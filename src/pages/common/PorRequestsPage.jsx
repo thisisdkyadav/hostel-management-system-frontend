@@ -3,9 +3,10 @@ import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
 import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, ShieldAlert, ShieldCheck, UserRoundSearch, Users } from "lucide-react"
 import toast from "react-hot-toast"
 import PageHeader from "../../components/common/PageHeader"
+import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
 import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, StatCards, Textarea } from "@/components/ui"
-import { porApi } from "@/service"
+import { porApi, uploadApi } from "@/service"
 import {
   EventDetailInfoRow,
   EventDetailSectionCard,
@@ -22,6 +23,8 @@ const createDefaultForm = () => ({
   positionTitle: "",
   positionDetails: "",
   tenure: "",
+  supportingDocumentUrl: "",
+  supportingDocumentName: "",
 })
 
 const POST_SA_STAGE_ORDER = [
@@ -295,6 +298,21 @@ const buildGroupedRequestCommentState = (requests = []) =>
     return acc
   }, {})
 
+const getFilenameFromUrl = (url, fallback = "document.pdf") => {
+  const normalized = String(url || "").trim()
+  if (!normalized) return fallback
+  if (normalized.startsWith("media://")) return fallback
+
+  try {
+    const parsed = new URL(normalized)
+    const candidate = decodeURIComponent(parsed.pathname.split("/").pop() || "")
+    return candidate || fallback
+  } catch {
+    const candidate = decodeURIComponent(normalized.split("/").pop()?.split("?")[0] || "")
+    return candidate || fallback
+  }
+}
+
 const PorRequestFormModal = ({
   isOpen,
   isSaving,
@@ -308,6 +326,27 @@ const PorRequestFormModal = ({
   if (!isOpen) return null
 
   const clubOptions = buildClubOptions(clubs)
+  const updateSupportingDocument = (url, name = "") => {
+    onChange?.({
+      target: {
+        name: "supportingDocumentUrl",
+        value: url,
+      },
+    })
+    onChange?.({
+      target: {
+        name: "supportingDocumentName",
+        value: url ? name : "",
+      },
+    })
+  }
+
+  const uploadSupportingDocument = (file) => {
+    updateSupportingDocument(formData.supportingDocumentUrl, file.name)
+    const uploadPayload = new FormData()
+    uploadPayload.append("porPdf", file)
+    return uploadApi.uploadPorDocumentPDF(uploadPayload)
+  }
 
   return (
     <Modal
@@ -376,6 +415,25 @@ const PorRequestFormModal = ({
               rows={5}
               required
               disabled={isSaving}
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <PdfUploadField
+              label="Supporting PDF"
+              value={formData.supportingDocumentUrl}
+              onChange={(url) =>
+                updateSupportingDocument(
+                  url,
+                  url ? formData.supportingDocumentName || getFilenameFromUrl(url, "por-document.pdf") : ""
+                )
+              }
+              onUpload={uploadSupportingDocument}
+              disabled={isSaving}
+              uploadedText={formData.supportingDocumentName || "Supporting PDF uploaded"}
+              viewerTitle="POR Supporting Document"
+              viewerSubtitle="Uploaded supporting PDF"
+              downloadFileName={formData.supportingDocumentName || "por-document.pdf"}
             />
           </div>
 
@@ -535,6 +593,27 @@ const PorRequestDetailModal = ({
 
                 <SectionHeader>Responsibilities</SectionHeader>
                 <div style={detailTextStyle}>{request.positionDetails || "—"}</div>
+
+                <SectionHeader>Supporting Document</SectionHeader>
+                {request.supportingDocumentUrl ? (
+                  <PdfUploadField
+                    label="Supporting PDF"
+                    value={request.supportingDocumentUrl}
+                    onChange={() => {}}
+                    disabled
+                    uploadedText={request.supportingDocumentName || "Supporting PDF uploaded"}
+                    viewerTitle="POR Supporting Document"
+                    viewerSubtitle="Uploaded supporting PDF"
+                    downloadFileName={request.supportingDocumentName || "por-document.pdf"}
+                  />
+                ) : (
+                  <div style={infoBoxStyle}>
+                    <span style={sectionLabelStyle}>Attachment</span>
+                    <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
+                      No supporting PDF attached.
+                    </div>
+                  </div>
+                )}
               </div>
             </EventDetailSectionCard>
 
@@ -877,6 +956,19 @@ const PorRequestGroupModal = ({
                               {request.disciplinaryActionDetails || "No details provided."}
                             </div>
                           </div>
+                        ) : null}
+
+                        {request.supportingDocumentUrl ? (
+                          <PdfUploadField
+                            label="Supporting PDF"
+                            value={request.supportingDocumentUrl}
+                            onChange={() => {}}
+                            disabled
+                            uploadedText={request.supportingDocumentName || "Supporting PDF uploaded"}
+                            viewerTitle="POR Supporting Document"
+                            viewerSubtitle="Uploaded supporting PDF"
+                            downloadFileName={request.supportingDocumentName || "por-document.pdf"}
+                          />
                         ) : null}
                       </div>
                     </div>
@@ -1232,6 +1324,8 @@ const PorRequestsPage = () => {
       positionTitle: request?.positionTitle || "",
       positionDetails: request?.positionDetails || "",
       tenure: request?.tenure || "",
+      supportingDocumentUrl: request?.supportingDocumentUrl || "",
+      supportingDocumentName: request?.supportingDocumentName || "",
     })
     setSelectedRequest(null)
     setSelectedRequestGroup(null)

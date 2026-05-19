@@ -137,6 +137,14 @@ export const uploadApi = {
   uploadOverallBestPerformerProofPDF: (fileData) => {
     return apiClient.upload("/upload/overall-best-performer-proof-pdf", fileData)
   },
+
+  /**
+   * Upload POR supporting document PDF
+   * @param {FormData} fileData - File form data
+   */
+  uploadPorDocumentPDF: (fileData) => {
+    return apiClient.upload("/upload/por-document-pdf", fileData)
+  },
 }
 
 export default uploadApi
