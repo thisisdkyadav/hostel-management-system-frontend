@@ -419,6 +419,23 @@ const PorRequestFormModal = ({
           </div>
 
           <div className="md:col-span-2">
+            <div style={{ ...infoBoxStyle, marginBottom: "var(--spacing-2)" }}>
+              <span style={sectionLabelStyle}>Order of Attachment in PDF</span>
+              <ol
+                style={{
+                  margin: "var(--spacing-2) 0 0",
+                  paddingLeft: "var(--spacing-5)",
+                  color: "var(--color-text-body)",
+                  fontSize: "var(--font-size-sm)",
+                  lineHeight: 1.6,
+                }}
+              >
+                <li>Academic Achievements</li>
+                <li>Part of any Club/Fluxus/Ingenium/RIC/MUN/E-Summit etc.</li>
+                <li>Participation in any Inter IIT Meets</li>
+                <li>Any other extra-curricular activities</li>
+              </ol>
+            </div>
             <PdfUploadField
               label="Supporting PDF"
               value={formData.supportingDocumentUrl}
@@ -430,6 +447,7 @@ const PorRequestFormModal = ({
               }
               onUpload={uploadSupportingDocument}
               disabled={isSaving}
+              required
               uploadedText={formData.supportingDocumentName || "Supporting PDF uploaded"}
               viewerTitle="POR Supporting Document"
               viewerSubtitle="Uploaded supporting PDF"
@@ -1347,6 +1365,11 @@ const PorRequestsPage = () => {
   }
 
   const handleSubmitForm = async () => {
+    if (!String(formData.supportingDocumentUrl || "").trim()) {
+      toast.error("Please upload the supporting PDF before submitting the POR request.")
+      return
+    }
+
     setSavingForm(true)
 
     try {
