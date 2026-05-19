@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
+import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 
@@ -18,11 +19,6 @@ const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   const isGymkhana = staffType === "gymkhana"
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
-  const gymkhanaSubRoleOptions = [
-    { value: "GS Gymkhana", label: "GS Gymkhana" },
-    { value: "President Gymkhana", label: "President Gymkhana" },
-    { value: "Election Officer", label: "Election Officer" },
-  ]
 
   const [formData, setFormData] = useState({
     name: "",
@@ -169,7 +165,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                   id="subRole"
                   value={formData.subRole}
                   onChange={handleChange}
-                  options={gymkhanaSubRoleOptions}
+                  options={GYMKHANA_SUBROLE_OPTIONS}
                   placeholder="Select Gymkhana sub role"
                   icon={<FiTag />}
                   required

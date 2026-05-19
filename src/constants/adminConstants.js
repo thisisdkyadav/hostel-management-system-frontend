@@ -4,11 +4,18 @@ export const WARDEN_FILTER_TABS = [
   { label: "Unassigned", value: "unassigned" },
 ]
 
-export const GYMKHANA_FILTER_TABS = [
-  { label: "All", value: "all" },
+export const GYMKHANA_SUBROLE_OPTIONS = [
   { label: "GS Gymkhana", value: "GS Gymkhana" },
   { label: "President Gymkhana", value: "President Gymkhana" },
   { label: "Election Officer", value: "Election Officer" },
+  { label: "Councils", value: "Councils" },
+  { label: "Committee", value: "Committee" },
+  { label: "Mega Events", value: "Mega Events" },
+]
+
+export const GYMKHANA_FILTER_TABS = [
+  { label: "All", value: "all" },
+  ...GYMKHANA_SUBROLE_OPTIONS,
 ]
 
 export const COMPLAINT_FILTER_TABS = [

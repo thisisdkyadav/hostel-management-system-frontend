@@ -2,6 +2,7 @@ import { StatCards } from "@/components/ui"
 import { FaUsers } from "react-icons/fa"
 import { MdVerified } from "react-icons/md"
 import { FaBuilding, FaUserTie } from "react-icons/fa"
+import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 
 const WardenStats = ({ wardens, staffType = "warden" }) => {
   const isGymkhana = staffType === "gymkhana"
@@ -9,11 +10,7 @@ const WardenStats = ({ wardens, staffType = "warden" }) => {
 
   if (isGymkhana) {
     const totalUsers = wardens.length
-    const gsCount = wardens.filter((user) => user.subRole === "GS Gymkhana").length
-    const presidentCount = wardens.filter((user) => user.subRole === "President Gymkhana").length
-    const electionOfficerCount = wardens.filter((user) => user.subRole === "Election Officer").length
-
-    const statsData = [
+    const baseStats = [
       {
         title: "Total Gymkhana",
         value: totalUsers,
@@ -21,28 +18,44 @@ const WardenStats = ({ wardens, staffType = "warden" }) => {
         icon: <FaUsers style={{ fontSize: "var(--icon-xl)" }} />,
         color: "var(--color-primary)",
       },
-      {
-        title: "GS Gymkhana",
-        value: gsCount,
-        subtitle: "General Secretary accounts",
-        icon: <MdVerified style={{ fontSize: "var(--icon-xl)" }} />,
-        color: "var(--color-success)",
-      },
-      {
-        title: "President",
-        value: presidentCount,
-        subtitle: "President Gymkhana accounts",
-        icon: <FaUserTie style={{ fontSize: "var(--icon-xl)" }} />,
-        color: "var(--color-warning)",
-      },
-      {
-        title: "Election Officer",
-        value: electionOfficerCount,
-        subtitle: "Election officer accounts",
-        icon: <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
-        color: "var(--color-info)",
-      },
     ]
+
+    const statIconBySubRole = {
+      "GS Gymkhana": <MdVerified style={{ fontSize: "var(--icon-xl)" }} />,
+      "President Gymkhana": <FaUserTie style={{ fontSize: "var(--icon-xl)" }} />,
+      "Election Officer": <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
+      Councils: <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
+      Committee: <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
+      "Mega Events": <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
+    }
+
+    const statColorBySubRole = {
+      "GS Gymkhana": "var(--color-success)",
+      "President Gymkhana": "var(--color-warning)",
+      "Election Officer": "var(--color-info)",
+      Councils: "var(--color-primary)",
+      Committee: "var(--color-danger)",
+      "Mega Events": "var(--color-success)",
+    }
+
+    const statSubtitleBySubRole = {
+      "GS Gymkhana": "General Secretary accounts",
+      "President Gymkhana": "President Gymkhana accounts",
+      "Election Officer": "Election officer accounts",
+      Councils: "Council member accounts",
+      Committee: "Committee member accounts",
+      "Mega Events": "Mega events accounts",
+    }
+
+    const statsData = baseStats.concat(
+      GYMKHANA_SUBROLE_OPTIONS.map(({ value, label }) => ({
+        title: label,
+        value: wardens.filter((user) => user.subRole === value).length,
+        subtitle: statSubtitleBySubRole[value] || `${label} accounts`,
+        icon: statIconBySubRole[value] || <FaBuilding style={{ fontSize: "var(--icon-xl)" }} />,
+        color: statColorBySubRole[value] || "var(--color-info)",
+      }))
+    )
 
     return <StatCards stats={statsData} columns={4} />
   }

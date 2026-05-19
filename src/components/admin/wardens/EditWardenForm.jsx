@@ -4,6 +4,7 @@ import { FiTag, FiUser, FiBriefcase } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
+import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -26,11 +27,6 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const gymkhanaSubRoleOptions = [
-    { value: "GS Gymkhana", label: "GS Gymkhana" },
-    { value: "President Gymkhana", label: "President Gymkhana" },
-    { value: "Election Officer", label: "Election Officer" },
-  ]
   const [gymkhanaCategoryDefinitions, setGymkhanaCategoryDefinitions] = useState([])
 
   const [formData, setFormData] = useState({
@@ -225,7 +221,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   id="subRole"
                   value={formData.subRole}
                   onChange={handleChange}
-                  options={gymkhanaSubRoleOptions}
+                  options={GYMKHANA_SUBROLE_OPTIONS}
                   placeholder="Select Gymkhana sub role"
                   icon={<FiTag />}
                   required
