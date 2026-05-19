@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import PageHeader from "../../components/common/PageHeader"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
-import { Badge, EmptyState, ErrorState, Label, LoadingState, Select, StatCards, Textarea } from "@/components/ui"
+import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea } from "@/components/ui"
 import { porApi, uploadApi } from "@/service"
 import {
   EventDetailInfoRow,
@@ -174,8 +174,6 @@ const getViewerSubtitle = (mode) => {
 
   return "Review POR requests, manage POR categories, monitor the approval chain, and assign post-Student-Affairs recommenders where required."
 }
-
-const shouldShowStats = (viewer) => Boolean(viewer?.showStats)
 
 const shouldShowStudentColumn = (viewer) => viewer?.mode !== "student"
 
@@ -2163,12 +2161,6 @@ const PorRequestsPage = () => {
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
-        {shouldShowStats(viewer) && workspace.stats.length > 0 ? (
-          <div style={{ marginBottom: "var(--spacing-6)" }}>
-            <StatCards stats={workspace.stats} columns={4} loading={false} />
-          </div>
-        ) : null}
-
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs
