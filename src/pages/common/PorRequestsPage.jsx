@@ -1594,16 +1594,19 @@ const PorRequestsPage = () => {
         key: "club",
         render: (row) => {
           if (row.rowType === "group") {
+            const categories = Array.isArray(row.categories) ? row.categories : []
+            const positions = Array.isArray(row.positions) ? row.positions : []
+            const clubs = Array.isArray(row.clubs) ? row.clubs : []
             const categoryLabel =
-              row.categories.length === 1
-                ? row.categories[0]
-                : row.categories.length > 1
-                  ? `${row.categories.length} categories`
+              categories.length === 1
+                ? categories[0]
+                : categories.length > 1
+                  ? `${categories.length} categories`
                   : "Multiple categories"
             const positionsPreview =
-              row.positions.length <= 2
-                ? row.positions.join(", ")
-                : `${row.positions.slice(0, 2).join(", ")} +${row.positions.length - 2} more`
+              positions.length <= 2
+                ? positions.join(", ")
+                : `${positions.slice(0, 2).join(", ")} +${positions.length - 2} more`
 
             return (
               <div style={{ display: "grid", gap: "4px" }}>
@@ -1613,9 +1616,9 @@ const PorRequestsPage = () => {
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                   {categoryLabel}
                 </div>
-                {row.clubs.length > 0 ? (
+                {clubs.length > 0 ? (
                   <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                    {row.clubs.length === 1 ? row.clubs[0] : `${row.clubs.length} clubs`}
+                    {clubs.length === 1 ? clubs[0] : `${clubs.length} clubs`}
                   </div>
                 ) : null}
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
@@ -1654,10 +1657,14 @@ const PorRequestsPage = () => {
       columns.push({
         header: "Category",
         key: "category",
-        render: (row) =>
-          row.rowType === "group"
-            ? row.gymkhanaCategoryLabel || row.categories?.join(", ") || "—"
-            : row.request?.gymkhanaCategoryLabel || row.request?.porCategoryName || "—",
+        render: (row) => {
+          if (row.rowType === "group") {
+            const categories = Array.isArray(row.categories) ? row.categories : []
+            return row.gymkhanaCategoryLabel || categories.join(", ") || "—"
+          }
+
+          return row.request?.gymkhanaCategoryLabel || row.request?.porCategoryName || "—"
+        },
       })
     }
 
