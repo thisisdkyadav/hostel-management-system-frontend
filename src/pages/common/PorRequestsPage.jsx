@@ -740,7 +740,7 @@ const PorCategoryFormModal = ({
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
-          <Button type="submit" loading={isSaving} disabled={isSaving}>
+          <Button type="button" onClick={() => onSubmit?.()} loading={isSaving} disabled={isSaving}>
             {isEdit ? "Save Category" : "Create Category"}
           </Button>
         </div>
@@ -1867,7 +1867,25 @@ const PorRequestsPage = () => {
       return
     }
 
-    const invalidStep = (categoryForm.gymkhanaSteps || []).find(
+    const normalizedSteps = (categoryForm.gymkhanaSteps || []).map((step) => {
+      const reviewerUserIds = Array.from(
+        new Set(
+          [
+            ...(Array.isArray(step.reviewerUserIds) ? step.reviewerUserIds : []),
+            step.reviewerPickerId,
+          ]
+            .map((value) => String(value || "").trim())
+            .filter(Boolean)
+        )
+      )
+
+      return {
+        label: String(step.label || "").trim(),
+        reviewerUserIds,
+      }
+    })
+
+    const invalidStep = normalizedSteps.find(
       (step) => !String(step.label || "").trim() || !Array.isArray(step.reviewerUserIds) || step.reviewerUserIds.length === 0
     )
     if (invalidStep) {
@@ -1877,10 +1895,7 @@ const PorRequestsPage = () => {
 
     const payload = {
       name: normalizedName,
-      gymkhanaSteps: categoryForm.gymkhanaSteps.map((step) => ({
-        label: String(step.label || "").trim(),
-        reviewerUserIds: step.reviewerUserIds,
-      })),
+      gymkhanaSteps: normalizedSteps,
     }
 
     setSavingCategory(true)
