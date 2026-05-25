@@ -6,7 +6,7 @@ import PageHeader from "../../components/common/PageHeader"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
-import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea } from "@/components/ui"
+import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea, ToggleButtonGroup } from "@/components/ui"
 import { porApi, studentApi, uploadApi } from "@/service"
 import {
   EventDetailInfoRow,
@@ -19,7 +19,7 @@ import {
 
 const createDefaultForm = () => ({
   porCategoryId: "",
-  hasDisciplinaryAction: false,
+  hasDisciplinaryAction: null,
   disciplinaryActionDetails: "",
   positionTitle: "",
   positionDetails: "",
@@ -492,22 +492,57 @@ const PorRequestFormModal = ({
           </div>
 
           <div className="md:col-span-2">
-            <Checkbox
-              id="por-disciplinary-flag"
-              name="hasDisciplinaryAction"
-              checked={formData.hasDisciplinaryAction}
-              onChange={(event) =>
-                onChange?.({
-                  target: {
-                    name: "hasDisciplinaryAction",
-                    value: event?.target?.checked,
-                    checked: event?.target?.checked,
-                    type: "checkbox",
+            <Label required>Do you have any disciplinary action?</Label>
+            <div style={{ marginTop: "var(--spacing-2)" }}>
+              <ToggleButtonGroup
+                options={[
+                  {
+                    value: "no",
+                    label: "No",
+                    icon: <ShieldCheck size={16} />,
+                    ariaLabel: "No disciplinary action",
                   },
-                })
-              }
-              label="I have a disciplinary action that should be disclosed with this request"
-            />
+                  {
+                    value: "yes",
+                    label: "Yes",
+                    icon: <ShieldAlert size={16} />,
+                    ariaLabel: "Yes disciplinary action",
+                  },
+                ]}
+                value={
+                  formData.hasDisciplinaryAction === true
+                    ? "yes"
+                    : formData.hasDisciplinaryAction === false
+                      ? "no"
+                      : null
+                }
+                onChange={(selectedValue) =>
+                  onChange?.({
+                    target: {
+                      name: "hasDisciplinaryAction",
+                      value: selectedValue === "yes",
+                      checked: selectedValue === "yes",
+                      type: "checkbox",
+                    },
+                  })
+                }
+                variant="outline"
+                size="medium"
+                fullWidth
+                hideLabelsOnMobile={false}
+                disabled={isSaving}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: "var(--spacing-2)",
+                fontSize: "var(--font-size-sm)",
+                color: "var(--color-text-muted)",
+                lineHeight: 1.6,
+              }}
+            >
+              Select one option to continue with the POR request.
+            </div>
           </div>
 
           {formData.hasDisciplinaryAction ? (
@@ -1905,6 +1940,11 @@ const PorRequestsPage = () => {
   }
 
   const handleSubmitForm = async () => {
+    if (formData.hasDisciplinaryAction !== true && formData.hasDisciplinaryAction !== false) {
+      toast.error("Please answer the disciplinary action question before submitting the POR request.")
+      return
+    }
+
     if (!String(formData.supportingDocumentUrl || "").trim()) {
       toast.error("Please upload the supporting PDF before submitting the POR request.")
       return
