@@ -3,10 +3,11 @@ import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
 import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import toast from "react-hot-toast"
 import PageHeader from "../../components/common/PageHeader"
+import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
 import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea } from "@/components/ui"
-import { porApi, uploadApi } from "@/service"
+import { porApi, studentApi, uploadApi } from "@/service"
 import {
   EventDetailInfoRow,
   EventDetailSectionCard,
@@ -874,14 +875,51 @@ const PorRequestDetailModal = ({
   actionLoading,
 }) => {
   const [showFullHistoryModal, setShowFullHistoryModal] = useState(false)
-
-  if (!isOpen || !request) return null
-
+  const [studentId, setStudentId] = useState(null)
+  const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
   const canAct = Boolean(request?.permissions?.canApprove)
+  const canViewStudentProfile = Boolean(request?.student?.userId && viewer?.mode !== "student")
   const isStudentAffairsApproval =
     viewer?.canSelectPostApprovers && request?.status === "pending_student_affairs"
   const primaryDecisionLabel = request?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
   const selectedPostSaApproverCount = countSelectedPostSaApprovers(postSaAssignments)
+
+  useEffect(() => {
+    let isSubscribed = true
+
+    const loadStudentId = async () => {
+      if (!isOpen || !canViewStudentProfile) {
+        if (isSubscribed) {
+          setStudentId(null)
+          setShowStudentDetailModal(false)
+        }
+        return
+      }
+
+      try {
+        const resolvedStudentId = await studentApi.getStudentId(request.student.userId)
+        if (!isSubscribed) return
+        setStudentId(resolvedStudentId || null)
+      } catch (error) {
+        console.error("Failed to resolve POR student profile id:", error)
+        if (!isSubscribed) return
+        setStudentId(null)
+      }
+    }
+
+    loadStudentId()
+
+    return () => {
+      isSubscribed = false
+    }
+  }, [canViewStudentProfile, isOpen, request?.student?.userId])
+
+  const handleOpenStudentDetail = () => {
+    if (!canViewStudentProfile || !studentId) return
+    setShowStudentDetailModal(true)
+  }
+
+  if (!isOpen || !request) return null
 
   return (
     <Modal
@@ -992,6 +1030,18 @@ const PorRequestDetailModal = ({
                 icon={Users}
                 title="Student Details"
                 accentColor="var(--color-info)"
+                headerAction={
+                  canViewStudentProfile ? (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleOpenStudentDetail}
+                      disabled={!studentId}
+                    >
+                      View Profile
+                    </Button>
+                  ) : null
+                }
               >
                 <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
                   <EventDetailInfoRow label="Name" value={request.student.name || "—"} />
@@ -1174,6 +1224,14 @@ const PorRequestDetailModal = ({
       >
         <PorApprovalHistory porRequestId={request.id} />
       </Modal>
+
+      {showStudentDetailModal && studentId ? (
+        <StudentDetailModal
+          selectedStudent={{ _id: studentId, userId: request.student.userId }}
+          setShowStudentDetail={setShowStudentDetailModal}
+          onUpdate={() => setShowStudentDetailModal(false)}
+        />
+      ) : null}
     </Modal>
   )
 }
@@ -1199,10 +1257,11 @@ const PorRequestGroupModal = ({
   onOpenIndividual,
   actionLoading,
 }) => {
-  if (!isOpen || !group?.requests?.length) return null
-
-  const requests = group.requests
-  const student = group.student || {}
+  const [studentId, setStudentId] = useState(null)
+  const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
+  const requests = Array.isArray(group?.requests) ? group.requests : []
+  const student = group?.student || {}
+  const canViewStudentProfile = Boolean(student?.userId && viewer?.mode !== "student")
   const isStudentAffairsApproval =
     viewer?.canSelectPostApprovers && group?.status === "pending_student_affairs"
   const primaryDecisionLabel = group?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
@@ -1210,6 +1269,43 @@ const PorRequestGroupModal = ({
   const commentRequiredForBulkNegativeAction = useCommonComment
     ? Boolean(String(commonReviewComment || "").trim())
     : requests.every((request) => Boolean(String(perRequestComments?.[request.id] || "").trim()))
+
+  useEffect(() => {
+    let isSubscribed = true
+
+    const loadStudentId = async () => {
+      if (!isOpen || !canViewStudentProfile) {
+        if (isSubscribed) {
+          setStudentId(null)
+          setShowStudentDetailModal(false)
+        }
+        return
+      }
+
+      try {
+        const resolvedStudentId = await studentApi.getStudentId(student.userId)
+        if (!isSubscribed) return
+        setStudentId(resolvedStudentId || null)
+      } catch (error) {
+        console.error("Failed to resolve grouped POR student profile id:", error)
+        if (!isSubscribed) return
+        setStudentId(null)
+      }
+    }
+
+    loadStudentId()
+
+    return () => {
+      isSubscribed = false
+    }
+  }, [canViewStudentProfile, isOpen, student?.userId])
+
+  const handleOpenStudentDetail = () => {
+    if (!canViewStudentProfile || !studentId) return
+    setShowStudentDetailModal(true)
+  }
+
+  if (!isOpen || !group?.requests?.length) return null
 
   return (
     <Modal
@@ -1249,6 +1345,18 @@ const PorRequestGroupModal = ({
               icon={Users}
               title="Student Overview"
               accentColor="var(--color-info)"
+              headerAction={
+                canViewStudentProfile ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleOpenStudentDetail}
+                    disabled={!studentId}
+                  >
+                    View Profile
+                  </Button>
+                ) : null
+              }
             >
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
@@ -1479,6 +1587,14 @@ const PorRequestGroupModal = ({
           </div>
         </div>
       </div>
+
+      {showStudentDetailModal && studentId ? (
+        <StudentDetailModal
+          selectedStudent={{ _id: studentId, userId: student.userId }}
+          setShowStudentDetail={setShowStudentDetailModal}
+          onUpdate={() => setShowStudentDetailModal(false)}
+        />
+      ) : null}
     </Modal>
   )
 }

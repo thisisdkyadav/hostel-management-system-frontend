@@ -17,6 +17,7 @@ import {
 import PageHeader from "@/components/common/PageHeader"
 import CsvUploader from "@/components/common/CsvUploader"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
+import StudentDetailModal from "@/components/common/students/StudentDetailModal"
 import {
   eventDetailMetaChipStyles,
   infoBoxStyle,
@@ -33,7 +34,7 @@ import useLocalFormDraft, {
   buildLocalFormDraftKey,
   readLocalFormDraft,
 } from "@/hooks/useLocalFormDraft"
-import { overallBestPerformerApi, porApi, uploadApi } from "@/service"
+import { overallBestPerformerApi, porApi, studentApi, uploadApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
 const BTP_AWARD_OPTIONS = [
@@ -1724,13 +1725,50 @@ const ReviewModal = ({
 }) => {
   const [remarks, setRemarks] = useState("")
   const [activePorDetail, setActivePorDetail] = useState(null)
+  const [studentProfileId, setStudentProfileId] = useState(null)
+  const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
 
   useEffect(() => {
     if (open) {
       setRemarks(application?.review?.remarks || "")
       setActivePorDetail(null)
+      setShowStudentDetailModal(false)
     }
   }, [open, application])
+
+  useEffect(() => {
+    let isSubscribed = true
+
+    const loadStudentProfileId = async () => {
+      if (!open || !application?.studentUserId) {
+        if (isSubscribed) {
+          setStudentProfileId(null)
+        }
+        return
+      }
+
+      if (application?.studentProfileId) {
+        setStudentProfileId(application.studentProfileId)
+        return
+      }
+
+      try {
+        const resolvedStudentId = await studentApi.getStudentId(application.studentUserId)
+        if (!isSubscribed) return
+        setStudentProfileId(resolvedStudentId || null)
+      } catch (error) {
+        console.error("Failed to resolve Best Performer student profile id:", error)
+        if (!isSubscribed) return
+        setStudentProfileId(null)
+      }
+    }
+
+    loadStudentProfileId()
+
+    return () => {
+      isSubscribed = false
+    }
+  }, [application?.studentProfileId, application?.studentUserId, open])
 
   if (!open || !application) return null
 
@@ -1747,8 +1785,20 @@ const ReviewModal = ({
                 <SummaryMetric icon={CheckCircle2} label="Final Score" value={application.finalScore || 0} />
               </div>
               <div style={{ marginTop: "var(--spacing-4)", padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
-                <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)", marginBottom: "var(--spacing-3)" }}>
-                  Personal / academic details
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", marginBottom: "var(--spacing-3)", flexWrap: "wrap" }}>
+                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    Personal / academic details
+                  </div>
+                  {application?.studentUserId ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setShowStudentDetailModal(true)}
+                      disabled={!studentProfileId}
+                    >
+                      View Profile
+                    </Button>
+                  ) : null}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)", fontSize: "var(--font-size-sm)" }}>
                   <div><strong>Programme:</strong> {application.personalAcademic?.programme || "—"}</div>
@@ -1889,6 +1939,13 @@ const ReviewModal = ({
           onClose={() => setActivePorDetail(null)}
           porRequest={activePorDetail}
         />
+        {showStudentDetailModal && studentProfileId ? (
+          <StudentDetailModal
+            selectedStudent={{ _id: studentProfileId, userId: application.studentUserId }}
+            setShowStudentDetail={setShowStudentDetailModal}
+            onUpdate={() => setShowStudentDetailModal(false)}
+          />
+        ) : null}
       </div>
     </Modal>
   )
