@@ -328,6 +328,12 @@ const createDefaultCategoryForm = () => ({
   gymkhanaSteps: [createEmptyCategoryStep(0)],
 })
 
+const countSelectedPostSaApprovers = (assignments = {}) =>
+  POST_SA_STAGE_ORDER.reduce(
+    (count, stage) => (String(assignments?.[stage] || "").trim() ? count + 1 : count),
+    0
+  )
+
 const formatCurrentReviewerLabel = (request) => {
   const reviewerUsers = Array.isArray(request?.currentApproverUsers) ? request.currentApproverUsers : []
   if (reviewerUsers.length === 0) {
@@ -875,6 +881,7 @@ const PorRequestDetailModal = ({
   const isStudentAffairsApproval =
     viewer?.canSelectPostApprovers && request?.status === "pending_student_affairs"
   const primaryDecisionLabel = request?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
+  const selectedPostSaApproverCount = countSelectedPostSaApprovers(postSaAssignments)
 
   return (
     <Modal
@@ -1117,7 +1124,7 @@ const PorRequestDetailModal = ({
                       <Button
                         variant="secondary"
                         onClick={onApprove}
-                        disabled={actionLoading}
+                        disabled={actionLoading || selectedPostSaApproverCount === 0}
                         loading={actionLoading === "approve"}
                       >
                         Recommend & Forward
@@ -1125,7 +1132,7 @@ const PorRequestDetailModal = ({
                     ) : null}
                     <Button
                       onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
-                      disabled={actionLoading}
+                      disabled={actionLoading || (isStudentAffairsApproval && selectedPostSaApproverCount > 0)}
                       loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
                     >
                       {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
@@ -1199,6 +1206,7 @@ const PorRequestGroupModal = ({
   const isStudentAffairsApproval =
     viewer?.canSelectPostApprovers && group?.status === "pending_student_affairs"
   const primaryDecisionLabel = group?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
+  const selectedPostSaApproverCount = countSelectedPostSaApprovers(postSaAssignments)
   const commentRequiredForBulkNegativeAction = useCommonComment
     ? Boolean(String(commonReviewComment || "").trim())
     : requests.every((request) => Boolean(String(perRequestComments?.[request.id] || "").trim()))
@@ -1452,7 +1460,7 @@ const PorRequestGroupModal = ({
                     <Button
                       variant="secondary"
                       onClick={onApprove}
-                      disabled={actionLoading}
+                      disabled={actionLoading || selectedPostSaApproverCount === 0}
                       loading={actionLoading === "approve"}
                     >
                       Recommend & Forward All
@@ -1460,7 +1468,7 @@ const PorRequestGroupModal = ({
                   ) : null}
                   <Button
                     onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
-                    disabled={actionLoading}
+                    disabled={actionLoading || (isStudentAffairsApproval && selectedPostSaApproverCount > 0)}
                     loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
                   >
                     {isStudentAffairsApproval ? "Approve All" : `${primaryDecisionLabel} All`}
