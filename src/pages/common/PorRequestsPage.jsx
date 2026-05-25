@@ -285,6 +285,7 @@ const buildTableRows = (requests = [], viewer = {}) => {
             ? `Multiple (${summary.categories.length})`
             : "—",
       updatedAt: summary.latestUpdatedAt,
+      categories: summary.categories,
       clubs: summary.clubs,
       positions: summary.positions,
       requestCount: groupRequests.length,
@@ -934,6 +935,50 @@ const PorCategoryManagementModal = ({
   )
 }
 
+const renderStudentAvatar = (name) => {
+  const initials = String(name || "S")
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase()
+  return <div className="por-student-avatar">{initials}</div>
+}
+
+const PorDetailCard = ({
+  icon: Icon,
+  title,
+  accentColor = "var(--color-primary)",
+  children,
+  headerAction = null,
+}) => (
+  <div className="por-detail-card">
+    <div className="por-detail-card-header">
+      <div className="por-detail-card-header-left">
+        <span
+          className="por-detail-card-icon-wrapper"
+          style={{
+            backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
+            color: accentColor,
+          }}
+        >
+          {Icon && <Icon size={14} />}
+        </span>
+        <h4 className="por-detail-card-title">{title}</h4>
+      </div>
+      {headerAction}
+    </div>
+    <div className="por-detail-card-body">{children}</div>
+  </div>
+)
+
+const PorDetailInfoRow = ({ label, value }) => (
+  <div className="por-detail-info-row">
+    <span className="por-detail-info-label">{label}</span>
+    <span className="por-detail-info-value">{value}</span>
+  </div>
+)
+
 const PorRequestDetailModal = ({
   isOpen,
   request,
@@ -1010,21 +1055,16 @@ const PorRequestDetailModal = ({
       <div style={detailBodyStyle}>
         <div style={metaBarStyle}>
           <div style={metaBarLeftStyle}>
-            <span
-              style={buildMetaChipStyle({
-                fontFamily: "monospace",
-                backgroundColor: "var(--color-bg-muted)",
-              })}
-            >
+            <span className="por-detail-meta-chip por-detail-meta-chip-id">
               {request.id}
             </span>
             <Badge variant={getStatusVariant(request.status)}>{formatStatusLabel(request.status)}</Badge>
-            <span style={buildMetaChipStyle()}>{request.porCategoryName || "—"}</span>
-            <span style={buildMetaChipStyle()}>
+            <span className="por-detail-meta-chip">{request.porCategoryName || "—"}</span>
+            <span className="por-detail-meta-chip">
               <ShieldCheck size={12} />
               {formatStageLabel(request.currentApprovalStage)}
             </span>
-            <span style={buildMetaChipStyle()}>
+            <span className="por-detail-meta-chip">
               <CalendarDays size={12} />
               Submitted {formatDateTime(request.createdAt)}
             </span>
@@ -1047,31 +1087,17 @@ const PorRequestDetailModal = ({
             className="xl:col-span-2"
             style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}
           >
-            <EventDetailSectionCard
+            <PorDetailCard
               icon={FileText}
               title="POR Submission"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>Position of Responsibility</span>
-                  <div
-                    style={{
-                      marginTop: "var(--spacing-2)",
-                      fontSize: "var(--font-size-base)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-heading)",
-                    }}
-                  >
+              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                <div className="por-detail-hero-box">
+                  <div className="por-detail-hero-title">
                     {request.positionTitle || "—"}
                   </div>
-                  <div
-                    style={{
-                      marginTop: "6px",
-                      fontSize: "var(--font-size-sm)",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
+                  <div className="por-detail-hero-subtitle">
                     Tenure: {request.tenure || "—"}
                   </div>
                 </div>
@@ -1092,18 +1118,17 @@ const PorRequestDetailModal = ({
                     downloadFileName={request.supportingDocumentName || "por-document.pdf"}
                   />
                 ) : (
-                  <div style={infoBoxStyle}>
-                    <span style={sectionLabelStyle}>Attachment</span>
-                    <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
+                  <div className="por-detail-info-grid">
+                    <div style={detailTextStyle}>
                       No supporting PDF attached.
                     </div>
                   </div>
                 )}
               </div>
-            </EventDetailSectionCard>
+            </PorDetailCard>
 
             <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)" }}>
-              <EventDetailSectionCard
+              <PorDetailCard
                 icon={Users}
                 title="Student Details"
                 accentColor="var(--color-info)"
@@ -1120,72 +1145,73 @@ const PorRequestDetailModal = ({
                   ) : null
                 }
               >
-                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                  <EventDetailInfoRow label="Name" value={request.student.name || "—"} />
-                  <EventDetailInfoRow label="Roll Number" value={request.student.rollNumber || "—"} />
-                  <EventDetailInfoRow label="Email" value={request.student.email || "—"} />
-                  <EventDetailInfoRow label="Department" value={request.student.department || "—"} />
-                  <EventDetailInfoRow label="Degree" value={request.student.degree || "—"} />
-                  <EventDetailInfoRow label="Batch" value={request.student.batch || "—"} />
+                <div className="por-student-profile-header">
+                  {renderStudentAvatar(request.student.name)}
+                  <div className="por-student-profile-info">
+                    <span className="por-student-profile-name">{request.student.name || "—"}</span>
+                    <span className="por-student-profile-roll">{request.student.rollNumber || "—"}</span>
+                  </div>
                 </div>
-              </EventDetailSectionCard>
+                <div className="por-detail-info-grid">
+                  <PorDetailInfoRow label="Email" value={request.student.email || "—"} />
+                  <PorDetailInfoRow label="Department" value={request.student.department || "—"} />
+                  <PorDetailInfoRow label="Degree" value={request.student.degree || "—"} />
+                  <PorDetailInfoRow label="Batch" value={request.student.batch || "—"} />
+                </div>
+              </PorDetailCard>
 
-              <EventDetailSectionCard
+              <PorDetailCard
                 icon={Building2}
                 title="Routing Details"
                 accentColor="var(--color-success)"
               >
-                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                  <EventDetailInfoRow label="POR Category" value={request.porCategoryName || "—"} />
-                  <EventDetailInfoRow label="Club" value={request.club?.name || "—"} />
-                  <EventDetailInfoRow
+                <div className="por-detail-info-grid">
+                  <PorDetailInfoRow label="POR Category" value={request.porCategoryName || "—"} />
+                  <PorDetailInfoRow label="Club" value={request.club?.name || "—"} />
+                  <PorDetailInfoRow
                     label="Current Stage"
                     value={formatStageLabel(request.currentApprovalStage)}
                   />
-                  <EventDetailInfoRow
+                  <PorDetailInfoRow
                     label="Current Reviewer"
                     value={formatCurrentReviewerLabel(request)}
                   />
-                  <EventDetailInfoRow
+                  <PorDetailInfoRow
                     label="Last Updated"
                     value={formatDateTime(request.updatedAt)}
                   />
                 </div>
-              </EventDetailSectionCard>
+              </PorDetailCard>
             </div>
 
-            <EventDetailSectionCard
-              icon={ShieldCheck}
+            <PorDetailCard
+              icon={request.hasDisciplinaryAction ? ShieldAlert : ShieldCheck}
               title="Disciplinary Disclosure"
-              accentColor={request.hasDisciplinaryAction ? "var(--color-warning)" : "var(--color-success)"}
+              accentColor={request.hasDisciplinaryAction ? "var(--color-danger)" : "var(--color-success)"}
             >
-              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>Declaration</span>
-                  <div
-                    style={{
-                      marginTop: "var(--spacing-2)",
-                      fontSize: "var(--font-size-sm)",
-                      fontWeight: "var(--font-weight-medium)",
-                      color: "var(--color-text-heading)",
-                    }}
-                  >
-                    {request.hasDisciplinaryAction
-                      ? "Disciplinary action disclosed by the student"
-                      : "No disciplinary action declared"}
+              {request.hasDisciplinaryAction ? (
+                <div className="por-detail-alert-card">
+                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
+                    Disciplinary Action Disclosed
                   </div>
-                </div>
-
-                {request.hasDisciplinaryAction ? (
                   <div style={detailTextStyle}>
                     {request.disciplinaryActionDetails || "No details provided."}
                   </div>
-                ) : null}
-              </div>
-            </EventDetailSectionCard>
+                </div>
+              ) : (
+                <div className="por-detail-success-card">
+                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-success)", fontSize: "var(--font-size-sm)" }}>
+                    ✓ No Disciplinary Action Declared
+                  </div>
+                  <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                    The student has declared that they have no past or active disciplinary actions.
+                  </div>
+                </div>
+              )}
+            </PorDetailCard>
 
             {canAct ? (
-              <EventDetailSectionCard
+              <PorDetailCard
                 icon={BadgeCheck}
                 title="Review Decision"
                 accentColor="var(--color-primary)"
@@ -1266,12 +1292,12 @@ const PorRequestDetailModal = ({
                     </Button>
                   </div>
                 </div>
-              </EventDetailSectionCard>
+              </PorDetailCard>
             ) : null}
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <EventDetailSectionCard
+            <PorDetailCard
               icon={Clock3}
               title="Approval History"
               accentColor="var(--color-text-heading)"
@@ -1286,7 +1312,7 @@ const PorRequestDetailModal = ({
               }
             >
               <PorApprovalHistory porRequestId={request.id} compact />
-            </EventDetailSectionCard>
+            </PorDetailCard>
           </div>
         </div>
       </div>
@@ -1396,17 +1422,17 @@ const PorRequestGroupModal = ({
       <div style={detailBodyStyle}>
         <div style={metaBarStyle}>
           <div style={metaBarLeftStyle}>
-            <span style={buildMetaChipStyle()}>
+            <span className="por-detail-meta-chip">
               <Users size={12} />
               {student?.name || "Student"}
             </span>
-            <span style={buildMetaChipStyle()}>{student?.rollNumber || student?.email || "—"}</span>
+            <span className="por-detail-meta-chip">{student?.rollNumber || student?.email || "—"}</span>
             <Badge variant={getStatusVariant(group.status)}>{formatStatusLabel(group.status)}</Badge>
-            <span style={buildMetaChipStyle()}>
+            <span className="por-detail-meta-chip">
               <ShieldCheck size={12} />
               {formatStageLabel(group.currentApprovalStage)}
             </span>
-            <span style={buildMetaChipStyle()}>
+            <span className="por-detail-meta-chip">
               <FileText size={12} />
               {group.requestCount} PORs
             </span>
@@ -1418,7 +1444,7 @@ const PorRequestGroupModal = ({
           style={{ gap: "var(--spacing-4)", alignItems: "start" }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <EventDetailSectionCard
+            <PorDetailCard
               icon={Users}
               title="Student Overview"
               accentColor="var(--color-info)"
@@ -1435,26 +1461,27 @@ const PorRequestGroupModal = ({
                 ) : null
               }
             >
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                  <EventDetailInfoRow label="Name" value={student?.name || "—"} />
-                  <EventDetailInfoRow label="Roll Number" value={student?.rollNumber || "—"} />
-                  <EventDetailInfoRow label="Email" value={student?.email || "—"} />
-                </div>
-                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                  <EventDetailInfoRow label="Department" value={student?.department || "—"} />
-                  <EventDetailInfoRow label="Degree" value={student?.degree || "—"} />
-                  <EventDetailInfoRow label="Batch" value={student?.batch || "—"} />
+              <div className="por-student-profile-header">
+                {renderStudentAvatar(student?.name)}
+                <div className="por-student-profile-info">
+                  <span className="por-student-profile-name">{student?.name || "—"}</span>
+                  <span className="por-student-profile-roll">{student?.rollNumber || "—"}</span>
                 </div>
               </div>
-            </EventDetailSectionCard>
+              <div className="por-detail-info-grid">
+                <PorDetailInfoRow label="Email" value={student?.email || "—"} />
+                <PorDetailInfoRow label="Department" value={student?.department || "—"} />
+                <PorDetailInfoRow label="Degree" value={student?.degree || "—"} />
+                <PorDetailInfoRow label="Batch" value={student?.batch || "—"} />
+              </div>
+            </PorDetailCard>
 
-            <EventDetailSectionCard
+            <PorDetailCard
               icon={FileText}
               title="POR Requests"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
                 {requests.map((request, index) => (
                   <div
                     key={request.id}
@@ -1462,7 +1489,7 @@ const PorRequestGroupModal = ({
                       border: "1px solid var(--color-border-primary)",
                       borderRadius: "var(--radius-card-sm)",
                       backgroundColor: "var(--color-bg-secondary)",
-                      padding: "var(--spacing-3)",
+                      padding: "var(--spacing-4)",
                     }}
                   >
                     <div
@@ -1472,20 +1499,15 @@ const PorRequestGroupModal = ({
                         justifyContent: "space-between",
                         gap: "var(--spacing-2)",
                         flexWrap: "wrap",
-                        marginBottom: "var(--spacing-2)",
+                        marginBottom: "var(--spacing-3)",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                        <span
-                          style={buildMetaChipStyle({
-                            fontFamily: "monospace",
-                            backgroundColor: "var(--color-bg-muted)",
-                          })}
-                        >
+                        <span className="por-detail-meta-chip por-detail-meta-chip-id">
                           {request.id}
                         </span>
-                        <span style={buildMetaChipStyle()}>{request.porCategoryName || "—"}</span>
-                        {request.club?.name ? <span style={buildMetaChipStyle()}>{request.club.name}</span> : null}
+                        <span className="por-detail-meta-chip">{request.porCategoryName || "—"}</span>
+                        {request.club?.name ? <span className="por-detail-meta-chip">{request.club.name}</span> : null}
                       </div>
 
                       <Button
@@ -1498,16 +1520,16 @@ const PorRequestGroupModal = ({
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                      <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                        <EventDetailInfoRow label="Position" value={request.positionTitle || "—"} />
-                        <EventDetailInfoRow label="Tenure" value={request.tenure || "—"} />
-                        <EventDetailInfoRow
+                      <div className="por-detail-info-grid">
+                        <PorDetailInfoRow label="Position" value={request.positionTitle || "—"} />
+                        <PorDetailInfoRow label="Tenure" value={request.tenure || "—"} />
+                        <PorDetailInfoRow
                           label="Disciplinary Disclosure"
                           value={request.hasDisciplinaryAction ? "Yes" : "No"}
                         />
                       </div>
 
-                      <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
                         <div style={infoBoxStyle}>
                           <span style={sectionLabelStyle}>Responsibilities</span>
                           <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
@@ -1516,9 +1538,11 @@ const PorRequestGroupModal = ({
                         </div>
 
                         {request.hasDisciplinaryAction ? (
-                          <div style={infoBoxStyle}>
-                            <span style={sectionLabelStyle}>Disciplinary Details</span>
-                            <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
+                          <div className="por-detail-alert-card" style={{ padding: "var(--spacing-3) var(--spacing-4)" }}>
+                            <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                              Disciplinary Action Details
+                            </div>
+                            <div style={detailTextStyle}>
                               {request.disciplinaryActionDetails || "No details provided."}
                             </div>
                           </div>
@@ -1556,11 +1580,11 @@ const PorRequestGroupModal = ({
                   </div>
                 ))}
               </div>
-            </EventDetailSectionCard>
+            </PorDetailCard>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <EventDetailSectionCard
+            <PorDetailCard
               icon={BadgeCheck}
               title="Grouped Review Decision"
               accentColor="var(--color-primary)"
@@ -1660,10 +1684,11 @@ const PorRequestGroupModal = ({
                   </Button>
                 </div>
               </div>
-            </EventDetailSectionCard>
+            </PorDetailCard>
           </div>
         </div>
       </div>
+
 
       {showStudentDetailModal && studentId ? (
         <StudentDetailModal
