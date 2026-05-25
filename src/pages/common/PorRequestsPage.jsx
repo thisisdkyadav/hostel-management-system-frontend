@@ -26,6 +26,7 @@ const createDefaultForm = () => ({
   tenure: "",
   supportingDocumentUrl: "",
   supportingDocumentName: "",
+  undertakingAccepted: false,
 })
 
 const POST_SA_STAGE_ORDER = [
@@ -526,6 +527,25 @@ const PorRequestFormModal = ({
               />
             </div>
           ) : null}
+
+          <div className="md:col-span-2">
+            <Checkbox
+              id="por-undertaking-accepted"
+              name="undertakingAccepted"
+              checked={Boolean(formData.undertakingAccepted)}
+              onChange={(event) =>
+                onChange?.({
+                  target: {
+                    name: "undertakingAccepted",
+                    value: event?.target?.checked,
+                    checked: event?.target?.checked,
+                    type: "checkbox",
+                  },
+                })
+              }
+              label="I hereby declare that the information provided by me is true and correct to the best of my knowledge and belief. If any of the information is found to be false or misleading, I authorize the Institute to take appropriate action against me as deemed fit."
+            />
+          </div>
         </div>
 
         <div className="flex justify-end gap-3">
@@ -1863,6 +1883,7 @@ const PorRequestsPage = () => {
       tenure: request?.tenure || "",
       supportingDocumentUrl: request?.supportingDocumentUrl || "",
       supportingDocumentName: request?.supportingDocumentName || "",
+      undertakingAccepted: Boolean(request?.undertakingAccepted),
     })
     setSelectedRequest(null)
     setSelectedRequestGroup(null)
@@ -1886,6 +1907,11 @@ const PorRequestsPage = () => {
   const handleSubmitForm = async () => {
     if (!String(formData.supportingDocumentUrl || "").trim()) {
       toast.error("Please upload the supporting PDF before submitting the POR request.")
+      return
+    }
+
+    if (!formData.undertakingAccepted) {
+      toast.error("Please accept the undertaking before submitting the POR request.")
       return
     }
 

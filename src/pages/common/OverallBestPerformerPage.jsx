@@ -1814,7 +1814,7 @@ const ReviewModal = ({
                   <div><strong>Passing out student:</strong> {application.personalAcademic?.isPassingOutStudent ? "Yes" : "No"}</div>
                   <div><strong>No disciplinary action:</strong> {application.personalAcademic?.hasNoDisciplinaryAction ? "Yes" : "No"}</div>
                   <div><strong>No FR grade:</strong> {application.personalAcademic?.hasNoFrGrade ? "Yes" : "No"}</div>
-                  <div><strong>Declaration accepted:</strong> {application.personalAcademic?.declarationAccepted ? "Yes" : "No"}</div>
+                  <div><strong>Undertaking accepted:</strong> {application.personalAcademic?.declarationAccepted ? "Yes" : "No"}</div>
                 </div>
                 <div style={{ marginTop: "var(--spacing-3)" }}>
                   <ProofActionButton
@@ -2255,7 +2255,7 @@ const OverallBestPerformerPage = () => {
     }
 
     if (!applicationForm.personalAcademic.declarationAccepted) {
-      toast.error("Please accept the declaration before submitting")
+      toast.error("Please accept the undertaking before submitting")
       return
     }
 
@@ -3063,7 +3063,7 @@ const OverallBestPerformerPage = () => {
                       style={{ marginTop: 4 }}
                     />
                     <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
-                      I confirm that the information and supporting proofs submitted here are factual, correspond to my performance during my study period at IIT Indore, and I accept the award committee decision as final and binding.
+                      I hereby declare that the information provided by me is true and correct to the best of my knowledge and belief. If any of the information is found to be false or misleading, I authorize the Institute to take appropriate action against me as deemed fit.
                     </span>
                   </label>
 
