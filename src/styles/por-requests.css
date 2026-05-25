@@ -1,0 +1,211 @@
+/* Custom CSS for POR Requests Page and Form Modal */
+
+.por-modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  padding: var(--spacing-1);
+}
+
+.por-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .por-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.por-form-section {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  transition: all var(--transition-base) ease;
+}
+
+.por-form-section:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-bg);
+}
+
+.por-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2-5);
+  margin-bottom: var(--spacing-5);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.por-section-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.por-section-icon {
+  color: var(--color-primary);
+}
+
+/* Perfect alignment for labels inside sections */
+.por-form-section label {
+  display: inline-block;
+  margin-bottom: var(--spacing-2) !important;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Smooth active focus styling overrides */
+.por-form-section input:focus,
+.por-form-section select:focus,
+.por-form-section textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-focus) !important;
+  background-color: var(--color-bg-primary) !important;
+  transition: all var(--transition-fast) ease-in-out;
+}
+
+/* Beautiful custom instruction box for Order of Attachment */
+.por-instruction-box {
+  background: linear-gradient(135deg, var(--color-primary-bg) 0%, var(--color-bg-tertiary) 100%);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-5);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+
+.por-instruction-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.por-instruction-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.por-instruction-list {
+  margin: var(--spacing-3) 0 0;
+  padding-left: 0;
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.por-instruction-item {
+  position: relative;
+  list-style-type: none;
+  padding-left: var(--spacing-4);
+  margin-bottom: var(--spacing-2);
+  transition: transform var(--transition-fast) ease, color var(--transition-fast) ease;
+}
+
+.por-instruction-item::before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: bold;
+  display: inline-block;
+  width: var(--spacing-4);
+  margin-left: calc(-1 * var(--spacing-4));
+}
+
+.por-instruction-item:hover {
+  transform: translateX(3px);
+  color: var(--color-primary);
+}
+
+/* Toggle Group & Buttons details */
+.por-toggle-desc {
+  margin-top: var(--spacing-2-5);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Disciplinary active warning section */
+.por-warning-box {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-left: 4px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-top: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Undertaking block */
+.por-undertaking-container {
+  grid-column: 1 / -1;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-left: 4px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-5);
+  transition: all var(--transition-base) ease;
+}
+
+.por-undertaking-container:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-primary-bg);
+  border-left-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Modal Actions footer with hover transitions */
+.por-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-5);
+  padding-top: var(--spacing-5);
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.por-modal-footer button {
+  transition: all var(--transition-fast) ease-in-out;
+}
+
+.por-modal-footer button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-button);
+}
+
+/* Micro-animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--transition-slow) ease forwards;
+}

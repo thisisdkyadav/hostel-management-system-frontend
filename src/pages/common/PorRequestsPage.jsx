@@ -8,6 +8,7 @@ import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
 import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea, ToggleButtonGroup } from "@/components/ui"
 import { porApi, studentApi, uploadApi } from "@/service"
+import "../../styles/por-requests.css"
 import {
   EventDetailInfoRow,
   EventDetailSectionCard,
@@ -388,8 +389,13 @@ const PorRequestFormModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? "Edit & Resubmit POR Request" : "Create POR Request"}
-      width={820}
+      title={
+        <div className="flex items-center gap-2">
+          <FilePenLine className="text-[var(--color-primary)] shrink-0" size={20} />
+          <span>{isEdit ? "Edit & Resubmit POR Request" : "Create POR Request"}</span>
+        </div>
+      }
+      width={880}
       minHeight="50vh"
     >
       <form
@@ -397,173 +403,189 @@ const PorRequestFormModal = ({
           event.preventDefault()
           onSubmit?.()
         }}
-        className="flex min-h-[42vh] flex-col justify-between gap-6"
+        className="por-modal-container"
       >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="md:col-span-2">
-            <Label htmlFor="por-category" required>POR Category</Label>
-            <Select
-              id="por-category"
-              name="porCategoryId"
-              value={formData.porCategoryId}
-              onChange={onChange}
-              options={categoryOptions}
-              placeholder="Select POR category"
-              required
-              disabled={isSaving}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="por-position-title" required>Position of Responsibility</Label>
-            <Input
-              id="por-position-title"
-              name="positionTitle"
-              value={formData.positionTitle}
-              onChange={onChange}
-              placeholder="e.g. Treasurer"
-              disabled={isSaving}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="por-tenure" required>Tenure</Label>
-            <Input
-              id="por-tenure"
-              name="tenure"
-              value={formData.tenure}
-              onChange={onChange}
-              placeholder="e.g. Jul 2024 - Apr 2025"
-              disabled={isSaving}
-              required
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label htmlFor="por-position-details" required>POR Details</Label>
-            <Textarea
-              id="por-position-details"
-              name="positionDetails"
-              value={formData.positionDetails}
-              onChange={onChange}
-              placeholder="Describe the position and your responsibilities"
-              rows={5}
-              required
-              disabled={isSaving}
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <div style={{ ...infoBoxStyle, marginBottom: "var(--spacing-2)" }}>
-              <span style={sectionLabelStyle}>Order of Attachment in PDF</span>
-              <ol
-                style={{
-                  margin: "var(--spacing-2) 0 0",
-                  paddingLeft: "var(--spacing-5)",
-                  color: "var(--color-text-body)",
-                  fontSize: "var(--font-size-sm)",
-                  lineHeight: 1.6,
-                }}
-              >
-                <li>Academic Achievements</li>
-                <li>Part of any Club/Fluxus/Ingenium/RIC/MUN/E-Summit etc.</li>
-                <li>Participation in any Inter IIT Meets</li>
-                <li>Any other extra-curricular activities</li>
-              </ol>
+        <div className="por-form-grid">
+          {/* Left Column: Position Details */}
+          <div className="por-form-section">
+            <div className="por-section-header">
+              <Building2 className="por-section-icon" size={18} />
+              <h3 className="por-section-title">Position Information</h3>
             </div>
-            <PdfUploadField
-              label="Supporting PDF"
-              value={formData.supportingDocumentUrl}
-              onChange={(url) =>
-                updateSupportingDocument(
-                  url,
-                  url ? formData.supportingDocumentName || getFilenameFromUrl(url, "por-document.pdf") : ""
-                )
-              }
-              onUpload={uploadSupportingDocument}
-              disabled={isSaving}
-              required
-              uploadedText={formData.supportingDocumentName || "Supporting PDF uploaded"}
-              viewerTitle="POR Supporting Document"
-              viewerSubtitle="Uploaded supporting PDF"
-              downloadFileName={formData.supportingDocumentName || "por-document.pdf"}
-            />
-          </div>
 
-          <div className="md:col-span-2">
-            <Label required>Do you have any disciplinary action?</Label>
-            <div style={{ marginTop: "var(--spacing-2)" }}>
-              <ToggleButtonGroup
-                options={[
-                  {
-                    value: "no",
-                    label: "No",
-                    icon: <ShieldCheck size={16} />,
-                    ariaLabel: "No disciplinary action",
-                  },
-                  {
-                    value: "yes",
-                    label: "Yes",
-                    icon: <ShieldAlert size={16} />,
-                    ariaLabel: "Yes disciplinary action",
-                  },
-                ]}
-                value={
-                  formData.hasDisciplinaryAction === true
-                    ? "yes"
-                    : formData.hasDisciplinaryAction === false
-                      ? "no"
-                      : null
-                }
-                onChange={(selectedValue) =>
-                  onChange?.({
-                    target: {
-                      name: "hasDisciplinaryAction",
-                      value: selectedValue === "yes",
-                      checked: selectedValue === "yes",
-                      type: "checkbox",
-                    },
-                  })
-                }
-                variant="outline"
-                size="medium"
-                fullWidth
-                hideLabelsOnMobile={false}
-                disabled={isSaving}
-              />
-            </div>
-            <div
-              style={{
-                marginTop: "var(--spacing-2)",
-                fontSize: "var(--font-size-sm)",
-                color: "var(--color-text-muted)",
-                lineHeight: 1.6,
-              }}
-            >
-              Select one option to continue with the POR request.
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="por-category" required>POR Category</Label>
+                <Select
+                  id="por-category"
+                  name="porCategoryId"
+                  value={formData.porCategoryId}
+                  onChange={onChange}
+                  options={categoryOptions}
+                  placeholder="Select POR category"
+                  required
+                  disabled={isSaving}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="por-position-title" required>Position of Responsibility</Label>
+                <Input
+                  id="por-position-title"
+                  name="positionTitle"
+                  value={formData.positionTitle}
+                  onChange={onChange}
+                  placeholder="e.g. Treasurer"
+                  disabled={isSaving}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="por-tenure" required>Tenure</Label>
+                <Input
+                  id="por-tenure"
+                  name="tenure"
+                  value={formData.tenure}
+                  onChange={onChange}
+                  placeholder="e.g. Jul 2024 - Apr 2025"
+                  disabled={isSaving}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="por-position-details" required>POR Details</Label>
+                <Textarea
+                  id="por-position-details"
+                  name="positionDetails"
+                  value={formData.positionDetails}
+                  onChange={onChange}
+                  placeholder="Describe the position and your responsibilities in detail..."
+                  rows={5}
+                  required
+                  disabled={isSaving}
+                />
+              </div>
             </div>
           </div>
 
-          {formData.hasDisciplinaryAction ? (
-            <div className="md:col-span-2">
-              <Label htmlFor="por-disciplinary-details" required>
-                Disciplinary Action Details
-              </Label>
-              <Textarea
-                id="por-disciplinary-details"
-                name="disciplinaryActionDetails"
-                value={formData.disciplinaryActionDetails}
-                onChange={onChange}
-                placeholder="Briefly describe the disciplinary action"
-                rows={4}
-                required
-                disabled={isSaving}
-              />
+          {/* Right Column: Documentation & Safety */}
+          <div className="por-form-section">
+            <div className="por-section-header">
+              <FileText className="por-section-icon" size={18} />
+              <h3 className="por-section-title">Documentation & Safety</h3>
             </div>
-          ) : null}
 
-          <div className="md:col-span-2">
+            <div className="space-y-4">
+              <div className="por-instruction-box">
+                <span className="por-instruction-title">
+                  <Clock3 size={14} />
+                  Order of Attachment in PDF
+                </span>
+                <ol className="por-instruction-list">
+                  <li className="por-instruction-item">Academic Achievements</li>
+                  <li className="por-instruction-item">Part of any Club/Fluxus/Ingenium/RIC/MUN/E-Summit etc.</li>
+                  <li className="por-instruction-item">Participation in any Inter IIT Meets</li>
+                  <li className="por-instruction-item">Any other extra-curricular activities</li>
+                </ol>
+              </div>
+
+              <div className="por-upload-container">
+                <PdfUploadField
+                  label="Supporting PDF"
+                  value={formData.supportingDocumentUrl}
+                  onChange={(url) =>
+                    updateSupportingDocument(
+                      url,
+                      url ? formData.supportingDocumentName || getFilenameFromUrl(url, "por-document.pdf") : ""
+                    )
+                  }
+                  onUpload={uploadSupportingDocument}
+                  disabled={isSaving}
+                  required
+                  uploadedText={formData.supportingDocumentName || "Supporting PDF uploaded"}
+                  viewerTitle="POR Supporting Document"
+                  viewerSubtitle="Uploaded supporting PDF"
+                  downloadFileName={formData.supportingDocumentName || "por-document.pdf"}
+                />
+              </div>
+
+              <div className="por-disciplinary-container">
+                <Label required>Do you have any disciplinary action?</Label>
+                <div style={{ marginTop: "var(--spacing-2)" }}>
+                  <ToggleButtonGroup
+                    options={[
+                      {
+                        value: "no",
+                        label: "No",
+                        icon: <ShieldCheck size={16} />,
+                        ariaLabel: "No disciplinary action",
+                      },
+                      {
+                        value: "yes",
+                        label: "Yes",
+                        icon: <ShieldAlert size={16} />,
+                        ariaLabel: "Yes disciplinary action",
+                      },
+                    ]}
+                    value={
+                      formData.hasDisciplinaryAction === true
+                        ? "yes"
+                        : formData.hasDisciplinaryAction === false
+                          ? "no"
+                          : null
+                    }
+                    onChange={(selectedValue) =>
+                      onChange?.({
+                        target: {
+                          name: "hasDisciplinaryAction",
+                          value: selectedValue === "yes",
+                          checked: selectedValue === "yes",
+                          type: "checkbox",
+                        },
+                      })
+                    }
+                    variant="outline"
+                    size="medium"
+                    fullWidth
+                    hideLabelsOnMobile={false}
+                    disabled={isSaving}
+                  />
+                </div>
+                <div className="por-toggle-desc">
+                  Select one option to continue with the POR request.
+                </div>
+              </div>
+
+              {formData.hasDisciplinaryAction ? (
+                <div className="por-warning-box animate-fadeIn">
+                  <div className="flex items-center gap-2 text-[var(--color-danger)] font-semibold text-sm">
+                    <ShieldAlert className="shrink-0 animate-bounce" size={16} />
+                    <span>Action Details Required</span>
+                  </div>
+                  <div>
+                    <Label htmlFor="por-disciplinary-details" required>
+                      Disciplinary Action Details
+                    </Label>
+                    <Textarea
+                      id="por-disciplinary-details"
+                      name="disciplinaryActionDetails"
+                      value={formData.disciplinaryActionDetails}
+                      onChange={onChange}
+                      placeholder="Briefly describe the disciplinary action..."
+                      rows={3}
+                      required
+                      disabled={isSaving}
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Undertaking accepted - Full Width */}
+          <div className="por-undertaking-container">
             <Checkbox
               id="por-undertaking-accepted"
               name="undertakingAccepted"
@@ -583,7 +605,7 @@ const PorRequestFormModal = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="por-modal-footer">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
