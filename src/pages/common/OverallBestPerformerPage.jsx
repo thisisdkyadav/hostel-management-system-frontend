@@ -29,6 +29,10 @@ import {
   useToast,
 } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
+import useLocalFormDraft, {
+  buildLocalFormDraftKey,
+  readLocalFormDraft,
+} from "@/hooks/useLocalFormDraft"
 import { overallBestPerformerApi, porApi, uploadApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -589,6 +593,27 @@ const createInitialForm = (student = {}, application = null) => ({
   gamesSportsItems: toFormItems(application?.gamesSportsItems),
   coCurricularItems: toFormItems(application?.coCurricularItems),
 })
+
+const buildOverallBestPerformerDraftKey = (student = {}, occurrence = null) => {
+  const studentKey =
+    student?.id ||
+    student?._id ||
+    student?.rollNumber ||
+    student?.email ||
+    "student"
+  const occurrenceKey =
+    occurrence?.id ||
+    occurrence?._id ||
+    occurrence?.awardYear ||
+    "occurrence"
+
+  return buildLocalFormDraftKey(
+    "overall-best-performer",
+    "application",
+    studentKey,
+    occurrenceKey
+  )
+}
 
 const sanitizeItemsForPayload = (items = []) =>
   (Array.isArray(items) ? items : [])
@@ -1882,6 +1907,7 @@ const OverallBestPerformerPage = () => {
   const [portalState, setPortalState] = useState(null)
   const [verifiedPors, setVerifiedPors] = useState([])
   const [applicationForm, setApplicationForm] = useState(createInitialForm())
+  const [applicationDraftReady, setApplicationDraftReady] = useState(false)
   const [savingApplication, setSavingApplication] = useState(false)
   const [savingOccurrence, setSavingOccurrence] = useState(false)
   const [reviewing, setReviewing] = useState(false)
@@ -1901,11 +1927,20 @@ const OverallBestPerformerPage = () => {
   const currentOccurrence = isAdminView ? occurrenceDetail?.occurrence : portalState?.data?.occurrence
   const currentApplication = portalState?.data?.application || null
   const canEditStudentForm = Boolean(portalState?.data?.canEdit)
+  const applicationDraftKey = isAdminView
+    ? ""
+    : buildOverallBestPerformerDraftKey(portalState?.data?.student, portalState?.data?.occurrence)
   const applicantStage = useMemo(() => getApplicantStage(applicationForm), [applicationForm])
   const studentScorePreview = useMemo(
     () => computeStudentScorePreview(applicationForm),
     [applicationForm]
   )
+  const { clearDraft: clearApplicationDraft } = useLocalFormDraft({
+    formKey: applicationDraftKey,
+    value: applicationForm,
+    enabled: Boolean(!isAdminView && canEditStudentForm && applicationDraftKey),
+    ready: applicationDraftReady,
+  })
 
   const updatePersonalAcademicField = (field, value) => {
     setApplicationForm((current) => ({
@@ -1979,8 +2014,21 @@ const OverallBestPerformerPage = () => {
       overallBestPerformerApi.getStudentPortalState(),
       porApi.getWorkspace().catch(() => null),
     ])
+    const baseForm = createInitialForm(state?.data?.student, state?.data?.application)
+    const draftKey = buildOverallBestPerformerDraftKey(
+      state?.data?.student,
+      state?.data?.occurrence
+    )
+    const savedDraft = state?.data?.canEdit ? readLocalFormDraft(draftKey) : null
+
     setPortalState(state)
-    setApplicationForm(createInitialForm(state?.data?.student, state?.data?.application))
+    setApplicationForm(savedDraft?.data || baseForm)
+    setApplicationDraftReady(true)
+
+    if (savedDraft?.data) {
+      toast.success("Restored your unsaved Best Performer draft from this browser.")
+    }
+
     const approvedWorkspacePors = (porWorkspace?.requests || []).filter((request) => request.status === "approved")
     const linkedApplicationPors = collectLinkedPorsFromApplication(state?.data?.application)
     const mergedPors = new Map()
@@ -2003,6 +2051,7 @@ const OverallBestPerformerPage = () => {
       try {
         setLoading(true)
         setError("")
+        setApplicationDraftReady(false)
         if (isAdminView) {
           setVerifiedPors([])
           await loadAdminData()
@@ -2241,6 +2290,7 @@ const OverallBestPerformerPage = () => {
         portalState.data.occurrence.id,
         buildPayload(applicationForm)
       )
+      clearApplicationDraft()
       toast.success(response?.message || "Application saved")
       await loadStudentData()
     } catch (err) {

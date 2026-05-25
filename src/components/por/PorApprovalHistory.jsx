@@ -6,6 +6,7 @@ import { porApi } from "@/service"
 
 const ACTION_ICONS = {
   submitted: Send,
+  recommended: Check,
   approved: Check,
   rejected: X,
   revision_requested: FileText,
@@ -13,6 +14,7 @@ const ACTION_ICONS = {
 
 const ACTION_COLORS = {
   submitted: "info",
+  recommended: "warning",
   approved: "success",
   rejected: "danger",
   revision_requested: "warning",
@@ -34,8 +36,6 @@ const formatTimestamp = (value) => {
   if (Number.isNaN(date.getTime())) return "Date unavailable"
   return date.toLocaleString()
 }
-
-const isDosaStage = (stage) => stage === "Dean SA"
 
 const timelineRailStyle = {
   position: "relative",
@@ -128,13 +128,8 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
         const safeActorName = log.performedBy?.name || "Unknown"
         const safeActorRole = log.performedBy?.subRole || log.performedBy?.email || ""
         const isLast = idx === history.length - 1
-        const actionLabel =
-          log.action === "approved"
-            ? isDosaStage(log.stage)
-              ? "Approved"
-              : "Recommended"
-            : formatActionLabel(log.action)
-        const color = actionLabel === "Recommended" ? "warning" : baseColor
+        const actionLabel = formatActionLabel(log.action)
+        const color = log.action === "recommended" ? "warning" : baseColor
 
         if (compact) {
           return (

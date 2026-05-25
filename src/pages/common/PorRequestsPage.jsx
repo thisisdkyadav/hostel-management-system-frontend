@@ -861,6 +861,7 @@ const PorRequestDetailModal = ({
   onPostSaAssignmentChange,
   onClose,
   onApprove,
+  onDirectApprove,
   onReject,
   onRequestRevision,
   onEdit,
@@ -1112,12 +1113,22 @@ const PorRequestDetailModal = ({
                     >
                       Reject
                     </Button>
+                    {isStudentAffairsApproval ? (
+                      <Button
+                        variant="secondary"
+                        onClick={onApprove}
+                        disabled={actionLoading}
+                        loading={actionLoading === "approve"}
+                      >
+                        Recommend & Forward
+                      </Button>
+                    ) : null}
                     <Button
-                      onClick={onApprove}
+                      onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
                       disabled={actionLoading}
-                      loading={actionLoading === "approve"}
+                      loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
                     >
-                      {primaryDecisionLabel}
+                      {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
                     </Button>
                   </div>
                 </div>
@@ -1175,6 +1186,7 @@ const PorRequestGroupModal = ({
   onPostSaAssignmentChange,
   onClose,
   onApprove,
+  onDirectApprove,
   onReject,
   onRequestRevision,
   onOpenIndividual,
@@ -1436,12 +1448,22 @@ const PorRequestGroupModal = ({
                   >
                     Reject All
                   </Button>
+                  {isStudentAffairsApproval ? (
+                    <Button
+                      variant="secondary"
+                      onClick={onApprove}
+                      disabled={actionLoading}
+                      loading={actionLoading === "approve"}
+                    >
+                      Recommend & Forward All
+                    </Button>
+                  ) : null}
                   <Button
-                    onClick={onApprove}
+                    onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
                     disabled={actionLoading}
-                    loading={actionLoading === "approve"}
+                    loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
                   >
-                    {primaryDecisionLabel} All
+                    {isStudentAffairsApproval ? "Approve All" : `${primaryDecisionLabel} All`}
                   </Button>
                 </div>
               </div>
@@ -1981,11 +2003,33 @@ const PorRequestsPage = () => {
         nextApprovers,
       })
 
-      toast.success("POR request approved.")
+      toast.success(
+        selectedRequest?.currentApprovalStage === "Dean SA" ? "POR request approved." : "POR request recommended."
+      )
       closeRequestModal()
       await fetchWorkspace({ keepLoading: true })
     } catch (err) {
       console.error("Failed to approve POR request:", err)
+      toast.error(err?.message || "Failed to approve POR request.")
+      setActionLoading("")
+    }
+  }
+
+  const handleDirectApprove = async () => {
+    if (!selectedRequest?.id) return
+    setActionLoading("direct-approve")
+
+    try {
+      await porApi.approve(selectedRequest.id, {
+        comments: reviewComment,
+        directApprove: true,
+      })
+
+      toast.success("POR request approved.")
+      closeRequestModal()
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to directly approve POR request:", err)
       toast.error(err?.message || "Failed to approve POR request.")
       setActionLoading("")
     }
@@ -2069,6 +2113,42 @@ const PorRequestsPage = () => {
     } catch (err) {
       console.error("Failed to process grouped POR approval:", err)
       toast.error(err?.message || "Failed to process grouped POR requests.")
+      setGroupActionLoading("")
+    }
+  }
+
+  const handleGroupDirectApprove = async () => {
+    const requestsToProcess = selectedRequestGroup?.requests || []
+    if (requestsToProcess.length === 0) return
+
+    setGroupActionLoading("direct-approve")
+
+    try {
+      const results = await Promise.allSettled(
+        requestsToProcess.map((request) =>
+          porApi.approve(request.id, {
+            comments: getGroupCommentForRequest(request.id),
+            directApprove: true,
+          })
+        )
+      )
+
+      const successCount = results.filter((result) => result.status === "fulfilled").length
+      const failureCount = results.length - successCount
+
+      if (failureCount === 0) {
+        toast.success(`${successCount} POR request${successCount === 1 ? "" : "s"} approved.`)
+      } else {
+        toast.error(
+          `${successCount} POR request${successCount === 1 ? "" : "s"} approved, ${failureCount} failed.`
+        )
+      }
+
+      closeRequestGroupModal()
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to directly approve grouped POR requests:", err)
+      toast.error(err?.message || "Failed to approve grouped POR requests.")
       setGroupActionLoading("")
     }
   }
@@ -2277,6 +2357,7 @@ const PorRequestsPage = () => {
         }
         onClose={closeRequestModal}
         onApprove={handleApprove}
+        onDirectApprove={handleDirectApprove}
         onReject={handleReject}
         onRequestRevision={handleRequestRevision}
         onEdit={() => openEditModal(selectedRequest)}
@@ -2302,6 +2383,7 @@ const PorRequestsPage = () => {
         }
         onClose={closeRequestGroupModal}
         onApprove={handleGroupApprove}
+        onDirectApprove={handleGroupDirectApprove}
         onReject={handleGroupReject}
         onRequestRevision={handleGroupRequestRevision}
         onOpenIndividual={(request) => openRequest(request)}
