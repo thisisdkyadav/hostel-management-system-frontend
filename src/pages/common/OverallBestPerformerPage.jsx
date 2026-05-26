@@ -29,6 +29,7 @@ import {
   LoadingState,
   useToast,
 } from "@/components/ui/feedback"
+import { StatCards } from "@/components/ui"
 import { useAuth } from "@/contexts/AuthProvider"
 import useLocalFormDraft, {
   buildLocalFormDraftKey,
@@ -2588,13 +2589,54 @@ const OverallBestPerformerPage = () => {
       <div style={{ padding: "var(--spacing-4) var(--spacing-6) var(--spacing-8)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
         {currentOccurrence ? (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
-              <SummaryMetric icon={CalendarDays} label="Award year" value={currentOccurrence.awardYear} />
-              <SummaryMetric icon={Clock3} label="Application starts" value={currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"} />
-              <SummaryMetric icon={Clock3} label="Application ends" value={new Date(currentOccurrence.applyEndAt).toLocaleString()} />
-              <SummaryMetric icon={Users} label="Eligible students" value={currentOccurrence.eligibleStudentCount || 0} />
-              <SummaryMetric icon={Trophy} label="Window" value={getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)} />
-            </div>
+            <StatCards
+              columns={5}
+              stats={[
+                {
+                  title: "Award Year",
+                  value: currentOccurrence.awardYear,
+                  subtitle: currentOccurrence.title || "Occurrence",
+                  icon: <CalendarDays size={18} />,
+                  color: "var(--color-primary)",
+                },
+                {
+                  title: "Application Starts",
+                  value: (
+                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                      {currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
+                    </span>
+                  ),
+                  subtitle: "Opening time",
+                  icon: <Clock3 size={18} />,
+                  color: "var(--color-info)",
+                },
+                {
+                  title: "Application Ends",
+                  value: (
+                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                      {currentOccurrence.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
+                    </span>
+                  ),
+                  subtitle: "Closing time",
+                  icon: <Clock3 size={18} />,
+                  color: "var(--color-warning)",
+                },
+                {
+                  title: "Eligible Students",
+                  value: currentOccurrence.eligibleStudentCount || 0,
+                  subtitle: "Configured list",
+                  icon: <Users size={18} />,
+                  color: "var(--color-success)",
+                },
+                {
+                  title: "Window",
+                  value: getApplicationWindowLabel(currentOccurrence.applicationWindowStatus),
+                  subtitle: "Current status",
+                  icon: <Trophy size={18} />,
+                  color: "var(--color-primary)",
+                },
+              ]}
+            />
 
             {currentOccurrence.description ? (
               <div style={{ ...panelStyle, backgroundColor: "var(--color-primary-bg)" }}>
@@ -2609,55 +2651,50 @@ const OverallBestPerformerPage = () => {
         {isAdminView ? (
           occurrenceDetail ? (
             <>
-              <SectionPanel
-                title="Occurrence overview"
-                subtitle="Ranked by final score when reviewed, otherwise by calculated score"
-              >
-                {occurrenceDetail.leaderboard?.length ? (
-                  <div style={{ overflowX: "auto", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)" }}>
-                    <table style={{ width: "100%", minWidth: 920, borderCollapse: "collapse" }}>
-                      <thead style={{ backgroundColor: "var(--color-bg-secondary)" }}>
-                        <tr>
-                          {["Rank", "Student", "Roll", "Calculated", "Final", "Status", "Updated", "Action"].map((heading) => (
-                            <th key={heading} style={{ textAlign: "left", padding: "12px", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
-                              {heading}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {occurrenceDetail.leaderboard.map((application, index) => (
-                          <tr key={application.id} style={{ borderTop: "1px solid var(--color-border-light)" }}>
-                            <td style={{ padding: "12px", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>#{index + 1}</td>
-                            <td style={{ padding: "12px", color: "var(--color-text-primary)" }}>{application.studentName}</td>
-                            <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.rollNumber}</td>
-                            <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.calculatedTotal}</td>
-                            <td style={{ padding: "12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{application.finalScore}</td>
-                            <td style={{ padding: "12px" }}>
-                              <span style={badgeStyle(statusTone(application.review?.status))}>
-                                {application.review?.status || "submitted"}
-                              </span>
-                            </td>
-                            <td style={{ padding: "12px", color: "var(--color-text-body)" }}>
-                              {application.updatedAt ? new Date(application.updatedAt).toLocaleString() : "—"}
-                            </td>
-                            <td style={{ padding: "12px" }}>
-                              <Button size="sm" variant="secondary" onClick={() => setReviewApplication(application)}>
-                                Review
-                              </Button>
-                            </td>
-                          </tr>
+              {occurrenceDetail.leaderboard?.length ? (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", minWidth: 920, borderCollapse: "collapse" }}>
+                    <thead style={{ backgroundColor: "var(--color-bg-secondary)" }}>
+                      <tr>
+                        {["Rank", "Student", "Roll", "Calculated", "Final", "Status", "Updated", "Action"].map((heading) => (
+                          <th key={heading} style={{ textAlign: "left", padding: "12px", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
+                            {heading}
+                          </th>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <EmptyState
-                    title="No applications yet"
-                    description="Students have not submitted applications for this occurrence."
-                  />
-                )}
-              </SectionPanel>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {occurrenceDetail.leaderboard.map((application, index) => (
+                        <tr key={application.id} style={{ borderTop: "1px solid var(--color-border-light)" }}>
+                          <td style={{ padding: "12px", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>#{index + 1}</td>
+                          <td style={{ padding: "12px", color: "var(--color-text-primary)" }}>{application.studentName}</td>
+                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.rollNumber}</td>
+                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.calculatedTotal}</td>
+                          <td style={{ padding: "12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{application.finalScore}</td>
+                          <td style={{ padding: "12px" }}>
+                            <span style={badgeStyle(statusTone(application.review?.status))}>
+                              {application.review?.status || "submitted"}
+                            </span>
+                          </td>
+                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>
+                            {application.updatedAt ? new Date(application.updatedAt).toLocaleString() : "—"}
+                          </td>
+                          <td style={{ padding: "12px" }}>
+                            <Button size="sm" variant="secondary" onClick={() => setReviewApplication(application)}>
+                              Review
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <EmptyState
+                  title="No applications yet"
+                  description="Students have not submitted applications for this occurrence."
+                />
+              )}
             </>
           ) : (
             <EmptyState
