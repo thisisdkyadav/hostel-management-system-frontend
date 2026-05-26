@@ -341,6 +341,48 @@ const formatDateTimeInput = (value) => {
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
+const normalizeRollNumbers = (rollNumbers = []) =>
+  [...new Set(
+    (Array.isArray(rollNumbers) ? rollNumbers : [])
+      .map((rollNumber) => String(rollNumber || "").trim().toUpperCase())
+      .filter(Boolean)
+  )]
+
+const buildEligibleStudentRows = (rollNumbers = [], studentRecords = []) => {
+  const studentByRollNumber = new Map(
+    (Array.isArray(studentRecords) ? studentRecords : []).map((student) => [
+      String(student?.rollNumber || "").trim().toUpperCase(),
+      student,
+    ])
+  )
+
+  return normalizeRollNumbers(rollNumbers).map((rollNumber) => {
+    const student = studentByRollNumber.get(rollNumber)
+
+    return {
+      rollNumber,
+      name: String(student?.name || "").trim(),
+      email: String(student?.email || "").trim(),
+      department: String(student?.department || "").trim(),
+      degree: String(student?.degree || "").trim(),
+      exists: student?.exists !== false,
+    }
+  })
+}
+
+const createOccurrenceFormState = (overrides = {}) => ({
+  title: "",
+  awardYear: String(new Date().getFullYear()),
+  applyStartAt: "",
+  applyEndAt: "",
+  description: "",
+  eligibleRows: [],
+  eligibleRollNumbers: [],
+  eligibleStudents: [],
+  studentListTouched: false,
+  ...overrides,
+})
+
 const resolvePrimaryProof = (proofs = []) => (Array.isArray(proofs) ? proofs[0] || null : null)
 
 const buildProofStateFromProofs = (proofs = []) => {
@@ -1969,17 +2011,13 @@ const OverallBestPerformerPage = () => {
   const [savingOccurrence, setSavingOccurrence] = useState(false)
   const [reviewing, setReviewing] = useState(false)
   const [showOccurrenceModal, setShowOccurrenceModal] = useState(false)
+  const [showEligibleStudentsModal, setShowEligibleStudentsModal] = useState(false)
   const [showMarkingSchemeModal, setShowMarkingSchemeModal] = useState(false)
   const [occurrenceModalMode, setOccurrenceModalMode] = useState("create")
   const [reviewApplication, setReviewApplication] = useState(null)
-  const [occurrenceForm, setOccurrenceForm] = useState({
-    title: "",
-    awardYear: String(new Date().getFullYear()),
-    applyStartAt: "",
-    applyEndAt: "",
-    description: "",
-    eligibleRows: [],
-  })
+  const [occurrenceForm, setOccurrenceForm] = useState(createOccurrenceFormState())
+  const [eligibleStudentSearch, setEligibleStudentSearch] = useState("")
+  const [manualEligibleRollNumber, setManualEligibleRollNumber] = useState("")
 
   const currentOccurrence = isAdminView ? occurrenceDetail?.occurrence : portalState?.data?.occurrence
   const currentApplication = portalState?.data?.application || null
@@ -1992,6 +2030,26 @@ const OverallBestPerformerPage = () => {
     () => computeStudentScorePreview(applicationForm),
     [applicationForm]
   )
+  const filteredEligibleStudents = useMemo(() => {
+    const normalizedSearch = String(eligibleStudentSearch || "").trim().toLowerCase()
+    const rows = Array.isArray(occurrenceForm.eligibleStudents) ? occurrenceForm.eligibleStudents : []
+
+    if (!normalizedSearch) return rows
+
+    return rows.filter((student) =>
+      [
+        student?.rollNumber,
+        student?.name,
+        student?.email,
+        student?.department,
+        student?.degree,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedSearch)
+    )
+  }, [eligibleStudentSearch, occurrenceForm.eligibleStudents])
   const { clearDraft: clearApplicationDraft } = useLocalFormDraft({
     formKey: applicationDraftKey,
     value: applicationForm,
@@ -2151,42 +2209,94 @@ const OverallBestPerformerPage = () => {
 
   const resetOccurrenceForm = (mode = "create") => {
     if (mode === "edit" && occurrenceDetail?.occurrence) {
-      setOccurrenceForm({
+      const eligibleRollNumbers = normalizeRollNumbers(occurrenceDetail.occurrence.eligibleRollNumbers)
+      setOccurrenceForm(createOccurrenceFormState({
         title: occurrenceDetail.occurrence.title || "",
         awardYear: String(occurrenceDetail.occurrence.awardYear || new Date().getFullYear()),
         applyStartAt: formatDateTimeInput(occurrenceDetail.occurrence.applyStartAt),
         applyEndAt: formatDateTimeInput(occurrenceDetail.occurrence.applyEndAt),
         description: occurrenceDetail.occurrence.description || "",
         eligibleRows: [],
-      })
+        eligibleRollNumbers,
+        eligibleStudents: buildEligibleStudentRows(
+          eligibleRollNumbers,
+          occurrenceDetail.occurrence.eligibleStudents
+        ),
+        studentListTouched: false,
+      }))
       setOccurrenceModalMode("edit")
+      setEligibleStudentSearch("")
+      setManualEligibleRollNumber("")
+      setShowEligibleStudentsModal(false)
       return
     }
 
-    setOccurrenceForm({
-      title: "",
-      awardYear: String(new Date().getFullYear()),
-      applyStartAt: "",
-      applyEndAt: "",
-      description: "",
-      eligibleRows: [],
-    })
+    setOccurrenceForm(createOccurrenceFormState())
     setOccurrenceModalMode("create")
+    setEligibleStudentSearch("")
+    setManualEligibleRollNumber("")
+    setShowEligibleStudentsModal(false)
   }
 
   const handleOccurrenceRowsParsed = (rows) => {
+    const nextRollNumbers = normalizeRollNumbers(
+      (Array.isArray(rows) ? rows : []).map((row) => row?.rollNumber)
+    )
+
     setOccurrenceForm((current) => ({
       ...current,
       eligibleRows: rows,
+      eligibleRollNumbers: nextRollNumbers,
+      eligibleStudents: buildEligibleStudentRows(nextRollNumbers, current.eligibleStudents),
+      studentListTouched: true,
     }))
   }
 
+  const handleAddEligibleStudent = () => {
+    const nextRollNumber = String(manualEligibleRollNumber || "").trim().toUpperCase()
+    if (!nextRollNumber) {
+      toast.error("Enter a roll number to add.")
+      return
+    }
+
+    setOccurrenceForm((current) => {
+      const nextRollNumbers = normalizeRollNumbers([
+        ...(current.eligibleRollNumbers || []),
+        nextRollNumber,
+      ])
+
+      if (nextRollNumbers.length === (current.eligibleRollNumbers || []).length) {
+        return current
+      }
+
+      return {
+        ...current,
+        eligibleRollNumbers: nextRollNumbers,
+        eligibleStudents: buildEligibleStudentRows(nextRollNumbers, current.eligibleStudents),
+        studentListTouched: true,
+      }
+    })
+
+    setManualEligibleRollNumber("")
+  }
+
+  const handleRemoveEligibleStudent = (rollNumberToRemove) => {
+    setOccurrenceForm((current) => {
+      const nextRollNumbers = normalizeRollNumbers(current.eligibleRollNumbers).filter(
+        (rollNumber) => rollNumber !== String(rollNumberToRemove || "").trim().toUpperCase()
+      )
+
+      return {
+        ...current,
+        eligibleRollNumbers: nextRollNumbers,
+        eligibleStudents: buildEligibleStudentRows(nextRollNumbers, current.eligibleStudents),
+        studentListTouched: true,
+      }
+    })
+  }
+
   const handleSaveOccurrence = async () => {
-    const rollNumbers = [...new Set(
-      (occurrenceForm.eligibleRows || [])
-        .map((row) => String(row.rollNumber || "").trim().toUpperCase())
-        .filter(Boolean)
-    )]
+    const rollNumbers = normalizeRollNumbers(occurrenceForm.eligibleRollNumbers)
 
     if (!occurrenceForm.title.trim()) {
       toast.error("Occurrence title is required")
@@ -2213,6 +2323,11 @@ const OverallBestPerformerPage = () => {
       return
     }
 
+    if (occurrenceModalMode === "edit" && occurrenceForm.studentListTouched && rollNumbers.length === 0) {
+      toast.error("Keep at least one eligible student in the list.")
+      return
+    }
+
     try {
       setSavingOccurrence(true)
       const payload = {
@@ -2221,7 +2336,11 @@ const OverallBestPerformerPage = () => {
         applyStartAt: new Date(occurrenceForm.applyStartAt).toISOString(),
         applyEndAt: new Date(occurrenceForm.applyEndAt).toISOString(),
         description: occurrenceForm.description.trim(),
-        ...(rollNumbers.length > 0 ? { eligibleRollNumbers: rollNumbers } : {}),
+        ...(
+          occurrenceModalMode === "create" || occurrenceForm.studentListTouched
+            ? { eligibleRollNumbers: rollNumbers }
+            : {}
+        ),
       }
 
       if (occurrenceModalMode === "edit" && occurrenceDetail?.occurrence?.id) {
@@ -2233,6 +2352,7 @@ const OverallBestPerformerPage = () => {
       }
 
       setShowOccurrenceModal(false)
+      setShowEligibleStudentsModal(false)
       const selectorPayload = await loadAdminData()
       const nextSelectedOccurrenceId = String(
         selectorPayload?.activeOccurrenceId || occurrenceDetail?.occurrence?.id || selectedOccurrenceId || ""
@@ -3093,7 +3213,10 @@ const OverallBestPerformerPage = () => {
       {showOccurrenceModal ? (
         <Modal
           title={occurrenceModalMode === "edit" ? "Edit active occurrence" : "Start Overall Best Performer occurrence"}
-          onClose={() => setShowOccurrenceModal(false)}
+          onClose={() => {
+            setShowOccurrenceModal(false)
+            setShowEligibleStudentsModal(false)
+          }}
           width={980}
           fullHeight={true}
         >
@@ -3116,7 +3239,11 @@ const OverallBestPerformerPage = () => {
                 <input type="datetime-local" value={occurrenceForm.applyEndAt} onChange={(event) => setOccurrenceForm((current) => ({ ...current, applyEndAt: event.target.value }))} style={inputStyle} />
               </div>
               <div style={{ display: "flex", alignItems: "end", color: "var(--color-text-muted)" }}>
-                {(occurrenceForm.eligibleRows || []).length ? `${occurrenceForm.eligibleRows.length} CSV rows loaded` : "CSV upload required when activating a new occurrence"}
+                {occurrenceModalMode === "edit"
+                  ? `${occurrenceForm.eligibleRollNumbers.length || 0} eligible students currently configured`
+                  : (occurrenceForm.eligibleRows || []).length
+                    ? `${occurrenceForm.eligibleRows.length} CSV rows loaded`
+                    : "CSV upload required when activating a new occurrence"}
               </div>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={fieldLabelStyle}>Description / instructions</label>
@@ -3124,9 +3251,104 @@ const OverallBestPerformerPage = () => {
               </div>
             </div>
 
+            {occurrenceModalMode === "edit" ? (
+              <SectionPanel
+                title="Eligible students"
+                subtitle="Review and update the active student list without reuploading unless you want to replace it."
+                actions={(
+                  <Button variant="secondary" onClick={() => setShowEligibleStudentsModal(true)}>
+                    <Eye size={16} /> View Students
+                  </Button>
+                )}
+              >
+                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                  <div style={fieldClusterStyle}>
+                    <span style={sectionLabelStyle}>Current list</span>
+                    <div style={{ display: "grid", gap: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                      <div>{occurrenceForm.eligibleRollNumbers.length || 0} eligible students configured for this active occurrence.</div>
+                      <div style={{ color: "var(--color-text-muted)" }}>
+                        Editing this list will not remove or delete already submitted applications for this occurrence.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </SectionPanel>
+            ) : (
+              <SectionPanel
+                title="Eligible students CSV"
+                subtitle="Upload a CSV with a single required column: rollNumber"
+              >
+                <CsvUploader
+                  onDataParsed={handleOccurrenceRowsParsed}
+                  requiredFields={["rollNumber"]}
+                  templateFileName="overall_best_performer_eligible_students.csv"
+                  templateHeaders={["rollNumber"]}
+                  maxRecords={5000}
+                  instructionText="Upload the exact roll numbers allowed to apply in this occurrence."
+                />
+              </SectionPanel>
+            )}
+
+            <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setShowOccurrenceModal(false)
+                  setShowEligibleStudentsModal(false)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSaveOccurrence} loading={savingOccurrence}>
+                <Upload size={16} /> {occurrenceModalMode === "edit" ? "Save changes" : "Activate occurrence"}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      ) : null}
+
+      {showEligibleStudentsModal ? (
+        <Modal
+          title="Manage Eligible Students"
+          onClose={() => setShowEligibleStudentsModal(false)}
+          width={1080}
+          minHeight="60vh"
+        >
+          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <div style={fieldClusterStyle}>
+              <span style={sectionLabelStyle}>Important</span>
+              <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+                Changing this list affects future eligibility for the active occurrence, but it does not remove or delete already submitted applications.
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: "var(--spacing-3)", alignItems: "end" }}>
+              <div>
+                <label style={fieldLabelStyle}>Search students</label>
+                <Input
+                  value={eligibleStudentSearch}
+                  onChange={(event) => setEligibleStudentSearch(event.target.value)}
+                  placeholder="Search by roll number, name, email, department..."
+                />
+              </div>
+              <div style={{ minWidth: 220 }}>
+                <label style={fieldLabelStyle}>Add by roll number</label>
+                <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: "var(--spacing-2)" }}>
+                  <Input
+                    value={manualEligibleRollNumber}
+                    onChange={(event) => setManualEligibleRollNumber(event.target.value.toUpperCase())}
+                    placeholder="e.g. 22CS10001"
+                  />
+                  <Button onClick={handleAddEligibleStudent}>
+                    <Plus size={16} /> Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <SectionPanel
-              title="Eligible students CSV"
-              subtitle="Upload a CSV with a single required column: rollNumber"
+              title="Replace entire list"
+              subtitle="Upload a new CSV to overwrite the current eligible student list for this occurrence."
             >
               <CsvUploader
                 onDataParsed={handleOccurrenceRowsParsed}
@@ -3134,16 +3356,63 @@ const OverallBestPerformerPage = () => {
                 templateFileName="overall_best_performer_eligible_students.csv"
                 templateHeaders={["rollNumber"]}
                 maxRecords={5000}
-                instructionText="Upload the exact roll numbers allowed to apply in this occurrence."
+                instructionText="Uploading here replaces the current list inside this edit session. Save the occurrence to apply the changes."
               />
             </SectionPanel>
 
-            <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
-              <Button variant="ghost" onClick={() => setShowOccurrenceModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveOccurrence} loading={savingOccurrence}>
-                <Upload size={16} /> {occurrenceModalMode === "edit" ? "Save changes" : "Activate occurrence"}
+            <SectionPanel
+              title="Eligible students"
+              subtitle={`${occurrenceForm.eligibleRollNumbers.length || 0} students currently in this edit list.`}
+            >
+              <div style={{ display: "grid", gap: "var(--spacing-2)", maxHeight: "42vh", overflowY: "auto" }}>
+                {filteredEligibleStudents.length > 0 ? (
+                  filteredEligibleStudents.map((student) => (
+                    <div
+                      key={student.rollNumber}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "minmax(0,1.2fr) minmax(0,1fr) auto",
+                        gap: "var(--spacing-3)",
+                        alignItems: "center",
+                        padding: "var(--spacing-3)",
+                        border: "1px solid var(--color-border-primary)",
+                        borderRadius: "var(--radius-card-sm)",
+                        backgroundColor: "var(--color-bg-secondary)",
+                      }}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                          {student.name || "Student record will be validated on save"}
+                        </div>
+                        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+                          {student.rollNumber}
+                        </div>
+                      </div>
+                      <div style={{ minWidth: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                        <div>{student.email || "Name/email not loaded yet"}</div>
+                        <div>
+                          {[student.department, student.degree].filter(Boolean).join(" · ") || "Profile details unavailable"}
+                        </div>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handleRemoveEligibleStudent(student.rollNumber)}
+                      >
+                        <XCircle size={16} /> Remove
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    No students match the current search.
+                  </div>
+                )}
+              </div>
+            </SectionPanel>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+              <Button variant="ghost" onClick={() => setShowEligibleStudentsModal(false)}>
+                Done
               </Button>
             </div>
           </div>
