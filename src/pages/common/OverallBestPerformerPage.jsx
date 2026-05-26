@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Input, Modal } from "czero/react"
+import { Button, DataTable, Input, Modal } from "czero/react"
 import {
   FileText,
   CalendarDays,
@@ -2497,6 +2497,82 @@ const OverallBestPerformerPage = () => {
     }
   }
 
+  const leaderboardRows = useMemo(
+    () =>
+      (occurrenceDetail?.leaderboard || []).map((application, index) => ({
+        ...application,
+        leaderboardRank: index + 1,
+      })),
+    [occurrenceDetail?.leaderboard]
+  )
+
+  const leaderboardColumns = useMemo(
+    () => [
+      {
+        header: "Rank",
+        key: "leaderboardRank",
+        render: (application) => (
+          <span style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+            #{application.leaderboardRank}
+          </span>
+        ),
+      },
+      {
+        header: "Student",
+        key: "studentName",
+        render: (application) => (
+          <div style={{ display: "grid", gap: "4px" }}>
+            <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
+              {application.studentName || "—"}
+            </div>
+            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              {application.rollNumber || "—"}
+            </div>
+          </div>
+        ),
+      },
+      {
+        header: "Calculated",
+        key: "calculatedTotal",
+        render: (application) => application.calculatedTotal ?? "—",
+      },
+      {
+        header: "Final",
+        key: "finalScore",
+        render: (application) => (
+          <span style={{ color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+            {application.finalScore ?? "—"}
+          </span>
+        ),
+      },
+      {
+        header: "Status",
+        key: "status",
+        render: (application) => (
+          <span style={badgeStyle(statusTone(application.review?.status))}>
+            {application.review?.status || "submitted"}
+          </span>
+        ),
+      },
+      {
+        header: "Updated",
+        key: "updatedAt",
+        render: (application) =>
+          application.updatedAt ? new Date(application.updatedAt).toLocaleString() : "—",
+      },
+      {
+        header: "Action",
+        key: "action",
+        render: (application) => (
+          <Button size="sm" variant="secondary" onClick={() => setReviewApplication(application)}>
+            Review
+          </Button>
+        ),
+      },
+    ],
+    []
+  )
+
   if (loading) {
     return <LoadingState message="Loading Overall Best Performer award..." />
   }
@@ -2630,7 +2706,19 @@ const OverallBestPerformerPage = () => {
                 },
                 {
                   title: "Window",
-                  value: getApplicationWindowLabel(currentOccurrence.applicationWindowStatus),
+                  value: (
+                    <span
+                      style={{
+                        fontSize: "var(--font-size-sm)",
+                        lineHeight: 1.35,
+                        display: "inline-block",
+                        maxWidth: "100%",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)}
+                    </span>
+                  ),
                   subtitle: "Current status",
                   icon: <Trophy size={18} />,
                   color: "var(--color-primary)",
@@ -2651,44 +2739,14 @@ const OverallBestPerformerPage = () => {
         {isAdminView ? (
           occurrenceDetail ? (
             <>
-              {occurrenceDetail.leaderboard?.length ? (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", minWidth: 920, borderCollapse: "collapse" }}>
-                    <thead style={{ backgroundColor: "var(--color-bg-secondary)" }}>
-                      <tr>
-                        {["Rank", "Student", "Roll", "Calculated", "Final", "Status", "Updated", "Action"].map((heading) => (
-                          <th key={heading} style={{ textAlign: "left", padding: "12px", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
-                            {heading}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {occurrenceDetail.leaderboard.map((application, index) => (
-                        <tr key={application.id} style={{ borderTop: "1px solid var(--color-border-light)" }}>
-                          <td style={{ padding: "12px", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>#{index + 1}</td>
-                          <td style={{ padding: "12px", color: "var(--color-text-primary)" }}>{application.studentName}</td>
-                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.rollNumber}</td>
-                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>{application.calculatedTotal}</td>
-                          <td style={{ padding: "12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{application.finalScore}</td>
-                          <td style={{ padding: "12px" }}>
-                            <span style={badgeStyle(statusTone(application.review?.status))}>
-                              {application.review?.status || "submitted"}
-                            </span>
-                          </td>
-                          <td style={{ padding: "12px", color: "var(--color-text-body)" }}>
-                            {application.updatedAt ? new Date(application.updatedAt).toLocaleString() : "—"}
-                          </td>
-                          <td style={{ padding: "12px" }}>
-                            <Button size="sm" variant="secondary" onClick={() => setReviewApplication(application)}>
-                              Review
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              {leaderboardRows.length ? (
+                <DataTable
+                  columns={leaderboardColumns}
+                  data={leaderboardRows}
+                  loading={false}
+                  emptyMessage="No applications yet."
+                  onRowClick={setReviewApplication}
+                />
               ) : (
                 <EmptyState
                   title="No applications yet"
