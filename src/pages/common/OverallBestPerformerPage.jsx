@@ -29,7 +29,7 @@ import {
   LoadingState,
   useToast,
 } from "@/components/ui/feedback"
-import { StatCards } from "@/components/ui"
+import { Badge, StatCards } from "@/components/ui"
 import { useAuth } from "@/contexts/AuthProvider"
 import useLocalFormDraft, {
   buildLocalFormDraftKey,
@@ -2512,9 +2512,7 @@ const OverallBestPerformerPage = () => {
         header: "Rank",
         key: "leaderboardRank",
         render: (application) => (
-          <span style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-            #{application.leaderboardRank}
-          </span>
+          <Badge variant="primary">#{application.leaderboardRank}</Badge>
         ),
       },
       {
@@ -2528,46 +2526,66 @@ const OverallBestPerformerPage = () => {
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
               {application.rollNumber || "—"}
             </div>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>
+              {application.department || "—"}{application.degree ? ` · ${application.degree}` : ""}
+            </div>
           </div>
         ),
       },
       {
         header: "Calculated",
         key: "calculatedTotal",
-        render: (application) => application.calculatedTotal ?? "—",
+        render: (application) => (
+          <div style={{ display: "grid", gap: "4px" }}>
+            <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+              {application.calculatedTotal ?? "—"}
+            </div>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              Auto score
+            </div>
+          </div>
+        ),
       },
       {
         header: "Final",
         key: "finalScore",
         render: (application) => (
-          <span style={{ color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-            {application.finalScore ?? "—"}
-          </span>
+          <div style={{ display: "grid", gap: "4px" }}>
+            <div>
+              <Badge variant="info">{application.finalScore ?? "—"}</Badge>
+            </div>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              Reviewed score
+            </div>
+          </div>
         ),
       },
       {
         header: "Status",
         key: "status",
         render: (application) => (
-          <span style={badgeStyle(statusTone(application.review?.status))}>
+          <Badge variant={statusTone(application.review?.status)}>
             {application.review?.status || "submitted"}
-          </span>
+          </Badge>
         ),
       },
       {
         header: "Updated",
         key: "updatedAt",
-        render: (application) =>
-          application.updatedAt ? new Date(application.updatedAt).toLocaleString() : "—",
-      },
-      {
-        header: "Action",
-        key: "action",
-        render: (application) => (
-          <Button size="sm" variant="secondary" onClick={() => setReviewApplication(application)}>
-            Review
-          </Button>
-        ),
+        render: (application) => {
+          if (!application.updatedAt) return "—"
+          const updatedAt = new Date(application.updatedAt)
+          return (
+            <div style={{ display: "grid", gap: "4px" }}>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
+                {updatedAt.toLocaleDateString()}
+              </div>
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                {updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </div>
+            </div>
+          )
+        },
       },
     ],
     []
