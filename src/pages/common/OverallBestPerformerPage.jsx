@@ -2767,14 +2767,38 @@ const OverallBestPerformerPage = () => {
         header: "Student",
         key: "studentName",
         render: (application) => (
-          <div style={{ display: "grid", gap: "4px" }}>
-            <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
+          <div style={{ display: "grid", gap: "4px", minWidth: 0 }}>
+            <div
+              style={{
+                color: "var(--color-text-primary)",
+                fontWeight: "var(--font-weight-medium)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {application.studentName || "—"}
             </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            <div
+              style={{
+                fontSize: "var(--font-size-sm)",
+                color: "var(--color-text-muted)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {application.rollNumber || "—"}
             </div>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>
+            <div
+              style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-light)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {application.department || "—"}{application.degree ? ` · ${application.degree}` : ""}
             </div>
           </div>
@@ -2785,10 +2809,22 @@ const OverallBestPerformerPage = () => {
         key: "calculatedTotal",
         render: (application) => (
           <div style={{ display: "grid", gap: "4px" }}>
-            <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+            <div
+              style={{
+                color: "var(--color-text-primary)",
+                fontWeight: "var(--font-weight-semibold)",
+                whiteSpace: "nowrap",
+              }}
+            >
               {application.calculatedTotal ?? "—"}
             </div>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <div
+              style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)",
+                whiteSpace: "nowrap",
+              }}
+            >
               Auto score
             </div>
           </div>
@@ -2802,7 +2838,13 @@ const OverallBestPerformerPage = () => {
             <div>
               <Badge variant="info">{application.finalScore ?? "—"}</Badge>
             </div>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <div
+              style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)",
+                whiteSpace: "nowrap",
+              }}
+            >
               Reviewed score
             </div>
           </div>
@@ -2825,10 +2867,23 @@ const OverallBestPerformerPage = () => {
           const updatedAt = new Date(application.updatedAt)
           return (
             <div style={{ display: "grid", gap: "4px" }}>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
+              <div
+                style={{
+                  fontSize: "var(--font-size-sm)",
+                  color: "var(--color-text-primary)",
+                  fontWeight: "var(--font-weight-medium)",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {updatedAt.toLocaleDateString()}
               </div>
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              <div
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--color-text-muted)",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </div>
             </div>
