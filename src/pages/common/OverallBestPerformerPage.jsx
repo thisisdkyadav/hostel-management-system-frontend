@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, Modal } from "czero/react"
 import {
+  Download,
   FileText,
   CalendarDays,
   CheckCircle2,
@@ -383,6 +384,90 @@ const createOccurrenceFormState = (overrides = {}) => ({
   studentListTouched: false,
   ...overrides,
 })
+
+const formatExportDateTime = (value) => {
+  if (!value) return ""
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+  return date.toISOString()
+}
+
+const summarizeProofsForExport = (proofs = []) =>
+  (Array.isArray(proofs) ? proofs : [])
+    .map((proof) => {
+      if (proof?.sourceType === "por") {
+        const linkedPor = proof?.linkedPor
+        return [
+          "POR",
+          linkedPor?.positionTitle || "",
+          linkedPor?.club?.name || "",
+          linkedPor?.gymkhanaCategoryLabel || "",
+          linkedPor?.tenure || "",
+          proof?.porRequestId || "",
+        ]
+          .filter(Boolean)
+          .join(" | ")
+      }
+
+      return ["PDF", proof?.label || "", proof?.url || ""].filter(Boolean).join(" | ")
+    })
+    .filter(Boolean)
+    .join(" || ")
+
+const summarizeReferencesForExport = (references = []) =>
+  (Array.isArray(references) ? references : [])
+    .map((reference) =>
+      [
+        reference?.name || "",
+        reference?.designation || "",
+        reference?.department || "",
+        reference?.phoneNumber || "",
+      ]
+        .filter(Boolean)
+        .join(" | ")
+    )
+    .filter(Boolean)
+    .join(" || ")
+
+const summarizeItemsForExport = (items = []) =>
+  (Array.isArray(items) ? items : [])
+    .map((item, index) =>
+      [
+        `#${index + 1}`,
+        item?.title || "",
+        item?.scoreType || "",
+        item?.calculatedPoints ?? "",
+        item?.year || "",
+        item?.level || "",
+        item?.eventName || "",
+        item?.performance || "",
+        item?.participationType || "",
+        item?.referenceCode || "",
+        item?.notes || "",
+        summarizeProofsForExport(item?.proofs),
+      ]
+        .filter((value) => String(value ?? "").trim() !== "")
+        .join(" | ")
+    )
+    .filter(Boolean)
+    .join(" || ")
+
+const escapeCsvValue = (value) => {
+  const normalized = value === null || value === undefined ? "" : String(value)
+  return `"${normalized.replace(/"/g, '""')}"`
+}
+
+const downloadCsvFile = (content, filename) => {
+  const blob = new Blob(["\ufeff" + content], { type: "text/csv;charset=utf-8;" })
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
 
 const resolvePrimaryProof = (proofs = []) => (Array.isArray(proofs) ? proofs[0] || null : null)
 
@@ -2497,6 +2582,169 @@ const OverallBestPerformerPage = () => {
     }
   }
 
+  const handleExportOccurrenceCsv = () => {
+    const applications = occurrenceDetail?.leaderboard || []
+    if (!applications.length) {
+      toast.error("No applications available to export.")
+      return
+    }
+
+    const headers = [
+      "rank",
+      "occurrence_title",
+      "award_year",
+      "student_name",
+      "student_email",
+      "roll_number",
+      "department",
+      "degree",
+      "programme",
+      "personal_department",
+      "hostel_address",
+      "home_address",
+      "mobile_number",
+      "faculty_advisor_name",
+      "faculty_advisor_phone",
+      "project_guide_name",
+      "project_guide_phone",
+      "thesis_guide_name",
+      "thesis_guide_phone",
+      "references_summary",
+      "is_passing_out_student",
+      "has_no_disciplinary_action",
+      "has_no_fr_grade",
+      "undertaking_accepted",
+      "coursework_mode",
+      "coursework_score_value",
+      "coursework_notes",
+      "coursework_proofs",
+      "project_track",
+      "btp_award_level",
+      "btp_award_title",
+      "btp_award_notes",
+      "btp_award_proofs",
+      "project_grade",
+      "project_grade_title",
+      "project_grade_notes",
+      "project_grade_proofs",
+      "publication_items",
+      "technology_transfer_items",
+      "responsibility_items",
+      "award_items",
+      "cultural_items",
+      "science_technology_items",
+      "games_sports_items",
+      "co_curricular_items",
+      "coursework_points",
+      "project_thesis_points",
+      "responsibilities_points",
+      "awards_points",
+      "cultural_points",
+      "science_technology_points",
+      "games_sports_points",
+      "co_curricular_points",
+      "calculated_total",
+      "review_status",
+      "review_remarks",
+      "reviewed_by",
+      "reviewed_at",
+      "final_score",
+      "submitted_at",
+      "created_at",
+      "updated_at",
+    ]
+
+    const rows = applications.map((application, index) => {
+      const personalAcademic = application?.personalAcademic || {}
+      const coursework = application?.coursework || {}
+      const projectThesis = application?.projectThesis || {}
+      const review = application?.review || {}
+      const scoreBreakdown = application?.scoreBreakdown || {}
+
+      return [
+        index + 1,
+        currentOccurrence?.title || "",
+        application?.awardYear || currentOccurrence?.awardYear || "",
+        application?.studentName || "",
+        application?.studentEmail || "",
+        application?.rollNumber || "",
+        application?.department || "",
+        application?.degree || "",
+        personalAcademic?.programme || "",
+        personalAcademic?.department || "",
+        personalAcademic?.hostelAddress || "",
+        personalAcademic?.homeAddress || "",
+        personalAcademic?.mobileNumber || "",
+        personalAcademic?.facultyAdvisorName || "",
+        personalAcademic?.facultyAdvisorPhone || "",
+        personalAcademic?.projectGuideName || "",
+        personalAcademic?.projectGuidePhone || "",
+        personalAcademic?.thesisGuideName || "",
+        personalAcademic?.thesisGuidePhone || "",
+        summarizeReferencesForExport(personalAcademic?.references),
+        personalAcademic?.isPassingOutStudent ? "Yes" : "No",
+        personalAcademic?.hasNoDisciplinaryAction ? "Yes" : "No",
+        personalAcademic?.hasNoFrGrade ? "Yes" : "No",
+        personalAcademic?.declarationAccepted ? "Yes" : "No",
+        coursework?.evaluationMode || "",
+        coursework?.scoreValue ?? "",
+        coursework?.notes || "",
+        summarizeProofsForExport(coursework?.proofs),
+        projectThesis?.track || "",
+        projectThesis?.btpAwardLevel || "",
+        projectThesis?.btpAwardTitle || "",
+        projectThesis?.btpAwardNotes || "",
+        summarizeProofsForExport(projectThesis?.btpAwardProofs),
+        projectThesis?.projectGrade || "",
+        projectThesis?.projectGradeTitle || "",
+        projectThesis?.projectGradeNotes || "",
+        summarizeProofsForExport(projectThesis?.projectGradeProofs),
+        summarizeItemsForExport(projectThesis?.publicationItems),
+        summarizeItemsForExport(projectThesis?.technologyTransferItems),
+        summarizeItemsForExport(application?.responsibilityItems),
+        summarizeItemsForExport(application?.awardItems),
+        summarizeItemsForExport(application?.culturalItems),
+        summarizeItemsForExport(application?.scienceTechnologyItems),
+        summarizeItemsForExport(application?.gamesSportsItems),
+        summarizeItemsForExport(application?.coCurricularItems),
+        scoreBreakdown?.coursework ?? "",
+        scoreBreakdown?.projectThesis ?? "",
+        scoreBreakdown?.responsibilities ?? "",
+        scoreBreakdown?.awards ?? "",
+        scoreBreakdown?.cultural ?? "",
+        scoreBreakdown?.scienceTechnology ?? "",
+        scoreBreakdown?.gamesSports ?? "",
+        scoreBreakdown?.coCurricular ?? "",
+        application?.calculatedTotal ?? "",
+        review?.status || "",
+        review?.remarks || "",
+        review?.reviewedBy || "",
+        formatExportDateTime(review?.reviewedAt),
+        application?.finalScore ?? "",
+        formatExportDateTime(application?.submittedAt),
+        formatExportDateTime(application?.createdAt),
+        formatExportDateTime(application?.updatedAt),
+      ]
+    })
+
+    const csvContent = [
+      headers.map(escapeCsvValue).join(","),
+      ...rows.map((row) => row.map(escapeCsvValue).join(",")),
+    ].join("\n")
+
+    const occurrenceSlug = String(currentOccurrence?.title || "best-performer")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+
+    downloadCsvFile(
+      csvContent,
+      `${occurrenceSlug || "best-performer"}-${currentOccurrence?.awardYear || "occurrence"}-${new Date().toISOString().split("T")[0]}.csv`
+    )
+    toast.success("Best Performer export downloaded.")
+  }
+
   const leaderboardRows = useMemo(
     () =>
       (occurrenceDetail?.leaderboard || []).map((application, index) => ({
@@ -2671,6 +2919,13 @@ const OverallBestPerformerPage = () => {
                 <Save size={16} /> Edit active
               </Button>
             ) : null}
+            <Button
+              variant="secondary"
+              onClick={handleExportOccurrenceCsv}
+              disabled={!occurrenceDetail?.leaderboard?.length}
+            >
+              <Download size={16} /> Export CSV
+            </Button>
           </>
         ) : (
           <div style={badgeStyle(currentOccurrence?.applicationWindowStatus === "open" ? "primary" : "default")}>
