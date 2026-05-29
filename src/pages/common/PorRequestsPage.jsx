@@ -6,6 +6,7 @@ import PageHeader from "../../components/common/PageHeader"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
+import SharedPorRequestDetailModal from "../../components/por/PorRequestDetailModal"
 import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, Textarea, ToggleButtonGroup } from "@/components/ui"
 import { porApi, studentApi, uploadApi } from "@/service"
 import "../../styles/por-requests.css"
@@ -1717,6 +1718,8 @@ const PorRequestsPage = () => {
   const [showFormModal, setShowFormModal] = useState(false)
   const [editingRequest, setEditingRequest] = useState(null)
   const [selectedRequest, setSelectedRequest] = useState(null)
+  const [selectedRequestStudentId, setSelectedRequestStudentId] = useState(null)
+  const [showSelectedRequestStudentDetail, setShowSelectedRequestStudentDetail] = useState(false)
   const [selectedRequestGroup, setSelectedRequestGroup] = useState(null)
   const [formData, setFormData] = useState(createDefaultForm())
   const [savingForm, setSavingForm] = useState(false)
@@ -1767,6 +1770,40 @@ const PorRequestsPage = () => {
   const requests = workspace.requests || []
   const porCategories = workspace.porCategories || []
   const gymkhanaReviewerOptions = workspace.gymkhanaReviewerOptions || []
+
+  useEffect(() => {
+    let isSubscribed = true
+
+    const loadSelectedRequestStudentId = async () => {
+      const canViewStudentProfile = Boolean(
+        selectedRequest?.student?.userId && viewer?.mode !== "student"
+      )
+
+      if (!canViewStudentProfile) {
+        if (isSubscribed) {
+          setSelectedRequestStudentId(null)
+          setShowSelectedRequestStudentDetail(false)
+        }
+        return
+      }
+
+      try {
+        const resolvedStudentId = await studentApi.getStudentId(selectedRequest.student.userId)
+        if (!isSubscribed) return
+        setSelectedRequestStudentId(resolvedStudentId || null)
+      } catch (err) {
+        console.error("Failed to resolve POR student profile id:", err)
+        if (!isSubscribed) return
+        setSelectedRequestStudentId(null)
+      }
+    }
+
+    loadSelectedRequestStudentId()
+
+    return () => {
+      isSubscribed = false
+    }
+  }, [selectedRequest?.student?.userId, viewer?.mode])
 
   const statusTabs = useMemo(() => buildStatusTabs(requests), [requests])
 
@@ -2198,6 +2235,8 @@ const PorRequestsPage = () => {
 
   const closeRequestModal = () => {
     setSelectedRequest(null)
+    setSelectedRequestStudentId(null)
+    setShowSelectedRequestStudentDetail(false)
     setReviewComment("")
     setPostSaAssignments({})
     setActionLoading("")
@@ -2581,7 +2620,7 @@ const PorRequestsPage = () => {
         isEdit={Boolean(editingCategory)}
       />
 
-      <PorRequestDetailModal
+      <SharedPorRequestDetailModal
         isOpen={Boolean(selectedRequest)}
         request={selectedRequest}
         viewer={viewer}
@@ -2599,7 +2638,17 @@ const PorRequestsPage = () => {
         onRequestRevision={handleRequestRevision}
         onEdit={() => openEditModal(selectedRequest)}
         actionLoading={actionLoading}
+        canViewStudentProfile={Boolean(selectedRequest?.student?.userId && selectedRequestStudentId)}
+        onOpenStudentProfile={() => setShowSelectedRequestStudentDetail(true)}
       />
+
+      {showSelectedRequestStudentDetail && selectedRequestStudentId && selectedRequest?.student?.userId ? (
+        <StudentDetailModal
+          selectedStudent={{ _id: selectedRequestStudentId, userId: selectedRequest.student.userId }}
+          setShowStudentDetail={setShowSelectedRequestStudentDetail}
+          onUpdate={() => setShowSelectedRequestStudentDetail(false)}
+        />
+      ) : null}
 
       <PorRequestGroupModal
         isOpen={Boolean(selectedRequestGroup)}

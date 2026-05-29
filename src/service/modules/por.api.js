@@ -18,6 +18,10 @@ export const porApi = {
     return apiClient.get("/student-affairs/por/workspace").then(unwrapStandardResponse)
   },
 
+  getStudentRequests: (userId) => {
+    return apiClient.get(`/student-affairs/por/student/${userId}`).then(unwrapStandardResponse)
+  },
+
   create: (data) => {
     return apiClient.post("/student-affairs/por", data).then(unwrapStandardResponse)
   },

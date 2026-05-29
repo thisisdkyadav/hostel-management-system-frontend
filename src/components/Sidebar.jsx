@@ -25,12 +25,22 @@ const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin/sheet",
   "/admin/complaints",
   "/admin/overall-best-performer",
+  "/admin/caterers",
+  "/admin/dining-periods",
 ]
 const ADMIN_SIDEBAR_V2_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
 const ADMIN_PINNED_TAB_MIGRATIONS = [
   {
     storageKey: "admin_sidebar_pin_overall_best_performer_v1",
     path: "/admin/overall-best-performer",
+  },
+  {
+    storageKey: "admin_sidebar_pin_caterers_v1",
+    path: "/admin/caterers",
+  },
+  {
+    storageKey: "admin_sidebar_pin_dining_periods_v1",
+    path: "/admin/dining-periods",
   },
 ]
 

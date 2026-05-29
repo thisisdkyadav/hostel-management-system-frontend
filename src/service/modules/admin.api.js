@@ -62,6 +62,76 @@ export const adminApi = {
     return apiClient.get("/admin/hostel/list")
   },
 
+  // ==================== Dining Caterers ====================
+
+  /**
+   * Get all caterers
+   * @param {string} queries - Query string
+   */
+  getAllCaterers: (queries = "") => {
+    return apiClient.get("/admin/caterers", { queryString: queries })
+  },
+
+  /**
+   * Add new caterer
+   * @param {Object} catererData - Caterer data
+   */
+  addCaterer: (catererData) => {
+    return apiClient.post("/admin/caterers", catererData).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Update caterer
+   * @param {string} catererId - Caterer ID
+   * @param {Object} catererData - Updated caterer data
+   */
+  updateCaterer: (catererId, catererData) => {
+    return apiClient.put(`/admin/caterers/${catererId}`, catererData).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Archive or unarchive caterer
+   * @param {string} catererId - Caterer ID
+   * @param {boolean} status - Archive status
+   */
+  changeCatererArchiveStatus: (catererId, status) => {
+    return apiClient.put(`/admin/caterers/${catererId}/archive`, { status }).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Get all dining periods
+   * @param {string} queries - Query string
+   */
+  getAllDiningPeriods: (queries = "") => {
+    return apiClient.get("/admin/dining-periods", { queryString: queries })
+  },
+
+  /**
+   * Add new dining period
+   * @param {Object} periodData - Dining period data
+   */
+  addDiningPeriod: (periodData) => {
+    return apiClient.post("/admin/dining-periods", periodData).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Update dining period
+   * @param {string} periodId - Dining period ID
+   * @param {Object} periodData - Updated dining period data
+   */
+  updateDiningPeriod: (periodId, periodData) => {
+    return apiClient.put(`/admin/dining-periods/${periodId}`, periodData).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Archive or unarchive dining period
+   * @param {string} periodId - Dining period ID
+   * @param {boolean} status - Archive status
+   */
+  changeDiningPeriodArchiveStatus: (periodId, status) => {
+    return apiClient.put(`/admin/dining-periods/${periodId}/archive`, { status }).then(unwrapStandardResponse)
+  },
+
   // ==================== Wardens ====================
   
   /**
@@ -196,6 +266,40 @@ export const adminApi = {
    */
   deleteGymkhana: (id) => {
     return apiClient.delete(`/admin/gymkhana/${id}`)
+  },
+
+  // ==================== Academics Users ====================
+
+  /**
+   * Get all Academics users
+   */
+  getAllAcademicsUsers: () => {
+    return apiClient.get("/admin/academics")
+  },
+
+  /**
+   * Add Academics user
+   * @param {Object} data - Academics user data
+   */
+  addAcademics: (data) => {
+    return apiClient.post("/admin/academics", data)
+  },
+
+  /**
+   * Update Academics user
+   * @param {string} id - Academics user ID
+   * @param {Object} data - Updated data
+   */
+  updateAcademics: (id, data) => {
+    return apiClient.put(`/admin/academics/${id}`, data)
+  },
+
+  /**
+   * Delete Academics user
+   * @param {string} id - Academics user ID
+   */
+  deleteAcademics: (id) => {
+    return apiClient.delete(`/admin/academics/${id}`)
   },
 
   // ==================== Security Staff ====================

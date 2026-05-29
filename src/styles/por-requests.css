@@ -451,4 +451,159 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* ==========================================
+   Overall Best Performer Review Modal Styles
+   ========================================== */
+
+/* Table row styling for review tables */
+tr.por-review-table-row {
+  transition: background-color var(--transition-fast) ease;
+}
+
+tr.por-review-table-row:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Beautiful scorecard visual progress bars */
+.por-scorecard-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1-5);
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--color-border-primary);
+  transition: transform var(--transition-fast) ease;
+}
+
+.por-scorecard-row:last-child {
+  border-bottom: none;
+}
+
+.por-scorecard-row:hover {
+  transform: translateX(4px);
+}
+
+.por-scorecard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.por-scorecard-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  font-weight: var(--font-weight-medium);
+}
+
+.por-scorecard-value-container {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.por-scorecard-max {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
+
+.por-scorecard-progress-bg {
+  height: 6px;
+  width: 100%;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--color-border-primary);
+}
+
+.por-scorecard-progress-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow) ease-in-out;
+}
+
+/* Reference card list */
+.por-reference-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.por-reference-item {
+  padding: var(--spacing-4);
+  border-radius: var(--radius-card-sm);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-left: 4px solid var(--color-primary);
+  transition: all var(--transition-base) ease;
+}
+
+.por-reference-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-border-input);
+  background-color: var(--color-bg-primary);
+}
+
+.por-reference-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-heading);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.por-reference-detail-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-body);
+  margin-top: var(--spacing-1);
+}
+
+.por-reference-detail-row svg {
+  color: var(--color-text-muted);
+}
+
+/* Admin Remarks & Decision Card */
+.por-decision-textarea {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-input);
+  background-color: var(--color-bg-primary);
+  padding: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  resize: vertical;
+  transition: all var(--transition-fast) ease-in-out;
+}
+
+.por-decision-textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-focus) !important;
+  outline: none;
+}
+
+.por-decision-actions {
+  display: flex;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+}
+
+.por-decision-actions button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  transition: all var(--transition-fast) ease-in-out;
+}
+
+.por-decision-actions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-button);
+}
+
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
+import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 
@@ -18,7 +18,8 @@ const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
 
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   const isGymkhana = staffType === "gymkhana"
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
+  const isAcademics = staffType === "academics"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : staffType === "gymkhana" ? "Gymkhana" : "Academics"
 
   const [formData, setFormData] = useState({
     name: "",
@@ -78,19 +79,23 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
     e.preventDefault()
 
     try {
-      if (isGymkhana && !formData.subRole) {
-        alert("Please select a Gymkhana sub role.")
+      if ((isGymkhana || isAcademics) && !formData.subRole) {
+        alert(`Please select a ${staffTitle} sub role.`)
         return
       }
 
-      const payload = isGymkhana
+      const payload = isGymkhana || isAcademics
         ? {
             name: formData.name,
             email: formData.email,
             password: formData.password,
             subRole: formData.subRole,
-            categories: formData.categories,
-            position: formData.position,
+            ...(isGymkhana
+              ? {
+                  categories: formData.categories,
+                  position: formData.position,
+                }
+              : {}),
           }
         : formData
 
@@ -100,7 +105,9 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
           ? await adminApi.addAssociateWarden(payload)
           : staffType === "hostelSupervisor"
             ? await adminApi.addHostelSupervisor(payload)
-            : await adminApi.addGymkhana(payload)
+            : staffType === "gymkhana"
+              ? await adminApi.addGymkhana(payload)
+              : await adminApi.addAcademics(payload)
 
       if (!response) {
         alert(`Failed to add ${staffTitle.toLowerCase()}. Please try again.`)
@@ -156,7 +163,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
             <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Leave empty to create without password" />
           </div>
 
-          {isGymkhana ? (
+          {isGymkhana || isAcademics ? (
             <>
               <div>
                 <Label htmlFor="subRole" required>Sub Role</Label>
@@ -165,71 +172,75 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                   id="subRole"
                   value={formData.subRole}
                   onChange={handleChange}
-                  options={GYMKHANA_SUBROLE_OPTIONS}
-                  placeholder="Select Gymkhana sub role"
+                  options={isGymkhana ? GYMKHANA_SUBROLE_OPTIONS : ACADEMICS_SUBROLE_OPTIONS}
+                  placeholder={`Select ${staffTitle} sub role`}
                   icon={<FiTag />}
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="position">Position</Label>
-                <Input
-                  type="text"
-                  name="position"
-                  id="position"
-                  value={formData.position}
-                  onChange={handleChange}
-                  icon={<FiBriefcase />}
-                  placeholder="e.g., Cultural Coordinator"
-                />
-              </div>
+              {isGymkhana ? (
+                <>
+                  <div>
+                    <Label htmlFor="position">Position</Label>
+                    <Input
+                      type="text"
+                      name="position"
+                      id="position"
+                      value={formData.position}
+                      onChange={handleChange}
+                      icon={<FiBriefcase />}
+                      placeholder="e.g., Cultural Coordinator"
+                    />
+                  </div>
 
-              <div>
-                <Label>Categories</Label>
-                <div
-                  style={{
-                    marginTop: "var(--spacing-2)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "var(--spacing-2)",
-                    maxHeight: "12rem",
-                    overflowY: "auto",
-                    border: "var(--border-1) solid var(--color-border-input)",
-                    borderRadius: "var(--radius-lg)",
-                    padding: "var(--spacing-3)",
-                  }}
-                >
-                  {gymkhanaCategoryDefinitions.length > 0 ? (
-                    gymkhanaCategoryDefinitions.map((category) => (
-                      <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
-                        <Checkbox
-                          id={`gymkhana-category-${category.key}`}
-                          name="categories"
-                          checked={formData.categories.includes(category.key)}
-                          onChange={(event) =>
-                            handleChange({
-                              target: {
-                                name: "categories",
-                                value: category.key,
-                                checked: event.target.checked,
-                              },
-                            })
-                          }
-                        />
-                        <label
-                          htmlFor={`gymkhana-category-${category.key}`}
-                          style={{ marginLeft: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
-                        >
-                          {category.label}
-                        </label>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
-                  )}
-                </div>
-              </div>
+                  <div>
+                    <Label>Categories</Label>
+                    <div
+                      style={{
+                        marginTop: "var(--spacing-2)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "var(--spacing-2)",
+                        maxHeight: "12rem",
+                        overflowY: "auto",
+                        border: "var(--border-1) solid var(--color-border-input)",
+                        borderRadius: "var(--radius-lg)",
+                        padding: "var(--spacing-3)",
+                      }}
+                    >
+                      {gymkhanaCategoryDefinitions.length > 0 ? (
+                        gymkhanaCategoryDefinitions.map((category) => (
+                          <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox
+                              id={`gymkhana-category-${category.key}`}
+                              name="categories"
+                              checked={formData.categories.includes(category.key)}
+                              onChange={(event) =>
+                                handleChange({
+                                  target: {
+                                    name: "categories",
+                                    value: category.key,
+                                    checked: event.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                            <label
+                              htmlFor={`gymkhana-category-${category.key}`}
+                              style={{ marginLeft: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
+                            >
+                              {category.label}
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : null}
             </>
           ) : (
             <>

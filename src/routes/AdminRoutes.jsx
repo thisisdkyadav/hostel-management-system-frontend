@@ -7,12 +7,15 @@ const AdminDashboard = lazy(() => import("../pages/admin/DashboardPage"))
 const LiveCheckInOutPage = lazy(() => import("../pages/admin/LiveCheckInOutPage"))
 const FaceScannersPage = lazy(() => import("../pages/admin/FaceScannersPage"))
 const ClubsPage = lazy(() => import("../pages/admin/ClubsPage"))
+const CaterersPage = lazy(() => import("../pages/admin/CaterersPage"))
+const DiningPeriodsPage = lazy(() => import("../pages/admin/DiningPeriodsPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
 const AdminAdminManagement = lazy(() => import("../pages/admin/AdminManagementPage"))
 const AdminWarden = lazy(() => import("../pages/admin/WardensPage"))
 const AdminAssociateWardens = lazy(() => import("../pages/admin/AssociateWardensPage"))
 const AdminHostelSupervisors = lazy(() => import("../pages/admin/HostelSupervisorsPage"))
 const GymkhanaManagementPage = lazy(() => import("../pages/admin/GymkhanaManagementPage"))
+const AcademicsManagementPage = lazy(() => import("../pages/admin/AcademicsManagementPage"))
 const InventoryPage = lazy(() => import("../pages/admin/InventoryPage"))
 const SecurityLoginsPage = lazy(() => import("../pages/admin/SecurityLoginsPage"))
 const UpdatePasswordPage = lazy(() => import("../pages/admin/UpdatePasswordPage"))
@@ -57,12 +60,15 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/LiveCheckInOutPage"),
   () => import("../pages/admin/FaceScannersPage"),
   () => import("../pages/admin/ClubsPage"),
+  () => import("../pages/admin/CaterersPage"),
+  () => import("../pages/admin/DiningPeriodsPage"),
   () => import("../pages/admin/HostelsPage"),
   () => import("../pages/admin/AdminManagementPage"),
   () => import("../pages/admin/WardensPage"),
   () => import("../pages/admin/AssociateWardensPage"),
   () => import("../pages/admin/HostelSupervisorsPage"),
   () => import("../pages/admin/GymkhanaManagementPage"),
+  () => import("../pages/admin/AcademicsManagementPage"),
   () => import("../pages/admin/InventoryPage"),
   () => import("../pages/admin/SecurityLoginsPage"),
   () => import("../pages/admin/UpdatePasswordPage"),
@@ -130,11 +136,14 @@ const AdminRoutes = () => {
                 <Route path="hostels" element={guardRoute("route.admin.hostels", <AdminHostels />)} />
                 <Route path="hostels/:hostelName" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
                 <Route path="hostels/:hostelName/units/:unitNumber" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
+                <Route path="caterers" element={guardRoute("route.admin.caterers", <CaterersPage />)} />
+                <Route path="dining-periods" element={guardRoute("route.admin.diningPeriods", <DiningPeriodsPage />)} />
                 <Route path="administrators" element={guardRoute("route.admin.administrators", <AdminAdminManagement />)} />
                 <Route path="wardens" element={guardRoute("route.admin.wardens", <AdminWarden />)} />
                 <Route path="associate-wardens" element={guardRoute("route.admin.associateWardens", <AdminAssociateWardens />)} />
                 <Route path="hostel-supervisors" element={guardRoute("route.admin.hostelSupervisors", <AdminHostelSupervisors />)} />
                 <Route path="gymkhana" element={guardRoute("route.admin.gymkhana", <GymkhanaManagementPage />)} />
+                <Route path="academics" element={guardRoute("route.admin.academics", <AcademicsManagementPage />)} />
                 <Route path="students" element={guardRoute("route.admin.students", <StudentsPage />)} />
                 <Route path="inventory" element={guardRoute("route.admin.inventory", <InventoryPage />)} />
                 <Route path="complaints" element={guardRoute("route.admin.complaints", <ComplaintsPage />)} />

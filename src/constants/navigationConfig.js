@@ -156,6 +156,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    // { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/admin/caterers", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    // { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
@@ -172,6 +174,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Gymkhana Members", icon: GraduationCap, section: "main", path: "/admin/gymkhana", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Academics", icon: GraduationCap, section: "main", path: "/admin/academics", routeKey: "route.admin.academics", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Security", icon: Shield, section: "main", path: "/admin/security", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Maintenance", icon: Wrench, section: "main", path: "/admin/maintenance", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -402,6 +405,16 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
     createLogoutItem(handleLogout),
   ]
 }
+
+// ============================================
+// ACADEMICS NAVIGATION
+// ============================================
+
+export const getAcademicsNavItems = (handleLogout) => [
+  { name: "Best Performer", icon: Trophy, section: "main", path: "/academics/overall-best-performer", routeKey: "route.academics.bestPerformer" },
+  createProfileItem("/academics"),
+  createLogoutItem(handleLogout),
+]
 
 /**
  * PWA bottom bar main items (4 primary items shown in bottom bar)

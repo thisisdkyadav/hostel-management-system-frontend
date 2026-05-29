@@ -33,6 +33,20 @@ export const filterStaffMembers = (staffMembers = [], staffType = "warden", filt
       })
   }
 
+  if (staffType === "academics") {
+    return staffMembers
+      .filter((staff) => filterStatus === "all" || staff.subRole === filterStatus)
+      .filter((staff) => {
+        if (!normalizedSearchTerm) return true
+
+        const fields = [staff.name, staff.role, staff.subRole, staff.email]
+          .filter(Boolean)
+          .map((value) => String(value).toLowerCase())
+
+        return fields.some((value) => value.includes(normalizedSearchTerm))
+      })
+  }
+
   return staffMembers
     .filter((staff) => {
       if (filterStatus === "all") return true

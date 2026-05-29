@@ -4,21 +4,30 @@ import {
   Download,
   FileText,
   CalendarDays,
+  BadgeCheck,
   CheckCircle2,
   Clock3,
   Eye,
-  ExternalLink,
+  MessageSquare,
   Plus,
   Save,
   Trophy,
   Upload,
   Users,
   XCircle,
+  BookOpen,
+  Share2,
+  Sparkles,
+  Cpu,
+  Activity,
+  Compass,
 } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import CsvUploader from "@/components/common/CsvUploader"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
+import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import StudentDetailModal from "@/components/common/students/StudentDetailModal"
+import ProfileAvatar from "@/components/profile/ProfileAvatar"
 import {
   eventDetailMetaChipStyles,
   infoBoxStyle,
@@ -37,7 +46,7 @@ import useLocalFormDraft, {
   readLocalFormDraft,
 } from "@/hooks/useLocalFormDraft"
 import { overallBestPerformerApi, porApi, studentApi, uploadApi } from "@/service"
-import { getMediaUrl } from "@/utils/mediaUtils"
+import "../../styles/por-requests.css"
 
 const BTP_AWARD_OPTIONS = [
   { value: "none", label: "No BTP award" },
@@ -411,21 +420,6 @@ const summarizeProofsForExport = (proofs = []) =>
 
       return ["PDF", proof?.label || "", proof?.url || ""].filter(Boolean).join(" | ")
     })
-    .filter(Boolean)
-    .join(" || ")
-
-const summarizeReferencesForExport = (references = []) =>
-  (Array.isArray(references) ? references : [])
-    .map((reference) =>
-      [
-        reference?.name || "",
-        reference?.designation || "",
-        reference?.department || "",
-        reference?.phoneNumber || "",
-      ]
-        .filter(Boolean)
-        .join(" | ")
-    )
     .filter(Boolean)
     .join(" || ")
 
@@ -1524,6 +1518,11 @@ const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
         >
           {title}
         </div>
+        {subtitle && (
+          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+            {subtitle}
+          </div>
+        )}
       </div>
       {actions}
     </div>
@@ -1531,32 +1530,36 @@ const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
   </section>
 )
 
-const SummaryMetric = ({ icon: Icon, label, value }) => (
-  <div style={{ ...surfaceStyle, padding: "var(--spacing-3)", display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-    <div style={{ width: 40, height: 40, borderRadius: "var(--radius-icon)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <Icon size={18} />
-    </div>
-    <div>
-      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-        {label}
+const SummaryMetric = (props) => {
+  const Icon = props.icon
+  const { label, value } = props
+  return (
+    <div style={{ ...surfaceStyle, padding: "var(--spacing-3)", display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+      <div style={{ width: 40, height: 40, borderRadius: "var(--radius-icon)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {Icon && <Icon size={18} />}
       </div>
-      <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
-        {value}
+      <div>
+        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          {label}
+        </div>
+        <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+          {value}
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 const ScoreBreakdownCard = ({ breakdown }) => {
   const rows = [
-    ["Coursework", breakdown?.coursework || 0],
-    ["Project / Thesis", breakdown?.projectThesis || 0],
-    ["Position of Responsibility", breakdown?.responsibilities || 0],
-    ["Awards & Extracurricular", breakdown?.awards || 0],
-    ["Cultural", breakdown?.cultural || 0],
-    ["Science & Technology", breakdown?.scienceTechnology || 0],
-    ["Games & Sports", breakdown?.gamesSports || 0],
-    ["Co-curricular", breakdown?.coCurricular || 0],
+    ["Coursework", breakdown?.coursework || 0, SECTION_MAX_POINTS.coursework],
+    ["Project / Thesis", breakdown?.projectThesis || 0, SECTION_MAX_POINTS.projectThesis],
+    ["Position of Responsibility", breakdown?.responsibilities || 0, SECTION_MAX_POINTS.responsibilities],
+    ["Awards & Extracurricular", breakdown?.awards || 0, SECTION_MAX_POINTS.awards],
+    ["Cultural", breakdown?.cultural || 0, SECTION_MAX_POINTS.cultural],
+    ["Science & Technology", breakdown?.scienceTechnology || 0, SECTION_MAX_POINTS.scienceTechnology],
+    ["Games & Sports", breakdown?.gamesSports || 0, SECTION_MAX_POINTS.gamesSports],
+    ["Co-curricular", breakdown?.coCurricular || 0, SECTION_MAX_POINTS.coCurricular],
   ]
 
   return (
@@ -1568,28 +1571,43 @@ const ScoreBreakdownCard = ({ breakdown }) => {
           backgroundColor: "var(--color-bg-secondary)",
         }}
       >
-        <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Application Insight</div>
         <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
           Score Breakdown
         </div>
       </div>
       <div style={{ padding: "var(--spacing-3) var(--spacing-4)" }}>
-        {rows.map(([label, value]) => (
-          <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "var(--spacing-2) 0", borderBottom: "1px solid var(--color-border-light)" }}>
-            <span style={{ color: "var(--color-text-body)" }}>{label}</span>
-            <strong style={{ color: "var(--color-text-primary)" }}>{value}</strong>
-          </div>
-        ))}
+        {rows.map(([label, value, max]) => {
+          const pct = Math.min(100, Math.max(0, (value / max) * 100))
+          return (
+            <div key={label} className="por-scorecard-row">
+              <div className="por-scorecard-header">
+                <span className="por-scorecard-label">{label}</span>
+                <span className="por-scorecard-value-container">
+                  {value} <span className="por-scorecard-max">/ {max}</span>
+                </span>
+              </div>
+              <div className="por-scorecard-progress-bg">
+                <div
+                  className="por-scorecard-progress-bar"
+                  style={{
+                    width: `${pct}%`,
+                    backgroundColor: pct >= 100 ? "var(--color-success)" : "var(--color-primary)",
+                  }}
+                />
+              </div>
+            </div>
+          )
+        })}
         <div
           style={{
             ...infoBoxStyle,
-            marginTop: "var(--spacing-3)",
+            marginTop: "var(--spacing-4)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>Total</span>
+          <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>Total Score</span>
           <span style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)" }}>
             {breakdown?.total || 0}
           </span>
@@ -1776,7 +1794,7 @@ const MarkingSchemeModal = ({ open, onClose }) => {
   )
 }
 
-const ProofActionButton = ({ proof, onViewPor }) => {
+const ProofActionButton = ({ proof, onViewPor, onViewPdf }) => {
   if (!proof) {
     return <span style={{ color: "var(--color-text-muted)" }}>—</span>
   }
@@ -1795,29 +1813,176 @@ const ProofActionButton = ({ proof, onViewPor }) => {
 
   if (proof.url) {
     return (
-      <a href={getMediaUrl(proof.url)} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-        <ExternalLink size={14} /> Open PDF
-      </a>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() =>
+          onViewPdf?.({
+            url: proof.url,
+            title: proof.label || "Supporting Document",
+          })
+        }
+      >
+        <Eye size={14} /> View PDF
+      </Button>
     )
   }
 
   return <span style={{ color: "var(--color-text-muted)" }}>—</span>
 }
 
-const ItemsReviewTable = ({ title, items = [], onViewPor }) => {
+const PorDetailCard = ({
+  icon: Icon,
+  title,
+  accentColor = "var(--color-primary)",
+  children,
+  headerAction = null,
+  bodyStyle = null,
+}) => (
+  <div className="por-detail-card" style={{ marginTop: "var(--spacing-4)" }}>
+    <div className="por-detail-card-header">
+      <div className="por-detail-card-header-left">
+        <span
+          className="por-detail-card-icon-wrapper"
+          style={{
+            backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
+            color: accentColor,
+            width: 24,
+            height: 24,
+            borderRadius: "var(--radius-md)",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {Icon && <Icon size={14} />}
+        </span>
+        <h4 className="por-detail-card-title">{title}</h4>
+      </div>
+      {headerAction}
+    </div>
+    <div className="por-detail-card-body" style={bodyStyle || undefined}>{children}</div>
+  </div>
+)
+
+const PorDetailInfoRow = ({ label, value }) => (
+  <div className="por-detail-info-row">
+    <span className="por-detail-info-label">{label}</span>
+    <span className="por-detail-info-value">{value}</span>
+  </div>
+)
+
+const REVIEW_SECTION_META = {
+  "Project publications / patents": { icon: BookOpen, accent: "var(--color-primary)" },
+  "Technology transfer": { icon: Share2, accent: "var(--color-info)" },
+  "Responsibilities": { icon: Users, accent: "var(--color-primary)" },
+  "Awards": { icon: Trophy, accent: "var(--color-warning)" },
+  "Cultural activities": { icon: Sparkles, accent: "var(--color-warning)" },
+  "Science & Technology activities": { icon: Cpu, accent: "var(--color-primary)" },
+  "Games & Sports activities": { icon: Activity, accent: "var(--color-success)" },
+  "Co-curricular activities": { icon: Compass, accent: "var(--color-info)" }
+}
+
+const SCORE_TYPE_LABELS = {
+  // BTP Award Options
+  none: "No BTP award",
+  institute_best: "Institute Best BTP",
+  second: "Second Best BTP",
+  third: "Third Best BTP",
+  department_award_or_nomination: "Department award / nomination",
+
+  // Project Grade Options
+  AP: "AP",
+  AA: "AA",
+  AB: "AB",
+  BB: "BB",
+  OTHER: "Other",
+
+  // Publication Options
+  journal_first_author: "Journal first author",
+  journal_co_author: "Journal co-author",
+  patent_granted: "Patent granted",
+  patent_filed: "Patent filed",
+  patent_published: "Patent published",
+  conference_first_author: "Conference first author",
+  conference_co_author: "Conference co-author",
+
+  // Tech Transfer Options
+  lead_role: "Technology transfer: lead role",
+  supporting_role: "Technology transfer: supporting role",
+
+  // Responsibility Options
+  gymkhana_or_fluxus_coordinator_or_il_event_organiser: "Gymkhana / Fluxus coordinator / IL organiser",
+  club_head_or_placmgr_or_fluxus_head_or_senator: "Club head / PlacMgr / Fluxus head / Senator",
+  organiser_of_national_level_event: "Organiser of national-level event",
+  chair_of_scientific_body: "Chair of scientific body",
+  position_holder_in_scientific_body: "Position holder in scientific body",
+  organiser_or_avana_or_coordinator: "Organiser / Avana / coordinator",
+  team_member: "Team member",
+  participation: "Participation",
+
+  // Award Options
+  young_scientist_award: "Young Scientist Award",
+  incubator_generating_revenue: "Incubator generating revenue",
+  international_award: "International award",
+  incubated_startup: "Incubated startup",
+  national_award: "National award",
+
+  // Activity Level Options
+  inter_iit_top_3: "Inter IIT top 3",
+  inter_iit_top_5: "Inter IIT top 5",
+  intra_iit_top_3: "Intra IIT top 3",
+  intra_iit_top_5: "Intra IIT top 5",
+  participation_inter_iit: "Participation in Inter IIT",
+  participation_intra_iit: "Participation in Intra IIT",
+
+  // Co-curricular Options
+  competitive_exam_topper: "Competitive exam topper",
+  competitive_exam_rank_2_5: "Competitive exam rank 2-5",
+  competitive_exam_rank_6_10: "Competitive exam rank 6-10",
+  competitive_exam_participation: "Competitive exam participation",
+  workshop: "Workshop",
+  social_service: "Social service",
+}
+
+const formatScoreTypeLabel = (scoreType) => {
+  if (!scoreType) return "—"
+  if (SCORE_TYPE_LABELS[scoreType]) {
+    return SCORE_TYPE_LABELS[scoreType]
+  }
+  return scoreType
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
   if (!items.length) return null
 
+  const meta = REVIEW_SECTION_META[title] || { icon: FileText, accent: "var(--color-primary)" }
+  const Icon = meta.icon
+  const accentColor = meta.accent
+
   return (
-    <div style={{ marginTop: "var(--spacing-4)" }}>
-      <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)", marginBottom: "var(--spacing-2)" }}>
-        {title}
-      </div>
-      <div style={{ overflowX: "auto", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 760 }}>
-          <thead style={{ backgroundColor: "var(--color-bg-secondary)" }}>
-            <tr>
-              {["Title", "Type", "Year", "Level", "Ref", "Points", "Proof"].map((heading) => (
-                <th key={heading} style={{ textAlign: "left", padding: "10px 12px", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>
+    <PorDetailCard icon={Icon} title={title} accentColor={accentColor} bodyStyle={{ padding: 0, gap: 0 }}>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
+          <thead>
+            <tr style={{ backgroundColor: "var(--color-bg-secondary)", borderBottom: "1px solid var(--color-border-primary)" }}>
+              {["Title", "Type", "Year", "Level", "Ref Code", "Points", "Proof"].map((heading) => (
+                <th
+                  key={heading}
+                  style={{
+                    textAlign: "left",
+                    padding: "10px 16px",
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-text-muted)",
+                    textTransform: "uppercase",
+                    fontWeight: "var(--font-weight-semibold)",
+                    letterSpacing: "0.05em",
+                    ...(heading === "Proof" ? { width: 140, minWidth: 140 } : {}),
+                  }}
+                >
                   {heading}
                 </th>
               ))}
@@ -1825,22 +1990,83 @@ const ItemsReviewTable = ({ title, items = [], onViewPor }) => {
           </thead>
           <tbody>
             {items.map((item, index) => (
-              <tr key={`${title}-${index}`} style={{ borderTop: "1px solid var(--color-border-light)" }}>
-                <td style={{ padding: "10px 12px", color: "var(--color-text-primary)" }}>{item.title}</td>
-                <td style={{ padding: "10px 12px", color: "var(--color-text-body)" }}>{item.scoreType}</td>
-                <td style={{ padding: "10px 12px", color: "var(--color-text-body)" }}>{item.year || "—"}</td>
-                <td style={{ padding: "10px 12px", color: "var(--color-text-body)" }}>{item.level || "—"}</td>
-                <td style={{ padding: "10px 12px", color: "var(--color-text-body)" }}>{item.referenceCode || "—"}</td>
-                <td style={{ padding: "10px 12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{item.calculatedPoints || 0}</td>
-                <td style={{ padding: "10px 12px" }}>
-                  <ProofActionButton proof={resolvePrimaryProof(item.proofs)} onViewPor={onViewPor} />
+              <tr key={`${title}-${index}`} className="por-review-table-row" style={{ borderBottom: index < items.length - 1 ? "1px solid var(--color-border-light)" : "none" }}>
+                <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>{item.title}</td>
+                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{formatScoreTypeLabel(item.scoreType)}</td>
+                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{item.year || "—"}</td>
+                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{item.level || "—"}</td>
+                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontFamily: "monospace" }}>{item.referenceCode || "—"}</td>
+                <td style={{ padding: "12px 16px" }}>
+                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xs)" }}>
+                    +{item.calculatedPoints || 0}
+                  </span>
+                </td>
+                <td style={{ padding: "12px 16px", width: 132, minWidth: 132 }}>
+                  <ProofActionButton proof={resolvePrimaryProof(item.proofs)} onViewPor={onViewPor} onViewPdf={onViewPdf} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </PorDetailCard>
+  )
+}
+
+const formatHodVerificationActionLabel = (action = "") =>
+  action === "verified" ? "Verified" : "Commented"
+
+const HodVerificationsCard = ({ verifications = [] }) => {
+  const entries = Array.isArray(verifications) ? verifications : []
+
+  return (
+    <PorDetailCard
+      icon={MessageSquare}
+      title="HOD Verifications"
+      accentColor="var(--color-info)"
+    >
+      {entries.length > 0 ? (
+        <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+          {entries.map((entry, index) => (
+            <div
+              key={entry?.id || `${entry?.verifiedBy || "hod"}-${entry?.verifiedAt || index}`}
+              style={{
+                display: "grid",
+                gap: "var(--spacing-2)",
+                padding: "var(--spacing-3)",
+                border: "1px solid var(--color-border-primary)",
+                borderRadius: "var(--radius-lg)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    {entry?.verifierName || "HOD"}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    {entry?.verifierEmail || "Email not available"}
+                  </div>
+                </div>
+                <Badge variant={entry?.action === "verified" ? "success" : "info"}>
+                  {formatHodVerificationActionLabel(entry?.action)}
+                </Badge>
+              </div>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+                {entry?.remarks || "No remarks provided."}
+              </div>
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                {entry?.verifiedAt ? new Date(entry.verifiedAt).toLocaleString() : "Timestamp unavailable"}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.7 }}>
+          No HOD verification or comments have been recorded yet.
+        </div>
+      )}
+    </PorDetailCard>
   )
 }
 
@@ -1850,19 +2076,28 @@ const ReviewModal = ({
   onClose,
   onDecision,
   deciding,
+  reviewMode = "readonly",
 }) => {
   const [remarks, setRemarks] = useState("")
   const [activePorDetail, setActivePorDetail] = useState(null)
+  const [activePdfDetail, setActivePdfDetail] = useState(null)
   const [studentProfileId, setStudentProfileId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
+  const canAdminReview = reviewMode === "admin"
+  const canHodVerify = reviewMode === "hod"
+  const canTakeAction = canAdminReview || canHodVerify
 
   useEffect(() => {
     if (open) {
-      setRemarks(application?.review?.remarks || "")
-      setActivePorDetail(null)
-      setShowStudentDetailModal(false)
+      const timer = setTimeout(() => {
+        setRemarks(canAdminReview ? application?.review?.remarks || "" : "")
+        setActivePorDetail(null)
+        setActivePdfDetail(null)
+        setShowStudentDetailModal(false)
+      }, 0)
+      return () => clearTimeout(timer)
     }
-  }, [open, application])
+  }, [open, application, canAdminReview])
 
   useEffect(() => {
     let isSubscribed = true
@@ -1901,171 +2136,310 @@ const ReviewModal = ({
   if (!open || !application) return null
 
   return (
-    <Modal title={`Review ${application.studentName}`} onClose={onClose} width={1100} fullHeight={true}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "var(--spacing-4)" }}>
-          <div style={{ ...panelStyle }}>
-            <div style={panelBodyStyle}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
-                <SummaryMetric icon={Users} label="Student" value={`${application.studentName} (${application.rollNumber})`} />
-                <SummaryMetric icon={Trophy} label="Review Status" value={application.review?.status || "submitted"} />
-                <SummaryMetric icon={Clock3} label="Calculated Score" value={application.calculatedTotal || 0} />
-                <SummaryMetric icon={CheckCircle2} label="Final Score" value={application.finalScore || 0} />
+    <Modal title={`${canTakeAction ? "Review" : "View"} ${application.studentName}`} onClose={onClose} width={1800} fullHeight={true}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        {/* Upper Meta Bar */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", marginBottom: "var(--spacing-2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <span className="por-detail-meta-chip por-detail-meta-chip-id">
+              {application.rollNumber}
+            </span>
+            <Badge variant={statusTone(application.review?.status)}>{application.review?.status || "submitted"}</Badge>
+            <span className="por-detail-meta-chip">
+              <Trophy size={12} />
+              Calculated Score: {application.calculatedTotal || 0}
+            </span>
+            <span className="por-detail-meta-chip">
+              <CheckCircle2 size={12} />
+              Final Score: {application.finalScore || 0}
+            </span>
+          </div>
+        </div>
+
+        {/* Main 3-Column Grid Layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
+          
+          {/* Main content - col-span-2 */}
+          <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", marginTop: "calc(-1 * var(--spacing-4))" }}>
+            
+            {/* Academic profile card */}
+            <PorDetailCard
+              icon={Users}
+              title="Student Academic Profile"
+              accentColor="var(--color-primary)"
+            >
+              <div className="por-student-profile-header">
+                <ProfileAvatar
+                  user={{
+                    name: application.studentName,
+                    profileImage: application.studentProfileImage,
+                  }}
+                  size="medium"
+                />
+                <div className="por-student-profile-info" style={{ minWidth: 0 }}>
+                  <span className="por-student-profile-name">{application.studentName}</span>
+                  <span className="por-student-profile-roll">{application.rollNumber}</span>
+                </div>
+                {canAdminReview && application?.studentUserId ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setShowStudentDetailModal(true)}
+                    disabled={!studentProfileId}
+                    style={{ marginLeft: "auto", flexShrink: 0 }}
+                  >
+                    <Eye size={14} /> View Student Profile
+                  </Button>
+                ) : null}
               </div>
-              <div style={{ marginTop: "var(--spacing-4)", padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", marginBottom: "var(--spacing-3)", flexWrap: "wrap" }}>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
-                    Personal / academic details
+
+              <div className="por-detail-info-grid">
+                <PorDetailInfoRow label="Programme" value={application.personalAcademic?.programme || "—"} />
+                <PorDetailInfoRow label="Department" value={application.personalAcademic?.department || application.department || "—"} />
+                <PorDetailInfoRow label="CGPA / CPI" value={application.coursework?.scoreValue || "—"} />
+              </div>
+
+              {/* Declarations (Yes/No fields) styled beautifully! */}
+              <div style={{ marginTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-primary)", paddingTop: "var(--spacing-4)" }}>
+                <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-3)" }}>
+                  Disclosures & Declarations
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+                  <div className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Passing Out Student</div>
+                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                      {application.personalAcademic?.isPassingOutStudent ? (
+                        <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Yes</>
+                      ) : (
+                        <><XCircle size={14} className="text-[var(--color-danger)]" /> No</>
+                      )}
+                    </div>
                   </div>
-                  {application?.studentUserId ? (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setShowStudentDetailModal(true)}
-                      disabled={!studentProfileId}
-                    >
-                      View Profile
-                    </Button>
-                  ) : null}
+                  <div className={application.personalAcademic?.hasNoDisciplinaryAction ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No Disciplinary Action</div>
+                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                      {application.personalAcademic?.hasNoDisciplinaryAction ? (
+                        <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Declared Clean</>
+                      ) : (
+                        <><XCircle size={14} className="text-[var(--color-danger)]" /> Action Disclosed</>
+                      )}
+                    </div>
+                  </div>
+                  <div className={application.personalAcademic?.hasNoFrGrade ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No FR Grade</div>
+                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                      {application.personalAcademic?.hasNoFrGrade ? (
+                        <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> None</>
+                      ) : (
+                        <><XCircle size={14} className="text-[var(--color-danger)]" /> Has FR Grade</>
+                      )}
+                    </div>
+                  </div>
+                  <div className={application.personalAcademic?.declarationAccepted ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Undertaking Accepted</div>
+                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                      {application.personalAcademic?.declarationAccepted ? (
+                        <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Confirmed</>
+                      ) : (
+                        <><XCircle size={14} className="text-[var(--color-danger)]" /> Pending</>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)", fontSize: "var(--font-size-sm)" }}>
-                  <div><strong>Programme:</strong> {application.personalAcademic?.programme || "—"}</div>
-                  <div><strong>Department:</strong> {application.personalAcademic?.department || application.department || "—"}</div>
-                  <div><strong>Coursework mode:</strong> {application.coursework?.evaluationMode || "—"}</div>
-                  <div><strong>CGPA / CPI:</strong> {application.coursework?.scoreValue || "—"}</div>
-                  <div><strong>Mobile:</strong> {application.personalAcademic?.mobileNumber || "—"}</div>
-                  <div><strong>Hostel address:</strong> {application.personalAcademic?.hostelAddress || "—"}</div>
-                  <div><strong>Home address:</strong> {application.personalAcademic?.homeAddress || "—"}</div>
-                  <div><strong>Faculty advisor:</strong> {application.personalAcademic?.facultyAdvisorName || "—"} {application.personalAcademic?.facultyAdvisorPhone ? `(${application.personalAcademic.facultyAdvisorPhone})` : ""}</div>
-                  <div><strong>Project guide:</strong> {application.personalAcademic?.projectGuideName || "—"} {application.personalAcademic?.projectGuidePhone ? `(${application.personalAcademic.projectGuidePhone})` : ""}</div>
-                  <div><strong>Thesis guide:</strong> {application.personalAcademic?.thesisGuideName || "—"} {application.personalAcademic?.thesisGuidePhone ? `(${application.personalAcademic.thesisGuidePhone})` : ""}</div>
-                  <div><strong>Passing out student:</strong> {application.personalAcademic?.isPassingOutStudent ? "Yes" : "No"}</div>
-                  <div><strong>No disciplinary action:</strong> {application.personalAcademic?.hasNoDisciplinaryAction ? "Yes" : "No"}</div>
-                  <div><strong>No FR grade:</strong> {application.personalAcademic?.hasNoFrGrade ? "Yes" : "No"}</div>
-                  <div><strong>Undertaking accepted:</strong> {application.personalAcademic?.declarationAccepted ? "Yes" : "No"}</div>
-                </div>
-                <div style={{ marginTop: "var(--spacing-3)" }}>
+              </div>
+
+              {/* Coursework proof */}
+              {application.coursework?.proofs && (
+                <div style={{ marginTop: "var(--spacing-4)" }}>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-semibold)" }}>
+                    Coursework Supporting Document
+                  </div>
                   <ProofActionButton
                     proof={resolvePrimaryProof(application.coursework?.proofs)}
                     onViewPor={setActivePorDetail}
+                    onViewPdf={setActivePdfDetail}
                   />
                 </div>
-                {(application.personalAcademic?.references || []).length ? (
-                <div style={{ marginTop: "var(--spacing-4)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
-                    Faculty / staff references
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                      {(application.personalAcademic.references || []).map((reference, index) => (
-                        <div key={`reference-${index}`} style={{ padding: "var(--spacing-3)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-primary)" }}>
-                          <strong>{reference.name || `Reference ${index + 1}`}</strong>
-                          <div>{reference.designation || "—"}</div>
-                          <div>{reference.department || "—"}</div>
-                          <div>{reference.phoneNumber || "—"}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              {application.projectThesis?.track === "btech_project" &&
-              (application.projectThesis?.btpAwardLevel !== "none" || application.projectThesis?.projectGrade !== "none") ? (
-                <div style={{ marginTop: "var(--spacing-4)", display: "grid", gap: "var(--spacing-3)" }}>
+              )}
+            </PorDetailCard>
+
+            {/* BTP details card if applicable */}
+            {application.projectThesis?.track === "btech_project" &&
+            (application.projectThesis?.btpAwardLevel !== "none" || application.projectThesis?.projectGrade !== "none") ? (
+              <PorDetailCard
+                icon={Trophy}
+                title="BTP & Project Grade Details"
+                accentColor="var(--color-warning)"
+              >
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-4)" }}>
                   {application.projectThesis?.btpAwardLevel !== "none" ? (
-                    <div style={{ padding: "var(--spacing-3)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)" }}>
+                    <div className="por-detail-hero-box" style={{ background: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)", borderLeft: "4px solid var(--color-warning)" }}>
                       <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
-                        BTP award
+                        BTP Award
                       </div>
-                      <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                      <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-md)" }}>
                         {BTP_AWARD_OPTIONS.find((option) => option.value === application.projectThesis?.btpAwardLevel)?.label || application.projectThesis?.btpAwardLevel}
                       </div>
-                      <div style={{ marginTop: "6px", color: "var(--color-text-body)" }}>
+                      <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                         {application.projectThesis?.btpAwardTitle || "—"}
                       </div>
                       {application.projectThesis?.btpAwardNotes ? (
-                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                          {application.projectThesis.btpAwardNotes}
+                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
+                          Notes: {application.projectThesis.btpAwardNotes}
                         </div>
                       ) : null}
-                      <div style={{ marginTop: "8px" }}>
+                      <div style={{ marginTop: "var(--spacing-3)" }}>
                         <ProofActionButton
                           proof={resolvePrimaryProof(application.projectThesis?.btpAwardProofs)}
                           onViewPor={setActivePorDetail}
+                          onViewPdf={setActivePdfDetail}
                         />
                       </div>
                     </div>
                   ) : null}
 
                   {application.projectThesis?.projectGrade !== "none" ? (
-                    <div style={{ padding: "var(--spacing-3)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)" }}>
+                    <div className="por-detail-hero-box" style={{ background: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)", borderLeft: "4px solid var(--color-primary)" }}>
                       <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
-                        Project grade
+                        Project Grade
                       </div>
-                      <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                      <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-md)" }}>
                         {PROJECT_GRADE_OPTIONS.find((option) => option.value === application.projectThesis?.projectGrade)?.label || application.projectThesis?.projectGrade}
                       </div>
-                      <div style={{ marginTop: "6px", color: "var(--color-text-body)" }}>
+                      <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                         {application.projectThesis?.projectGradeTitle || "—"}
                       </div>
                       {application.projectThesis?.projectGradeNotes ? (
-                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                          {application.projectThesis.projectGradeNotes}
+                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
+                          Notes: {application.projectThesis.projectGradeNotes}
                         </div>
                       ) : null}
-                      <div style={{ marginTop: "8px" }}>
+                      <div style={{ marginTop: "var(--spacing-3)" }}>
                         <ProofActionButton
                           proof={resolvePrimaryProof(application.projectThesis?.projectGradeProofs)}
                           onViewPor={setActivePorDetail}
+                          onViewPdf={setActivePdfDetail}
                         />
                       </div>
                     </div>
                   ) : null}
                 </div>
-              ) : null}
-              <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Awards" items={application.awardItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} />
-              <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} />
-            </div>
+              </PorDetailCard>
+            ) : null}
+
+            {/* List of achievements tables styled beautifully */}
+            <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Awards" items={application.awardItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
           </div>
+
+          {/* Right sidebar column */}
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            
+            {/* Scorecard */}
             <ScoreBreakdownCard breakdown={application.scoreBreakdown} />
-            <div style={panelStyle}>
-              <div style={panelBodyStyle}>
-                <label style={fieldLabelStyle}>Review remarks</label>
-                <textarea
-                  value={remarks}
-                  onChange={(event) => setRemarks(event.target.value)}
-                  style={textareaStyle}
-                  placeholder="Add review notes or rejection reason"
-                />
-                <div style={{ display: "flex", gap: "var(--spacing-2)", marginTop: "var(--spacing-4)" }}>
-                  <Button
-                    onClick={() => onDecision("approved", remarks)}
-                    loading={deciding}
-                  >
-                    <CheckCircle2 size={16} /> Approve
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => onDecision("rejected", remarks)}
-                    loading={deciding}
-                  >
-                    <XCircle size={16} /> Reject
-                  </Button>
+
+            <HodVerificationsCard verifications={application.hodVerifications} />
+
+            {/* Admin Decision card */}
+            <PorDetailCard
+              icon={canHodVerify ? BadgeCheck : CheckCircle2}
+              title={canAdminReview ? "Application Review Decision" : canHodVerify ? "HOD Verification" : "Review Summary"}
+              accentColor="var(--color-primary)"
+            >
+              {canAdminReview ? (
+                <div>
+                  <label style={{ ...fieldLabelStyle, marginBottom: "var(--spacing-2)" }}>Review Remarks / Notes</label>
+                  <textarea
+                    value={remarks}
+                    onChange={(event) => setRemarks(event.target.value)}
+                    className="por-decision-textarea"
+                    placeholder="Add review feedback, notes, or justification for rejection..."
+                  />
+                  <div className="por-decision-actions">
+                    <Button
+                      onClick={() => onDecision("approved", remarks)}
+                      loading={deciding}
+                      disabled={deciding}
+                    >
+                      <CheckCircle2 size={16} /> Approve
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => onDecision("rejected", remarks)}
+                      loading={deciding}
+                      disabled={deciding}
+                    >
+                      <XCircle size={16} /> Reject
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              ) : canHodVerify ? (
+                <div>
+                  <label style={{ ...fieldLabelStyle, marginBottom: "var(--spacing-2)" }}>Verification Comment</label>
+                  <textarea
+                    value={remarks}
+                    onChange={(event) => setRemarks(event.target.value)}
+                    className="por-decision-textarea"
+                    placeholder="Add your verification note or comment..."
+                  />
+                  <div style={{ ...helperTextStyle, marginTop: "var(--spacing-2)" }}>
+                    A comment is required for both actions.
+                  </div>
+                  <div className="por-decision-actions">
+                    <Button
+                      onClick={() => onDecision("verified", remarks)}
+                      loading={deciding}
+                      disabled={deciding || !String(remarks || "").trim()}
+                    >
+                      <BadgeCheck size={16} /> Verify
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => onDecision("commented", remarks)}
+                      loading={deciding}
+                      disabled={deciding || !String(remarks || "").trim()}
+                    >
+                      <MessageSquare size={16} /> Comment
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                  <div className="por-detail-info-grid">
+                    <PorDetailInfoRow label="Review Status" value={application.review?.status || "submitted"} />
+                    <PorDetailInfoRow label="Final Score" value={application.finalScore ?? "—"} />
+                  </div>
+                  <div style={fieldClusterStyle}>
+                    <span style={sectionLabelStyle}>Review Remarks / Notes</span>
+                    <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                      {application.review?.remarks || "No review remarks have been added yet."}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </PorDetailCard>
           </div>
         </div>
+
+        {/* Support Modal portals */}
         <PorProofDetailModal
           open={Boolean(activePorDetail)}
           onClose={() => setActivePorDetail(null)}
           porRequest={activePorDetail}
+        />
+        <PdfViewerModal
+          isOpen={Boolean(activePdfDetail?.url)}
+          onClose={() => setActivePdfDetail(null)}
+          documentUrl={activePdfDetail?.url}
+          title={activePdfDetail?.title || "Supporting Document"}
+          subtitle="Uploaded supporting PDF"
+          downloadFileName={`${activePdfDetail?.title || "supporting-document"}.pdf`}
         />
         {showStudentDetailModal && studentProfileId ? (
           <StudentDetailModal
@@ -2083,6 +2457,11 @@ const OverallBestPerformerPage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
   const isAdminView = user?.role === "Admin" || user?.role === "Super Admin"
+  const isAcademicsView = user?.role === "Academics"
+  const isReviewerView = isAdminView || isAcademicsView
+  const canManageOccurrence = isAdminView
+  const canReviewApplications = isAdminView
+  const canAddHodVerification = isAcademicsView
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -2105,10 +2484,10 @@ const OverallBestPerformerPage = () => {
   const [eligibleStudentSearch, setEligibleStudentSearch] = useState("")
   const [manualEligibleRollNumber, setManualEligibleRollNumber] = useState("")
 
-  const currentOccurrence = isAdminView ? occurrenceDetail?.occurrence : portalState?.data?.occurrence
+  const currentOccurrence = isReviewerView ? occurrenceDetail?.occurrence : portalState?.data?.occurrence
   const currentApplication = portalState?.data?.application || null
   const canEditStudentForm = Boolean(portalState?.data?.canEdit)
-  const applicationDraftKey = isAdminView
+  const applicationDraftKey = isReviewerView
     ? ""
     : buildOverallBestPerformerDraftKey(portalState?.data?.student, portalState?.data?.occurrence)
   const applicantStage = useMemo(() => getApplicantStage(applicationForm), [applicationForm])
@@ -2139,7 +2518,7 @@ const OverallBestPerformerPage = () => {
   const { clearDraft: clearApplicationDraft } = useLocalFormDraft({
     formKey: applicationDraftKey,
     value: applicationForm,
-    enabled: Boolean(!isAdminView && canEditStudentForm && applicationDraftKey),
+    enabled: Boolean(!isReviewerView && canEditStudentForm && applicationDraftKey),
     ready: applicationDraftReady,
   })
 
@@ -2253,7 +2632,7 @@ const OverallBestPerformerPage = () => {
         setLoading(true)
         setError("")
         setApplicationDraftReady(false)
-        if (isAdminView) {
+        if (isReviewerView) {
           setVerifiedPors([])
           await loadAdminData()
         } else {
@@ -2267,16 +2646,16 @@ const OverallBestPerformerPage = () => {
     }
 
     load()
-  }, [isAdminView])
+  }, [isReviewerView])
 
   useEffect(() => {
-    if (isAdminView && selectorData?.activeOccurrenceId && !selectedOccurrenceId) {
+    if (isReviewerView && selectorData?.activeOccurrenceId && !selectedOccurrenceId) {
       setSelectedOccurrenceId(String(selectorData.activeOccurrenceId))
     }
-  }, [isAdminView, selectorData, selectedOccurrenceId])
+  }, [isReviewerView, selectorData, selectedOccurrenceId])
 
   useEffect(() => {
-    if (!isAdminView) return
+    if (!isReviewerView) return
 
     const loadDetail = async () => {
       try {
@@ -2291,7 +2670,7 @@ const OverallBestPerformerPage = () => {
     }
 
     loadDetail()
-  }, [isAdminView, selectedOccurrenceId])
+  }, [isReviewerView, selectedOccurrenceId])
 
   const resetOccurrenceForm = (mode = "create") => {
     if (mode === "edit" && occurrenceDetail?.occurrence) {
@@ -2564,7 +2943,7 @@ const OverallBestPerformerPage = () => {
   }
 
   const handleReviewDecision = async (decision, remarks) => {
-    if (!reviewApplication?.id) return
+    if (!reviewApplication?.id || !canReviewApplications) return
 
     try {
       setReviewing(true)
@@ -2577,6 +2956,31 @@ const OverallBestPerformerPage = () => {
       await loadAdminOccurrence(selectedOccurrenceId)
     } catch (err) {
       toast.error(err.message || "Failed to review application")
+    } finally {
+      setReviewing(false)
+    }
+  }
+
+  const handleHodVerification = async (action, remarks) => {
+    if (!reviewApplication?.id || !canAddHodVerification) return
+
+    const trimmedRemarks = String(remarks || "").trim()
+    if (!trimmedRemarks) {
+      toast.error("Comments are required.")
+      return
+    }
+
+    try {
+      setReviewing(true)
+      await overallBestPerformerApi.addHodVerification(reviewApplication.id, {
+        action,
+        remarks: trimmedRemarks,
+      })
+      toast.success(action === "verified" ? "Application verified" : "Comment added")
+      setReviewApplication(null)
+      await loadAdminOccurrence(selectedOccurrenceId)
+    } catch (err) {
+      toast.error(err.message || "Failed to save HOD verification")
     } finally {
       setReviewing(false)
     }
@@ -2600,16 +3004,6 @@ const OverallBestPerformerPage = () => {
       "degree",
       "programme",
       "personal_department",
-      "hostel_address",
-      "home_address",
-      "mobile_number",
-      "faculty_advisor_name",
-      "faculty_advisor_phone",
-      "project_guide_name",
-      "project_guide_phone",
-      "thesis_guide_name",
-      "thesis_guide_phone",
-      "references_summary",
       "is_passing_out_student",
       "has_no_disciplinary_action",
       "has_no_fr_grade",
@@ -2672,16 +3066,6 @@ const OverallBestPerformerPage = () => {
         application?.degree || "",
         personalAcademic?.programme || "",
         personalAcademic?.department || "",
-        personalAcademic?.hostelAddress || "",
-        personalAcademic?.homeAddress || "",
-        personalAcademic?.mobileNumber || "",
-        personalAcademic?.facultyAdvisorName || "",
-        personalAcademic?.facultyAdvisorPhone || "",
-        personalAcademic?.projectGuideName || "",
-        personalAcademic?.projectGuidePhone || "",
-        personalAcademic?.thesisGuideName || "",
-        personalAcademic?.thesisGuidePhone || "",
-        summarizeReferencesForExport(personalAcademic?.references),
         personalAcademic?.isPassingOutStudent ? "Yes" : "No",
         personalAcademic?.hasNoDisciplinaryAction ? "Yes" : "No",
         personalAcademic?.hasNoFrGrade ? "Yes" : "No",
@@ -2902,7 +3286,7 @@ const OverallBestPerformerPage = () => {
     return <ErrorState title="Overall Best Performer unavailable" message={error} />
   }
 
-  if (!isAdminView && !portalState?.data?.canAccessPortal) {
+  if (!isReviewerView && !portalState?.data?.canAccessPortal) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
         <PageHeader title="Overall Best Performer" subtitle="Student portal" showDate={false} />
@@ -2935,11 +3319,11 @@ const OverallBestPerformerPage = () => {
   return (
     <div style={{ minHeight: "100%", backgroundColor: "var(--color-bg-page)" }}>
       <PageHeader
-        title={isAdminView ? "Overall Best Performer" : "Overall Best Performer Award"}
-        subtitle={isAdminView ? "Annual occurrence control, review, and leaderboard" : "Apply, upload proofs, and track your score"}
+        title={isReviewerView ? "Overall Best Performer" : "Overall Best Performer Award"}
+        subtitle={isReviewerView ? (canManageOccurrence ? "Annual occurrence control, review, and leaderboard" : "Occurrence leaderboard and application review") : "Apply, upload proofs, and track your score"}
         showDate={false}
       >
-        {isAdminView ? (
+        {isReviewerView ? (
           <>
             <div style={{ minWidth: 260 }}>
               <select
@@ -2955,15 +3339,17 @@ const OverallBestPerformerPage = () => {
                 ))}
               </select>
             </div>
-            <Button
-              onClick={() => {
-                resetOccurrenceForm("create")
-                setShowOccurrenceModal(true)
-              }}
-            >
-              <Plus size={16} /> Start occurrence
-            </Button>
-            {occurrenceDetail?.occurrence?.status === "active" ? (
+            {canManageOccurrence ? (
+              <Button
+                onClick={() => {
+                  resetOccurrenceForm("create")
+                  setShowOccurrenceModal(true)
+                }}
+              >
+                <Plus size={16} /> Start occurrence
+              </Button>
+            ) : null}
+            {canManageOccurrence && occurrenceDetail?.occurrence?.status === "active" ? (
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -2974,13 +3360,15 @@ const OverallBestPerformerPage = () => {
                 <Save size={16} /> Edit active
               </Button>
             ) : null}
-            <Button
-              variant="secondary"
-              onClick={handleExportOccurrenceCsv}
-              disabled={!occurrenceDetail?.leaderboard?.length}
-            >
-              <Download size={16} /> Export CSV
-            </Button>
+            {canManageOccurrence ? (
+              <Button
+                variant="secondary"
+                onClick={handleExportOccurrenceCsv}
+                disabled={!occurrenceDetail?.leaderboard?.length}
+              >
+                <Download size={16} /> Export CSV
+              </Button>
+            ) : null}
           </>
         ) : (
           <div style={badgeStyle(currentOccurrence?.applicationWindowStatus === "open" ? "primary" : "default")}>
@@ -3064,7 +3452,7 @@ const OverallBestPerformerPage = () => {
           </>
         ) : null}
 
-        {isAdminView ? (
+        {isReviewerView ? (
           occurrenceDetail ? (
             <>
               {leaderboardRows.length ? (
@@ -3085,7 +3473,7 @@ const OverallBestPerformerPage = () => {
           ) : (
             <EmptyState
               title="No occurrence selected"
-              description="If there is no active occurrence, pick one from history. If you want to open a new annual round, start an occurrence from the header."
+              description={canManageOccurrence ? "If there is no active occurrence, pick one from history. If you want to open a new annual round, start an occurrence from the header." : "Pick an occurrence from the header to inspect applications and scores."}
             />
           )
         ) : (
@@ -3846,8 +4234,9 @@ const OverallBestPerformerPage = () => {
         application={reviewApplication}
         open={Boolean(reviewApplication)}
         onClose={() => setReviewApplication(null)}
-        onDecision={handleReviewDecision}
+        onDecision={canReviewApplications ? handleReviewDecision : handleHodVerification}
         deciding={reviewing}
+        reviewMode={canReviewApplications ? "admin" : canAddHodVerification ? "hod" : "readonly"}
       />
     </div>
   )

@@ -8,7 +8,7 @@ import AddWardenModal from "../wardens/AddWardenModal"
 import WardenStats from "../wardens/WardenStats"
 import StaffManagementHeader from "../../headers/StaffManagementHeader"
 import { filterStaffMembers } from "../../../utils/adminUtils"
-import { GYMKHANA_FILTER_TABS, WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
+import { ACADEMICS_FILTER_TABS, GYMKHANA_FILTER_TABS, WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
 import { adminApi } from "../../../service"
 
 const StaffManagement = ({ staffType = "warden" }) => {
@@ -16,6 +16,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
   const isAssociateWarden = staffType === "associateWarden"
   const isHostelSupervisor = staffType === "hostelSupervisor"
   const isGymkhana = staffType === "gymkhana"
+  const isAcademics = staffType === "academics"
 
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
@@ -30,12 +31,16 @@ const StaffManagement = ({ staffType = "warden" }) => {
       ? "Associate Warden"
       : isHostelSupervisor
         ? "Hostel Supervisor"
-        : "Gymkhana"
-  const filterTabs = isGymkhana ? GYMKHANA_FILTER_TABS : WARDEN_FILTER_TABS
+        : isGymkhana
+          ? "Gymkhana"
+          : "Academics"
+  const filterTabs = isGymkhana ? GYMKHANA_FILTER_TABS : isAcademics ? ACADEMICS_FILTER_TABS : WARDEN_FILTER_TABS
   const searchPlaceholder = isGymkhana
     ? "Search Gymkhana users by name, sub role, position or category"
-    : `Search ${staffTitle.toLowerCase()}s by name or hostel`
-  const emptyMessage = isGymkhana ? "No Gymkhana users found" : `No ${staffTitle.toLowerCase()}s found`
+    : isAcademics
+      ? "Search academics users by name, email, or sub role"
+      : `Search ${staffTitle.toLowerCase()}s by name or hostel`
+  const emptyMessage = isGymkhana ? "No Gymkhana users found" : isAcademics ? "No academics users found" : `No ${staffTitle.toLowerCase()}s found`
 
   const fetchStaff = async () => {
     try {
@@ -45,7 +50,9 @@ const StaffManagement = ({ staffType = "warden" }) => {
           ? await adminApi.getAllAssociateWardens()
           : isHostelSupervisor
             ? await adminApi.getAllHostelSupervisors()
-            : await adminApi.getAllGymkhanaUsers()
+            : isGymkhana
+              ? await adminApi.getAllGymkhanaUsers()
+              : await adminApi.getAllAcademicsUsers()
       setStaffList(response || [])
     } catch (error) {
       console.error(`Error fetching ${staffTitle.toLowerCase()}s:`, error)

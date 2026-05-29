@@ -18,6 +18,15 @@ export const GYMKHANA_FILTER_TABS = [
   ...GYMKHANA_SUBROLE_OPTIONS,
 ]
 
+export const ACADEMICS_SUBROLE_OPTIONS = [
+  { label: "HOD", value: "HOD" },
+]
+
+export const ACADEMICS_FILTER_TABS = [
+  { label: "All", value: "all" },
+  ...ACADEMICS_SUBROLE_OPTIONS,
+]
+
 export const COMPLAINT_FILTER_TABS = [
   { label: "All Complaints", value: "all" },
   { label: "Pending", value: "Pending" },

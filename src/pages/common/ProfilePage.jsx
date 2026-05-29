@@ -5,6 +5,7 @@ import WardenProfile from "../../components/profile/WardenProfile"
 import AdminProfile from "../../components/profile/AdminProfile"
 import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
+import AcademicsProfile from "../../components/profile/AcademicsProfile"
 
 const ProfilePage = () => {
   const { user } = useAuth()
@@ -27,6 +28,8 @@ const ProfilePage = () => {
         return <SuperAdminProfile user={user} activeTab={activeTab} />
       case "Gymkhana":
         return <GymkhanaProfile user={user} activeTab={activeTab} />
+      case "Academics":
+        return <AcademicsProfile user={user} activeTab={activeTab} />
       default:
         return <div>No profile data available</div>
     }

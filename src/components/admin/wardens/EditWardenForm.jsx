@@ -4,7 +4,7 @@ import { FiTag, FiUser, FiBriefcase } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
+import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -24,7 +24,8 @@ const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useGlobal()
   const isGymkhana = staffType === "gymkhana"
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
+  const isAcademics = staffType === "academics"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : staffType === "gymkhana" ? "Gymkhana" : "Academics"
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [gymkhanaCategoryDefinitions, setGymkhanaCategoryDefinitions] = useState([])
@@ -130,6 +131,11 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             categories: formData.categories,
             position: formData.position,
           }
+        : isAcademics
+          ? {
+              name: formData.name,
+              subRole: formData.subRole,
+            }
         : {
             phone: formData.phone,
             hostelIds: formData.hostelIds,
@@ -145,7 +151,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             ? await adminApi.updateAssociateWarden(warden.id, payload)
             : staffType === "hostelSupervisor"
               ? await adminApi.updateHostelSupervisor(warden.id, payload)
-              : await adminApi.updateGymkhana(warden.id, payload)
+              : staffType === "gymkhana"
+                ? await adminApi.updateGymkhana(warden.id, payload)
+                : await adminApi.updateAcademics(warden.id, payload)
 
       if (!message) {
         alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
@@ -177,7 +185,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             ? await adminApi.deleteAssociateWarden(warden.id)
             : staffType === "hostelSupervisor"
               ? await adminApi.deleteHostelSupervisor(warden.id)
-              : await adminApi.deleteGymkhana(warden.id)
+              : staffType === "gymkhana"
+                ? await adminApi.deleteGymkhana(warden.id)
+                : await adminApi.deleteAcademics(warden.id)
 
       if (!message) {
         alert(`Failed to delete ${staffTitle.toLowerCase()}. Please try again.`)
@@ -196,7 +206,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     }
   }
 
-  if (isGymkhana) {
+  if (isGymkhana || isAcademics) {
     return (
       <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={500}>
         <form onSubmit={handleSubmit}>
@@ -204,7 +214,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
               <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
                 <FiUser style={{ marginRight: "var(--spacing-2)" }} />
-                <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>Gymkhana User Information</h4>
+                <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>{staffTitle} User Information</h4>
               </div>
             </div>
 
@@ -221,71 +231,75 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   id="subRole"
                   value={formData.subRole}
                   onChange={handleChange}
-                  options={GYMKHANA_SUBROLE_OPTIONS}
-                  placeholder="Select Gymkhana sub role"
+                  options={isGymkhana ? GYMKHANA_SUBROLE_OPTIONS : ACADEMICS_SUBROLE_OPTIONS}
+                  placeholder={`Select ${staffTitle} sub role`}
                   icon={<FiTag />}
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="position">Position</Label>
-                <Input
-                  type="text"
-                  name="position"
-                  id="position"
-                  value={formData.position}
-                  onChange={handleChange}
-                  icon={<FiBriefcase />}
-                  placeholder="e.g., Cultural Coordinator"
-                />
-              </div>
+              {isGymkhana ? (
+                <>
+                  <div>
+                    <Label htmlFor="position">Position</Label>
+                    <Input
+                      type="text"
+                      name="position"
+                      id="position"
+                      value={formData.position}
+                      onChange={handleChange}
+                      icon={<FiBriefcase />}
+                      placeholder="e.g., Cultural Coordinator"
+                    />
+                  </div>
 
-              <div>
-                <Label>Categories</Label>
-                <div
-                  style={{
-                    marginTop: "var(--spacing-2)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "var(--spacing-2)",
-                    maxHeight: "12rem",
-                    overflowY: "auto",
-                    border: "var(--border-1) solid var(--color-border-input)",
-                    borderRadius: "var(--radius-lg)",
-                    padding: "var(--spacing-3)",
-                  }}
-                >
-                  {gymkhanaCategoryDefinitions.length > 0 ? (
-                    gymkhanaCategoryDefinitions.map((category) => (
-                      <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
-                        <Checkbox
-                          id={`gymkhana-category-${category.key}`}
-                          name="categories"
-                          checked={formData.categories.includes(category.key)}
-                          onChange={(event) =>
-                            handleChange({
-                              target: {
-                                name: "categories",
-                                value: category.key,
-                                checked: event.target.checked,
-                              },
-                            })
-                          }
-                        />
-                        <label
-                          htmlFor={`gymkhana-category-${category.key}`}
-                          style={{ marginLeft: "var(--spacing-3)", display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
-                        >
-                          {category.label}
-                        </label>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
-                  )}
-                </div>
-              </div>
+                  <div>
+                    <Label>Categories</Label>
+                    <div
+                      style={{
+                        marginTop: "var(--spacing-2)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "var(--spacing-2)",
+                        maxHeight: "12rem",
+                        overflowY: "auto",
+                        border: "var(--border-1) solid var(--color-border-input)",
+                        borderRadius: "var(--radius-lg)",
+                        padding: "var(--spacing-3)",
+                      }}
+                    >
+                      {gymkhanaCategoryDefinitions.length > 0 ? (
+                        gymkhanaCategoryDefinitions.map((category) => (
+                          <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox
+                              id={`gymkhana-category-${category.key}`}
+                              name="categories"
+                              checked={formData.categories.includes(category.key)}
+                              onChange={(event) =>
+                                handleChange({
+                                  target: {
+                                    name: "categories",
+                                    value: category.key,
+                                    checked: event.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                            <label
+                              htmlFor={`gymkhana-category-${category.key}`}
+                              style={{ marginLeft: "var(--spacing-3)", display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
+                            >
+                              {category.label}
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : null}
             </VStack>
 
             <HStack

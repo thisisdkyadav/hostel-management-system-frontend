@@ -23,6 +23,7 @@ import {
   X,
   UserCheck,
   UserX,
+  ShieldCheck,
 } from "lucide-react"
 import { FaBoxes, FaExpand } from "react-icons/fa"
 import { studentApi } from "../../../service"
@@ -36,6 +37,7 @@ import Certificates from "./Certificates"
 import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
+import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
@@ -47,6 +49,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const canAssignInventory = true
   const canEditInventory = true
   const canEditStudentProfile = can("cap.students.edit.personal")
+  const canViewPorTab = can("route.admin.por") || can("route.gymkhana.por")
 
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
@@ -92,6 +95,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     { id: "inventory", name: "Inventory", icon: <Package size={16} /> },
     { id: "idcard", name: "ID Card", icon: <CreditCard size={16} /> },
     { id: "disco", name: "DisCo Actions", icon: <Users size={16} /> },
+    ...(canViewPorTab ? [{ id: "por", name: "POR", icon: <ShieldCheck size={16} /> }] : []),
     { id: "certificates", name: "Certificates", icon: <CreditCard size={16} /> },
     { id: "family", name: "Family", icon: <Users size={16} /> },
     { id: "health", name: "Health", icon: <Heart size={16} /> },
@@ -526,6 +530,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       case "complaints":
         return <ComplaintsTab userId={selectedStudent.userId} />
+
+      case "por":
+        return <PorTab userId={selectedStudent.userId} />
 
       case "access":
         return (
@@ -1042,7 +1049,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1300} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1400} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "256px" }}>
             <div style={{ position: "relative", width: "var(--spacing-16)", height: "var(--spacing-16)" }}>

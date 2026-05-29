@@ -1,6 +1,7 @@
 // Admin Pages - Barrel Export
 export { default as AdminManagementPage } from './AdminManagementPage'
 export { default as AssociateWardensPage } from './AssociateWardensPage'
+export { default as AcademicsManagementPage } from './AcademicsManagementPage'
 export { default as DashboardPage } from './DashboardPage'
 export { default as FaceScannersPage } from './FaceScannersPage'
 export { default as ClubsPage } from './ClubsPage'

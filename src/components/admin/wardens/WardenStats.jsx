@@ -2,11 +2,12 @@ import { StatCards } from "@/components/ui"
 import { FaUsers } from "react-icons/fa"
 import { MdVerified } from "react-icons/md"
 import { FaBuilding, FaUserTie } from "react-icons/fa"
-import { GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
+import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 
 const WardenStats = ({ wardens, staffType = "warden" }) => {
   const isGymkhana = staffType === "gymkhana"
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
+  const isAcademics = staffType === "academics"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : staffType === "gymkhana" ? "Gymkhana" : "Academics"
 
   if (isGymkhana) {
     const totalUsers = wardens.length
@@ -58,6 +59,28 @@ const WardenStats = ({ wardens, staffType = "warden" }) => {
     )
 
     return <StatCards stats={statsData} columns={4} />
+  }
+
+  if (isAcademics) {
+    const totalUsers = wardens.length
+    const statsData = [
+      {
+        title: "Total Academics",
+        value: totalUsers,
+        subtitle: "All academics user accounts",
+        icon: <FaUsers style={{ fontSize: "var(--icon-xl)" }} />,
+        color: "var(--color-primary)",
+      },
+      ...ACADEMICS_SUBROLE_OPTIONS.map(({ value, label }) => ({
+        title: label,
+        value: wardens.filter((user) => user.subRole === value).length,
+        subtitle: `${label} accounts`,
+        icon: <MdVerified style={{ fontSize: "var(--icon-xl)" }} />,
+        color: "var(--color-success)",
+      })),
+    ]
+
+    return <StatCards stats={statsData} columns={2} />
   }
 
   const totalWardens = wardens.length
