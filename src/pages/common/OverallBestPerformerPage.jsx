@@ -21,6 +21,7 @@ import {
   Cpu,
   Activity,
   Compass,
+  MoreHorizontal,
 } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import CsvUploader from "@/components/common/CsvUploader"
@@ -39,7 +40,7 @@ import {
   LoadingState,
   useToast,
 } from "@/components/ui/feedback"
-import { Badge, StatCards } from "@/components/ui"
+import { Badge, Select, StatCards } from "@/components/ui"
 import { useAuth } from "@/contexts/AuthProvider"
 import useLocalFormDraft, {
   buildLocalFormDraftKey,
@@ -1283,7 +1284,8 @@ const SupportingProofField = ({
         {effectiveSourceType === "por" ? (
           <div style={fieldClusterStyle}>
             <span style={sectionLabelStyle}>{label}</span>
-            <select
+            <Select
+              name={`${label}-verifiedPor`}
               value={proofPorId}
               onChange={(event) =>
                 onChange({
@@ -1293,15 +1295,12 @@ const SupportingProofField = ({
                 })
               }
               disabled={disabled}
-              style={inputStyle}
-            >
-              <option value="">Select a verified POR</option>
-              {(verifiedPors || []).map((por) => (
-                <option key={por.id} value={por.id}>
-                  {getPorOptionLabel(por)}
-                </option>
-              ))}
-            </select>
+              placeholder="Select a verified POR"
+              options={(verifiedPors || []).map((por) => ({
+                value: por.id,
+                label: getPorOptionLabel(por),
+              }))}
+            />
 
             {selectedPor ? (
               <div
@@ -1444,11 +1443,13 @@ const MinimalScoredItemsEditor = ({
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               <div>
                 <label style={fieldLabelStyle}>Marking category</label>
-                <NativeSelect
+                <Select
+                  name={`scoreType-${index}`}
                   value={item.scoreType}
                   disabled={disabled}
                   onChange={(event) => updateItem(index, "scoreType", event.target.value)}
                   options={options}
+                  placeholder="Select marking category"
                 />
               </div>
               <div>
@@ -1545,11 +1546,13 @@ const SingleSelectionAchievementEditor = ({
     <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
       <div>
         <label style={fieldLabelStyle}>{heading} category</label>
-        <NativeSelect
+        <Select
+          name={`${heading}-category`}
           value={value}
           disabled={disabled}
           onChange={(event) => onValueChange(event.target.value)}
           options={options}
+          placeholder={`Select ${heading} category`}
         />
       </div>
 
@@ -1596,21 +1599,6 @@ const SingleSelectionAchievementEditor = ({
       )}
     </div>
   </div>
-)
-
-const NativeSelect = ({ value, onChange, options, disabled = false }) => (
-  <select
-    value={value}
-    onChange={onChange}
-    disabled={disabled}
-    style={inputStyle}
-  >
-    {options.map((option) => (
-      <option key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    ))}
-  </select>
 )
 
 const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
@@ -1981,14 +1969,62 @@ const PorDetailInfoRow = ({ label, value }) => (
 )
 
 const REVIEW_SECTION_META = {
-  "Project publications / patents": { icon: BookOpen, accent: "var(--color-primary)" },
-  "Technology transfer": { icon: Share2, accent: "var(--color-info)" },
-  "Responsibilities": { icon: Users, accent: "var(--color-primary)" },
-  "Awards": { icon: Trophy, accent: "var(--color-warning)" },
-  "Cultural activities": { icon: Sparkles, accent: "var(--color-warning)" },
-  "Science & Technology activities": { icon: Cpu, accent: "var(--color-primary)" },
-  "Games & Sports activities": { icon: Activity, accent: "var(--color-success)" },
-  "Co-curricular activities": { icon: Compass, accent: "var(--color-info)" }
+  "Project publications / patents": {
+    icon: BookOpen,
+    accent: "var(--color-primary)",
+    sectionKey: "publicationItems",
+    options: PUBLICATION_OPTIONS,
+    pointsMap: PUBLICATION_POINTS,
+  },
+  "Technology transfer": {
+    icon: Share2,
+    accent: "var(--color-info)",
+    sectionKey: "technologyTransferItems",
+    options: TECH_TRANSFER_OPTIONS,
+    pointsMap: TECHNOLOGY_TRANSFER_POINTS,
+  },
+  "Responsibilities": {
+    icon: Users,
+    accent: "var(--color-primary)",
+    sectionKey: "responsibilityItems",
+    options: RESPONSIBILITY_OPTIONS,
+    pointsMap: RESPONSIBILITY_POINTS,
+  },
+  "Awards": {
+    icon: Trophy,
+    accent: "var(--color-warning)",
+    sectionKey: "awardItems",
+    options: AWARD_OPTIONS,
+    pointsMap: AWARD_POINTS,
+  },
+  "Cultural activities": {
+    icon: Sparkles,
+    accent: "var(--color-warning)",
+    sectionKey: "culturalItems",
+    options: ACTIVITY_LEVEL_OPTIONS,
+    pointsMap: ACTIVITY_LEVEL_POINTS,
+  },
+  "Science & Technology activities": {
+    icon: Cpu,
+    accent: "var(--color-primary)",
+    sectionKey: "scienceTechnologyItems",
+    options: ACTIVITY_LEVEL_OPTIONS,
+    pointsMap: ACTIVITY_LEVEL_POINTS,
+  },
+  "Games & Sports activities": {
+    icon: Activity,
+    accent: "var(--color-success)",
+    sectionKey: "gamesSportsItems",
+    options: ACTIVITY_LEVEL_OPTIONS,
+    pointsMap: ACTIVITY_LEVEL_POINTS,
+  },
+  "Co-curricular activities": {
+    icon: Compass,
+    accent: "var(--color-info)",
+    sectionKey: "coCurricularItems",
+    options: CO_CURRICULAR_OPTIONS,
+    pointsMap: CO_CURRICULAR_POINTS,
+  },
 }
 
 const SCORE_TYPE_LABELS = {
@@ -2064,7 +2100,19 @@ const formatScoreTypeLabel = (scoreType) => {
     .join(" ")
 }
 
-const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
+const getApplicationItemsForReviewSection = (application, sectionKey) => {
+  if (!application || !sectionKey) return []
+  if (sectionKey === "publicationItems") return application.projectThesis?.publicationItems || []
+  if (sectionKey === "technologyTransferItems") return application.projectThesis?.technologyTransferItems || []
+  return application?.[sectionKey] || []
+}
+
+const formatSignedPoints = (value) => {
+  const numericValue = Number(value || 0)
+  return `${numericValue > 0 ? "+" : ""}${numericValue}`
+}
+
+const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore }) => {
   if (!items.length) return null
 
   const meta = REVIEW_SECTION_META[title] || { icon: FileText, accent: "var(--color-primary)" }
@@ -2074,12 +2122,12 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
   return (
     <PorDetailCard icon={Icon} title={title} accentColor={accentColor} bodyStyle={{ padding: 0, gap: 0 }}>
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 680 }}>
           <thead>
             <tr style={{ backgroundColor: "var(--color-bg-secondary)", borderBottom: "1px solid var(--color-border-primary)" }}>
-              {["Title", "Type", "Year", "Level", "Ref Code", "Points", "Proof"].map((heading) => (
+              {["Title", "Type", "Points", "Proof", ""].map((heading) => (
                 <th
-                  key={heading}
+                  key={heading || "more"}
                   style={{
                     textAlign: "left",
                     padding: "10px 16px",
@@ -2089,6 +2137,7 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
                     fontWeight: "var(--font-weight-semibold)",
                     letterSpacing: "0.05em",
                     ...(heading === "Proof" ? { width: 140, minWidth: 140 } : {}),
+                    ...(heading === "" ? { width: 96, minWidth: 96, textAlign: "right" } : {}),
                   }}
                 >
                   {heading}
@@ -2101,16 +2150,29 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
               <tr key={`${title}-${index}`} className="por-review-table-row" style={{ borderBottom: index < items.length - 1 ? "1px solid var(--color-border-light)" : "none" }}>
                 <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>{item.title}</td>
                 <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{formatScoreTypeLabel(item.scoreType)}</td>
-                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{item.year || "—"}</td>
-                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{item.level || "—"}</td>
-                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontFamily: "monospace" }}>{item.referenceCode || "—"}</td>
                 <td style={{ padding: "12px 16px" }}>
                   <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xs)" }}>
                     +{item.calculatedPoints || 0}
                   </span>
                 </td>
-                <td style={{ padding: "12px 16px", width: 132, minWidth: 132 }}>
+                <td style={{ padding: "12px 16px", width: 140, minWidth: 140 }}>
                   <ProofActionButton proof={resolvePrimaryProof(item.proofs)} onViewPor={onViewPor} onViewPdf={onViewPdf} />
+                </td>
+                <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      onOpenMore?.({
+                        sectionTitle: title,
+                        sectionKey: meta.sectionKey,
+                        options: meta.options || [],
+                        item,
+                        itemIndex: index,
+                      })
+                    }
+                  >
+                    <MoreHorizontal size={14} /> More
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -2118,6 +2180,341 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf }) => {
         </table>
       </div>
     </PorDetailCard>
+  )
+}
+
+const ReviewItemDetailModal = ({
+  detail,
+  canEditType = false,
+  saving = false,
+  onClose,
+  onSaveType,
+  onViewPor,
+  onViewPdf,
+}) => {
+  const [selectedType, setSelectedType] = useState(detail?.item?.scoreType || "")
+
+  const item = detail?.item || {}
+  const currentScoreType = item.scoreType || ""
+  const proofs = Array.isArray(item.proofs) ? item.proofs : []
+  const typeOptions = useMemo(() => {
+    const options = Array.isArray(detail?.options) ? detail.options : []
+    if (!item.scoreType || options.some((option) => option.value === item.scoreType)) return options
+    return [{ value: item.scoreType, label: formatScoreTypeLabel(item.scoreType) }, ...options]
+  }, [detail?.options, item.scoreType])
+
+  useEffect(() => {
+    setSelectedType(currentScoreType)
+  }, [currentScoreType, detail?.itemIndex, detail?.sectionKey])
+
+  if (!detail) return null
+
+  const canSave = canEditType && selectedType && selectedType !== item.scoreType
+
+  const meta = (detail?.sectionTitle && REVIEW_SECTION_META[detail.sectionTitle]) || {
+    icon: FileText,
+    accent: "var(--color-primary)",
+    pointsMap: {},
+  }
+  const SectionIcon = meta.icon
+  const accentColor = meta.accent
+  const pointsMap = meta.pointsMap || {}
+  const currentPoints = Number(item.calculatedPoints ?? pointsMap[item.scoreType] ?? 0)
+  const nextPoints = Number(pointsMap[selectedType] ?? currentPoints)
+  const pointsDelta = nextPoints - currentPoints
+  const hasPointChange = canEditType && selectedType && selectedType !== item.scoreType
+  const deltaColor = pointsDelta > 0
+    ? "var(--color-success)"
+    : pointsDelta < 0
+      ? "var(--color-danger)"
+      : "var(--color-text-muted)"
+
+  const titleNode = (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+      <span
+        style={{
+          backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
+          color: accentColor,
+          width: 36,
+          height: 36,
+          borderRadius: "var(--radius-md)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        {SectionIcon && <SectionIcon size={18} />}
+      </span>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          {detail.sectionTitle}
+        </div>
+        <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+          {item.title || "Untitled Item"}
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <Modal title={titleNode} onClose={onClose} width={1080}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", padding: "var(--spacing-1)" }}>
+        {/* Main 2-Column Responsive Layout using Pure CSS Grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          gap: "var(--spacing-4)",
+          alignItems: "start"
+        }}>
+          {/* Left Column: Achievement Details */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <PorDetailCard
+              icon={SectionIcon}
+              title="Achievement Details"
+              accentColor={accentColor}
+              bodyStyle={{ padding: "var(--spacing-3)" }}
+            >
+              <div className="por-detail-info-grid">
+                <PorDetailInfoRow label="Year" value={item.year || "—"} />
+                <PorDetailInfoRow label="Level" value={item.level || "—"} />
+                <PorDetailInfoRow label="Event name" value={item.eventName || "—"} />
+                <PorDetailInfoRow label="Performance" value={item.performance || "—"} />
+                <PorDetailInfoRow label="Participation" value={item.participationType || "—"} />
+                <PorDetailInfoRow label="Reference code" value={item.referenceCode || "—"} />
+              </div>
+            </PorDetailCard>
+
+            {/* Notes Section styled beautifully */}
+            <div style={{
+              background: "var(--color-bg-secondary)",
+              border: "1px solid var(--color-border-primary)",
+              borderLeft: `4px solid ${accentColor}`,
+              borderRadius: "var(--radius-card-sm)",
+              padding: "var(--spacing-4)",
+              boxShadow: "var(--shadow-sm)",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <MessageSquare size={12} style={{ color: accentColor }} />
+                Student Notes
+              </div>
+              <div style={{ color: item.notes ? "var(--color-text-body)" : "var(--color-text-muted)", fontSize: "var(--font-size-sm)", lineHeight: 1.6, fontStyle: item.notes ? "normal" : "italic" }}>
+                {item.notes || "No notes added by the student."}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Score, Classification & Proofs */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            {/* Beautiful Dashboard Scorecard */}
+            <div style={{
+              background: "linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(91, 159, 232, 0.05) 100%)",
+              border: "1px solid var(--color-primary-bg)",
+              borderRadius: "var(--radius-card-sm)",
+              padding: "var(--spacing-4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-4)",
+              boxShadow: "var(--shadow-sm)",
+              minHeight: 102,
+            }}>
+              <div>
+                <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  {hasPointChange ? "Score Preview" : "Awarded Score"}
+                </div>
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px", minHeight: 16 }}>
+                  {hasPointChange
+                    ? "Preview before saving this classification change"
+                    : "Calculated based on verified level/type points"}
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "4px", minHeight: 58 }}>
+                <div style={{
+                  fontSize: "var(--font-size-xl)",
+                  fontWeight: "var(--font-weight-bold)",
+                  color: "var(--color-primary)",
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: "6px",
+                  minHeight: 26,
+                }}>
+                  {hasPointChange ? (
+                    <>
+                      <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
+                        +{currentPoints}
+                      </span>
+                      <span>+{nextPoints}</span>
+                    </>
+                  ) : (
+                    <span>+{currentPoints}</span>
+                  )}
+                </div>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: 92,
+                    minHeight: 22,
+                    whiteSpace: "nowrap",
+                    padding: "3px 8px",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: `color-mix(in srgb, ${deltaColor} 12%, transparent)`,
+                    color: deltaColor,
+                    fontSize: "var(--font-size-xs)",
+                    fontWeight: "var(--font-weight-bold)",
+                    visibility: hasPointChange ? "visible" : "hidden",
+                  }}
+                >
+                  {pointsDelta === 0 ? "No score change" : `${formatSignedPoints(pointsDelta)} change`}
+                </span>
+              </div>
+            </div>
+
+            {/* Achievement Re-classification / Admin Evaluator */}
+            <div style={{
+              background: "var(--color-bg-secondary)",
+              border: "1px solid var(--color-border-primary)",
+              borderRadius: "var(--radius-card-sm)",
+              padding: "var(--spacing-4)",
+              boxShadow: "var(--shadow-sm)"
+            }}>
+              <label style={{ ...fieldLabelStyle, display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-3)" }}>
+                <Sparkles size={12} style={{ color: "var(--color-primary)" }} />
+                Category Re-classification
+              </label>
+              {canEditType ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <Select
+                    name="bestPerformerItemType"
+                    value={selectedType}
+                    onChange={(event) => setSelectedType(event.target.value)}
+                    options={typeOptions}
+                    placeholder="Select classification"
+                    disabled={saving}
+                  />
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.4 }}>
+                    Admins can re-classify the category if the student submitted under an incorrect type. This will instantly update the points.
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    {formatScoreTypeLabel(item.scoreType)}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+                    Verified category (Read-only view)
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Supporting Proofs Container */}
+            <div style={{
+              background: "var(--color-bg-secondary)",
+              border: "1px solid var(--color-border-primary)",
+              borderRadius: "var(--radius-card-sm)",
+              padding: "var(--spacing-4)",
+              boxShadow: "var(--shadow-sm)"
+            }}>
+              <div style={{ ...sectionLabelStyle, display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-3)" }}>
+                <FileText size={14} style={{ color: "var(--color-primary)" }} />
+                Supporting Proofs
+              </div>
+              {proofs.length ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  {proofs.map((proof, index) => {
+                    const isPor = proof?.sourceType === "por"
+                    const ProofIcon = isPor ? BadgeCheck : FileText
+                    const iconColor = isPor ? "var(--color-success)" : "var(--color-primary)"
+                    return (
+                      <div
+                        key={proof?._id || proof?.id || `${item.title || "proof"}-${index}`}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "var(--spacing-3)",
+                          padding: "10px 12px",
+                          border: "1px solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-md)",
+                          backgroundColor: "var(--color-bg-primary)",
+                          transition: "all var(--transition-base) ease",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2-5)", minWidth: 0 }}>
+                          <span style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "var(--radius-sm)",
+                            backgroundColor: `color-mix(in srgb, ${iconColor} 8%, transparent)`,
+                            color: iconColor,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0
+                          }}>
+                            <ProofIcon size={16} />
+                          </span>
+                          <div style={{ minWidth: 0 }}>
+                            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                              {proof?.label || `Proof ${index + 1}`}
+                            </div>
+                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                              {isPor ? "Verified Gymkhana POR" : "Uploaded PDF Document"}
+                            </div>
+                          </div>
+                        </div>
+                        <ProofActionButton proof={proof} onViewPor={onViewPor} onViewPdf={onViewPdf} />
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "var(--spacing-6)",
+                  border: "1px dashed var(--color-border-primary)",
+                  borderRadius: "var(--radius-md)",
+                  color: "var(--color-text-muted)",
+                  textAlign: "center"
+                }}>
+                  <XCircle size={24} style={{ color: "var(--color-text-muted)", marginBottom: "8px" }} />
+                  <span style={{ fontSize: "var(--font-size-sm)" }}>No supporting proof attached.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "var(--spacing-2)",
+          marginTop: "var(--spacing-4)",
+          paddingTop: "var(--spacing-4)",
+          borderTop: "1px solid var(--color-border-primary)"
+        }}>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            Close
+          </Button>
+          {canEditType ? (
+            <Button
+              onClick={() => onSaveType(selectedType)}
+              loading={saving}
+              disabled={!canSave || saving}
+            >
+              <Save size={14} /> Save Classification
+            </Button>
+          ) : null}
+        </div>
+      </div>
+    </Modal>
   )
 }
 
@@ -2183,12 +2580,15 @@ const ReviewModal = ({
   open,
   onClose,
   onDecision,
+  onApplicationUpdated,
   deciding,
   reviewMode = "readonly",
 }) => {
   const [remarks, setRemarks] = useState("")
   const [activePorDetail, setActivePorDetail] = useState(null)
   const [activePdfDetail, setActivePdfDetail] = useState(null)
+  const [activeItemDetail, setActiveItemDetail] = useState(null)
+  const [savingItemType, setSavingItemType] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
@@ -2207,6 +2607,8 @@ const ReviewModal = ({
         setRemarks(canAdminReview ? application?.review?.remarks || "" : "")
         setActivePorDetail(null)
         setActivePdfDetail(null)
+        setActiveItemDetail(null)
+        setSavingItemType(false)
         setDownloadingAllPdfs(false)
         setShowStudentDetailModal(false)
       }, 0)
@@ -2267,6 +2669,39 @@ const ReviewModal = ({
       toast.error(error?.message || "Failed to download supporting PDFs.")
     } finally {
       setDownloadingAllPdfs(false)
+    }
+  }
+
+  const handleOpenItemDetail = (detail) => {
+    const latestItems = getApplicationItemsForReviewSection(application, detail?.sectionKey)
+    setActiveItemDetail({
+      ...detail,
+      item: latestItems?.[detail?.itemIndex] || detail?.item || {},
+    })
+  }
+
+  const handleSaveItemType = async (scoreType) => {
+    if (!canAdminReview || !application?.id || !activeItemDetail?.sectionKey) return
+
+    try {
+      setSavingItemType(true)
+      const response = await overallBestPerformerApi.updateApplicationItemType(application.id, {
+        sectionKey: activeItemDetail.sectionKey,
+        itemIndex: activeItemDetail.itemIndex,
+        scoreType,
+      })
+      const updatedApplication = response?.data?.application || response?.application || null
+      toast.success(response?.message || "Application item type updated")
+      setActiveItemDetail(null)
+      if (updatedApplication) {
+        await onApplicationUpdated?.(updatedApplication)
+      } else {
+        await onApplicationUpdated?.()
+      }
+    } catch (error) {
+      toast.error(error?.message || "Failed to update item type")
+    } finally {
+      setSavingItemType(false)
     }
   }
 
@@ -2472,14 +2907,14 @@ const ReviewModal = ({
             ) : null}
 
             {/* List of achievements tables styled beautifully */}
-            <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Awards" items={application.awardItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
-            <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} />
+            <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Awards" items={application.awardItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
+            <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
           </div>
 
           {/* Right sidebar column */}
@@ -2572,6 +3007,15 @@ const ReviewModal = ({
         </div>
 
         {/* Support Modal portals */}
+        <ReviewItemDetailModal
+          detail={activeItemDetail}
+          canEditType={canAdminReview}
+          saving={savingItemType}
+          onClose={() => setActiveItemDetail(null)}
+          onSaveType={handleSaveItemType}
+          onViewPor={setActivePorDetail}
+          onViewPdf={setActivePdfDetail}
+        />
         <PorProofDetailModal
           open={Boolean(activePorDetail)}
           onClose={() => setActivePorDetail(null)}
@@ -3130,6 +3574,20 @@ const OverallBestPerformerPage = () => {
     }
   }
 
+  const handleReviewApplicationUpdated = async (updatedApplication = null) => {
+    if (updatedApplication) {
+      setReviewApplication(updatedApplication)
+    }
+
+    if (selectedOccurrenceId) {
+      try {
+        await loadAdminOccurrence(selectedOccurrenceId)
+      } catch (error) {
+        toast.error(error?.message || "Updated item, but failed to refresh occurrence data")
+      }
+    }
+  }
+
   const handleExportOccurrenceCsv = () => {
     const applications = occurrenceDetail?.leaderboard || []
     if (!applications.length) {
@@ -3470,18 +3928,16 @@ const OverallBestPerformerPage = () => {
         {isReviewerView ? (
           <>
             <div style={{ minWidth: 260 }}>
-              <select
+              <Select
+                name="bestPerformerOccurrence"
                 value={selectedOccurrenceId}
                 onChange={(event) => setSelectedOccurrenceId(event.target.value)}
-                style={inputStyle}
-              >
-                <option value="">Select an occurrence</option>
-                {(selectorData?.occurrences || []).map((occurrence) => (
-                  <option key={occurrence.id} value={occurrence.id}>
-                    {occurrence.awardYear} · {occurrence.title} · {occurrence.status}
-                  </option>
-                ))}
-              </select>
+                placeholder="Select an occurrence"
+                options={(selectorData?.occurrences || []).map((occurrence) => ({
+                  value: occurrence.id,
+                  label: `${occurrence.awardYear} · ${occurrence.title} · ${occurrence.status}`,
+                }))}
+              />
             </div>
             {canManageOccurrence ? (
               <Button
@@ -4379,6 +4835,7 @@ const OverallBestPerformerPage = () => {
         open={Boolean(reviewApplication)}
         onClose={() => setReviewApplication(null)}
         onDecision={canReviewApplications ? handleReviewDecision : handleHodVerification}
+        onApplicationUpdated={handleReviewApplicationUpdated}
         deciding={reviewing}
         reviewMode={canReviewApplications ? "admin" : canAddHodVerification ? "hod" : "readonly"}
       />

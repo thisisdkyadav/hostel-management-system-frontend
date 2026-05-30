@@ -18,6 +18,9 @@ export const overallBestPerformerApi = {
 
   reviewApplication: (applicationId, payload) =>
     apiClient.post(`${BASE_PATH}/applications/${applicationId}/review`, payload),
+
+  updateApplicationItemType: (applicationId, payload) =>
+    apiClient.patch(`${BASE_PATH}/applications/${applicationId}/item-type`, payload),
 }
 
 export default overallBestPerformerApi
