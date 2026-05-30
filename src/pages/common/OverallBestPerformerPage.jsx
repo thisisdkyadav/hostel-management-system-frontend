@@ -46,6 +46,7 @@ import useLocalFormDraft, {
   readLocalFormDraft,
 } from "@/hooks/useLocalFormDraft"
 import { overallBestPerformerApi, porApi, studentApi, uploadApi } from "@/service"
+import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import "../../styles/por-requests.css"
 
 const BTP_AWARD_OPTIONS = [
@@ -463,7 +464,114 @@ const downloadCsvFile = (content, filename) => {
   URL.revokeObjectURL(url)
 }
 
+const downloadBlobFile = (blob, filename) => {
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+const slugifyFilePart = (value, fallback = "document") => {
+  const slug = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  return slug || fallback
+}
+
 const resolvePrimaryProof = (proofs = []) => (Array.isArray(proofs) ? proofs[0] || null : null)
+
+const collectPdfDocumentsFromProofs = (proofs = [], fallbackLabel = "Supporting Document") =>
+  (Array.isArray(proofs) ? proofs : [])
+    .map((proof) => {
+      if (proof?.sourceType === "por") {
+        const linkedPor = proof?.linkedPor
+        if (!linkedPor?.supportingDocumentUrl) return null
+
+        return {
+          url: linkedPor.supportingDocumentUrl,
+          label: linkedPor.supportingDocumentName || linkedPor.positionTitle || proof?.label || fallbackLabel,
+        }
+      }
+
+      if (!proof?.url) return null
+
+      return {
+        url: proof.url,
+        label: proof.label || fallbackLabel,
+      }
+    })
+    .filter(Boolean)
+
+const collectApplicationPdfDocuments = (application = null) => {
+  if (!application) return []
+
+  const documents = []
+  const addProofs = (proofs, label) => {
+    documents.push(...collectPdfDocumentsFromProofs(proofs, label))
+  }
+
+  addProofs(application?.coursework?.proofs, "Coursework")
+  addProofs(application?.projectThesis?.btpAwardProofs, "BTP Award")
+  addProofs(application?.projectThesis?.projectGradeProofs, "Project Grade")
+
+  const addItemProofs = (items = [], sectionLabel = "Supporting Document") => {
+    for (const item of Array.isArray(items) ? items : []) {
+      addProofs(item?.proofs, item?.title || sectionLabel)
+    }
+  }
+
+  addItemProofs(application?.projectThesis?.publicationItems, "Publication")
+  addItemProofs(application?.projectThesis?.technologyTransferItems, "Technology Transfer")
+  addItemProofs(application?.responsibilityItems, "Responsibility")
+  addItemProofs(application?.awardItems, "Award")
+  addItemProofs(application?.culturalItems, "Cultural Activity")
+  addItemProofs(application?.scienceTechnologyItems, "Science And Technology Activity")
+  addItemProofs(application?.gamesSportsItems, "Games And Sports Activity")
+  addItemProofs(application?.coCurricularItems, "Co-curricular Activity")
+
+  const uniqueByUrl = new Map()
+  for (const document of documents) {
+    const key = String(document?.url || "").trim()
+    if (key && !uniqueByUrl.has(key)) {
+      uniqueByUrl.set(key, document)
+    }
+  }
+
+  return [...uniqueByUrl.values()]
+}
+
+const fetchPdfBytes = async (document) => {
+  const response = await fetch(getMediaDownloadUrl(document.url), {
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to download ${document.label || "supporting PDF"}`)
+  }
+
+  return response.arrayBuffer()
+}
+
+const mergePdfDocuments = async (documents = []) => {
+  const { PDFDocument } = await import("pdf-lib")
+  const mergedPdf = await PDFDocument.create()
+
+  for (const document of documents) {
+    const pdfBytes = await fetchPdfBytes(document)
+    const sourcePdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true })
+    const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices())
+    copiedPages.forEach((page) => mergedPdf.addPage(page))
+  }
+
+  return mergedPdf.save()
+}
 
 const buildProofStateFromProofs = (proofs = []) => {
   const proof = resolvePrimaryProof(proofs)
@@ -2081,11 +2189,17 @@ const ReviewModal = ({
   const [remarks, setRemarks] = useState("")
   const [activePorDetail, setActivePorDetail] = useState(null)
   const [activePdfDetail, setActivePdfDetail] = useState(null)
+  const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
+  const { toast } = useToast()
   const canAdminReview = reviewMode === "admin"
   const canHodVerify = reviewMode === "hod"
   const canTakeAction = canAdminReview || canHodVerify
+  const applicationPdfDocuments = useMemo(
+    () => collectApplicationPdfDocuments(application),
+    [application]
+  )
 
   useEffect(() => {
     if (open) {
@@ -2093,6 +2207,7 @@ const ReviewModal = ({
         setRemarks(canAdminReview ? application?.review?.remarks || "" : "")
         setActivePorDetail(null)
         setActivePdfDetail(null)
+        setDownloadingAllPdfs(false)
         setShowStudentDetailModal(false)
       }, 0)
       return () => clearTimeout(timer)
@@ -2135,6 +2250,26 @@ const ReviewModal = ({
 
   if (!open || !application) return null
 
+  const handleDownloadAllPdfs = async () => {
+    if (!applicationPdfDocuments.length) {
+      toast.error("No supporting PDFs are attached to this application.")
+      return
+    }
+
+    try {
+      setDownloadingAllPdfs(true)
+      const mergedPdfBytes = await mergePdfDocuments(applicationPdfDocuments)
+      const filename = `${slugifyFilePart(application.rollNumber || application.studentName, "best-performer")}-supporting-documents.pdf`
+      downloadBlobFile(new Blob([mergedPdfBytes], { type: "application/pdf" }), filename)
+      toast.success("Supporting PDFs downloaded.")
+    } catch (error) {
+      console.error("Failed to merge Best Performer PDFs:", error)
+      toast.error(error?.message || "Failed to download supporting PDFs.")
+    } finally {
+      setDownloadingAllPdfs(false)
+    }
+  }
+
   return (
     <Modal title={`${canTakeAction ? "Review" : "View"} ${application.studentName}`} onClose={onClose} width={1800} fullHeight={true}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -2154,6 +2289,15 @@ const ReviewModal = ({
               Final Score: {application.finalScore || 0}
             </span>
           </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={handleDownloadAllPdfs}
+            loading={downloadingAllPdfs}
+            disabled={downloadingAllPdfs || !applicationPdfDocuments.length}
+          >
+            <Download size={14} /> Download All PDFs
+          </Button>
         </div>
 
         {/* Main 3-Column Grid Layout */}

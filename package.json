@@ -25,6 +25,7 @@
     "lucide-react": "^0.562.0",
     "node-forge": "^1.4.0",
     "papaparse": "^5.5.3",
+    "pdf-lib": "^1.17.1",
     "prop-types": "^15.8.1",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.5",
