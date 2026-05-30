@@ -3628,8 +3628,9 @@ const OverallBestPerformerPage = () => {
       setShowOccurrenceModal(false)
       setShowEligibleStudentsModal(false)
       const selectorPayload = await loadAdminData()
+      const editedOccurrenceId = occurrenceModalMode === "edit" ? occurrenceDetail?.occurrence?.id || "" : ""
       const nextSelectedOccurrenceId = String(
-        getDefaultBestPerformerOccurrenceId(selectorPayload) || occurrenceDetail?.occurrence?.id || selectedOccurrenceId || ""
+        editedOccurrenceId || getDefaultBestPerformerOccurrenceId(selectorPayload) || selectedOccurrenceId || ""
       )
       setSelectedOccurrenceId(nextSelectedOccurrenceId)
       if (nextSelectedOccurrenceId) {
@@ -3644,7 +3645,7 @@ const OverallBestPerformerPage = () => {
 
   const handleSaveStudentApplication = async () => {
     if (!portalState?.data?.occurrence?.id) {
-      toast.error("No active occurrence available")
+      toast.error("No occurrence available")
       return
     }
 
@@ -4170,7 +4171,7 @@ const OverallBestPerformerPage = () => {
                 <Plus size={16} /> Start occurrence
               </Button>
             ) : null}
-            {canManageOccurrence && occurrenceDetail?.occurrence?.status === "active" ? (
+            {canManageOccurrence && occurrenceDetail?.occurrence ? (
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -4178,7 +4179,7 @@ const OverallBestPerformerPage = () => {
                   setShowOccurrenceModal(true)
                 }}
               >
-                <Save size={16} /> Edit active
+                <Save size={16} /> Edit
               </Button>
             ) : null}
             {canManageOccurrence ? (
@@ -4263,7 +4264,7 @@ const OverallBestPerformerPage = () => {
               ]}
             />
 
-            {currentOccurrence.description ? (
+            {!isReviewerView && currentOccurrence.description ? (
               <div style={{ ...panelStyle, backgroundColor: "var(--color-primary-bg)" }}>
                 <div style={{ ...panelBodyStyle, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
                   {currentOccurrence.description}
@@ -4294,7 +4295,7 @@ const OverallBestPerformerPage = () => {
           ) : (
             <EmptyState
               title="No occurrence selected"
-              description={canManageOccurrence ? "If there is no active occurrence, pick one from history. If you want to open a new annual round, start an occurrence from the header." : "Pick an occurrence from the header to inspect applications and scores."}
+              description={canManageOccurrence ? "Pick an occurrence from history, or start a new annual round from the header." : "Pick an occurrence from the header to inspect applications and scores."}
             />
           )
         ) : (
@@ -4844,7 +4845,7 @@ const OverallBestPerformerPage = () => {
 
       {showOccurrenceModal ? (
         <Modal
-          title={occurrenceModalMode === "edit" ? "Edit active occurrence" : "Start Overall Best Performer occurrence"}
+          title={occurrenceModalMode === "edit" ? "Edit occurrence" : "Start Overall Best Performer occurrence"}
           onClose={() => {
             setShowOccurrenceModal(false)
             setShowEligibleStudentsModal(false)
@@ -4886,7 +4887,7 @@ const OverallBestPerformerPage = () => {
             {occurrenceModalMode === "edit" ? (
               <SectionPanel
                 title="Eligible students"
-                subtitle="Review and update the active student list without reuploading unless you want to replace it."
+                subtitle="Review and update the student list without reuploading unless you want to replace it."
                 actions={(
                   <Button variant="secondary" onClick={() => setShowEligibleStudentsModal(true)}>
                     <Eye size={16} /> View Students
@@ -4897,7 +4898,7 @@ const OverallBestPerformerPage = () => {
                   <div style={fieldClusterStyle}>
                     <span style={sectionLabelStyle}>Current list</span>
                     <div style={{ display: "grid", gap: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                      <div>{occurrenceForm.eligibleRollNumbers.length || 0} eligible students configured for this active occurrence.</div>
+                      <div>{occurrenceForm.eligibleRollNumbers.length || 0} eligible students configured for this occurrence.</div>
                       <div style={{ color: "var(--color-text-muted)" }}>
                         Editing this list will not remove or delete already submitted applications for this occurrence.
                       </div>
@@ -4950,7 +4951,7 @@ const OverallBestPerformerPage = () => {
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Important</span>
               <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
-                Changing this list affects future eligibility for the active occurrence, but it does not remove or delete already submitted applications.
+                Changing this list affects future eligibility for this occurrence, but it does not remove or delete already submitted applications.
               </div>
             </div>
 
