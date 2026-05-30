@@ -1405,14 +1405,11 @@ const MinimalScoredItemsEditor = ({
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
         {!rows.length ? (
-          <div style={fieldClusterStyle}>
-            <span style={sectionLabelStyle}>No Entries Added</span>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
-              Add only the relevant achievements for this section. Every item needs either an uploaded PDF or one of your verified PORs as supporting proof.
-            </div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", fontStyle: "italic", padding: "var(--spacing-2) 0" }}>
+            No entries added yet.
           </div>
         ) : null}
-
+ 
         {rows.map((item, index) => (
           <div
             key={`${title}-${index}`}
@@ -1440,7 +1437,7 @@ const MinimalScoredItemsEditor = ({
                 </Button>
               ) : null}
             </div>
-
+ 
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               <div>
                 <label style={fieldLabelStyle}>Marking category</label>
@@ -1492,18 +1489,13 @@ const MinimalScoredItemsEditor = ({
       </div>
     </>
   )
-
+ 
   if (embedded) {
     return (
-      <div style={fieldClusterStyle}>
+      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
           <div>
             <div style={sectionLabelStyle}>{title}</div>
-            {subtitle ? (
-              <div style={{ marginTop: "6px", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
-                {subtitle}
-              </div>
-            ) : null}
           </div>
           {!disabled ? <Button size="sm" variant="secondary" onClick={addItem}><Plus size={14} /> Add item</Button> : null}
         </div>
@@ -1511,18 +1503,17 @@ const MinimalScoredItemsEditor = ({
       </div>
     )
   }
-
+ 
   return (
     <SectionPanel
       title={`${step}. ${title}`}
-      subtitle={subtitle}
       actions={!disabled ? <Button size="sm" variant="secondary" onClick={addItem}><Plus size={14} /> Add item</Button> : null}
     >
       {content}
     </SectionPanel>
   )
 }
-
+ 
 const SingleSelectionAchievementEditor = ({
   heading,
   value,
@@ -1543,7 +1534,7 @@ const SingleSelectionAchievementEditor = ({
   descriptionLabel = "Description",
   descriptionPlaceholder = "",
 }) => (
-  <div style={fieldClusterStyle}>
+  <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
     <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
       <div>
         <label style={fieldLabelStyle}>{heading} category</label>
@@ -1627,19 +1618,62 @@ const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
   </section>
 )
 
-const SummaryMetric = (props) => {
-  const Icon = props.icon
-  const { label, value } = props
+const SummaryMetric = ({ icon: Icon, label, value }) => {
+  const getMetricSettings = (lbl) => {
+    const l = String(lbl).toLowerCase()
+    if (l.includes("current") || l.includes("calculated")) {
+      return {
+        bg: "linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(91, 159, 232, 0.04) 100%)",
+        border: "var(--color-primary-bg)",
+        text: "var(--color-primary)"
+      }
+    }
+    if (l.includes("final")) {
+      return {
+        bg: "linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(34, 197, 94, 0.02) 100%)",
+        border: "rgba(34, 197, 94, 0.15)",
+        text: "var(--color-success)"
+      }
+    }
+    return {
+      bg: "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%)",
+      border: "rgba(245, 158, 11, 0.15)",
+      text: "var(--color-warning)"
+    }
+  }
+
+  const activeTone = getMetricSettings(label)
+
   return (
-    <div style={{ ...surfaceStyle, padding: "var(--spacing-3)", display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-      <div style={{ width: 40, height: 40, borderRadius: "var(--radius-icon)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {Icon && <Icon size={18} />}
+    <div style={{
+      background: activeTone.bg,
+      border: `1px solid ${activeTone.border}`,
+      borderRadius: "var(--radius-card-sm)",
+      padding: "var(--spacing-4)",
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-3)",
+      boxShadow: "var(--shadow-sm)",
+      transition: "all var(--transition-base) ease",
+    }} className="summary-metric-hover">
+      <div style={{
+        width: 44,
+        height: 44,
+        borderRadius: "var(--radius-md)",
+        backgroundColor: `color-mix(in srgb, ${activeTone.text} 12%, transparent)`,
+        color: activeTone.text,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0
+      }}>
+        {Icon && <Icon size={20} />}
       </div>
       <div>
-        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "var(--font-weight-semibold)" }}>
           {label}
         </div>
-        <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+        <div style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", marginTop: "2px" }}>
           {value}
         </div>
       </div>
@@ -4203,66 +4237,68 @@ const OverallBestPerformerPage = () => {
       <div style={{ padding: "var(--spacing-4) var(--spacing-6) var(--spacing-8)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
         {currentOccurrence ? (
           <>
-            <StatCards
-              columns={5}
-              stats={[
-                {
-                  title: "Award Year",
-                  value: currentOccurrence.awardYear,
-                  subtitle: currentOccurrence.title || "Occurrence",
-                  icon: <CalendarDays size={18} />,
-                  color: "var(--color-primary)",
-                },
-                {
-                  title: "Application Starts",
-                  value: (
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
-                      {currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
-                    </span>
-                  ),
-                  subtitle: "Opening time",
-                  icon: <Clock3 size={18} />,
-                  color: "var(--color-info)",
-                },
-                {
-                  title: "Application Ends",
-                  value: (
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
-                      {currentOccurrence.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
-                    </span>
-                  ),
-                  subtitle: "Closing time",
-                  icon: <Clock3 size={18} />,
-                  color: "var(--color-warning)",
-                },
-                {
-                  title: "Eligible Students",
-                  value: currentOccurrence.eligibleStudentCount || 0,
-                  subtitle: "Configured list",
-                  icon: <Users size={18} />,
-                  color: "var(--color-success)",
-                },
-                {
-                  title: "Window",
-                  value: (
-                    <span
-                      style={{
-                        fontSize: "var(--font-size-sm)",
-                        lineHeight: 1.35,
-                        display: "inline-block",
-                        maxWidth: "100%",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)}
-                    </span>
-                  ),
-                  subtitle: "Current status",
-                  icon: <Trophy size={18} />,
-                  color: "var(--color-primary)",
-                },
-              ]}
-            />
+            {isReviewerView ? (
+              <StatCards
+                columns={5}
+                stats={[
+                  {
+                    title: "Award Year",
+                    value: currentOccurrence.awardYear,
+                    subtitle: currentOccurrence.title || "Occurrence",
+                    icon: <CalendarDays size={18} />,
+                    color: "var(--color-primary)",
+                  },
+                  {
+                    title: "Application Starts",
+                    value: (
+                      <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                        {currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
+                      </span>
+                    ),
+                    subtitle: "Opening time",
+                    icon: <Clock3 size={18} />,
+                    color: "var(--color-info)",
+                  },
+                  {
+                    title: "Application Ends",
+                    value: (
+                      <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                        {currentOccurrence.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
+                      </span>
+                    ),
+                    subtitle: "Closing time",
+                    icon: <Clock3 size={18} />,
+                    color: "var(--color-warning)",
+                  },
+                  {
+                    title: "Eligible Students",
+                    value: currentOccurrence.eligibleStudentCount || 0,
+                    subtitle: "Configured list",
+                    icon: <Users size={18} />,
+                    color: "var(--color-success)",
+                  },
+                  {
+                    title: "Window",
+                    value: (
+                      <span
+                        style={{
+                          fontSize: "var(--font-size-sm)",
+                          lineHeight: 1.35,
+                          display: "inline-block",
+                          maxWidth: "100%",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)}
+                      </span>
+                    ),
+                    subtitle: "Current status",
+                    icon: <Trophy size={18} />,
+                    color: "var(--color-primary)",
+                  },
+                ]}
+              />
+            ) : null}
 
             {!isReviewerView && currentOccurrence.description ? (
               <div style={{ ...panelStyle, backgroundColor: "var(--color-primary-bg)" }}>
@@ -4300,78 +4336,148 @@ const OverallBestPerformerPage = () => {
           )
         ) : (
           <>
-            <div style={{ ...panelStyle, backgroundColor: "var(--color-primary-bg)" }}>
-              <div style={{ ...panelBodyStyle, display: "grid", gap: "var(--spacing-3)" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
-                    Start: {currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
+            {/* Active Application Round Details Dashboard */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+              gap: "var(--spacing-4)",
+              marginBottom: "var(--spacing-4)"
+            }}>
+              {/* Left Card: Application Period & Eligibility */}
+              <div style={{
+                ...panelStyle,
+                background: "var(--color-bg-primary)",
+                borderLeft: "4px solid var(--color-primary)",
+                padding: "var(--spacing-4)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--spacing-3)",
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-primary)" }}>
+                  <CalendarDays size={18} />
+                  <span style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                    Active Application Round
                   </span>
-                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
-                    End: {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
+                </div>
+                
+                <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
+                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)" }}>Submissions Open</span>
+                    <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                      {currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
+                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)" }}>Submissions Close</span>
+                    <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                      {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "var(--spacing-1)" }}>
+                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
+                    Min CGPA / CPI: 6.50
                   </span>
-                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
-                    Min CGPA/CPI: 6.50
-                  </span>
-                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
+                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
                     Passing-out students only
                   </span>
-                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
-                    Allowed status: Active / Graduated
+                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
+                    Status: Active / Graduated
                   </span>
                 </div>
-
-                <div>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)", marginBottom: "var(--spacing-1)" }}>
-                    Application rules
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-                    The portal is visible to students only between the configured application start and end date. During that window, you can edit your application. Eligibility follows the manual form: only students with Active or Graduated status, passing out student declaration, minimum CGPA/CPI 6.50, no disciplinary action, and no FR grade counted in academics.
-                  </div>
-                </div>
               </div>
-            </div>
 
-            <div style={panelStyle}>
-              <div style={panelBodyStyle}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
-                  <div style={{ maxWidth: "72ch" }}>
-                    <div style={{ ...sectionLabelStyle, marginBottom: "8px" }}>Reference Guide</div>
-                    <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
-                      Marking Scheme
-                    </div>
-                    <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-                      Check the marking scheme before filling the form and map each entry to the correct scoring category. Use the official scheme to decide which achievements to add and what supporting proof to attach.
-                    </div>
+              {/* Right Card: Reference Guide & Marking Scheme */}
+              <div style={{
+                ...panelStyle,
+                background: "linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(91, 159, 232, 0.03) 100%)",
+                borderLeft: "4px solid var(--color-info)",
+                padding: "var(--spacing-4)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: "var(--spacing-3)",
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-info)" }}>
+                    <BookOpen size={18} />
+                    <span style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                      Reference & Evaluation
+                    </span>
                   </div>
-
-                  <Button variant="secondary" onClick={() => setShowMarkingSchemeModal(true)}>
-                    <FileText size={16} /> View Marking Scheme
-                  </Button>
+                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6 }}>
+                    Achievements are mapped to specific point scales. Review the official marking scheme to ensure correct categories and supporting proof documents are uploaded.
+                  </div>
                 </div>
+
+                <Button variant="secondary" onClick={() => setShowMarkingSchemeModal(true)} style={{ width: "100%", justifyContent: "center" }}>
+                  <FileText size={16} /> View Marking Scheme
+                </Button>
               </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-              <div style={panelStyle}>
-                <div style={{ ...panelBodyStyle, display: "grid", gap: "var(--spacing-3)" }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                    <span style={buildMetaChipStyle()}>{portalState?.data?.student?.name || "Student"}</span>
-                    <span style={buildMetaChipStyle()}>{portalState?.data?.student?.rollNumber || "—"}</span>
-                    <span style={buildMetaChipStyle()}>{portalState?.data?.student?.department || "—"}</span>
-                    <span style={buildMetaChipStyle()}>
-                      Status: {portalState?.data?.student?.status || "—"}
-                    </span>
-                    <span style={buildMetaChipStyle()}>Review: {currentApplication?.review?.status || "draft"}</span>
-                  </div>
-                  {currentApplication?.review?.status === "rejected" && currentApplication.review?.remarks ? (
-                    <div style={{ ...fieldClusterStyle, backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)" }}>
-                      <span style={{ ...sectionLabelStyle, color: "var(--color-danger-text)" }}>Latest Review Remark</span>
-                      <div style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
-                        {currentApplication.review.remarks}
-                      </div>
+              {/* Personalized Student Profile & Status card */}
+              <div style={{
+                ...panelStyle,
+                background: "var(--color-bg-primary)",
+                padding: "var(--spacing-4)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--spacing-3)",
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                  <ProfileAvatar
+                    user={{
+                      name: portalState?.data?.student?.name || "Student",
+                      profileImage: portalState?.data?.student?.profileImage,
+                    }}
+                    size="medium"
+                  />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                      {portalState?.data?.student?.name || "Student"}
                     </div>
-                  ) : null}
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "2px", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                      <span>Roll Number: <strong>{portalState?.data?.student?.rollNumber || "—"}</strong></span>
+                      <span>•</span>
+                      <span>Department: <strong>{portalState?.data?.student?.department || "—"}</strong></span>
+                    </div>
+                  </div>
+
+                  <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Status:</span>
+                    <Badge variant={statusTone(currentApplication?.review?.status)}>
+                      {currentApplication?.review?.status || "draft"}
+                    </Badge>
+                  </div>
                 </div>
+
+                {currentApplication?.review?.status === "rejected" && currentApplication.review?.remarks ? (
+                  <div style={{
+                    background: "rgba(239, 68, 68, 0.04)",
+                    border: "1px solid rgba(239, 68, 68, 0.15)",
+                    borderLeft: "4px solid var(--color-danger)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "var(--spacing-3) var(--spacing-4)",
+                    marginTop: "var(--spacing-1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "var(--spacing-1)"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)" }}>
+                      <XCircle size={14} />
+                      Needs Attention / Revise Application
+                    </div>
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6, paddingLeft: "20px" }}>
+                      {currentApplication.review.remarks}
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               <SectionPanel title="Score Preview">
@@ -4403,12 +4509,9 @@ const OverallBestPerformerPage = () => {
                 </div>
               </SectionPanel>
 
-              <SectionPanel
-                title="1. Academic achievements"
-                subtitle="Choose your programme type and provide your CGPA / CPI with supporting transcript proof."
-              >
+              <SectionPanel title="1. Academic achievements">
                 <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-                  <div style={fieldClusterStyle}>
+                  <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
                     <span style={sectionLabelStyle}>Programme Type</span>
                     <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
@@ -4423,7 +4526,7 @@ const OverallBestPerformerPage = () => {
                       ))}
                     </div>
                   </div>
-
+ 
                   <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
                     <div>
                       <label style={fieldLabelStyle}>
@@ -4442,7 +4545,7 @@ const OverallBestPerformerPage = () => {
                       />
                       <div style={helperTextStyle}>Minimum eligible value is 6.50.</div>
                     </div>
-
+ 
                     <div>
                       <label style={fieldLabelStyle}>Brief note</label>
                       <textarea
@@ -4458,7 +4561,7 @@ const OverallBestPerformerPage = () => {
                         placeholder="Mention any coursework context if needed."
                       />
                     </div>
-
+ 
                     <div>
                       <SupportingProofField
                         label="Supporting document"
@@ -4480,13 +4583,10 @@ const OverallBestPerformerPage = () => {
                   </div>
                 </div>
               </SectionPanel>
-
-              <SectionPanel
-                title="2. Project / thesis work"
-                subtitle="The UG / PG choice here is synced with section 1. Add only the relevant project or thesis achievements."
-              >
+ 
+              <SectionPanel title="2. Project / thesis work">
                 <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-                  <div style={fieldClusterStyle}>
+                  <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
                     <span style={sectionLabelStyle}>Project Track</span>
                     <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
@@ -4766,10 +4866,7 @@ const OverallBestPerformerPage = () => {
                 descriptionPlaceholder="Describe the activity briefly."
               />
 
-              <SectionPanel
-                title="Final Declaration"
-                subtitle="Confirm your eligibility and then save the application."
-              >
+              <SectionPanel title="Final Declaration">
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", color: "var(--color-text-body)" }}>
                   <label style={checklistItemStyle}>
                     <input
