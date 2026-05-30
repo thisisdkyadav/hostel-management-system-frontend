@@ -3380,8 +3380,9 @@ const OverallBestPerformerPage = () => {
     const selectorPayload = selector?.data || {}
     setSelectorData(selectorPayload)
 
-    if (selectorPayload.activeOccurrenceId && !selectedOccurrenceId) {
-      setSelectedOccurrenceId(String(selectorPayload.activeOccurrenceId))
+    const defaultOccurrenceId = getDefaultBestPerformerOccurrenceId(selectorPayload)
+    if (defaultOccurrenceId && !selectedOccurrenceId) {
+      setSelectedOccurrenceId(String(defaultOccurrenceId))
     }
 
     return selectorPayload
@@ -3456,8 +3457,9 @@ const OverallBestPerformerPage = () => {
   }, [isReviewerView])
 
   useEffect(() => {
-    if (isReviewerView && selectorData?.activeOccurrenceId && !selectedOccurrenceId) {
-      setSelectedOccurrenceId(String(selectorData.activeOccurrenceId))
+    const defaultOccurrenceId = getDefaultBestPerformerOccurrenceId(selectorData)
+    if (isReviewerView && defaultOccurrenceId && !selectedOccurrenceId) {
+      setSelectedOccurrenceId(String(defaultOccurrenceId))
     }
   }, [isReviewerView, selectorData, selectedOccurrenceId])
 
@@ -3627,7 +3629,7 @@ const OverallBestPerformerPage = () => {
       setShowEligibleStudentsModal(false)
       const selectorPayload = await loadAdminData()
       const nextSelectedOccurrenceId = String(
-        selectorPayload?.activeOccurrenceId || occurrenceDetail?.occurrence?.id || selectedOccurrenceId || ""
+        getDefaultBestPerformerOccurrenceId(selectorPayload) || occurrenceDetail?.occurrence?.id || selectedOccurrenceId || ""
       )
       setSelectedOccurrenceId(nextSelectedOccurrenceId)
       if (nextSelectedOccurrenceId) {
