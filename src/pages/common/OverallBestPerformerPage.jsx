@@ -2112,6 +2112,22 @@ const formatSignedPoints = (value) => {
   return `${numericValue > 0 ? "+" : ""}${numericValue}`
 }
 
+const getPointBadgeStyle = (points = 0) => {
+  const numericPoints = Number(points || 0)
+  const isZero = numericPoints === 0
+  return {
+    display: "inline-flex",
+    padding: "4px 8px",
+    borderRadius: "var(--radius-sm)",
+    backgroundColor: isZero
+      ? "color-mix(in srgb, var(--color-danger) 12%, transparent)"
+      : "var(--color-primary-bg)",
+    color: isZero ? "var(--color-danger)" : "var(--color-primary)",
+    fontWeight: "var(--font-weight-bold)",
+    fontSize: "var(--font-size-xs)",
+  }
+}
+
 const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore }) => {
   if (!items.length) return null
 
@@ -2151,7 +2167,7 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore 
                 <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>{item.title}</td>
                 <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{formatScoreTypeLabel(item.scoreType)}</td>
                 <td style={{ padding: "12px 16px" }}>
-                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "var(--radius-sm)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xs)" }}>
+                  <span style={getPointBadgeStyle(item.calculatedPoints || 0)}>
                     +{item.calculatedPoints || 0}
                   </span>
                 </td>
@@ -2193,9 +2209,13 @@ const ReviewItemDetailModal = ({
   onViewPdf,
 }) => {
   const [selectedType, setSelectedType] = useState(detail?.item?.scoreType || "")
+  const [selectedExcludedFromScoring, setSelectedExcludedFromScoring] = useState(
+    Boolean(detail?.item?.excludedFromScoring)
+  )
 
   const item = detail?.item || {}
   const currentScoreType = item.scoreType || ""
+  const currentExcludedFromScoring = Boolean(item.excludedFromScoring)
   const proofs = Array.isArray(item.proofs) ? item.proofs : []
   const typeOptions = useMemo(() => {
     const options = Array.isArray(detail?.options) ? detail.options : []
@@ -2205,11 +2225,15 @@ const ReviewItemDetailModal = ({
 
   useEffect(() => {
     setSelectedType(currentScoreType)
-  }, [currentScoreType, detail?.itemIndex, detail?.sectionKey])
+    setSelectedExcludedFromScoring(currentExcludedFromScoring)
+  }, [currentScoreType, currentExcludedFromScoring, detail?.itemIndex, detail?.sectionKey])
 
   if (!detail) return null
 
-  const canSave = canEditType && selectedType && selectedType !== item.scoreType
+  const canSave =
+    canEditType &&
+    selectedType &&
+    (selectedType !== item.scoreType || selectedExcludedFromScoring !== currentExcludedFromScoring)
 
   const meta = (detail?.sectionTitle && REVIEW_SECTION_META[detail.sectionTitle]) || {
     icon: FileText,
@@ -2220,14 +2244,19 @@ const ReviewItemDetailModal = ({
   const accentColor = meta.accent
   const pointsMap = meta.pointsMap || {}
   const currentPoints = Number(item.calculatedPoints ?? pointsMap[item.scoreType] ?? 0)
-  const nextPoints = Number(pointsMap[selectedType] ?? currentPoints)
+  const nextPoints = selectedExcludedFromScoring ? 0 : Number(pointsMap[selectedType] ?? currentPoints)
   const pointsDelta = nextPoints - currentPoints
-  const hasPointChange = canEditType && selectedType && selectedType !== item.scoreType
+  const hasPointChange =
+    canEditType &&
+    selectedType &&
+    (selectedType !== item.scoreType || selectedExcludedFromScoring !== currentExcludedFromScoring)
+  const isNextZeroPoints = nextPoints === 0
   const deltaColor = pointsDelta > 0
     ? "var(--color-success)"
     : pointsDelta < 0
       ? "var(--color-danger)"
       : "var(--color-text-muted)"
+  const nextPointColor = isNextZeroPoints ? "var(--color-danger)" : "var(--color-primary)"
 
   const titleNode = (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
@@ -2258,7 +2287,7 @@ const ReviewItemDetailModal = ({
   )
 
   return (
-    <Modal title={titleNode} onClose={onClose} width={1080}>
+    <Modal title={titleNode} onClose={onClose} width={1200}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", padding: "var(--spacing-1)" }}>
         {/* Main 2-Column Responsive Layout using Pure CSS Grid */}
         <div style={{
@@ -2325,7 +2354,11 @@ const ReviewItemDetailModal = ({
                 </div>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px", minHeight: 16 }}>
                   {hasPointChange
-                    ? "Preview before saving this classification change"
+                    ? selectedExcludedFromScoring
+                      ? "Preview before excluding this entry from scoring"
+                      : currentExcludedFromScoring
+                        ? "Preview before restoring this entry to scoring"
+                        : "Preview before saving this classification change"
                     : "Calculated based on verified level/type points"}
                 </div>
               </div>
@@ -2344,10 +2377,12 @@ const ReviewItemDetailModal = ({
                       <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
                         +{currentPoints}
                       </span>
-                      <span>+{nextPoints}</span>
+                      <span style={{ color: nextPointColor }}>+{nextPoints}</span>
                     </>
                   ) : (
-                    <span>+{currentPoints}</span>
+                    <span style={{ color: currentPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+                      +{currentPoints}
+                    </span>
                   )}
                 </div>
                 <span
@@ -2394,8 +2429,42 @@ const ReviewItemDetailModal = ({
                     placeholder="Select classification"
                     disabled={saving}
                   />
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "var(--spacing-3)",
+                      padding: "10px 12px",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--color-border-primary)",
+                      backgroundColor: selectedExcludedFromScoring
+                        ? "color-mix(in srgb, var(--color-danger) 8%, var(--color-bg-primary))"
+                        : "var(--color-bg-primary)",
+                    }}
+                  >
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: selectedExcludedFromScoring ? "var(--color-danger)" : "var(--color-text-primary)" }}>
+                        {selectedExcludedFromScoring ? "Excluded from scoring" : "Included in scoring"}
+                      </div>
+                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                        {selectedExcludedFromScoring
+                          ? "This entry will count as 0 points after saving."
+                          : "This entry contributes points according to its classification."}
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={selectedExcludedFromScoring ? "secondary" : "danger"}
+                      onClick={() => setSelectedExcludedFromScoring((current) => !current)}
+                      disabled={saving}
+                      style={{ flexShrink: 0 }}
+                    >
+                      {selectedExcludedFromScoring ? "Restore Scoring" : "Exclude from Scoring"}
+                    </Button>
+                  </div>
                   <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.4 }}>
-                    Admins can re-classify the category if the student submitted under an incorrect type. This will instantly update the points.
+                    Admins can re-classify the category or exclude entries that should not count. Score changes are previewed above before saving.
                   </div>
                 </div>
               ) : (
@@ -2505,7 +2574,7 @@ const ReviewItemDetailModal = ({
           </Button>
           {canEditType ? (
             <Button
-              onClick={() => onSaveType(selectedType)}
+              onClick={() => onSaveType(selectedType, selectedExcludedFromScoring)}
               loading={saving}
               disabled={!canSave || saving}
             >
@@ -2590,6 +2659,7 @@ const ReviewModal = ({
   const [activeItemDetail, setActiveItemDetail] = useState(null)
   const [savingItemType, setSavingItemType] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
+  const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
   const { toast } = useToast()
@@ -2610,6 +2680,7 @@ const ReviewModal = ({
         setActiveItemDetail(null)
         setSavingItemType(false)
         setDownloadingAllPdfs(false)
+        setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
       }, 0)
       return () => clearTimeout(timer)
@@ -2680,7 +2751,7 @@ const ReviewModal = ({
     })
   }
 
-  const handleSaveItemType = async (scoreType) => {
+  const handleSaveItemType = async (scoreType, excludedFromScoring = false) => {
     if (!canAdminReview || !application?.id || !activeItemDetail?.sectionKey) return
 
     try {
@@ -2689,6 +2760,7 @@ const ReviewModal = ({
         sectionKey: activeItemDetail.sectionKey,
         itemIndex: activeItemDetail.itemIndex,
         scoreType,
+        excludedFromScoring,
       })
       const updatedApplication = response?.data?.application || response?.application || null
       toast.success(response?.message || "Application item type updated")
@@ -2724,15 +2796,24 @@ const ReviewModal = ({
               Final Score: {application.finalScore || 0}
             </span>
           </div>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={handleDownloadAllPdfs}
-            loading={downloadingAllPdfs}
-            disabled={downloadingAllPdfs || !applicationPdfDocuments.length}
-          >
-            <Download size={14} /> Download All PDFs
-          </Button>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setShowReviewMarkingSchemeModal(true)}
+            >
+              <FileText size={14} /> Show Marking Scheme
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleDownloadAllPdfs}
+              loading={downloadingAllPdfs}
+              disabled={downloadingAllPdfs || !applicationPdfDocuments.length}
+            >
+              <Download size={14} /> Download All PDFs
+            </Button>
+          </div>
         </div>
 
         {/* Main 3-Column Grid Layout */}
@@ -3015,6 +3096,10 @@ const ReviewModal = ({
           onSaveType={handleSaveItemType}
           onViewPor={setActivePorDetail}
           onViewPdf={setActivePdfDetail}
+        />
+        <MarkingSchemeModal
+          open={showReviewMarkingSchemeModal}
+          onClose={() => setShowReviewMarkingSchemeModal(false)}
         />
         <PorProofDetailModal
           open={Boolean(activePorDetail)}
