@@ -21,6 +21,9 @@ export const overallBestPerformerApi = {
 
   updateApplicationItemType: (applicationId, payload) =>
     apiClient.patch(`${BASE_PATH}/applications/${applicationId}/item-type`, payload),
+
+  updateApplicationCourseworkScore: (applicationId, payload) =>
+    apiClient.patch(`${BASE_PATH}/applications/${applicationId}/coursework-score`, payload),
 }
 
 export default overallBestPerformerApi

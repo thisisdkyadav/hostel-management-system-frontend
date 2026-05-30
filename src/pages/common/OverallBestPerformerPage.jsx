@@ -22,6 +22,7 @@ import {
   Activity,
   Compass,
   MoreHorizontal,
+  Pencil,
 } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import CsvUploader from "@/components/common/CsvUploader"
@@ -2128,6 +2129,9 @@ const getPointBadgeStyle = (points = 0) => {
   }
 }
 
+const getDefaultBestPerformerOccurrenceId = (selectorPayload = {}) =>
+  selectorPayload?.defaultOccurrenceId || selectorPayload?.activeOccurrenceId || ""
+
 const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore }) => {
   if (!items.length) return null
 
@@ -2644,6 +2648,93 @@ const HodVerificationsCard = ({ verifications = [] }) => {
   )
 }
 
+const EditCourseworkScoreModal = ({
+  open,
+  scoreValue,
+  saving = false,
+  onClose,
+  onSave,
+}) => {
+  const [draftScore, setDraftScore] = useState("")
+
+  useEffect(() => {
+    if (open) {
+      setDraftScore(scoreValue || "")
+    }
+  }, [open, scoreValue])
+
+  if (!open) return null
+
+  const numericScore = Number(draftScore)
+  const isValidScore = !Number.isNaN(numericScore) && numericScore >= 6.5 && numericScore <= 10
+  const previewPoints = isValidScore
+    ? clampPoints(numericScore * 1.5, SECTION_MAX_POINTS.coursework)
+    : 0
+
+  return (
+    <Modal title="Edit CGPA / CPI" onClose={onClose} width={520}>
+      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+        <div style={infoBoxStyle}>
+          <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Coursework Score</div>
+          <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+            Update the verified CGPA / CPI. The coursework points and total score will be recalculated after saving.
+          </div>
+        </div>
+
+        <div style={fieldClusterStyle}>
+          <label style={fieldLabelStyle}>CGPA / CPI</label>
+          <Input
+            type="number"
+            min="6.5"
+            max="10"
+            step="0.01"
+            value={draftScore}
+            onChange={(event) => setDraftScore(event.target.value)}
+            disabled={saving}
+            placeholder="Enter CGPA / CPI"
+          />
+          <div style={{ ...helperTextStyle, color: isValidScore ? "var(--color-text-muted)" : "var(--color-danger)" }}>
+            Enter a value between 6.50 and 10.00.
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "var(--spacing-3)",
+            padding: "var(--spacing-3)",
+            border: "1px solid var(--color-border-primary)",
+            borderRadius: "var(--radius-card-sm)",
+            backgroundColor: "var(--color-bg-secondary)",
+          }}
+        >
+          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Coursework points preview
+          </span>
+          <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)" }}>
+            +{previewPoints}
+          </span>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onSave(numericScore)}
+            loading={saving}
+            disabled={saving || !isValidScore}
+          >
+            <Save size={14} /> Save CGPA / CPI
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
 const ReviewModal = ({
   application,
   open,
@@ -2658,6 +2749,8 @@ const ReviewModal = ({
   const [activePdfDetail, setActivePdfDetail] = useState(null)
   const [activeItemDetail, setActiveItemDetail] = useState(null)
   const [savingItemType, setSavingItemType] = useState(false)
+  const [showCourseworkScoreModal, setShowCourseworkScoreModal] = useState(false)
+  const [savingCourseworkScore, setSavingCourseworkScore] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
   const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
@@ -2679,6 +2772,8 @@ const ReviewModal = ({
         setActivePdfDetail(null)
         setActiveItemDetail(null)
         setSavingItemType(false)
+        setShowCourseworkScoreModal(false)
+        setSavingCourseworkScore(false)
         setDownloadingAllPdfs(false)
         setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
@@ -2777,6 +2872,29 @@ const ReviewModal = ({
     }
   }
 
+  const handleSaveCourseworkScore = async (scoreValue) => {
+    if (!canAdminReview || !application?.id) return
+
+    try {
+      setSavingCourseworkScore(true)
+      const response = await overallBestPerformerApi.updateApplicationCourseworkScore(application.id, {
+        scoreValue,
+      })
+      const updatedApplication = response?.data?.application || response?.application || null
+      toast.success(response?.message || "CGPA / CPI updated")
+      setShowCourseworkScoreModal(false)
+      if (updatedApplication) {
+        await onApplicationUpdated?.(updatedApplication)
+      } else {
+        await onApplicationUpdated?.()
+      }
+    } catch (error) {
+      toast.error(error?.message || "Failed to update CGPA / CPI")
+    } finally {
+      setSavingCourseworkScore(false)
+    }
+  }
+
   return (
     <Modal title={`${canTakeAction ? "Review" : "View"} ${application.studentName}`} onClose={onClose} width={1800} fullHeight={true}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -2856,7 +2974,30 @@ const ReviewModal = ({
               <div className="por-detail-info-grid">
                 <PorDetailInfoRow label="Programme" value={application.personalAcademic?.programme || "—"} />
                 <PorDetailInfoRow label="Department" value={application.personalAcademic?.department || application.department || "—"} />
-                <PorDetailInfoRow label="CGPA / CPI" value={application.coursework?.scoreValue || "—"} />
+                <PorDetailInfoRow
+                  label="CGPA / CPI"
+                  value={
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                      <span>{application.coursework?.scoreValue || "—"}</span>
+                      {application.coursework?.proofs?.length ? (
+                        <ProofActionButton
+                          proof={resolvePrimaryProof(application.coursework?.proofs)}
+                          onViewPor={setActivePorDetail}
+                          onViewPdf={setActivePdfDetail}
+                        />
+                      ) : null}
+                      {canAdminReview ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setShowCourseworkScoreModal(true)}
+                        >
+                          <Pencil size={14} /> Edit
+                        </Button>
+                      ) : null}
+                    </span>
+                  }
+                />
               </div>
 
               {/* Declarations (Yes/No fields) styled beautifully! */}
@@ -2907,20 +3048,6 @@ const ReviewModal = ({
                   </div>
                 </div>
               </div>
-
-              {/* Coursework proof */}
-              {application.coursework?.proofs && (
-                <div style={{ marginTop: "var(--spacing-4)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-semibold)" }}>
-                    Coursework Supporting Document
-                  </div>
-                  <ProofActionButton
-                    proof={resolvePrimaryProof(application.coursework?.proofs)}
-                    onViewPor={setActivePorDetail}
-                    onViewPdf={setActivePdfDetail}
-                  />
-                </div>
-              )}
             </PorDetailCard>
 
             {/* BTP details card if applicable */}
@@ -3100,6 +3227,13 @@ const ReviewModal = ({
         <MarkingSchemeModal
           open={showReviewMarkingSchemeModal}
           onClose={() => setShowReviewMarkingSchemeModal(false)}
+        />
+        <EditCourseworkScoreModal
+          open={showCourseworkScoreModal}
+          scoreValue={application.coursework?.scoreValue || ""}
+          saving={savingCourseworkScore}
+          onClose={() => setShowCourseworkScoreModal(false)}
+          onSave={handleSaveCourseworkScore}
         />
         <PorProofDetailModal
           open={Boolean(activePorDetail)}
