@@ -19,6 +19,9 @@ export const overallBestPerformerApi = {
   reviewApplication: (applicationId, payload) =>
     apiClient.post(`${BASE_PATH}/applications/${applicationId}/review`, payload),
 
+  addHodVerification: (applicationId, payload) =>
+    apiClient.post(`${BASE_PATH}/applications/${applicationId}/hod-verification`, payload),
+
   updateApplicationItemType: (applicationId, payload) =>
     apiClient.patch(`${BASE_PATH}/applications/${applicationId}/item-type`, payload),
 
