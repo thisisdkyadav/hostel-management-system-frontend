@@ -2769,6 +2769,125 @@ const EditCourseworkScoreModal = ({
   )
 }
 
+const EditProjectThesisGradesModal = ({
+  open,
+  projectThesis,
+  saving = false,
+  onClose,
+  onSave,
+}) => {
+  const [btpAwardLevel, setBtpAwardLevel] = useState("none")
+  const [projectGrade, setProjectGrade] = useState("none")
+
+  useEffect(() => {
+    if (open) {
+      setBtpAwardLevel(projectThesis?.btpAwardLevel || "none")
+      setProjectGrade(projectThesis?.projectGrade || "none")
+    }
+  }, [open, projectThesis?.btpAwardLevel, projectThesis?.projectGrade])
+
+  if (!open) return null
+
+  const btpPoints = Number(BTP_AWARD_POINTS[btpAwardLevel] || 0)
+  const projectGradePoints = Number(PROJECT_GRADE_POINTS[projectGrade] || 0)
+  const currentBtpPoints = Number(BTP_AWARD_POINTS[projectThesis?.btpAwardLevel] || 0)
+  const currentProjectGradePoints = Number(PROJECT_GRADE_POINTS[projectThesis?.projectGrade] || 0)
+  const previewPoints = btpPoints + projectGradePoints
+  const currentPoints = currentBtpPoints + currentProjectGradePoints
+  const hasChanges =
+    btpAwardLevel !== (projectThesis?.btpAwardLevel || "none") ||
+    projectGrade !== (projectThesis?.projectGrade || "none")
+
+  return (
+    <Modal title="Edit BTP & Project Grade" onClose={onClose} width={620}>
+      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+        <div style={infoBoxStyle}>
+          <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>BTP / Project Grade Score</div>
+          <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+            Update the verified BTP award and project grade. Project/thesis points and total score will be recalculated after saving.
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-3)" }}>
+          <div style={fieldClusterStyle}>
+            <label style={fieldLabelStyle}>BTP award</label>
+            <Select
+              name="btpAwardLevel"
+              value={btpAwardLevel}
+              onChange={(event) => setBtpAwardLevel(event.target.value)}
+              options={BTP_AWARD_OPTIONS}
+              disabled={saving}
+            />
+          </div>
+          <div style={fieldClusterStyle}>
+            <label style={fieldLabelStyle}>Project grade</label>
+            <Select
+              name="projectGrade"
+              value={projectGrade}
+              onChange={(event) => setProjectGrade(event.target.value)}
+              options={PROJECT_GRADE_OPTIONS}
+              disabled={saving}
+            />
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "var(--spacing-2)",
+            padding: "var(--spacing-3)",
+            border: "1px solid var(--color-border-primary)",
+            borderRadius: "var(--radius-card-sm)",
+            backgroundColor: "var(--color-bg-secondary)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>BTP award points</span>
+            <span style={{ fontWeight: "var(--font-weight-bold)", color: btpPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+              +{btpPoints}
+            </span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Project grade points</span>
+            <span style={{ fontWeight: "var(--font-weight-bold)", color: projectGradePoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+              +{projectGradePoints}
+            </span>
+          </div>
+          <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+              Total preview
+            </span>
+            <span style={{ fontWeight: "var(--font-weight-bold)", color: previewPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+              {hasChanges ? (
+                <>
+                  <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through", marginRight: 6 }}>+{currentPoints}</span>
+                  +{previewPoints}
+                </>
+              ) : (
+                <>+{previewPoints}</>
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onSave({ btpAwardLevel, projectGrade })}
+            loading={saving}
+            disabled={saving || !hasChanges}
+          >
+            <Save size={14} /> Save BTP Grades
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
 const ReviewModal = ({
   application,
   open,
@@ -2785,6 +2904,8 @@ const ReviewModal = ({
   const [savingItemType, setSavingItemType] = useState(false)
   const [showCourseworkScoreModal, setShowCourseworkScoreModal] = useState(false)
   const [savingCourseworkScore, setSavingCourseworkScore] = useState(false)
+  const [showProjectThesisGradesModal, setShowProjectThesisGradesModal] = useState(false)
+  const [savingProjectThesisGrades, setSavingProjectThesisGrades] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
   const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
@@ -2808,6 +2929,8 @@ const ReviewModal = ({
         setSavingItemType(false)
         setShowCourseworkScoreModal(false)
         setSavingCourseworkScore(false)
+        setShowProjectThesisGradesModal(false)
+        setSavingProjectThesisGrades(false)
         setDownloadingAllPdfs(false)
         setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
@@ -2926,6 +3049,27 @@ const ReviewModal = ({
       toast.error(error?.message || "Failed to update CGPA / CPI")
     } finally {
       setSavingCourseworkScore(false)
+    }
+  }
+
+  const handleSaveProjectThesisGrades = async (payload) => {
+    if (!canAdminReview || !application?.id) return
+
+    try {
+      setSavingProjectThesisGrades(true)
+      const response = await overallBestPerformerApi.updateApplicationProjectThesisGrades(application.id, payload)
+      const updatedApplication = response?.data?.application || response?.application || null
+      toast.success(response?.message || "BTP grades updated")
+      setShowProjectThesisGradesModal(false)
+      if (updatedApplication) {
+        await onApplicationUpdated?.(updatedApplication)
+      } else {
+        await onApplicationUpdated?.()
+      }
+    } catch (error) {
+      toast.error(error?.message || "Failed to update BTP grades")
+    } finally {
+      setSavingProjectThesisGrades(false)
     }
   }
 
@@ -3086,11 +3230,20 @@ const ReviewModal = ({
 
             {/* BTP details card if applicable */}
             {application.projectThesis?.track === "btech_project" &&
-            (application.projectThesis?.btpAwardLevel !== "none" || application.projectThesis?.projectGrade !== "none") ? (
+            (canAdminReview || application.projectThesis?.btpAwardLevel !== "none" || application.projectThesis?.projectGrade !== "none") ? (
               <PorDetailCard
                 icon={Trophy}
                 title="BTP & Project Grade Details"
                 accentColor="var(--color-warning)"
+                headerAction={canAdminReview ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setShowProjectThesisGradesModal(true)}
+                  >
+                    <Pencil size={14} /> Edit
+                  </Button>
+                ) : null}
               >
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-4)" }}>
                   {application.projectThesis?.btpAwardLevel !== "none" ? (
@@ -3268,6 +3421,13 @@ const ReviewModal = ({
           saving={savingCourseworkScore}
           onClose={() => setShowCourseworkScoreModal(false)}
           onSave={handleSaveCourseworkScore}
+        />
+        <EditProjectThesisGradesModal
+          open={showProjectThesisGradesModal}
+          projectThesis={application.projectThesis || {}}
+          saving={savingProjectThesisGrades}
+          onClose={() => setShowProjectThesisGradesModal(false)}
+          onSave={handleSaveProjectThesisGrades}
         />
         <PorProofDetailModal
           open={Boolean(activePorDetail)}

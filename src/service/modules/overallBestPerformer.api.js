@@ -24,6 +24,9 @@ export const overallBestPerformerApi = {
 
   updateApplicationCourseworkScore: (applicationId, payload) =>
     apiClient.patch(`${BASE_PATH}/applications/${applicationId}/coursework-score`, payload),
+
+  updateApplicationProjectThesisGrades: (applicationId, payload) =>
+    apiClient.patch(`${BASE_PATH}/applications/${applicationId}/project-thesis-grades`, payload),
 }
 
 export default overallBestPerformerApi
