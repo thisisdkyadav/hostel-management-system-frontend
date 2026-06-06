@@ -10,33 +10,53 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
         type: "hostel-gate",
         direction: "in",
         hostelId: "",
+        catererId: "",
     })
     const [hostels, setHostels] = useState([])
+    const [caterers, setCaterers] = useState([])
     const [loading, setLoading] = useState(false)
     const [credentials, setCredentials] = useState(null)
 
     useEffect(() => {
-        const fetchHostels = async () => {
+        const fetchOptions = async () => {
             try {
-                const response = await adminApi.getAllHostels()
-                setHostels(response || [])
+                const [hostelResponse, catererResponse] = await Promise.all([
+                    adminApi.getAllHostels(),
+                    adminApi.getAllCaterers(""),
+                ])
+                setHostels(hostelResponse || [])
+                const catererList = Array.isArray(catererResponse)
+                    ? catererResponse
+                    : Array.isArray(catererResponse?.data)
+                      ? catererResponse.data
+                      : []
+                setCaterers(catererList)
             } catch (error) {
-                console.error("Error fetching hostels:", error)
+                console.error("Error fetching scanner options:", error)
             }
         }
         if (show) {
-            fetchHostels()
+            fetchOptions()
             setCredentials(null)
         }
     }, [show])
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+            ...(name === "type" && value === "hostel-gate" ? { catererId: "" } : {}),
+            ...(name === "type" && value === "dining-meal" ? { hostelId: "", direction: "in" } : {}),
+        }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (formData.type === "dining-meal" && !formData.catererId) {
+            alert("Please select a caterer for the dining meal scanner.")
+            return
+        }
         setLoading(true)
 
         try {
@@ -61,6 +81,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
             type: "hostel-gate",
             direction: "in",
             hostelId: "",
+            catererId: "",
         })
         setCredentials(null)
         onClose()
@@ -78,7 +99,15 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
         ...hostels.map((h) => ({ value: h.id, label: h.name })),
     ]
 
-    const typeOptions = [{ value: "hostel-gate", label: "Hostel Gate" }]
+    const catererOptions = [
+        { value: "", label: "Select Caterer" },
+        ...caterers.map((caterer) => ({ value: caterer.id || caterer._id, label: caterer.name })),
+    ]
+
+    const typeOptions = [
+        { value: "hostel-gate", label: "Hostel Gate" },
+        { value: "dining-meal", label: "Dining Meal" },
+    ]
 
     const directionOptions = [
         { value: "in", label: "Entry (Check In)" },
@@ -129,7 +158,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                     <VStack gap="large">
                         <div>
                             <Label htmlFor="name" required>Scanner Name</Label>
-                            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Boys Hostel Entry Scanner" required />
+                            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Dining Hall Breakfast Scanner" required />
                         </div>
 
                         <HStack gap="medium">
@@ -144,10 +173,17 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                             </div>
                         </HStack>
 
-                        <div>
-                            <Label htmlFor="hostelId">Hostel (Optional)</Label>
-                            <Select name="hostelId" id="hostelId" value={formData.hostelId} onChange={handleChange} options={hostelOptions} />
-                        </div>
+                        {formData.type === "hostel-gate" ? (
+                            <div>
+                                <Label htmlFor="hostelId">Hostel (Optional)</Label>
+                                <Select name="hostelId" id="hostelId" value={formData.hostelId} onChange={handleChange} options={hostelOptions} />
+                            </div>
+                        ) : (
+                            <div>
+                                <Label htmlFor="catererId" required>Caterer</Label>
+                                <Select name="catererId" id="catererId" value={formData.catererId} onChange={handleChange} options={catererOptions} required />
+                            </div>
+                        )}
 
                         <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
                             <Button type="button" onClick={handleClose} variant="secondary" size="md">

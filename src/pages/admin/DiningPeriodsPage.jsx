@@ -9,6 +9,7 @@ import {
   Pencil,
   Plus,
   Search,
+  Trash2,
   Users,
   UtensilsCrossed,
 } from "lucide-react"
@@ -19,11 +20,20 @@ import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemL
 
 const ELIGIBILITY_MODE_ALL_ACTIVE = "all-active"
 const ELIGIBILITY_MODE_CUSTOM = "custom"
+const DEFAULT_MEAL_SLOTS = [
+  { name: "Breakfast", startTime: "07:00", endTime: "10:00" },
+  { name: "Lunch", startTime: "12:00", endTime: "15:00" },
+  { name: "Dinner", startTime: "19:00", endTime: "22:00" },
+]
 
 const initialFormState = {
   startDate: "",
   endDate: "",
+  allocationStartAt: "",
+  allocationEndAt: "",
   catererIds: [],
+  catererCapacities: [],
+  mealSlots: DEFAULT_MEAL_SLOTS,
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: [],
 }
@@ -39,6 +49,14 @@ const toDateInputValue = (value) => {
   return date.toISOString().slice(0, 10)
 }
 
+const toDateTimeInputValue = (value) => {
+  if (!value) return ""
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16)
+}
+
 const formatDate = (value) => {
   if (!value) return "-"
   return new Date(value).toLocaleDateString(undefined, {
@@ -48,12 +66,50 @@ const formatDate = (value) => {
   })
 }
 
+const getIdValue = (value) => String(value?.id || value?._id || value || "")
+
+const normalizeCapacityValue = (value) => String(Math.max(1, Number(value || 1)))
+
+const buildCapacityRows = (catererIds = [], capacities = []) => {
+  const capacityByCaterer = new Map(
+    (Array.isArray(capacities) ? capacities : []).map((entry) => [
+      getIdValue(entry?.catererId),
+      {
+        catererId: getIdValue(entry?.catererId),
+        maxStudentCount: normalizeCapacityValue(entry?.maxStudentCount),
+        allocatedCount: Number(entry?.allocatedCount || 0),
+      },
+    ])
+  )
+
+  return (Array.isArray(catererIds) ? catererIds : [])
+    .map(getIdValue)
+    .filter(Boolean)
+    .map((catererId) => (
+      capacityByCaterer.get(catererId) || {
+        catererId,
+        maxStudentCount: "1",
+        allocatedCount: 0,
+      }
+    ))
+}
+
 const normalizePeriod = (period = {}) => ({
   id: period.id || period._id,
   startDate: period.startDate,
   endDate: period.endDate,
-  catererIds: Array.isArray(period.catererIds) ? period.catererIds.map((id) => String(id)) : [],
+  allocationStartAt: period.allocationStartAt,
+  allocationEndAt: period.allocationEndAt,
+  catererIds: Array.isArray(period.catererIds) ? period.catererIds.map(getIdValue).filter(Boolean) : [],
   caterers: Array.isArray(period.caterers) ? period.caterers : [],
+  catererCapacities: Array.isArray(period.catererCapacities) ? period.catererCapacities.map((entry) => ({
+    catererId: getIdValue(entry.catererId),
+    maxStudentCount: Number(entry.maxStudentCount || 0),
+    allocatedCount: Number(entry.allocatedCount || 0),
+    remainingSeats: Number(entry.remainingSeats || 0),
+  })) : [],
+  mealSlots: Array.isArray(period.mealSlots) && period.mealSlots.length > 0 ? period.mealSlots : DEFAULT_MEAL_SLOTS,
+  totalCapacity: Number(period.totalCapacity || 0),
   eligibilityMode: period.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: Array.isArray(period.eligibleRollNumbers) ? period.eligibleRollNumbers : [],
   eligibleStudentCount: Number(period.eligibleStudentCount || 0),
@@ -239,11 +295,22 @@ const PeriodFormModal = ({
 
   useEffect(() => {
     if (!isOpen) return
+    const selectedCatererIds = Array.isArray(initialData.catererIds) ? initialData.catererIds.map(getIdValue).filter(Boolean) : []
 
     setFormData({
       startDate: toDateInputValue(initialData.startDate),
       endDate: toDateInputValue(initialData.endDate),
-      catererIds: Array.isArray(initialData.catererIds) ? initialData.catererIds.map((id) => String(id)) : [],
+      allocationStartAt: toDateTimeInputValue(initialData.allocationStartAt),
+      allocationEndAt: toDateTimeInputValue(initialData.allocationEndAt),
+      catererIds: selectedCatererIds,
+      catererCapacities: buildCapacityRows(selectedCatererIds, initialData.catererCapacities),
+      mealSlots: Array.isArray(initialData.mealSlots) && initialData.mealSlots.length > 0
+        ? initialData.mealSlots.map((slot) => ({
+          name: slot.name || "",
+          startTime: slot.startTime || "",
+          endTime: slot.endTime || "",
+        }))
+        : DEFAULT_MEAL_SLOTS,
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
       eligibleRollNumbers: Array.isArray(initialData.eligibleRollNumbers) ? initialData.eligibleRollNumbers : [],
     })
@@ -254,10 +321,33 @@ const PeriodFormModal = ({
   const handleCatererToggle = (catererId) => {
     setFormData((prev) => {
       const catererSet = new Set(prev.catererIds)
-      if (catererSet.has(catererId)) catererSet.delete(catererId)
-      else catererSet.add(catererId)
-      return { ...prev, catererIds: [...catererSet] }
+      let nextCapacities = Array.isArray(prev.catererCapacities) ? [...prev.catererCapacities] : []
+      if (catererSet.has(catererId)) {
+        const existingCapacity = nextCapacities.find((entry) => entry.catererId === catererId)
+        if (Number(existingCapacity?.allocatedCount || 0) > 0) {
+          setError("This caterer already has student allocations. Archive the period or keep the caterer selected.")
+          return prev
+        }
+        catererSet.delete(catererId)
+        nextCapacities = nextCapacities.filter((entry) => entry.catererId !== catererId)
+      } else {
+        catererSet.add(catererId)
+        nextCapacities.push({ catererId, maxStudentCount: "1", allocatedCount: 0 })
+      }
+      return { ...prev, catererIds: [...catererSet], catererCapacities: nextCapacities }
     })
+  }
+
+  const handleCapacityChange = (catererId, value) => {
+    const nextValue = String(value || "").replace(/[^\d]/g, "")
+    setFormData((prev) => ({
+      ...prev,
+      catererCapacities: prev.catererCapacities.some((entry) => entry.catererId === catererId)
+        ? prev.catererCapacities.map((entry) => (
+          entry.catererId === catererId ? { ...entry, maxStudentCount: nextValue } : entry
+        ))
+        : [...prev.catererCapacities, { catererId, maxStudentCount: nextValue, allocatedCount: 0 }],
+    }))
   }
 
   const handleEligibilityModeChange = (mode) => {
@@ -268,10 +358,42 @@ const PeriodFormModal = ({
     }))
   }
 
+  const handleMealSlotChange = (index, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      mealSlots: prev.mealSlots.map((slot, slotIndex) => (
+        slotIndex === index ? { ...slot, [field]: value } : slot
+      )),
+    }))
+  }
+
+  const handleAddMealSlot = () => {
+    setFormData((prev) => ({
+      ...prev,
+      mealSlots: [...prev.mealSlots, { name: "", startTime: "", endTime: "" }],
+    }))
+  }
+
+  const handleRemoveMealSlot = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      mealSlots: prev.mealSlots.filter((_, slotIndex) => slotIndex !== index),
+    }))
+  }
+
   const validateForm = () => {
     if (!formData.startDate || !formData.endDate) return "Start date and end date are required."
+    if (!formData.allocationStartAt || !formData.allocationEndAt) return "Allocation start and end time are required."
     if (new Date(formData.startDate) > new Date(formData.endDate)) return "Start date must be before or equal to end date."
+    if (new Date(formData.allocationStartAt) > new Date(formData.allocationEndAt)) return "Allocation start time must be before or equal to allocation end time."
     if (formData.catererIds.length === 0) return "Please select at least one caterer."
+    if (formData.catererCapacities.some((entry) => Number(entry.maxStudentCount || 0) < 1)) {
+      return "Each selected caterer must have a max student count of at least 1."
+    }
+    if (formData.mealSlots.length === 0) return "Please add at least one meal verification slot."
+    if (formData.mealSlots.some((slot) => !slot.name.trim() || !slot.startTime || !slot.endTime)) {
+      return "Each meal verification slot must have a name, start time, and end time."
+    }
     if (formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM && formData.eligibleRollNumbers.length === 0) {
       return "Please upload at least one roll number for custom eligibility."
     }
@@ -289,10 +411,24 @@ const PeriodFormModal = ({
 
     setIsSubmitting(true)
     try {
+      const normalizedCapacities = formData.catererCapacities.map((entry) => ({
+        ...entry,
+        maxStudentCount: Number(entry.maxStudentCount || 0),
+        allocatedCount: Number(entry.allocatedCount || 0),
+      }))
+
       await onSubmit({
         startDate: formData.startDate,
         endDate: formData.endDate,
+        allocationStartAt: formData.allocationStartAt,
+        allocationEndAt: formData.allocationEndAt,
         catererIds: formData.catererIds,
+        catererCapacities: normalizedCapacities,
+        mealSlots: formData.mealSlots.map((slot) => ({
+          name: slot.name.trim(),
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        })),
         eligibilityMode: formData.eligibilityMode,
         eligibleRollNumbers: formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM ? formData.eligibleRollNumbers : [],
       })
@@ -340,11 +476,106 @@ const PeriodFormModal = ({
             </div>
           </div>
 
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+            <div>
+              <Label htmlFor="allocationStartAt" required>Allocation Start Time</Label>
+              <Input
+                id="allocationStartAt"
+                type="datetime-local"
+                value={formData.allocationStartAt}
+                onChange={(event) => setFormData((prev) => ({ ...prev, allocationStartAt: event.target.value }))}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="allocationEndAt" required>Allocation End Time</Label>
+              <Input
+                id="allocationEndAt"
+                type="datetime-local"
+                value={formData.allocationEndAt}
+                onChange={(event) => setFormData((prev) => ({ ...prev, allocationEndAt: event.target.value }))}
+                required
+              />
+            </div>
+          </div>
+
+          <VStack gap="small">
+            <HStack justify="between" align="center">
+              <Label required>Meal Verification Slots</Label>
+              <Button type="button" variant="secondary" size="sm" onClick={handleAddMealSlot}>
+                <Plus size={16} /> Add Slot
+              </Button>
+            </HStack>
+
+            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              {formData.mealSlots.map((slot, index) => (
+                <div
+                  key={`${slot.name}-${index}`}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "minmax(140px, 1fr) minmax(110px, 140px) minmax(110px, 140px) auto",
+                    gap: "var(--spacing-3)",
+                    alignItems: "end",
+                    padding: "var(--spacing-3)",
+                    border: "var(--border-1) solid var(--color-border-light)",
+                    borderRadius: "var(--radius-lg)",
+                    backgroundColor: "var(--color-bg-primary)",
+                  }}
+                >
+                  <div>
+                    <Label htmlFor={`meal-slot-name-${index}`} required>Name</Label>
+                    <Input
+                      id={`meal-slot-name-${index}`}
+                      value={slot.name}
+                      onChange={(event) => handleMealSlotChange(index, "name", event.target.value)}
+                      placeholder="Breakfast"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`meal-slot-start-${index}`} required>Start</Label>
+                    <Input
+                      id={`meal-slot-start-${index}`}
+                      type="time"
+                      value={slot.startTime}
+                      onChange={(event) => handleMealSlotChange(index, "startTime", event.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`meal-slot-end-${index}`} required>End</Label>
+                    <Input
+                      id={`meal-slot-end-${index}`}
+                      type="time"
+                      value={slot.endTime}
+                      onChange={(event) => handleMealSlotChange(index, "endTime", event.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    onClick={() => handleRemoveMealSlot(index)}
+                    disabled={formData.mealSlots.length <= 1}
+                    title="Remove slot"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </VStack>
+
           <VStack gap="small">
             <Label required>Allowed Caterers</Label>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-2)" }}>
-              {caterers.map((caterer) => (
-                <label
+              {caterers.map((caterer) => {
+                const capacity = formData.catererCapacities.find((entry) => entry.catererId === caterer.id)
+
+                return (
+                <div
                   key={caterer.id}
                   style={{
                     display: "flex",
@@ -354,7 +585,6 @@ const PeriodFormModal = ({
                     border: "var(--border-1) solid var(--color-border-light)",
                     borderRadius: "var(--radius-lg)",
                     backgroundColor: formData.catererIds.includes(caterer.id) ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
-                    cursor: "pointer",
                   }}
                 >
                   <input
@@ -366,9 +596,28 @@ const PeriodFormModal = ({
                   <span>
                     <span style={{ display: "block", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>{caterer.name}</span>
                     <span style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{caterer.email}</span>
+                    {formData.catererIds.includes(caterer.id) && (
+                      <span style={{ display: "block", marginTop: "var(--spacing-2)" }}>
+                        <Label htmlFor={`capacity-${caterer.id}`} required>Max Students</Label>
+                        <Input
+                          id={`capacity-${caterer.id}`}
+                          type="number"
+                          min="1"
+                          value={capacity?.maxStudentCount ?? ""}
+                          onClick={(event) => event.stopPropagation()}
+                          onChange={(event) => handleCapacityChange(caterer.id, event.target.value)}
+                        />
+                        {Number(capacity?.allocatedCount || 0) > 0 && (
+                          <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                            Already allocated: {capacity?.allocatedCount}
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </span>
-                </label>
-              ))}
+                </div>
+                )
+              })}
             </div>
             {caterers.length === 0 && (
               <Alert type="warning" icon>
@@ -539,10 +788,13 @@ const DiningPeriodsPage = () => {
               <Table.Header>
                 <Table.Row>
                   <Table.Head>Period</Table.Head>
-                  <Table.Head>Caterers</Table.Head>
-                  <Table.Head>Students</Table.Head>
-                  <Table.Head>Status</Table.Head>
-                  <Table.Head>Actions</Table.Head>
+                    <Table.Head>Caterers</Table.Head>
+                    <Table.Head>Students</Table.Head>
+                    <Table.Head>Capacity</Table.Head>
+                    <Table.Head>Meal Slots</Table.Head>
+                    <Table.Head>Status</Table.Head>
+                    <Table.Head>Allocation</Table.Head>
+                    <Table.Head>Actions</Table.Head>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -559,7 +811,12 @@ const DiningPeriodsPage = () => {
                     <Table.Cell>
                       {period.eligibilityMode === ELIGIBILITY_MODE_ALL_ACTIVE ? "All active students" : "Custom CSV"} ({period.eligibleStudentCount})
                     </Table.Cell>
+                    <Table.Cell>{period.totalCapacity}</Table.Cell>
+                    <Table.Cell>
+                      {period.mealSlots?.length ? period.mealSlots.map((slot) => `${slot.name} ${slot.startTime}-${slot.endTime}`).join(", ") : "-"}
+                    </Table.Cell>
                     <Table.Cell>{period.status}</Table.Cell>
+                    <Table.Cell>{period.allocationStatus}</Table.Cell>
                     <Table.Cell>
                       <Button variant="secondary" size="sm" onClick={() => setEditingPeriod(period)}>
                         <Pencil size={16} /> Edit

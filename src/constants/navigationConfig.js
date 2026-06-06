@@ -156,8 +156,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
-    // { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/admin/caterers", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
-    // { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/admin/caterers", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
@@ -212,6 +212,12 @@ export const getSuperAdminNavItems = (handleLogout) => [
   { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
   { name: "AuthZ", icon: ShieldCheck, section: "main", path: "/super-admin/authz" },
   createProfileItem("/super-admin"),
+  createLogoutItem(handleLogout),
+]
+
+export const getCatererNavItems = (handleLogout) => [
+  { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
+  { name: "Current Meal", icon: UtensilsCrossed, section: "main", path: "/caterer/meal-verification", routeKey: "route.caterer.mealVerification" },
   createLogoutItem(handleLogout),
 ]
 
@@ -357,6 +363,7 @@ export const getStudentNavItems = (
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
   { name: "POR", icon: BadgeCheck, section: "main", path: "/student/por" },
+  { name: "Dining", icon: UtensilsCrossed, section: "main", path: "/student/dining", routeKey: "route.student.dining", alwaysVisible: true },
   ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer" }] : []),
   ...(electionPortalState?.canAccessPortal ? [{
     name: "Elections",

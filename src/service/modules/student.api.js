@@ -221,6 +221,20 @@ export const studentApi = {
       .post("/students/profiles-admin/profiles/check-roll-numbers", { rollNumbers, ...options })
       .then(unwrapStandardResponse)
   },
+
+  /**
+   * Get current student dining allocation portal state
+   */
+  getDiningPortalState: () => {
+    return apiClient.get("/students/dining/portal").then(unwrapStandardResponse)
+  },
+
+  /**
+   * Select dining caterer for the active allocation period
+   */
+  selectDiningCaterer: (catererId) => {
+    return apiClient.post("/students/dining/select", { catererId }).then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

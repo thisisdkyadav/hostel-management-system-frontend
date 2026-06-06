@@ -101,7 +101,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                             {scanner.name}
                         </h3>
                         <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                            {scanner.type === "hostel-gate" ? "Hostel Gate" : scanner.type}
+                            {scanner.type === "hostel-gate" ? "Hostel Gate" : "Dining Meal"}
                         </p>
                     </div>
                     <Badge variant={scanner.isActive ? "success" : "danger"}>
@@ -117,10 +117,17 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     <span>Direction: {directionStyle.label}</span>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
-                    <FaBuilding style={{ color: "var(--color-text-muted)" }} />
-                    <span>Hostel: {scanner.hostelId?.name || "Not Assigned"}</span>
-                </div>
+                {scanner.type === "hostel-gate" ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                        <FaBuilding style={{ color: "var(--color-text-muted)" }} />
+                        <span>Hostel: {scanner.hostelId?.name || "Not Assigned"}</span>
+                    </div>
+                ) : (
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                        <FaBuilding style={{ color: "var(--color-text-muted)" }} />
+                        <span>Caterer: {scanner.catererId?.name || "Not Assigned"}</span>
+                    </div>
+                )}
 
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                     <span>Username: {scanner.username}</span>

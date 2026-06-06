@@ -64,6 +64,8 @@ export const getDefaultHomeRoute = (user) => {
       return normalizeSubRole(user.subRole) === "club" ? "/gymkhana/club" : "/gymkhana"
     case "Academics":
       return "/academics"
+    case "Caterer":
+      return "/caterer"
     default:
       return "/login"
   }

@@ -60,6 +60,7 @@ export { faceScannerApi } from "./modules/faceScanner.api"
 export { appointmentsApi } from "./modules/appointments.api"
 export { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
 export { electionsApi } from "./modules/elections.api"
+export { catererApi } from "./modules/caterer.api"
 
 // NOTE:
 // Keep this module as named re-exports only.

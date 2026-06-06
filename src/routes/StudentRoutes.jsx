@@ -7,6 +7,7 @@ const StudentDashboard = lazy(() => import("../pages/student/DashboardPage"))
 const IDCardPage = lazy(() => import("../pages/student/IDCardPage"))
 const UndertakingsPage = lazy(() => import("../pages/student/UndertakingsPage"))
 const SecurityPage = lazy(() => import("../pages/student/SecurityPage"))
+const DiningPage = lazy(() => import("../pages/student/DiningPage"))
 
 // Common pages
 const VisitorRequestsPage = lazy(() => import("../pages/common/VisitorRequestsPage"))
@@ -35,6 +36,7 @@ const studentPrefetchLoaders = [
   () => import("../pages/student/IDCardPage"),
   () => import("../pages/student/UndertakingsPage"),
   () => import("../pages/student/SecurityPage"),
+  () => import("../pages/student/DiningPage"),
   () => import("../pages/common/VisitorRequestsPage"),
   () => import("../pages/common/ComplaintsPage"),
   () => import("../pages/common/ProfilePage"),
@@ -153,6 +155,10 @@ const StudentRoutes = () => (
                 <PorRequestsPage />
               </RouteAccessGuard>
             }
+          />
+          <Route
+            path="dining"
+            element={<DiningPage />}
           />
           <Route
             path="overall-best-performer"

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
 import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
-const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
+const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate", "Gymkhana", "Academics", "Caterer"]
 
 const styles = {
   spaceY6: {

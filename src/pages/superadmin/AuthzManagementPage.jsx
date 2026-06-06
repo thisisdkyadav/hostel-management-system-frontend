@@ -20,6 +20,8 @@ const NON_STUDENT_ROLE_OPTIONS = [
   { value: "Hostel Gate", label: "Hostel Gate" },
   { value: "Maintenance Staff", label: "Maintenance Staff" },
   { value: "Gymkhana", label: "Gymkhana" },
+  { value: "Academics", label: "Academics" },
+  { value: "Caterer", label: "Caterer" },
 ]
 const OVERRIDE_MODE = {
   DEFAULT: "default",
