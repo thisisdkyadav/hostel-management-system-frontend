@@ -132,6 +132,27 @@ export const adminApi = {
     return apiClient.put(`/admin/dining-periods/${periodId}/archive`, { status }).then(unwrapStandardResponse)
   },
 
+  /**
+   * Get dining rebate requests
+   */
+  getDiningRebates: (filters = {}) => {
+    return apiClient.get("/admin/dining-rebates", { params: filters }).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Approve a long-term dining rebate request
+   */
+  approveDiningRebate: (rebateId) => {
+    return apiClient.put(`/admin/dining-rebates/${rebateId}/approve`, {}).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Reject a long-term dining rebate request
+   */
+  rejectDiningRebate: (rebateId, comment = "") => {
+    return apiClient.put(`/admin/dining-rebates/${rebateId}/reject`, { comment }).then(unwrapStandardResponse)
+  },
+
   // ==================== Wardens ====================
   
   /**

@@ -12,6 +12,8 @@ import {
   Trash2,
   Users,
   UtensilsCrossed,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -25,6 +27,12 @@ const DEFAULT_MEAL_SLOTS = [
   { name: "Lunch", startTime: "12:00", endTime: "15:00" },
   { name: "Dinner", startTime: "19:00", endTime: "22:00" },
 ]
+const DEFAULT_REBATE_SETTINGS = {
+  shortTermMaxTotalDays: 10,
+  shortTermMaxContinuousDays: 3,
+  shortTermMinApplicationDays: 1,
+  shortTermMinAdvanceDays: 2,
+}
 
 const initialFormState = {
   startDate: "",
@@ -34,6 +42,7 @@ const initialFormState = {
   catererIds: [],
   catererCapacities: [],
   mealSlots: DEFAULT_MEAL_SLOTS,
+  rebateSettings: DEFAULT_REBATE_SETTINGS,
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: [],
 }
@@ -69,6 +78,13 @@ const formatDate = (value) => {
 const getIdValue = (value) => String(value?.id || value?._id || value || "")
 
 const normalizeCapacityValue = (value) => String(Math.max(1, Number(value || 1)))
+
+const normalizeRebateSettings = (settings = {}) => ({
+  shortTermMaxTotalDays: String(Math.max(0, Number(settings.shortTermMaxTotalDays ?? DEFAULT_REBATE_SETTINGS.shortTermMaxTotalDays))),
+  shortTermMaxContinuousDays: String(Math.max(1, Number(settings.shortTermMaxContinuousDays ?? DEFAULT_REBATE_SETTINGS.shortTermMaxContinuousDays))),
+  shortTermMinApplicationDays: String(Math.max(1, Number(settings.shortTermMinApplicationDays ?? DEFAULT_REBATE_SETTINGS.shortTermMinApplicationDays))),
+  shortTermMinAdvanceDays: String(Math.max(0, Number(settings.shortTermMinAdvanceDays ?? DEFAULT_REBATE_SETTINGS.shortTermMinAdvanceDays))),
+})
 
 const buildCapacityRows = (catererIds = [], capacities = []) => {
   const capacityByCaterer = new Map(
@@ -109,6 +125,10 @@ const normalizePeriod = (period = {}) => ({
     remainingSeats: Number(entry.remainingSeats || 0),
   })) : [],
   mealSlots: Array.isArray(period.mealSlots) && period.mealSlots.length > 0 ? period.mealSlots : DEFAULT_MEAL_SLOTS,
+  rebateSettings: {
+    ...DEFAULT_REBATE_SETTINGS,
+    ...(period.rebateSettings || {}),
+  },
   totalCapacity: Number(period.totalCapacity || 0),
   eligibilityMode: period.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: Array.isArray(period.eligibleRollNumbers) ? period.eligibleRollNumbers : [],
@@ -279,6 +299,84 @@ const RollNumberCsvInput = ({ rollNumbers, onChange, disabled = false }) => {
   )
 }
 
+const formatRebateType = (type = "") => (
+  type === "long-term" ? "Long-term" : "Short-term"
+)
+
+const formatRebateStatus = (status = "") => {
+  if (status === "approved") return "Approved"
+  if (status === "rejected") return "Rejected"
+  return "Pending"
+}
+
+const DiningRebateRequests = ({ rebates, loading, onApprove, onReject }) => (
+  <div className="mt-[var(--spacing-8)]">
+    <HStack justify="between" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
+      <div>
+        <h2 style={{ color: "var(--color-text-heading)", fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)" }}>
+          Long-Term Rebate Requests
+        </h2>
+        <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+          Pending requests need admin approval before caterer counts are reduced.
+        </p>
+      </div>
+    </HStack>
+
+    <div className="overflow-x-auto rounded-[var(--radius-xl)] border border-[var(--color-border-light)] bg-[var(--color-bg-primary)]">
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>Student</Table.Head>
+            <Table.Head>Period</Table.Head>
+            <Table.Head>Caterer</Table.Head>
+            <Table.Head>Days</Table.Head>
+            <Table.Head>Type</Table.Head>
+            <Table.Head>Status</Table.Head>
+            <Table.Head>Actions</Table.Head>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {rebates.map((rebate) => (
+            <Table.Row key={rebate.id}>
+              <Table.Cell>
+                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>
+                  {rebate.student?.name || "Student"}
+                </div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  {rebate.rollNumber}
+                </div>
+              </Table.Cell>
+              <Table.Cell>{formatDate(rebate.startDate)} - {formatDate(rebate.endDate)}</Table.Cell>
+              <Table.Cell>{rebate.caterer?.name || "-"}</Table.Cell>
+              <Table.Cell>{rebate.dayCount}</Table.Cell>
+              <Table.Cell>{formatRebateType(rebate.type)}</Table.Cell>
+              <Table.Cell>{formatRebateStatus(rebate.status)}</Table.Cell>
+              <Table.Cell>
+                {rebate.status === "pending" ? (
+                  <HStack gap="small">
+                    <Button variant="primary" size="sm" onClick={() => onApprove(rebate)}>
+                      <CheckCircle2 size={16} /> Approve
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => onReject(rebate)}>
+                      <XCircle size={16} /> Reject
+                    </Button>
+                  </HStack>
+                ) : "-"}
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </div>
+
+    {!loading && rebates.length === 0 && (
+      <Alert type="info" icon style={{ marginTop: "var(--spacing-4)" }}>
+        No pending long-term rebate requests right now.
+      </Alert>
+    )}
+  </div>
+)
+
 const PeriodFormModal = ({
   isOpen,
   title,
@@ -311,6 +409,7 @@ const PeriodFormModal = ({
           endTime: slot.endTime || "",
         }))
         : DEFAULT_MEAL_SLOTS,
+      rebateSettings: normalizeRebateSettings(initialData.rebateSettings || DEFAULT_REBATE_SETTINGS),
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
       eligibleRollNumbers: Array.isArray(initialData.eligibleRollNumbers) ? initialData.eligibleRollNumbers : [],
     })
@@ -381,6 +480,17 @@ const PeriodFormModal = ({
     }))
   }
 
+  const handleRebateSettingChange = (field, value) => {
+    const nextValue = String(value || "").replace(/[^\d]/g, "")
+    setFormData((prev) => ({
+      ...prev,
+      rebateSettings: {
+        ...prev.rebateSettings,
+        [field]: nextValue,
+      },
+    }))
+  }
+
   const validateForm = () => {
     if (!formData.startDate || !formData.endDate) return "Start date and end date are required."
     if (!formData.allocationStartAt || !formData.allocationEndAt) return "Allocation start and end time are required."
@@ -393,6 +503,13 @@ const PeriodFormModal = ({
     if (formData.mealSlots.length === 0) return "Please add at least one meal verification slot."
     if (formData.mealSlots.some((slot) => !slot.name.trim() || !slot.startTime || !slot.endTime)) {
       return "Each meal verification slot must have a name, start time, and end time."
+    }
+    const rebateSettings = formData.rebateSettings || {}
+    if (Number(rebateSettings.shortTermMaxTotalDays || 0) < 0) return "Short-term total days cannot be negative."
+    if (Number(rebateSettings.shortTermMaxContinuousDays || 0) < 1) return "Short-term max continuous days must be at least 1."
+    if (Number(rebateSettings.shortTermMinApplicationDays || 0) < 1) return "Short-term minimum application days must be at least 1."
+    if (Number(rebateSettings.shortTermMinApplicationDays || 0) > Number(rebateSettings.shortTermMaxContinuousDays || 0)) {
+      return "Minimum application days cannot exceed max continuous short-term days."
     }
     if (formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM && formData.eligibleRollNumbers.length === 0) {
       return "Please upload at least one roll number for custom eligibility."
@@ -429,6 +546,12 @@ const PeriodFormModal = ({
           startTime: slot.startTime,
           endTime: slot.endTime,
         })),
+        rebateSettings: {
+          shortTermMaxTotalDays: Number(formData.rebateSettings.shortTermMaxTotalDays || 0),
+          shortTermMaxContinuousDays: Number(formData.rebateSettings.shortTermMaxContinuousDays || 0),
+          shortTermMinApplicationDays: Number(formData.rebateSettings.shortTermMinApplicationDays || 0),
+          shortTermMinAdvanceDays: Number(formData.rebateSettings.shortTermMinAdvanceDays || 0),
+        },
         eligibilityMode: formData.eligibilityMode,
         eligibleRollNumbers: formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM ? formData.eligibleRollNumbers : [],
       })
@@ -569,6 +692,59 @@ const PeriodFormModal = ({
           </VStack>
 
           <VStack gap="small">
+            <Label required>Short-Term Rebate Rules</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-4)" }}>
+              <div>
+                <Label htmlFor="rebate-total-days" required>Max Total Days</Label>
+                <Input
+                  id="rebate-total-days"
+                  type="number"
+                  min="0"
+                  value={formData.rebateSettings.shortTermMaxTotalDays}
+                  onChange={(event) => handleRebateSettingChange("shortTermMaxTotalDays", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="rebate-continuous-days" required>Max Continuous Days</Label>
+                <Input
+                  id="rebate-continuous-days"
+                  type="number"
+                  min="1"
+                  value={formData.rebateSettings.shortTermMaxContinuousDays}
+                  onChange={(event) => handleRebateSettingChange("shortTermMaxContinuousDays", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="rebate-min-days" required>Min Days / Request</Label>
+                <Input
+                  id="rebate-min-days"
+                  type="number"
+                  min="1"
+                  value={formData.rebateSettings.shortTermMinApplicationDays}
+                  onChange={(event) => handleRebateSettingChange("shortTermMinApplicationDays", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="rebate-advance-days" required>Advance Notice Days</Label>
+                <Input
+                  id="rebate-advance-days"
+                  type="number"
+                  min="0"
+                  value={formData.rebateSettings.shortTermMinAdvanceDays}
+                  onChange={(event) => handleRebateSettingChange("shortTermMinAdvanceDays", event.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <Alert type="info" icon>
+              Requests within the continuous-day limit are auto-approved only when these rules pass. Longer requests go to admin approval.
+            </Alert>
+          </VStack>
+
+          <VStack gap="small">
             <Label required>Allowed Caterers</Label>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-2)" }}>
               {caterers.map((caterer) => {
@@ -680,6 +856,8 @@ const DiningPeriodsPage = () => {
   const [fetchArchive, setFetchArchive] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPeriod, setEditingPeriod] = useState(null)
+  const [rebateRequests, setRebateRequests] = useState([])
+  const [rebatesLoading, setRebatesLoading] = useState(false)
 
   const filteredPeriods = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase()
@@ -719,6 +897,19 @@ const DiningPeriodsPage = () => {
     }
   }
 
+  const fetchRebateRequests = async () => {
+    setRebatesLoading(true)
+    try {
+      const response = await adminApi.getDiningRebates({ status: "pending" })
+      setRebateRequests(Array.isArray(response?.rebates) ? response.rebates : [])
+    } catch (error) {
+      console.error("Error fetching dining rebate requests:", error)
+      setRebateRequests([])
+    } finally {
+      setRebatesLoading(false)
+    }
+  }
+
   const handleArchiveToggle = () => {
     const nextArchiveState = !fetchArchive
     setFetchArchive(nextArchiveState)
@@ -753,9 +944,34 @@ const DiningPeriodsPage = () => {
     }
   }
 
+  const handleApproveRebate = async (rebate) => {
+    const shouldProceed = window.confirm(`Approve rebate for ${rebate.rollNumber} from ${formatDate(rebate.startDate)} to ${formatDate(rebate.endDate)}?`)
+    if (!shouldProceed) return
+
+    try {
+      await adminApi.approveDiningRebate(rebate.id)
+      await fetchRebateRequests()
+    } catch (error) {
+      alert(getErrorMessage(error, "Unable to approve rebate. Please try again."))
+    }
+  }
+
+  const handleRejectRebate = async (rebate) => {
+    const comment = window.prompt("Reason/comment for rejection")
+    if (comment === null) return
+
+    try {
+      await adminApi.rejectDiningRebate(rebate.id, comment)
+      await fetchRebateRequests()
+    } catch (error) {
+      alert(getErrorMessage(error, "Unable to reject rebate. Please try again."))
+    }
+  }
+
   useEffect(() => {
     fetchPeriods(false)
     fetchCaterers()
+    fetchRebateRequests()
   }, [])
 
   return (
@@ -835,6 +1051,13 @@ const DiningPeriodsPage = () => {
               message="No dining periods match your search criteria. Try adjusting your search or archive view."
             />
           )}
+
+          <DiningRebateRequests
+            rebates={rebateRequests}
+            loading={rebatesLoading}
+            onApprove={handleApproveRebate}
+            onReject={handleRejectRebate}
+          />
         </div>
       </div>
 

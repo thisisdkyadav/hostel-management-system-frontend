@@ -7,8 +7,17 @@ import apiClient from "../core/apiClient"
 
 const BASE_PATH = "/student-affairs/events"
 
-const buildApprovalPayload = (comments = "", nextApprovalStages = [], nextApprovers = []) => {
+const buildApprovalPayload = (
+  comments = "",
+  nextApprovalStages = [],
+  nextApprovers = [],
+  directApprove = false
+) => {
   const payload = { comments }
+
+  if (directApprove) {
+    payload.directApprove = true
+  }
 
   if (Array.isArray(nextApprovers) && nextApprovers.length > 0) {
     payload.nextApprovers = nextApprovers
@@ -108,10 +117,16 @@ export const gymkhanaEventsApi = {
   /**
    * Approve calendar
    */
-  approveCalendar: (id, comments = "", nextApprovalStages = [], nextApprovers = []) => {
+  approveCalendar: (
+    id,
+    comments = "",
+    nextApprovalStages = [],
+    nextApprovers = [],
+    directApprove = false
+  ) => {
     return apiClient.post(
       `${BASE_PATH}/calendar/${id}/approve`,
-      buildApprovalPayload(comments, nextApprovalStages, nextApprovers)
+      buildApprovalPayload(comments, nextApprovalStages, nextApprovers, directApprove)
     )
   },
 
@@ -348,10 +363,16 @@ export const gymkhanaEventsApi = {
   /**
    * Approve proposal
    */
-  approveProposal: (id, comments = "", nextApprovalStages = [], nextApprovers = []) => {
+  approveProposal: (
+    id,
+    comments = "",
+    nextApprovalStages = [],
+    nextApprovers = [],
+    directApprove = false
+  ) => {
     return apiClient.post(
       `${BASE_PATH}/proposals/${id}/approve`,
-      buildApprovalPayload(comments, nextApprovalStages, nextApprovers)
+      buildApprovalPayload(comments, nextApprovalStages, nextApprovers, directApprove)
     )
   },
 

@@ -849,7 +849,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     const normalizedApprovalComments = String(approvalComments || "").trim()
 
     if (requiresCalendarNextApprovalSelection && getNextApproverSelectionCount(calendarNextApproversByStage) === 0) {
-      toast.error("Select at least one next approver")
+      toast.error("Select at least one next recommender")
       return
     }
 
@@ -859,9 +859,53 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         calendar._id,
         normalizedApprovalComments,
         [],
-        requiresCalendarNextApprovalSelection ? nextApprovers : []
+        requiresCalendarNextApprovalSelection ? nextApprovers : [],
+        false
+      )
+      toast.success(
+        requiresCalendarNextApprovalSelection
+          ? "Calendar recommended successfully"
+          : "Calendar approved successfully"
+      )
+      setCalendarNextApproversByStage(createEmptyNextApproverSelection())
+      setShowApprovalModal(false)
+      setApprovalComments("")
+      await fetchCalendar(selectedYear)
+      await fetchYears()
+    } catch (err) {
+      toast.error(err.message || "Failed to approve calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDirectApprove = async () => {
+    if (!canApprove) {
+      toast.error("You do not have permission to approve calendar")
+      return
+    }
+
+    if (!calendar?._id) return
+
+    if (
+      requiresCalendarNextApprovalSelection &&
+      getNextApproverSelectionCount(calendarNextApproversByStage) > 0
+    ) {
+      toast.error("Clear all next recommenders before approving directly")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.approveCalendar(
+        calendar._id,
+        String(approvalComments || "").trim(),
+        [],
+        [],
+        true
       )
       toast.success("Calendar approved successfully")
+      setCalendarNextApproversByStage(createEmptyNextApproverSelection())
       setShowApprovalModal(false)
       setApprovalComments("")
       await fetchCalendar(selectedYear)
@@ -1118,6 +1162,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     getHolidaysForDate: getHolidaysForCurrentDate,
     handleAddEvent,
     handleApprove,
+    handleDirectApprove,
     handleConfirmSubmitWithOverlap,
     handleCreateCalendar,
     handleEditEvent,

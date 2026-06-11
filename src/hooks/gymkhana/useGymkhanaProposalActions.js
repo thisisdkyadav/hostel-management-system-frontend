@@ -318,7 +318,7 @@ export const useGymkhanaProposalActions = ({
     const nextApprovers = buildNextApproversPayload(proposalNextApproversByStage)
 
     if (requiresProposalNextApprovalSelection && getNextApproverSelectionCount(proposalNextApproversByStage) === 0) {
-      toast.error("Select at least one next approver")
+      toast.error("Select at least one next recommender")
       return
     }
 
@@ -328,9 +328,55 @@ export const useGymkhanaProposalActions = ({
         proposalData._id,
         normalizedProposalActionComments,
         [],
-        requiresProposalNextApprovalSelection ? nextApprovers : []
+        requiresProposalNextApprovalSelection ? nextApprovers : [],
+        false
+      )
+      toast.success(requiresProposalNextApprovalSelection ? "Proposal recommended" : "Proposal approved")
+      setProposalNextApproversByStage(createEmptyNextApproverSelection())
+      setProposalActionComments("")
+      await fetchProposalForEvent(proposalEvent)
+      setProposalHistoryRefreshKey((prev) => prev + 1)
+      await fetchCalendar(selectedYear)
+      await refreshProposalsForApproval()
+    } catch (err) {
+      toast.error(err.message || "Failed to approve proposal")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDirectApproveProposal = async () => {
+    if (!canCurrentUserReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
+    if (!proposalData?._id) return
+    const normalizedProposalActionComments = String(proposalActionComments || "").trim()
+    if (!isProposalWithinApprovalLimit && maxApprovalAmount !== null) {
+      toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
+      return
+    }
+
+    if (
+      requiresProposalNextApprovalSelection &&
+      getNextApproverSelectionCount(proposalNextApproversByStage) > 0
+    ) {
+      toast.error("Clear all next recommenders before approving directly")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.approveProposal(
+        proposalData._id,
+        normalizedProposalActionComments,
+        [],
+        [],
+        true
       )
       toast.success("Proposal approved")
+      setProposalNextApproversByStage(createEmptyNextApproverSelection())
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
       setProposalHistoryRefreshKey((prev) => prev + 1)
@@ -451,6 +497,7 @@ export const useGymkhanaProposalActions = ({
     refreshProposalsForApproval,
     closeProposalModal,
     handleApproveProposal,
+    handleDirectApproveProposal,
     handleCreateOrUpdateProposal,
     handleProposalDetailsChange,
     handleProposalFormChange,

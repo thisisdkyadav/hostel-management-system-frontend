@@ -26,6 +26,10 @@ export const catererApi = {
     return apiClient.get("/dining-meal-verification/available-students").then(unwrapStandardResponse)
   },
 
+  getRebateSummary: () => {
+    return apiClient.get("/dining-meal-verification/rebate-summary").then(unwrapStandardResponse)
+  },
+
   manualMealVerification: (payload) => {
     return apiClient.post("/dining-meal-verification/manual", payload).then(unwrapStandardResponse)
   },

@@ -262,6 +262,7 @@ export const GymkhanaApprovalModal = ({
   submitting,
   onReject,
   onApprove,
+  onDirectApprove,
 }) => (
   <Modal
     isOpen={isOpen}
@@ -276,18 +277,32 @@ export const GymkhanaApprovalModal = ({
         <Button size="sm" variant="danger" onClick={onReject} loading={submitting}>
           <X size={14} /> Reject
         </Button>
-        <Button
-          size="sm"
-          variant="success"
-          onClick={onApprove}
-          loading={submitting}
-          disabled={
-            requiresCalendarNextApprovalSelection &&
-            Object.values(calendarNextApproversByStage || {}).filter(Boolean).length === 0
-          }
-        >
-          <Check size={14} /> Approve
-        </Button>
+        {requiresCalendarNextApprovalSelection ? (
+          <>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={onApprove}
+              loading={submitting}
+              disabled={Object.values(calendarNextApproversByStage || {}).filter(Boolean).length === 0}
+            >
+              <Check size={14} /> Recommend & Forward
+            </Button>
+            <Button
+              size="sm"
+              variant="success"
+              onClick={onDirectApprove}
+              loading={submitting}
+              disabled={Object.values(calendarNextApproversByStage || {}).filter(Boolean).length > 0}
+            >
+              <Check size={14} /> Approve
+            </Button>
+          </>
+        ) : (
+          <Button size="sm" variant="success" onClick={onApprove} loading={submitting}>
+            <Check size={14} /> Approve
+          </Button>
+        )}
       </div>
     }
   >
@@ -332,7 +347,7 @@ export const GymkhanaApprovalModal = ({
 
       {requiresCalendarNextApprovalSelection && (
         <div>
-          <label style={formLabelStyles}>Next Approvers</label>
+          <label style={formLabelStyles}>Next Recommenders</label>
           <div
             style={{
               display: "flex",

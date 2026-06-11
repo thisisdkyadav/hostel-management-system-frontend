@@ -50,6 +50,7 @@ export const GymkhanaProposalModal = ({
   handleRequestProposalRevision,
   handleRejectProposal,
   handleApproveProposal,
+  handleDirectApproveProposal,
   proposalHistoryRefreshKey,
   postStudentAffairsStageOptions,
   postStudentAffairsApproverOptionsByStage,
@@ -365,7 +366,7 @@ export const GymkhanaProposalModal = ({
                     }}
                   >
                     <label style={{ ...formLabelStyles, marginBottom: 0 }}>
-                      Next Approvers
+                      Next Recommenders
                     </label>
                     <span
                       style={{
@@ -443,15 +444,23 @@ export const GymkhanaProposalModal = ({
                   <Button
                     size="sm"
                     variant="success"
-                    onClick={handleApproveProposal}
+                    onClick={requiresProposalNextApprovalSelection ? handleDirectApproveProposal : handleApproveProposal}
                     loading={submitting}
-                    disabled={
-                      requiresProposalNextApprovalSelection &&
-                      Object.values(proposalNextApproversByStage || {}).filter(Boolean).length === 0
-                    }
+                    disabled={requiresProposalNextApprovalSelection && Object.values(proposalNextApproversByStage || {}).filter(Boolean).length > 0}
                   >
                     Approve
                   </Button>
+                  {requiresProposalNextApprovalSelection && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={handleApproveProposal}
+                      loading={submitting}
+                      disabled={Object.values(proposalNextApproversByStage || {}).filter(Boolean).length === 0}
+                    >
+                      Recommend & Forward
+                    </Button>
+                  )}
                 </div>
               </div>
             </EventDetailSectionCard>

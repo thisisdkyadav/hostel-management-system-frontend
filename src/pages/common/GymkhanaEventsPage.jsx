@@ -205,6 +205,7 @@ const EventsPage = () => {
         handleRequestProposalRevision={proposalState.handleRequestProposalRevision}
         handleRejectProposal={proposalState.handleRejectProposal}
         handleApproveProposal={proposalState.handleApproveProposal}
+        handleDirectApproveProposal={proposalState.handleDirectApproveProposal}
         proposalHistoryRefreshKey={proposalState.proposalHistoryRefreshKey}
         postStudentAffairsStageOptions={POST_STUDENT_AFFAIRS_STAGE_OPTIONS}
         postStudentAffairsApproverOptionsByStage={calendarState.postStudentAffairsApproverOptionsByStage}
@@ -371,6 +372,7 @@ const EventsPage = () => {
         submitting={calendarState.submitting}
         onReject={calendarState.handleReject}
         onApprove={calendarState.handleApprove}
+        onDirectApprove={calendarState.handleDirectApprove}
       />
 
       <GymkhanaOverlapConfirmModal

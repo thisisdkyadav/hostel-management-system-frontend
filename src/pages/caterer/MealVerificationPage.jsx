@@ -14,6 +14,7 @@ const STATUS_LABELS = {
   "unknown-student": "Unknown Student",
   "outside-meal-time": "Outside Meal Time",
   "no-active-period": "No Active Period",
+  "on-rebate": "On Rebate",
 }
 
 const STATUS_TONES = {
@@ -24,6 +25,7 @@ const STATUS_TONES = {
   "unknown-student": "danger",
   "outside-meal-time": "warning",
   "no-active-period": "warning",
+  "on-rebate": "warning",
 }
 
 const formatDateTime = (value) => {
@@ -40,6 +42,15 @@ const formatDateTime = (value) => {
 const formatPeriodRange = (period) => {
   if (!period) return "No active dining period"
   return `${formatDateTime(period.startDate)} to ${formatDateTime(period.endDate)}`
+}
+
+const formatDate = (value) => {
+  if (!value) return "-"
+  return new Date(value).toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
 }
 
 const getErrorMessage = (error, fallback) => error?.response?.data?.message || error?.message || fallback
@@ -96,6 +107,7 @@ const MealVerificationPage = () => {
   const { socket, isConnected } = useSocket()
   const [context, setContext] = useState({ caterer: null, currentPeriod: null })
   const [studentState, setStudentState] = useState({ students: [], total: 0, verifiedCount: 0, pendingCount: 0, currentMealSlot: null })
+  const [rebateSummary, setRebateSummary] = useState({ days: [], currentRebateCount: 0, upcomingRebateCount: 0 })
   const [entries, setEntries] = useState([])
   const [rollNumber, setRollNumber] = useState("")
   const [loading, setLoading] = useState(false)
@@ -114,7 +126,8 @@ const MealVerificationPage = () => {
     { label: "Allocated Students", value: studentState.total || 0 },
     { label: "Verified", value: studentState.verifiedCount || 0 },
     { label: "Pending", value: studentState.pendingCount || 0 },
-  ], [studentState])
+    { label: "On Rebate Today", value: studentState.rebateCount || rebateSummary.currentRebateCount || 0 },
+  ], [studentState, rebateSummary])
 
   const fetchContext = async () => {
     const response = await catererApi.getMealVerificationContext()
@@ -135,6 +148,7 @@ const MealVerificationPage = () => {
         total: Number(response?.total || 0),
         verifiedCount: Number(response?.verifiedCount || 0),
         pendingCount: Number(response?.pendingCount || 0),
+        rebateCount: Number(response?.rebateCount || 0),
         currentMealSlot: response?.currentMealSlot || null,
       })
     } catch (studentError) {
@@ -144,11 +158,20 @@ const MealVerificationPage = () => {
     }
   }
 
+  const fetchRebateSummary = async () => {
+    const response = await catererApi.getRebateSummary()
+    setRebateSummary({
+      days: Array.isArray(response?.days) ? response.days : [],
+      currentRebateCount: Number(response?.currentRebateCount || 0),
+      upcomingRebateCount: Number(response?.upcomingRebateCount || 0),
+    })
+  }
+
   const refreshAll = async () => {
     setLoading(true)
     setError("")
     try {
-      await Promise.all([fetchContext(), fetchFeed(), fetchStudents()])
+      await Promise.all([fetchContext(), fetchFeed(), fetchStudents(), fetchRebateSummary()])
     } catch (refreshError) {
       setError(getErrorMessage(refreshError, "Unable to load current meal verification details."))
     } finally {
@@ -172,6 +195,7 @@ const MealVerificationPage = () => {
         return [verification, ...prev].slice(0, 50)
       })
       fetchStudents().catch(() => {})
+      fetchRebateSummary().catch(() => {})
     }
 
     socket.on("dining-meal-verification:new", handleNewVerification)
@@ -196,6 +220,7 @@ const MealVerificationPage = () => {
         setEntries((prev) => [verification, ...prev.filter((entry) => entry.id !== verification.id)].slice(0, 50))
       }
       await fetchStudents()
+      await fetchRebateSummary()
       setSuccessMessage(response?.verification?.message || "Manual meal verification recorded.")
       setRollNumber("")
     } catch (manualError) {
@@ -285,7 +310,7 @@ const MealVerificationPage = () => {
                 <h3 style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Current Meal Count</h3>
               </CardHeader>
               <CardBody>
-                <div className="grid grid-cols-3 gap-[var(--spacing-2)]">
+                <div className="grid grid-cols-2 gap-[var(--spacing-2)]">
                   {stats.map((item) => (
                     <div key={item.label} className="rounded-[var(--radius-lg)] border border-[var(--color-border-light)] p-[var(--spacing-3)]">
                       <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>{item.label}</p>
@@ -296,6 +321,35 @@ const MealVerificationPage = () => {
               </CardBody>
             </Card>
           </div>
+
+          <Card>
+            <CardHeader>
+              <HStack gap="medium" align="center">
+                <Users size={22} style={{ color: "var(--color-primary)" }} />
+                <div>
+                  <h3 style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Rebates & Available Students</h3>
+                  <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    Today and the next two days, after approved rebates are excluded.
+                  </p>
+                </div>
+              </HStack>
+            </CardHeader>
+            <CardBody>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-3)]">
+                {(rebateSummary.days || []).map((day) => (
+                  <div key={day.date} className="rounded-[var(--radius-xl)] border border-[var(--color-border-light)] p-[var(--spacing-4)]">
+                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{formatDate(day.date)}</p>
+                    <p style={{ color: "var(--color-text-heading)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-2xl)" }}>
+                      {day.availableStudentCount || 0}
+                    </p>
+                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                      available of {day.allocatedStudentCount || 0}; {day.approvedRebateCount || 0} on rebate
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardBody>
+          </Card>
 
           <div className="overflow-x-auto rounded-[var(--radius-xl)] border border-[var(--color-border-light)] bg-[var(--color-bg-primary)]">
             <Table>

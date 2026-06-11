@@ -11,6 +11,7 @@ import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 
 const ACTION_ICONS = {
     submitted: Send,
+    recommended: Check,
     approved: Check,
     rejected: X,
     revision_requested: FileText,
@@ -18,6 +19,7 @@ const ACTION_ICONS = {
 
 const ACTION_COLORS = {
     submitted: "info",
+    recommended: "warning",
     approved: "success",
     rejected: "danger",
     revision_requested: "warning",
@@ -103,22 +105,13 @@ const ApprovalHistory = ({
             </div>
         )
     }
-
-    const isDosaStage = (stage) => stage === "Dean SA"
-
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             {history.map((log, idx) => {
                 const Icon = ACTION_ICONS[log.action] || Clock
-                const baseColor = ACTION_COLORS[log.action] || "default"
+                const color = ACTION_COLORS[log.action] || "default"
                 const safeComments = String(log?.comments || "").trim()
-                const actionLabel =
-                    log.action === "approved"
-                        ? isDosaStage(log.stage)
-                            ? "Approved"
-                            : "Recommended"
-                        : formatActionLabel(log.action)
-                const color = actionLabel === "Recommended" ? "warning" : baseColor
+                const actionLabel = formatActionLabel(log.action)
 
                 return (
                     <div

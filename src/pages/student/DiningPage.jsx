@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Modal } from "czero/react"
-import { Alert, Card, CardBody, CardFooter, CardHeader, HStack, LoadingState, VStack } from "@/components/ui"
+import { Button, Input, Modal, Table } from "czero/react"
+import { Alert, Card, CardBody, CardFooter, CardHeader, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
-import { CalendarDays, CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
+import { CalendarDays, CheckCircle2, Clock, FileText, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
 
 const REFRESH_INTERVAL_MS = 5000
 
@@ -23,6 +23,15 @@ const formatPeriodRange = (period) => {
   return `${formatDateTime(period.startDate)} to ${formatDateTime(period.endDate)}`
 }
 
+const formatDate = (value) => {
+  if (!value) return "-"
+  return new Date(value).toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
+}
+
 const getErrorMessage = (error, fallback) => {
   return error?.response?.data?.message || error?.message || fallback
 }
@@ -38,16 +47,93 @@ const InfoTile = ({ label, value }) => (
   </div>
 )
 
+const RebateRequestModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
+  const [formData, setFormData] = useState({ startDate: "", endDate: "", reason: "" })
+  const [error, setError] = useState("")
+
+  if (!isOpen) return null
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    if (!formData.startDate || !formData.endDate) {
+      setError("Please select start and end dates.")
+      return
+    }
+    if (new Date(formData.startDate) > new Date(formData.endDate)) {
+      setError("Start date must be before or equal to end date.")
+      return
+    }
+
+    setError("")
+    await onSubmit(formData)
+  }
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Request Dining Rebate" width={720} minHeight="50vh">
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          <Alert type="info" icon>
+            Short-term rebates are approved automatically when they follow the period rules. Longer requests are sent to admin for approval.
+          </Alert>
+          {error && <Alert type="error" icon>{error}</Alert>}
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+            <div>
+              <Label htmlFor="rebate-start" required>Start Date</Label>
+              <Input
+                id="rebate-start"
+                type="date"
+                value={formData.startDate}
+                onChange={(event) => setFormData((prev) => ({ ...prev, startDate: event.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="rebate-end" required>End Date</Label>
+              <Input
+                id="rebate-end"
+                type="date"
+                value={formData.endDate}
+                onChange={(event) => setFormData((prev) => ({ ...prev, endDate: event.target.value }))}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="rebate-reason">Reason</Label>
+            <Textarea
+              id="rebate-reason"
+              rows={4}
+              value={formData.reason}
+              onChange={(event) => setFormData((prev) => ({ ...prev, reason: event.target.value }))}
+              placeholder="Add a short reason for the rebate request"
+            />
+          </div>
+
+          <HStack justify="end" gap="small" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+            <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
+              Submit Request
+            </Button>
+          </HStack>
+        </VStack>
+      </form>
+    </Modal>
+  )
+}
+
 const DiningStatusCard = ({ title, subtitle, icon: Icon, children, tone = "primary" }) => {
   const toneColor = tone === "success" ? "var(--color-success)" : tone === "warning" ? "var(--color-warning)" : "var(--color-primary)"
   const toneBg = tone === "success" ? "var(--color-success-bg-light)" : tone === "warning" ? "var(--color-warning-bg-light)" : "var(--color-primary-bg)"
+  const iconNode = Icon ? <Icon size={22} /> : null
 
   return (
     <Card>
       <CardHeader>
         <HStack gap="medium" align="center">
           <div className="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center" style={{ backgroundColor: toneBg, color: toneColor }}>
-            <Icon size={22} />
+            {iconNode}
           </div>
           <div>
             <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
@@ -144,6 +230,9 @@ const DiningPage = () => {
   const [refreshing, setRefreshing] = useState(false)
   const [selectingCatererId, setSelectingCatererId] = useState("")
   const [showAllocationModal, setShowAllocationModal] = useState(false)
+  const [showRebateModal, setShowRebateModal] = useState(false)
+  const [rebates, setRebates] = useState([])
+  const [rebateSubmitting, setRebateSubmitting] = useState(false)
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
 
@@ -181,8 +270,18 @@ const DiningPage = () => {
     }
   }
 
+  const fetchRebates = async () => {
+    try {
+      const response = await studentApi.getDiningRebates()
+      setRebates(Array.isArray(response?.rebates) ? response.rebates : [])
+    } catch (rebateError) {
+      setError(getErrorMessage(rebateError, "Unable to load dining rebate requests."))
+    }
+  }
+
   useEffect(() => {
     fetchPortalState()
+    fetchRebates()
 
     const intervalId = window.setInterval(() => {
       fetchPortalState({ silent: true })
@@ -210,6 +309,25 @@ const DiningPage = () => {
       await fetchPortalState({ silent: true })
     } finally {
       setSelectingCatererId("")
+    }
+  }
+
+  const handleRequestRebate = async (payload) => {
+    setRebateSubmitting(true)
+    setSuccessMessage("")
+    setError("")
+    try {
+      const response = await studentApi.requestDiningRebate(payload)
+      setRebates(Array.isArray(response?.rebates) ? [...response.rebates, ...rebates] : rebates)
+      await fetchRebates()
+      await fetchPortalState({ silent: true })
+      setShowRebateModal(false)
+      const hasPending = Array.isArray(response?.rebates) && response.rebates.some((rebate) => rebate.status === "pending")
+      setSuccessMessage(hasPending ? "Long-term rebate request submitted for approval." : "Short-term rebate approved successfully.")
+    } catch (rebateError) {
+      setError(getErrorMessage(rebateError, "Unable to submit rebate request."))
+    } finally {
+      setRebateSubmitting(false)
     }
   }
 
@@ -255,6 +373,14 @@ const DiningPage = () => {
               <div style={{ marginTop: "var(--spacing-5)" }}>
                 <Button variant="primary" onClick={() => setShowAllocationModal(true)}>
                   <UtensilsCrossed size={18} /> Select Caterer for New Allocation
+                </Button>
+              </div>
+            )}
+
+            {(currentPeriod?.selectedAllocation || selectedUpcomingPeriod?.selectedAllocation) && (
+              <div style={{ marginTop: canSelect ? "var(--spacing-3)" : "var(--spacing-5)" }}>
+                <Button variant="secondary" onClick={() => setShowRebateModal(true)}>
+                  <FileText size={18} /> Request Rebate
                 </Button>
               </div>
             )}
@@ -314,6 +440,45 @@ const DiningPage = () => {
               </Alert>
             </DiningStatusCard>
           )}
+
+          <DiningStatusCard
+            title="Rebate Requests"
+            subtitle="Your approved, pending, and rejected dining rebate requests"
+            icon={FileText}
+            tone="primary"
+          >
+            <div className="overflow-x-auto rounded-[var(--radius-xl)] border border-[var(--color-border-light)]">
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head>Dates</Table.Head>
+                    <Table.Head>Caterer</Table.Head>
+                    <Table.Head>Days</Table.Head>
+                    <Table.Head>Type</Table.Head>
+                    <Table.Head>Status</Table.Head>
+                    <Table.Head>Comment</Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {rebates.map((rebate) => (
+                    <Table.Row key={rebate.id}>
+                      <Table.Cell>{formatDate(rebate.startDate)} - {formatDate(rebate.endDate)}</Table.Cell>
+                      <Table.Cell>{rebate.caterer?.name || "-"}</Table.Cell>
+                      <Table.Cell>{rebate.dayCount}</Table.Cell>
+                      <Table.Cell>{rebate.type === "long-term" ? "Long-term" : "Short-term"}</Table.Cell>
+                      <Table.Cell>{rebate.status === "approved" ? "Approved" : rebate.status === "rejected" ? "Rejected" : "Pending"}</Table.Cell>
+                      <Table.Cell>{rebate.adminComment || rebate.reason || "-"}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </div>
+            {rebates.length === 0 && (
+              <div style={{ marginTop: "var(--spacing-4)" }}>
+                <Alert type="info" icon>No rebate requests submitted yet.</Alert>
+              </div>
+            )}
+          </DiningStatusCard>
         </VStack>
       </div>
 
@@ -325,6 +490,14 @@ const DiningPage = () => {
         onClose={() => setShowAllocationModal(false)}
         onSelect={handleSelectCaterer}
       />
+      {showRebateModal && (
+        <RebateRequestModal
+          isOpen={showRebateModal}
+          onClose={() => setShowRebateModal(false)}
+          onSubmit={handleRequestRebate}
+          isSubmitting={rebateSubmitting}
+        />
+      )}
     </div>
   )
 }

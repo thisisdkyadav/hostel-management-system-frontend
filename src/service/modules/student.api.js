@@ -235,6 +235,20 @@ export const studentApi = {
   selectDiningCaterer: (catererId) => {
     return apiClient.post("/students/dining/select", { catererId }).then(unwrapStandardResponse)
   },
+
+  /**
+   * Get student dining rebate requests
+   */
+  getDiningRebates: () => {
+    return apiClient.get("/students/dining/rebates").then(unwrapStandardResponse)
+  },
+
+  /**
+   * Request a dining rebate
+   */
+  requestDiningRebate: (payload) => {
+    return apiClient.post("/students/dining/rebates", payload).then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi
