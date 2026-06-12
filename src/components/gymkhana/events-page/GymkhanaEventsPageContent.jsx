@@ -133,9 +133,9 @@ export default function GymkhanaEventsPageContent({
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <StatCards
               stats={budgetStats}
-              columns={Math.min(Math.max(budgetStats.length, 1), 6)}
+              columns={Math.min(Math.max(budgetStats.length, 1), 7)}
               loading={loading || !calendar}
-              loadingCount={Math.min(Math.max(budgetStats.length, 1), 6)}
+              loadingCount={Math.min(Math.max(budgetStats.length, 1), 7)}
             />
           </div>
         )}
