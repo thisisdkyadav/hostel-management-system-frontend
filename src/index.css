@@ -323,7 +323,7 @@ body {
 /* Sidebar-specific scrollbar (inherits global but can override if needed) */
 .sidebar-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #a8c9fc transparent;
+  scrollbar-color: var(--color-border-dark) transparent;
 }
 
 .sidebar-scrollbar::-webkit-scrollbar {
@@ -335,10 +335,10 @@ body {
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #a8c9fc;
-  border-radius: 10px;
+  background: var(--color-border-dark);
+  border-radius: var(--radius-full, 9999px);
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3b7de8;
+  background: var(--color-text-muted);
 }

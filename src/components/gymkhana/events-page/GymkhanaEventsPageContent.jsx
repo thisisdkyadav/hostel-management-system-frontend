@@ -136,6 +136,7 @@ export default function GymkhanaEventsPageContent({
               columns={Math.min(Math.max(budgetStats.length, 1), 7)}
               loading={loading || !calendar}
               loadingCount={Math.min(Math.max(budgetStats.length, 1), 7)}
+              valueSize="sm"
             />
           </div>
         )}

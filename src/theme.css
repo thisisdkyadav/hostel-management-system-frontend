@@ -132,6 +132,17 @@
   --color-coed-card-tint: rgba(147, 51, 234, 0.05);
 
   /* ============================================
+     ADMIN SIDEBAR - CATEGORY ACCENTS
+     One accent per admin nav category; pair with
+     color-mix(...) for tints so dark mode stays correct
+     ============================================ */
+  --color-cat-home: var(--color-primary);
+  --color-cat-hostels: #059669;
+  --color-cat-student-affairs: #D97706;
+  --color-cat-staff: #0284C7;
+  --color-cat-dining: #E11D48;
+
+  /* ============================================
      COLOR PALETTE - ADDITIONAL COLORS
      Miscellaneous UI colors
      ============================================ */
@@ -750,6 +761,13 @@
   --color-boys-card-tint: rgba(91, 159, 232, 0.07);
   --color-girls-card-tint: rgba(244, 114, 182, 0.07);
   --color-coed-card-tint: rgba(192, 132, 252, 0.07);
+
+  /* Admin sidebar category accents - lightened for dark surfaces */
+  --color-cat-home: var(--color-primary);
+  --color-cat-hostels: #34D399;
+  --color-cat-student-affairs: #FBBF24;
+  --color-cat-staff: #38BDF8;
+  --color-cat-dining: #FB7185;
 
   /* Additional Colors - Neutral */
   --color-purple-bg: #251A2D;

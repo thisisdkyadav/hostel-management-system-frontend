@@ -24,8 +24,15 @@ const ShimmerBar = ({ width, height, style }) => (
  * @param {string} color - Icon/value color (CSS color or variable)
  * @param {boolean} tintBackground - Whether to tint the card background with the color
  * @param {boolean} loading - Keep layout fixed and show skeleton only for value
+ * @param {"sm"|"md"|"lg"} valueSize - Main value font size (default: "lg")
  */
-export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false, loading = false }) => {
+const VALUE_SIZE_CLASSES = {
+  sm: "text-base md:text-lg",
+  md: "text-lg md:text-xl",
+  lg: "text-xl md:text-2xl",
+}
+
+export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false, loading = false, valueSize = "lg" }) => {
   const getColorValue = (cssVar) => {
     if (cssVar.startsWith("var(")) return null
     return cssVar
@@ -66,7 +73,7 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
         {loading ? (
           <ShimmerBar width="3.5rem" height={24} style={{ marginBottom: 2 }} />
         ) : (
-          <h3 className="text-xl md:text-2xl font-bold leading-none" style={{ color: colorValue }}>
+          <h3 className={`${VALUE_SIZE_CLASSES[valueSize] || VALUE_SIZE_CLASSES.lg} font-bold leading-none`} style={{ color: colorValue }}>
             {value}
           </h3>
         )}
@@ -83,8 +90,9 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
  * @param {number} columns - Number of grid columns (default: 4)
  * @param {boolean} loading - Show skeleton for all cards (default: false)
  * @param {number} loadingCount - Number of skeleton cards to show when loading (default: columns)
+ * @param {"sm"|"md"|"lg"} valueSize - Main value font size for all cards (default: "lg")
  */
-const StatCards = ({ stats, columns = 4, loading = false, loadingCount }) => {
+const StatCards = ({ stats, columns = 4, loading = false, loadingCount, valueSize = "lg" }) => {
   const getGridClass = () => {
     let gridClass = "grid-cols-2 max-[375px]:grid-cols-1"
     if (columns === 1) gridClass = "grid-cols-1"
@@ -124,6 +132,7 @@ const StatCards = ({ stats, columns = 4, loading = false, loadingCount }) => {
           color={stat.color}
           tintBackground={stat.tintBackground}
           loading={loading}
+          valueSize={valueSize}
         />
       ))}
     </div>

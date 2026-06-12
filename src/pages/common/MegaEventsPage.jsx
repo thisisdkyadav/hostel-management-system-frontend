@@ -66,51 +66,117 @@ const REGISTRATION_CATEGORIES = [
   { key: "industryProfessionals", label: "Industry / Professionals" },
 ]
 
-const footerTabStyles = {
-  tabsBar: {
+const layoutStyles = {
+  masterDetail: {
     display: "flex",
-    alignItems: "center",
-    backgroundColor: "var(--color-bg-tertiary)",
-    borderTop: "var(--border-1) solid var(--color-border-primary)",
-    padding: 0,
-    flexShrink: 0,
-    minHeight: "42px",
-    overflowX: "auto",
-    overflowY: "hidden",
-  },
-  tabsList: {
-    display: "flex",
-    alignItems: "stretch",
+    gap: "var(--spacing-4)",
     height: "100%",
-    gap: 0,
+    minHeight: 0,
   },
-  tab: {
+  sidebar: {
+    width: 264,
+    flexShrink: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-3)",
+    backgroundColor: "var(--color-bg-primary)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    borderRadius: "var(--radius-card)",
+    padding: "var(--spacing-3)",
+    minHeight: 0,
+  },
+  sidebarHeader: {
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-text-muted)",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    padding: "0 var(--spacing-1)",
+  },
+  sidebarList: {
+    flex: 1,
+    minHeight: 0,
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-1)",
+  },
+  seriesItem: {
     display: "flex",
     alignItems: "center",
-    padding: "0 var(--spacing-4)",
-    minHeight: "42px",
+    gap: "var(--spacing-2)",
+    width: "100%",
+    textAlign: "left",
+    padding: "var(--spacing-2) var(--spacing-3)",
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid transparent",
+    backgroundColor: "transparent",
+    color: "var(--color-text-body)",
     fontSize: "var(--font-size-sm)",
     fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-muted)",
-    backgroundColor: "transparent",
-    border: "none",
-    borderRight: "var(--border-1) solid var(--color-border-primary)",
     cursor: "pointer",
-    whiteSpace: "nowrap",
     transition: "var(--transition-colors)",
-    minWidth: "120px",
-    justifyContent: "center",
-    gap: "var(--spacing-2)",
   },
-  tabActive: {
-    backgroundColor: "var(--color-bg-primary)",
-    color: "var(--color-primary)",
-    borderBottom: "var(--border-2) solid var(--color-primary)",
-    fontWeight: "var(--font-weight-semibold)",
-  },
-  addTab: {
+  seriesItemActive: {
     backgroundColor: "var(--color-primary-bg)",
     color: "var(--color-primary)",
+    borderColor: "var(--color-primary)",
+    fontWeight: "var(--font-weight-semibold)",
+  },
+  detail: {
+    flex: 1,
+    minWidth: 0,
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-4)",
+  },
+  detailHeader: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "var(--spacing-2)",
+  },
+  occStrip: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "var(--spacing-2)",
+  },
+  occChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    borderRadius: "var(--radius-button-pill)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    color: "var(--color-text-body)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    cursor: "pointer",
+    transition: "var(--transition-colors)",
+    whiteSpace: "nowrap",
+  },
+  occChipActive: {
+    borderColor: "var(--color-primary)",
+    backgroundColor: "var(--color-primary-bg)",
+    color: "var(--color-primary)",
+    fontWeight: "var(--font-weight-semibold)",
+  },
+  summaryGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+    gap: "var(--spacing-3)",
+  },
+  miniStat: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-2)",
+    padding: "var(--spacing-3)",
+    borderRadius: "var(--radius-card-sm)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
   },
 }
 
@@ -212,6 +278,49 @@ const SectionHeader = ({ children }) => (
   <div style={sectionHeaderStyle}>
     <span style={sectionLabelStyle}>{children}</span>
     <div style={sectionDividerStyle} />
+  </div>
+)
+
+const MiniStat = ({ icon: Icon, label, value, tone = "var(--color-primary)" }) => (
+  <div style={layoutStyles.miniStat}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 26,
+          height: 26,
+          borderRadius: "var(--radius-md)",
+          backgroundColor: "var(--color-bg-secondary)",
+          color: tone,
+        }}
+      >
+        {Icon && <Icon size={14} />}
+      </span>
+      <span
+        style={{
+          fontSize: "var(--font-size-xs)",
+          fontWeight: "var(--font-weight-semibold)",
+          color: "var(--color-text-muted)",
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+        }}
+      >
+        {label}
+      </span>
+    </div>
+    <div
+      style={{
+        fontSize: "var(--font-size-base)",
+        fontWeight: "var(--font-weight-semibold)",
+        color: "var(--color-text-heading)",
+        textTransform: "capitalize",
+        wordBreak: "break-word",
+      }}
+    >
+      {value}
+    </div>
   </div>
 )
 
@@ -687,7 +796,6 @@ const MegaEventsPage = () => {
   const [occurrences, setOccurrences] = useState([])
   const [latestOccurrence, setLatestOccurrence] = useState(null)
   const [selectedOccurrenceId, setSelectedOccurrenceId] = useState("")
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false)
 
   const [proposalData, setProposalData] = useState(null)
   const [expenseData, setExpenseData] = useState(null)
@@ -859,7 +967,6 @@ const MegaEventsPage = () => {
       const latest = orderedOccurrences[0] || null
       setLatestOccurrence(latest)
       setSelectedOccurrenceId(latest?._id || "")
-      setIsHistoryOpen(false)
     } catch (err) {
       setError(err.message || "Failed to load mega event details")
     }
@@ -1255,11 +1362,6 @@ const MegaEventsPage = () => {
 
   const headerActions = (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--spacing-2)" }}>
-      {selectedSeries && occurrences.length > 0 && (
-        <Button size="md" variant="secondary" onClick={() => setIsHistoryOpen(true)}>
-          <History size={16} /> History
-        </Button>
-      )}
       {canCreateOccurrence && (
         <Button size="md" onClick={() => setIsCreateOccurrenceOpen(true)}>
           <Plus size={16} /> Add Occurrence
@@ -1287,7 +1389,7 @@ const MegaEventsPage = () => {
         {headerActions}
       </PageHeader>
 
-      <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
+      <div style={{ flex: 1, overflow: "hidden", padding: "var(--spacing-6)" }}>
         {loading ? (
           <LoadingState message="Loading mega events..." />
         ) : error ? (
@@ -1298,131 +1400,184 @@ const MegaEventsPage = () => {
               <EmptyState
                 title="No Mega Event Series"
                 message={canCreateSeries
-                  ? "Create your first mega event series from the footer to get started."
+                  ? "Create your first mega event series to get started."
                   : "No mega event series available yet."}
               />
+              {canCreateSeries && (
+                <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--spacing-4)" }}>
+                  <Button onClick={() => setIsCreateSeriesOpen(true)}>
+                    <Plus size={16} /> New Series
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ) : (
-          <>
-            {selectedSeries && (
-              <Card style={{ height: "100%" }}>
-                <CardContent style={{ height: "100%", display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-                  {!selectedOccurrence ? (
-                    <Alert type="info" title="No occurrence yet">
-                      Create a new occurrence for this mega event series.
-                    </Alert>
-                  ) : (
-                    <>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: "var(--spacing-2)",
-                        }}
-                      >
-                        <div>
-                          <h3 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedSeries.name}</h3>
-                          <p style={{ margin: 0, marginTop: 2, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                            {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
-                          </p>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-                          <Badge
-                            variant={
-                              selectedOccurrence?._id && selectedOccurrence._id === latestOccurrence?._id
-                                ? "success"
-                                : "default"
-                            }
-                          >
-                            {selectedOccurrence?._id && selectedOccurrence._id === latestOccurrence?._id
-                              ? "Present"
-                              : "Past"}
-                          </Badge>
-                          <Badge variant={statusBadgeVariant(selectedOccurrence.status)}>
-                            {(selectedOccurrence.status || "unknown").replace(/_/g, " ")}
-                          </Badge>
-                        </div>
-                      </div>
+          <div style={layoutStyles.masterDetail}>
+            <aside style={layoutStyles.sidebar}>
+              <div style={layoutStyles.sidebarHeader}>Series</div>
+              <div style={layoutStyles.sidebarList}>
+                {series.map((entry) => {
+                  const isActive = selectedSeriesId === entry._id
+                  return (
+                    <button
+                      key={entry._id}
+                      type="button"
+                      onClick={() => setSelectedSeriesId(entry._id)}
+                      style={{
+                        ...layoutStyles.seriesItem,
+                        ...(isActive ? layoutStyles.seriesItemActive : {}),
+                      }}
+                    >
+                      <CalendarDays size={15} style={{ flexShrink: 0 }} />
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{entry.name}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              {canCreateSeries && (
+                <Button size="sm" variant="secondary" fullWidth onClick={() => setIsCreateSeriesOpen(true)}>
+                  <Plus size={14} /> New Series
+                </Button>
+              )}
+            </aside>
 
-                      <div
-                        style={{
-                          flex: 1,
-                          padding: "var(--spacing-4)",
-                          borderRadius: "var(--radius-card-sm)",
-                          backgroundColor: "var(--color-bg-secondary)",
-                        }}
-                      >
-                        <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
-                        {selectedOccurrence.description ? (
-                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{selectedOccurrence.description}</p>
-                        ) : (
-                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                            Description will be available after proposal details are added.
-                          </p>
-                        )}
+            <section style={layoutStyles.detail}>
+              {!selectedSeries ? (
+                <EmptyState
+                  title="Select a series"
+                  message="Choose a mega event series from the list to view its occurrences."
+                />
+              ) : !selectedOccurrence ? (
+                <Alert type="info" title="No occurrence yet">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", alignItems: "flex-start" }}>
+                    <span>Create a new occurrence for {selectedSeries.name}.</span>
+                    {canCreateOccurrence && (
+                      <Button size="sm" onClick={() => setIsCreateOccurrenceOpen(true)}>
+                        <Plus size={14} /> Add Occurrence
+                      </Button>
+                    )}
+                  </div>
+                </Alert>
+              ) : (
+                <>
+                  <div style={layoutStyles.detailHeader}>
+                    <div>
+                      <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedSeries.name}</h2>
+                      <p style={{ margin: 0, marginTop: 2, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                        {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
+                      </p>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                      <Badge variant={selectedOccurrence._id === latestOccurrence?._id ? "success" : "default"}>
+                        {selectedOccurrence._id === latestOccurrence?._id ? "Present" : "Past"}
+                      </Badge>
+                      <Badge variant={statusBadgeVariant(selectedOccurrence.status)}>
+                        {(selectedOccurrence.status || "unknown").replace(/_/g, " ")}
+                      </Badge>
+                    </div>
+                  </div>
 
-                        <div style={{ marginTop: "var(--spacing-4)", display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                          {canCreateOrEditProposal && (
-                            <Button size="sm" onClick={() => setIsProposalOpen(true)}>
-                              <FileText size={14} /> {proposalData ? "Edit Proposal" : "Submit Proposal"}
-                            </Button>
-                          )}
-                          {(proposalData || canReviewProposal) && (
-                            <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(true)}>
-                              <History size={14} /> Proposal Review
-                            </Button>
-                          )}
-                          {(expenseData || canCreateOrEditExpense || canReviewExpense) && (
-                            <Button size="sm" variant="secondary" onClick={() => setIsExpenseOpen(true)}>
-                              <Receipt size={14} /> Expense Flow
-                            </Button>
-                          )}
-                        </div>
-                        {!canCreateOrEditProposal && !canCreateOrEditExpense && !canReviewProposal && !canReviewExpense && (
-                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                            You have read-only access for this occurrence.
-                          </p>
-                        )}
+                  {occurrences.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                      <span style={sectionLabelStyle}>Occurrences</span>
+                      <div style={layoutStyles.occStrip}>
+                        {occurrences.map((entry) => {
+                          const isActive = selectedOccurrence._id === entry._id
+                          const isPresent = latestOccurrence?._id === entry._id
+                          return (
+                            <button
+                              key={entry._id}
+                              type="button"
+                              onClick={() => setSelectedOccurrenceId(entry._id)}
+                              style={{
+                                ...layoutStyles.occChip,
+                                ...(isActive ? layoutStyles.occChipActive : {}),
+                              }}
+                            >
+                              {isPresent && (
+                                <span style={{ width: 7, height: 7, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success)" }} />
+                              )}
+                              <span>{entry.title}</span>
+                            </button>
+                          )
+                        })}
                       </div>
-                    </>
+                    </div>
                   )}
-                </CardContent>
-              </Card>
-            )}
-          </>
-        )}
-      </div>
 
-      <div style={footerTabStyles.tabsBar}>
-        <div style={footerTabStyles.tabsList}>
-          {series.map((entry) => (
-            <button
-              key={entry._id}
-              type="button"
-              onClick={() => setSelectedSeriesId(entry._id)}
-              style={{
-                ...footerTabStyles.tab,
-                ...(selectedSeriesId === entry._id ? footerTabStyles.tabActive : {}),
-              }}
-            >
-              <CalendarDays size={14} />
-              {entry.name}
-            </button>
-          ))}
-          {canCreateSeries && (
-            <button
-              type="button"
-              onClick={() => setIsCreateSeriesOpen(true)}
-              style={{ ...footerTabStyles.tab, ...footerTabStyles.addTab }}
-            >
-              <Plus size={14} />
-              Add Event
-            </button>
-          )}
-        </div>
+                  <div style={layoutStyles.summaryGrid}>
+                    <MiniStat
+                      icon={FileText}
+                      label="Proposal"
+                      tone="var(--color-primary)"
+                      value={proposalData?.status ? proposalData.status.replace(/_/g, " ") : "Not started"}
+                    />
+                    <MiniStat
+                      icon={Receipt}
+                      label="Expense"
+                      tone="var(--color-warning)"
+                      value={expenseData?.approvalStatus ? expenseData.approvalStatus.replace(/_/g, " ") : "Not started"}
+                    />
+                    <MiniStat
+                      icon={DollarSign}
+                      label="Expected Income"
+                      tone="var(--color-success)"
+                      value={proposalData?.totalExpectedIncome != null ? `₹${Number(proposalData.totalExpectedIncome).toLocaleString()}` : "—"}
+                    />
+                    <MiniStat
+                      icon={DollarSign}
+                      label="Expenditure"
+                      tone="var(--color-info)"
+                      value={proposalData?.totalExpenditure != null ? `₹${Number(proposalData.totalExpenditure).toLocaleString()}` : "—"}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      padding: "var(--spacing-4)",
+                      borderRadius: "var(--radius-card-sm)",
+                      border: "var(--border-1) solid var(--color-border-primary)",
+                      backgroundColor: "var(--color-bg-primary)",
+                    }}
+                  >
+                    <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
+                    {selectedOccurrence.description ? (
+                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>{selectedOccurrence.description}</p>
+                    ) : (
+                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                        Description will be available after proposal details are added.
+                      </p>
+                    )}
+
+                    <div style={{ marginTop: "var(--spacing-4)", display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                      {canCreateOrEditProposal && (
+                        <Button size="sm" onClick={() => setIsProposalOpen(true)}>
+                          <FileText size={14} /> {proposalData ? "Edit Proposal" : "Submit Proposal"}
+                        </Button>
+                      )}
+                      {(proposalData || canReviewProposal) && (
+                        <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(true)}>
+                          <History size={14} /> Proposal Review
+                        </Button>
+                      )}
+                      {(expenseData || canCreateOrEditExpense || canReviewExpense) && (
+                        <Button size="sm" variant="secondary" onClick={() => setIsExpenseOpen(true)}>
+                          <Receipt size={14} /> Expense Flow
+                        </Button>
+                      )}
+                    </div>
+                    {!canCreateOrEditProposal && !canCreateOrEditExpense && !canReviewProposal && !canReviewExpense && (
+                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                        You have read-only access for this occurrence.
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
+          </div>
+        )}
       </div>
 
       <Modal
@@ -1492,62 +1647,6 @@ const MegaEventsPage = () => {
               />
             </FormField>
           </div>
-        </div>
-      </Modal>
-
-      <Modal
-        title={`${selectedSeries?.name || "Mega Event"} — Occurrences`}
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        width={480}
-        footer={<Button size="sm" variant="secondary" onClick={() => setIsHistoryOpen(false)}>Close</Button>}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-          {occurrences.length === 0 ? (
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No occurrences available.</p>
-          ) : (
-            occurrences.map((entry) => {
-              const isSelected = selectedOccurrenceId === entry._id
-              const isPresent = latestOccurrence?._id === entry._id
-              return (
-                <button
-                  key={entry._id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedOccurrenceId(entry._id)
-                    setIsHistoryOpen(false)
-                  }}
-                  style={{
-                    ...compactCardStyle,
-                    textAlign: "left",
-                    cursor: "pointer",
-                    transition: "var(--transition-colors)",
-                    ...(isSelected ? {
-                      borderColor: "var(--color-primary)",
-                      backgroundColor: "var(--color-primary-bg)",
-                    } : {}),
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
-                    <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
-                      {entry.title}
-                    </span>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
-                      <Badge variant={isPresent ? "success" : "default"} size="sm">
-                        {isPresent ? "Present" : "Past"}
-                      </Badge>
-                      <Badge variant={statusBadgeVariant(entry.status)} size="sm">
-                        {(entry.status || "unknown").replace(/_/g, " ")}
-                      </Badge>
-                    </div>
-                  </div>
-                  <p style={{ marginTop: 2, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                    {formatDateRange(entry.scheduledStartDate, entry.scheduledEndDate)}
-                  </p>
-                </button>
-              )
-            })
-          )}
         </div>
       </Modal>
 

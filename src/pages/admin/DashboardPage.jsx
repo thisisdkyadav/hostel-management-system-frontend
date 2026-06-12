@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { FaUser, FaUsers, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa"
-import { BiBuildings } from "react-icons/bi"
-import { TbBuildingCommunity } from "react-icons/tb"
-import { MdDashboard, MdOutlineEvent, MdNotifications } from "react-icons/md"
+import { FaUser, FaCalendarAlt } from "react-icons/fa"
+import { MdOutlineEvent } from "react-icons/md"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { HiStatusOnline } from "react-icons/hi"
-import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
@@ -105,6 +102,27 @@ const HeaderStatBadge = ({ label, value }) => (
   </span>
 )
 
+// Unified card section title with accent bar and optional "View all" link
+const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = "View all", children }) => (
+  <div className="flex justify-between items-center gap-[var(--spacing-2)] mb-[var(--spacing-2)]">
+    <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
+      <span className="w-1 h-4 rounded-[var(--radius-full)]" style={{ backgroundColor: accent }}></span>
+      {title}
+    </h2>
+    <div className="flex items-center gap-[var(--spacing-1-5)]">
+      {children}
+      {to && (
+        <Link
+          to={to}
+          className="text-[0.7rem] font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-[var(--transition-colors)] whitespace-nowrap"
+        >
+          {linkLabel} →
+        </Link>
+      )}
+    </div>
+  </div>
+)
+
 const buildComplaintDashboardLink = (filters = {}) => {
   const params = new URLSearchParams()
 
@@ -119,12 +137,9 @@ const buildComplaintDashboardLink = (filters = {}) => {
 }
 
 const DashboardPage = () => {
-  const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [currentDate] = useState(new Date())
-  const [studentView, setStudentView] = useState("degree") // Default to degree view
   const [normalizedView, setNormalizedView] = useState(false)
   const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
   const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
@@ -329,7 +344,7 @@ const DashboardPage = () => {
         {/* Main dashboard grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-[var(--spacing-6)]">
           {/* Student data card */}
-          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
+          <Card className="xl:col-span-2 h-[29rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <div className="flex justify-between items-center mb-[var(--spacing-4)]">
@@ -343,40 +358,34 @@ const DashboardPage = () => {
             ) : (
               <div className="h-full flex flex-col overflow-auto">
                 {/* Compact Header */}
-                <div className="flex justify-between items-center mb-[var(--spacing-2)]">
-                  <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
-                    <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
-                    Student Distribution
-                  </h2>
-                  <div className="flex items-center gap-[var(--spacing-1-5)]">
-                    {/* Normal/Registered Toggle */}
-                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                      <button onClick={() => setStudentDataView("normal")}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Hostler
-                      </button>
-                      <button onClick={() => setStudentDataView("registered")}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Registered
-                      </button>
-                    </div>
-                    {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                      <button onClick={() => setNormalizedView(false)}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Abs
-                      </button>
-                      <button onClick={() => setNormalizedView(true)}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        %
-                      </button>
-                    </div>
+                <SectionTitle title="Student Distribution" to="/admin/students">
+                  {/* Normal/Registered Toggle */}
+                  <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                    <button onClick={() => setStudentDataView("normal")}
+                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                    >
+                      Hostler
+                    </button>
+                    <button onClick={() => setStudentDataView("registered")}
+                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                    >
+                      Registered
+                    </button>
                   </div>
-                </div>
+                  {/* Absolute/Normalized Toggle */}
+                  <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                    <button onClick={() => setNormalizedView(false)}
+                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                    >
+                      Abs
+                    </button>
+                    <button onClick={() => setNormalizedView(true)}
+                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                    >
+                      %
+                    </button>
+                  </div>
+                </SectionTitle>
 
                 <div className="flex-1 flex flex-col min-h-0">
                   <div className="h-full">
@@ -388,7 +397,7 @@ const DashboardPage = () => {
           </Card>
 
           {/* Hostel occupancy card */}
-          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
+          <Card className="xl:col-span-2 h-[29rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
@@ -406,87 +415,94 @@ const DashboardPage = () => {
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
-                  <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
-                  Hostel Occupancy
-                </h2>
+                <SectionTitle title="Hostel Occupancy" to="/admin/hostels" />
 
-                <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-                  <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col h-full min-h-0 overflow-hidden">
-                    {/* Fixed Header */}
-                    <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-secondary)] border-b border-[var(--color-border-primary)] flex-shrink-0">
-                      <table className="min-w-full">
-                        <thead>
-                          <tr>
-                            <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
-                              <div className="flex items-center gap-[var(--spacing-2)]">
-                                <Checkbox checked={allHostelsSelected} onChange={() => {
-                                  if (allHostelsSelected) {
-                                    setSelectedHostels([])
-                                  } else {
-                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-                                  }
-                                }} />
-                                Hostel
-                              </div>
-                            </th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupancy</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacancy</th>
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
+                <div className="flex-1 min-h-0 rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col overflow-hidden">
+                  {/* Fixed Header */}
+                  <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
+                    <table className="min-w-full table-fixed">
+                      <thead>
+                        <tr>
+                          <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
+                            <div className="flex items-center gap-[var(--spacing-2)]">
+                              <Checkbox checked={allHostelsSelected} onChange={() => {
+                                if (allHostelsSelected) {
+                                  setSelectedHostels([])
+                                } else {
+                                  setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+                                }
+                              }} />
+                              Hostel
+                            </div>
+                          </th>
+                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
+                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
+                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupancy</th>
+                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacancy</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
 
-                    {/* Scrollable Body */}
-                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                      <table className="min-w-full">
-                        <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
-                          {dashboardData?.hostels?.map((hostel, index) => {
-                            return (
-                              <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
-                                <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
-                                  <div className="flex items-center gap-[var(--spacing-2)]">
-                                    <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
-                                    <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
+                  {/* Scrollable Body */}
+                  <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
+                    <table className="min-w-full table-fixed">
+                      <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
+                        {dashboardData?.hostels?.map((hostel, index) => {
+                          const occupancyPercent = hostel.totalCapacity > 0 ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100) : 0
+                          return (
+                            <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                              <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
+                                <div className="flex items-center gap-[var(--spacing-2)]">
+                                  <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
+                                  <div className="flex-1 min-w-0">
+                                    <span className={`block text-[0.8125rem] font-semibold leading-tight transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
+                                    <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                      <div className="w-20 h-1 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-[var(--radius-full)] ${occupancyPercent >= 95 ? 'bg-[var(--color-danger)]' : occupancyPercent >= 80 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
+                                          style={{ width: `${Math.min(occupancyPercent, 100)}%` }}
+                                        ></div>
+                                      </div>
+                                      <span className="text-[0.65rem] leading-none text-[var(--color-text-muted)] tabular-nums">{occupancyPercent}%</span>
+                                    </div>
                                   </div>
-                                </td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Fixed Footer */}
-                    <div className="bg-gradient-to-r from-[var(--color-bg-muted)] to-[var(--color-bg-tertiary)] border-t-2 border-[var(--color-border-dark)] flex-shrink-0">
-                      <table className="min-w-full">
-                        <tfoot>
-                          <tr>
-                            <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
-                              <div className="flex items-center gap-[var(--spacing-2)]">
-                                <div className="w-3.5 h-3.5"></div>
-                                <div className="flex items-center gap-[var(--spacing-1-5)]">
-                                  <span className="uppercase tracking-wider font-extrabold">Total</span>
-                                  {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
-                                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
-                                  )}
                                 </div>
+                              </td>
+                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
+                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
+                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
+                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Fixed Footer */}
+                  <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
+                    <table className="min-w-full table-fixed">
+                      <tfoot>
+                        <tr>
+                          <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
+                            <div className="flex items-center gap-[var(--spacing-2)]">
+                              <div className="w-3.5 h-3.5"></div>
+                              <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                <span className="uppercase tracking-wider font-extrabold">Total</span>
+                                {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
+                                  <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
+                                )}
                               </div>
-                            </td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
+                            </div>
+                          </td>
+                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
+                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -505,10 +521,7 @@ const DashboardPage = () => {
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
-                  <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
-                  Staff Upcoming Joins
-                </h2>
+                <SectionTitle title="Staff Upcoming Joins" to="/admin/leaves" />
 
                 <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
                   {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
@@ -520,7 +533,7 @@ const DashboardPage = () => {
                     </div>
                   ) : (
                     <ul className="space-y-[var(--spacing-2)]">
-                      {dashboardData.leaves.data.leaves.map((lv, index) => {
+                      {dashboardData.leaves.data.leaves.map((lv) => {
                         const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
                         // compute joining date = endDate + 1 day
                         let joinDate = ""
@@ -536,7 +549,7 @@ const DashboardPage = () => {
                             const timeDiff = j.getTime() - today.getTime()
                             daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
                           }
-                        } catch (e) {
+                        } catch {
                           joinDate = "Invalid date"
                         }
 
@@ -601,10 +614,7 @@ const DashboardPage = () => {
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
-                  <span className="w-1 h-4 bg-[var(--color-warning)] rounded-[var(--radius-full)]"></span>
-                  Complaints
-                </h2>
+                <SectionTitle title="Complaints" accent="var(--color-warning)" to="/admin/complaints" />
 
                 <div className="flex-1 flex flex-col justify-between">
                   {/* Primary stats - 2x2 grid */}
@@ -690,14 +700,11 @@ const DashboardPage = () => {
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
-                  <span className="w-1 h-4 bg-[var(--color-purple-text)] rounded-[var(--radius-full)]"></span>
-                  Upcoming Events
-                </h2>
+                <SectionTitle title="Upcoming Events" accent="var(--color-purple-text)" to="/admin/events" />
 
                 <div className="flex-1 overflow-hidden">
                   <div className="overflow-y-auto max-h-[16rem] pr-[var(--spacing-1)] scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                    {dashboardData?.events?.map((event, index) => {
+                    {dashboardData?.events?.map((event) => {
                       // Determine event date status
                       const eventDate = new Date(event.date)
                       const today = new Date()
@@ -833,10 +840,10 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
   const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
 
   return (
-    <div className="h-full flex flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] overflow-hidden">
+    <div className="h-full rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col overflow-hidden">
       {/* Fixed Header */}
-      <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-muted)] border-b border-[var(--color-border-primary)] flex-shrink-0">
-        <table className="min-w-full">
+      <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
+        <table className="min-w-full table-fixed">
           <thead>
             <tr>
               <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">
@@ -867,7 +874,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
 
       {/* Scrollable Body */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-        <table className="min-w-full">
+        <table className="min-w-full table-fixed">
           <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
             {degreeData.map((item, index) => {
               const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
@@ -882,13 +889,13 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                       <span className={`text-[0.8125rem] font-medium transition-colors ${isSelected ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{item.degree}</span>
                     </div>
                   </td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium w-[17.5%]">{item.boys}</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium w-[17.5%]">{item.girls}</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-semibold w-[17.5%]">{item.total}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium tabular-nums w-[17.5%]">{item.boys}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[17.5%]">{item.girls}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-semibold tabular-nums w-[17.5%]">{item.total}</td>
                   {normalized && (
                     <>
-                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium w-[8.75%]">{boysPercent}%</td>
-                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium w-[8.75%]">{girlsPercent}%</td>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium tabular-nums w-[8.75%]">{boysPercent}%</td>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[8.75%]">{girlsPercent}%</td>
                     </>
                   )}
                 </tr>
@@ -899,8 +906,8 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
       </div>
 
       {/* Fixed Footer */}
-      <div className="bg-gradient-to-r from-[var(--color-bg-muted)] to-[var(--color-bg-tertiary)] border-t-2 border-[var(--color-border-dark)] flex-shrink-0">
-        <table className="min-w-full">
+      <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
+        <table className="min-w-full table-fixed">
           <tfoot>
             <tr>
               <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">
@@ -911,13 +918,13 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                   )}
                 </div>
               </td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold w-[17.5%]">{totalBoys}</td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold w-[17.5%]">{totalGirls}</td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-extrabold w-[17.5%]">{grandTotal}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[17.5%]">{totalBoys}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold tabular-nums w-[17.5%]">{totalGirls}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-extrabold tabular-nums w-[17.5%]">{grandTotal}</td>
               {normalized && (
                 <>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold w-[8.75%]">{boysPercentTotal}%</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold w-[8.75%]">{girlsPercentTotal}%</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[8.75%]">{boysPercentTotal}%</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold tabular-nums w-[8.75%]">{girlsPercentTotal}%</td>
                 </>
               )}
             </tr>

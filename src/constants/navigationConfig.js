@@ -124,12 +124,13 @@ export const ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS = "student-affairs"
 export const ADMIN_NAV_CATEGORY_STAFF = "staff"
 export const ADMIN_NAV_CATEGORY_DINING = "dining"
 
+// colorVar names a CSS custom property from theme.css (light + dark variants)
 export const ADMIN_NAV_CATEGORIES = [
-  { id: ADMIN_NAV_CATEGORY_HOME, name: "Home", icon: House },
-  { id: ADMIN_NAV_CATEGORY_HOSTELS, name: "HMS", icon: Building2 },
-  { id: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS, name: "Student Affairs", icon: GraduationCap },
-  { id: ADMIN_NAV_CATEGORY_STAFF, name: "Staff", icon: BriefcaseBusiness },
-  { id: ADMIN_NAV_CATEGORY_DINING, name: "Dining", icon: UtensilsCrossed },
+  { id: ADMIN_NAV_CATEGORY_HOME, name: "Home", icon: House, colorVar: "--color-cat-home" },
+  { id: ADMIN_NAV_CATEGORY_HOSTELS, name: "HMS", icon: Building2, colorVar: "--color-cat-hostels" },
+  { id: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS, name: "Student Affairs", icon: GraduationCap, colorVar: "--color-cat-student-affairs" },
+  { id: ADMIN_NAV_CATEGORY_STAFF, name: "Staff", icon: BriefcaseBusiness, colorVar: "--color-cat-staff" },
+  { id: ADMIN_NAV_CATEGORY_DINING, name: "Dining", icon: UtensilsCrossed, colorVar: "--color-cat-dining" },
 ]
 
 // ============================================
