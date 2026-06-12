@@ -16,6 +16,7 @@ export const GYMKHANA_SUBROLE_OPTIONS = [
 export const GYMKHANA_FILTER_TABS = [
   { label: "All", value: "all" },
   ...GYMKHANA_SUBROLE_OPTIONS,
+  { label: "Clubs", value: "clubs" },
 ]
 
 export const ACADEMICS_SUBROLE_OPTIONS = [

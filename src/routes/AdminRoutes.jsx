@@ -6,7 +6,6 @@ import AdminLayout from "../layouts/AdminLayout"
 const AdminDashboard = lazy(() => import("../pages/admin/DashboardPage"))
 const LiveCheckInOutPage = lazy(() => import("../pages/admin/LiveCheckInOutPage"))
 const FaceScannersPage = lazy(() => import("../pages/admin/FaceScannersPage"))
-const ClubsPage = lazy(() => import("../pages/admin/ClubsPage"))
 const CaterersPage = lazy(() => import("../pages/admin/CaterersPage"))
 const DiningPeriodsPage = lazy(() => import("../pages/admin/DiningPeriodsPage"))
 const DiningRebatesPage = lazy(() => import("../pages/admin/DiningRebatesPage"))
@@ -60,7 +59,6 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/DashboardPage"),
   () => import("../pages/admin/LiveCheckInOutPage"),
   () => import("../pages/admin/FaceScannersPage"),
-  () => import("../pages/admin/ClubsPage"),
   () => import("../pages/admin/CaterersPage"),
   () => import("../pages/admin/DiningPeriodsPage"),
   () => import("../pages/admin/DiningRebatesPage"),
@@ -158,7 +156,6 @@ const AdminRoutes = () => {
                 <Route path="visitors" element={guardRoute("route.admin.visitors", <VisitorRequestsPage />)} />
                 <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
                 <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
-                <Route path="clubs" element={guardRoute("route.admin.clubs", <ClubsPage />)} />
                 <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />
                 <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                 <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />

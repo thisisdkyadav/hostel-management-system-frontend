@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from "react"
 import { Button, Input, Modal } from "czero/react"
 import { Building2, Pencil, Plus, Users } from "lucide-react"
 import toast from "react-hot-toast"
-import PageHeader from "../../components/common/PageHeader"
-import NoResults from "../../components/common/NoResults"
+import NoResults from "../../common/NoResults"
 import { Card, CardBody, CardFooter, CardHeader, Label, SearchInput, Select, StatCards } from "@/components/ui"
-import { clubApi } from "../../service"
+import { clubApi } from "../../../service"
 
 const createDefaultForm = () => ({
   name: "",
@@ -165,7 +164,7 @@ const EditClubModal = ({ club, categoryOptions, isOpen, isSaving, onClose, onSav
   )
 }
 
-const ClubsPage = () => {
+const ClubsManagement = ({ showAddModal = false, setShowAddModal }) => {
   const [clubs, setClubs] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
   const [createForm, setCreateForm] = useState(createDefaultForm())
@@ -173,8 +172,12 @@ const ClubsPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [isSavingEdit, setIsSavingEdit] = useState(false)
-  const [showAddModal, setShowAddModal] = useState(false)
   const [editingClub, setEditingClub] = useState(null)
+
+  const closeAddModal = () => {
+    setShowAddModal?.(false)
+    setCreateForm(createDefaultForm())
+  }
 
   const fetchClubs = async ({ keepLoadingState = false } = {}) => {
     if (!keepLoadingState) {
@@ -213,17 +216,14 @@ const ClubsPage = () => {
     setCreateForm((current) => ({ ...current, [name]: value }))
   }
 
-  const handleCreateClub = async (event) => {
-    if (event?.preventDefault) {
-      event.preventDefault()
-    }
+  const handleCreateClub = async () => {
     setIsCreating(true)
 
     try {
       await clubApi.create(createForm)
       toast.success("Club created successfully. Login account created with the same email.")
       setCreateForm(createDefaultForm())
-      setShowAddModal(false)
+      setShowAddModal?.(false)
       await fetchClubs({ keepLoadingState: true })
     } catch (error) {
       console.error("Failed to create club:", error)
@@ -288,196 +288,184 @@ const ClubsPage = () => {
   }, [clubs, categoryOptions])
 
   return (
-    <div className="flex h-full flex-col">
-      <PageHeader title="Clubs" subtitle="Create and manage club contact details and GS category mapping.">
-        <Button
-          variant="primary"
-          onClick={() => setShowAddModal(true)}
-          disabled={categoryOptions.length === 0}
+    <div className="mt-6">
+      <div style={{ marginBottom: "var(--spacing-6)" }}>
+        <StatCards
+          stats={stats}
+          columns={Math.min(Math.max(stats.length, 1), 5)}
+          loading={isLoading}
+          loadingCount={Math.min(Math.max(stats.length, 1), 5)}
+        />
+      </div>
+
+      {categoryOptions.length === 0 && !isLoading ? (
+        <div
+          style={{
+            marginBottom: "var(--spacing-6)",
+            borderRadius: "var(--radius-lg)",
+            border: "var(--border-1) solid var(--color-border-primary)",
+            backgroundColor: "var(--color-bg-secondary)",
+            padding: "var(--spacing-4)",
+            fontSize: "var(--font-size-sm)",
+            color: "var(--color-text-muted)",
+          }}
         >
-          <Plus size={18} /> Add Club
-        </Button>
-      </PageHeader>
-
-      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
-        <div style={{ marginBottom: "var(--spacing-6)" }}>
-          <StatCards
-            stats={stats}
-            columns={Math.min(Math.max(stats.length, 1), 5)}
-            loading={isLoading}
-            loadingCount={Math.min(Math.max(stats.length, 1), 5)}
-          />
+          No GS categories are configured yet. Add them in Settings before creating clubs.
         </div>
+      ) : null}
 
-        {categoryOptions.length === 0 && !isLoading ? (
-          <div
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2
             style={{
-              marginBottom: "var(--spacing-6)",
-              borderRadius: "var(--radius-lg)",
-              border: "var(--border-1) solid var(--color-border-primary)",
-              backgroundColor: "var(--color-bg-secondary)",
-              padding: "var(--spacing-4)",
+              fontSize: "var(--font-size-xl)",
+              fontWeight: "var(--font-weight-semibold)",
+              color: "var(--color-text-secondary)",
+            }}
+          >
+            Existing Clubs
+          </h2>
+          <p
+            style={{
+              marginTop: "var(--spacing-1)",
               fontSize: "var(--font-size-sm)",
               color: "var(--color-text-muted)",
             }}
           >
-            No GS categories are configured yet. Add them in Settings before creating clubs.
-          </div>
-        ) : null}
-
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2
-              style={{
-                fontSize: "var(--font-size-xl)",
-                fontWeight: "var(--font-weight-semibold)",
-                color: "var(--color-text-secondary)",
-              }}
-            >
-              Existing Clubs
-            </h2>
-            <p
-              style={{
-                marginTop: "var(--spacing-1)",
-                fontSize: "var(--font-size-sm)",
-                color: "var(--color-text-muted)",
-              }}
-            >
-              Review clubs and update their details anytime.
-            </p>
-          </div>
-
-          <SearchInput
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search clubs by name, email, or category"
-            className="w-full sm:w-80"
-          />
+            Review clubs and update their details anytime.
+          </p>
         </div>
 
-        {isLoading ? (
-          <div
-            className="mt-6 flex items-center justify-center rounded-2xl"
-            style={{
-              minHeight: "14rem",
-              backgroundColor: "var(--color-bg-primary)",
-              border: "var(--border-1) solid var(--color-border-primary)",
-              color: "var(--color-text-muted)",
-            }}
-          >
-            Loading clubs...
-          </div>
-        ) : filteredClubs.length > 0 ? (
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {filteredClubs.map((club) => (
-              <Card key={club.id} className="overflow-hidden">
-                <CardHeader className="mb-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3
-                        style={{
-                          fontSize: "var(--font-size-lg)",
-                          fontWeight: "var(--font-weight-bold)",
-                          color: "var(--color-text-secondary)",
-                        }}
-                      >
-                        {club.name}
-                      </h3>
-                      <p
-                        style={{
-                          marginTop: "var(--spacing-1)",
-                          fontSize: "var(--font-size-sm)",
-                          color: "var(--color-text-muted)",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {club.email}
-                      </p>
-                    </div>
-
-                    <div
-                      style={{
-                        flexShrink: 0,
-                        width: "2.5rem",
-                        height: "2.5rem",
-                        borderRadius: "var(--radius-full)",
-                        backgroundColor: "var(--color-primary-bg)",
-                        color: "var(--color-primary)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Users size={16} />
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardBody style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  <div className="flex items-center justify-between gap-4">
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>GS Category</span>
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "var(--spacing-2)",
-                        borderRadius: "var(--radius-full)",
-                        backgroundColor: "var(--color-primary-bg)",
-                        color: "var(--color-primary)",
-                        padding: "var(--spacing-1) var(--spacing-3)",
-                        fontSize: "var(--font-size-sm)",
-                        fontWeight: "var(--font-weight-medium)",
-                      }}
-                    >
-                      <Building2 size={14} />
-                      {club.gymkhanaCategoryLabel}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-4">
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Last Updated</span>
-                    <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                      {club.updatedAt
-                        ? new Date(club.updatedAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "N/A"}
-                    </span>
-                  </div>
-                </CardBody>
-
-                <CardFooter
-                  style={{
-                    marginTop: "var(--spacing-5)",
-                    paddingTop: "var(--spacing-4)",
-                    borderTop: "var(--border-1) solid var(--color-border-primary)",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Button type="button" variant="ghost" size="sm" onClick={() => setEditingClub(club)}>
-                    <Pencil size={16} /> Edit
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-6">
-            <NoResults
-              icon={<Users size={48} style={{ color: "var(--color-border-primary)" }} />}
-              message={clubs.length === 0 ? "No clubs created yet" : "No clubs match your search"}
-              suggestion={
-                clubs.length === 0
-                  ? "Create your first club using the form above."
-                  : "Try a different name, email, or GS category."
-              }
-            />
-          </div>
-        )}
+        <SearchInput
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Search clubs by name, email, or category"
+          className="w-full sm:w-80"
+        />
       </div>
+
+      {isLoading ? (
+        <div
+          className="mt-6 flex items-center justify-center rounded-2xl"
+          style={{
+            minHeight: "14rem",
+            backgroundColor: "var(--color-bg-primary)",
+            border: "var(--border-1) solid var(--color-border-primary)",
+            color: "var(--color-text-muted)",
+          }}
+        >
+          Loading clubs...
+        </div>
+      ) : filteredClubs.length > 0 ? (
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filteredClubs.map((club) => (
+            <Card key={club.id} className="overflow-hidden">
+              <CardHeader className="mb-0">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <h3
+                      style={{
+                        fontSize: "var(--font-size-lg)",
+                        fontWeight: "var(--font-weight-bold)",
+                        color: "var(--color-text-secondary)",
+                      }}
+                    >
+                      {club.name}
+                    </h3>
+                    <p
+                      style={{
+                        marginTop: "var(--spacing-1)",
+                        fontSize: "var(--font-size-sm)",
+                        color: "var(--color-text-muted)",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {club.email}
+                    </p>
+                  </div>
+
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: "2.5rem",
+                      height: "2.5rem",
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: "var(--color-primary-bg)",
+                      color: "var(--color-primary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Users size={16} />
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardBody style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <div className="flex items-center justify-between gap-4">
+                  <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>GS Category</span>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "var(--spacing-2)",
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: "var(--color-primary-bg)",
+                      color: "var(--color-primary)",
+                      padding: "var(--spacing-1) var(--spacing-3)",
+                      fontSize: "var(--font-size-sm)",
+                      fontWeight: "var(--font-weight-medium)",
+                    }}
+                  >
+                    <Building2 size={14} />
+                    {club.gymkhanaCategoryLabel}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                  <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Last Updated</span>
+                  <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                    {club.updatedAt
+                      ? new Date(club.updatedAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "N/A"}
+                  </span>
+                </div>
+              </CardBody>
+
+              <CardFooter
+                style={{
+                  marginTop: "var(--spacing-5)",
+                  paddingTop: "var(--spacing-4)",
+                  borderTop: "var(--border-1) solid var(--color-border-primary)",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button type="button" variant="ghost" size="sm" onClick={() => setEditingClub(club)}>
+                  <Pencil size={16} /> Edit
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6">
+          <NoResults
+            icon={<Users size={48} style={{ color: "var(--color-border-primary)" }} />}
+            message={clubs.length === 0 ? "No clubs created yet" : "No clubs match your search"}
+            suggestion={
+              clubs.length === 0
+                ? "Create your first club using the Add button above."
+                : "Try a different name, email, or GS category."
+            }
+          />
+        </div>
+      )}
 
       <EditClubModal
         club={editingClub}
@@ -496,10 +484,7 @@ const ClubsPage = () => {
         isOpen={showAddModal}
         isSaving={isCreating}
         fieldPrefix="create-club"
-        onClose={() => {
-          setShowAddModal(false)
-          setCreateForm(createDefaultForm())
-        }}
+        onClose={closeAddModal}
         onChange={handleCreateChange}
         onSubmit={handleCreateClub}
       />
@@ -507,4 +492,4 @@ const ClubsPage = () => {
   )
 }
 
-export default ClubsPage
+export default ClubsManagement
