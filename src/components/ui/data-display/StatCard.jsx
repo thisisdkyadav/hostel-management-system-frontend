@@ -91,7 +91,8 @@ const StatCards = ({ stats, columns = 4, loading = false, loadingCount }) => {
     else if (columns === 2) gridClass = "grid-cols-2"
     else if (columns === 3) gridClass += " md:grid-cols-3"
     else if (columns === 4) gridClass += " lg:grid-cols-4"
-    else if (columns >= 5) gridClass += " lg:grid-cols-5"
+    else if (columns === 5) gridClass += " lg:grid-cols-5"
+    else if (columns >= 6) gridClass += " lg:grid-cols-6"
     return gridClass
   }
 
