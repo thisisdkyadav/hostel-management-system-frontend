@@ -19,14 +19,14 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
           ${isOpen ? "px-3 py-2.5 text-left" : "px-0 py-2.5 justify-center"}
           ${isActive
             ? "bg-[var(--color-primary)] text-white shadow-md shadow-[var(--color-primary)]/20"
-            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]"}
+            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"}
         `}
       >
         <span className={`relative flex justify-center items-center shrink-0 ${isOpen ? "mr-3" : ""}`}>
           <item.icon
             size={18}
             strokeWidth={1.9}
-            className={`transition-colors duration-200 ${isActive ? "text-white" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`}
+            className={`transition-colors duration-200 ${isActive ? "text-white" : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]"}`}
           />
 
           {item?.badge > 0 && (
@@ -40,7 +40,7 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
 
         {isOpen && (
           <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
-            <span className={`text-sm font-medium truncate transition-colors duration-200 ${isActive ? "text-white" : "group-hover:text-[var(--color-text-primary)]"}`}>
+            <span className="text-sm font-medium truncate transition-colors duration-200">
               {item.name}
             </span>
             {item.isNew && (
