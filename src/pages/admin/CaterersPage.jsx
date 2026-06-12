@@ -1,39 +1,13 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Input, Modal } from "czero/react"
-import {
-  Archive,
-  ClipboardList,
-  Mail,
-  Pencil,
-  Plus,
-  Search,
-  Store,
-  UtensilsCrossed,
-} from "lucide-react"
+import { Button, DataTable, Input, Modal, StatusBadge } from "czero/react"
+import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import {
-  Alert,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  EmptyState,
-  HStack,
-  Label,
-  SearchInput,
-  StatCards,
-  VStack,
-} from "@/components/ui"
+import { Alert, Avatar, ConfirmDialog, EmptyState, HStack, Label, SearchInput, VStack } from "@/components/ui"
 
-const initialFormState = {
-  name: "",
-  email: "",
-}
+const initialFormState = { name: "", email: "" }
 
-const getErrorMessage = (error, fallback) => {
-  return error?.response?.data?.message || error?.message || fallback
-}
+const getErrorMessage = (error, fallback) => error?.response?.data?.message || error?.message || fallback
 
 const normalizeCaterer = (caterer = {}) => ({
   id: caterer.id || caterer._id,
@@ -44,60 +18,17 @@ const normalizeCaterer = (caterer = {}) => ({
   updatedAt: caterer.updatedAt,
 })
 
-const CatererStats = ({ caterers, fetchArchive }) => {
-  const activeCount = caterers.filter((caterer) => !caterer.isArchived).length
-  const archivedCount = caterers.filter((caterer) => caterer.isArchived).length
-
-  const statsData = [
-    {
-      title: fetchArchive ? "Archived Caterers" : "Active Caterers",
-      value: caterers.length,
-      subtitle: fetchArchive ? "Hidden from active operations" : "Available for dining setup",
-      icon: <UtensilsCrossed size={20} />,
-      color: "var(--color-primary)",
-    },
-    {
-      title: "Active",
-      value: activeCount,
-      subtitle: "Currently listed",
-      icon: <Store size={20} />,
-      color: "var(--color-success)",
-    },
-    {
-      title: "Archived",
-      value: archivedCount,
-      subtitle: "In this view",
-      icon: <Archive size={20} />,
-      color: "var(--color-warning)",
-    },
-  ]
-
-  return <StatCards stats={statsData} columns={3} />
+const formatDateTime = (value) => {
+  if (!value) return "Not available"
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return "Not available"
+  return date.toLocaleString(undefined, { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })
 }
 
-const CatererFormModal = ({
-  isOpen,
-  title,
-  submitLabel,
-  initialData = initialFormState,
-  onClose,
-  onSubmit,
-  archiveAction = null,
-}) => {
-  const [formData, setFormData] = useState(initialFormState)
+const CatererFormModal = ({ isOpen, title, submitLabel, initialData = initialFormState, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState(() => ({ name: initialData.name || "", email: initialData.email || "" }))
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    if (isOpen) {
-      setFormData({
-        name: initialData.name || "",
-        email: initialData.email || "",
-      })
-      setError("")
-      setIsSubmitting(false)
-    }
-  }, [initialData.email, initialData.name, isOpen])
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -107,18 +38,13 @@ const CatererFormModal = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-
     if (!formData.name.trim() || !formData.email.trim()) {
       setError("Name and email are required.")
       return
     }
-
     setIsSubmitting(true)
     try {
-      await onSubmit({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-      })
+      await onSubmit({ name: formData.name.trim(), email: formData.email.trim() })
       onClose()
     } catch (submitError) {
       setError(getErrorMessage(submitError, "Unable to save caterer. Please try again."))
@@ -130,161 +56,83 @@ const CatererFormModal = ({
   if (!isOpen) return null
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} width={640} minHeight="50vh">
-      <form onSubmit={handleSubmit}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      width={560}
+      footer={
+        <>
+          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button type="submit" form="caterer-form" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : submitLabel}
+          </Button>
+        </>
+      }
+    >
+      <form id="caterer-form" onSubmit={handleSubmit}>
         <VStack gap="large">
-          {error && (
-            <Alert type="error" icon>
-              {error}
-            </Alert>
-          )}
-
-          <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3) var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-            <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary-dark)" }}>
-              Caterer Information
-            </h4>
-          </div>
-
+          {error && <Alert type="error" icon>{error}</Alert>}
           <div>
             <Label htmlFor="name" required>Caterer Name</Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter caterer name"
-              required
-            />
+            <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter caterer name" required />
           </div>
-
           <div>
             <Label htmlFor="email" required>Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="caterer@example.com"
-              required
-            />
+            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="caterer@iiti.ac.in" required />
           </div>
-
-          {archiveAction && (
-            <Button type="button" variant="secondary" fullWidth onClick={archiveAction.onClick}>
-              <Archive size={16} /> {archiveAction.label}
-            </Button>
-          )}
-
-          <HStack justify="end" gap="small" style={{ paddingTop: "var(--spacing-5)", marginTop: "auto", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-            <Button type="button" variant="secondary" size="md" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="md" loading={isSubmitting} disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : submitLabel}
-            </Button>
-          </HStack>
+          <Alert type="info" icon>
+            A caterer login is created automatically from this email so they can run meal verification.
+          </Alert>
         </VStack>
       </form>
     </Modal>
   )
 }
 
-const CatererDetailsModal = ({ caterer, onClose }) => {
+const DetailRow = ({ label, value }) => (
+  <HStack justify="between" gap="medium">
+    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
+    <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)" }}>{value}</span>
+  </HStack>
+)
+
+const CatererDetailsModal = ({ caterer, onClose, onEdit, onToggleArchive }) => {
   if (!caterer) return null
 
-  const formatDate = (date) => {
-    if (!date) return "Not available"
-    return new Date(date).toLocaleString()
-  }
-
   return (
-    <Modal isOpen={Boolean(caterer)} onClose={onClose} title="Caterer Details" width={560} minHeight="50vh">
-      <VStack gap="large">
-        <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-          <HStack gap="medium" align="center">
-            <div className="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center" style={{ backgroundColor: "var(--color-bg-primary)", color: "var(--color-primary)" }}>
-              <UtensilsCrossed size={22} />
-            </div>
-            <div>
-              <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>
-                {caterer.name}
-              </h3>
-              <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                {caterer.isArchived ? "Archived caterer" : "Active caterer"}
-              </p>
-            </div>
-          </HStack>
-        </div>
-
-        <VStack gap="medium">
-          <HStack justify="between" gap="medium">
-            <span style={{ color: "var(--color-text-muted)" }}>Email</span>
-            <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{caterer.email}</span>
-          </HStack>
-          <HStack justify="between" gap="medium">
-            <span style={{ color: "var(--color-text-muted)" }}>Created</span>
-            <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{formatDate(caterer.createdAt)}</span>
-          </HStack>
-          <HStack justify="between" gap="medium">
-            <span style={{ color: "var(--color-text-muted)" }}>Last Updated</span>
-            <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{formatDate(caterer.updatedAt)}</span>
-          </HStack>
-        </VStack>
-
-        <HStack justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "auto", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-          <Button type="button" variant="secondary" size="md" onClick={onClose}>
-            Close
+    <Modal
+      isOpen={Boolean(caterer)}
+      onClose={onClose}
+      title="Caterer Details"
+      width={520}
+      footer={
+        <>
+          <Button variant="secondary" onClick={() => onToggleArchive(caterer)}>
+            {caterer.isArchived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
+            {caterer.isArchived ? "Unarchive" : "Archive"}
           </Button>
+          <Button variant="primary" onClick={() => onEdit(caterer)}>
+            <Pencil size={16} /> Edit
+          </Button>
+        </>
+      }
+    >
+      <VStack gap="large">
+        <HStack gap="medium" align="center">
+          <Avatar name={caterer.name || "?"} size="large" />
+          <div>
+            <h3 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>{caterer.name}</h3>
+            <StatusBadge status={caterer.isArchived ? "Archived" : "Active"} tone={caterer.isArchived ? "primary" : "success"} />
+          </div>
         </HStack>
+        <VStack gap="medium">
+          <DetailRow label="Email" value={caterer.email} />
+          <DetailRow label="Created" value={formatDateTime(caterer.createdAt)} />
+          <DetailRow label="Last updated" value={formatDateTime(caterer.updatedAt)} />
+        </VStack>
       </VStack>
     </Modal>
-  )
-}
-
-const CatererCard = ({ caterer, onEdit, onView }) => {
-  return (
-    <Card className="group">
-      <CardHeader>
-        <HStack gap="medium" align="center">
-          <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center transition-all duration-300" style={{ backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)" }}>
-            <UtensilsCrossed size={20} />
-          </div>
-          <div>
-            <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>
-              {caterer.name}
-            </h3>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              {caterer.isArchived ? "Archived" : "Active"}
-            </p>
-          </div>
-        </HStack>
-      </CardHeader>
-
-      <CardBody style={{ marginBottom: "var(--spacing-5)" }}>
-        <VStack gap="small">
-          <HStack gap="xsmall" align="center" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
-            <Mail size={16} style={{ color: "var(--color-text-muted)" }} />
-            <span>{caterer.email}</span>
-          </HStack>
-          <HStack gap="xsmall" align="center" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
-            <Store size={16} style={{ color: "var(--color-text-muted)" }} />
-            <span>Dining caterer profile</span>
-          </HStack>
-        </VStack>
-      </CardBody>
-
-      <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
-          <Button onClick={() => onEdit(caterer)} variant="secondary" size="md" fullWidth>
-            <Pencil size={16} /> Edit Details
-          </Button>
-          <Button onClick={() => onView(caterer)} variant="secondary" size="md" fullWidth>
-            <ClipboardList size={16} /> View Details
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
   )
 }
 
@@ -292,20 +140,19 @@ const CaterersPage = () => {
   const [caterers, setCaterers] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [fetchArchive, setFetchArchive] = useState(false)
+  const [feedback, setFeedback] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCaterer, setEditingCaterer] = useState(null)
   const [viewingCaterer, setViewingCaterer] = useState(null)
+  const [archiveTarget, setArchiveTarget] = useState(null)
 
   const filteredCaterers = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase()
     if (!normalizedSearch) return caterers
-
-    return caterers.filter((caterer) => {
-      return (
-        caterer.name.toLowerCase().includes(normalizedSearch) ||
-        caterer.email.toLowerCase().includes(normalizedSearch)
-      )
-    })
+    return caterers.filter(
+      (caterer) =>
+        caterer.name.toLowerCase().includes(normalizedSearch) || caterer.email.toLowerCase().includes(normalizedSearch)
+    )
   }, [caterers, searchTerm])
 
   const fetchCaterers = async (archive = fetchArchive) => {
@@ -318,117 +165,183 @@ const CaterersPage = () => {
     }
   }
 
+  useEffect(() => {
+    fetchCaterers(false)
+  }, [])
+
   const handleArchiveToggle = () => {
-    const nextArchiveState = !fetchArchive
-    setFetchArchive(nextArchiveState)
-    fetchCaterers(nextArchiveState)
+    const next = !fetchArchive
+    setFetchArchive(next)
+    fetchCaterers(next)
   }
 
   const handleAddCaterer = async (payload) => {
     await adminApi.addCaterer(payload)
+    setFeedback({ type: "success", message: `${payload.name} added.` })
     await fetchCaterers()
   }
 
   const handleUpdateCaterer = async (payload) => {
     if (!editingCaterer?.id) return
-
     await adminApi.updateCaterer(editingCaterer.id, payload)
-    await fetchCaterers()
     setEditingCaterer(null)
+    setFeedback({ type: "success", message: "Caterer updated." })
+    await fetchCaterers()
   }
 
-  const handleArchiveCaterer = async () => {
-    if (!editingCaterer?.id) return
-
-    const action = editingCaterer.isArchived ? "unarchive" : "archive"
-    const shouldProceed = window.confirm(`Are you sure you want to ${action} this caterer?`)
-    if (!shouldProceed) return
-
+  const handleConfirmArchive = async () => {
+    if (!archiveTarget?.id) return
+    const action = archiveTarget.isArchived ? "unarchive" : "archive"
     try {
-      await adminApi.changeCatererArchiveStatus(editingCaterer.id, !editingCaterer.isArchived)
+      await adminApi.changeCatererArchiveStatus(archiveTarget.id, !archiveTarget.isArchived)
+      setArchiveTarget(null)
       setEditingCaterer(null)
+      setViewingCaterer(null)
+      setFeedback({ type: "success", message: `Caterer ${action}d.` })
       await fetchCaterers()
     } catch (error) {
-      alert(getErrorMessage(error, `Unable to ${action} caterer. Please try again.`))
+      setArchiveTarget(null)
+      setFeedback({ type: "error", message: getErrorMessage(error, `Unable to ${action} caterer.`) })
     }
   }
 
-  useEffect(() => {
-    fetchCaterers(false)
-  }, [])
+  const openEdit = (caterer) => {
+    setViewingCaterer(null)
+    setEditingCaterer(caterer)
+  }
+
+  const columns = [
+    {
+      key: "name",
+      header: "Caterer",
+      render: (row) => (
+        <HStack gap="small" align="center">
+          <Avatar name={row.name || "?"} size="small" />
+          <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{row.name}</span>
+        </HStack>
+      ),
+    },
+    {
+      key: "email",
+      header: "Email",
+      render: (row) => (
+        <HStack gap="xsmall" align="center" style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+          <Mail size={14} /> {row.email}
+        </HStack>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (row) => <StatusBadge status={row.isArchived ? "Archived" : "Active"} tone={row.isArchived ? "primary" : "success"} />,
+    },
+    {
+      key: "actions",
+      header: "",
+      align: "right",
+      render: (row) => (
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }} onClick={(e) => e.stopPropagation()}>
+          <Button variant="secondary" size="sm" onClick={() => openEdit(row)}>
+            <Pencil size={15} /> Edit
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setArchiveTarget(row)}>
+            {row.isArchived ? <ArchiveRestore size={15} /> : <Archive size={15} />}
+          </Button>
+        </div>
+      ),
+    },
+  ]
 
   return (
     <>
       <div className="flex flex-col h-full">
-        <PageHeader title="Caterer Management">
+        <PageHeader title="Caterers">
           <Button variant="secondary" onClick={handleArchiveToggle}>
-            <Archive size={18} /> {fetchArchive ? "Show Active" : "Show Archived"}
+            {fetchArchive ? <ArchiveRestore size={18} /> : <Archive size={18} />}
+            {fetchArchive ? "Show Active" : "Show Archived"}
           </Button>
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
             <Plus size={18} /> Add Caterer
           </Button>
         </PageHeader>
 
-        <div className="flex-1 overflow-y-scroll px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
-          <CatererStats caterers={caterers} fetchArchive={fetchArchive} />
+        <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+          {feedback && (
+            <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)} style={{ marginBottom: "var(--spacing-4)" }}>
+              {feedback.message}
+            </Alert>
+          )}
 
-          <div className="mt-[var(--spacing-8)] flex justify-end">
-            <div className="w-full sm:w-[16rem] md:w-[18rem]">
-              <SearchInput
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search caterer..."
-              />
+          <div className="flex items-center justify-between gap-[var(--spacing-3)] flex-wrap mb-[var(--spacing-4)]">
+            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              {filteredCaterers.length} {fetchArchive ? "archived" : "active"} caterer{filteredCaterers.length === 1 ? "" : "s"}
+            </span>
+            <div className="w-full sm:w-[18rem]">
+              <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search caterer..." />
             </div>
           </div>
 
-          <div className="mt-[var(--spacing-6)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
-            {filteredCaterers.map((caterer) => (
-              <CatererCard
-                key={caterer.id}
-                caterer={caterer}
-                onEdit={setEditingCaterer}
-                onView={setViewingCaterer}
-              />
-            ))}
-          </div>
-
-          {filteredCaterers.length === 0 && (
+          {filteredCaterers.length === 0 ? (
             <EmptyState
               icon={Search}
               title="No Caterers Found"
               message="No caterers match your search criteria. Try adjusting your search or archive view."
             />
+          ) : (
+            <DataTable
+              data={filteredCaterers}
+              columns={columns}
+              getRowId={(row) => row.id}
+              onRowClick={setViewingCaterer}
+              pagination
+              pageSize={10}
+            />
           )}
         </div>
       </div>
 
-      <CatererFormModal
-        isOpen={showAddModal}
-        title="Add New Caterer"
-        submitLabel="Add Caterer"
-        onClose={() => setShowAddModal(false)}
-        onSubmit={handleAddCaterer}
+      {showAddModal && (
+        <CatererFormModal
+          isOpen
+          title="Add New Caterer"
+          submitLabel="Add Caterer"
+          onClose={() => setShowAddModal(false)}
+          onSubmit={handleAddCaterer}
+        />
+      )}
+
+      {editingCaterer && (
+        <CatererFormModal
+          key={editingCaterer.id}
+          isOpen
+          title="Edit Caterer Details"
+          submitLabel="Save Changes"
+          initialData={editingCaterer}
+          onClose={() => setEditingCaterer(null)}
+          onSubmit={handleUpdateCaterer}
+        />
+      )}
+
+      <CatererDetailsModal
+        caterer={viewingCaterer}
+        onClose={() => setViewingCaterer(null)}
+        onEdit={openEdit}
+        onToggleArchive={setArchiveTarget}
       />
 
-      <CatererFormModal
-        isOpen={Boolean(editingCaterer)}
-        title="Edit Caterer Details"
-        submitLabel="Save Changes"
-        initialData={editingCaterer || initialFormState}
-        onClose={() => setEditingCaterer(null)}
-        onSubmit={handleUpdateCaterer}
-        archiveAction={
-          editingCaterer
-            ? {
-              label: editingCaterer.isArchived ? "Unarchive Caterer" : "Archive Caterer",
-              onClick: handleArchiveCaterer,
-            }
-            : null
+      <ConfirmDialog
+        isOpen={Boolean(archiveTarget)}
+        onClose={() => setArchiveTarget(null)}
+        onConfirm={handleConfirmArchive}
+        title={archiveTarget?.isArchived ? "Unarchive Caterer" : "Archive Caterer"}
+        message={
+          archiveTarget?.isArchived
+            ? `Restore ${archiveTarget?.name || "this caterer"} to active caterers?`
+            : `Archive ${archiveTarget?.name || "this caterer"}? They will be hidden from dining setup but their data is kept.`
         }
+        confirmText={archiveTarget?.isArchived ? "Unarchive" : "Archive"}
+        isDestructive={!archiveTarget?.isArchived}
       />
-
-      <CatererDetailsModal caterer={viewingCaterer} onClose={() => setViewingCaterer(null)} />
     </>
   )
 }
