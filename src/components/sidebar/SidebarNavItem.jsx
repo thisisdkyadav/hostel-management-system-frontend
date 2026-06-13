@@ -9,7 +9,7 @@ import { Pin } from "lucide-react"
  * `accent` (a CSS var string like "var(--color-cat-hostels)") opts the row into
  * category-colored selected/hover states; without it the row uses app primary.
  */
-const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNavigate, onTogglePin, accent }) => {
+const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, onTogglePin, accent }) => {
   const [hovered, setHovered] = useState(false)
   const useAccent = !!accent
   const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
@@ -38,13 +38,11 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
         onClick={() => onNavigate(item)}
         onMouseEnter={useAccent ? () => setHovered(true) : undefined}
         onMouseLeave={useAccent ? () => setHovered(false) : undefined}
-        title={!isOpen ? item.name : undefined}
         aria-current={isActive ? "page" : undefined}
         style={useAccent ? buttonStyle : undefined}
         className={`
-          w-full flex items-center rounded-xl cursor-pointer transition duration-200 active:scale-[0.99]
+          w-full flex items-center px-3 py-2.5 text-left rounded-xl cursor-pointer transition duration-200 active:scale-[0.99]
           outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
-          ${isOpen ? "px-3 py-2.5 text-left" : "px-0 py-2.5 justify-center"}
           ${useAccent
             ? ""
             : isActive
@@ -52,7 +50,7 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
               : "text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"}
         `}
       >
-        <span className={`relative flex justify-center items-center shrink-0 ${isOpen ? "mr-3" : ""}`}>
+        <span className="relative flex justify-center items-center shrink-0 mr-3">
           <item.icon
             size={18}
             strokeWidth={1.9}
@@ -69,28 +67,21 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
           )}
         </span>
 
-        {isOpen && (
-          <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
-            <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
-              {item.name}
-            </span>
-            {item.isNew && (
-              <span
-                className={`
-                  px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide rounded-md shrink-0
-                  ${isActive ? "bg-white/25 text-white" : "bg-[var(--color-success)]/10 text-[var(--color-success)]"}
-                `}
-              >
-                New
-              </span>
-            )}
+        <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
+          <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
+            {item.name}
           </span>
-        )}
-
-        {/* Collapsed-mode "new" indicator dot */}
-        {!isOpen && item.isNew && (
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--color-success)] shadow-[0_0_8px_var(--color-success)]" />
-        )}
+          {item.isNew && (
+            <span
+              className={`
+                px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide rounded-md shrink-0
+                ${isActive ? "bg-white/25 text-white" : "bg-[var(--color-success)]/10 text-[var(--color-success)]"}
+              `}
+            >
+              New
+            </span>
+          )}
+        </span>
       </button>
 
       {showPinControl && (

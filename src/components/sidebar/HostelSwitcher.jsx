@@ -12,7 +12,7 @@ import { FaBuilding } from "react-icons/fa"
  * Handles hostel switching for warden roles.
  * Only renders for Warden, Associate Warden, and Hostel Supervisor roles.
  */
-const HostelSwitcher = ({ isOpen, onExpand }) => {
+const HostelSwitcher = () => {
   const { user } = useAuth()
   const wardenContext = useWarden()
   const [isUpdatingHostel, setIsUpdatingHostel] = useState(false)
@@ -79,59 +79,41 @@ const HostelSwitcher = ({ isOpen, onExpand }) => {
     }
   }
 
-  // Expanded view with labelled select dropdown
-  if (isOpen) {
-    return (
-      <div className="border-t border-[var(--color-border-primary)] px-4 py-3 shrink-0">
-        <div className="flex items-center gap-1.5 px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-          <FaBuilding size={10} className="text-[var(--color-primary)]" />
-          Active Hostel
-        </div>
-        <div className="relative">
-          <Select
-            id="activeHostelSelect"
-            value={activeHostelId || ""}
-            onChange={handleHostelChange}
-            disabled={isUpdatingHostel}
-            size="small"
-            options={[
-              ...(!activeHostelId && assignedHostels.length > 0
-                ? [{ value: "", label: "Select Active Hostel", disabled: true }]
-                : []),
-              ...assignedHostels
-                .map((hostel) => {
-                  const hostelId = typeof hostel === "string" ? hostel : hostel?._id
-                  const hostelName = typeof hostel === "string"
-                    ? `Hostel (${hostelId?.slice(-4) || "Unknown"})`
-                    : hostel?.name || "Unknown Hostel"
-                  return { value: hostelId, label: hostelName }
-                })
-                .filter((opt) => opt.value),
-            ]}
-          />
-          {isUpdatingHostel && (
-            <div className="absolute inset-y-0 right-8 flex items-center pointer-events-none">
-              <CgSpinner className="animate-spin text-[var(--color-primary)]" />
-            </div>
-          )}
-        </div>
-        {updateError && <p className="mt-1.5 px-1 text-xs text-[var(--color-danger)]">{updateError}</p>}
-      </div>
-    )
-  }
-
-  // Collapsed view - icon button that expands the sidebar to switch hostels
   return (
-    <div className="border-t border-[var(--color-border-primary)] p-2 shrink-0">
-      <button
-        type="button"
-        onClick={() => onExpand?.()}
-        title="Active hostel - expand to switch"
-        aria-label="Active hostel - expand sidebar to switch"
-        className="w-full py-2.5 rounded-xl flex justify-center items-center text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
-      >
-        {isUpdatingHostel ? <CgSpinner className="animate-spin text-xl" /> : <FaBuilding className="text-xl" />}
-      </button>
+    <div className="border-t border-[var(--color-border-primary)] px-4 py-3 shrink-0">
+      <div className="flex items-center gap-1.5 px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+        <FaBuilding size={10} className="text-[var(--color-primary)]" />
+        Active Hostel
+      </div>
+      <div className="relative">
+        <Select
+          id="activeHostelSelect"
+          value={activeHostelId || ""}
+          onChange={handleHostelChange}
+          disabled={isUpdatingHostel}
+          size="small"
+          options={[
+            ...(!activeHostelId && assignedHostels.length > 0
+              ? [{ value: "", label: "Select Active Hostel", disabled: true }]
+              : []),
+            ...assignedHostels
+              .map((hostel) => {
+                const hostelId = typeof hostel === "string" ? hostel : hostel?._id
+                const hostelName = typeof hostel === "string"
+                  ? `Hostel (${hostelId?.slice(-4) || "Unknown"})`
+                  : hostel?.name || "Unknown Hostel"
+                return { value: hostelId, label: hostelName }
+              })
+              .filter((opt) => opt.value),
+          ]}
+        />
+        {isUpdatingHostel && (
+          <div className="absolute inset-y-0 right-8 flex items-center pointer-events-none">
+            <CgSpinner className="animate-spin text-[var(--color-primary)]" />
+          </div>
+        )}
+      </div>
+      {updateError && <p className="mt-1.5 px-1 text-xs text-[var(--color-danger)]">{updateError}</p>}
     </div>
   )
 }

@@ -5,13 +5,13 @@ import { getCategoryTint } from "./categoryStyles"
  * V2 bottom category bar. Accents come from --color-cat-* tokens; active
  * buttons use the page background as text color so contrast holds in dark mode.
  */
-const CategoryBar = ({ activeCategory, onCategoryChange, isOpen }) => {
+const CategoryBar = ({ activeCategory, onCategoryChange }) => {
   return (
     <div
-      className={`border-t border-[var(--color-border-primary)] transition-all duration-300 ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
+      className="border-t border-[var(--color-border-primary)] transition-all duration-300 px-4 py-3"
       style={{ backgroundColor: getCategoryTint(activeCategory) }}
     >
-      <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-1.5"}>
+      <div className="grid grid-cols-5 gap-2">
         {ADMIN_NAV_CATEGORIES.map((category) => {
           const isActiveCategory = activeCategory === category.id
           const accent = `var(${category.colorVar})`

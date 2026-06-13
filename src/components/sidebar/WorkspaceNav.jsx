@@ -30,7 +30,7 @@ const SectionLabel = ({ icon: Icon, children }) => (
  * V3 "Workspace" layout: quick jump (Ctrl+K or /), Pinned, Recent, and
  * collapsible category sections with persisted expand state.
  */
-const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onNavigate, onTogglePin, onRequestExpand }) => {
+const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate, onTogglePin }) => {
   const [query, setQuery] = useState("")
   const inputRef = useRef(null)
 
@@ -43,14 +43,9 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
     return new Set([activeCategory || ADMIN_NAV_CATEGORY_HOSTELS])
   })
 
-  // The category of the page you're on should never be hidden
-  useEffect(() => {
-    if (!activeCategory) return
-    setExpandedCategories((previous) => {
-      if (previous.has(activeCategory)) return previous
-      return new Set([...previous, activeCategory])
-    })
-  }, [activeCategory])
+  // The category of the page you're on is always shown expanded, derived at
+  // render so we never need an effect to keep it in sync.
+  const expandedSet = activeCategory ? new Set([...expandedCategories, activeCategory]) : expandedCategories
 
   const toggleCategory = (categoryId) => {
     setExpandedCategories((previous) => {
@@ -64,12 +59,6 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
       }
       return next
     })
-  }
-
-  const focusQuickJump = () => {
-    if (!isOpen) onRequestExpand?.()
-    // Defer one tick so the input exists after a collapsed sidebar expands
-    setTimeout(() => inputRef.current?.focus(), 0)
   }
 
   // Ctrl+K / Cmd+K anywhere, or "/" outside editable fields, focuses quick jump
@@ -89,13 +78,12 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
       if (event.key === "/" && isEditable) return
 
       event.preventDefault()
-      focusQuickJump()
+      inputRef.current?.focus()
     }
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
+  }, [])
 
   const pinnedSet = useMemo(() => new Set(pinnedPaths), [pinnedPaths])
   const pinnedItems = useMemo(() => items.filter((item) => item.path && pinnedSet.has(item.path)), [items, pinnedSet])
@@ -125,8 +113,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
       key={`${keyPrefix}-${item.name}`}
       item={item}
       isActive={activeName === item.name}
-      isOpen={isOpen}
-      showPinControl={isOpen && !!item.path}
+      showPinControl={!!item.path}
       isPinned={!!item.path && pinnedSet.has(item.path)}
       accent={accent}
       onNavigate={(navItem) => {
@@ -136,34 +123,6 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
       onTogglePin={onTogglePin}
     />
   )
-
-  if (!isOpen) {
-    const collapsedExtras = activeItem && !pinnedSet.has(activeItem.path) ? [activeItem] : []
-    return (
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-2 py-3">
-        <button
-          type="button"
-          onClick={focusQuickJump}
-          title="Quick jump (Ctrl+K)"
-          aria-label="Quick jump"
-          className="w-full py-2.5 rounded-xl flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-primary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
-        >
-          <Search size={18} strokeWidth={1.9} />
-        </button>
-
-        {pinnedItems.length > 0 && (
-          <ul className="space-y-1 mt-1 pt-1 border-t border-[var(--color-border-light)]">
-            {pinnedItems.map((item) => renderItem(item, "pinned"))}
-          </ul>
-        )}
-        {collapsedExtras.length > 0 && (
-          <ul className="space-y-1 mt-1 pt-1 border-t border-[var(--color-border-light)]">
-            {collapsedExtras.map((item) => renderItem(item, "active"))}
-          </ul>
-        )}
-      </div>
-    )
-  }
 
   return (
     <div className="flex-1 min-h-0 flex flex-col">
@@ -219,7 +178,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
 
             <div className={pinnedItems.length > 0 || recentItems.length > 0 ? "mt-3 pt-2 border-t border-[var(--color-border-light)]" : "pt-2"}>
               {categoryGroups.map((category) => {
-                const isExpanded = expandedCategories.has(category.id)
+                const isExpanded = expandedSet.has(category.id)
                 const isActiveGroup = category.id === activeCategory
                 const accent = `var(${category.colorVar})`
                 const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`

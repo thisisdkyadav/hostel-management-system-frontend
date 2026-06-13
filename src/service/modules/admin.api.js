@@ -631,23 +631,6 @@ export const adminApi = {
       .then(unwrapStandardResponse)
   },
 
-  // ==================== Registered Students Management ====================
-
-  /**
-   * Get registered students configuration
-   */
-  getRegisteredStudents: () => {
-    return apiClient.get("/config/registeredStudents")
-  },
-
-  /**
-   * Update registered students configuration
-   * @param {Object} registeredStudents - Registered students config
-   */
-  updateRegisteredStudents: (registeredStudents) => {
-    return apiClient.put("/config/registeredStudents", { value: registeredStudents })
-  },
-
   // ==================== Academic Holidays Management ====================
 
   /**

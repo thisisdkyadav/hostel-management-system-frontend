@@ -10,7 +10,7 @@ const matchesQuery = (item, query) => item.name.toLowerCase().includes(query)
  * V1 "All tabs" layout: every admin tab in one scrollable list with sticky
  * category headers, a Pinned group on top, and a quick text filter.
  */
-const FlatGroupedNav = ({ items, pinnedPaths, activeName, isOpen, onNavigate, onTogglePin }) => {
+const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePin }) => {
   const [filterQuery, setFilterQuery] = useState("")
   const normalizedQuery = filterQuery.trim().toLowerCase()
 
@@ -44,26 +44,6 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, isOpen, onNavigate, on
 
   const activeItem = items.find((item) => item.name === activeName)
   const activeCategoryId = activeItem ? (activeItem.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) : null
-
-  if (!isOpen) {
-    return (
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-2 py-3">
-        {groups.map((group, groupIndex) => (
-          <ul key={group.id} className={`space-y-1 ${groupIndex > 0 ? "mt-1 pt-1 border-t border-[var(--color-border-light)]" : ""}`}>
-            {group.items.map((item) => (
-              <SidebarNavItem
-                key={`${group.id}-${item.name}`}
-                item={item}
-                isActive={activeName === item.name}
-                isOpen={false}
-                onNavigate={onNavigate}
-              />
-            ))}
-          </ul>
-        ))}
-      </div>
-    )
-  }
 
   return (
     <div className="flex-1 min-h-0 flex flex-col">
@@ -107,7 +87,6 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, isOpen, onNavigate, on
                   key={`${group.id}-${item.name}`}
                   item={item}
                   isActive={activeName === item.name}
-                  isOpen
                   showPinControl={!!item.path}
                   isPinned={!!item.path && pinnedPaths.includes(item.path)}
                   onNavigate={onNavigate}

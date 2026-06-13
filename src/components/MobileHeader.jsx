@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
+import { Moon, Sun } from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
 
-const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
+const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isDark, onToggleTheme }) => {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
@@ -69,6 +70,20 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
         <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">HMS</span>
       </div>
+
+      {/* Right cluster: theme toggle + profile dropdown */}
+      <div className="flex items-center gap-2">
+        {onToggleTheme && (
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--color-border-primary)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        )}
 
       {/* User Profile Dropdown */}
       <div className="relative" ref={dropdownRef}>
@@ -144,6 +159,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   )

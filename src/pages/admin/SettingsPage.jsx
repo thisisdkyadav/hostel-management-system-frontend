@@ -5,7 +5,6 @@ import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import StudentBatchManager from "../../components/admin/settings/StudentBatchManager"
-import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
@@ -30,7 +29,6 @@ const SettingsPage = () => {
     departments: false,
     studentBatches: false,
     studentGroups: false,
-    registeredStudents: false,
     academicHolidays: false,
     gymkhanaCategories: false,
     systemSettings: false,
@@ -42,7 +40,6 @@ const SettingsPage = () => {
   const [departments, setDepartments] = useState([])
   const [studentBatches, setStudentBatches] = useState({})
   const [studentGroups, setStudentGroups] = useState([])
-  const [registeredStudents, setRegisteredStudents] = useState({})
   const [academicHolidays, setAcademicHolidays] = useState({})
   const [gymkhanaCategories, setGymkhanaCategories] = useState([])
   const [systemSettings, setSystemSettings] = useState({})
@@ -53,7 +50,6 @@ const SettingsPage = () => {
     departments: null,
     studentBatches: null,
     studentGroups: null,
-    registeredStudents: null,
     academicHolidays: null,
     gymkhanaCategories: null,
     systemSettings: null,
@@ -65,7 +61,6 @@ const SettingsPage = () => {
     "departments",
     "studentBatches",
     "studentGroups",
-    "registeredStudents",
     "academicHolidays",
     "gymkhanaCategories",
     "systemSettings",
@@ -139,13 +134,6 @@ const SettingsPage = () => {
       }
     } else if (activeTab === "studentGroups" && studentGroups.length === 0) {
       fetchStudentGroups()
-    } else if (activeTab === "registeredStudents") {
-      if (degrees.length === 0) {
-        fetchDegrees()
-      }
-      if (Object.keys(registeredStudents).length === 0) {
-        fetchRegisteredStudents()
-      }
     } else if (activeTab === "academicHolidays" && Object.keys(academicHolidays).length === 0) {
       fetchAcademicHolidays()
     } else if (activeTab === "gymkhanaCategories" && gymkhanaCategories.length === 0) {
@@ -213,23 +201,6 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, departments: false }))
-    }
-  }
-
-  const fetchRegisteredStudents = async () => {
-    setLoading((prev) => ({ ...prev, registeredStudents: true }))
-    setError((prev) => ({ ...prev, registeredStudents: null }))
-    try {
-      const response = await adminApi.getRegisteredStudents()
-      setRegisteredStudents(response.value || {})
-    } catch (err) {
-      console.error("Error fetching registered students:", err)
-      setError((prev) => ({
-        ...prev,
-        registeredStudents: "Failed to load registered students data. Please try again later.",
-      }))
-    } finally {
-      setLoading((prev) => ({ ...prev, registeredStudents: false }))
     }
   }
 
@@ -441,29 +412,6 @@ const SettingsPage = () => {
     }
   }
 
-  const handleUpdateRegisteredStudents = async (updatedRegisteredStudents) => {
-    if (!canUpdateTab("registeredStudents")) {
-      toast.error("You do not have permission to update registered student counts.")
-      return
-    }
-
-    const confirmUpdate = window.confirm("Are you sure you want to update registered students counts?")
-    if (!confirmUpdate) return
-
-    setLoading((prev) => ({ ...prev, registeredStudents: true }))
-    try {
-      const response = await adminApi.updateRegisteredStudents(updatedRegisteredStudents)
-      setRegisteredStudents(response.configuration.value || {})
-      setSuccessMessage(`Registered students counts updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
-      setShowSuccessModal(true)
-    } catch (err) {
-      console.error("Error updating registered students:", err)
-      toast.error("An error occurred while updating registered students counts. Please try again.")
-    } finally {
-      setLoading((prev) => ({ ...prev, registeredStudents: false }))
-    }
-  }
-
   const handleUpdateSystemSettings = async (updatedSettings) => {
     if (!canUpdateTab("systemSettings")) {
       toast.error("You do not have permission to update system settings.")
@@ -631,7 +579,6 @@ const SettingsPage = () => {
         { key: "studentFields", label: "Edit Permissions", icon: HiCog, description: "Configure which profile fields students are allowed to edit in their profiles. Enable or disable each field as needed." },
         { key: "studentBatches", label: "Batches", icon: HiUsers, description: "Manage batch values by degree and department scope. You can configure exact combinations, Mixed Degree, Mixed Department, or both mixed before assigning students in the batch update flow." },
         { key: "studentGroups", label: "Groups", icon: HiUsers, description: "Manage reusable student groups that are independent of degree, department, and batch. Students can belong to multiple groups, and deleting a group here removes it from student profiles as well." },
-        { key: "registeredStudents", label: "Registered Students", icon: HiUsers, description: "Set the total number of registered students for each degree program, broken down by gender. This helps track enrollment statistics and capacity planning with detailed demographics." },
       ],
     },
     {
@@ -826,17 +773,6 @@ const SettingsPage = () => {
                       itemLabel="Group"
                       placeholder="Enter group name (e.g., Placement Team, Hostel Council, NSS)"
                     />
-                  )}
-                </>
-              )}
-
-              {/* Registered Students Tab */}
-              {activeTab === "registeredStudents" && (
-                <>
-                  {loading.registeredStudents && Object.keys(registeredStudents).length === 0 ? (
-                    <TabSpinner />
-                  ) : (
-                    <RegisteredStudentsForm degrees={degrees} registeredStudents={registeredStudents} onUpdate={handleUpdateRegisteredStudents} isLoading={loading.registeredStudents} />
                   )}
                 </>
               )}

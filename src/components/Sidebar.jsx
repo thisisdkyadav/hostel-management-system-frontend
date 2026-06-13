@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
-import { HiMenuAlt2, HiMenuAlt3 } from "react-icons/hi"
+import { Moon, Sun } from "lucide-react"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
 import HostelSwitcher from "./sidebar/HostelSwitcher"
 import SidebarNavItem from "./sidebar/SidebarNavItem"
 import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/ProfileCard"
+import NewBadge from "./sidebar/NewBadge"
 import CategoryBar from "./sidebar/CategoryBar"
 import { getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
@@ -63,6 +64,8 @@ const Sidebar = ({ navItems }) => {
   const [sidebarMode, setSidebarMode] = useState(readStoredSidebarMode)
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
+  // Theme is ephemeral: always boots to light, toggled for the session only.
+  const [isDark, setIsDark] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
@@ -171,9 +174,8 @@ const Sidebar = ({ navItems }) => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      if (mobile) {
-        setIsOpen(false)
-      }
+      // Desktop sidebar is always expanded; mobile starts as a closed drawer.
+      setIsOpen(!mobile)
     }
 
     window.addEventListener("resize", handleResize)
@@ -181,6 +183,16 @@ const Sidebar = ({ navItems }) => {
 
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  // Apply the chosen theme to <html>; defaults to light on every load.
+  useEffect(() => {
+    const root = document.documentElement
+    if (isDark) {
+      root.setAttribute("data-theme", "dark")
+    } else {
+      root.removeAttribute("data-theme")
+    }
+  }, [isDark])
 
   // Skip sidebar rendering for student PWA in mobile mode with bottombar preference.
   // All hooks must run before this point (Rules of Hooks).
@@ -254,7 +266,7 @@ const Sidebar = ({ navItems }) => {
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
     <div
-      className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
+      className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3"
       style={tintBg ? { backgroundColor: tintBg } : undefined}
     >
       <ul className="space-y-1">
@@ -263,8 +275,7 @@ const Sidebar = ({ navItems }) => {
             key={item.name}
             item={item}
             isActive={active === item.name}
-            isOpen={isOpen}
-            showPinControl={withPins && isOpen && !!item.path}
+            showPinControl={withPins && !!item.path}
             isPinned={!!item.path && pinnedAdminPaths.includes(item.path)}
             accent={accent}
             onNavigate={handleNavigation}
@@ -272,7 +283,7 @@ const Sidebar = ({ navItems }) => {
           />
         ))}
       </ul>
-      {withPins && items.length === 0 && isOpen && (
+      {withPins && items.length === 0 && (
         <div className="mt-3 px-4 py-3 rounded-xl text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-light)]">
           {activeAdminCategory === ADMIN_NAV_CATEGORY_DINING
             ? "Coming Soon"
@@ -291,7 +302,6 @@ const Sidebar = ({ navItems }) => {
           items={mainNavItems}
           pinnedPaths={pinnedAdminPaths}
           activeName={active}
-          isOpen={isOpen}
           onNavigate={handleNavigation}
           onTogglePin={togglePinnedItem}
         />
@@ -305,10 +315,8 @@ const Sidebar = ({ navItems }) => {
           pinnedPaths={pinnedAdminPaths}
           recentPaths={recentPaths}
           activeName={active}
-          isOpen={isOpen}
           onNavigate={handleNavigation}
           onTogglePin={togglePinnedItem}
-          onRequestExpand={() => setIsOpen(true)}
         />
       )
     }
@@ -330,12 +338,19 @@ const Sidebar = ({ navItems }) => {
 
   return (
     <>
-      <MobileHeader isOpen={isOpen} setIsOpen={setIsOpen} bottomNavItems={bottomNavItems} handleNavigation={handleNavigation} />
+      <MobileHeader
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        bottomNavItems={bottomNavItems}
+        handleNavigation={handleNavigation}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark((prev) => !prev)}
+      />
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[280px]" : "w-0 md:w-[72px]"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] w-[280px] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
         style={{ boxShadow: "var(--shadow-sm)" }}
       >
         <div className="flex flex-col h-full">
@@ -344,42 +359,31 @@ const Sidebar = ({ navItems }) => {
             className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}
             style={{ backgroundColor: headerTint }}
           >
-            <div className={`h-full flex items-center ${isOpen ? "justify-between px-5" : "justify-center px-3"} transition-all duration-200`}>
-              {isOpen && (
-                <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
-                  <span
-                    className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70"
-                    style={{ color: headerTitleColor }}
-                  >
-                    {headerTitle}
-                  </span>
-                </div>
-              )}
+            <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
+              <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
+                <span
+                  className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70"
+                  style={{ color: headerTitleColor }}
+                >
+                  {headerTitle}
+                </span>
+              </div>
 
-              {isOpen ? (
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
+                <span className="relative inline-flex">
+                  <NewBadge />
                   <button
                     type="button"
-                    onClick={() => setIsOpen(false)}
-                    title="Minimize"
-                    aria-label="Minimize sidebar"
+                    onClick={() => setIsDark((prev) => !prev)}
+                    title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                    aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
                   >
-                    <HiMenuAlt2 className="text-[17px]" />
+                    {isDark ? <Sun size={16} /> : <Moon size={16} />}
                   </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(true)}
-                  title="Expand"
-                  aria-label="Expand sidebar"
-                  className="w-8 h-8 rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] flex items-center justify-center transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
-                >
-                  <HiMenuAlt3 className="text-[17px]" />
-                </button>
-              )}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -387,16 +391,15 @@ const Sidebar = ({ navItems }) => {
           {renderNavBody()}
 
           {/* Active hostel switcher (warden roles only) */}
-          <HostelSwitcher isOpen={isOpen} onExpand={() => setIsOpen(true)} />
+          <HostelSwitcher />
 
           {/* Profile and logout */}
           <div
-            className={`border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
+            className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3"
             style={{ backgroundColor: headerTint }}
           >
             <ProfileCard
               user={user}
-              isOpen={isOpen}
               profileItem={profileItem}
               logoutItem={logoutItem}
               isActive={active === "Profile"}
@@ -405,7 +408,7 @@ const Sidebar = ({ navItems }) => {
           </div>
 
           {/* V2 category bar */}
-          {isCategorizedMode && <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} isOpen={isOpen} />}
+          {isCategorizedMode && <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} />}
         </div>
       </div>
     </>

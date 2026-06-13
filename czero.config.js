@@ -188,52 +188,53 @@ export default {
         disabled: { opacity: "0.5" },
       },
 
-      // Custom variants matching your theme
+      // Custom variants — driven by theme.css variables (with hardcoded
+      // fallbacks) so buttons follow dark mode and the admin category theme.
       variants: {
         primary: {
-          bg: "#1360AB",
-          color: "white",
-          hover: { bg: "#0F4C81" },
+          bg: "var(--color-primary, #1360AB)",
+          color: "#FFFFFF",
+          hover: { bg: "var(--color-primary-hover, #0F4C81)" },
         },
         secondary: {
-          bg: "#E8F1FE",
-          color: "#1360AB",
-          hover: { bg: "#D2E3FC" },
+          bg: "var(--color-primary-bg, #E8F1FE)",
+          color: "var(--color-primary, #1360AB)",
+          hover: { bg: "var(--color-primary-bg-hover, #D2E3FC)" },
         },
         danger: {
-          bg: "#EF4444",
-          color: "white",
-          hover: { bg: "#DC2626" },
+          bg: "var(--color-danger, #EF4444)",
+          color: "#FFFFFF",
+          hover: { bg: "var(--color-danger-hover, #DC2626)" },
         },
         success: {
-          bg: "#22C55E",
-          color: "white",
-          hover: { bg: "#16A34A" },
+          bg: "var(--color-success, #22C55E)",
+          color: "#FFFFFF",
+          hover: { bg: "var(--color-success-hover, #16A34A)" },
         },
         outline: {
-          bg: "white",
-          color: "#1360AB",
-          border: "2px solid #1360AB",
-          hover: { bg: "#E8F1FE" },
+          bg: "var(--color-bg-primary, #FFFFFF)",
+          color: "var(--color-primary, #1360AB)",
+          border: "2px solid var(--color-primary, #1360AB)",
+          hover: { bg: "var(--color-primary-bg, #E8F1FE)" },
         },
         white: {
-          bg: "white",
-          color: "#334155",
-          border: "1px solid #E2E8F0",
-          hover: { bg: "#F8FAFC", color: "#1E293B" },
+          bg: "var(--color-bg-primary, #FFFFFF)",
+          color: "var(--color-text-body, #334155)",
+          border: "1px solid var(--color-border-primary, #E2E8F0)",
+          hover: { bg: "var(--color-bg-tertiary, #F8FAFC)", color: "var(--color-text-secondary, #1E293B)" },
         },
         ghost: {
           bg: "transparent",
-          color: "#64748B",
-          hover: { bg: "#F8FAFC", color: "#1360AB" },
+          color: "var(--color-text-muted, #64748B)",
+          hover: { bg: "var(--color-bg-tertiary, #F8FAFC)", color: "var(--color-primary, #1360AB)" },
         },
         gradient: {
-          bg: "linear-gradient(135deg, #1360AB, #2E7BC4)",
-          color: "white",
-          shadow: "0 4px 15px rgba(19, 96, 171, 0.25)",
-          hover: { 
-            bg: "linear-gradient(135deg, #0F4C81, #1360AB)",
-            shadow: "0 4px 15px rgba(19, 96, 171, 0.35)" 
+          bg: "var(--gradient-primary, linear-gradient(135deg, #1360AB, #2E7BC4))",
+          color: "#FFFFFF",
+          shadow: "var(--shadow-button-primary, 0 4px 15px rgba(19, 96, 171, 0.25))",
+          hover: {
+            bg: "var(--gradient-primary-hover, linear-gradient(135deg, #0F4C81, #1360AB))",
+            shadow: "var(--shadow-button-primary-hover, 0 4px 15px rgba(19, 96, 171, 0.35))",
           },
         },
       },

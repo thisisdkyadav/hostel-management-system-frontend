@@ -141,6 +141,9 @@
   --color-cat-student-affairs: #D97706;
   --color-cat-staff: #0284C7;
   --color-cat-dining: #E11D48;
+  /* Endpoint that category tints mix toward — white in light mode, the dark
+     card surface in dark mode — so the re-themed primary tints stay correct. */
+  --admin-mix-surface: #FFFFFF;
 
   /* ============================================
      COLOR PALETTE - ADDITIONAL COLORS
@@ -768,6 +771,7 @@
   --color-cat-student-affairs: #FBBF24;
   --color-cat-staff: #38BDF8;
   --color-cat-dining: #FB7185;
+  --admin-mix-surface: #1A1A1A;
 
   /* Additional Colors - Neutral */
   --color-purple-bg: #251A2D;
@@ -857,6 +861,66 @@
   /* Skeleton/Loading */
   --skeleton-base: #262626;
   --skeleton-highlight: #333333;
+}
+
+/* ============================================
+   ADMIN CATEGORY THEME (V2 sidebar)
+   The categorized admin sidebar sets
+   data-admin-category on <html>. When it does, we
+   repoint the entire primary palette to that
+   category's accent, so buttons, links, focus rings
+   and active states across the admin surface adopt
+   the category color. Derivations mix toward
+   --admin-mix-surface (white / dark surface) so they
+   stay correct in both modes. Home keeps default blue.
+   ============================================ */
+[data-admin-category="hostels"] { --admin-accent: var(--color-cat-hostels); }
+[data-admin-category="student-affairs"] { --admin-accent: var(--color-cat-student-affairs); }
+[data-admin-category="staff"] { --admin-accent: var(--color-cat-staff); }
+[data-admin-category="dining"] { --admin-accent: var(--color-cat-dining); }
+
+[data-admin-category="hostels"],
+[data-admin-category="student-affairs"],
+[data-admin-category="staff"],
+[data-admin-category="dining"] {
+  --color-primary: var(--admin-accent);
+  --color-primary-hover: color-mix(in srgb, var(--admin-accent) 86%, #000);
+  --color-primary-active: color-mix(in srgb, var(--admin-accent) 74%, #000);
+  --color-primary-dark: color-mix(in srgb, var(--admin-accent) 86%, #000);
+  --color-primary-darker: color-mix(in srgb, var(--admin-accent) 64%, #000);
+  --color-primary-light: color-mix(in srgb, var(--admin-accent) 80%, var(--admin-mix-surface));
+  --color-primary-lighter: color-mix(in srgb, var(--admin-accent) 60%, var(--admin-mix-surface));
+  --color-primary-muted: color-mix(in srgb, var(--admin-accent) 45%, var(--admin-mix-surface));
+  --color-primary-pale: color-mix(in srgb, var(--admin-accent) 22%, var(--admin-mix-surface));
+  --color-primary-bg: color-mix(in srgb, var(--admin-accent) 12%, var(--admin-mix-surface));
+  --color-primary-bg-hover: color-mix(in srgb, var(--admin-accent) 20%, var(--admin-mix-surface));
+
+  --color-border-focus: var(--admin-accent);
+  --color-border-secondary: color-mix(in srgb, var(--admin-accent) 30%, var(--admin-mix-surface));
+  --color-border-hover: color-mix(in srgb, var(--admin-accent) 45%, var(--admin-mix-surface));
+
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 22%, transparent);
+  --shadow-focus-primary: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 16%, transparent);
+  --shadow-button-primary: 0 4px 15px color-mix(in srgb, var(--admin-accent) 25%, transparent);
+  --shadow-button-primary-hover: 0 4px 15px color-mix(in srgb, var(--admin-accent) 35%, transparent);
+  --shadow-button-active: 0 2px 8px color-mix(in srgb, var(--admin-accent) 35%, transparent);
+  --shadow-glow-primary: 0 0 20px color-mix(in srgb, var(--admin-accent) 30%, transparent);
+
+  --ring-primary: 0 0 0 2px color-mix(in srgb, var(--admin-accent) 15%, transparent);
+  --focus-ring-color: color-mix(in srgb, var(--admin-accent) 50%, transparent);
+
+  --gradient-primary: linear-gradient(135deg, var(--admin-accent), color-mix(in srgb, var(--admin-accent) 78%, var(--admin-mix-surface)));
+  --gradient-primary-hover: linear-gradient(135deg, color-mix(in srgb, var(--admin-accent) 86%, #000), var(--admin-accent));
+
+  --sidebar-active-bg: var(--admin-accent);
+  --sidebar-active-shadow: 0 4px 12px color-mix(in srgb, var(--admin-accent) 30%, transparent);
+
+  --modal-title-color: var(--admin-accent);
+  --input-border-focus: var(--admin-accent);
+  --input-focus-ring: 0 0 0 2px color-mix(in srgb, var(--admin-accent) 12%, transparent);
+  --button-primary-bg: var(--admin-accent);
+  --button-primary-hover: color-mix(in srgb, var(--admin-accent) 86%, #000);
+  --button-primary-active: color-mix(in srgb, var(--admin-accent) 74%, #000);
 }
 
 /* ============================================

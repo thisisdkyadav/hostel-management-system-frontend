@@ -308,7 +308,7 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [normalizedView, setNormalizedView] = useState(false)
-  const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
+  const [studentDataView, setStudentDataView] = useState("hostler") // "hostler" | "dayScholar" | "all"
   const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
   const [approvalCounts, setApprovalCounts] = useState({ proposals: 0, calendars: 0, expenses: 0, por: 0 })
   const [approvalsLoading, setApprovalsLoading] = useState(true)
@@ -432,77 +432,18 @@ const DashboardPage = () => {
           <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
         ) : (
           (() => {
-            // Safe access to degreeWise and registered data
-            const degreeWise = dashboardData?.students?.degreeWise || []
-
-            // Sum normal (actual) counts by gender and total
-            const normalSums = degreeWise.reduce(
-              (acc, d) => {
-                const boys = parseInt(d.boys) || 0
-                const girls = parseInt(d.girls) || 0
-                acc.boys += boys
-                acc.girls += girls
-                acc.total += boys + girls
-                return acc
-              },
-              { boys: 0, girls: 0, total: 0 }
-            )
-
-            // Sum registered counts; try multiple possible shapes
-            const registeredSums = degreeWise.reduce(
-              (acc, d) => {
-                // preferred: d.registered (object with boys/girls/total)
-                if (d.registered && typeof d.registered === "object") {
-                  const rb = parseInt(d.registered.boys) || 0
-                  const rg = parseInt(d.registered.girls) || 0
-                  const rt = parseInt(d.registered.total) || rb + rg
-                  acc.boys += rb
-                  acc.girls += rg
-                  acc.total += rt
-                } else if (d.registeredStudents != null) {
-                  // older format: registeredStudents might be a number
-                  const rt = parseInt(d.registeredStudents) || 0
-                  // if no breakdown available, split evenly
-                  const rb = Math.floor(rt / 2)
-                  const rg = rt - rb
-                  acc.boys += rb
-                  acc.girls += rg
-                  acc.total += rt
-                } else {
-                  // fallback: use d.totalRegistered or d.total if available
-                  const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
-                  const rb = Math.floor(rt / 2)
-                  const rg = rt - rb
-                  acc.boys += rb
-                  acc.girls += rg
-                  acc.total += rt
-                }
-
-                return acc
-              },
-              { boys: 0, girls: 0, total: 0 }
-            )
-
-            // Derive day scholar = registered - normal (per gender and total)
-            const dayScholar = {
-              boys: Math.max(0, registeredSums.boys - normalSums.boys),
-              girls: Math.max(0, registeredSums.girls - normalSums.girls),
-            }
-            dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
-
-            // Prefer exact backend counts for hostlers/day scholars; fall back to derived values only if needed.
+            // Actual active hostler / day-scholar counts (from the isDayScholar flag)
+            const counts = dashboardData?.hostlerAndDayScholarCounts || {}
             const hostler = {
-              boys: dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys ?? normalSums.boys ?? 0,
-              girls: dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls ?? normalSums.girls ?? 0,
+              boys: counts.hostler?.boys || 0,
+              girls: counts.hostler?.girls || 0,
+              total: counts.hostler?.total || 0,
             }
-            hostler.total = dashboardData?.hostlerAndDayScholarCounts?.hostler?.total ?? normalSums.total ?? (hostler.boys + hostler.girls)
-
-            // Fall back to derived day scholar counts only if exact backend data is unavailable.
             const finalDayScholar = {
-              boys: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys ?? dayScholar.boys ?? 0,
-              girls: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls ?? dayScholar.girls ?? 0,
+              boys: counts.dayScholar?.boys || 0,
+              girls: counts.dayScholar?.girls || 0,
+              total: counts.dayScholar?.total || 0,
             }
-            finalDayScholar.total = dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total ?? dayScholar.total ?? (finalDayScholar.boys + finalDayScholar.girls)
 
             return (
               <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
@@ -586,18 +527,15 @@ const DashboardPage = () => {
               ) : (
                 <>
                   <SectionTitle title="Student Distribution" to="/admin/students">
-                    {/* Normal/Registered Toggle */}
+                    {/* Hostler / Day Scholar / All Toggle */}
                     <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                      <button onClick={() => setStudentDataView("normal")}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Hostler
-                      </button>
-                      <button onClick={() => setStudentDataView("registered")}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Registered
-                      </button>
+                      {[{ key: "hostler", label: "Hostler" }, { key: "dayScholar", label: "Day Scholar" }, { key: "all", label: "All" }].map((opt) => (
+                        <button key={opt.key} onClick={() => setStudentDataView(opt.key)}
+                          className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === opt.key ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
                     </div>
                     {/* Absolute/Normalized Toggle */}
                     <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
@@ -755,35 +693,27 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
   if (!degreeWiseData.length) return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
 
   const degreeData = degreeWiseData.map((item) => {
-    // Choose which data to display based on studentDataView toggle
-    let displayBoys, displayGirls, displayTotal
-    if (studentDataView === "registered") {
-      // Show registered students data from settings
-      const registeredData = item.registeredStudents
-      const registered = item?.registered || null
-      if (registered !== null) {
-        displayBoys = registered.boys || 0
-        displayGirls = registered.girls || 0
-        displayTotal = registered.total || 0
-      } else {
-        // If old format or no breakdown available, show total as boys+girls split evenly or 0
-        const total = parseInt(registeredData) || 0
-        displayBoys = Math.floor(total / 2)
-        displayGirls = Math.ceil(total / 2)
-        displayTotal = total
-      }
+    // Pick the active count source based on the Hostler / Day Scholar / All toggle
+    const hostler = item.hostler || { boys: 0, girls: 0 }
+    const dayScholar = item.dayScholar || { boys: 0, girls: 0 }
+    let displayBoys, displayGirls
+    if (studentDataView === "hostler") {
+      displayBoys = hostler.boys || 0
+      displayGirls = hostler.girls || 0
+    } else if (studentDataView === "dayScholar") {
+      displayBoys = dayScholar.boys || 0
+      displayGirls = dayScholar.girls || 0
     } else {
-      // Show normal/actual students data (default)
-      displayBoys = item.boys || 0
-      displayGirls = item.girls || 0
-      displayTotal = displayBoys + displayGirls
+      // "all" — prefer the combined count from the backend, fall back to the splits
+      displayBoys = item.boys ?? (hostler.boys || 0) + (dayScholar.boys || 0)
+      displayGirls = item.girls ?? (hostler.girls || 0) + (dayScholar.girls || 0)
     }
 
     return {
       ...item,
       boys: displayBoys,
       girls: displayGirls,
-      total: displayTotal,
+      total: displayBoys + displayGirls,
     }
   })
 

@@ -1,9 +1,9 @@
 import { FaUserCircle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
-const Avatar = ({ user, isActive, sizeClass }) => (
+const Avatar = ({ user, isActive }) => (
   <div
-    className={`${sizeClass} rounded-xl flex items-center justify-center overflow-hidden ring-2 transition-all duration-200 ${
+    className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden ring-2 transition-all duration-200 ${
       isActive ? "ring-white/30" : "ring-[var(--color-border-primary)]"
     }`}
   >
@@ -24,30 +24,11 @@ const Avatar = ({ user, isActive, sizeClass }) => (
 )
 
 /**
- * Profile + logout block at the bottom of the sidebar.
- * Expanded: avatar, name/email and a logout button. Collapsed: avatar only.
+ * Profile + logout block at the bottom of the sidebar:
+ * avatar, name/email and a logout button.
  */
-const ProfileCard = ({ user, isOpen, profileItem, logoutItem, isActive, onNavigate }) => {
+const ProfileCard = ({ user, profileItem, logoutItem, isActive, onNavigate }) => {
   if (!user) return null
-
-  if (!isOpen) {
-    return (
-      <button
-        type="button"
-        onClick={() => profileItem && onNavigate(profileItem)}
-        title={user.name || "Profile"}
-        aria-label="Profile"
-        aria-current={isActive ? "page" : undefined}
-        className={`
-          group w-full rounded-xl transition-colors duration-200 cursor-pointer p-2 flex justify-center
-          outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
-          ${isActive ? "bg-[var(--color-primary)] shadow-md shadow-[var(--color-primary)]/25" : "hover:bg-[var(--color-bg-hover)]"}
-        `}
-      >
-        <Avatar user={user} isActive={isActive} sizeClass="w-10 h-10" />
-      </button>
-    )
-  }
 
   return (
     <div
@@ -70,7 +51,7 @@ const ProfileCard = ({ user, isOpen, profileItem, logoutItem, isActive, onNaviga
       <div className="flex items-center justify-between px-3 py-2.5">
         <div className="flex items-center flex-1 min-w-0">
           <div className="relative mr-3 flex-shrink-0">
-            <Avatar user={user} isActive={isActive} sizeClass="w-10 h-10" />
+            <Avatar user={user} isActive={isActive} />
           </div>
 
           <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
