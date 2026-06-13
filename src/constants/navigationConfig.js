@@ -43,7 +43,8 @@ import {
   GraduationCap,
   BriefcaseBusiness,
   UtensilsCrossed,
-  BadgeCheck
+  BadgeCheck,
+  Wallet
 } from "lucide-react"
 
 // ============================================
@@ -160,6 +161,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/admin/caterers", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/admin/dining-rebates", routeKey: "route.admin.diningRebates", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Dining Billing", icon: Wallet, section: "main", path: "/admin/dining-billing", pathPattern: "^/admin/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },

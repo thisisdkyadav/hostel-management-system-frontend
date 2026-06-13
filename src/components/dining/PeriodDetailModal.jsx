@@ -90,6 +90,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
             <Field label="Period end" value={formatDate(period.endDate)} />
             <Field label="Allocation opens" value={formatDateTime(period.allocationStartAt)} />
             <Field label="Allocation closes" value={formatDateTime(period.allocationEndAt)} />
+            <Field label="Daily rate" value={period.dailyRate > 0 ? `₹${period.dailyRate}/day` : "Not set"} />
           </div>
         </Section>
 

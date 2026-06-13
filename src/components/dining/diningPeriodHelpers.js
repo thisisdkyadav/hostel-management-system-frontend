@@ -128,6 +128,7 @@ export const normalizePeriod = (period = {}) => {
     mealSlots:
       Array.isArray(period.mealSlots) && period.mealSlots.length > 0 ? period.mealSlots : DEFAULT_MEAL_SLOTS,
     rebateSettings: { ...DEFAULT_REBATE_SETTINGS, ...(period.rebateSettings || {}) },
+    dailyRate: Math.max(0, Number(period.dailyRate || 0)),
     totalCapacity: Number(period.totalCapacity || 0),
     totalAllocated,
     eligibilityMode: period.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,

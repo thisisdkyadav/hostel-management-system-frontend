@@ -44,6 +44,7 @@ const initialFormState = {
   catererCapacities: [],
   mealSlots: DEFAULT_MEAL_SLOTS,
   rebateSettings: normalizeRebateSettings(DEFAULT_REBATE_SETTINGS),
+  dailyRate: "",
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: [],
 }
@@ -202,6 +203,7 @@ const PeriodFormModal = ({
             }))
           : DEFAULT_MEAL_SLOTS,
       rebateSettings: normalizeRebateSettings(initialData.rebateSettings || DEFAULT_REBATE_SETTINGS),
+      dailyRate: initialData.dailyRate != null && initialData.dailyRate !== "" ? String(initialData.dailyRate) : "",
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
       eligibleRollNumbers: Array.isArray(initialData.eligibleRollNumbers) ? initialData.eligibleRollNumbers : [],
     })
@@ -339,6 +341,7 @@ const PeriodFormModal = ({
           shortTermMinApplicationDays: Number(formData.rebateSettings.shortTermMinApplicationDays || 0),
           shortTermMinAdvanceDays: Number(formData.rebateSettings.shortTermMinAdvanceDays || 0),
         },
+        dailyRate: Number(formData.dailyRate || 0),
         eligibilityMode: formData.eligibilityMode,
         eligibleRollNumbers:
           formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM ? formData.eligibleRollNumbers : [],
@@ -422,8 +425,17 @@ const PeriodFormModal = ({
                     onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
                 </div>
               </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+                <div>
+                  <Label htmlFor="dailyRate">Daily Rate (₹ / day)</Label>
+                  <Input id="dailyRate" type="number" min="0" step="0.01" placeholder="0"
+                    value={formData.dailyRate}
+                    onChange={(e) => setFormData((p) => ({ ...p, dailyRate: e.target.value }))} />
+                </div>
+              </div>
               <Alert type="info" icon>
                 Students can pick a caterer only while the allocation window is open. The period dates control when meals are verified.
+                The daily rate is what each eligible student is billed per day in this period (skipping approved-rebate days) — used by billing periods.
               </Alert>
             </VStack>
           )}

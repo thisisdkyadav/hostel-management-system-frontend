@@ -249,6 +249,14 @@ export const studentApi = {
   requestDiningRebate: (payload) => {
     return apiClient.post("/students/dining/rebates", payload).then(unwrapStandardResponse)
   },
+
+  /**
+   * Get the student's dining billing overview (per billing period:
+   * allocated, charged, balance, clearance + per-dining-period breakdown)
+   */
+  getDiningBilling: () => {
+    return apiClient.get("/students/dining/billing").then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

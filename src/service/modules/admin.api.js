@@ -153,6 +153,59 @@ export const adminApi = {
     return apiClient.put(`/admin/dining-rebates/${rebateId}/reject`, { comment }).then(unwrapStandardResponse)
   },
 
+  // ==================== Dining Billing ====================
+
+  /**
+   * Get all dining billing periods (with derived summary)
+   * @param {string} queries - Query string (e.g. "archive=true")
+   */
+  getBillingPeriods: (queries = "") => {
+    return apiClient.get("/admin/dining-billing-periods", { queryString: queries })
+  },
+
+  /**
+   * Create a billing period
+   * @param {Object} data - { name, diningPeriodIds, note }
+   */
+  addBillingPeriod: (data) => {
+    return apiClient.post("/admin/dining-billing-periods", data).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Update a billing period
+   * @param {string} billingPeriodId
+   * @param {Object} data - { name, diningPeriodIds, note }
+   */
+  updateBillingPeriod: (billingPeriodId, data) => {
+    return apiClient.put(`/admin/dining-billing-periods/${billingPeriodId}`, data).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Archive or unarchive a billing period
+   * @param {string} billingPeriodId
+   * @param {boolean} status - Archive status
+   */
+  changeBillingPeriodArchiveStatus: (billingPeriodId, status) => {
+    return apiClient.put(`/admin/dining-billing-periods/${billingPeriodId}/archive`, { status }).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Get accounts (per-student derived charges/balance) for a billing period
+   * @param {string} billingPeriodId
+   */
+  getBillingAccounts: (billingPeriodId) => {
+    return apiClient.get(`/admin/dining-billing-periods/${billingPeriodId}/accounts`).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Bulk add/deduct/set student fund allocations
+   * @param {string} billingPeriodId
+   * @param {Object} payload - { mode: "add"|"deduct"|"set", entries: [{ rollNumber, amount }] }
+   */
+  bulkUpdateBillingAccounts: (billingPeriodId, payload) => {
+    return apiClient.post(`/admin/dining-billing-periods/${billingPeriodId}/accounts/bulk`, payload).then(unwrapStandardResponse)
+  },
+
   // ==================== Wardens ====================
   
   /**

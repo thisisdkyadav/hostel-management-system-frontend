@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, Modal, StatusBadge, Table } from "czero/react"
-import { CalendarDays, CheckCircle2, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
+import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
@@ -12,6 +12,12 @@ import {
   getErrorMessage,
   rebateStatusTone,
 } from "@/components/dining/diningPeriodHelpers"
+import {
+  balanceTone,
+  clearanceTone,
+  formatClearance,
+  formatCurrency,
+} from "@/components/dining/diningBillingHelpers"
 
 const REFRESH_INTERVAL_MS = 5000
 
@@ -248,6 +254,83 @@ const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCat
 }
 
 /* ------------------------------------------------------------------ */
+/* Billing                                                            */
+/* ------------------------------------------------------------------ */
+
+const BillingFigure = ({ label, value, tone }) => (
+  <div>
+    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{label}</div>
+    <div
+      style={{
+        fontSize: "var(--font-size-md)",
+        fontWeight: "var(--font-weight-bold)",
+        color: tone === "danger" ? "var(--color-danger)" : tone === "success" ? "var(--color-success)" : "var(--color-text-heading)",
+      }}
+    >
+      {value}
+    </div>
+  </div>
+)
+
+const StudentBillingCard = ({ billingPeriod }) => {
+  const [expanded, setExpanded] = useState(false)
+  const hasBreakdown = Array.isArray(billingPeriod.perPeriod) && billingPeriod.perPeriod.length > 0
+
+  return (
+    <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-4)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+            {billingPeriod.name}
+          </div>
+          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            {billingPeriod.startDate ? `${formatDate(billingPeriod.startDate)} – ${formatDate(billingPeriod.endDate)}` : "No dining periods"}
+          </div>
+        </div>
+        <StatusBadge status={formatClearance(billingPeriod.clearance)} tone={clearanceTone(billingPeriod.clearance)} />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)" }}>
+        <BillingFigure label="Allocated" value={formatCurrency(billingPeriod.allocatedAmount)} />
+        <BillingFigure label="Charged" value={formatCurrency(billingPeriod.totalCharged)} />
+        <BillingFigure label="Balance" value={formatCurrency(billingPeriod.balance)} tone={balanceTone(billingPeriod.balance)} />
+      </div>
+
+      {hasBreakdown && (
+        <>
+          <button
+            type="button"
+            onClick={() => setExpanded((prev) => !prev)}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", marginTop: "var(--spacing-3)",
+              background: "none", border: "none", cursor: "pointer", padding: 0,
+              color: "var(--color-primary)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)",
+            }}
+          >
+            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            {expanded ? "Hide breakdown" : "Show breakdown"}
+          </button>
+
+          {expanded && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+              {billingPeriod.perPeriod.map((row) => (
+                <div key={row.periodId} style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <span>
+                    {formatDate(row.startDate)} – {formatDate(row.endDate)} · {row.chargeableDays}d × {formatCurrency(row.dailyRate)}
+                    {row.rebateDays > 0 ? ` (−${row.rebateDays} rebate)` : ""}
+                  </span>
+                  <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{formatCurrency(row.amount)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /* Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -260,6 +343,7 @@ const DiningPage = () => {
   const [showAllocationModal, setShowAllocationModal] = useState(false)
   const [showRebateModal, setShowRebateModal] = useState(false)
   const [rebates, setRebates] = useState([])
+  const [billing, setBilling] = useState([])
   const [rebateSubmitting, setRebateSubmitting] = useState(false)
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
@@ -355,9 +439,20 @@ const DiningPage = () => {
     }
   }
 
+  const fetchBilling = async () => {
+    try {
+      const response = await studentApi.getDiningBilling()
+      setBilling(Array.isArray(response?.billingPeriods) ? response.billingPeriods : [])
+    } catch (billingError) {
+      // Billing is supplementary — don't block the dining page on it.
+      console.error("Error fetching dining billing:", billingError)
+    }
+  }
+
   useEffect(() => {
     fetchPortalState()
     fetchRebates()
+    fetchBilling()
     const intervalId = window.setInterval(() => fetchPortalState({ silent: true }), REFRESH_INTERVAL_MS)
     return () => window.clearInterval(intervalId)
   }, [])
@@ -387,6 +482,7 @@ const DiningPage = () => {
     try {
       const response = await studentApi.requestDiningRebate(payload)
       await fetchRebates()
+      await fetchBilling()
       await fetchPortalState({ silent: true })
       setShowRebateModal(false)
       const hasPending = Array.isArray(response?.rebates) && response.rebates.some((rebate) => rebate.status === "pending")
@@ -501,6 +597,25 @@ const DiningPage = () => {
               </div>
             )}
           </Card>
+
+          {/* Billing */}
+          {billing.length > 0 && (
+            <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <div>
+                <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                  <Wallet size={18} style={{ color: "var(--color-primary)" }} /> Mess Billing
+                </h3>
+                <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Your allocated funds, daily charges and balance for each billing period. Approved-rebate days are not charged.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-3)]">
+                {billing.map((billingPeriod) => (
+                  <StudentBillingCard key={billingPeriod.id} billingPeriod={billingPeriod} />
+                ))}
+              </div>
+            </Card>
+          )}
         </VStack>
       </div>
 
