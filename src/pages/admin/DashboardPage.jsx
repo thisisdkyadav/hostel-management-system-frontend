@@ -226,7 +226,7 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
         </SnapColumn>
 
         {/* My approvals */}
-        <SnapColumn title="My Approvals" icon={FaFileAlt} accent="var(--color-success)" count={approvalsLoading ? null : approvalTotal}>
+        <SnapColumn title="To-Do" icon={FaFileAlt} accent="var(--color-success)" count={approvalsLoading ? null : approvalTotal}>
           {approvalsLoading ? <SnapShimmer /> : approvalTotal === 0 ? <SnapEmpty icon={FaAward} label="All caught up" /> : (
             APPROVAL_TODO_ITEMS.map((item) => {
               const count = approvalCounts[item.key] || 0
