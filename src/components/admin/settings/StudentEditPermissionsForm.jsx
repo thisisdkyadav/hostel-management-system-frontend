@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
-import { VStack, HStack, Badge } from "@/components/ui"
+import { Switch } from "@/components/ui"
 import { Button } from "czero/react"
 
 const getFieldDescription = (field) => {
@@ -35,170 +35,6 @@ const getFieldIcon = (field) => {
   return icons[field] || "✏️"
 }
 
-const styles = {
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-4)",
-  },
-  itemsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-3)",
-  },
-  permissionCard: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "var(--spacing-4)",
-    borderRadius: "var(--radius-lg)",
-    transition: "var(--transition-all)",
-  },
-  permissionCardActive: {
-    backgroundColor: "var(--color-primary-bg)",
-    border: "var(--border-1) solid var(--color-primary-pale)",
-  },
-  permissionCardInactive: {
-    backgroundColor: "var(--color-bg-tertiary)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-  },
-  contentWrapper: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: "var(--spacing-3)",
-  },
-  icon: {
-    fontSize: "var(--font-size-3xl)",
-  },
-  labelContainer: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  labelRow: {
-    display: "flex",
-    alignItems: "center",
-  },
-  label: {
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-secondary)",
-  },
-  badgeActive: {
-    marginLeft: "var(--spacing-2)",
-    padding: "var(--spacing-1) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: "var(--color-primary-bg)",
-    color: "var(--color-primary)",
-  },
-  badgeInactive: {
-    marginLeft: "var(--spacing-2)",
-    padding: "var(--spacing-1) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: "var(--color-bg-muted)",
-    color: "var(--color-text-tertiary)",
-  },
-  description: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-muted)",
-    marginTop: "var(--spacing-1)",
-  },
-  statusActive: {
-    marginTop: "var(--spacing-2)",
-    display: "flex",
-    alignItems: "center",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-primary)",
-  },
-  statusInactive: {
-    marginTop: "var(--spacing-2)",
-    display: "flex",
-    alignItems: "center",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-muted)",
-  },
-  statusIcon: {
-    marginRight: "var(--spacing-1)",
-  },
-  toggleLabel: {
-    position: "relative",
-    display: "inline-flex",
-    alignItems: "center",
-    cursor: "pointer",
-  },
-  toggleLabelDisabled: {
-    opacity: "var(--opacity-disabled)",
-    cursor: "not-allowed",
-  },
-  toggleInput: {
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    padding: 0,
-    margin: "-1px",
-    overflow: "hidden",
-    clip: "rect(0, 0, 0, 0)",
-    whiteSpace: "nowrap",
-    border: 0,
-  },
-  toggleTrack: {
-    width: "44px",
-    height: "24px",
-    borderRadius: "var(--radius-full)",
-    position: "relative",
-    transition: "var(--transition-all)",
-  },
-  toggleTrackActive: {
-    backgroundColor: "var(--color-primary)",
-  },
-  toggleTrackInactive: {
-    backgroundColor: "var(--color-bg-muted)",
-  },
-  toggleThumb: {
-    position: "absolute",
-    top: "2px",
-    width: "20px",
-    height: "20px",
-    backgroundColor: "var(--color-white)",
-    borderRadius: "var(--radius-full)",
-    transition: "var(--transition-all)",
-    border: "var(--border-1) solid var(--color-border-input)",
-  },
-  toggleThumbActive: {
-    left: "22px",
-  },
-  toggleThumbInactive: {
-    left: "2px",
-  },
-  submitContainer: {
-    paddingTop: "var(--spacing-4)",
-  },
-  submitButton: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "var(--spacing-3) var(--spacing-4)",
-    color: "var(--color-white)",
-    fontWeight: "var(--font-weight-medium)",
-    borderRadius: "var(--radius-lg)",
-    border: "none",
-    cursor: "pointer",
-    transition: "var(--transition-all)",
-  },
-  spinner: {
-    width: "var(--icon-lg)",
-    height: "var(--icon-lg)",
-    borderRadius: "var(--radius-full)",
-    borderBottom: "var(--border-2) solid var(--color-white)",
-    marginRight: "var(--spacing-2)",
-    animation: "spin 1s linear infinite",
-  },
-  saveIcon: {
-    marginRight: "var(--spacing-2)",
-  },
-}
-
 const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
   const [localPermissions, setLocalPermissions] = useState(permissions)
 
@@ -216,44 +52,57 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
     onUpdate(localPermissions)
   }
 
-  const getSubmitButtonStyle = () => {
-    if (isLoading) return { ...styles.submitButton, backgroundColor: "var(--color-text-disabled)", cursor: "not-allowed" }
-    return { ...styles.submitButton, backgroundColor: "var(--color-primary)" }
-  }
+  const allowedCount = localPermissions.filter((permission) => permission.allowed).length
+  const allowedPercent = localPermissions.length > 0 ? Math.round((allowedCount / localPermissions.length) * 100) : 0
 
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
-      <div style={styles.itemsContainer}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Summary strip */}
+      <div className="flex items-center justify-between gap-4 rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] px-4 py-2.5">
+        <span className="text-sm text-[var(--color-text-body)]">
+          <span className="font-semibold text-[var(--color-primary)]">{allowedCount}</span> of {localPermissions.length} fields editable by students
+        </span>
+        <div className="flex items-center gap-2">
+          <div className="w-24 sm:w-32 h-1.5 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
+            <div className="h-full rounded-[var(--radius-full)] bg-[var(--color-primary)] transition-all duration-300" style={{ width: `${allowedPercent}%` }}></div>
+          </div>
+          <span className="text-xs text-[var(--color-text-muted)] tabular-nums">{allowedPercent}%</span>
+        </div>
+      </div>
+
+      {/* Permission cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         {localPermissions.map((permission) => (
-          <div key={permission.field} style={{ ...styles.permissionCard, ...(permission.allowed ? styles.permissionCardActive : styles.permissionCardInactive) }}>
-            <div style={styles.contentWrapper}>
-              <div style={styles.icon}>{getFieldIcon(permission.field)}</div>
-              <div style={styles.labelContainer}>
-                <div style={styles.labelRow}>
-                  <p style={styles.label}>{permission.label}</p>
-                  <span style={permission.allowed ? styles.badgeActive : styles.badgeInactive}>{permission.allowed ? "Editable" : "Locked"}</span>
-                </div>
-                <p style={styles.description}>{getFieldDescription(permission.field)}</p>
-                <div style={permission.allowed ? styles.statusActive : styles.statusInactive}>
+          <div
+            key={permission.field}
+            className={`flex items-center justify-between gap-3 p-3 rounded-[var(--radius-lg)] border transition-[var(--transition-all)] ${permission.allowed
+              ? "bg-[var(--color-primary-bg)] border-[var(--color-primary-pale)]"
+              : "bg-[var(--color-bg-tertiary)] border-[var(--color-border-primary)]"}`}
+          >
+            <div className="flex items-start gap-2.5 min-w-0">
+              <span className="text-xl leading-none mt-0.5" aria-hidden="true">{getFieldIcon(permission.field)}</span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium text-[var(--color-text-secondary)]">{permission.label}</p>
                   {permission.allowed ? (
-                    <><HiPencil style={styles.statusIcon} />Students can modify this field</>
+                    <HiPencil className="h-3 w-3 shrink-0 text-[var(--color-primary)]" title="Editable by students" />
                   ) : (
-                    <><HiLockClosed style={styles.statusIcon} />Students cannot modify this field</>
+                    <HiLockClosed className="h-3 w-3 shrink-0 text-[var(--color-text-muted)]" title="Locked for students" />
                   )}
                 </div>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5 leading-snug">{getFieldDescription(permission.field)}</p>
               </div>
             </div>
-            <label style={{ ...styles.toggleLabel, ...(isLoading ? styles.toggleLabelDisabled : {}) }}>
-              <input type="checkbox" checked={permission.allowed} onChange={() => handleTogglePermission(permission.field)} style={styles.toggleInput} disabled={isLoading} />
-              <div style={{ ...styles.toggleTrack, ...(permission.allowed ? styles.toggleTrackActive : styles.toggleTrackInactive) }}>
-                <div style={{ ...styles.toggleThumb, ...(permission.allowed ? styles.toggleThumbActive : styles.toggleThumbInactive) }}></div>
-              </div>
-            </label>
+            <Switch
+              checked={permission.allowed}
+              onChange={() => handleTogglePermission(permission.field)}
+              disabled={isLoading}
+            />
           </div>
         ))}
       </div>
 
-      <div style={styles.submitContainer}>
+      <div className="pt-2">
         <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading}>
           {!isLoading && <HiSave size={20} />}
           {isLoading ? "Updating..." : "Update Permissions"}

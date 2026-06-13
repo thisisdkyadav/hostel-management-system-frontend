@@ -1,180 +1,6 @@
 import { useState, useEffect } from "react"
-import { HiPlus, HiSave } from "react-icons/hi"
-import { VStack, HStack, Label } from "@/components/ui"
+import { HiSave, HiExclamationCircle } from "react-icons/hi"
 import { Button, Input } from "czero/react"
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-6)",
-  },
-  itemsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-4)",
-  },
-  emptyContainer: {
-    textAlign: "center",
-    padding: "var(--spacing-8) 0",
-  },
-  emptyText: {
-    color: "var(--color-text-muted)",
-    marginBottom: "var(--spacing-2)",
-  },
-  emptySubText: {
-    fontSize: "var(--font-size-sm)",
-    color: "var(--color-text-placeholder)",
-  },
-  degreeCard: {
-    padding: "var(--spacing-4)",
-    borderRadius: "var(--radius-lg)",
-    transition: "var(--transition-all)",
-  },
-  degreeHeader: {
-    marginBottom: "var(--spacing-3)",
-  },
-  degreeTitle: {
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-tertiary)",
-    marginBottom: "var(--spacing-1)",
-  },
-  degreeSubtitle: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-muted)",
-  },
-  errorIcon: {
-    width: "var(--icon-xs)",
-    height: "var(--icon-xs)",
-    marginRight: "var(--spacing-1)",
-  },
-  errorText: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-danger-text)",
-    marginTop: "var(--spacing-1)",
-    display: "flex",
-    alignItems: "center",
-  },
-  inputGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "var(--spacing-4)",
-  },
-  inputLabel: {
-    display: "block",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-body)",
-    marginBottom: "var(--spacing-1)",
-  },
-  input: {
-    width: "100%",
-    padding: "var(--spacing-2) var(--spacing-3)",
-    border: "var(--border-1) solid var(--color-border-input)",
-    borderRadius: "var(--radius-md)",
-    boxShadow: "var(--shadow-sm)",
-    textAlign: "center",
-    backgroundColor: "var(--color-bg-primary)",
-    color: "var(--color-text-body)",
-    fontSize: "var(--font-size-base)",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "flex-end",
-    paddingTop: "var(--spacing-4)",
-    borderTop: "var(--border-1) solid var(--color-border-primary)",
-  },
-  button: {
-    display: "flex",
-    alignItems: "center",
-    padding: "var(--spacing-2-5) var(--spacing-6)",
-    backgroundColor: "var(--color-primary)",
-    color: "var(--color-white)",
-    borderRadius: "var(--radius-lg)",
-    transition: "var(--transition-all)",
-    cursor: "pointer",
-    border: "none",
-  },
-  buttonIcon: {
-    marginRight: "var(--spacing-2)",
-    width: "var(--icon-md)",
-    height: "var(--icon-md)",
-  },
-  spinner: {
-    width: "var(--icon-md)",
-    height: "var(--icon-md)",
-    borderRadius: "var(--radius-full)",
-    borderBottom: "var(--border-2) solid var(--color-white)",
-    marginRight: "var(--spacing-2)",
-    animation: "spin 1s linear infinite",
-  },
-  summaryContainer: {
-    backgroundColor: "var(--color-bg-tertiary)",
-    borderRadius: "var(--radius-lg)",
-    padding: "var(--spacing-4)",
-  },
-  summaryTitle: {
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-tertiary)",
-    marginBottom: "var(--spacing-3)",
-  },
-  summaryGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "var(--spacing-4)",
-    marginBottom: "var(--spacing-4)",
-  },
-  summaryItem: {
-    textAlign: "center",
-  },
-  summaryValue: {
-    fontSize: "var(--font-size-lg)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-secondary)",
-  },
-  summaryValueBoys: {
-    fontSize: "var(--font-size-lg)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-primary)",
-  },
-  summaryValueGirls: {
-    fontSize: "var(--font-size-lg)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-girls-text)",
-  },
-  summaryLabel: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-muted)",
-  },
-  degreeList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-2)",
-  },
-  degreeRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontSize: "var(--font-size-xs)",
-  },
-  degreeRowLabel: {
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-tertiary)",
-  },
-  degreeRowValues: {
-    display: "flex",
-    gap: "var(--spacing-3)",
-    color: "var(--color-text-body)",
-  },
-  boysValue: {
-    color: "var(--color-primary)",
-  },
-  girlsValue: {
-    color: "var(--color-girls-text)",
-  },
-}
 
 const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoading }) => {
   const [counts, setCounts] = useState({})
@@ -242,91 +68,77 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
 
   if (!degrees || degrees.length === 0) {
     return (
-      <div style={styles.emptyContainer}>
-        <div style={styles.emptyText}>No degrees found</div>
-        <div style={styles.emptySubText}>Please add degrees first in the Degrees tab</div>
+      <div className="text-center py-10">
+        <p className="text-[var(--color-text-muted)] mb-1.5">No degrees found</p>
+        <p className="text-sm text-[var(--color-text-placeholder)]">Please add degrees first in the Degrees section</p>
       </div>
     )
   }
 
+  const totals = Object.values(counts).reduce(
+    (acc, count) => {
+      acc.total += count?.total || 0
+      acc.boys += count?.boys || 0
+      acc.girls += count?.girls || 0
+      return acc
+    },
+    { total: 0, boys: 0, girls: 0 }
+  )
+
   return (
-    <div style={styles.container}>
-      <div style={styles.itemsContainer}>
-        {degrees.map((degree) => {
+    <div className="flex flex-col gap-5">
+      {/* Summary tiles */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-tertiary)] px-4 py-3 text-center">
+          <p className="text-lg font-semibold text-[var(--color-text-secondary)] tabular-nums">{totals.total}</p>
+          <p className="text-xs text-[var(--color-text-muted)]">Total Students</p>
+        </div>
+        <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-tertiary)] px-4 py-3 text-center">
+          <p className="text-lg font-semibold text-[var(--color-primary)] tabular-nums">{totals.boys}</p>
+          <p className="text-xs text-[var(--color-text-muted)]">Total Boys</p>
+        </div>
+        <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-tertiary)] px-4 py-3 text-center">
+          <p className="text-lg font-semibold text-[var(--color-girls-text)] tabular-nums">{totals.girls}</p>
+          <p className="text-xs text-[var(--color-text-muted)]">Total Girls</p>
+        </div>
+      </div>
+
+      {/* Degree table */}
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] overflow-hidden">
+        <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] gap-3 items-center bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)] px-4 py-2">
+          <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Degree</span>
+          <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--color-text-muted)] text-center">Total</span>
+          <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--color-primary)] text-center">Boys</span>
+          <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--color-girls-text)] text-center">Girls</span>
+        </div>
+
+        {degrees.map((degree, index) => {
           const degreeData = counts[degree] || { total: 0, boys: 0, girls: 0 }
           const isValid = validateCounts(degreeData)
-          const borderColor = isValid ? "var(--color-border-primary)" : "var(--color-danger-border)"
 
           return (
-            <div key={degree} style={{ ...styles.degreeCard, border: `var(--border-1) solid ${borderColor}` }}>
-              <div style={styles.degreeHeader}>
-                <h3 style={styles.degreeTitle}>{degree}</h3>
-                <div style={styles.degreeSubtitle}>Registered students breakdown for this degree</div>
-                {!isValid && (
-                  <div style={styles.errorText}>
-                    <svg style={styles.errorIcon} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    Boys + Girls ({degreeData.boys + degreeData.girls}) cannot exceed Total ({degreeData.total})
-                  </div>
-                )}
+            <div key={degree} className={`${index > 0 ? "border-t border-[var(--color-border-light)]" : ""} ${!isValid ? "bg-[var(--color-danger-bg)]" : ""}`}>
+              <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] gap-3 items-center px-4 py-2.5">
+                <span className="text-sm font-medium text-[var(--color-text-secondary)] truncate">{degree}</span>
+                <Input type="number" id={`total-${degree}`} min="0" value={counts[degree]?.total || 0} onChange={(e) => handleCountChange(degree, "total", e.target.value)} disabled={isLoading} />
+                <Input type="number" id={`boys-${degree}`} min="0" value={counts[degree]?.boys || 0} onChange={(e) => handleCountChange(degree, "boys", e.target.value)} disabled={isLoading} />
+                <Input type="number" id={`girls-${degree}`} min="0" value={counts[degree]?.girls || 0} onChange={(e) => handleCountChange(degree, "girls", e.target.value)} disabled={isLoading} />
               </div>
-              <div style={styles.inputGrid}>
-                <div>
-                  <label htmlFor={`total-${degree}`} style={styles.inputLabel}>Total</label>
-                  <Input type="number" id={`total-${degree}`} min="0" value={counts[degree]?.total || 0} onChange={(e) => handleCountChange(degree, "total", e.target.value)} disabled={isLoading} />
-                </div>
-                <div>
-                  <label htmlFor={`boys-${degree}`} style={styles.inputLabel}>Boys</label>
-                  <Input type="number" id={`boys-${degree}`} min="0" value={counts[degree]?.boys || 0} onChange={(e) => handleCountChange(degree, "boys", e.target.value)} disabled={isLoading} />
-                </div>
-                <div>
-                  <label htmlFor={`girls-${degree}`} style={styles.inputLabel}>Girls</label>
-                  <Input type="number" id={`girls-${degree}`} min="0" value={counts[degree]?.girls || 0} onChange={(e) => handleCountChange(degree, "girls", e.target.value)} disabled={isLoading} />
-                </div>
-              </div>
+              {!isValid && (
+                <p className="flex items-center gap-1 px-4 pb-2 text-xs text-[var(--color-danger-text)]">
+                  <HiExclamationCircle className="h-3.5 w-3.5 shrink-0" />
+                  Boys + Girls ({degreeData.boys + degreeData.girls}) cannot exceed Total ({degreeData.total})
+                </p>
+              )}
             </div>
           )
         })}
       </div>
 
-      <div style={styles.buttonContainer}>
+      <div className="flex justify-end pt-1">
         <Button onClick={handleSubmit} disabled={isLoading || !hasChanges() || hasValidationErrors()} variant="primary" size="md" loading={isLoading}>
           <HiSave /> Save Changes
         </Button>
-      </div>
-
-      <div style={styles.summaryContainer}>
-        <h4 style={styles.summaryTitle}>Summary</h4>
-        <div style={styles.summaryGrid}>
-          <div style={styles.summaryItem}>
-            <div style={styles.summaryValue}>{Object.values(counts).reduce((sum, count) => sum + (count?.total || 0), 0)}</div>
-            <div style={styles.summaryLabel}>Total Students</div>
-          </div>
-          <div style={styles.summaryItem}>
-            <div style={styles.summaryValueBoys}>{Object.values(counts).reduce((sum, count) => sum + (count?.boys || 0), 0)}</div>
-            <div style={styles.summaryLabel}>Total Boys</div>
-          </div>
-          <div style={styles.summaryItem}>
-            <div style={styles.summaryValueGirls}>{Object.values(counts).reduce((sum, count) => sum + (count?.girls || 0), 0)}</div>
-            <div style={styles.summaryLabel}>Total Girls</div>
-          </div>
-        </div>
-        <div style={styles.degreeList}>
-          {degrees.map((degree) => {
-            const degreeData = counts[degree] || { total: 0, boys: 0, girls: 0 }
-            return (
-              <div key={degree} style={styles.degreeRow}>
-                <span style={styles.degreeRowLabel}>{degree}:</span>
-                <div style={styles.degreeRowValues}>
-                  <span>Total: {degreeData.total}</span>
-                  <span style={styles.boysValue}>Boys: {degreeData.boys}</span>
-                  <span style={styles.girlsValue}>Girls: {degreeData.girls}</span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
       </div>
     </div>
   )

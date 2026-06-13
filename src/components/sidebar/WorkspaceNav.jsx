@@ -219,22 +219,34 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
             <div className={pinnedItems.length > 0 || recentItems.length > 0 ? "mt-3 pt-2 border-t border-[var(--color-border-light)]" : "pt-2"}>
               {categoryGroups.map((category) => {
                 const isExpanded = expandedCategories.has(category.id)
+                const isActiveGroup = category.id === activeCategory
+                const accent = `var(${category.colorVar})`
                 return (
                   <div key={category.id} className="mb-0.5">
                     <button
                       type="button"
                       onClick={() => toggleCategory(category.id)}
                       aria-expanded={isExpanded}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left transition-colors duration-200 hover:bg-[var(--color-bg-hover)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left transition duration-200 hover:bg-[var(--color-bg-hover)] active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
                     >
                       <ChevronRight
                         size={14}
                         strokeWidth={2}
                         className={`shrink-0 text-[var(--color-text-muted)] transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`}
                       />
-                      <category.icon size={16} strokeWidth={2} className="shrink-0" style={{ color: `var(${category.colorVar})` }} />
-                      <span className="flex-1 min-w-0 truncate text-sm font-medium text-[var(--color-text-secondary)]">{category.name}</span>
-                      <span className="text-xs text-[var(--color-text-muted)] tabular-nums">{category.items.length}</span>
+                      <category.icon size={16} strokeWidth={2} className="shrink-0" style={{ color: accent }} />
+                      <span
+                        className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium text-[var(--color-text-secondary)]"}`}
+                        style={isActiveGroup ? { color: accent } : undefined}
+                      >
+                        {category.name}
+                      </span>
+                      <span
+                        className={`px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0 ${isActiveGroup ? "" : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)]"}`}
+                        style={isActiveGroup ? { backgroundColor: `color-mix(in srgb, ${accent} 14%, transparent)`, color: accent } : undefined}
+                      >
+                        {category.items.length}
+                      </span>
                     </button>
 
                     {isExpanded && (

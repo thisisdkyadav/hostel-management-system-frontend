@@ -141,13 +141,6 @@ const GymkhanaCategoryManager = ({
 
   return (
     <form onSubmit={handleSave} style={panelStyles.wrapper}>
-      <div style={panelStyles.header}>
-        <h3 style={panelStyles.title}>Gymkhana Categories</h3>
-        <p style={panelStyles.description}>
-          Manage the global Gymkhana category catalog used across calendars, stats, and category-based budget caps. The four base categories stay in the system, but you can rename them and add more.
-        </p>
-      </div>
-
       <div style={panelStyles.list}>
         {localCategories.map((category) => (
           <div key={category.key} style={panelStyles.row}>
@@ -182,6 +175,11 @@ const GymkhanaCategoryManager = ({
       {error ? <p style={panelStyles.error}>{error}</p> : null}
 
       <div style={panelStyles.footer}>
+        {hasUnsavedChanges && (
+          <p className="mb-2 rounded-[var(--radius-md)] border border-[var(--color-warning-light)] bg-[var(--color-warning-bg)] px-3 py-2 text-xs text-[var(--color-warning-text)]">
+            You have unsaved category changes — they will apply everywhere after saving.
+          </p>
+        )}
         <Button
           type="submit"
           variant="primary"

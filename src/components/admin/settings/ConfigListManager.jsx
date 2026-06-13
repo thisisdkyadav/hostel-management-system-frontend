@@ -24,6 +24,7 @@ const styles = {
   inputWrapper: {
     display: "flex",
     alignItems: "center",
+    gap: "var(--spacing-2)",
   },
   input: {
     flex: 1,
@@ -282,12 +283,6 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
     }
   }
 
-  const getSubmitButtonStyle = () => {
-    if (isLoading) return { ...styles.submitButton, backgroundColor: "var(--color-text-disabled)", cursor: "not-allowed" }
-    if (hasUnsavedChanges) return { ...styles.submitButton, backgroundColor: "var(--color-primary)" }
-    return { ...styles.submitButton, backgroundColor: "var(--color-border-dark)", color: "var(--color-text-body)", cursor: "not-allowed" }
-  }
-
   return (
     <>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -308,21 +303,42 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </div>
 
         <div style={styles.itemsContainer}>
-          <h4 style={styles.itemsTitle}>Current {itemLabel}s</h4>
+          <h4 style={styles.itemsTitle}>
+            Current {itemLabel}s
+            <span className="ml-1.5 px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[0.65rem] font-bold text-[var(--color-text-muted)] tabular-nums">{localItems.length}</span>
+          </h4>
           {localItems.length === 0 ? (
             <p style={styles.emptyText}>No {itemLabel.toLowerCase()}s added yet</p>
           ) : (
             <div style={styles.itemsGrid}>
-              {localItems.map((item, index) => (
-                <div key={index} style={styles.itemChip} onClick={() => handleItemClick(item)}>
-                  <span style={styles.itemChipText}>{item}</span>
-                </div>
-              ))}
+              {localItems.map((item, index) => {
+                const isNew = !items.includes(item)
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleItemClick(item)}
+                    disabled={isLoading}
+                    title={`Rename or delete "${item}"`}
+                    className={`group inline-flex items-center gap-1.5 rounded-[var(--radius-full)] border px-3 py-1.5 text-sm cursor-pointer transition-[var(--transition-colors)] ${isNew
+                      ? "bg-[var(--color-primary-bg)] border-[var(--color-primary)] text-[var(--color-primary)] font-medium"
+                      : "bg-[var(--color-bg-primary)] border-[var(--color-border-primary)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"}`}
+                  >
+                    <span>{item}</span>
+                    <HiPencil className="h-3 w-3 opacity-40 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
 
         <div style={styles.submitContainer}>
+          {hasUnsavedChanges && (
+            <p className="mb-2 rounded-[var(--radius-md)] border border-[var(--color-warning-light)] bg-[var(--color-warning-bg)] px-3 py-2 text-xs text-[var(--color-warning-text)]">
+              You have unsaved changes — newly added {itemLabel.toLowerCase()}s are highlighted and will apply after saving.
+            </p>
+          )}
           <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading || !hasUnsavedChanges}>
             {!isLoading && <HiSave size={20} />} {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
           </Button>

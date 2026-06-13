@@ -14,7 +14,7 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
         title={!isOpen ? item.name : undefined}
         aria-current={isActive ? "page" : undefined}
         className={`
-          w-full flex items-center rounded-xl cursor-pointer transition-colors duration-200
+          w-full flex items-center rounded-xl cursor-pointer transition duration-200 active:scale-[0.99]
           outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
           ${isOpen ? "px-3 py-2.5 text-left" : "px-0 py-2.5 justify-center"}
           ${isActive
@@ -40,7 +40,7 @@ const SidebarNavItem = ({ item, isActive, isOpen, showPinControl, isPinned, onNa
 
         {isOpen && (
           <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
-            <span className="text-sm font-medium truncate transition-colors duration-200">
+            <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
               {item.name}
             </span>
             {item.isNew && (

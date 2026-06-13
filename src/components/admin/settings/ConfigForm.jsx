@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react"
-import { HiSave, HiInformationCircle } from "react-icons/hi"
-import { Checkbox, Alert, VStack, Label } from "@/components/ui"
+import { HiSave } from "react-icons/hi"
+import { Checkbox, Alert } from "@/components/ui"
 import { Button, Input } from "czero/react"
+
+// "maxLeaveDays" / "max_leave_days" -> "Max Leave Days" (display only)
+const formatKeyLabel = (key) =>
+  String(key)
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase())
 
 const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const [formData, setFormData] = useState({})
@@ -40,171 +47,6 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
     return "text"
   }
 
-  const styles = {
-    checkbox: {
-      width: "var(--icon-md)",
-      height: "var(--icon-md)",
-      accentColor: "var(--color-primary)",
-      backgroundColor: "var(--color-bg-muted)",
-      borderColor: "var(--color-border-input)",
-      borderRadius: "var(--radius-sm)",
-    },
-    input: {
-      width: "100%",
-      padding: "var(--spacing-2) var(--spacing-3)",
-      border: "var(--border-1) solid var(--color-border-input)",
-      borderRadius: "var(--radius-md)",
-      boxShadow: "var(--shadow-sm)",
-      fontSize: "var(--font-size-sm)",
-      backgroundColor: "var(--color-bg-primary)",
-      color: "var(--color-text-body)",
-      transition: "var(--transition-all)",
-      outline: "none",
-    },
-    emptyContainer: {
-      textAlign: "center",
-      padding: "var(--spacing-8) 0",
-    },
-    emptyText: {
-      color: "var(--color-text-muted)",
-      marginBottom: "var(--spacing-2)",
-    },
-    emptySubText: {
-      fontSize: "var(--font-size-sm)",
-      color: "var(--color-text-placeholder)",
-    },
-    container: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "var(--spacing-6)",
-    },
-    infoBox: {
-      backgroundColor: "var(--color-warning-bg-light)",
-      color: "var(--color-warning-text)",
-      borderRadius: "var(--radius-lg)",
-      padding: "var(--spacing-4)",
-      marginBottom: "var(--spacing-6)",
-      display: "flex",
-      alignItems: "flex-start",
-    },
-    infoIcon: {
-      flexShrink: 0,
-      marginTop: "var(--spacing-0-5)",
-      marginRight: "var(--spacing-3)",
-      width: "var(--icon-lg)",
-      height: "var(--icon-lg)",
-    },
-    infoTitle: {
-      fontSize: "var(--font-size-sm)",
-      fontWeight: "var(--font-weight-medium)",
-      marginBottom: "var(--spacing-1)",
-    },
-    infoDescription: {
-      fontSize: "var(--font-size-sm)",
-    },
-    itemsContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "var(--spacing-4)",
-    },
-    configItem: {
-      border: "var(--border-1) solid var(--color-border-primary)",
-      borderRadius: "var(--radius-lg)",
-      padding: "var(--spacing-4)",
-      transition: "var(--transition-all)",
-    },
-    configItemInner: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "var(--spacing-3)",
-    },
-    configLabel: {
-      display: "block",
-      fontSize: "var(--font-size-sm)",
-      fontWeight: "var(--font-weight-medium)",
-      color: "var(--color-text-tertiary)",
-      marginBottom: "var(--spacing-1)",
-    },
-    configMeta: {
-      fontSize: "var(--font-size-xs)",
-      color: "var(--color-text-muted)",
-    },
-    inputWrapper: {
-      marginLeft: "0",
-      width: "100%",
-    },
-    buttonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-      paddingTop: "var(--spacing-4)",
-      borderTop: "var(--border-1) solid var(--color-border-primary)",
-    },
-    button: {
-      display: "flex",
-      alignItems: "center",
-      padding: "var(--spacing-2-5) var(--spacing-6)",
-      backgroundColor: "var(--color-primary)",
-      color: "var(--color-white)",
-      borderRadius: "var(--radius-lg)",
-      transition: "var(--transition-all)",
-      cursor: "pointer",
-      border: "none",
-    },
-    buttonIcon: {
-      marginRight: "var(--spacing-2)",
-      width: "var(--icon-md)",
-      height: "var(--icon-md)",
-    },
-    spinner: {
-      width: "var(--icon-md)",
-      height: "var(--icon-md)",
-      borderRadius: "var(--radius-full)",
-      borderBottom: "var(--border-2) solid var(--color-white)",
-      marginRight: "var(--spacing-2)",
-      animation: "spin 1s linear infinite",
-    },
-    summaryContainer: {
-      backgroundColor: "var(--color-bg-tertiary)",
-      borderRadius: "var(--radius-lg)",
-      padding: "var(--spacing-4)",
-    },
-    summaryTitle: {
-      fontSize: "var(--font-size-sm)",
-      fontWeight: "var(--font-weight-medium)",
-      color: "var(--color-text-tertiary)",
-      marginBottom: "var(--spacing-2)",
-    },
-    summaryCount: {
-      fontSize: "var(--font-size-sm)",
-      color: "var(--color-text-body)",
-      marginBottom: "var(--spacing-2)",
-    },
-    summaryGrid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(1, 1fr)",
-      gap: "var(--spacing-2)",
-    },
-    summaryItem: {
-      fontSize: "var(--font-size-xs)",
-      color: "var(--color-text-muted)",
-      padding: "var(--spacing-2)",
-      backgroundColor: "var(--color-bg-primary)",
-      borderRadius: "var(--radius-md)",
-      border: "var(--border-1) solid var(--color-border-primary)",
-    },
-    summaryItemLabel: {
-      fontWeight: "var(--font-weight-medium)",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-    },
-    summaryItemValue: {
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-    },
-  }
-
   const renderInput = (key, value) => {
     const inputType = getInputType(value)
 
@@ -224,59 +66,57 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
 
   if (!config || Object.keys(config).length === 0) {
     return (
-      <div style={styles.emptyContainer}>
-        <div style={styles.emptyText}>No configuration found</div>
-        <div style={styles.emptySubText}>The general configuration object is empty or not available</div>
+      <div className="text-center py-10">
+        <p className="text-[var(--color-text-muted)] mb-1.5">No configuration found</p>
+        <p className="text-sm text-[var(--color-text-placeholder)]">The general configuration object is empty or not available</p>
       </div>
     )
   }
 
+  const modifiedCount = Object.keys(config).filter((key) => formData[key] !== config[key]).length
+
   return (
-    <div style={styles.container}>
-      <div style={styles.infoBox}>
-        <HiInformationCircle style={styles.infoIcon} />
-        <div>
-          <p style={styles.infoTitle}>Configuration Editor</p>
-          <p style={styles.infoDescription}>Only existing configuration keys can be modified. You cannot add or remove keys from this interface.</p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-5">
+      <Alert type="warning" title="Configuration Editor">
+        Only existing configuration keys can be modified — keys cannot be added or removed here. {Object.keys(config).length} keys loaded.
+      </Alert>
 
-      <div style={styles.itemsContainer}>
-        {Object.entries(config).map(([key, value]) => (
-          <div key={key} style={styles.configItem}>
-            <div style={styles.configItemInner}>
-              <div style={{ flex: 1 }}>
-                <label htmlFor={`config-${key}`} style={styles.configLabel}>
-                  {key}
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] divide-y divide-[var(--color-border-light)] overflow-hidden">
+        {Object.entries(config).map(([key, value]) => {
+          const isModified = formData[key] !== value
+          const inputType = getInputType(value)
+
+          return (
+            <div
+              key={key}
+              className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-4 py-3 transition-[var(--transition-colors)] ${isModified ? "bg-[var(--color-primary-bg)]" : "bg-[var(--color-bg-primary)]"}`}
+            >
+              <div className="flex-1 min-w-0">
+                <label htmlFor={`config-${key}`} className="flex flex-wrap items-center gap-1.5 text-sm font-medium text-[var(--color-text-secondary)]">
+                  {formatKeyLabel(key)}
+                  <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[0.6rem] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">{typeof value}</span>
+                  {isModified && (
+                    <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-warning-bg)] text-[0.6rem] font-bold uppercase tracking-wide text-[var(--color-warning-text)]">Modified</span>
+                  )}
                 </label>
-                <div style={styles.configMeta}>
-                  Type: {typeof value} | Current: {typeof value === "boolean" ? value.toString() : value}
-                </div>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5 font-mono truncate">
+                  {key}
+                  {isModified && <span className="ml-2 font-sans">was: {typeof value === "boolean" ? value.toString() : String(value)}</span>}
+                </p>
               </div>
-              <div style={styles.inputWrapper}>{renderInput(key, value)}</div>
+              <div className={inputType === "checkbox" ? "shrink-0" : "w-full sm:w-64 shrink-0"}>{renderInput(key, value)}</div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      <div style={styles.buttonContainer}>
+      <div className="flex items-center justify-end gap-3 pt-1">
+        {modifiedCount > 0 && (
+          <span className="text-xs text-[var(--color-warning-text)]">{modifiedCount} unsaved change{modifiedCount === 1 ? "" : "s"}</span>
+        )}
         <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="md" loading={isLoading}>
           <HiSave /> Save Changes
         </Button>
-      </div>
-
-      {/* Configuration Summary */}
-      <div style={styles.summaryContainer}>
-        <h4 style={styles.summaryTitle}>Configuration Summary</h4>
-        <div style={styles.summaryCount}>Total Configuration Keys: {Object.keys(config).length}</div>
-        <div style={styles.summaryGrid}>
-          {Object.entries(config).map(([key, value]) => (
-            <div key={key} style={styles.summaryItem}>
-              <div style={styles.summaryItemLabel}>{key}</div>
-              <div style={styles.summaryItemValue}>{typeof value === "object" ? JSON.stringify(value) : value.toString()}</div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   )

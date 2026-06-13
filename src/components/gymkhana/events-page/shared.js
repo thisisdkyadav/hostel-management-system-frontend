@@ -940,48 +940,6 @@ export const getProposalDueDate = (event) => {
   return fallbackDueDate
 }
 
-export const mergeCalendarEventsWithGymkhanaEvents = (calendarEvents = [], gymkhanaEvents = []) => {
-  const normalizeKeyDate = (value) => {
-    const parsed = new Date(value)
-    return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10)
-  }
-
-  const buckets = new Map()
-
-  for (const event of gymkhanaEvents) {
-    const key = [
-      event.title || "",
-      event.category || "",
-      normalizeKeyDate(event.scheduledStartDate),
-      normalizeKeyDate(event.scheduledEndDate),
-    ].join("|")
-
-    if (!buckets.has(key)) {
-      buckets.set(key, [])
-    }
-    buckets.get(key).push(event)
-  }
-
-  return calendarEvents.map((calendarEvent) => {
-    const key = [
-      calendarEvent.title || "",
-      calendarEvent.category || "",
-      normalizeKeyDate(calendarEvent.startDate),
-      normalizeKeyDate(calendarEvent.endDate),
-    ].join("|")
-    const matchBucket = buckets.get(key) || []
-    const linkedEvent = matchBucket.length > 0 ? matchBucket.shift() : null
-
-    return {
-      ...calendarEvent,
-      gymkhanaEventId: linkedEvent?._id || null,
-      proposalSubmitted: Boolean(linkedEvent?.proposalSubmitted),
-      proposalId: linkedEvent?.proposalId || null,
-      proposalDueDate: getProposalDueDate(linkedEvent || calendarEvent),
-      eventStatus: linkedEvent?.status || null,
-    }
-  })
-}
 
 export const toGymkhanaDisplayEvent = (event) => ({
   ...event,

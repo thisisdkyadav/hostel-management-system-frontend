@@ -25,7 +25,6 @@ import {
   getEventsForDate,
   getHolidaysForDate,
   isProposalWindowOpen,
-  mergeCalendarEventsWithGymkhanaEvents,
   getNextApproverSelectionCount,
   normalizeEvent,
   normalizeEventId,
@@ -469,11 +468,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
           }
         }
 
-        if (calendarData.status === "approved" && gymkhanaEvents.length > 0) {
-          mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
-        } else {
-          mergedEvents = mergeCalendarEventsWithGymkhanaEvents(normalizedEvents, gymkhanaEvents)
-        }
+        // GymkhanaEvent collection is the single source of truth for calendar events.
+        mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
       } catch {
         mergedEvents = normalizedEvents
       }

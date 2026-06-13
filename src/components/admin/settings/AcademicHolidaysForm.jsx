@@ -170,8 +170,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(180px, 220px) 1fr",
+          gridTemplateColumns: "minmax(180px, 240px) auto",
           gap: "var(--spacing-2)",
+          justifyContent: "start",
         }}
       >
         <Input
@@ -260,6 +261,18 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
                   Holidays for {selectedYear}
                 </span>
+                <span
+                  style={{
+                    padding: "var(--spacing-0-5) var(--spacing-2)",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "var(--color-primary-bg)",
+                    color: "var(--color-primary)",
+                    fontSize: "var(--font-size-xs)",
+                    fontWeight: "var(--font-weight-semibold)",
+                  }}
+                >
+                  {selectedYearHolidays.length}
+                </span>
               </div>
               <Button
                 type="button"
@@ -329,10 +342,21 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                       backgroundColor: "var(--color-bg-secondary)",
                     }}
                   >
-                    <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                    <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
                       {holiday.title}
                     </span>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                    <span
+                      style={{
+                        color: "var(--color-text-muted)",
+                        fontSize: "var(--font-size-xs)",
+                        fontWeight: "var(--font-weight-medium)",
+                        padding: "var(--spacing-0-5) var(--spacing-2)",
+                        borderRadius: "var(--radius-full)",
+                        backgroundColor: "var(--color-bg-primary)",
+                        border: "var(--border-1) solid var(--color-border-primary)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {formatDateLabel(holiday.date)}
                     </span>
                     <Button

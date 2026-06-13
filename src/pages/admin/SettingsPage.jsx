@@ -13,7 +13,13 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import toast from "react-hot-toast"
-import { Card } from "@/components/ui"
+import { Card, SearchInput } from "@/components/ui"
+
+const TabSpinner = () => (
+  <div className="flex justify-center py-6">
+    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+  </div>
+)
 
 const SettingsPage = () => {
   const { user } = useAuth()
@@ -30,6 +36,7 @@ const SettingsPage = () => {
     systemSettings: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [navQuery, setNavQuery] = useState("")
   const [studentEditPermissions, setStudentEditPermissions] = useState([])
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
@@ -616,6 +623,53 @@ const SettingsPage = () => {
     }
   }
 
+  // Grouped settings navigation (pure presentation — keys map 1:1 to SETTINGS_TABS)
+  const settingsNav = [
+    {
+      group: "Students",
+      items: [
+        { key: "studentFields", label: "Edit Permissions", icon: HiCog, description: "Configure which profile fields students are allowed to edit in their profiles. Enable or disable each field as needed." },
+        { key: "studentBatches", label: "Batches", icon: HiUsers, description: "Manage batch values by degree and department scope. You can configure exact combinations, Mixed Degree, Mixed Department, or both mixed before assigning students in the batch update flow." },
+        { key: "studentGroups", label: "Groups", icon: HiUsers, description: "Manage reusable student groups that are independent of degree, department, and batch. Students can belong to multiple groups, and deleting a group here removes it from student profiles as well." },
+        { key: "registeredStudents", label: "Registered Students", icon: HiUsers, description: "Set the total number of registered students for each degree program, broken down by gender. This helps track enrollment statistics and capacity planning with detailed demographics." },
+      ],
+    },
+    {
+      group: "Academics",
+      items: [
+        { key: "degrees", label: "Degrees", icon: HiAcademicCap, description: "Manage the list of academic degrees available in the system. Click on a degree to rename or delete it." },
+        { key: "departments", label: "Departments", icon: HiOfficeBuilding, description: "Manage the list of academic departments available in the system. Click on a department to rename or delete it." },
+        { key: "academicHolidays", label: "Academic Holidays", icon: HiCalendar, description: "Manage year-wise academic holidays. Create a year first, then add holiday title and date entries for that year." },
+      ],
+    },
+    {
+      group: "Gymkhana",
+      items: [
+        { key: "gymkhanaCategories", label: "Event Categories", icon: HiCollection, description: "Manage the global Gymkhana category catalog. These categories are used across activity calendars, category filters, and budget-cap summaries, so changes here apply everywhere." },
+      ],
+    },
+    {
+      group: "System",
+      items: [
+        { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
+      ],
+    },
+  ]
+
+  const allNavItems = settingsNav.flatMap((section) => section.items)
+  const activeItem = allNavItems.find((item) => item.key === activeTab) || allNavItems[0]
+  const ActiveIcon = activeItem.icon
+
+  const normalizedNavQuery = navQuery.trim().toLowerCase()
+  const filteredNav = normalizedNavQuery
+    ? settingsNav
+      .map((section) => ({
+        ...section,
+        items: section.items.filter((item) => item.label.toLowerCase().includes(normalizedNavQuery)),
+      }))
+      .filter((section) => section.items.length > 0)
+    : settingsNav
+
   if (user?.role !== "Admin" || !hasAnySettingsView) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg-tertiary)] px-4">
@@ -643,70 +697,63 @@ const SettingsPage = () => {
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-        <div className="max-w-3xl mx-auto">
-          {/* Tabs */}
-          <div className="mb-6 border-b border-[var(--color-border-primary)]">
-            <ul className="flex flex-wrap -mb-px">
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("studentFields")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentFields" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiCog className="mr-2 h-5 w-5" />
-                  Student Edit Permissions
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("degrees")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "degrees" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiAcademicCap className="mr-2 h-5 w-5" />
-                  Degrees
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("departments")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "departments" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiOfficeBuilding className="mr-2 h-5 w-5" />
-                  Departments
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("studentBatches")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentBatches" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiUsers className="mr-2 h-5 w-5" />
-                  Batches
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("studentGroups")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentGroups" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiUsers className="mr-2 h-5 w-5" />
-                  Groups
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("registeredStudents")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "registeredStudents" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiUsers className="mr-2 h-5 w-5" />
-                  Registered Students
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("academicHolidays")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "academicHolidays" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiCalendar className="mr-2 h-5 w-5" />
-                  Academic Holidays
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("gymkhanaCategories")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "gymkhanaCategories" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiCollection className="mr-2 h-5 w-5" />
-                  Gymkhana Categories
-                </button>
-              </li>
-              <li className="mr-2">
-                <button onClick={() => handleTabChange("systemSettings")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "systemSettings" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
-                  <HiAdjustments className="mr-2 h-5 w-5" />
-                  System Settings
-                </button>
-              </li>
-            </ul>
-          </div>
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
+          {/* Settings navigation */}
+          <aside className="w-full lg:w-64 lg:shrink-0 lg:sticky lg:top-0">
+            <Card padding="p-3">
+              <SearchInput
+                value={navQuery}
+                onChange={(e) => setNavQuery(e.target.value)}
+                placeholder="Search settings"
+                size="sm"
+              />
+              <nav className="mt-3 flex flex-col gap-4" aria-label="Settings sections">
+                {filteredNav.map((section) => (
+                  <div key={section.group}>
+                    <p className="px-2.5 mb-1 text-[0.65rem] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">{section.group}</p>
+                    <div className="flex flex-col gap-0.5">
+                      {section.items.map((item) => {
+                        const ItemIcon = item.icon
+                        const isActive = activeTab === item.key
+                        return (
+                          <button
+                            key={item.key}
+                            onClick={() => handleTabChange(item.key)}
+                            aria-current={isActive ? "page" : undefined}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-[var(--radius-md)] text-sm text-left transition-[var(--transition-colors)] ${isActive
+                              ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)] font-semibold"
+                              : "text-[var(--color-text-body)] hover:bg-[var(--color-bg-hover)]"}`}
+                          >
+                            <ItemIcon className={`h-4 w-4 shrink-0 ${isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`} />
+                            <span className="truncate">{item.label}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+                {filteredNav.length === 0 && (
+                  <p className="px-2.5 py-4 text-sm text-[var(--color-text-muted)] text-center">No settings match "{navQuery}"</p>
+                )}
+              </nav>
+            </Card>
+          </aside>
 
-          <Card className="overflow-hidden">
+          {/* Active settings panel */}
+          <main className="flex-1 min-w-0 w-full">
+            <Card className="overflow-hidden">
 
-            <Card.Body className="p-6">
+              <Card.Body className="p-6">
+              {/* Panel header */}
+              <div className="flex items-start gap-3 pb-4 mb-6 border-b border-[var(--color-border-primary)]">
+                <div className="w-10 h-10 shrink-0 rounded-[var(--radius-lg)] bg-[var(--color-primary-bg)] text-[var(--color-primary)] flex items-center justify-center">
+                  <ActiveIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-[var(--color-text-heading)] leading-tight">{activeItem.label}</h2>
+                  <p className="mt-1 text-sm text-[var(--color-text-muted)] leading-snug">{activeItem.description}</p>
+                </div>
+              </div>
               {/* Error messages */}
               {error[activeTab] && (
                 <div className="bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-lg p-4 mb-6">
@@ -717,19 +764,8 @@ const SettingsPage = () => {
               {/* Student Edit Permissions Tab */}
               {activeTab === "studentFields" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Configure which profile fields students are allowed to edit in their profiles. Enable or disable each field as needed.</p>
-                  </div>
-
                   {loading.studentFields && studentEditPermissions.length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <StudentEditPermissionsForm permissions={studentEditPermissions} onUpdate={handleUpdatePermissions} isLoading={loading.studentFields} />
                   )}
@@ -739,19 +775,8 @@ const SettingsPage = () => {
               {/* Degrees Tab */}
               {activeTab === "degrees" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage the list of academic degrees available in the system. Click on a degree to rename or delete it.</p>
-                  </div>
-
                   {loading.degrees && degrees.length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <ConfigListManager items={degrees} onUpdate={handleUpdateDegrees} onRename={handleRenameDegree} isLoading={loading.degrees} title="Degree Management" description="Add or rename academic degrees available in the system. Click on a degree to edit it." itemLabel="Degree" placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)" />
                   )}
@@ -761,19 +786,8 @@ const SettingsPage = () => {
               {/* Departments Tab */}
               {activeTab === "departments" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage the list of academic departments available in the system. Click on a department to rename or delete it.</p>
-                  </div>
-
                   {loading.departments && departments.length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <ConfigListManager items={departments} onUpdate={handleUpdateDepartments} onRename={handleRenameDepartment} isLoading={loading.departments} title="Department Management" description="Add or rename academic departments available in the system. Click on a department to edit it." itemLabel="Department" placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)" />
                   )}
@@ -782,19 +796,8 @@ const SettingsPage = () => {
 
               {activeTab === "studentBatches" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage batch values by degree and department scope. You can configure exact combinations, Mixed Degree, Mixed Department, or both mixed before assigning students in the batch update flow.</p>
-                  </div>
-
                   {loading.studentBatches && Object.keys(studentBatches).length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <StudentBatchManager
                       degrees={degrees}
@@ -810,19 +813,8 @@ const SettingsPage = () => {
 
               {activeTab === "studentGroups" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage reusable student groups that are independent of degree, department, and batch. Students can belong to multiple groups, and deleting a group here removes it from student profiles as well.</p>
-                  </div>
-
                   {loading.studentGroups && studentGroups.length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <ConfigListManager
                       items={studentGroups}
@@ -841,19 +833,8 @@ const SettingsPage = () => {
               {/* Registered Students Tab */}
               {activeTab === "registeredStudents" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Set the total number of registered students for each degree program, broken down by gender. This helps track enrollment statistics and capacity planning with detailed demographics.</p>
-                  </div>
-
                   {loading.registeredStudents && Object.keys(registeredStudents).length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <RegisteredStudentsForm degrees={degrees} registeredStudents={registeredStudents} onUpdate={handleUpdateRegisteredStudents} isLoading={loading.registeredStudents} />
                   )}
@@ -863,19 +844,8 @@ const SettingsPage = () => {
               {/* Academic Holidays Tab */}
               {activeTab === "academicHolidays" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage year-wise academic holidays. Create a year first, then add holiday title and date entries for that year.</p>
-                  </div>
-
                   {loading.academicHolidays && Object.keys(academicHolidays).length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <AcademicHolidaysForm
                       key={JSON.stringify(academicHolidays)}
@@ -889,19 +859,8 @@ const SettingsPage = () => {
 
               {activeTab === "gymkhanaCategories" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10M7 12h10m-7 5h7" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Manage the global Gymkhana category catalog. These categories are used across activity calendars, category filters, and budget-cap summaries, so changes here apply everywhere.</p>
-                  </div>
-
                   {loading.gymkhanaCategories && gymkhanaCategories.length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <GymkhanaCategoryManager
                       categories={gymkhanaCategories}
@@ -915,26 +874,16 @@ const SettingsPage = () => {
               {/* System Settings Tab */}
               {activeTab === "systemSettings" && (
                 <>
-                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0 mt-0.5 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-sm">Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface.</p>
-                  </div>
-
                   {loading.systemSettings && Object.keys(systemSettings).length === 0 ? (
-                    <div className="flex justify-center py-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
-                    </div>
+                    <TabSpinner />
                   ) : (
                     <ConfigForm config={systemSettings} onUpdate={handleUpdateSystemSettings} isLoading={loading.systemSettings} />
                   )}
                 </>
               )}
-            </Card.Body>
-          </Card>
+              </Card.Body>
+            </Card>
+          </main>
         </div>
 
         {/* Success Modal */}
