@@ -566,13 +566,13 @@ const DashboardPage = () => {
         )}
       </DashboardHeader>
 
-      {/* Unified console surface — one full-bleed area, sections split by dividers (no cards) */}
+      {/* Dashboard panels — lightweight bordered regions separated by gaps */}
       <div className="flex-1 overflow-y-auto p-[var(--spacing-4)]">
-        <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden flex flex-col">
+        <div className="flex flex-col gap-[var(--spacing-4)]">
           {/* Top band: Student Distribution | Hostel Occupancy */}
-          <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-4)]">
             {/* Student Distribution */}
-            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] border-b lg:border-b-0 lg:border-r border-[var(--color-border-primary)]">
+            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
               {loading ? (
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-[var(--spacing-4)]">
@@ -621,7 +621,7 @@ const DashboardPage = () => {
             </section>
 
             {/* Hostel Occupancy */}
-            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)]">
+            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
               {loading ? (
                 <div className="h-full flex flex-col">
                   <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
@@ -632,7 +632,7 @@ const DashboardPage = () => {
               ) : (
                 <>
                   <SectionTitle title="Hostel Occupancy" to="/admin/hostels" />
-                  <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                  <div className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)]">
                     {/* Fixed Header */}
                     <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
                       <table className="min-w-full table-fixed">
@@ -726,7 +726,7 @@ const DashboardPage = () => {
           </div>
 
           {/* Bottom band: Action Center */}
-          <div className="border-t border-[var(--color-border-primary)]">
+          <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
             <ActionCenter
               loading={loading}
               error={error}
@@ -807,7 +807,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
   const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)]">
       {/* Fixed Header */}
       <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
         <table className="min-w-full table-fixed">
