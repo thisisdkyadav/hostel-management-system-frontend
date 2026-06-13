@@ -120,7 +120,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
   const normalizedQuery = query.trim().toLowerCase()
   const searchResults = normalizedQuery ? items.filter((item) => item.name.toLowerCase().includes(normalizedQuery)) : null
 
-  const renderItem = (item, keyPrefix) => (
+  const renderItem = (item, keyPrefix, accent) => (
     <SidebarNavItem
       key={`${keyPrefix}-${item.name}`}
       item={item}
@@ -128,6 +128,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
       isOpen={isOpen}
       showPinControl={isOpen && !!item.path}
       isPinned={!!item.path && pinnedSet.has(item.path)}
+      accent={accent}
       onNavigate={(navItem) => {
         setQuery("")
         onNavigate(navItem)
@@ -221,37 +222,50 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, isOpen, onN
                 const isExpanded = expandedCategories.has(category.id)
                 const isActiveGroup = category.id === activeCategory
                 const accent = `var(${category.colorVar})`
+                const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
                 return (
-                  <div key={category.id} className="mb-0.5">
+                  <div
+                    key={category.id}
+                    className="mb-1 rounded-xl transition-colors duration-200"
+                    style={isExpanded ? { backgroundColor: tint(11) } : undefined}
+                  >
                     <button
                       type="button"
                       onClick={() => toggleCategory(category.id)}
                       aria-expanded={isExpanded}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left transition duration-200 hover:bg-[var(--color-bg-hover)] active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left transition duration-200 active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+                      style={isExpanded ? undefined : { backgroundColor: "transparent" }}
+                      onMouseEnter={(event) => {
+                        if (!isExpanded) event.currentTarget.style.backgroundColor = tint(10)
+                      }}
+                      onMouseLeave={(event) => {
+                        if (!isExpanded) event.currentTarget.style.backgroundColor = "transparent"
+                      }}
                     >
                       <ChevronRight
                         size={14}
                         strokeWidth={2}
-                        className={`shrink-0 text-[var(--color-text-muted)] transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`}
+                        className={`shrink-0 transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`}
+                        style={{ color: isExpanded ? accent : "var(--color-text-muted)" }}
                       />
                       <category.icon size={16} strokeWidth={2} className="shrink-0" style={{ color: accent }} />
                       <span
-                        className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium text-[var(--color-text-secondary)]"}`}
-                        style={isActiveGroup ? { color: accent } : undefined}
+                        className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium"}`}
+                        style={{ color: accent }}
                       >
                         {category.name}
                       </span>
                       <span
-                        className={`px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0 ${isActiveGroup ? "" : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)]"}`}
-                        style={isActiveGroup ? { backgroundColor: `color-mix(in srgb, ${accent} 14%, transparent)`, color: accent } : undefined}
+                        className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0"
+                        style={{ backgroundColor: tint(14), color: accent }}
                       >
                         {category.items.length}
                       </span>
                     </button>
 
                     {isExpanded && (
-                      <ul className="space-y-1 ml-[1.45rem] pl-1.5 py-1 border-l border-[var(--color-border-light)]">
-                        {category.items.map((item) => renderItem(item, category.id))}
+                      <ul className="space-y-1 ml-[1.45rem] pl-1.5 pb-2 border-l" style={{ borderColor: tint(40) }}>
+                        {category.items.map((item) => renderItem(item, category.id, accent))}
                       </ul>
                     )}
                   </div>

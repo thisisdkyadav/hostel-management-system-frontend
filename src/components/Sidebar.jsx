@@ -252,8 +252,11 @@ const Sidebar = ({ navItems }) => {
   const headerTitle = activeCategoryConfig?.name || "HMS"
   const headerTitleColor = activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)"
 
-  const renderPlainList = (items, { withPins = false } = {}) => (
-    <div className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}>
+  const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
+    <div
+      className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
+      style={tintBg ? { backgroundColor: tintBg } : undefined}
+    >
       <ul className="space-y-1">
         {items.map((item) => (
           <SidebarNavItem
@@ -263,6 +266,7 @@ const Sidebar = ({ navItems }) => {
             isOpen={isOpen}
             showPinControl={withPins && isOpen && !!item.path}
             isPinned={!!item.path && pinnedAdminPaths.includes(item.path)}
+            accent={accent}
             onNavigate={handleNavigation}
             onTogglePin={togglePinnedItem}
           />
@@ -314,7 +318,14 @@ const Sidebar = ({ navItems }) => {
         ? mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path))
         : mainNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
 
-    return renderPlainList(categoryItems, { withPins: true })
+    const activeCategoryConfig = ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
+    const categoryAccent = `var(${activeCategoryConfig?.colorVar || "--color-primary"})`
+
+    return renderPlainList(categoryItems, {
+      withPins: true,
+      accent: categoryAccent,
+      tintBg: getCategoryTint(activeAdminCategory),
+    })
   }
 
   return (

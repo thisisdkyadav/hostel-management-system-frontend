@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { FaUser, FaCalendarAlt } from "react-icons/fa"
+import { FaUser, FaCalendarAlt, FaFileAlt, FaReceipt, FaAward, FaChevronRight, FaClipboardList, FaCheck } from "react-icons/fa"
 import { MdOutlineEvent } from "react-icons/md"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { HiStatusOnline } from "react-icons/hi"
+import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
+import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
+import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
 import { Card, Checkbox, Popover } from "@/components/ui"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
+
+// Maps an admin SA sub-role to the status that means "pending my approval"
+// across activity calendars, event proposals/expenses, and POR requests.
+const APPROVAL_STAGE_STATUS = {
+  "Student Affairs": "pending_student_affairs",
+  "Officer SA": "pending_officer",
+  "Associate Dean SA": "pending_associate_dean",
+  "Dean SA": "pending_dean",
+}
 
 // Chart components
 // (Removed chart.js imports as they were unused)
 
 // Enhanced shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] ${className}`} style={{ height, width }} aria-hidden="true" />
-
-// Shimmer with blurred preview for charts
-const ChartShimmer = ({ height, className = "" }) => (
-  <div className={`relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)] ${className}`} style={{ height }} role="status" aria-label="Loading chart">
-    <div className="absolute inset-0 bg-[var(--color-bg-primary)]/60 backdrop-blur-[var(--blur-sm)]"></div>
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="rounded-[var(--radius-full)] h-[var(--spacing-12)] w-[var(--spacing-12)] border-[var(--border-4)] border-[var(--color-border-gray)] border-t-[var(--color-border-dark)] animate-spin"></div>
-    </div>
-    <div className="absolute inset-x-0 bottom-0 h-[var(--spacing-8)] bg-gradient-to-t from-[var(--color-bg-muted)] to-transparent"></div>
-    <div className="absolute inset-0 animate-pulse opacity-[var(--opacity-20)] bg-gradient-to-r from-[var(--color-bg-hover)] via-[var(--color-border-gray)] to-[var(--color-bg-hover)]"></div>
-  </div>
-)
 
 // Shimmer for tables
 const TableShimmer = ({ rows = 4, className = "" }) => (
@@ -46,34 +46,6 @@ const TableShimmer = ({ rows = 4, className = "" }) => (
             <ShimmerLoader height="0.8rem" width={j === 0 ? "80%" : "50%"} className="mx-auto" />
           </div>
         ))}
-      </div>
-    ))}
-  </div>
-)
-
-// Shimmer for stat cards
-const StatCardShimmer = ({ className = "" }) => (
-  <div className={`rounded-[var(--radius-lg)] border-l-[var(--border-4)] border-[var(--color-border-gray)] bg-[var(--color-bg-tertiary)] p-[var(--spacing-4)] ${className}`}>
-    <div className="absolute right-[var(--spacing-2)] top-[var(--spacing-2)]">
-      <ShimmerLoader height="1rem" width="2rem" />
-    </div>
-    <div className="flex justify-center items-center h-full">
-      <ShimmerLoader height="2.5rem" width="50%" className="mx-auto" />
-    </div>
-  </div>
-)
-
-// Shimmer for event cards
-const EventCardShimmer = ({ count = 3, className = "" }) => (
-  <div className={`space-y-[var(--spacing-3)] ${className}`}>
-    {[...Array(count)].map((_, i) => (
-      <div key={i} className="bg-[var(--color-bg-tertiary)] p-[var(--spacing-3)] rounded-[var(--radius-lg)] border-l-[var(--border-4)] border-[var(--color-border-gray)]">
-        <ShimmerLoader height="1rem" width="70%" className="mb-[var(--spacing-3)]" />
-        <div className="flex justify-between">
-          <ShimmerLoader height="0.8rem" width="40%" />
-          <ShimmerLoader height="0.8rem" width="25%" />
-        </div>
-        <ShimmerLoader height="0.7rem" width="50%" className="mt-[var(--spacing-2)]" />
       </div>
     ))}
   </div>
@@ -123,6 +95,21 @@ const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = 
   </div>
 )
 
+const APPROVAL_TODO_ITEMS = [
+  { key: "proposals", label: "Event Proposals", icon: FaFileAlt, accent: "var(--color-primary)", to: "/admin/gymkhana-events" },
+  { key: "calendars", label: "Activity Calendars", icon: FaCalendarAlt, accent: "var(--color-info)", to: "/admin/gymkhana-events" },
+  { key: "expenses", label: "Event Bills", icon: FaReceipt, accent: "var(--color-warning)", to: "/admin/gymkhana-events" },
+  { key: "por", label: "POR Requests", icon: FaAward, accent: "var(--color-purple-text)", to: "/admin/por" },
+]
+
+// Compact row-toggle indicator (used by the split-bar / occupancy lists, where the
+// whole row is clickable — avoids nesting a real checkbox inside a clickable row)
+const RowCheck = ({ selected }) => (
+  <span className={`w-4 h-4 shrink-0 rounded-[var(--radius-sm)] border flex items-center justify-center transition-colors ${selected ? "bg-[var(--color-primary)] border-[var(--color-primary)]" : "border-[var(--color-border-input)] bg-[var(--color-bg-primary)]"}`}>
+    {selected && <FaCheck className="text-[var(--color-white)]" style={{ fontSize: "0.55rem" }} />}
+  </span>
+)
+
 const buildComplaintDashboardLink = (filters = {}) => {
   const params = new URLSearchParams()
 
@@ -136,16 +123,198 @@ const buildComplaintDashboardLink = (filters = {}) => {
   return queryString ? `/admin/complaints?${queryString}` : "/admin/complaints"
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Action Center — a single unified strip combining four operational feeds into
+// one cohesive widget (vertical-divided columns), instead of four separate cards.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SnapColumn = ({ title, icon, accent, count, to, isFirst = false, children }) => {
+  const Icon = icon
+  return (
+  <div className={`flex-1 min-w-0 flex flex-col p-[var(--spacing-3)] ${isFirst ? "" : "border-t xl:border-t-0 xl:border-l border-[var(--color-border-primary)]"}`}>
+    <div className="flex items-center justify-between gap-2 mb-[var(--spacing-2-5)]">
+      <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+        <span className="w-7 h-7 shrink-0 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: "var(--color-bg-secondary)", color: accent }}>
+          <Icon className="text-xs" />
+        </span>
+        <h3 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] truncate">{title}</h3>
+        {count != null && (
+          <span className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums" style={{ backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}>{count}</span>
+        )}
+      </div>
+      {to && (
+        <Link to={to} aria-label={`Open ${title}`} className="shrink-0 text-[var(--color-text-light)] hover:text-[var(--color-primary)] transition-colors">
+          <FaChevronRight className="text-[0.7rem]" />
+        </Link>
+      )}
+    </div>
+    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)] flex flex-col gap-[var(--spacing-1-5)]">
+      {children}
+    </div>
+  </div>
+  )
+}
+
+const SnapEmpty = ({ icon, label }) => {
+  const Icon = icon
+  return (
+  <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-6)]">
+    <div className="w-10 h-10 bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-2)]">
+      <Icon className="text-[var(--color-text-light)]" />
+    </div>
+    <p className="text-xs font-medium text-[var(--color-text-muted)]">{label}</p>
+  </div>
+  )
+}
+
+const SnapShimmer = () => (
+  <>
+    {[...Array(4)].map((_, i) => <ShimmerLoader key={i} height="2.5rem" className="rounded-[var(--radius-lg)]" />)}
+  </>
+)
+
+const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvalsLoading }) => {
+  const leaves = dashboardData?.leaves?.data?.leaves || []
+  const events = dashboardData?.events || []
+  const complaints = dashboardData?.complaints || {}
+  const approvalTotal = APPROVAL_TODO_ITEMS.reduce((sum, item) => sum + (approvalCounts[item.key] || 0), 0)
+  const complaintsOpen = (complaints.pending || 0) + (complaints.inProgress || 0) + (complaints.forwardedToIDO || 0)
+
+  const complaintRows = [
+    { label: "Pending", value: complaints.pending || 0, color: "var(--color-warning)", to: buildComplaintDashboardLink({ status: "Pending" }) },
+    { label: "In Progress", value: complaints.inProgress || 0, color: "var(--color-info)", to: buildComplaintDashboardLink({ status: "In Progress" }) },
+    { label: "To IDO", value: complaints.forwardedToIDO || 0, color: "var(--color-purple-text)", to: buildComplaintDashboardLink({ status: "Forwarded to IDO" }) },
+    { label: "Resolved Today", value: complaints.resolvedToday || 0, color: "var(--color-success)", to: buildComplaintDashboardLink({ resolvedToday: true }) },
+  ]
+
+  if (error) {
+    return <p className="m-[var(--spacing-3)] text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
+  }
+
+  return (
+      <div className="flex flex-col xl:flex-row xl:h-[22rem]">
+        {/* Staff upcoming joins */}
+        <SnapColumn title="Upcoming Joins" icon={FaCalendarAlt} accent="var(--color-info)" count={loading ? null : leaves.length} to="/admin/leaves" isFirst>
+          {loading ? <SnapShimmer /> : leaves.length === 0 ? <SnapEmpty icon={FaCalendarAlt} label="No upcoming returns" /> : (
+            leaves.map((lv) => {
+              const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
+              let joinLabel = "—"
+              let urgency = "var(--color-info)"
+              try {
+                const end = lv?.endDate ? new Date(lv.endDate) : null
+                if (end) {
+                  const j = new Date(end)
+                  j.setDate(j.getDate() + 1)
+                  joinLabel = j.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+                  const days = Math.ceil((j.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+                  urgency = days <= 1 ? "var(--color-success)" : days <= 3 ? "var(--color-warning)" : "var(--color-info)"
+                }
+              } catch {
+                joinLabel = "—"
+              }
+              return (
+                <div key={lv._id} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)]">
+                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                    <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: urgency }}></span>
+                    <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate">{name}</span>
+                  </div>
+                  <span className="shrink-0 text-[0.7rem] font-semibold text-[var(--color-success-text)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-md)] px-[var(--spacing-2)] py-[var(--spacing-0-5)]">↩ {joinLabel}</span>
+                </div>
+              )
+            })
+          )}
+        </SnapColumn>
+
+        {/* My approvals */}
+        <SnapColumn title="My Approvals" icon={FaFileAlt} accent="var(--color-success)" count={approvalsLoading ? null : approvalTotal}>
+          {approvalsLoading ? <SnapShimmer /> : approvalTotal === 0 ? <SnapEmpty icon={FaAward} label="All caught up" /> : (
+            APPROVAL_TODO_ITEMS.map((item) => {
+              const count = approvalCounts[item.key] || 0
+              const Icon = item.icon
+              const hasItems = count > 0
+              return (
+                <Link key={item.key} to={item.to} className="group flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
+                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                    <Icon className="text-[0.72rem] shrink-0" style={{ color: item.accent }} />
+                    <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate group-hover:text-[var(--color-primary)] transition-colors">{item.label}</span>
+                  </div>
+                  <span
+                    className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums"
+                    style={hasItems ? { backgroundColor: item.accent, color: "var(--color-white)" } : { backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}
+                  >
+                    {count}
+                  </span>
+                </Link>
+              )
+            })
+          )}
+        </SnapColumn>
+
+        {/* Complaints */}
+        <SnapColumn title="Complaints" icon={FaClipboardList} accent="var(--color-warning)" count={loading ? null : complaintsOpen} to="/admin/complaints">
+          {loading ? <SnapShimmer /> : (
+            <>
+              {complaintRows.map((row) => (
+                <Link key={row.label} to={row.to} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
+                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                    <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: row.color }}></span>
+                    <span className="text-[0.78rem] font-medium text-[var(--color-text-body)] truncate">{row.label}</span>
+                  </div>
+                  <span className="shrink-0 text-[0.85rem] font-bold tabular-nums" style={{ color: row.color }}>{row.value}</span>
+                </Link>
+              ))}
+              <Link to={buildComplaintDashboardLink({ overdue: true })} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-light)] hover:border-[var(--color-danger)] transition-colors mt-[var(--spacing-0-5)]">
+                <span className="flex items-center gap-[var(--spacing-1-5)] text-[0.72rem] font-bold text-[var(--color-danger-text)] min-w-0 truncate">⚠ Overdue 20+ days</span>
+                <span className="shrink-0 text-[0.95rem] font-black text-[var(--color-danger-text)] tabular-nums">{complaints.overdueCount || 0}</span>
+              </Link>
+            </>
+          )}
+        </SnapColumn>
+
+        {/* Upcoming events */}
+        <SnapColumn title="Upcoming Events" icon={MdOutlineEvent} accent="var(--color-purple-text)" count={loading ? null : events.length} to="/admin/events">
+          {loading ? <SnapShimmer /> : events.length === 0 ? <SnapEmpty icon={MdOutlineEvent} label="No upcoming events" /> : (
+            events.map((event) => {
+              const eventDate = new Date(event.date)
+              const daysUntil = Math.ceil((eventDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+              const isToday = daysUntil === 0
+              const isTomorrow = daysUntil === 1
+              const isThisWeek = daysUntil > 1 && daysUntil <= 7
+              const dateColors = isToday
+                ? "bg-[var(--color-success-bg)] border-[var(--color-success-light)] text-[var(--color-success-text)]"
+                : isTomorrow
+                  ? "bg-[var(--color-warning-bg)] border-[var(--color-warning-light)] text-[var(--color-warning-text)]"
+                  : isThisWeek
+                    ? "bg-[var(--color-info-bg)] border-[var(--color-info-light)] text-[var(--color-info-text)]"
+                    : "bg-[var(--color-bg-muted)] border-[var(--color-border-primary)] text-[var(--color-text-muted)]"
+              return (
+                <div key={event.id} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] border-l-2 border-[var(--color-purple-text)]">
+                  <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate">{event.title}</span>
+                  <span className={`shrink-0 px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
+                    {isToday ? "Today" : isTomorrow ? "Tomorrow" : formatDate(event.date)}
+                  </span>
+                </div>
+              )
+            })
+          )}
+        </SnapColumn>
+      </div>
+  )
+}
+
 const DashboardPage = () => {
+  const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [normalizedView, setNormalizedView] = useState(false)
   const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
   const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
+  const [approvalCounts, setApprovalCounts] = useState({ proposals: 0, calendars: 0, expenses: 0, por: 0 })
+  const [approvalsLoading, setApprovalsLoading] = useState(true)
 
   // Fetch online users stats with auto-refresh every 5 seconds
-  const { stats: onlineStats, loading: onlineLoading } = useOnlineUsers({
+  const { stats: onlineStats } = useOnlineUsers({
     autoFetch: true,
     refreshInterval: 5000, // Refresh every 5 seconds
   })
@@ -178,6 +347,64 @@ const DashboardPage = () => {
       setSelectedHostels(dashboardData.hostels.map((_, index) => index))
     }
   }, [dashboardData])
+
+  // Fetch counts of items pending the current admin's approval stage
+  useEffect(() => {
+    let active = true
+    const myStage = APPROVAL_STAGE_STATUS[user?.subRole]
+    const meId = user?._id ? String(user._id) : null
+    const unwrap = (res) => res?.data ?? res ?? {}
+    // Mirrors backend "pending for me" logic: assigned to me, or unassigned (open to the stage)
+    const isMine = (item) => {
+      const single = item?.currentApproverUser?._id || item?.currentApproverUser
+      const multi = (item?.currentApproverUsers || []).map((u) => String(u?._id || u))
+      if (!single && multi.length === 0) return true
+      if (single && String(single) === meId) return true
+      return meId ? multi.includes(meId) : false
+    }
+
+    const fetchApprovalCounts = async () => {
+      setApprovalsLoading(true)
+      const next = { proposals: 0, calendars: 0, expenses: 0, por: 0 }
+
+      const [proposalsRes, expensesRes, calendarsRes, porRes] = await Promise.allSettled([
+        // Proposals + expenses are already filtered to the caller's stage server-side
+        gymkhanaEventsApi.getProposalsForApproval(),
+        myStage ? gymkhanaEventsApi.getAllExpenses({ limit: 1 }) : Promise.resolve(null),
+        myStage ? gymkhanaEventsApi.getCalendars({ status: myStage, limit: 100 }) : Promise.resolve(null),
+        myStage ? porApi.getWorkspace() : Promise.resolve(null),
+      ])
+
+      if (proposalsRes.status === "fulfilled") {
+        const data = unwrap(proposalsRes.value)
+        next.proposals = Array.isArray(data.proposals) ? data.proposals.length : 0
+      }
+      if (expensesRes.status === "fulfilled" && expensesRes.value) {
+        const data = unwrap(expensesRes.value)
+        next.expenses = data.pagination?.total ?? (Array.isArray(data.expenses) ? data.expenses.length : 0)
+      }
+      if (calendarsRes.status === "fulfilled" && calendarsRes.value) {
+        const data = unwrap(calendarsRes.value)
+        const list = Array.isArray(data.data) ? data.data : Array.isArray(data.calendars) ? data.calendars : []
+        next.calendars = list.filter((c) => c.status === myStage && isMine(c)).length
+      }
+      if (porRes.status === "fulfilled" && porRes.value) {
+        const data = unwrap(porRes.value)
+        const list = Array.isArray(data.requests) ? data.requests : []
+        next.por = list.filter((r) => r.status === myStage && isMine(r)).length
+      }
+
+      if (active) {
+        setApprovalCounts(next)
+        setApprovalsLoading(false)
+      }
+    }
+
+    fetchApprovalCounts()
+    return () => {
+      active = false
+    }
+  }, [user?._id, user?.subRole])
 
   // Toggle hostel selection
   const toggleHostelSelection = (index) => {
@@ -339,435 +566,175 @@ const DashboardPage = () => {
         )}
       </DashboardHeader>
 
-      {/* Main Content with padding */}
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-6)] py-[var(--spacing-6)]">
-        {/* Main dashboard grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-[var(--spacing-6)]">
-          {/* Student data card */}
-          <Card className="xl:col-span-2 h-[29rem]" padding="p-2.5">
-            {loading ? (
-              <div className="h-full flex flex-col">
-                <div className="flex justify-between items-center mb-[var(--spacing-4)]">
-                  <ShimmerLoader height="1.25rem" width="50%" />
-                  <ShimmerLoader height="1.75rem" width="8rem" className="rounded-[var(--radius-full)]" />
+      {/* Unified console surface — one full-bleed area, sections split by dividers (no cards) */}
+      <div className="flex-1 overflow-y-auto p-[var(--spacing-4)]">
+        <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden flex flex-col">
+          {/* Top band: Student Distribution | Hostel Occupancy */}
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Student Distribution */}
+            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] border-b lg:border-b-0 lg:border-r border-[var(--color-border-primary)]">
+              {loading ? (
+                <div className="h-full flex flex-col">
+                  <div className="flex justify-between items-center mb-[var(--spacing-4)]">
+                    <ShimmerLoader height="1.25rem" width="50%" />
+                    <ShimmerLoader height="1.75rem" width="8rem" className="rounded-[var(--radius-full)]" />
+                  </div>
+                  <TableShimmer rows={6} className="flex-1" />
                 </div>
-                <TableShimmer rows={6} className="flex-1" />
-              </div>
-            ) : error ? (
-              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-            ) : (
-              <div className="h-full flex flex-col overflow-auto">
-                {/* Compact Header */}
-                <SectionTitle title="Student Distribution" to="/admin/students">
-                  {/* Normal/Registered Toggle */}
-                  <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                    <button onClick={() => setStudentDataView("normal")}
-                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                    >
-                      Hostler
-                    </button>
-                    <button onClick={() => setStudentDataView("registered")}
-                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                    >
-                      Registered
-                    </button>
-                  </div>
-                  {/* Absolute/Normalized Toggle */}
-                  <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                    <button onClick={() => setNormalizedView(false)}
-                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                    >
-                      Abs
-                    </button>
-                    <button onClick={() => setNormalizedView(true)}
-                      className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                    >
-                      %
-                    </button>
-                  </div>
-                </SectionTitle>
-
-                <div className="flex-1 flex flex-col min-h-0">
-                  <div className="h-full">
+              ) : error ? (
+                <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
+              ) : (
+                <>
+                  <SectionTitle title="Student Distribution" to="/admin/students">
+                    {/* Normal/Registered Toggle */}
+                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                      <button onClick={() => setStudentDataView("normal")}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        Hostler
+                      </button>
+                      <button onClick={() => setStudentDataView("registered")}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        Registered
+                      </button>
+                    </div>
+                    {/* Absolute/Normalized Toggle */}
+                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                      <button onClick={() => setNormalizedView(false)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        Abs
+                      </button>
+                      <button onClick={() => setNormalizedView(true)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        %
+                      </button>
+                    </div>
+                  </SectionTitle>
+                  <div className="flex-1 min-h-0">
                     <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
                   </div>
+                </>
+              )}
+            </section>
+
+            {/* Hostel Occupancy */}
+            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)]">
+              {loading ? (
+                <div className="h-full flex flex-col">
+                  <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
+                  <TableShimmer rows={6} className="flex-1" />
                 </div>
-              </div>
-            )}
-          </Card>
+              ) : error ? (
+                <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
+              ) : (
+                <>
+                  <SectionTitle title="Hostel Occupancy" to="/admin/hostels" />
+                  <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                    {/* Fixed Header */}
+                    <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
+                      <table className="min-w-full table-fixed">
+                        <thead>
+                          <tr>
+                            <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
+                              <div className="flex items-center gap-[var(--spacing-2)]">
+                                <Checkbox checked={allHostelsSelected} onChange={() => {
+                                  if (allHostelsSelected) {
+                                    setSelectedHostels([])
+                                  } else {
+                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+                                  }
+                                }} />
+                                Hostel
+                              </div>
+                            </th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupancy</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacancy</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
 
-          {/* Hostel occupancy card */}
-          <Card className="xl:col-span-2 h-[29rem]" padding="p-2.5">
-            {loading ? (
-              <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
-                <div className="flex-1 grid grid-cols-3 gap-[var(--spacing-4)]">
-                  <div className="flex items-center justify-center">
-                    <ChartShimmer height="140px" className="rounded-[var(--radius-full)]" />
-                  </div>
-                  <div className="col-span-2">
-                    <TableShimmer rows={4} className="h-[16rem]" />
-                  </div>
-                </div>
-              </div>
-            ) : error ? (
-              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-            ) : (
-              <div className="h-full flex flex-col">
-                {/* Compact Header */}
-                <SectionTitle title="Hostel Occupancy" to="/admin/hostels" />
-
-                <div className="flex-1 min-h-0 rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col overflow-hidden">
-                  {/* Fixed Header */}
-                  <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
-                    <table className="min-w-full table-fixed">
-                      <thead>
-                        <tr>
-                          <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
-                            <div className="flex items-center gap-[var(--spacing-2)]">
-                              <Checkbox checked={allHostelsSelected} onChange={() => {
-                                if (allHostelsSelected) {
-                                  setSelectedHostels([])
-                                } else {
-                                  setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-                                }
-                              }} />
-                              Hostel
-                            </div>
-                          </th>
-                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
-                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
-                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupancy</th>
-                          <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacancy</th>
-                        </tr>
-                      </thead>
-                    </table>
-                  </div>
-
-                  {/* Scrollable Body */}
-                  <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                    <table className="min-w-full table-fixed">
-                      <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
-                        {dashboardData?.hostels?.map((hostel, index) => {
-                          const occupancyPercent = hostel.totalCapacity > 0 ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100) : 0
-                          return (
-                            <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
-                              <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
-                                <div className="flex items-center gap-[var(--spacing-2)]">
-                                  <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
-                                  <div className="flex-1 min-w-0">
-                                    <span className={`block text-[0.8125rem] font-semibold leading-tight transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
-                                    <div className="flex items-center gap-[var(--spacing-1-5)]">
-                                      <div className="w-20 h-1 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
-                                        <div
-                                          className={`h-full rounded-[var(--radius-full)] ${occupancyPercent >= 95 ? 'bg-[var(--color-danger)]' : occupancyPercent >= 80 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
-                                          style={{ width: `${Math.min(occupancyPercent, 100)}%` }}
-                                        ></div>
+                    {/* Scrollable Body */}
+                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
+                      <table className="min-w-full table-fixed">
+                        <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
+                          {dashboardData?.hostels?.map((hostel, index) => {
+                            const occupancyPercent = hostel.totalCapacity > 0 ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100) : 0
+                            return (
+                              <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                                <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
+                                  <div className="flex items-center gap-[var(--spacing-2)]">
+                                    <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
+                                    <div className="flex-1 min-w-0">
+                                      <span className={`block text-[0.8125rem] font-semibold leading-tight transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
+                                      <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                        <div className="w-20 h-1 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
+                                          <div
+                                            className={`h-full rounded-[var(--radius-full)] ${occupancyPercent >= 95 ? 'bg-[var(--color-danger)]' : occupancyPercent >= 80 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
+                                            style={{ width: `${Math.min(occupancyPercent, 100)}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="text-[0.65rem] leading-none text-[var(--color-text-muted)] tabular-nums">{occupancyPercent}%</span>
                                       </div>
-                                      <span className="text-[0.65rem] leading-none text-[var(--color-text-muted)] tabular-nums">{occupancyPercent}%</span>
                                     </div>
                                   </div>
+                                </td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Fixed Footer */}
+                    <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
+                      <table className="min-w-full table-fixed">
+                        <tfoot>
+                          <tr>
+                            <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
+                              <div className="flex items-center gap-[var(--spacing-2)]">
+                                <div className="w-3.5 h-3.5"></div>
+                                <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                  <span className="uppercase tracking-wider font-extrabold">Total</span>
+                                  {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
+                                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
+                                  )}
                                 </div>
-                              </td>
-                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
-                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
-                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
-                              <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Fixed Footer */}
-                  <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
-                    <table className="min-w-full table-fixed">
-                      <tfoot>
-                        <tr>
-                          <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
-                            <div className="flex items-center gap-[var(--spacing-2)]">
-                              <div className="w-3.5 h-3.5"></div>
-                              <div className="flex items-center gap-[var(--spacing-1-5)]">
-                                <span className="uppercase tracking-wider font-extrabold">Total</span>
-                                {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
-                                  <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
-                                )}
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
-                          <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* Staff Leaves card */}
-          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
-            {loading ? (
-              <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
-                <TableShimmer rows={4} className="flex-1" />
-              </div>
-            ) : error ? (
-              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-            ) : (
-              <div className="h-full flex flex-col">
-                {/* Compact Header */}
-                <SectionTitle title="Staff Upcoming Joins" to="/admin/leaves" />
-
-                <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                  {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-8)]">
-                      <div className="w-12 h-12 bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-3)]">
-                        <FaCalendarAlt className="text-[var(--color-text-light)] text-lg" />
-                      </div>
-                      <p className="text-sm font-medium text-[var(--color-text-muted)]">No upcoming returns</p>
+                            </td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
+                          </tr>
+                        </tfoot>
+                      </table>
                     </div>
-                  ) : (
-                    <ul className="space-y-[var(--spacing-2)]">
-                      {dashboardData.leaves.data.leaves.map((lv) => {
-                        const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
-                        // compute joining date = endDate + 1 day
-                        let joinDate = ""
-                        let daysRemaining = null
-                        try {
-                          const end = lv && lv.endDate ? new Date(lv.endDate) : null
-                          if (end) {
-                            const j = new Date(end)
-                            j.setDate(j.getDate() + 1)
-                            joinDate = j.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-                            // Calculate days remaining
-                            const today = new Date()
-                            const timeDiff = j.getTime() - today.getTime()
-                            daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
-                          }
-                        } catch {
-                          joinDate = "Invalid date"
-                        }
-
-                        const statusColors = {
-                          'pending': 'bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] border-[var(--color-warning-light)]',
-                          'approved': 'bg-[var(--color-success-bg)] text-[var(--color-success-text)] border-[var(--color-success-light)]',
-                          'rejected': 'bg-[var(--color-danger-bg)] text-[var(--color-danger-text)] border-[var(--color-danger-light)]',
-                        }
-                        const status = (lv.joinStatus || lv.status || '').toLowerCase()
-                        const statusStyle = statusColors[status] || 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] border-[var(--color-border-primary)]'
-
-                        return (
-                          <li key={lv._id} className="group relative flex items-center justify-between bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] p-[var(--spacing-2-5)] border border-[var(--color-border-light)] hover:border-[var(--color-primary-muted)] transition-all duration-150" >
-                            {/* Left accent bar */}
-                            <div className={`absolute left-0 top-[var(--spacing-1-5)] bottom-[var(--spacing-1-5)] w-0.5 rounded-[var(--radius-full)] ${daysRemaining !== null && daysRemaining <= 1 ? 'bg-[var(--color-success)]' : daysRemaining !== null && daysRemaining <= 3 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-info)]'}`}></div>
-
-                            <div className="pl-[var(--spacing-2)]">
-                              <p className="text-[0.8125rem] font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">{name}</p>
-                              <div className="flex items-center gap-[var(--spacing-2)] mt-[var(--spacing-1)]">
-                                <span className="text-[0.7rem] text-[var(--color-text-muted)]">Leave ends:</span>
-                                <span className="text-[0.7rem] font-medium text-[var(--color-text-body)]">{lv.endDate ? new Date(lv.endDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—"}</span>
-                              </div>
-                            </div>
-
-                            <div className="text-right flex flex-col items-end gap-[var(--spacing-1-5)]">
-                              <div className="flex items-center gap-[var(--spacing-1-5)]">
-                                <span className="text-[0.7rem] text-[var(--color-text-muted)]">Returns:</span>
-                                <span className="px-[var(--spacing-2)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-md)] text-[0.75rem] font-bold border border-[var(--color-success-light)]">{joinDate || "—"}</span>
-                              </div>
-                              <span className={`px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.65rem] font-semibold uppercase tracking-wide border ${statusStyle}`}>
-                                {lv.joinStatus || lv.status || "Pending"}
-                              </span>
-                            </div>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  )}
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* Complaints summary card */}
-          <Card className="h-[20rem]" padding="p-2.5">
-            {loading ? (
-              <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
-                <div className="grid grid-cols-2 gap-[var(--spacing-3)] mb-[var(--spacing-3)]">
-                  <StatCardShimmer className="relative h-16" />
-                  <StatCardShimmer className="relative h-16" />
-                </div>
-                <div className="grid grid-cols-3 gap-[var(--spacing-3)] mb-[var(--spacing-3)]">
-                  <StatCardShimmer className="relative h-16" />
-                  <StatCardShimmer className="relative h-16" />
-                  <StatCardShimmer className="relative h-16" />
-                </div>
-                <ShimmerLoader height="3rem" className="rounded-[var(--radius-lg)] mt-auto" />
-              </div>
-            ) : error ? (
-              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-            ) : (
-              <div className="h-full flex flex-col">
-                {/* Compact Header */}
-                <SectionTitle title="Complaints" accent="var(--color-warning)" to="/admin/complaints" />
-
-                <div className="flex-1 flex flex-col justify-between">
-                  {/* Primary stats - 2x2 grid */}
-                  <div className="grid grid-cols-2 gap-[var(--spacing-1-5)]">
-                    {/* Pending */}
-                    <Link
-                      to={buildComplaintDashboardLink({ status: "Pending" })}
-                      className="block rounded-[var(--radius-xl)] bg-[var(--color-warning-bg)] border border-[var(--color-warning-light)] p-[var(--spacing-2)] hover:border-[var(--color-warning)] transition-all"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-[var(--color-warning-text)] uppercase">Pending</p>
-                        <div className="w-2 h-2 bg-[var(--color-warning)] rounded-[var(--radius-full)] animate-pulse"></div>
-                      </div>
-                      <p className="text-xl font-black text-[var(--color-warning-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.pending || 0}</p>
-                    </Link>
-
-                    {/* In Progress */}
-                    <Link
-                      to={buildComplaintDashboardLink({ status: "In Progress" })}
-                      className="block rounded-[var(--radius-xl)] bg-[var(--color-info-bg)] border border-[var(--color-info-light)] p-[var(--spacing-2)] hover:border-[var(--color-info)] transition-all"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-[var(--color-info-text)] uppercase">In Progress</p>
-                        <AiOutlineLoading3Quarters className="w-3 h-3 text-[var(--color-info)] animate-spin" />
-                      </div>
-                      <p className="text-xl font-black text-[var(--color-info-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.inProgress || 0}</p>
-                    </Link>
-
-                    {/* Forwarded to IDO */}
-                    <Link
-                      to={buildComplaintDashboardLink({ status: "Forwarded to IDO" })}
-                      className="block rounded-[var(--radius-xl)] bg-[var(--color-purple-bg)] border border-[var(--color-purple-light-bg)] p-[var(--spacing-2)] hover:border-[var(--color-purple-text)] transition-all"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-[var(--color-purple-text)] uppercase">To IDO</p>
-                        <span className="text-[0.5rem] font-bold text-[var(--color-purple-text)]">FWD</span>
-                      </div>
-                      <p className="text-xl font-black text-[var(--color-purple-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
-                    </Link>
-
-                    {/* Resolved Today */}
-                    <Link
-                      to={buildComplaintDashboardLink({ resolvedToday: true })}
-                      className="block rounded-[var(--radius-xl)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] p-[var(--spacing-2)] hover:border-[var(--color-success)] transition-all"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-[var(--color-success-text)] uppercase">Today</p>
-                        <span className="text-xs text-[var(--color-success)]">✓</span>
-                      </div>
-                      <p className="text-xl font-black text-[var(--color-success-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.resolvedToday || 0}</p>
-                    </Link>
                   </div>
+                </>
+              )}
+            </section>
+          </div>
 
-                  {/* Overdue Summary */}
-                  <Link
-                    to={buildComplaintDashboardLink({ overdue: true })}
-                    className="mt-[var(--spacing-1-5)] block bg-[var(--color-danger-bg)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-danger-light)] hover:border-[var(--color-danger)] transition-all"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-[var(--spacing-1-5)]">
-                        <span className="text-[var(--color-danger)] text-xs">⚠</span>
-                        <p className="text-[0.7rem] font-bold text-[var(--color-danger-text)]">Overdue 20+ days</p>
-                      </div>
-                      <p className="text-xl font-black text-[var(--color-danger-text)] tabular-nums">{dashboardData?.complaints?.overdueCount || 0}</p>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* Upcoming events card */}
-          <Card className="h-[20rem]" padding="p-2.5">
-            {loading ? (
-              <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
-                <div className="flex-1 overflow-hidden">
-                  <EventCardShimmer count={3} />
-                </div>
-              </div>
-            ) : error ? (
-              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-            ) : (
-              <div className="h-full flex flex-col">
-                {/* Compact Header */}
-                <SectionTitle title="Upcoming Events" accent="var(--color-purple-text)" to="/admin/events" />
-
-                <div className="flex-1 overflow-hidden">
-                  <div className="overflow-y-auto max-h-[16rem] pr-[var(--spacing-1)] scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                    {dashboardData?.events?.map((event) => {
-                      // Determine event date status
-                      const eventDate = new Date(event.date)
-                      const today = new Date()
-                      const timeDiff = eventDate.getTime() - today.getTime()
-                      const daysUntil = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
-                      const isToday = daysUntil === 0
-                      const isTomorrow = daysUntil === 1
-                      const isThisWeek = daysUntil > 1 && daysUntil <= 7
-
-                      const dateColors = isToday ? 'bg-[var(--color-success-bg)] border-[var(--color-success-light)] text-[var(--color-success-text)]' :
-                        isTomorrow ? 'bg-[var(--color-warning-bg)] border-[var(--color-warning-light)] text-[var(--color-warning-text)]' :
-                          isThisWeek ? 'bg-[var(--color-info-bg)] border-[var(--color-info-light)] text-[var(--color-info-text)]' :
-                            'bg-[var(--color-bg-tertiary)] border-[var(--color-border-primary)] text-[var(--color-text-muted)]'
-
-                      return (
-                        <div key={event.id} className="group mb-[var(--spacing-1-5)] bg-[var(--color-bg-primary)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-border-light)] hover:border-[var(--color-purple-text)] transition-all duration-150 relative overflow-hidden" >
-                          {/* Left accent bar */}
-                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[var(--color-purple-text)] rounded-l-[var(--radius-xl)]"></div>
-
-                          <div className="pl-[var(--spacing-2)]">
-                            <div className="flex items-start justify-between gap-[var(--spacing-2)]">
-                              <h3 className="font-bold text-[0.8125rem] text-[var(--color-text-primary)] group-hover:text-[var(--color-purple-text)] transition-colors leading-tight flex-1">{event.title}</h3>
-                              <span className={`px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
-                                {isToday ? 'Today' : isTomorrow ? 'Tomorrow' : formatDate(event.date)}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-[var(--spacing-3)] mt-[var(--spacing-2)]">
-                              <div className="flex items-center gap-[var(--spacing-1)] text-[0.7rem] text-[var(--color-text-muted)]">
-                                <FaCalendarAlt className="text-[0.6rem] text-[var(--color-purple-text)]" />
-                                <span className="font-medium">{formatDate(event.date)}</span>
-                              </div>
-                              <div className="flex items-center gap-[var(--spacing-1)] text-[0.7rem]">
-                                <span className="w-1 h-1 bg-[var(--color-border-dark)] rounded-[var(--radius-full)]"></span>
-                                <span className="font-semibold text-[var(--color-purple-text)]">{event.time}</span>
-                              </div>
-                            </div>
-
-                            {event.location && (
-                              <div className="flex items-center gap-[var(--spacing-1)] mt-[var(--spacing-1-5)] text-[0.7rem] text-[var(--color-text-muted)]">
-                                <span className="text-[var(--color-purple-text)]">📍</span>
-                                <span>{event.location}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
-
-                    {dashboardData?.events?.length === 0 && (
-                      <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-8)]">
-                        <div className="w-12 h-12 bg-[var(--color-purple-bg)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-3)]">
-                          <MdOutlineEvent className="text-[var(--color-purple-text)] text-xl" />
-                        </div>
-                        <p className="text-sm font-medium text-[var(--color-text-muted)]">No upcoming events</p>
-                        <p className="text-xs text-[var(--color-text-light)] mt-[var(--spacing-1)]">Check back later for updates</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </Card>
+          {/* Bottom band: Action Center */}
+          <div className="border-t border-[var(--color-border-primary)]">
+            <ActionCenter
+              loading={loading}
+              error={error}
+              dashboardData={dashboardData}
+              approvalCounts={approvalCounts}
+              approvalsLoading={approvalsLoading}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -840,7 +807,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
   const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
 
   return (
-    <div className="h-full rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Fixed Header */}
       <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
         <table className="min-w-full table-fixed">
