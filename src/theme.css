@@ -137,10 +137,10 @@
      color-mix(...) for tints so dark mode stays correct
      ============================================ */
   --color-cat-home: var(--color-primary);
-  --color-cat-hostels: #059669;
+  --color-cat-hostels: var(--color-primary);
   --color-cat-student-affairs: #D97706;
   --color-cat-staff: #0284C7;
-  --color-cat-dining: #E11D48;
+  --color-cat-dining: #059669;
   /* Endpoint that category tints mix toward — white in light mode, the dark
      card surface in dark mode — so the re-themed primary tints stay correct. */
   --admin-mix-surface: #FFFFFF;
@@ -767,10 +767,10 @@
 
   /* Admin sidebar category accents - lightened for dark surfaces */
   --color-cat-home: var(--color-primary);
-  --color-cat-hostels: #34D399;
+  --color-cat-hostels: var(--color-primary);
   --color-cat-student-affairs: #FBBF24;
   --color-cat-staff: #38BDF8;
-  --color-cat-dining: #FB7185;
+  --color-cat-dining: #34D399;
   --admin-mix-surface: #1A1A1A;
 
   /* Additional Colors - Neutral */
@@ -874,12 +874,11 @@
    --admin-mix-surface (white / dark surface) so they
    stay correct in both modes. Home keeps default blue.
    ============================================ */
-[data-admin-category="hostels"] { --admin-accent: var(--color-cat-hostels); }
+/* HMS (hostels) intentionally omitted — it uses the default primary theme. */
 [data-admin-category="student-affairs"] { --admin-accent: var(--color-cat-student-affairs); }
 [data-admin-category="staff"] { --admin-accent: var(--color-cat-staff); }
 [data-admin-category="dining"] { --admin-accent: var(--color-cat-dining); }
 
-[data-admin-category="hostels"],
 [data-admin-category="student-affairs"],
 [data-admin-category="staff"],
 [data-admin-category="dining"] {

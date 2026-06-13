@@ -1,8 +1,12 @@
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 
-// Public/Auth routes - Always loaded (not lazy)
-import { HomePage, LoginPage } from "../pages/auth"
+// Public/Auth routes - Always loaded (not lazy).
+// Import directly (not via the ../pages/auth barrel): the barrel statically
+// re-exports the SSO/Forgot/Reset pages too, which would pull them into this
+// chunk and defeat the lazy() splits below.
+import HomePage from "../pages/auth/HomePage"
+import LoginPage from "../pages/auth/LoginPage"
 
 // Utility pages - Always loaded
 import NotFoundPage from "../pages/NotFoundPage"

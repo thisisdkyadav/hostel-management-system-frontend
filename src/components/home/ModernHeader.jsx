@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Code, ExternalLink, UserCircle, Github, FileText } from "lucide-react"
+import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Code, ExternalLink, UserCircle, FileText } from "lucide-react"
+import { FaGithub } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import ContactModal from "../contact/ContactModal"
 import AppointmentFormModal from "./AppointmentFormModal"
@@ -31,7 +32,7 @@ const ModernHeader = () => {
     },
     { label: "Contact", icon: <Phone className="modern-header-nav-icon" size={18} />, action: () => setIsContactModalOpen(true) },
     { label: "Dev Team", icon: <Code className="modern-header-nav-icon" size={18} />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
-    { label: "GitHub", icon: <Github className="modern-header-nav-icon" size={18} />, path: "https://github.com/thisisdkyadav/hostel-management-system-frontend", isExternal: true },
+    { label: "GitHub", icon: <FaGithub className="modern-header-nav-icon" size={18} />, path: "https://github.com/thisisdkyadav/hostel-management-system-frontend", isExternal: true },
   ]
 
   useEffect(() => {

@@ -33,51 +33,47 @@ const VALUE_SIZE_CLASSES = {
 }
 
 export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false, loading = false, valueSize = "lg" }) => {
-  const getColorValue = (cssVar) => {
-    if (cssVar.startsWith("var(")) return null
-    return cssVar
-  }
-
-  const colorValue =
-    getColorValue(color) ||
-    getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() ||
-    "#1360AB"
-
-  const cardClass = `bg-[var(--color-bg-primary)] rounded-xl p-3 border border-[var(--color-border-primary)]`
+  // color-mix works for any CSS color or var(--token); no JS resolution needed.
+  const tint = (pct) => `color-mix(in srgb, ${color} ${pct}%, transparent)`
 
   return (
     <div
-      className={`${cardClass} transition-all duration-200 hover:border-[var(--color-border-dark)] hover:scale-[1.02] group`}
+      className="group relative overflow-hidden rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]"
       style={{
+        backgroundColor: tintBackground ? tint(10) : "var(--color-bg-primary)",
         boxShadow: "var(--shadow-xs)",
-        ...(tintBackground && { backgroundColor: `${colorValue}14` }),
       }}
     >
-      <div className="flex justify-between items-start mb-1.5">
-        <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">
-          {title}
-        </span>
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110"
-          style={{ backgroundColor: `${colorValue}15` }}
-        >
-          {React.isValidElement(icon)
-            ? React.cloneElement(icon, {
-                style: { color: colorValue },
-                className: "text-base",
-              })
-            : null}
-        </div>
+      {/* Soft color glow from the top-right corner */}
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-300 opacity-80 group-hover:opacity-100"
+        style={{ background: `radial-gradient(125% 125% at 100% 0%, ${tint(18)} 0%, transparent 46%)` }}
+      />
+
+      {/* Oversized watermark icon bleeding out of the corner */}
+      <div
+        className="pointer-events-none absolute -right-3 -bottom-5 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-6"
+        style={{ color, opacity: 0.12 }}
+        aria-hidden="true"
+      >
+        {React.isValidElement(icon) ? React.cloneElement(icon, { style: { fontSize: "4.75rem" } }) : icon}
       </div>
-      <div>
+
+      <div className="relative z-10">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: color, boxShadow: `0 0 0 3px ${tint(20)}` }} />
+          <span className="text-[var(--color-text-muted)] text-[0.66rem] font-semibold uppercase tracking-[0.08em] truncate">
+            {title}
+          </span>
+        </div>
         {loading ? (
-          <ShimmerBar width="3.5rem" height={24} style={{ marginBottom: 2 }} />
+          <ShimmerBar width="3.5rem" height={28} style={{ marginBottom: 4 }} />
         ) : (
-          <h3 className={`${VALUE_SIZE_CLASSES[valueSize] || VALUE_SIZE_CLASSES.lg} font-bold leading-none`} style={{ color: colorValue }}>
+          <h3 className={`${VALUE_SIZE_CLASSES[valueSize] || VALUE_SIZE_CLASSES.lg} font-extrabold leading-none text-[var(--color-text-heading)] tabular-nums`}>
             {value}
           </h3>
         )}
-        <p className="text-xs text-[var(--color-text-light)] mt-0.5">{subtitle}</p>
+        {subtitle ? <p className="text-[0.7rem] text-[var(--color-text-light)] mt-1.5 leading-snug">{subtitle}</p> : null}
       </div>
     </div>
   )
