@@ -1,180 +1,74 @@
-import React, { forwardRef, useState } from "react"
+import React, { forwardRef } from "react"
+import { Switch as C0Switch } from "czero/react"
 
 /**
- * Switch Component - Toggle switch for boolean values
- * 
- * @param {string} id - Switch id
- * @param {string} name - Switch name attribute
- * @param {boolean} checked - Controlled checked state
- * @param {function} onChange - Change handler
- * @param {boolean} disabled - Disabled state
- * @param {string} size - Size variant: small, medium, large
- * @param {string} label - Optional inline label text
- * @param {string} description - Optional description below label
- * @param {string} labelPosition - Label position: left, right
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Switch — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Switch` while preserving the legacy HMS API so existing
+ * call sites keep working unchanged:
+ *  - event-style `onChange(e)` where consumers read `e.target.checked`
+ *  - size names "small" | "medium" | "large"
+ *
+ * Prefer importing `Switch` from `@/components/ui`; this adapter delegates
+ * styling/behavior to the shared C0 component.
+ *
+ * @param {string} id
+ * @param {string} name
+ * @param {boolean} checked
+ * @param {function} onChange - receives an event-like `{ target: { checked } }`
+ * @param {boolean} disabled
+ * @param {"small"|"medium"|"large"|"sm"|"md"|"lg"} size
+ * @param {string} label
+ * @param {string} description
+ * @param {"left"|"right"} labelPosition
  */
-const Switch = forwardRef(({
-  id,
-  name,
-  checked = false,
-  onChange,
-  disabled = false,
-  size = "medium",
-  label,
-  description,
-  labelPosition = "right",
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
-  const [isFocused, setIsFocused] = useState(false)
+const SIZE_MAP = { small: "sm", medium: "md", large: "lg", sm: "sm", md: "md", lg: "lg" }
 
-  // Size mappings
-  const sizes = {
-    small: {
-      track: { width: "32px", height: "18px" },
-      thumb: { size: "14px", translate: "14px" },
-      label: "var(--font-size-sm)",
-      description: "var(--font-size-xs)",
+const Switch = forwardRef(
+  (
+    {
+      id,
+      name,
+      checked = false,
+      onChange,
+      disabled = false,
+      size = "medium",
+      label,
+      description,
+      labelPosition = "right",
+      className = "",
+      style,
+      ...rest
     },
-    medium: {
-      track: { width: "40px", height: "22px" },
-      thumb: { size: "18px", translate: "18px" },
-      label: "var(--font-size-base)",
-      description: "var(--font-size-sm)",
-    },
-    large: {
-      track: { width: "48px", height: "26px" },
-      thumb: { size: "22px", translate: "22px" },
-      label: "var(--font-size-lg)",
-      description: "var(--font-size-base)",
-    },
-  }
-
-  const currentSize = sizes[size] || sizes.medium
-
-  // Container styles
-  const containerStyles = {
-    display: "inline-flex",
-    alignItems: description ? "flex-start" : "center",
-    gap: "var(--spacing-3)",
-    cursor: disabled ? "not-allowed" : "pointer",
-    flexDirection: labelPosition === "left" ? "row-reverse" : "row",
-    ...style,
-  }
-
-  // Track styles
-  const trackStyles = {
-    position: "relative",
-    width: currentSize.track.width,
-    height: currentSize.track.height,
-    borderRadius: "var(--radius-full)",
-    backgroundColor: checked ? "var(--color-primary)" : "var(--color-border-input)",
-    transition: "var(--transition-all)",
-    opacity: disabled ? 0.5 : 1,
-    flexShrink: 0,
-    boxShadow: isFocused && !disabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
-  }
-
-  // Thumb styles
-  const thumbStyles = {
-    position: "absolute",
-    top: "2px",
-    left: "2px",
-    width: currentSize.thumb.size,
-    height: currentSize.thumb.size,
-    borderRadius: "var(--radius-full)",
-    backgroundColor: "white",
-    boxShadow: "var(--shadow-sm)",
-    transition: "var(--transition-all)",
-    transform: checked ? `translateX(${currentSize.thumb.translate})` : "translateX(0)",
-  }
-
-  // Hidden input styles
-  const hiddenInputStyles = {
-    position: "absolute",
-    opacity: 0,
-    width: "100%",
-    height: "100%",
-    cursor: disabled ? "not-allowed" : "pointer",
-    margin: 0,
-    zIndex: 1,
-  }
-
-  // Label container styles
-  const labelContainerStyles = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-0-5)",
-  }
-
-  // Label styles
-  const labelStyles = {
-    fontSize: currentSize.label,
-    color: disabled ? "var(--color-text-disabled)" : "var(--color-text-body)",
-    cursor: disabled ? "not-allowed" : "pointer",
-    userSelect: "none",
-    lineHeight: "1.4",
-  }
-
-  // Description styles
-  const descriptionStyles = {
-    fontSize: currentSize.description,
-    color: "var(--color-text-muted)",
-    lineHeight: "1.4",
-  }
-
-  const switchId = id || name
-
-  const handleChange = (e) => {
-    if (!disabled && onChange) {
-      onChange(e)
+    ref
+  ) => {
+    const handleCheckedChange = (nextChecked) => {
+      if (disabled) return
+      onChange?.({
+        target: { checked: nextChecked, name, id, type: "checkbox" },
+        currentTarget: { checked: nextChecked, name, id },
+      })
     }
-  }
 
-  const content = (
-    <>
-      <div style={trackStyles}>
-        <input
-          ref={ref}
-          type="checkbox"
-          role="switch"
-          id={switchId}
-          name={name}
-          checked={checked}
-          onChange={handleChange}
-          disabled={disabled}
-          style={hiddenInputStyles}
-          className={className}
-          aria-checked={checked}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          {...rest}
-        />
-        <div style={thumbStyles} />
-      </div>
-      {(label || description) && (
-        <div style={labelContainerStyles}>
-          {label && <span style={labelStyles}>{label}</span>}
-          {description && <span style={descriptionStyles}>{description}</span>}
-        </div>
-      )}
-    </>
-  )
-
-  // Wrap in label if text is provided
-  if (label || description) {
     return (
-      <label htmlFor={switchId} style={containerStyles}>
-        {content}
-      </label>
+      <C0Switch
+        ref={ref}
+        id={id}
+        name={name}
+        checked={checked}
+        onCheckedChange={handleCheckedChange}
+        disabled={disabled}
+        size={SIZE_MAP[size] || "md"}
+        label={label}
+        description={description}
+        labelPosition={labelPosition}
+        className={className}
+        style={style}
+        {...rest}
+      />
     )
   }
-
-  return <div style={containerStyles}>{content}</div>
-})
+)
 
 Switch.displayName = "Switch"
 

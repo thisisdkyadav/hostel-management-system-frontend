@@ -26,6 +26,7 @@ import { Toast, Alert } from '@/components/ui/feedback'
 
 - `Button` -> migrated to C0
 - `Input` -> C0-backed via compatibility adapter (`@/components/ui/form/Input`)
+- `Switch` -> C0-backed via compatibility adapter (`@/components/ui/form/Switch`)
 - `SearchInput` -> frontend wrapper over C0 `Input` (`variant="search"`)
 - `Modal` -> migrated to C0
 - `Table` -> migrated to C0
