@@ -89,15 +89,6 @@ export const authApi = {
     return goApiClient.post(`/auth/user/devices/logout/${sessionId}`).then(unwrapStandardResponse)
   },
 
-  /**
-   * Redirect to wellness portal
-   */
-  redirectToWellness: () => {
-    return goApiClient.get("/sso/redirect", {
-      params: { redirectTo: "https://wellness.iitb.ac.in" },
-    })
-  },
-
   // ========== Password Reset ==========
 
   /**

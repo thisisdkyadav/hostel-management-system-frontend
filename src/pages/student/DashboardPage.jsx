@@ -657,7 +657,6 @@ const DashboardPage = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 flex-1 relative" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }}>
-      {/* <button onClick={() => authApi.redirectToWellness()}>wellness</button> */}
       {/* Offline notification banner */}
       {isOfflineData && <OfflineBanner message="You're offline. Viewing cached dashboard data." className="mb-4" showDismiss={true} />}
 
