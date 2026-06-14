@@ -607,78 +607,62 @@
 .cz-switch {
   all: unset;
   box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
   position: relative;
-  border-radius: var(--cz-switch-border-radius);
-  background-color: var(--cz-switch-bg-unchecked);
-  transition: all var(--cz-switch-transition);
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  width: var(--cz-switch-width, 2.75rem);
+  height: var(--cz-switch-height, 1.5rem);
+  border-radius: var(--cz-radius-full);
+  background-color: var(--cz-switch-bg, hsl(var(--cz-color-muted)));
+  transition: background-color 160ms ease;
   cursor: pointer;
 }
 
 .cz-switch:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--cz-color-bg)), 0 0 0 4px var(--cz-switch-focus-ring-color);
+  box-shadow: 0 0 0 2px hsl(var(--cz-color-bg)), 0 0 0 4px hsl(var(--cz-color-ring) / 0.6);
 }
 
 .cz-switch[data-state="checked"],
 .cz-switch.cz-switch-checked {
-  background-color: var(--cz-switch-bg-checked);
+  background-color: var(--cz-switch-bg-checked, hsl(var(--cz-color-primary)));
 }
 
 .cz-switch.cz-disabled,
 .cz-switch:disabled {
-  opacity: var(--cz-switch-disabled-opacity);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* The thumb is sized from the track height (height - 2*padding) so it can
+   never overflow vertically, and the checked offset is exactly width - height
+   so it can never overflow horizontally — regardless of the configured size. */
 .cz-switch-thumb {
-  display: block;
-  border-radius: var(--cz-switch-border-radius);
-  background-color: var(--cz-switch-thumb-bg);
-  box-shadow: var(--cz-switch-thumb-shadow);
-  transition: transform var(--cz-switch-transition);
+  position: absolute;
+  top: var(--cz-switch-padding, 0.125rem);
+  left: var(--cz-switch-padding, 0.125rem);
+  width: calc(var(--cz-switch-height, 1.5rem) - 2 * var(--cz-switch-padding, 0.125rem));
+  height: calc(var(--cz-switch-height, 1.5rem) - 2 * var(--cz-switch-padding, 0.125rem));
+  border-radius: var(--cz-radius-full);
+  background-color: var(--cz-switch-thumb-bg, hsl(var(--cz-color-bg)));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 0 0 0.5px rgb(0 0 0 / 0.04);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(0);
 }
 
-/* Switch Sizes */
-.cz-switch-sm {
-  width: var(--cz-switch-width-sm);
-  height: var(--cz-switch-height-sm);
+.cz-switch[data-state="checked"] .cz-switch-thumb,
+.cz-switch.cz-switch-checked .cz-switch-thumb {
+  transform: translateX(calc(var(--cz-switch-width, 2.75rem) - var(--cz-switch-height, 1.5rem)));
 }
-.cz-switch-sm .cz-switch-thumb {
-  width: var(--cz-switch-thumb-size-sm);
-  height: var(--cz-switch-thumb-size-sm);
-  transform: translateX(var(--cz-switch-thumb-offset));
-}
-.cz-switch-sm[data-state="checked"] .cz-switch-thumb,
-.cz-switch-sm.cz-switch-checked .cz-switch-thumb {
-  transform: translateX(calc(var(--cz-switch-width-sm) - var(--cz-switch-thumb-size-sm) - var(--cz-switch-thumb-offset)));
-}
-.cz-switch-md {
-  width: var(--cz-switch-width-md);
-  height: var(--cz-switch-height-md);
-}
-.cz-switch-md .cz-switch-thumb {
-  width: var(--cz-switch-thumb-size-md);
-  height: var(--cz-switch-thumb-size-md);
-  transform: translateX(var(--cz-switch-thumb-offset));
-}
-.cz-switch-md[data-state="checked"] .cz-switch-thumb,
-.cz-switch-md.cz-switch-checked .cz-switch-thumb {
-  transform: translateX(calc(var(--cz-switch-width-md) - var(--cz-switch-thumb-size-md) - var(--cz-switch-thumb-offset)));
-}
-.cz-switch-lg {
-  width: var(--cz-switch-width-lg);
-  height: var(--cz-switch-height-lg);
-}
-.cz-switch-lg .cz-switch-thumb {
-  width: var(--cz-switch-thumb-size-lg);
-  height: var(--cz-switch-thumb-size-lg);
-  transform: translateX(var(--cz-switch-thumb-offset));
-}
-.cz-switch-lg[data-state="checked"] .cz-switch-thumb,
-.cz-switch-lg.cz-switch-checked .cz-switch-thumb {
-  transform: translateX(calc(var(--cz-switch-width-lg) - var(--cz-switch-thumb-size-lg) - var(--cz-switch-thumb-offset)));
+
+/* Sizes set only the track dimensions; the thumb size and offset derive from them. */
+.cz-switch-sm { --cz-switch-width: 2rem; --cz-switch-height: 1.125rem; }
+.cz-switch-md { --cz-switch-width: 2.75rem; --cz-switch-height: 1.5rem; }
+.cz-switch-lg { --cz-switch-width: 3.5rem; --cz-switch-height: 1.875rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-switch-thumb { transition: none; }
 }
 
 /* Switch with Label */
