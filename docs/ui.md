@@ -36,27 +36,21 @@ import { Toast, Alert } from '@/components/ui/feedback'
 - Filter/table-style tabs standardized to C0 `Tabs` with `variant="pills"` for complaints-style parity.
 - Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
-## C0 Config Surfaces (HMS Overrides)
+## C0 Theming (czero >= 0.3.0)
 
-HMS now customizes these via `frontend/czero.config.js`:
-- `components.input` (base input + search behavior visuals: icon/clear/focus/disabled/readOnly)
-- `components.tabs` (variants, sizing, icon/count pills, list border/layout tokens)
-- `components.modal` (close icon size/padding/bg/hover, tab colors, modal paddings)
-- `components.dataTable` (container/header/body/pagination/empty/loading token surface)
-- `components.statusBadge` (pill spacing, dot sizing, semantic tone colors)
+As of czero 0.3.0 the CLI/config codegen is gone. There is no `czero.config.js`
+and no `npx czero build` step. Theming is plain `--cz-*` CSS variables.
 
-```js
-// frontend/czero.config.js
-export default {
-  components: {
-    input: { /* ... */ },
-    tabs: { /* ... */ },
-    modal: { /* ... */ },
-    dataTable: { /* ... */ },
-    statusBadge: { /* ... */ }
-  }
-}
-```
+HMS imports a single hand-maintained stylesheet, `frontend/czero.css`
+(`@import` from `src/index.css`), which contains czero's base styles plus all
+HMS overrides — global tokens (`--cz-color-*`, `--cz-radius-*`, …) and
+component-scoped tokens for input, tabs, modal, dataTable, statusBadge, table,
+and HMS's extra button variants (`success`, `white`, `gradient`).
+
+To adjust a component's look, edit `czero.css` directly (override the relevant
+`--cz-*` variable or `.cz-*` class). Many component tokens also fall back to
+HMS's own `--color-*`/`--table-*` theme variables, so dark mode and the
+sidebar's dynamic category theming flow through automatically.
 
 ---
 

@@ -215,16 +215,16 @@ Use these from `czero/react`:
 
 Keep app-specific composed components in `@/components/ui`.
 
-### Config-Driven Customization Rule
+### Theming Rule (czero >= 0.3.0)
 
-For C0-owned components, keep C0 internals generic and apply HMS design via `frontend/czero.config.js`.
+czero 0.3.0 removed the CLI/config codegen. Apply HMS design with `--cz-*` CSS
+variables, not a `czero.config.js`. HMS keeps all overrides in the hand-maintained
+`frontend/czero.css` (imported from `src/index.css`): global tokens plus
+component-scoped tokens for input, tabs, modal, dataTable, statusBadge, and table,
+and HMS's extra button variants (`success`, `white`, `gradient`).
 
-Current HMS config-driven surfaces:
-- `components.input` (input/search icon, clear action, focus, disabled/readOnly visuals)
-- `components.tabs` (filter/header tab variants, sizing, icon/count treatments)
-- `components.modal` (close icon, modal spacing, tab styles)
-- `components.dataTable` (table wrapper, cells, pagination, empty/loading)
-- `components.statusBadge` (pill and tone system)
+To restyle a C0 component, edit `czero.css` — override the relevant `--cz-*`
+variable or `.cz-*` rule. Keep C0's shipped components generic; do not fork them.
 
 ### Button (CZero)
 
