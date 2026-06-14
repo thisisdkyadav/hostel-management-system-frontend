@@ -108,7 +108,7 @@
   --cz-btn-font-weight: var(--cz-font-weight-medium);
   --cz-btn-border-radius: 12px;
   --cz-btn-border-width: 1px;
-  --cz-btn-transition: var(--cz-transition-fast);
+  --cz-btn-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --cz-btn-hover-opacity: 0.9;
   --cz-btn-focus-ring-width: 2px;
   --cz-btn-focus-ring-offset: 2px;
@@ -175,6 +175,16 @@
 .cz-btn:disabled {
   pointer-events: none;
   opacity: var(--cz-btn-disabled-opacity);
+}
+
+/* Tactile press feedback (matches the old custom button's active scale). */
+.cz-btn:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-btn { transition-duration: 1ms; }
+  .cz-btn:not(:disabled):active { transform: none; }
 }
 
 /* Button Sizes */
