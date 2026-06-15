@@ -195,6 +195,13 @@ export const gymkhanaEventsApi = {
   },
 
   /**
+   * Mega-event proposals pending the current approver's stage.
+   */
+  getMegaProposalsForApproval: () => {
+    return apiClient.get(`${BASE_PATH}/mega-proposals/pending`)
+  },
+
+  /**
    * Create a new mega event series (Admin only)
    */
   createMegaSeries: (data) => {

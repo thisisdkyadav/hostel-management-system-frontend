@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { FaUser, FaCalendarAlt, FaFileAlt, FaReceipt, FaAward, FaChevronRight, FaClipboardList, FaCheck } from "react-icons/fa"
+import { FaUser, FaCalendarAlt, FaFileAlt, FaReceipt, FaAward, FaChevronRight, FaClipboardList, FaCheck, FaTrophy } from "react-icons/fa"
 import { MdOutlineEvent } from "react-icons/md"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { HiStatusOnline } from "react-icons/hi"
@@ -97,6 +97,7 @@ const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = 
 
 const APPROVAL_TODO_ITEMS = [
   { key: "proposals", label: "Event Proposals", icon: FaFileAlt, accent: "var(--color-primary)", to: "/admin/gymkhana-events" },
+  { key: "megaProposals", label: "Mega Event Proposals", icon: FaTrophy, accent: "var(--color-teal-text)", to: "/admin/mega-events" },
   { key: "calendars", label: "Activity Calendars", icon: FaCalendarAlt, accent: "var(--color-info)", to: "/admin/gymkhana-events" },
   { key: "expenses", label: "Event Bills", icon: FaReceipt, accent: "var(--color-warning)", to: "/admin/gymkhana-events" },
   { key: "por", label: "POR Requests", icon: FaAward, accent: "var(--color-purple-text)", to: "/admin/por" },
@@ -228,7 +229,7 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
         {/* My approvals */}
         <SnapColumn title="To-Do" icon={FaFileAlt} accent="var(--color-success)" count={approvalsLoading ? null : approvalTotal}>
           {approvalsLoading ? <SnapShimmer /> : approvalTotal === 0 ? <SnapEmpty icon={FaAward} label="All caught up" /> : (
-            APPROVAL_TODO_ITEMS.map((item) => {
+            APPROVAL_TODO_ITEMS.filter((item) => (approvalCounts[item.key] || 0) > 0).map((item) => {
               const count = approvalCounts[item.key] || 0
               const Icon = item.icon
               const hasItems = count > 0
@@ -310,7 +311,7 @@ const DashboardPage = () => {
   const [normalizedView, setNormalizedView] = useState(false)
   const [studentDataView, setStudentDataView] = useState("hostler") // "hostler" | "dayScholar" | "all"
   const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
-  const [approvalCounts, setApprovalCounts] = useState({ proposals: 0, calendars: 0, expenses: 0, por: 0 })
+  const [approvalCounts, setApprovalCounts] = useState({ proposals: 0, megaProposals: 0, calendars: 0, expenses: 0, por: 0 })
   const [approvalsLoading, setApprovalsLoading] = useState(true)
 
   // Fetch online users stats with auto-refresh every 5 seconds
@@ -365,11 +366,12 @@ const DashboardPage = () => {
 
     const fetchApprovalCounts = async () => {
       setApprovalsLoading(true)
-      const next = { proposals: 0, calendars: 0, expenses: 0, por: 0 }
+      const next = { proposals: 0, megaProposals: 0, calendars: 0, expenses: 0, por: 0 }
 
-      const [proposalsRes, expensesRes, calendarsRes, porRes] = await Promise.allSettled([
-        // Proposals + expenses are already filtered to the caller's stage server-side
+      const [proposalsRes, megaProposalsRes, expensesRes, calendarsRes, porRes] = await Promise.allSettled([
+        // Proposals, mega proposals + expenses are already filtered to the caller's stage server-side
         gymkhanaEventsApi.getProposalsForApproval(),
+        gymkhanaEventsApi.getMegaProposalsForApproval(),
         myStage ? gymkhanaEventsApi.getAllExpenses({ limit: 1 }) : Promise.resolve(null),
         myStage ? gymkhanaEventsApi.getCalendars({ status: myStage, limit: 100 }) : Promise.resolve(null),
         myStage ? porApi.getWorkspace() : Promise.resolve(null),
@@ -378,6 +380,10 @@ const DashboardPage = () => {
       if (proposalsRes.status === "fulfilled") {
         const data = unwrap(proposalsRes.value)
         next.proposals = Array.isArray(data.proposals) ? data.proposals.length : 0
+      }
+      if (megaProposalsRes.status === "fulfilled") {
+        const data = unwrap(megaProposalsRes.value)
+        next.megaProposals = Array.isArray(data.occurrences) ? data.occurrences.length : 0
       }
       if (expensesRes.status === "fulfilled" && expensesRes.value) {
         const data = unwrap(expensesRes.value)
