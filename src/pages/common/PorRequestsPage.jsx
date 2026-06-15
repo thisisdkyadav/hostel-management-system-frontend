@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
 import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import toast from "react-hot-toast"
@@ -1736,6 +1737,8 @@ const PorRequestsPage = () => {
   const [editingCategory, setEditingCategory] = useState(null)
   const [categoryForm, setCategoryForm] = useState(createDefaultCategoryForm())
   const [savingCategory, setSavingCategory] = useState(false)
+  const [searchParams] = useSearchParams()
+  const handledRequestParamRef = useRef(null)
 
   const fetchWorkspace = async ({ keepLoading = false } = {}) => {
     try {
@@ -1770,6 +1773,21 @@ const PorRequestsPage = () => {
   const requests = workspace.requests || []
   const porCategories = workspace.porCategories || []
   const gymkhanaReviewerOptions = workspace.gymkhanaReviewerOptions || []
+
+  // Open a specific request's detail modal when deep-linked via ?request=<id> (from approval emails)
+  useEffect(() => {
+    const requestId = searchParams.get("request")
+    if (!requestId || loading) return
+    if (handledRequestParamRef.current === requestId) return
+    const match = requests.find(
+      (entry) => String(entry?.id) === String(requestId) || String(entry?._id) === String(requestId)
+    )
+    if (match) {
+      handledRequestParamRef.current = requestId
+      setSelectedRequest(match)
+      setSelectedRequestGroup(null)
+    }
+  }, [searchParams, requests, loading])
 
   useEffect(() => {
     let isSubscribed = true

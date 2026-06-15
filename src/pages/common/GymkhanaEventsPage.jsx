@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react"
+import { useSearchParams } from "react-router-dom"
 import { ErrorState, useToast } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import GymkhanaEventsPageContent from "@/components/gymkhana/events-page/GymkhanaEventsPageContent"
@@ -62,6 +64,44 @@ const EventsPage = () => {
     fetchCalendar: calendarState.fetchCalendar,
     setSubmitting: calendarState.setSubmitting,
   })
+
+  // Deep links from approval emails: ?year=<academicYear>&review=calendar|proposal[&event=<id>]
+  const [searchParams] = useSearchParams()
+  const handledDeepLinkRef = useRef("")
+
+  // Sync the requested academic year into the calendar selector
+  useEffect(() => {
+    const yearParam = searchParams.get("year")
+    if (yearParam && yearParam !== calendarState.selectedYear) {
+      calendarState.setSelectedYear(yearParam)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
+  // Once the calendar + events are loaded, open the deep-linked review modal (once)
+  useEffect(() => {
+    const review = searchParams.get("review")
+    if (!review || calendarState.loading || !calendarState.calendar) return
+    const yearParam = searchParams.get("year")
+    if (yearParam && yearParam !== calendarState.selectedYear) return
+    const eventParam = searchParams.get("event") || ""
+    const key = `${review}:${eventParam}:${calendarState.selectedYear || ""}`
+    if (handledDeepLinkRef.current === key) return
+
+    if (review === "calendar") {
+      handledDeepLinkRef.current = key
+      calendarState.openApprovalModal()
+    } else if (review === "proposal" && eventParam) {
+      const match = (calendarState.events || []).find(
+        (entry) => String(entry?._id) === eventParam || String(entry?.gymkhanaEventId) === eventParam
+      )
+      if (match) {
+        handledDeepLinkRef.current = key
+        proposalState.openProposalModal(match)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, calendarState.loading, calendarState.calendar, calendarState.events, calendarState.selectedYear])
 
   if (calendarState.error) {
     return <ErrorState message={calendarState.error} onRetry={calendarState.fetchYears} />

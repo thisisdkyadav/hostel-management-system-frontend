@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { Button, Modal, Input } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
@@ -1017,6 +1018,38 @@ const MegaEventsPage = () => {
     loadProposalAndExpense(selectedOccurrence)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOccurrence?._id])
+
+  // Deep links from approval emails: ?series=<id>&occurrence=<id>&review=proposal|expense
+  const [searchParams] = useSearchParams()
+  const megaDeepLinkRef = useRef("")
+
+  useEffect(() => {
+    const seriesParam = searchParams.get("series")
+    if (seriesParam && seriesParam !== selectedSeriesId) {
+      setSelectedSeriesId(seriesParam)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
+  useEffect(() => {
+    const occurrenceParam = searchParams.get("occurrence")
+    if (!occurrenceParam) return
+    if (occurrenceParam !== selectedOccurrenceId && occurrences.some((entry) => String(entry._id) === occurrenceParam)) {
+      setSelectedOccurrenceId(occurrenceParam)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, occurrences])
+
+  useEffect(() => {
+    const review = searchParams.get("review")
+    const occurrenceParam = searchParams.get("occurrence")
+    if (!review || !occurrenceParam || String(selectedOccurrence?._id) !== occurrenceParam) return
+    const key = `${review}:${occurrenceParam}`
+    if (megaDeepLinkRef.current === key) return
+    megaDeepLinkRef.current = key
+    if (review === "proposal") setIsProposalOpen(true)
+    else if (review === "expense") setIsExpenseOpen(true)
+  }, [searchParams, selectedOccurrence?._id])
 
   const toggleStageSelection = (stage, currentValues, setter) => {
     if (currentValues.includes(stage)) {
