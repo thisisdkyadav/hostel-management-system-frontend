@@ -712,12 +712,12 @@
 /* ===== CHECKBOX ===== */
 
 :root {
-  --cz-checkbox-size-sm: 1rem;
-  --cz-checkbox-size-md: 1.25rem;
-  --cz-checkbox-size-lg: 1.5rem;
-  --cz-checkbox-icon-size-sm: 10px;
-  --cz-checkbox-icon-size-md: 12px;
-  --cz-checkbox-icon-size-lg: 14px;
+  --cz-checkbox-size-sm: 0.875rem;
+  --cz-checkbox-size-md: 1rem;
+  --cz-checkbox-size-lg: 1.25rem;
+  --cz-checkbox-icon-size-sm: 9px;
+  --cz-checkbox-icon-size-md: 10px;
+  --cz-checkbox-icon-size-lg: 13px;
   --cz-checkbox-border-radius: var(--cz-radius-sm);
   --cz-checkbox-border-width: 2px;
   --cz-checkbox-border-color: hsl(var(--cz-color-border));
