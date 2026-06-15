@@ -1,182 +1,69 @@
-import React, { forwardRef, useState } from "react"
+import React, { forwardRef } from "react"
+import { Checkbox as C0Checkbox } from "czero/react"
 
 /**
- * Checkbox Component - Styled checkbox input
- * 
- * @param {string} id - Checkbox id
- * @param {string} name - Checkbox name attribute
- * @param {boolean} checked - Controlled checked state
- * @param {function} onChange - Change handler
- * @param {boolean} disabled - Disabled state
- * @param {string} size - Size variant: small, medium, large
- * @param {string} label - Optional inline label text
- * @param {string} description - Optional description below label
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Checkbox — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Checkbox` while preserving the legacy HMS API so existing
+ * call sites keep working unchanged:
+ *  - event-style `onChange(e)` where consumers read `e.target.checked`
+ *  - size names "small" | "medium" | "large"
+ *
+ * @param {string} id
+ * @param {string} name
+ * @param {boolean} checked
+ * @param {function} onChange - receives an event-like `{ target: { checked } }`
+ * @param {boolean} disabled
+ * @param {"small"|"medium"|"large"|"sm"|"md"|"lg"} size
+ * @param {string} label
+ * @param {string} description
  */
-const Checkbox = forwardRef(({
-  id,
-  name,
-  checked = false,
-  onChange,
-  disabled = false,
-  size = "medium",
-  label,
-  description,
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
-  const [isFocused, setIsFocused] = useState(false)
+const SIZE_MAP = { small: "sm", medium: "md", large: "lg", sm: "sm", md: "md", lg: "lg" }
 
-  // Size mappings
-  const sizes = {
-    small: {
-      checkbox: "16px",
-      label: "var(--font-size-sm)",
-      description: "var(--font-size-xs)",
+const Checkbox = forwardRef(
+  (
+    {
+      id,
+      name,
+      checked = false,
+      onChange,
+      disabled = false,
+      size = "medium",
+      label,
+      description,
+      className = "",
+      style,
+      ...rest
     },
-    medium: {
-      checkbox: "18px",
-      label: "var(--font-size-base)",
-      description: "var(--font-size-sm)",
-    },
-    large: {
-      checkbox: "20px",
-      label: "var(--font-size-lg)",
-      description: "var(--font-size-base)",
-    },
-  }
+    ref
+  ) => {
+    const handleCheckedChange = (next) => {
+      if (disabled) return
+      const nextChecked = next === true
+      onChange?.({
+        target: { checked: nextChecked, name, id, type: "checkbox" },
+        currentTarget: { checked: nextChecked, name, id },
+      })
+    }
 
-  const currentSize = sizes[size] || sizes.medium
-
-  // Container styles
-  const containerStyles = {
-    display: "inline-flex",
-    alignItems: description ? "flex-start" : "center",
-    gap: "var(--spacing-2-5)",
-    cursor: disabled ? "not-allowed" : "pointer",
-    ...style,
-  }
-
-  // Checkbox wrapper styles
-  const checkboxWrapperStyles = {
-    position: "relative",
-    width: currentSize.checkbox,
-    height: currentSize.checkbox,
-    flexShrink: 0,
-  }
-
-  // Hidden checkbox styles
-  const hiddenCheckboxStyles = {
-    position: "absolute",
-    opacity: 0,
-    width: "100%",
-    height: "100%",
-    cursor: disabled ? "not-allowed" : "pointer",
-    margin: 0,
-    zIndex: 1,
-  }
-
-  // Custom checkbox styles
-  const customCheckboxStyles = {
-    width: "100%",
-    height: "100%",
-    borderRadius: "var(--radius-sm)",
-    border: `2px solid ${checked ? "var(--color-primary)" : "var(--color-border-input)"}`,
-    backgroundColor: checked ? "var(--color-primary)" : "transparent",
-    transition: "var(--transition-all)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: disabled ? 0.5 : 1,
-    boxShadow: isFocused && !disabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
-  }
-
-  // Checkmark styles
-  const checkmarkStyles = {
-    color: "white",
-    fontSize: size === "small" ? "10px" : size === "large" ? "14px" : "12px",
-    opacity: checked ? 1 : 0,
-    transition: "var(--transition-opacity)",
-  }
-
-  // Label container styles
-  const labelContainerStyles = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-0-5)",
-  }
-
-  // Label styles
-  const labelStyles = {
-    fontSize: currentSize.label,
-    color: disabled ? "var(--color-text-disabled)" : "var(--color-text-body)",
-    cursor: disabled ? "not-allowed" : "pointer",
-    userSelect: "none",
-    lineHeight: "1.4",
-  }
-
-  // Description styles
-  const descriptionStyles = {
-    fontSize: currentSize.description,
-    color: "var(--color-text-muted)",
-    lineHeight: "1.4",
-  }
-
-  const checkboxId = id || name
-
-  const content = (
-    <>
-      <div style={checkboxWrapperStyles}>
-        <input
-          ref={ref}
-          type="checkbox"
-          id={checkboxId}
-          name={name}
-          checked={checked}
-          onChange={onChange}
-          disabled={disabled}
-          style={hiddenCheckboxStyles}
-          className={className}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          {...rest}
-        />
-        <div style={customCheckboxStyles}>
-          <svg
-            style={checkmarkStyles}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-      </div>
-      {(label || description) && (
-        <div style={labelContainerStyles}>
-          {label && <span style={labelStyles}>{label}</span>}
-          {description && <span style={descriptionStyles}>{description}</span>}
-        </div>
-      )}
-    </>
-  )
-
-  // Wrap in label if text is provided
-  if (label || description) {
     return (
-      <label htmlFor={checkboxId} style={containerStyles}>
-        {content}
-      </label>
+      <C0Checkbox
+        ref={ref}
+        id={id}
+        name={name}
+        checked={checked}
+        onCheckedChange={handleCheckedChange}
+        disabled={disabled}
+        size={SIZE_MAP[size] || "md"}
+        label={label}
+        description={description}
+        className={className}
+        style={style}
+        {...rest}
+      />
     )
   }
-
-  return <div style={containerStyles}>{content}</div>
-})
+)
 
 Checkbox.displayName = "Checkbox"
 
