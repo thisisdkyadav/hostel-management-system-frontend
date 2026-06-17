@@ -231,6 +231,10 @@ export const getCatererNavItems = (handleLogout) => [
 
 export const getDiningOfficeNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/dining-office", routeKey: "route.diningOffice.dashboard" },
+  { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/dining-office/caterers", routeKey: "route.admin.caterers" },
+  { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/dining-office/dining-periods", routeKey: "route.admin.diningPeriods" },
+  { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/dining-office/dining-rebates", routeKey: "route.admin.diningRebates" },
+  { name: "Dining Billing", icon: Wallet, section: "main", path: "/dining-office/dining-billing", pathPattern: "^/dining-office/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling" },
   createLogoutItem(handleLogout),
 ]
 

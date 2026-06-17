@@ -104,6 +104,15 @@ function MonthCalendarView({
   const todayStr = new Date().toDateString()
   const goMonth = (delta) =>
     setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + delta, 1))
+  const monthEventCount = days.reduce(
+    (total, date) => (date ? total + getEventsForDate(date).length : total),
+    0,
+  )
+  const hoverNav = (node, on) => {
+    node.currentTarget.style.borderColor = on ? "var(--color-primary)" : "var(--color-border-primary)"
+    node.currentTarget.style.color = on ? "var(--color-primary)" : "var(--color-text-muted)"
+    node.currentTarget.style.backgroundColor = on ? "var(--color-primary-bg)" : "var(--color-bg-primary)"
+  }
 
   return (
     <div style={calendarCardStyle}>
@@ -117,22 +126,45 @@ function MonthCalendarView({
           borderBottom: "var(--border-1) solid var(--color-border-primary)",
         }}
       >
-        <h3
-          style={{
-            margin: 0,
-            fontSize: "var(--font-size-xl)",
-            fontWeight: "var(--font-weight-bold)",
-            color: "var(--color-text-heading)",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
-          <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
-            {calendarMonth.getFullYear()}
-          </span>
-        </h3>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "var(--spacing-2-5)" }}>
+          <h3
+            style={{
+              margin: 0,
+              fontSize: "var(--font-size-xl)",
+              fontWeight: "var(--font-weight-bold)",
+              color: "var(--color-text-heading)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
+            <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
+              {calendarMonth.getFullYear()}
+            </span>
+          </h3>
+          {monthEventCount > 0 && (
+            <span
+              style={{
+                fontSize: "var(--font-size-xs)",
+                fontWeight: "var(--font-weight-semibold)",
+                color: "var(--color-primary)",
+                backgroundColor: "var(--color-primary-bg)",
+                borderRadius: "var(--radius-full)",
+                padding: "2px 10px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {monthEventCount} event{monthEventCount === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
-          <button onClick={() => goMonth(-1)} style={navBtnStyle} aria-label="Previous month">
+          <button
+            onClick={() => goMonth(-1)}
+            style={navBtnStyle}
+            aria-label="Previous month"
+            onMouseEnter={(node) => hoverNav(node, true)}
+            onMouseLeave={(node) => hoverNav(node, false)}
+          >
             <ChevronLeft size={16} />
           </button>
           <button
@@ -143,10 +175,18 @@ function MonthCalendarView({
               fontSize: "var(--font-size-xs)",
               fontWeight: "var(--font-weight-medium)",
             }}
+            onMouseEnter={(node) => hoverNav(node, true)}
+            onMouseLeave={(node) => hoverNav(node, false)}
           >
             Today
           </button>
-          <button onClick={() => goMonth(1)} style={navBtnStyle} aria-label="Next month">
+          <button
+            onClick={() => goMonth(1)}
+            style={navBtnStyle}
+            aria-label="Next month"
+            onMouseEnter={(node) => hoverNav(node, true)}
+            onMouseLeave={(node) => hoverNav(node, false)}
+          >
             <ChevronRight size={16} />
           </button>
         </div>
@@ -178,6 +218,10 @@ function MonthCalendarView({
           </span>
         ))}
         <span style={{ width: 1, height: 14, backgroundColor: "var(--color-border-primary)", flexShrink: 0 }} />
+        <span style={legendItemStyle}>
+          <span style={{ width: 9, height: 9, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary)" }} />
+          Today
+        </span>
         <span style={legendItemStyle}>
           <span style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: "var(--color-warning)" }} />
           Holiday
@@ -315,6 +359,14 @@ function MonthCalendarView({
                     key={eventIndex}
                     onClick={() => onEventClick(event)}
                     title={event.title}
+                    onMouseEnter={(node) => {
+                      node.currentTarget.style.backgroundColor = solidTint(getCategoryColor(event.category), 30)
+                      node.currentTarget.style.transform = "translateX(2px)"
+                    }}
+                    onMouseLeave={(node) => {
+                      node.currentTarget.style.backgroundColor = solidTint(getCategoryColor(event.category), 16)
+                      node.currentTarget.style.transform = "none"
+                    }}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -331,6 +383,7 @@ function MonthCalendarView({
                       color: "var(--color-text-body)",
                       fontWeight: "var(--font-weight-medium)",
                       overflow: "hidden",
+                      transition: "var(--transition-all)",
                     }}
                   >
                     <span
@@ -351,10 +404,13 @@ function MonthCalendarView({
                 {extra > 0 && (
                   <span
                     style={{
+                      alignSelf: "flex-start",
                       fontSize: 10,
                       color: "var(--color-text-muted)",
-                      fontWeight: "var(--font-weight-medium)",
-                      paddingLeft: 4,
+                      fontWeight: "var(--font-weight-semibold)",
+                      padding: "1px 6px",
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: "var(--color-bg-secondary)",
                     }}
                   >
                     +{extra} more
@@ -397,6 +453,9 @@ function YearCalendarView({
       {months.map((monthDate) => {
         const grid = getDaysInMonth(monthDate)
         const count = monthEventCount(monthDate)
+        const now = new Date()
+        const isCurrentMonth =
+          monthDate.getFullYear() === now.getFullYear() && monthDate.getMonth() === now.getMonth()
 
         return (
           <button
@@ -407,10 +466,12 @@ function YearCalendarView({
               cursor: "pointer",
               padding: "var(--spacing-3)",
               borderRadius: "var(--radius-card-sm)",
-              border: "var(--border-1) solid var(--color-border-primary)",
+              border: `var(--border-1) solid ${
+                isCurrentMonth ? "var(--color-primary)" : "var(--color-border-primary)"
+              }`,
               backgroundColor: "var(--color-bg-primary)",
               transition: "var(--transition-all)",
-              boxShadow: "var(--shadow-xs)",
+              boxShadow: isCurrentMonth ? "inset 0 0 0 1px var(--color-primary)" : "var(--shadow-xs)",
             }}
             onMouseEnter={(node) => {
               node.currentTarget.style.borderColor = "var(--color-primary)"
@@ -418,9 +479,13 @@ function YearCalendarView({
               node.currentTarget.style.boxShadow = "var(--shadow-sm)"
             }}
             onMouseLeave={(node) => {
-              node.currentTarget.style.borderColor = "var(--color-border-primary)"
+              node.currentTarget.style.borderColor = isCurrentMonth
+                ? "var(--color-primary)"
+                : "var(--color-border-primary)"
               node.currentTarget.style.transform = "none"
-              node.currentTarget.style.boxShadow = "var(--shadow-xs)"
+              node.currentTarget.style.boxShadow = isCurrentMonth
+                ? "inset 0 0 0 1px var(--color-primary)"
+                : "var(--shadow-xs)"
             }}
           >
             <div
@@ -443,20 +508,38 @@ function YearCalendarView({
                   &rsquo;{String(monthDate.getFullYear()).slice(2)}
                 </span>
               </span>
-              {count > 0 && (
-                <span
-                  style={{
-                    fontSize: "0.625rem",
-                    fontWeight: "var(--font-weight-bold)",
-                    color: "var(--color-primary)",
-                    backgroundColor: "var(--color-primary-bg)",
-                    borderRadius: "var(--radius-full)",
-                    padding: "1px 7px",
-                  }}
-                >
-                  {count}
-                </span>
-              )}
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                {isCurrentMonth && (
+                  <span
+                    style={{
+                      fontSize: "0.5625rem",
+                      fontWeight: "var(--font-weight-bold)",
+                      color: "var(--color-white)",
+                      backgroundColor: "var(--color-primary)",
+                      borderRadius: "var(--radius-full)",
+                      padding: "1px 7px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    Now
+                  </span>
+                )}
+                {count > 0 && (
+                  <span
+                    style={{
+                      fontSize: "0.625rem",
+                      fontWeight: "var(--font-weight-bold)",
+                      color: "var(--color-primary)",
+                      backgroundColor: "var(--color-primary-bg)",
+                      borderRadius: "var(--radius-full)",
+                      padding: "1px 7px",
+                    }}
+                  >
+                    {count}
+                  </span>
+                )}
+              </span>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 3 }}>

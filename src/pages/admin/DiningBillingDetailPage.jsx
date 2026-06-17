@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, Modal, StatusBadge } from "czero/react"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
@@ -68,6 +68,8 @@ const BreakdownModal = ({ account, onClose }) => {
 const DiningBillingDetailPage = () => {
   const { billingPeriodId } = useParams()
   const navigate = useNavigate()
+  // Same component renders under /admin and /dining-office; keep links in-portal.
+  const billingBase = useLocation().pathname.startsWith("/dining-office") ? "/dining-office/dining-billing" : "/admin/dining-billing"
 
   const [billingPeriod, setBillingPeriod] = useState(null)
   const [accounts, setAccounts] = useState([])
@@ -151,7 +153,7 @@ const DiningBillingDetailPage = () => {
     return (
       <div className="flex flex-col h-full">
         <PageHeader title="Dining Billing">
-          <Button variant="secondary" onClick={() => navigate("/admin/dining-billing")}>
+          <Button variant="secondary" onClick={() => navigate(billingBase)}>
             <ArrowLeft size={18} /> Back
           </Button>
         </PageHeader>
@@ -175,7 +177,7 @@ const DiningBillingDetailPage = () => {
     <>
       <div className="flex flex-col h-full">
         <PageHeader title={billingPeriod.name} subtitle={billingDateRange(billingPeriod)}>
-          <Button variant="secondary" onClick={() => navigate("/admin/dining-billing")}>
+          <Button variant="secondary" onClick={() => navigate(billingBase)}>
             <ArrowLeft size={18} /> Back
           </Button>
           <Button variant="primary" onClick={() => setShowManageFunds(true)}>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
@@ -87,6 +87,8 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
 
 const DiningBillingPage = () => {
   const navigate = useNavigate()
+  // Same component renders under /admin and /dining-office; keep links in-portal.
+  const billingBase = useLocation().pathname.startsWith("/dining-office") ? "/dining-office/dining-billing" : "/admin/dining-billing"
   const [billingPeriods, setBillingPeriods] = useState([])
   const [diningPeriods, setDiningPeriods] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -231,7 +233,7 @@ const DiningBillingPage = () => {
                 <BillingPeriodCard
                   key={period.id}
                   billingPeriod={period}
-                  onOpen={(bp) => navigate(`/admin/dining-billing/${bp.id}`)}
+                  onOpen={(bp) => navigate(`${billingBase}/${bp.id}`)}
                   onEdit={setEditingPeriod}
                   onArchive={setArchiveTarget}
                 />
