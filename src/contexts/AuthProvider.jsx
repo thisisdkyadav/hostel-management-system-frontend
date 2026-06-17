@@ -8,7 +8,7 @@ import { buildLoginRedirectPath, getDefaultHomeRoute } from "../utils/authRedire
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
 
-export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+export const ProtectedRoute = ({ children, allowedRoles = [], allowedSubRoles = [] }) => {
   const { user, loading } = useAuth()
   const location = useLocation()
 
@@ -21,6 +21,10 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/" replace />
+  }
+
+  if (allowedSubRoles.length > 0 && !allowedSubRoles.includes(user.subRole)) {
     return <Navigate to="/" replace />
   }
 

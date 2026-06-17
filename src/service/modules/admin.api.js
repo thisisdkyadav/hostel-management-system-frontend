@@ -206,6 +206,40 @@ export const adminApi = {
     return apiClient.post(`/admin/dining-billing-periods/${billingPeriodId}/accounts/bulk`, payload).then(unwrapStandardResponse)
   },
 
+  // ==================== Dining Office Logins ====================
+
+  /**
+   * Get all dining office logins
+   */
+  getAllDiningOfficeStaff: () => {
+    return apiClient.get("/admin/dining-office")
+  },
+
+  /**
+   * Create a dining office login
+   * @param {Object} data - { name, email, password, category, phone? }
+   */
+  addDiningOfficeStaff: (data) => {
+    return apiClient.post("/admin/dining-office", data)
+  },
+
+  /**
+   * Update a dining office login
+   * @param {string} id
+   * @param {Object} data - { name?, phone?, category?, status? }
+   */
+  updateDiningOfficeStaff: (id, data) => {
+    return apiClient.put(`/admin/dining-office/${id}`, data)
+  },
+
+  /**
+   * Delete a dining office login
+   * @param {string} id
+   */
+  deleteDiningOfficeStaff: (id) => {
+    return apiClient.delete(`/admin/dining-office/${id}`)
+  },
+
   // ==================== Wardens ====================
   
   /**

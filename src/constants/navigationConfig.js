@@ -162,6 +162,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/admin/dining-rebates", routeKey: "route.admin.diningRebates", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Billing", icon: Wallet, section: "main", path: "/admin/dining-billing", pathPattern: "^/admin/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Dining Office", icon: UserCog, section: "main", path: "/admin/dining-office", routeKey: "route.admin.diningOffice", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
@@ -221,6 +222,15 @@ export const getSuperAdminNavItems = (handleLogout) => [
 export const getCatererNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
   { name: "Current Meal", icon: UtensilsCrossed, section: "main", path: "/caterer/meal-verification", routeKey: "route.caterer.mealVerification" },
+  createLogoutItem(handleLogout),
+]
+
+// ============================================
+// DINING OFFICE NAVIGATION
+// ============================================
+
+export const getDiningOfficeNavItems = (handleLogout) => [
+  { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/dining-office", routeKey: "route.diningOffice.dashboard" },
   createLogoutItem(handleLogout),
 ]
 

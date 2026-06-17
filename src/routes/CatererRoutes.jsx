@@ -10,7 +10,7 @@ const DashboardPage = lazy(() => import("../pages/caterer/DashboardPage"))
 const MealVerificationPage = lazy(() => import("../pages/caterer/MealVerificationPage"))
 
 const CatererRoutes = () => (
-  <ProtectedRoute allowedRoles={["Caterer"]}>
+  <ProtectedRoute allowedRoles={["Dining"]} allowedSubRoles={["Caterer"]}>
     <Suspense fallback={<LoadingPage message="Loading Caterer Portal..." />}>
       <Routes>
         <Route element={<CatererLayout />}>
