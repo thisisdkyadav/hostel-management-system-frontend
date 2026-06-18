@@ -6,6 +6,7 @@ import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
 import { adminApi } from "../../../../service"
 import { hostelApi } from "../../../../service"
+import { ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"
 
 const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const [rooms, setRooms] = useState([])
@@ -113,7 +114,7 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           </div>
 
           <div style={{ minWidth: '150px' }}>
-            <Select icon={<Filter size={16} />} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} options={[{ value: "all", label: "All Status" }, { value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} />
+            <Select icon={<Filter size={16} />} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} options={[{ value: "all", label: "All Status" }, ...ROOM_STATUS_OPTIONS]} />
           </div>
         </HStack>
 

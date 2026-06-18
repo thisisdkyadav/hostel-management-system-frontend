@@ -10,6 +10,10 @@ const RoomStatusBadge = ({ status }) => {
         return "inactive"
       case "Maintenance":
         return "warning"
+      case "Guest":
+        return "info"
+      case "Storage":
+        return "purple"
       case "Occupied":
         return "info"
       case "Reserved":

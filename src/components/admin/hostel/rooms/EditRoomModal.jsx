@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Select, Label, Alert, VStack, HStack } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { DoorOpen, Users, Trash2 } from "lucide-react"
+import { ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"
 
 const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
   const [formData, setFormData] = useState({
@@ -112,7 +113,7 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
 
             <div>
               <Label htmlFor="status" required>Status</Label>
-              <Select name="status" value={formData.status} onChange={handleChange} options={[{ value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} error={errors.status} />
+              <Select name="status" value={formData.status} onChange={handleChange} options={ROOM_STATUS_OPTIONS} error={errors.status} />
             </div>
 
             <HStack gap="small" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

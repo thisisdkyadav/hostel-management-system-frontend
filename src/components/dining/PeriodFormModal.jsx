@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button, Input, Modal } from "czero/react"
 import {
@@ -170,12 +170,14 @@ const PeriodFormModal = ({
   isOpen,
   title,
   submitLabel,
+  mode = "create",
   initialData = initialFormState,
   caterers,
   onClose,
   onSubmit,
   archiveAction = null,
 }) => {
+  const isEdit = mode === "edit"
   const [formData, setFormData] = useState(initialFormState)
   const [error, setError] = useState("")
   const [activeTab, setActiveTab] = useState("schedule")
@@ -355,29 +357,65 @@ const PeriodFormModal = ({
   }
 
   const noCaterers = caterers.length === 0
+  const currentTabIndex = FORM_TABS.findIndex((tab) => tab.id === activeTab)
+  const isLastTab = currentTabIndex === FORM_TABS.length - 1
 
-  const footer = useMemo(
-    () => (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", width: "100%" }}>
-        <div>
-          {archiveAction && (
-            <Button type="button" variant="ghost" onClick={archiveAction.onClick}>
-              {archiveAction.isArchived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
-              {archiveAction.label}
-            </Button>
-          )}
-        </div>
-        <HStack gap="small">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+  // Create flow is a guided wizard: advance with Next, only allowing forward
+  // movement once the current (and earlier) tabs validate. Edit flow keeps a
+  // submit on every tab so any single change can be saved from where you are.
+  const goToNextTab = () => {
+    const validation = validateForm()
+    if (validation) {
+      const failingIndex = FORM_TABS.findIndex((tab) => tab.id === validation.tab)
+      if (failingIndex !== -1 && failingIndex <= currentTabIndex) {
+        setActiveTab(validation.tab)
+        setError(validation.message)
+        return
+      }
+    }
+    setError("")
+    setActiveTab(FORM_TABS[Math.min(currentTabIndex + 1, FORM_TABS.length - 1)].id)
+  }
+
+  const goToPrevTab = () => {
+    setError("")
+    setActiveTab(FORM_TABS[Math.max(currentTabIndex - 1, 0)].id)
+  }
+
+  const submitButton = (
+    <Button type="submit" form="dining-period-form" variant="primary" loading={isSubmitting} disabled={isSubmitting || noCaterers}>
+      {isSubmitting ? "Saving..." : submitLabel}
+    </Button>
+  )
+
+  const footer = (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", width: "100%" }}>
+      <div>
+        {archiveAction && (
+          <Button type="button" variant="ghost" onClick={archiveAction.onClick}>
+            {archiveAction.isArchived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
+            {archiveAction.label}
           </Button>
-          <Button type="submit" form="dining-period-form" variant="primary" loading={isSubmitting} disabled={isSubmitting || noCaterers}>
-            {isSubmitting ? "Saving..." : submitLabel}
-          </Button>
-        </HStack>
+        )}
       </div>
-    ),
-    [archiveAction, isSubmitting, noCaterers, onClose, submitLabel]
+      <HStack gap="small">
+        <Button type="button" variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        {currentTabIndex > 0 && (
+          <Button type="button" variant="secondary" onClick={goToPrevTab}>
+            Back
+          </Button>
+        )}
+        {isEdit || isLastTab ? (
+          submitButton
+        ) : (
+          <Button type="button" variant="primary" onClick={goToNextTab} disabled={noCaterers}>
+            Next
+          </Button>
+        )}
+      </HStack>
+    </div>
   )
 
   if (!isOpen) return null

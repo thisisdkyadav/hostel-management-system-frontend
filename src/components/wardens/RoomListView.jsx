@@ -2,6 +2,7 @@ import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
+import { isRoomActive } from "@/constants/roomStatus"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -44,8 +45,8 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       header: "Occupancy",
       key: "occupancy",
       render: (room) =>
-        room.status === "Inactive" ? (
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Inactive room</span>
+        !isRoomActive(room.status) ? (
+          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{room.status}</span>
         ) : (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ width: "var(--spacing-16)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2)", marginRight: "var(--spacing-2)", }} >
@@ -71,13 +72,13 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       className: "hidden lg:table-cell",
       render: (room) => (
         <span style={{
-          padding: "var(--badge-padding-sm)", display: "inline-flex", fontSize: "var(--font-size-xs)", lineHeight: "var(--line-height-tight)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: room.status === "Inactive" ? "var(--color-danger-bg)" : room.currentOccupancy >= room.capacity
+          padding: "var(--badge-padding-sm)", display: "inline-flex", fontSize: "var(--font-size-xs)", lineHeight: "var(--line-height-tight)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: !isRoomActive(room.status) ? "var(--color-danger-bg)" : room.currentOccupancy >= room.capacity
             ? "var(--color-success-bg)"
             : room.currentOccupancy > 0
               ? "var(--color-info-bg)"
               : "var(--color-bg-muted)",
           color:
-            room.status === "Inactive"
+            !isRoomActive(room.status)
               ? "var(--color-danger-text)"
               : room.currentOccupancy >= room.capacity
                 ? "var(--color-success-text)"
@@ -86,7 +87,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
                   : "var(--color-text-body)",
         }}
         >
-          {room.status === "Inactive" ? "Inactive" : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partial" : "Empty"}
+          {!isRoomActive(room.status) ? room.status : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partial" : "Empty"}
         </span>
       ),
     },
@@ -97,7 +98,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       render: (room) => (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--gap-sm)" }}>
           <Button onClick={(e) => { e.stopPropagation(); onRoomClick(room); }} variant="ghost" size="sm" aria-label="View details"><FaEye /></Button>
-          {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
+          {["Admin"].includes(user.role) && isRoomActive(room.status) && room.currentOccupancy < room.capacity && (
             <Button onClick={(e) => { e.stopPropagation(); onAllocateClick(room); }} variant="ghost" size="sm" aria-label="Allocate student"><FaUserPlus /></Button>
           )}
         </div>

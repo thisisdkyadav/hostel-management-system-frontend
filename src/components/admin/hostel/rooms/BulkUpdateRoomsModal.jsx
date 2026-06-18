@@ -4,6 +4,7 @@ import { Button, StatusBadge, Table, Modal } from "czero/react"
 import CsvUploader from "../../../common/CsvUploader"
 import { TriangleAlert, Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
+import { ROOM_STATUSES } from "@/constants/roomStatus"
 
 const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoading }) => {
   const [parsedCsvData, setParsedCsvData] = useState([])
@@ -18,7 +19,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
       unitNumber: isUnitBased ? room.unitNumber || "" : undefined,
       roomNumber: (room.roomNumber || "").toString(),
       capacity: room.capacity ? parseInt(room.capacity) : undefined,
-      status: ["Active", "Inactive"].includes(room.status) ? room.status : undefined,
+      status: ROOM_STATUSES.includes(room.status) ? room.status : undefined,
     }))
 
     setParsedCsvData(processedData)
@@ -76,7 +77,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
           <span style={{ fontWeight: 'var(--font-weight-medium)' }}>capacity:</span> Number (optional)
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> "Active" or "Inactive" (optional)
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> One of: {ROOM_STATUSES.join(", ")} (optional)
         </li>
       </ul>
       <p style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-2)' }}>

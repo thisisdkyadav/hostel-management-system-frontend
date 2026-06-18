@@ -5,6 +5,7 @@ import { Alert, VStack, HStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Upload } from "lucide-react"
 import { adminApi } from "../../../../service"
+import { ROOM_STATUSES } from "@/constants/roomStatus"
 
 const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const [parsedCsvData, setParsedCsvData] = useState([])
@@ -18,7 +19,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
       unitNumber: isUnitBased ? room.unitNumber || "" : undefined,
       roomNumber: (room.roomNumber || "").toString(),
       capacity: parseInt(room.capacity) || 1,
-      status: ["Active", "Inactive", "Maintenance"].includes(room.status) ? room.status : "Active",
+      status: ROOM_STATUSES.includes(room.status) ? room.status : "Active",
     }))
 
     setParsedCsvData(processedData)
@@ -69,7 +70,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           <span style={{ fontWeight: 'var(--font-weight-medium)' }}>capacity:</span> Number
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> "Active", "Inactive", or "Maintenance"
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> One of: {ROOM_STATUSES.join(", ")}
         </li>
       </ul>
     </div>

@@ -273,6 +273,7 @@ const DiningPeriodsPage = () => {
         isOpen={showAddModal}
         title="Add Dining Period"
         submitLabel="Create Period"
+        mode="create"
         caterers={caterers}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddPeriod}
@@ -282,6 +283,7 @@ const DiningPeriodsPage = () => {
         isOpen={Boolean(editingPeriod)}
         title="Edit Dining Period"
         submitLabel="Save Changes"
+        mode="edit"
         initialData={editingPeriod || undefined}
         caterers={caterers}
         onClose={() => setEditingPeriod(null)}

@@ -5,6 +5,7 @@ import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { isRoomActive } from "@/constants/roomStatus"
 import StudentDetailModal from "../common/students/StudentDetailModal"
 const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   const { user } = useAuth()
@@ -12,6 +13,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
   const [selectedStudentId, setSelectedStudentId] = useState(null)
   const [selectedUserId, setSelectedUserId] = useState(null)
+
+  // Only "Active" rooms are operational; every other status is out of service.
+  const isActive = isRoomActive(room.status)
 
   const handleRemoveStudent = async (allocationId) => {
     if (!confirm("Are you sure you want to remove this student from the room?")) {
@@ -40,7 +44,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   }
 
   const handleToggleStatus = async () => {
-    const newStatus = room.status === "Inactive" ? "Active" : "Inactive"
+    const newStatus = isActive ? "Inactive" : "Active"
     const message = newStatus === "Inactive" ? "Are you sure you want to mark this room as inactive? All Students allocated to this room will be removed." : "Are you sure you want to activate this room?"
 
     if (!confirm(message)) {
@@ -84,7 +88,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Current Occupancy:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.status === "Inactive" ? "Inactive" : `${room.currentOccupancy}/${room.capacity}`}</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{isActive ? `${room.currentOccupancy}/${room.capacity}` : room.status}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Floor:</span>
@@ -109,11 +113,11 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Status:</span>
                   <span style={{
-                    fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: room.status === "Inactive" ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
-                    color: room.status === "Inactive" ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
+                    fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: !isActive ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
+                    color: !isActive ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
                   }}
                   >
-                    {room.status === "Inactive" ? "Inactive" : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partially Occupied" : "Empty"}
+                    {!isActive ? room.status : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partially Occupied" : "Empty"}
                   </span>
                 </li>
               </ul>
@@ -122,8 +126,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
           {["Admin"].includes(user.role) && (
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <Button onClick={handleToggleStatus} disabled={loading} variant={room.status === "Inactive" ? "success" : "danger"} size="md">
-                {room.status === "Inactive" ? <FaToggleOff /> : <FaToggleOn />} {room.status === "Inactive" ? "Activate Room" : "Mark as Inactive"}
+              <Button onClick={handleToggleStatus} disabled={loading} variant={isActive ? "danger" : "success"} size="md">
+                {isActive ? <FaToggleOn /> : <FaToggleOff />} {isActive ? "Mark as Inactive" : "Activate Room"}
               </Button>
             </div>
           )}
@@ -133,17 +137,17 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center' }}>
                 <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
               </h3>
-              {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
+              {["Admin"].includes(user.role) && isActive && room.currentOccupancy < room.capacity && (
                 <Button onClick={onAllocate} variant="success" size="sm">
                   <FaUserPlus /> Allocate Student
                 </Button>
               )}
             </div>
 
-            {room.status === "Inactive" ? (
+            {!isActive ? (
               <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
                 <FaToggleOff style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
-                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>This room is currently inactive and not available for allocation</p>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>{`This room is currently ${room.status.toLowerCase()} and not available for allocation`}</p>
               </div>
             ) : room.students && room.students.length > 0 ? (
               <div style={{ backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>

@@ -1,7 +1,8 @@
 import React from "react"
 import { Button } from "czero/react"
 import OldButton from "@/components/old-ui/OldButton"
-import { FaPlus, FaDownload, FaEnvelope } from "react-icons/fa"
+import { FaPlus, FaDownload, FaEnvelope, FaUsers, FaBed, FaClipboardCheck, FaExclamationTriangle } from "react-icons/fa"
+import { StatCards } from "@/components/ui/data-display"
 
 /**
  * UI Examples Page - Compare Old vs New Button implementations
@@ -217,6 +218,47 @@ const UIExamplesPage = () => {
                             ))}
                         </div>
                     </div>
+                </section>
+
+                {/* StatCard variants comparison */}
+                <section className="mb-12">
+                    <h2 className="text-xl font-semibold text-[var(--color-text-secondary)] mb-4">
+                        StatCard — Creative Variants
+                    </h2>
+                    <p className="text-sm text-[var(--color-text-muted)] mb-5">
+                        Same data across every variant — hover each to compare motion (spotlight tracks your cursor). Each card supports an optional colored <code>trend</code> delta.
+                    </p>
+
+                    {(() => {
+                        const demoStats = [
+                            { title: "Total Students", value: "1,248", icon: <FaUsers />, color: "var(--color-primary)", trend: { direction: "up", label: "12 this week" } },
+                            { title: "Rooms Occupied", value: "312", icon: <FaBed />, color: "var(--color-success)", subtitle: "of 360 rooms" },
+                            { title: "Pending Approvals", value: "27", icon: <FaClipboardCheck />, color: "var(--color-warning)", trend: { direction: "down", label: "5 since yesterday" } },
+                            { title: "Open Complaints", value: "8", icon: <FaExclamationTriangle />, color: "var(--color-danger)", trend: { direction: "flat", label: "no change" } },
+                        ]
+                        const variantList = [
+                            ["aurora", "Aurora — gradient mesh backdrop + gradient-ink number"],
+                            ["spotlight", "Spotlight — glow tracks the cursor across the card"],
+                            ["orb", "Orb — levitating gradient orb holding the icon"],
+                            ["glass", "Glass — frosted panel + cursor-tracking spotlight glow"],
+                            ["expressive", "Expressive — watermark icon + corner glow (current)"],
+                            ["refined", "Refined — restrained icon chip + label"],
+                        ]
+                        return (
+                            <div className="space-y-8">
+                                {variantList.map(([variant, label]) => (
+                                    <div key={variant}>
+                                        <h3 className="text-sm font-medium text-[var(--color-text-muted)] mb-3">{label}</h3>
+                                        <StatCards stats={demoStats} columns={4} variant={variant} />
+                                    </div>
+                                ))}
+                                <div>
+                                    <h3 className="text-sm font-medium text-[var(--color-text-muted)] mb-3">Loading skeletons (aurora)</h3>
+                                    <StatCards stats={demoStats} columns={4} variant="aurora" loading />
+                                </div>
+                            </div>
+                        )
+                    })()}
                 </section>
             </div>
         </div>
