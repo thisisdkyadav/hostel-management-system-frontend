@@ -13,7 +13,7 @@ const UnitsAndRoomsPage = lazy(() => import("../pages/common/UnitsAndRoomsPage")
 const ComplaintsPage = lazy(() => import("../pages/common/ComplaintsPage"))
 const LeavesPage = lazy(() => import("../pages/common/LeavesPage"))
 const StudentsPage = lazy(() => import("../pages/common/StudentsPage"))
-const VisitorRequestsPage = lazy(() => import("../pages/common/VisitorRequestsPage"))
+const AccommodationStaffPage = lazy(() => import("../pages/common/AccommodationStaffPage"))
 const NotificationCenterPage = lazy(() => import("../pages/common/NotificationCenterPage"))
 const LostAndFoundPage = lazy(() => import("../pages/common/LostAndFoundPage"))
 const EventsPage = lazy(() => import("../pages/common/EventsPage"))
@@ -37,7 +37,7 @@ const hostelSupervisorPrefetchLoaders = [
   () => import("../pages/common/ComplaintsPage"),
   () => import("../pages/common/LeavesPage"),
   () => import("../pages/common/StudentsPage"),
-  () => import("../pages/common/VisitorRequestsPage"),
+  () => import("../pages/common/AccommodationStaffPage"),
   () => import("../pages/common/NotificationCenterPage"),
   () => import("../pages/common/LostAndFoundPage"),
   () => import("../pages/common/EventsPage"),
@@ -108,7 +108,7 @@ const HostelSupervisorRoutes = () => (
             path="visitors"
             element={
               <RouteAccessGuard routeKey="route.hostelSupervisor.visitors" fallback={<NotFoundPage />}>
-                <VisitorRequestsPage />
+                <AccommodationStaffPage />
               </RouteAccessGuard>
             }
           />

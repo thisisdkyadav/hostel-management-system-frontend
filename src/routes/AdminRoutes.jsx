@@ -35,7 +35,7 @@ const ComplaintsPage = lazy(() => import("../pages/common/ComplaintsPage"))
 const DisciplinaryProcessPage = lazy(() => import("../pages/common/DisciplinaryProcessPage"))
 const AppointmentsPage = lazy(() => import("../pages/common/AppointmentsPage"))
 const LeavesPage = lazy(() => import("../pages/common/LeavesPage"))
-const VisitorRequestsPage = lazy(() => import("../pages/common/VisitorRequestsPage"))
+const AccommodationStaffPage = lazy(() => import("../pages/common/AccommodationStaffPage"))
 const LostAndFoundPage = lazy(() => import("../pages/common/LostAndFoundPage"))
 const EventsPage = lazy(() => import("../pages/common/EventsPage"))
 const ElectionsPage = lazy(() => import("../pages/common/ElectionsPage"))
@@ -89,7 +89,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/DisciplinaryProcessPage"),
   () => import("../pages/common/AppointmentsPage"),
   () => import("../pages/common/LeavesPage"),
-  () => import("../pages/common/VisitorRequestsPage"),
+  () => import("../pages/common/AccommodationStaffPage"),
   () => import("../pages/common/LostAndFoundPage"),
   () => import("../pages/common/EventsPage"),
   () => import("../pages/common/ElectionsPage"),
@@ -162,7 +162,7 @@ const AdminRoutes = () => {
                 <Route path="jr-appointments" element={guardRoute("route.admin.appointments", <AppointmentsPage />)} />
                 <Route path="leaves" element={guardRoute("route.admin.leaves", <LeavesPage />)} />
                 <Route path="security" element={guardRoute("route.admin.security", <SecurityLoginsPage />)} />
-                <Route path="visitors" element={guardRoute("route.admin.visitors", <VisitorRequestsPage />)} />
+                <Route path="visitors" element={guardRoute("route.admin.visitors", <AccommodationStaffPage />)} />
                 <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
                 <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
                 <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />

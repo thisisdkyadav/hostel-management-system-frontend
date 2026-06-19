@@ -309,7 +309,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     [validDepartments]
   )
 
-  const availableFields = ["name", "email", "secondaryEmail", "phone", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
+  const availableFields = ["name", "email", "secondaryEmail", "facultyAdvisorEmail", "phone", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
   const VISIBLE_REFERENCE_LIMIT = 25
 
@@ -368,7 +368,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     if (column === "gender" && rowIssues.gender) {
       return { backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", fontWeight: "var(--font-weight-medium)" }
     }
-    if (["email", "guardianEmail", "secondaryEmail"].includes(column) && rowIssues[column]) {
+    if (["email", "guardianEmail", "secondaryEmail", "facultyAdvisorEmail"].includes(column) && rowIssues[column]) {
       return { backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" }
     }
     return null
@@ -581,7 +581,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           }
 
           const validGenders = ["Male", "Female"]
-          const emailFields = ["email", "guardianEmail", "secondaryEmail"]
+          const emailFields = ["email", "guardianEmail", "secondaryEmail", "facultyAdvisorEmail"]
           const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
           const degreeLookup = new Set(validDegrees.map((value) => value.toLowerCase()))
           const departmentLookup = new Set(validDepartments.map((value) => value.toLowerCase()))

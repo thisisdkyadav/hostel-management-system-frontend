@@ -710,6 +710,23 @@ export const adminApi = {
     return apiClient.put("/config/systemSettings", { value: config })
   },
 
+  // ==================== Accommodation Settings ====================
+
+  /**
+   * Get visitor accommodation settings
+   */
+  getAccommodationSettings: () => {
+    return apiClient.get("/config/accommodation")
+  },
+
+  /**
+   * Update visitor accommodation settings
+   * @param {Object} config - Accommodation settings config
+   */
+  updateAccommodationSettings: (config) => {
+    return apiClient.put("/config/accommodation", { value: config })
+  },
+
   // ==================== Maintenance Staff Stats ====================
 
   /**

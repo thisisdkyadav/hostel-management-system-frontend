@@ -10,7 +10,7 @@ const SecurityPage = lazy(() => import("../pages/student/SecurityPage"))
 const DiningPage = lazy(() => import("../pages/student/DiningPage"))
 
 // Common pages
-const VisitorRequestsPage = lazy(() => import("../pages/common/VisitorRequestsPage"))
+const AccommodationPage = lazy(() => import("../pages/student/AccommodationPage"))
 const ComplaintsPage = lazy(() => import("../pages/common/ComplaintsPage"))
 const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 const LostAndFoundPage = lazy(() => import("../pages/common/LostAndFoundPage"))
@@ -37,7 +37,7 @@ const studentPrefetchLoaders = [
   () => import("../pages/student/UndertakingsPage"),
   () => import("../pages/student/SecurityPage"),
   () => import("../pages/student/DiningPage"),
-  () => import("../pages/common/VisitorRequestsPage"),
+  () => import("../pages/student/AccommodationPage"),
   () => import("../pages/common/ComplaintsPage"),
   () => import("../pages/common/ProfilePage"),
   () => import("../pages/common/LostAndFoundPage"),
@@ -120,7 +120,7 @@ const StudentRoutes = () => (
             path="visitors"
             element={
               <RouteAccessGuard routeKey="route.student.visitors" fallback={<NotFoundPage />}>
-                <VisitorRequestsPage />
+                <AccommodationPage />
               </RouteAccessGuard>
             }
           />

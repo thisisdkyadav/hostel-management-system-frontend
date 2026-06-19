@@ -32,6 +32,7 @@ const SettingsPage = () => {
     academicHolidays: false,
     gymkhanaCategories: false,
     systemSettings: false,
+    accommodation: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [navQuery, setNavQuery] = useState("")
@@ -43,6 +44,7 @@ const SettingsPage = () => {
   const [academicHolidays, setAcademicHolidays] = useState({})
   const [gymkhanaCategories, setGymkhanaCategories] = useState([])
   const [systemSettings, setSystemSettings] = useState({})
+  const [accommodationSettings, setAccommodationSettings] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
     studentFields: null,
@@ -53,6 +55,7 @@ const SettingsPage = () => {
     academicHolidays: null,
     gymkhanaCategories: null,
     systemSettings: null,
+    accommodation: null,
   })
 
   const SETTINGS_TABS = [
@@ -64,6 +67,7 @@ const SettingsPage = () => {
     "academicHolidays",
     "gymkhanaCategories",
     "systemSettings",
+    "accommodation",
   ]
 
   const canViewTab = (tab) => {
@@ -140,6 +144,8 @@ const SettingsPage = () => {
       fetchGymkhanaCategories()
     } else if (activeTab === "systemSettings" && Object.keys(systemSettings).length === 0) {
       fetchSystemSettings()
+    } else if (activeTab === "accommodation" && Object.keys(accommodationSettings).length === 0) {
+      fetchAccommodationSettings()
     }
   }, [activeTab])
 
@@ -218,6 +224,23 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, systemSettings: false }))
+    }
+  }
+
+  const fetchAccommodationSettings = async () => {
+    setLoading((prev) => ({ ...prev, accommodation: true }))
+    setError((prev) => ({ ...prev, accommodation: null }))
+    try {
+      const response = await adminApi.getAccommodationSettings()
+      setAccommodationSettings(response.value || {})
+    } catch (err) {
+      console.error("Error fetching accommodation settings:", err)
+      setError((prev) => ({
+        ...prev,
+        accommodation: "Failed to load accommodation settings. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, accommodation: false }))
     }
   }
 
@@ -435,6 +458,29 @@ const SettingsPage = () => {
     }
   }
 
+  const handleUpdateAccommodationSettings = async (updatedSettings) => {
+    if (!canUpdateTab("accommodation")) {
+      toast.error("You do not have permission to update accommodation settings.")
+      return
+    }
+
+    const confirmUpdate = window.confirm("Are you sure you want to update the accommodation settings?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, accommodation: true }))
+    try {
+      const response = await adminApi.updateAccommodationSettings(updatedSettings)
+      setAccommodationSettings(response.configuration.value || {})
+      setSuccessMessage(`Accommodation settings updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating accommodation settings:", err)
+      toast.error("An error occurred while updating accommodation settings. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, accommodation: false }))
+    }
+  }
+
   const handleRenameStudentBatch = async ({ degree, department, oldName, newName }) => {
     if (!canRenameInTab("studentBatches")) {
       toast.error("You do not have permission to rename student batch values.")
@@ -599,6 +645,7 @@ const SettingsPage = () => {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
+        { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation settings: default payment link/QR, fee per person per night, GST percentage, and the GSTIN shown on invoices." },
       ],
     },
   ]
@@ -814,6 +861,17 @@ const SettingsPage = () => {
                     <TabSpinner />
                   ) : (
                     <ConfigForm config={systemSettings} onUpdate={handleUpdateSystemSettings} isLoading={loading.systemSettings} />
+                  )}
+                </>
+              )}
+
+              {/* Accommodation Settings Tab */}
+              {activeTab === "accommodation" && (
+                <>
+                  {loading.accommodation && Object.keys(accommodationSettings).length === 0 ? (
+                    <TabSpinner />
+                  ) : (
+                    <ConfigForm config={accommodationSettings} onUpdate={handleUpdateAccommodationSettings} isLoading={loading.accommodation} />
                   )}
                 </>
               )}

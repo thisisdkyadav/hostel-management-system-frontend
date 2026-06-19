@@ -21,6 +21,8 @@ const GuardianInfoSection = ({ data, onChange }) => {
         <FormField label="Guardian Phone" name="guardianPhone" type="tel" value={data.guardianPhone || ""} onChange={handleChange} />
 
         <FormField label="Guardian Email" name="guardianEmail" type="email" value={data.guardianEmail || ""} onChange={handleChange} />
+
+        <FormField label="Faculty Advisor Email" name="facultyAdvisorEmail" type="email" value={data.facultyAdvisorEmail || ""} onChange={handleChange} />
       </div>
     </div>
   )

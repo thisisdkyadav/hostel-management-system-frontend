@@ -492,6 +492,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Guardian Email:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.guardianEmail || "N/A"}</span>
                   </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Faculty Advisor Email:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.facultyAdvisorEmail || "N/A"}</span>
+                  </div>
                 </div>
               </div>
 

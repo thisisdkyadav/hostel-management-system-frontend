@@ -19,6 +19,7 @@ const ResetPasswordPage = lazy(() => import("../pages/auth/ResetPasswordPage"))
 const ComplaintFeedbackPage = lazy(() => import("../pages/public/ComplaintFeedbackPage"))
 const ElectionSupportConfirmationPage = lazy(() => import("../pages/public/ElectionSupportConfirmationPage"))
 const ElectionBallotPage = lazy(() => import("../pages/public/ElectionBallotPage"))
+const AccommodationRecommendationPage = lazy(() => import("../pages/public/AccommodationRecommendationPage"))
 
 // Role-based routes - Lazy loaded (loads all pages for a role when user visits that role's routes)
 const SuperAdminRoutes = lazy(() => import("./SuperAdminRoutes"))
@@ -78,6 +79,12 @@ const AppRoutes = () => {
       <Route path="/election-ballot/:token" element={
         <Suspense fallback={<LoadingPage message="Loading Ballot..." />}>
           <ElectionBallotPage />
+        </Suspense>
+      } />
+
+      <Route path="/accommodation/recommendation/:token" element={
+        <Suspense fallback={<LoadingPage message="Loading Recommendation..." />}>
+          <AccommodationRecommendationPage />
         </Suspense>
       } />
 
