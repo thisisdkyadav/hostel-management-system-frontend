@@ -18,6 +18,7 @@ import {
   Receipt,
   Send,
   Settings,
+  Trash2,
   X,
 } from "lucide-react"
 import { GymkhanaCalendarFooterTabs } from "@/components/gymkhana/events-page"
@@ -687,6 +688,7 @@ export default function GymkhanaEventsPageContent({
   headerSubtitle,
   headerTitle,
   isAdminLevel,
+  onOpenDeletedItems,
   isGS,
   isPresident,
   loading,
@@ -757,6 +759,11 @@ export default function GymkhanaEventsPageContent({
         {calendar && canManageCalendarLock && (
           <Button size="md" variant="ghost" onClick={() => setShowSettingsModal(true)}>
             <Settings size={16} /> Settings
+          </Button>
+        )}
+        {isAdminLevel && onOpenDeletedItems && (
+          <Button size="md" variant="ghost" onClick={onOpenDeletedItems}>
+            <Trash2 size={16} /> Deleted items
           </Button>
         )}
       </PageHeader>

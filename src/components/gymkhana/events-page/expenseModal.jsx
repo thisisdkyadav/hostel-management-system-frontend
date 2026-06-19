@@ -1,15 +1,20 @@
+import { useState } from "react"
 import { Button, Input, Modal } from "czero/react"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
 import { Textarea } from "@/components/ui/form"
-import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
+import AuditTimeline from "@/components/gymkhana/AuditTimeline"
+import AuditTimelineModal from "@/components/gymkhana/AuditTimelineModal"
+import AdminEntityActions from "@/components/gymkhana/events-page/AdminEntityActions"
+import ReasonPromptModal from "@/components/gymkhana/events-page/ReasonPromptModal"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
   Check,
   CircleDollarSign,
   Clock3,
   History,
+  Pencil,
   Plus,
   Receipt,
   Trash2,
@@ -53,7 +58,24 @@ export const GymkhanaExpenseModal = ({
   postStudentAffairsStageOptions,
   postStudentAffairsApproverOptionsByStage,
   onSave,
-}) => (
+  canAdminEditExpense = false,
+  handleAdminDeleteExpense,
+  editMode = false,
+  setEditMode,
+  onCancelEdit,
+}) => {
+  const [reasonOpen, setReasonOpen] = useState(false)
+  const [showHistoryDetails, setShowHistoryDetails] = useState(false)
+
+  const formEditable = canEditExpenseForm && editMode
+
+  const handleSaveClick = () => {
+    if (canAdminEditExpense) setReasonOpen(true)
+    else onSave()
+  }
+
+  return (
+    <>
   <Modal
     isOpen={isOpen}
     title={`Event Bills${expenseEvent?.title ? `: ${expenseEvent.title}` : ""}`}
@@ -62,9 +84,35 @@ export const GymkhanaExpenseModal = ({
     onClose={onClose}
     footer={
       canEditExpenseForm ? (
-        <Button onClick={onSave} loading={submitting} disabled={!isExpenseFormValid}>
-          {expenseData?._id ? "Update Bills" : "Submit Bills"}
-        </Button>
+        <div style={{ display: "flex", gap: "var(--spacing-2)", alignItems: "center" }}>
+          {canAdminEditExpense && handleAdminDeleteExpense && !editMode ? (
+            <AdminEntityActions
+              onDelete={handleAdminDeleteExpense}
+              deleting={submitting}
+              label="bill"
+            />
+          ) : null}
+          {editMode ? (
+            <>
+              {expenseData?._id ? (
+                <Button variant="ghost" onClick={onCancelEdit} disabled={submitting}>
+                  Cancel
+                </Button>
+              ) : null}
+              <Button onClick={handleSaveClick} loading={submitting} disabled={!isExpenseFormValid}>
+                {canAdminEditExpense
+                  ? "Save (Admin Override)"
+                  : expenseData?._id
+                    ? "Update Bills"
+                    : "Submit Bills"}
+              </Button>
+            </>
+          ) : (
+            <Button variant="secondary" onClick={() => setEditMode?.(true)}>
+              <Pencil size={16} /> Edit
+            </Button>
+          )}
+        </div>
       ) : null
     }
   >
@@ -181,7 +229,7 @@ export const GymkhanaExpenseModal = ({
                       >
                         Bill #{index + 1}
                       </span>
-                      {canEditExpenseForm && (expenseForm.bills || []).length > 1 && (
+                      {formEditable && (expenseForm.bills || []).length > 1 && (
                         <Button
                           size="sm"
                           variant="ghost"
@@ -215,7 +263,7 @@ export const GymkhanaExpenseModal = ({
                               event.target.value
                             )
                           }
-                          disabled={!canEditExpenseForm}
+                          disabled={!formEditable}
                         />
                       </div>
                       <div>
@@ -231,7 +279,7 @@ export const GymkhanaExpenseModal = ({
                           onChange={(event) =>
                             handleBillFieldChange(bill.localId, "amount", event.target.value)
                           }
-                          disabled={!canEditExpenseForm}
+                          disabled={!formEditable}
                         />
                       </div>
                       <div>
@@ -250,7 +298,7 @@ export const GymkhanaExpenseModal = ({
                               event.target.value
                             )
                           }
-                          disabled={!canEditExpenseForm}
+                          disabled={!formEditable}
                         />
                       </div>
                       <div>
@@ -269,7 +317,7 @@ export const GymkhanaExpenseModal = ({
                               event.target.value
                             )
                           }
-                          disabled={!canEditExpenseForm}
+                          disabled={!formEditable}
                         />
                       </div>
                     </div>
@@ -289,7 +337,7 @@ export const GymkhanaExpenseModal = ({
                           onChange={(event) =>
                             handleBillFieldChange(bill.localId, "vendor", event.target.value)
                           }
-                          disabled={!canEditExpenseForm}
+                          disabled={!formEditable}
                         />
                       </div>
 
@@ -306,7 +354,7 @@ export const GymkhanaExpenseModal = ({
                         }}
                         onUpload={uploadBillDocument}
                         required
-                        disabled={!canEditExpenseForm}
+                        disabled={!formEditable}
                         uploadedText="Uploaded"
                         viewerTitle={`Bill ${index + 1}`}
                         viewerSubtitle="Bill attachment"
@@ -317,7 +365,7 @@ export const GymkhanaExpenseModal = ({
                 ))}
               </div>
 
-              {canEditExpenseForm && (
+              {formEditable && (
                 <Button size="sm" variant="ghost" onClick={handleAddBillRow}>
                   <Plus size={12} /> Add Bill
                 </Button>
@@ -330,7 +378,7 @@ export const GymkhanaExpenseModal = ({
                   onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
                   onUpload={uploadEventReportDocument}
                   required
-                  disabled={!canEditExpenseForm}
+                  disabled={!formEditable}
                   uploadedText="Uploaded"
                   viewerTitle="Event Report"
                   viewerSubtitle="Post-event report"
@@ -348,7 +396,7 @@ export const GymkhanaExpenseModal = ({
                     value={expenseForm.notes}
                     onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
                     rows={2}
-                    disabled={!canEditExpenseForm}
+                    disabled={!formEditable}
                   />
                 </div>
               </div>
@@ -516,10 +564,23 @@ export const GymkhanaExpenseModal = ({
             accentColor="var(--color-text-secondary)"
           >
             {expenseData?._id ? (
-              <ApprovalHistory
-                key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
-                expenseId={expenseData._id}
-              />
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <AuditTimeline
+                  key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
+                  entityType="EventExpense"
+                  entityId={expenseData._id}
+                  compact
+                  editsOnly
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHistoryDetails(true)}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  <History size={14} /> View detailed history
+                </Button>
+              </div>
             ) : (
               <p
                 style={{
@@ -536,4 +597,32 @@ export const GymkhanaExpenseModal = ({
       </div>
     )}
   </Modal>
-)
+
+      {reasonOpen ? (
+        <ReasonPromptModal
+          isOpen
+          onClose={() => setReasonOpen(false)}
+          loading={submitting}
+          title="Admin override — reason required"
+          description="This edit changes the bill without altering its approval status. Your reason is recorded in the audit log."
+          confirmText="Save changes"
+          placeholder="Why are you editing this bill?"
+          onConfirm={async (reason) => {
+            await onSave(reason)
+            setReasonOpen(false)
+          }}
+        />
+      ) : null}
+
+      {showHistoryDetails && expenseData?._id ? (
+        <AuditTimelineModal
+          isOpen
+          onClose={() => setShowHistoryDetails(false)}
+          entityType="EventExpense"
+          entityId={expenseData._id}
+          title="Bill history"
+        />
+      ) : null}
+    </>
+  )
+}

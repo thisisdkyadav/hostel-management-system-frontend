@@ -46,6 +46,8 @@ export const useGymkhanaProposalActions = ({
   const [showProposalModal, setShowProposalModal] = useState(false)
   const [showProposalDetailsModal, setShowProposalDetailsModal] = useState(false)
   const [showPendingProposalModal, setShowPendingProposalModal] = useState(false)
+  // View by default; an existing proposal opens read-only, a new one opens editable.
+  const [proposalEditMode, setProposalEditMode] = useState(false)
 
   const refreshProposalsForApproval = async () => {
     if (!user?.subRole) {
@@ -164,12 +166,19 @@ export const useGymkhanaProposalActions = ({
       Number(proposalForm.totalExpenditure || 0) >= 0
   )
 
-  const canEditProposalForm = canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser
+  // Admin / Super Admin may surgically override an EXISTING proposal (status
+  // unchanged) regardless of the normal GS/President edit gating.
+  const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
+  const canAdminEditProposal = isAdminLevel && Boolean(proposalData?._id)
+
+  const canEditProposalForm =
+    canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser || canAdminEditProposal
 
   const fetchProposalForEvent = async (event) => {
     if (!event?.gymkhanaEventId) {
       setProposalData(null)
       setProposalForm(createDefaultProposalForm())
+      setProposalEditMode(true)
       return
     }
 
@@ -179,10 +188,13 @@ export const useGymkhanaProposalActions = ({
       const proposal = response.data?.proposal || response.proposal || null
       setProposalData(proposal)
       setProposalForm(proposal ? toProposalForm(proposal) : createDefaultProposalForm())
+      // Existing proposal opens in view mode; a new one opens ready to edit.
+      setProposalEditMode(!proposal)
     } catch (err) {
       if (err.status === 404) {
         setProposalData(null)
         setProposalForm(createDefaultProposalForm())
+        setProposalEditMode(true)
       } else {
         toast.error(err.message || "Failed to load proposal")
       }
@@ -263,8 +275,10 @@ export const useGymkhanaProposalActions = ({
     return uploadApi.uploadEventChiefGuestPDF(formData)
   }
 
-  const handleCreateOrUpdateProposal = async () => {
-    if (!canCreateEventsCapability) {
+  const handleCreateOrUpdateProposal = async (adminReason) => {
+    const isAdminOverride = canAdminEditProposal
+
+    if (!isAdminOverride && !canCreateEventsCapability) {
       toast.error("You do not have permission to submit proposals")
       return
     }
@@ -279,12 +293,23 @@ export const useGymkhanaProposalActions = ({
       return
     }
 
+    if (isAdminOverride && String(adminReason || "").trim().length < 3) {
+      toast.error("Please provide a reason for the admin edit")
+      return
+    }
+
     const payload = buildProposalPayload(proposalForm)
 
     try {
       setSubmitting(true)
 
-      if (proposalData?._id) {
+      if (isAdminOverride) {
+        await gymkhanaEventsApi.adminUpdateProposal(proposalData._id, {
+          ...payload,
+          reason: String(adminReason).trim(),
+        })
+        toast.success("Proposal updated (admin override)")
+      } else if (proposalData?._id) {
         await gymkhanaEventsApi.updateProposal(proposalData._id, payload)
         toast.success("Proposal updated successfully")
       } else {
@@ -298,6 +323,28 @@ export const useGymkhanaProposalActions = ({
       await refreshProposalsForApproval()
     } catch (err) {
       toast.error(err.message || "Failed to save proposal")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const cancelProposalEdit = async () => {
+    setProposalEditMode(false)
+    await fetchProposalForEvent(proposalEvent)
+  }
+
+  const handleAdminDeleteProposal = async (reason) => {
+    if (!proposalData?._id) return
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.adminDeleteProposal(proposalData._id, reason)
+      toast.success("Proposal deleted")
+      setShowProposalModal(false)
+      await fetchCalendar(selectedYear)
+      await refreshProposalsForApproval()
+    } catch (err) {
+      toast.error(err.message || "Failed to delete proposal")
     } finally {
       setSubmitting(false)
     }
@@ -480,6 +527,12 @@ export const useGymkhanaProposalActions = ({
     canCreateProposalForSelectedEvent,
     canCurrentUserReviewProposal,
     canEditProposalForm,
+    isAdminLevel,
+    canAdminEditProposal,
+    proposalEditMode,
+    setProposalEditMode,
+    cancelProposalEdit,
+    handleAdminDeleteProposal,
     computedTotalExpectedIncome,
     detailedExternalGuestsText,
     detailedProposalPreviewText,

@@ -460,6 +460,56 @@ export const gymkhanaEventsApi = {
     return apiClient.get(`${BASE_PATH}/expenses/${id}/history`)
   },
 
+  /**
+   * Get the merged edit + approval audit timeline for an event-area entity.
+   * @param {string} entityType - "EventProposal" | "EventExpense" | "GymkhanaEvent" | "ActivityCalendar" | "CalendarAmendment" | "MegaEventOccurrence"
+   * @param {string} entityId
+   * @param {{ page?: number, limit?: number }} [params]
+   * Returns { items, pagination }.
+   */
+  getAuditTimeline: (entityType, entityId, params = {}) => {
+    return apiClient.get(`${BASE_PATH}/audit/${entityType}/${entityId}`, { params })
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ADMIN OVERRIDE OPERATIONS (Admin / Super Admin)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /** Admin surgical edit of a proposal (status unchanged). `data` = fields + reason. */
+  adminUpdateProposal: (id, data) => {
+    return apiClient.put(`${BASE_PATH}/proposals/${id}/admin`, data)
+  },
+
+  /** Admin soft-delete of a proposal. Reason goes in the query (DELETE has no body). */
+  adminDeleteProposal: (id, reason) => {
+    return apiClient.delete(`${BASE_PATH}/proposals/${id}`, { params: { reason } })
+  },
+
+  /** Admin restore of a soft-deleted proposal. */
+  adminRestoreProposal: (id) => {
+    return apiClient.post(`${BASE_PATH}/proposals/${id}/restore`, {})
+  },
+
+  /** Admin surgical edit of a bill (status unchanged). `data` = fields + reason. */
+  adminUpdateExpense: (id, data) => {
+    return apiClient.put(`${BASE_PATH}/expenses/${id}/admin`, data)
+  },
+
+  /** Admin soft-delete of a bill. Reason goes in the query (DELETE has no body). */
+  adminDeleteExpense: (id, reason) => {
+    return apiClient.delete(`${BASE_PATH}/expenses/${id}`, { params: { reason } })
+  },
+
+  /** Admin restore of a soft-deleted bill. */
+  adminRestoreExpense: (id) => {
+    return apiClient.post(`${BASE_PATH}/expenses/${id}/restore`, {})
+  },
+
+  /** Admin: list soft-deleted proposals + bills. Returns { proposals, expenses }. */
+  getDeletedEventEntities: () => {
+    return apiClient.get(`${BASE_PATH}/admin/deleted`)
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // AMENDMENT OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

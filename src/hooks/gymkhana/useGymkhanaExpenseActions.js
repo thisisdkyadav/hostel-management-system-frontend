@@ -38,6 +38,8 @@ export const useGymkhanaExpenseActions = ({
   const [expenseHistoryRefreshKey, setExpenseHistoryRefreshKey] = useState(0)
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showPendingBillsModal, setShowPendingBillsModal] = useState(false)
+  // View by default; an existing bill opens read-only, a new one opens editable.
+  const [expenseEditMode, setExpenseEditMode] = useState(false)
 
   const getPendingExpenseApprovals = async () => {
     if (!isAdminLevel) return []
@@ -154,6 +156,10 @@ export const useGymkhanaExpenseActions = ({
     ]
   )
 
+  // Admin / Super Admin may surgically override an EXISTING bill (status
+  // unchanged), regardless of the normal GS edit gating.
+  const canAdminEditExpense = isAdminLevel && Boolean(expenseData?._id)
+
   const canApproveExpense = useMemo(() => {
     if (!canApproveEventsCapability) return false
     if (!isAdminLevel || !expenseData?._id) return false
@@ -212,6 +218,7 @@ export const useGymkhanaExpenseActions = ({
     if (!event?.gymkhanaEventId) {
       setExpenseData(null)
       setExpenseForm(createDefaultExpenseForm())
+      setExpenseEditMode(true)
       return
     }
 
@@ -221,10 +228,13 @@ export const useGymkhanaExpenseActions = ({
       const expense = response.data?.expense || response.expense || null
       setExpenseData(expense)
       setExpenseForm(expense ? toExpenseForm(expense) : createDefaultExpenseForm())
+      // Existing bill opens in view mode; a new one opens ready to edit.
+      setExpenseEditMode(!expense)
     } catch (err) {
       if (err.status === 404) {
         setExpenseData(null)
         setExpenseForm(createDefaultExpenseForm())
+        setExpenseEditMode(true)
       } else {
         toast.error(err.message || "Failed to load bills")
       }
@@ -308,8 +318,10 @@ export const useGymkhanaExpenseActions = ({
     return uploadApi.uploadEventReportPDF(formData)
   }
 
-  const handleCreateOrUpdateExpense = async () => {
-    if (!canCreateEventsCapability) {
+  const handleCreateOrUpdateExpense = async (adminReason) => {
+    const isAdminOverride = canAdminEditExpense
+
+    if (!isAdminOverride && !canCreateEventsCapability) {
       toast.error("You do not have permission to submit event expenses")
       return
     }
@@ -319,7 +331,7 @@ export const useGymkhanaExpenseActions = ({
       return
     }
 
-    if (!isExpenseSubmissionAllowedForSelectedEvent) {
+    if (!isAdminOverride && !isExpenseSubmissionAllowedForSelectedEvent) {
       toast.error("Bills can be submitted only after proposal approval")
       return
     }
@@ -329,10 +341,21 @@ export const useGymkhanaExpenseActions = ({
       return
     }
 
+    if (isAdminOverride && String(adminReason || "").trim().length < 3) {
+      toast.error("Please provide a reason for the admin edit")
+      return
+    }
+
     const payload = buildExpensePayload(expenseForm)
     try {
       setSubmitting(true)
-      if (expenseData?._id) {
+      if (isAdminOverride) {
+        await gymkhanaEventsApi.adminUpdateExpense(expenseData._id, {
+          ...payload,
+          reason: String(adminReason).trim(),
+        })
+        toast.success("Bills updated (admin override)")
+      } else if (expenseData?._id) {
         await gymkhanaEventsApi.updateExpense(expenseData._id, payload)
         toast.success("Bills updated successfully")
       } else {
@@ -346,6 +369,28 @@ export const useGymkhanaExpenseActions = ({
       await refreshPendingExpenseApprovals()
     } catch (err) {
       toast.error(err.message || "Failed to save bills")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const cancelExpenseEdit = async () => {
+    setExpenseEditMode(false)
+    await fetchExpenseForEvent(expenseEvent)
+  }
+
+  const handleAdminDeleteExpense = async (reason) => {
+    if (!expenseData?._id) return
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.adminDeleteExpense(expenseData._id, reason)
+      toast.success("Bill deleted")
+      setShowExpenseModal(false)
+      await fetchCalendar(selectedYear)
+      await refreshPendingExpenseApprovals()
+    } catch (err) {
+      toast.error(err.message || "Failed to delete bill")
     } finally {
       setSubmitting(false)
     }
@@ -443,7 +488,12 @@ export const useGymkhanaExpenseActions = ({
   return {
     assignedExpenseBudget,
     canApproveExpense,
-    canEditExpenseForm,
+    canEditExpenseForm: canEditExpenseForm || canAdminEditExpense,
+    canAdminEditExpense,
+    expenseEditMode,
+    setExpenseEditMode,
+    cancelExpenseEdit,
+    handleAdminDeleteExpense,
     expenseApprovalComments,
     expenseData,
     expenseEvent,

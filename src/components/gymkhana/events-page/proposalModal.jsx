@@ -1,9 +1,13 @@
+import { useState } from "react"
 import { Button, Input, Modal } from "czero/react"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
 import { Checkbox, Textarea } from "@/components/ui/form"
-import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
+import AuditTimeline from "@/components/gymkhana/AuditTimeline"
+import AuditTimelineModal from "@/components/gymkhana/AuditTimelineModal"
+import AdminEntityActions from "@/components/gymkhana/events-page/AdminEntityActions"
+import ReasonPromptModal from "@/components/gymkhana/events-page/ReasonPromptModal"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
   Check,
@@ -11,6 +15,7 @@ import {
   Clock3,
   FileText,
   History,
+  Pencil,
 } from "lucide-react"
 import {
   EventDetailInfoRow,
@@ -58,7 +63,26 @@ export const GymkhanaProposalModal = ({
   getProposalDueDate,
   onOpenProposalDetails,
   onSave,
-}) => (
+  canAdminEditProposal = false,
+  handleAdminDeleteProposal,
+  editMode = false,
+  setEditMode,
+  onCancelEdit,
+}) => {
+  const [reasonOpen, setReasonOpen] = useState(false)
+  const [showHistoryDetails, setShowHistoryDetails] = useState(false)
+
+  // "May edit at all" (GS/President or admin) vs the active edit mode toggle.
+  const formEditable = canEditProposalForm && editMode
+
+  const handleSaveClick = () => {
+    // Admin override edits ask for a reason in a separate popup before saving.
+    if (canAdminEditProposal) setReasonOpen(true)
+    else onSave()
+  }
+
+  return (
+    <>
   <Modal
     isOpen={isOpen}
     title={`Event Proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`}
@@ -67,9 +91,35 @@ export const GymkhanaProposalModal = ({
     onClose={onClose}
     footer={
       canEditProposalForm ? (
-        <Button onClick={onSave} loading={submitting} disabled={!isProposalFormValid}>
-          {proposalData?._id ? "Save Proposal" : "Submit Proposal"}
-        </Button>
+        <div style={{ display: "flex", gap: "var(--spacing-2)", alignItems: "center" }}>
+          {canAdminEditProposal && handleAdminDeleteProposal && !editMode ? (
+            <AdminEntityActions
+              onDelete={handleAdminDeleteProposal}
+              deleting={submitting}
+              label="proposal"
+            />
+          ) : null}
+          {editMode ? (
+            <>
+              {proposalData?._id ? (
+                <Button variant="ghost" onClick={onCancelEdit} disabled={submitting}>
+                  Cancel
+                </Button>
+              ) : null}
+              <Button onClick={handleSaveClick} loading={submitting} disabled={!isProposalFormValid}>
+                {canAdminEditProposal
+                  ? "Save (Admin Override)"
+                  : proposalData?._id
+                    ? "Save Proposal"
+                    : "Submit Proposal"}
+              </Button>
+            </>
+          ) : (
+            <Button variant="secondary" onClick={() => setEditMode?.(true)}>
+              <Pencil size={16} /> Edit
+            </Button>
+          )}
+        </div>
       ) : null
     }
   >
@@ -188,7 +238,7 @@ export const GymkhanaProposalModal = ({
                   </div>
                 </div>
                 <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
-                  {canEditProposalForm ? "Edit Details" : "View Details"}
+                  {formEditable ? "Edit Details" : "View Details"}
                 </Button>
               </div>
 
@@ -260,7 +310,7 @@ export const GymkhanaProposalModal = ({
                       handleProposalFormChange("totalExpenditure", event.target.value)
                     }
                     placeholder="Amount"
-                    disabled={!canEditProposalForm}
+                    disabled={!formEditable}
                   />
                 </FormField>
                 <FormField label="Registration Fee" htmlFor="gymkhana-registration-fee-source">
@@ -283,7 +333,7 @@ export const GymkhanaProposalModal = ({
                   handleProposalFormChange("accommodationRequired", event.target.checked)
                 }
                 label="Accommodation required"
-                disabled={!canEditProposalForm}
+                disabled={!formEditable}
               />
 
               <SectionHeader>Documents</SectionHeader>
@@ -292,7 +342,7 @@ export const GymkhanaProposalModal = ({
                 value={proposalForm.proposalDocumentUrl}
                 onChange={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
                 onUpload={uploadProposalDocument}
-                disabled={!canEditProposalForm}
+                disabled={!formEditable}
                 uploadedText="Proposal document uploaded"
                 viewerTitle="Proposal Document"
                 viewerSubtitle="Event proposal attachment"
@@ -304,7 +354,7 @@ export const GymkhanaProposalModal = ({
                 value={proposalForm.chiefGuestDocumentUrl}
                 onChange={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
                 onUpload={uploadChiefGuestDocument}
-                disabled={!canEditProposalForm}
+                disabled={!formEditable}
                 uploadedText="Chief guest document uploaded"
                 viewerTitle="Chief Guest Document"
                 viewerSubtitle="External guest attachment"
@@ -504,7 +554,23 @@ export const GymkhanaProposalModal = ({
             accentColor="var(--color-text-secondary)"
           >
             {proposalData?._id ? (
-              <ApprovalHistory key={proposalHistoryRefreshKey} proposalId={proposalData._id} />
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <AuditTimeline
+                  key={proposalHistoryRefreshKey}
+                  entityType="EventProposal"
+                  entityId={proposalData._id}
+                  compact
+                  editsOnly
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHistoryDetails(true)}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  <History size={14} /> View detailed history
+                </Button>
+              </div>
             ) : (
               <p
                 style={{
@@ -521,4 +587,32 @@ export const GymkhanaProposalModal = ({
       </div>
     )}
   </Modal>
-)
+
+      {reasonOpen ? (
+        <ReasonPromptModal
+          isOpen
+          onClose={() => setReasonOpen(false)}
+          loading={submitting}
+          title="Admin override — reason required"
+          description="This edit changes the proposal without altering its approval status. Your reason is recorded in the audit log."
+          confirmText="Save changes"
+          placeholder="Why are you editing this proposal?"
+          onConfirm={async (reason) => {
+            await onSave(reason)
+            setReasonOpen(false)
+          }}
+        />
+      ) : null}
+
+      {showHistoryDetails && proposalData?._id ? (
+        <AuditTimelineModal
+          isOpen
+          onClose={() => setShowHistoryDetails(false)}
+          entityType="EventProposal"
+          entityId={proposalData._id}
+          title="Proposal history"
+        />
+      ) : null}
+    </>
+  )
+}

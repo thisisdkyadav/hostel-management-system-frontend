@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { ErrorState, useToast } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import GymkhanaEventsPageContent from "@/components/gymkhana/events-page/GymkhanaEventsPageContent"
+import DeletedItemsModal from "@/components/gymkhana/events-page/DeletedItemsModal"
 import {
   GymkhanaCreateCalendarModal,
   GymkhanaEventDetailsModal,
@@ -33,6 +34,7 @@ import { useGymkhanaExpenseActions } from "@/hooks/gymkhana/useGymkhanaExpenseAc
 const EventsPage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
+  const [showDeletedModal, setShowDeletedModal] = useState(false)
 
   const calendarState = useGymkhanaCalendarPageState({ user, toast })
   const proposalState = useGymkhanaProposalActions({
@@ -148,6 +150,7 @@ const EventsPage = () => {
         headerSubtitle={calendarState.headerSubtitle}
         headerTitle={calendarState.headerTitle}
         isAdminLevel={calendarState.isAdminLevel}
+        onOpenDeletedItems={() => setShowDeletedModal(true)}
         isGS={calendarState.isGS}
         isPresident={calendarState.isPresident}
         loading={calendarState.loading}
@@ -253,13 +256,18 @@ const EventsPage = () => {
         getProposalDueDate={proposalState.getProposalDueDate}
         onOpenProposalDetails={() => proposalState.setShowProposalDetailsModal(true)}
         onSave={proposalState.handleCreateOrUpdateProposal}
+        canAdminEditProposal={proposalState.canAdminEditProposal}
+        handleAdminDeleteProposal={proposalState.handleAdminDeleteProposal}
+        editMode={proposalState.proposalEditMode}
+        setEditMode={proposalState.setProposalEditMode}
+        onCancelEdit={proposalState.cancelProposalEdit}
       />
 
       <GymkhanaProposalDetailsModal
         isOpen={proposalState.showProposalDetailsModal}
         onClose={() => proposalState.setShowProposalDetailsModal(false)}
         proposalForm={proposalState.proposalForm}
-        canEditProposalForm={proposalState.canEditProposalForm}
+        canEditProposalForm={proposalState.canEditProposalForm && proposalState.proposalEditMode}
         handleProposalDetailsChange={proposalState.handleProposalDetailsChange}
         uploadScheduleAnnexureDocument={proposalState.uploadScheduleAnnexureDocument}
         handleProposalRegistrationDetailChange={proposalState.handleProposalRegistrationDetailChange}
@@ -302,7 +310,20 @@ const EventsPage = () => {
         postStudentAffairsStageOptions={POST_STUDENT_AFFAIRS_STAGE_OPTIONS}
         postStudentAffairsApproverOptionsByStage={calendarState.postStudentAffairsApproverOptionsByStage}
         onSave={expenseState.handleCreateOrUpdateExpense}
+        canAdminEditExpense={expenseState.canAdminEditExpense}
+        handleAdminDeleteExpense={expenseState.handleAdminDeleteExpense}
+        editMode={expenseState.expenseEditMode}
+        setEditMode={expenseState.setExpenseEditMode}
+        onCancelEdit={expenseState.cancelExpenseEdit}
       />
+
+      {showDeletedModal && (
+        <DeletedItemsModal
+          isOpen
+          onClose={() => setShowDeletedModal(false)}
+          onRestored={() => calendarState.fetchCalendar?.(calendarState.selectedYear)}
+        />
+      )}
 
       <GymkhanaEventEditorModal
         isOpen={calendarState.showAddEventModal}
