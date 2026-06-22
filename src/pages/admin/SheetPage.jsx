@@ -478,7 +478,11 @@ const renderBoolean = (value) => (value === null || value === undefined ? "—" 
 
 const renderDate = (value) => {
     if (!value) return "—"
-    return new Date(value).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
+    // Date-only "YYYY-MM-DD" is parsed in local time so it never shifts a day.
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(String(value).trim())
+        ? (() => { const [y, m, d] = String(value).trim().split("-").map(Number); return new Date(y, m - 1, d) })()
+        : new Date(value)
+    return date.toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
 }
 
 // Export utility functions

@@ -183,8 +183,12 @@ const DashboardPage = () => {
 
     console.log("Checking birthday for DOB value:", dobValue)
 
-    // Try to parse common formats; prefer ISO-like strings
-    let dob = new Date(dobValue)
+    // Try to parse common formats; prefer ISO-like strings.
+    // Date-only "YYYY-MM-DD" is parsed in local time so it never shifts a day.
+    const trimmedDob = String(dobValue).trim()
+    let dob = /^\d{4}-\d{2}-\d{2}$/.test(trimmedDob)
+      ? (() => { const [y, mo, d] = trimmedDob.split("-").map(Number); return new Date(y, mo - 1, d) })()
+      : new Date(dobValue)
     if (isNaN(dob.getTime())) {
       // Try to handle dd/mm/yyyy or dd-mm-yyyy
       const parts = String(dobValue).split(/[\/\-]/)

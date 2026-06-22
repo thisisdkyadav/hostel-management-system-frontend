@@ -226,7 +226,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
           </label>
-          <Input type="date" value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} onChange={(e) => handleChange(field, e.target.value)} />
+          <Input type="date" value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} />
         </div>
       )
     }

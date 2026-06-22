@@ -594,11 +594,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
             availableFields.forEach((field) => {
               if (student[field] !== undefined && student[field] !== null && String(student[field]).trim() !== "") {
-                if (field === "admissionDate") {
-                  studentData[field] = student[field] || new Date().toISOString().split("T")[0]
-                } else {
-                  studentData[field] = normalizeString(student[field])
-                }
+                // Date-only fields (admissionDate, dateOfBirth) are kept as the
+                // raw "YYYY-MM-DD" string the CSV provides — no Date conversion,
+                // so no timezone day-shift. The backend normalizes/validates.
+                studentData[field] = normalizeString(student[field])
               }
             })
 

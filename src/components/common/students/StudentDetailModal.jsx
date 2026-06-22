@@ -256,7 +256,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A"
-    return new Date(dateString).toLocaleDateString("en-US", {
+    // Date-only "YYYY-MM-DD" is parsed in local time so it never shifts a day.
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(String(dateString).trim())
+      ? (() => { const [y, m, d] = String(dateString).trim().split("-").map(Number); return new Date(y, m - 1, d) })()
+      : new Date(dateString)
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",

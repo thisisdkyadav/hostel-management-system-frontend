@@ -9,6 +9,7 @@ import { studentApi, studentProfileApi } from "../../service"
 import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
 import { formatDateTime } from "../../utils/dateUtils"
+import { formatDateOnly } from "../../utils/formatters"
 
 const normalizeStudentProfile = (profile) => {
   if (!profile || typeof profile !== "object") return null
@@ -44,6 +45,10 @@ const normalizeStudentProfile = (profile) => {
 
 const formatOptionalDate = (value) => {
   if (!value) return null
+  // dateOfBirth is a date-only "YYYY-MM-DD" string — format without timezone shift.
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.trim())) {
+    return formatDateOnly(value)
+  }
   return formatDateTime(value).date
 }
 
