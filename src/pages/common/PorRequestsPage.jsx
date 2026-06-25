@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
-import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
+import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import toast from "react-hot-toast"
 import PageHeader from "../../components/common/PageHeader"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
@@ -183,6 +183,68 @@ const getViewerSubtitle = (mode) => {
 const shouldShowStudentColumn = (viewer) => viewer?.mode !== "student"
 
 const shouldShowCategoryColumn = (viewer) => viewer?.mode !== "student"
+
+const csvDateTime = (value) => {
+  if (!value) return ""
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleString()
+}
+
+const escapeCsvValue = (value) => {
+  const str = String(value ?? "")
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str
+}
+
+// Column set for the POR CSV export. Mirrors the on-screen table's visibility:
+// student identity columns are dropped for the student's own view (same rule as the table).
+const buildPorCsvColumns = (viewer) => {
+  const columns = []
+
+  if (shouldShowStudentColumn(viewer)) {
+    columns.push(
+      { header: "Student Name", value: (r) => r?.student?.name },
+      { header: "Roll Number", value: (r) => r?.student?.rollNumber },
+      { header: "Email", value: (r) => r?.student?.email },
+      { header: "Department", value: (r) => r?.student?.department },
+      { header: "Degree", value: (r) => r?.student?.degree },
+      { header: "Batch", value: (r) => r?.student?.batch },
+    )
+  }
+
+  columns.push(
+    { header: "Club", value: (r) => r?.club?.name },
+    { header: "POR Category", value: (r) => r?.porCategoryName || r?.porCategory?.name },
+    { header: "Position Title", value: (r) => r?.positionTitle },
+    { header: "Tenure", value: (r) => r?.tenure },
+    { header: "Status", value: (r) => formatStatusLabel(r?.status) },
+    { header: "Current Stage", value: (r) => formatStageLabel(r?.currentApprovalStage) },
+    {
+      header: "Current Approver(s)",
+      value: (r) => {
+        const approvers = Array.isArray(r?.currentApproverUsers) ? r.currentApproverUsers : []
+        const names = approvers.map((user) => user?.name).filter(Boolean)
+        if (names.length) return names.join("; ")
+        return r?.currentApproverUser?.name || ""
+      },
+    },
+    { header: "Disciplinary Action", value: (r) => (r?.hasDisciplinaryAction ? "Yes" : "No") },
+    { header: "Disciplinary Details", value: (r) => r?.disciplinaryActionDetails },
+    { header: "Revision Count", value: (r) => r?.revisionCount ?? 0 },
+    { header: "Rejection Reason", value: (r) => r?.rejectionReason },
+    { header: "Submitted On", value: (r) => csvDateTime(r?.createdAt) },
+    { header: "Last Updated", value: (r) => csvDateTime(r?.updatedAt) },
+    { header: "Approved On", value: (r) => csvDateTime(r?.approvedAt) },
+  )
+
+  return columns
+}
+
+const buildPorCsvContent = (requests = [], viewer) => {
+  const columns = buildPorCsvColumns(viewer)
+  const headerRow = columns.map((col) => col.header)
+  const dataRows = requests.map((request) => columns.map((col) => col.value(request)))
+  return [headerRow, ...dataRows].map((row) => row.map(escapeCsvValue).join(",")).join("\n")
+}
 
 const buildPorCategoryOptions = (porCategories = []) =>
   (Array.isArray(porCategories) ? porCategories : []).map((category) => ({
@@ -1866,6 +1928,31 @@ const PorRequestsPage = () => {
     [filteredRequests, viewer]
   )
 
+  // Export exactly what the current filter (status tab + search) shows, one row per POR
+  // request (ungrouped). Visibility is already scoped server-side, so filteredRequests is
+  // precisely "all POR visible to this user in this filter".
+  const exportFilteredRequestsCsv = () => {
+    if (!filteredRequests.length) {
+      toast.error("No POR requests to export.")
+      return
+    }
+
+    const csvContent = buildPorCsvContent(filteredRequests, viewer)
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
+    link.href = URL.createObjectURL(blob)
+    link.download = `por_requests_${activeTab}_${date}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+
+    toast.success(
+      `Exported ${filteredRequests.length} POR request${filteredRequests.length === 1 ? "" : "s"}.`
+    )
+  }
+
   const tableColumns = useMemo(() => {
     const columns = []
 
@@ -2547,6 +2634,14 @@ const PorRequestsPage = () => {
             Manage Categories
           </Button>
         ) : null}
+        <Button
+          variant="secondary"
+          onClick={exportFilteredRequestsCsv}
+          disabled={filteredRequests.length === 0}
+        >
+          <Download size={16} />
+          Export CSV
+        </Button>
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
