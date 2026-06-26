@@ -53,6 +53,11 @@ export const porApi = {
   getHistory: (requestId) => {
     return apiClient.get(`/student-affairs/por/${requestId}/history`).then(unwrapStandardResponse)
   },
+
+  /** Resolved template + data + signatures (data URLs) for rendering a POR certificate. */
+  getCertificateData: (requestId) => {
+    return apiClient.get(`/student-affairs/por/${requestId}/certificate`).then(unwrapStandardResponse)
+  },
 }
 
 export default porApi

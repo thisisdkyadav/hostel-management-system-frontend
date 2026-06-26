@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments, HiCalendar, HiCollection } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments, HiCalendar, HiCollection, HiDocumentText } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
@@ -8,6 +8,7 @@ import StudentBatchManager from "../../components/admin/settings/StudentBatchMan
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
+import CertificateTemplateForm from "../../components/admin/settings/CertificateTemplateForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
@@ -33,6 +34,7 @@ const SettingsPage = () => {
     gymkhanaCategories: false,
     systemSettings: false,
     accommodation: false,
+    porCertificate: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [navQuery, setNavQuery] = useState("")
@@ -45,6 +47,7 @@ const SettingsPage = () => {
   const [gymkhanaCategories, setGymkhanaCategories] = useState([])
   const [systemSettings, setSystemSettings] = useState({})
   const [accommodationSettings, setAccommodationSettings] = useState({})
+  const [porCertificateTemplate, setPorCertificateTemplate] = useState(null)
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
     studentFields: null,
@@ -56,6 +59,7 @@ const SettingsPage = () => {
     gymkhanaCategories: null,
     systemSettings: null,
     accommodation: null,
+    porCertificate: null,
   })
 
   const SETTINGS_TABS = [
@@ -68,6 +72,7 @@ const SettingsPage = () => {
     "gymkhanaCategories",
     "systemSettings",
     "accommodation",
+    "porCertificate",
   ]
 
   const canViewTab = (tab) => {
@@ -146,6 +151,8 @@ const SettingsPage = () => {
       fetchSystemSettings()
     } else if (activeTab === "accommodation" && Object.keys(accommodationSettings).length === 0) {
       fetchAccommodationSettings()
+    } else if (activeTab === "porCertificate" && porCertificateTemplate === null) {
+      fetchPorCertificateTemplate()
     }
   }, [activeTab])
 
@@ -309,6 +316,46 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, gymkhanaCategories: false }))
+    }
+  }
+
+  const fetchPorCertificateTemplate = async () => {
+    setLoading((prev) => ({ ...prev, porCertificate: true }))
+    setError((prev) => ({ ...prev, porCertificate: null }))
+    try {
+      const response = await adminApi.getPorCertificateTemplate()
+      setPorCertificateTemplate(response?.value || {})
+    } catch (err) {
+      console.error("Error fetching certificate template:", err)
+      setError((prev) => ({
+        ...prev,
+        porCertificate: "Failed to load the certificate template. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, porCertificate: false }))
+    }
+  }
+
+  const handleUpdatePorCertificateTemplate = async (updatedTemplate) => {
+    if (!canUpdateTab("porCertificate")) {
+      toast.error("You do not have permission to update the certificate template.")
+      return
+    }
+
+    const confirmUpdate = window.confirm("Are you sure you want to update the POR certificate template?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, porCertificate: true }))
+    try {
+      const response = await adminApi.updatePorCertificateTemplate(updatedTemplate)
+      setPorCertificateTemplate(response?.configuration?.value || updatedTemplate)
+      setSuccessMessage(`Certificate template updated successfully on ${new Date(response?.configuration?.lastUpdated || Date.now()).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating certificate template:", err)
+      toast.error(err.message || "An error occurred while updating the certificate template. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, porCertificate: false }))
     }
   }
 
@@ -642,6 +689,12 @@ const SettingsPage = () => {
       ],
     },
     {
+      group: "Certificates",
+      items: [
+        { key: "porCertificate", label: "POR Certificate", icon: HiDocumentText, description: "Design the POR certificate: logo, title, body text with {{variables}}, appearance, and the signatories (users who have set a signature) shown on it." },
+      ],
+    },
+    {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
@@ -872,6 +925,22 @@ const SettingsPage = () => {
                     <TabSpinner />
                   ) : (
                     <ConfigForm config={accommodationSettings} onUpdate={handleUpdateAccommodationSettings} isLoading={loading.accommodation} />
+                  )}
+                </>
+              )}
+
+              {/* POR Certificate Template Tab */}
+              {activeTab === "porCertificate" && (
+                <>
+                  {loading.porCertificate && porCertificateTemplate === null ? (
+                    <TabSpinner />
+                  ) : (
+                    <CertificateTemplateForm
+                      key={porCertificateTemplate ? "loaded" : "empty"}
+                      template={porCertificateTemplate || {}}
+                      onUpdate={handleUpdatePorCertificateTemplate}
+                      isLoading={loading.porCertificate}
+                    />
                   )}
                 </>
               )}

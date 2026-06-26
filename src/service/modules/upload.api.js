@@ -123,6 +123,15 @@ export const uploadApi = {
   },
 
   /**
+   * Upload a signature image (any authenticated user, for their own signature).
+   * Compress client-side before calling so the stored image (and PDFs) stay small.
+   * @param {FormData} imageData - Image form data (field name "image")
+   */
+  uploadSignatureImage: (imageData) => {
+    return apiClient.upload("/upload/signature-image", imageData)
+  },
+
+  /**
    * Upload election nomination document
    * @param {FormData} fileData - File form data
    */

@@ -28,6 +28,18 @@ export const adminApi = {
     return apiClient.get("/admin/profile")
   },
 
+  // ==================== POR Certificate Template ====================
+
+  /** Get the POR certificate template config (returns { key, value, ... }). */
+  getPorCertificateTemplate: () => {
+    return apiClient.get("/config/porCertificateTemplate").then(unwrapStandardResponse)
+  },
+
+  /** Update the POR certificate template config. */
+  updatePorCertificateTemplate: (value) => {
+    return apiClient.put("/config/porCertificateTemplate", { value }).then(unwrapStandardResponse)
+  },
+
   // ==================== Hostels ====================
   
   /**

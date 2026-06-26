@@ -6,6 +6,7 @@ import AdminProfile from "../../components/profile/AdminProfile"
 import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 import AcademicsProfile from "../../components/profile/AcademicsProfile"
+import SignatureSettingsCard from "../../components/profile/SignatureSettingsCard"
 
 const ProfilePage = () => {
   const { user } = useAuth()
@@ -46,6 +47,8 @@ const ProfilePage = () => {
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
           <div style={{ padding: 'var(--spacing-6)' }}>{renderProfile()}</div>
         </div>
+
+        {user ? <SignatureSettingsCard user={user} /> : null}
       </div>
     </div>
   )

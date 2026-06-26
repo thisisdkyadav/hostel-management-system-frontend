@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
+import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import PageHeader from "../../components/common/PageHeader"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
@@ -423,6 +424,7 @@ const PorRequestFormModal = ({
   onChange,
   onClose,
   onSubmit,
+  onSupportingDocPendingChange,
   isEdit = false,
 }) => {
   if (!isOpen) return null
@@ -567,6 +569,7 @@ const PorRequestFormModal = ({
                     )
                   }
                   onUpload={uploadSupportingDocument}
+                  onPendingFileChange={(file) => onSupportingDocPendingChange?.(Boolean(file))}
                   disabled={isSaving}
                   required
                   uploadedText={formData.supportingDocumentName || "Supporting PDF uploaded"}
@@ -674,7 +677,7 @@ const PorRequestFormModal = ({
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
-          <Button type="submit" loading={isSaving} disabled={isSaving || categoryOptions.length === 0}>
+          <Button type="button" onClick={() => onSubmit?.()} loading={isSaving} disabled={isSaving}>
             {isEdit ? "Resubmit Request" : "Create Request"}
           </Button>
         </div>
@@ -1766,6 +1769,7 @@ const PorRequestGroupModal = ({
 }
 
 const PorRequestsPage = () => {
+  const { toast } = useToast()
   const [workspace, setWorkspace] = useState({
     viewer: null,
     porCategories: [],
@@ -1786,6 +1790,7 @@ const PorRequestsPage = () => {
   const [selectedRequestGroup, setSelectedRequestGroup] = useState(null)
   const [formData, setFormData] = useState(createDefaultForm())
   const [savingForm, setSavingForm] = useState(false)
+  const [hasPendingSupportingDoc, setHasPendingSupportingDoc] = useState(false)
   const [reviewComment, setReviewComment] = useState("")
   const [groupReviewComment, setGroupReviewComment] = useState("")
   const [useCommonGroupComment, setUseCommonGroupComment] = useState(true)
@@ -1794,6 +1799,7 @@ const PorRequestsPage = () => {
   const [groupPostSaAssignments, setGroupPostSaAssignments] = useState({})
   const [actionLoading, setActionLoading] = useState("")
   const [groupActionLoading, setGroupActionLoading] = useState("")
+  const [generatingCertificateId, setGeneratingCertificateId] = useState(null)
   const [showCategoryManagerModal, setShowCategoryManagerModal] = useState(false)
   const [showCategoryModal, setShowCategoryModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
@@ -1953,6 +1959,33 @@ const PorRequestsPage = () => {
     )
   }
 
+  // Generate a certificate PDF for a single POR on the fly: fetch the admin-configured
+  // template + resolved data + signatures (as data URLs), render with pdf-certificate-kit, and download.
+  const handleGenerateCertificate = async (request) => {
+    if (!request?.id) return
+    setGeneratingCertificateId(request.id)
+    try {
+      const payload = await porApi.getCertificateData(request.id)
+      const bytes = await renderCertificate({
+        template: payload?.template || {},
+        data: payload?.data || {},
+        signatures: Array.isArray(payload?.signatures) ? payload.signatures : [],
+        meta: { title: "POR Certificate", subject: payload?.request?.positionTitle || "" },
+      })
+      const student = payload?.request?.student || request.student || {}
+      const slug = String(student.rollNumber || student.name || request.id)
+        .trim()
+        .replace(/[^a-zA-Z0-9._-]+/g, "_")
+      downloadBytes(bytes, `POR_Certificate_${slug}.pdf`)
+      toast.success("Certificate generated")
+    } catch (error) {
+      console.error("Failed to generate certificate:", error)
+      toast.error(error?.message || "Failed to generate certificate")
+    } finally {
+      setGeneratingCertificateId(null)
+    }
+  }
+
   const tableColumns = useMemo(() => {
     const columns = []
 
@@ -2093,11 +2126,13 @@ const PorRequestsPage = () => {
   const openCreateModal = () => {
     setEditingRequest(null)
     setFormData(createDefaultForm())
+    setHasPendingSupportingDoc(false)
     setShowFormModal(true)
   }
 
   const openEditModal = (request) => {
     setEditingRequest(request)
+    setHasPendingSupportingDoc(false)
     setFormData({
       porCategoryId: request?.porCategory?.id || "",
       hasDisciplinaryAction: Boolean(request?.hasDisciplinaryAction),
@@ -2129,13 +2164,42 @@ const PorRequestsPage = () => {
   }
 
   const handleSubmitForm = async () => {
-    if (formData.hasDisciplinaryAction !== true && formData.hasDisciplinaryAction !== false) {
-      toast.error("Please answer the disciplinary action question before submitting the POR request.")
+    if (!Array.isArray(porCategories) || porCategories.length === 0) {
+      toast.error("No POR categories are available yet. Please contact an administrator.")
+      return
+    }
+
+    if (!String(formData.porCategoryId || "").trim()) {
+      toast.error("Please select a POR category.")
+      return
+    }
+
+    if (!String(formData.positionTitle || "").trim()) {
+      toast.error("Please enter the position of responsibility.")
+      return
+    }
+
+    if (!String(formData.tenure || "").trim()) {
+      toast.error("Please enter the tenure.")
+      return
+    }
+
+    if (!String(formData.positionDetails || "").trim()) {
+      toast.error("Please enter the POR details.")
       return
     }
 
     if (!String(formData.supportingDocumentUrl || "").trim()) {
-      toast.error("Please upload the supporting PDF before submitting the POR request.")
+      if (hasPendingSupportingDoc) {
+        toast.error("You selected a PDF but haven't uploaded it yet. Please click the Upload button.")
+      } else {
+        toast.error("Please upload the supporting PDF before submitting the POR request.")
+      }
+      return
+    }
+
+    if (formData.hasDisciplinaryAction !== true && formData.hasDisciplinaryAction !== false) {
+      toast.error("Please answer the disciplinary action question before submitting the POR request.")
       return
     }
 
@@ -2158,6 +2222,7 @@ const PorRequestsPage = () => {
       setShowFormModal(false)
       setEditingRequest(null)
       setFormData(createDefaultForm())
+      setHasPendingSupportingDoc(false)
       await fetchWorkspace({ keepLoading: true })
     } catch (err) {
       console.error("Failed to save POR request:", err)
@@ -2699,8 +2764,10 @@ const PorRequestsPage = () => {
           setShowFormModal(false)
           setEditingRequest(null)
           setFormData(createDefaultForm())
+          setHasPendingSupportingDoc(false)
         }}
         onSubmit={handleSubmitForm}
+        onSupportingDocPendingChange={setHasPendingSupportingDoc}
         isEdit={Boolean(editingRequest)}
       />
 
@@ -2753,6 +2820,8 @@ const PorRequestsPage = () => {
         actionLoading={actionLoading}
         canViewStudentProfile={Boolean(selectedRequest?.student?.userId && selectedRequestStudentId)}
         onOpenStudentProfile={() => setShowSelectedRequestStudentDetail(true)}
+        onGenerateCertificate={selectedRequest?.status === "approved" ? handleGenerateCertificate : undefined}
+        isGeneratingCertificate={generatingCertificateId === selectedRequest?.id}
       />
 
       {showSelectedRequestStudentDetail && selectedRequestStudentId && selectedRequest?.student?.userId ? (

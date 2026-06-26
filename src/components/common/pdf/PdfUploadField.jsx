@@ -15,6 +15,7 @@ const PdfUploadField = ({
   value,
   onChange,
   onUpload,
+  onPendingFileChange,
   disabled = false,
   required = false,
   maxSizeMb = 5,
@@ -29,6 +30,13 @@ const PdfUploadField = ({
   const [showViewer, setShowViewer] = useState(false)
 
   const maxSizeBytes = maxSizeMb * 1024 * 1024
+
+  // Set the selected (not-yet-uploaded) file and notify the parent so it can warn
+  // on submit if the user forgot to click Upload.
+  const applySelectedFile = (file) => {
+    setSelectedFile(file)
+    onPendingFileChange?.(file)
+  }
 
   const validateFile = (file) => {
     if (!file) return "Please select a PDF file"
@@ -51,7 +59,7 @@ const PdfUploadField = ({
       return
     }
 
-    setSelectedFile(file)
+    applySelectedFile(file)
   }
 
   const handleUpload = async () => {
@@ -67,7 +75,7 @@ const PdfUploadField = ({
       }
 
       onChange(uploadedUrl)
-      setSelectedFile(null)
+      applySelectedFile(null)
       toast.success(`${label} uploaded`)
     } catch (error) {
       toast.error(error.message || `Failed to upload ${label}`)
@@ -109,7 +117,7 @@ const PdfUploadField = ({
                 </span>
                 {!disabled && (
                   <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                    <Button size="sm" variant="secondary" onClick={() => setSelectedFile(null)}>
+                    <Button size="sm" variant="secondary" onClick={() => applySelectedFile(null)}>
                       Remove
                     </Button>
                     <Button size="sm" onClick={handleUpload} loading={uploading}>

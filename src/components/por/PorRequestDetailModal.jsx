@@ -186,6 +186,8 @@ const PorRequestDetailModal = ({
   actionLoading = "",
   canViewStudentProfile = false,
   onOpenStudentProfile,
+  onGenerateCertificate,
+  isGeneratingCertificate = false,
 }) => {
   const [showFullHistoryModal, setShowFullHistoryModal] = useState(false)
   const canAct = Boolean(request?.permissions?.canApprove)
@@ -227,6 +229,16 @@ const PorRequestDetailModal = ({
           </div>
 
           <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            {onGenerateCertificate ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => onGenerateCertificate(request)}
+                loading={isGeneratingCertificate}
+              >
+                <BadgeCheck size={15} /> Generate Certificate
+              </Button>
+            ) : null}
             {request?.permissions?.canEdit ? (
               <Button variant="secondary" size="sm" onClick={onEdit}>
                 Edit & Resubmit
