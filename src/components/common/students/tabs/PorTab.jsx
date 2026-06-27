@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { ShieldCheck } from "lucide-react"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { DataTable } from "czero/react"
 import PorRequestDetailModal from "@/components/por/PorRequestDetailModal"
 import { Badge, EmptyState } from "@/components/ui"
@@ -42,6 +42,7 @@ const formatDateTime = (value) => {
 }
 
 const PorTab = ({ userId }) => {
+  const { toast } = useToast()
   const [workspace, setWorkspace] = useState({
     viewer: null,
     requests: [],

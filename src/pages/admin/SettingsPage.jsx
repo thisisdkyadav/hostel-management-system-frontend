@@ -12,7 +12,7 @@ import CertificateTemplateForm from "../../components/admin/settings/Certificate
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { Card, SearchInput } from "@/components/ui"
 
 const TabSpinner = () => (
@@ -22,6 +22,7 @@ const TabSpinner = () => (
 )
 
 const SettingsPage = () => {
+  const { toast } = useToast()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("studentFields")
   const [loading, setLoading] = useState({

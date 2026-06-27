@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Button, Input } from "czero/react"
 import { compressImage } from "pdf-certificate-kit"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"
 import {
   Card,
@@ -27,6 +27,7 @@ const SIGNATURE_TYPES = [
  * the stored file and any generated PDF stay tiny. Students always sign as "Student".
  */
 const SignatureSettingsCard = ({ user }) => {
+  const { toast } = useToast()
   const isStudent = user?.role === "Student"
   const defaultPosition = isStudent ? "Student" : user?.subRole || user?.role || ""
 

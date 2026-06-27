@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
 import {
   Label,
@@ -57,6 +57,7 @@ const DEFAULT_THEME = {
  * already have a usable signature, sourced from the signature directory).
  */
 const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
+  const { toast } = useToast()
   const [eyebrow, setEyebrow] = useState(template?.eyebrow || "")
   const [title, setTitle] = useState(template?.title || "")
   const [body, setBody] = useState(template?.body || "")

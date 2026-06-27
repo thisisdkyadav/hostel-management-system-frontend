@@ -6,10 +6,11 @@ import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
 import AddRoomsCsv from "./rooms/AddRoomsCsv"
 import { hostelApi } from "../../../service"
-import { toast } from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { createPortal } from "react-dom"
 
 const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("view")
   const [inputMethod, setInputMethod] = useState("form")
   const [isLoading, setIsLoading] = useState(false)

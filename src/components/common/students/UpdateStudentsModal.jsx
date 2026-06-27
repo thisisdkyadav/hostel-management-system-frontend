@@ -7,7 +7,7 @@ import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import { studentApi } from "../../../service"
-import toast from "react-hot-toast"
+import { useToast } from "@/components/ui/feedback"
 import { Select, Checkbox, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -237,6 +237,7 @@ const uniqueNonEmptyValues = (values = []) => {
 
 
 const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
+  const { toast } = useToast()
   const { on, isConnected } = useSocket()
 
   const [csvFile, setCsvFile] = useState(null)
