@@ -23,6 +23,9 @@ const PdfUploadField = ({
   viewerTitle = "Document",
   viewerSubtitle = "PDF Document",
   downloadFileName = "document.pdf",
+  accept = ".pdf",
+  acceptHint = "PDF only",
+  validateType,
 }) => {
   const { toast } = useToast()
   const [selectedFile, setSelectedFile] = useState(null)
@@ -38,10 +41,13 @@ const PdfUploadField = ({
     onPendingFileChange?.(file)
   }
 
+  const isTypeAllowed = (file) =>
+    validateType ? validateType(file) : file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+
   const validateFile = (file) => {
-    if (!file) return "Please select a PDF file"
-    if (!(file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"))) {
-      return "Only PDF files are allowed"
+    if (!file) return "Please select a file"
+    if (!isTypeAllowed(file)) {
+      return `Only ${acceptHint} files are allowed`
     }
     if (file.size > maxSizeBytes) {
       return `File size exceeds ${maxSizeMb}MB limit. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`
@@ -129,13 +135,13 @@ const PdfUploadField = ({
             ) : (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                 <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                  PDF only (max {maxSizeMb}MB)
+                  {acceptHint} (max {maxSizeMb}MB)
                 </span>
                 {!disabled && (
                   <label style={{ margin: 0 }}>
                     <input
                       type="file"
-                      accept=".pdf"
+                      accept={accept}
                       onChange={handleFileChange}
                       style={{ display: "none" }}
                     />

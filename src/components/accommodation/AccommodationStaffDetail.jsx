@@ -2,16 +2,18 @@ import { useState, useEffect, useCallback } from "react"
 import { Modal, Button, Input } from "czero/react"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
-import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink } from "lucide-react"
+import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye } from "lucide-react"
 import { accommodationApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
 import { MetaBar, SectionCard, InfoRow, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
 import StudentDetailModal from "../common/students/StudentDetailModal"
+import PdfViewerModal from "../common/pdf/PdfViewerModal"
 
 const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) => {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [showStudentProfile, setShowStudentProfile] = useState(false)
+  const [showProof, setShowProof] = useState(false)
 
   const [decision, setDecision] = useState({ action: "approve", reason: "" })
   const [payForm, setPayForm] = useState({ amount: 0, paymentLink: "", qrRef: "" })
@@ -187,7 +189,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</div>
                   <InfoRow label="Amount" value={money(request.payment.amount)} />
                   <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
-                  <div style={{ color: "var(--color-text-muted)", wordBreak: "break-all", marginTop: "4px" }}>{request.payment.screenshotFileRef}</div>
+                  <div style={{ marginTop: "var(--spacing-2)" }}>
+                    <Button size="sm" variant="secondary" onClick={() => setShowProof(true)}>
+                      <Eye size={14} /> View payment proof
+                    </Button>
+                  </div>
                 </div>
               )}
             </SectionCard>
@@ -321,6 +327,15 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
           onUpdate={() => setShowStudentProfile(false)}
         />
       )}
+
+      <PdfViewerModal
+        isOpen={showProof}
+        onClose={() => setShowProof(false)}
+        documentUrl={request.payment?.screenshotFileRef}
+        title="Payment proof"
+        subtitle={`Txn ${request.payment?.transactionId || "—"}`}
+        downloadFileName="payment-proof.png"
+      />
     </Modal>
   )
 }

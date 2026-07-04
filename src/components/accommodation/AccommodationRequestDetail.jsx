@@ -2,9 +2,16 @@ import { useState } from "react"
 import { Modal, Button, Input } from "czero/react"
 import { Label } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
-import { accommodationApi } from "@/service"
+import { accommodationApi, uploadApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
+import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import { MetaBar, SectionCard, InfoRow, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
+
+const uploadPaymentScreenshot = (file) => {
+  const formData = new FormData()
+  formData.append("image", file)
+  return uploadApi.uploadPaymentScreenshot(formData)
+}
 
 const CANCELLABLE = [
   ACCOMMODATION_STATUS.DRAFT,
@@ -122,11 +129,20 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     <Label>Transaction ID / UTR</Label>
                     <Input value={pay.transactionId} onChange={(e) => setPay((p) => ({ ...p, transactionId: e.target.value }))} placeholder="Reference number" />
                   </div>
-                  <div>
-                    <Label required>Payment screenshot reference</Label>
-                    <Input value={pay.screenshotFileRef} onChange={(e) => setPay((p) => ({ ...p, screenshotFileRef: e.target.value }))} placeholder="Screenshot link / reference" />
-                    <p style={{ fontSize: "10px", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>In-app image upload is coming soon — paste a link for now.</p>
-                  </div>
+                  <PdfUploadField
+                    label="Payment screenshot"
+                    required
+                    value={pay.screenshotFileRef}
+                    onChange={(ref) => setPay((p) => ({ ...p, screenshotFileRef: ref }))}
+                    onUpload={uploadPaymentScreenshot}
+                    accept="image/*"
+                    acceptHint="PNG or JPG"
+                    validateType={(file) => file.type?.startsWith("image/")}
+                    uploadedText="Screenshot uploaded"
+                    viewerTitle="Payment screenshot"
+                    viewerSubtitle="Payment proof"
+                    downloadFileName="payment-screenshot.png"
+                  />
                   <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !pay.screenshotFileRef.trim()}>Submit payment</Button>
                 </div>
               </SectionCard>
