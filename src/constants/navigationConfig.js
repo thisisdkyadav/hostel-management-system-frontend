@@ -180,6 +180,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Gymkhana Members", icon: GraduationCap, section: "main", path: "/admin/gymkhana", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Academics", icon: GraduationCap, section: "main", path: "/admin/academics", routeKey: "route.admin.academics", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Security", icon: Shield, section: "main", path: "/admin/security", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Face Scanners", icon: Scan, section: "main", path: "/admin/face-scanners", routeKey: "route.admin.faceScanners", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Maintenance", icon: Wrench, section: "main", path: "/admin/maintenance", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password", adminCategory: ADMIN_NAV_CATEGORY_STAFF },

@@ -5,6 +5,7 @@ import NoResults from "../../components/common/NoResults"
 import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"
 import AddFaceScannerModal from "../../components/admin/faceScanner/AddFaceScannerModal"
+import LiveScanMonitorModal from "../../components/admin/faceScanner/LiveScanMonitorModal"
 import FaceScannersHeader from "../../components/headers/FaceScannersHeader"
 import { faceScannerApi } from "../../service"
 
@@ -20,6 +21,7 @@ const FaceScannersPage = () => {
     const [activeTab, setActiveTab] = useState("all")
     const [searchTerm, setSearchTerm] = useState("")
     const [showAddModal, setShowAddModal] = useState(false)
+    const [showLiveMonitor, setShowLiveMonitor] = useState(false)
     const [scanners, setScanners] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -63,7 +65,10 @@ const FaceScannersPage = () => {
         <>
             <div className="flex flex-col h-full">
                 {/* Fixed Header */}
-                <FaceScannersHeader onAddScanner={() => setShowAddModal(true)} />
+                <FaceScannersHeader
+                    onAddScanner={() => setShowAddModal(true)}
+                    onOpenLiveMonitor={() => setShowLiveMonitor(true)}
+                />
 
                 {/* Scrollable Content Area */}
                 <div className="flex-1 overflow-y-scroll px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
@@ -95,6 +100,7 @@ const FaceScannersPage = () => {
             </div>
 
             <AddFaceScannerModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchScanners} />
+            <LiveScanMonitorModal isOpen={showLiveMonitor} onClose={() => setShowLiveMonitor(false)} />
         </>
     )
 }

@@ -1,10 +1,13 @@
 import { Button } from "czero/react"
 import PageHeader from "../common/PageHeader"
-import { Plus } from "lucide-react"
+import { Plus, Radio } from "lucide-react"
 
-const FaceScannersHeader = ({ onAddScanner }) => {
+const FaceScannersHeader = ({ onAddScanner, onOpenLiveMonitor }) => {
     return (
         <PageHeader title="Face Scanners">
+            <Button variant="secondary" onClick={onOpenLiveMonitor}>
+                <Radio size={18} /> Live Monitor
+            </Button>
             <Button variant="primary" onClick={onAddScanner}>
                 <Plus size={18} /> Add Scanner
             </Button>
