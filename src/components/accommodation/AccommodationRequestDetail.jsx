@@ -125,8 +125,13 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                   {request.payment?.paymentLink && (
                     <a href={request.payment.paymentLink} target="_blank" rel="noreferrer" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)", wordBreak: "break-all" }}>Open payment link / QR ↗</a>
                   )}
+                  {request.payment?.remarks && (
+                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-2) var(--spacing-3)" }}>
+                      <strong>Note:</strong> {request.payment.remarks}
+                    </div>
+                  )}
                   <div>
-                    <Label>Transaction ID / UTR</Label>
+                    <Label required>Transaction ID / UTR</Label>
                     <Input value={pay.transactionId} onChange={(e) => setPay((p) => ({ ...p, transactionId: e.target.value }))} placeholder="Reference number" />
                   </div>
                   <PdfUploadField
@@ -143,7 +148,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     viewerSubtitle="Payment proof"
                     downloadFileName="payment-screenshot.png"
                   />
-                  <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !pay.screenshotFileRef.trim()}>Submit payment</Button>
+                  <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !pay.screenshotFileRef.trim() || !pay.transactionId.trim()}>Submit payment</Button>
                 </div>
               </SectionCard>
             )}

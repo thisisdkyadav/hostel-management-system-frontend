@@ -23,8 +23,8 @@ const ALL = "__all"
 const lanesFor = (user) => {
   const l = (status, label) => ({ status, label })
   if (user?.role === "Hostel Supervisor") return [l(S.HOSTEL_ALLOTTED, "Assign rooms"), l(S.ROOMS_ASSIGNED, "Assigned"), l(S.CHECKED_IN, "Checked in")]
-  if (user?.role === "Admin" && user.subRole === "Chief Warden") return [l(S.PENDING_CW_APPROVAL, "Awaiting you"), l(S.CW_APPROVED, "Approved"), l(S.RETURNED_TO_STUDENT, "Returned")]
-  if (user?.role === "Admin" && user.subRole === "Chief Warden Office") return [l(S.CW_APPROVED, "Request payment"), l(S.PAYMENT_VERIFIED, "Allot hostel"), l(S.HOSTEL_ALLOTTED, "Allotted")]
+  if (user?.role === "Admin" && user.subRole === "Chief Warden") return [l(S.PENDING_CW_APPROVAL, "Awaiting you"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.CW_APPROVED, "Approved"), l(S.RETURNED_TO_STUDENT, "Returned")]
+  if (user?.role === "Admin" && user.subRole === "Chief Warden Office") return [l(S.CW_APPROVED, "Request payment"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.PAYMENT_VERIFIED, "Allot hostel"), l(S.HOSTEL_ALLOTTED, "Allotted")]
   if (user?.role === "Admin" && user.subRole === "Accountant") return [l(S.PAYMENT_SUBMITTED, "Verify payment"), l(S.PAYMENT_VERIFIED, "Verified")]
   return [l(S.PENDING_CW_APPROVAL, "In approval"), l(S.PAYMENT_SUBMITTED, "In payment"), l(S.HOSTEL_ALLOTTED, "Allotted")]
 }

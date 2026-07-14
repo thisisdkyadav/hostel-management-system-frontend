@@ -4,8 +4,23 @@ import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
-import { accommodationApi } from "@/service"
+import { accommodationApi, studentApi } from "@/service"
 import { ChargesRows } from "./AccommodationKit"
+
+const MIN_LEAD_WORKING_DAYS = 2
+const pad2 = (n) => String(n).padStart(2, "0")
+const toYmd = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
+// Add n working days (skip Sat/Sun) to today; used for the minimum stay start.
+const addWorkingDays = (start, n) => {
+  const d = new Date(start.getFullYear(), start.getMonth(), start.getDate())
+  let added = 0
+  while (added < n) {
+    d.setDate(d.getDate() + 1)
+    const day = d.getDay()
+    if (day !== 0 && day !== 6) added++
+  }
+  return d
+}
 
 const GENDERS = [
   { value: "Male", label: "Male" },
@@ -19,7 +34,7 @@ const STEPS = [
   { id: "review", label: "Review" },
 ]
 
-const emptyGuest = () => ({ name: "", gender: "", relation: "", occupation: "" })
+const emptyGuest = () => ({ name: "", gender: "", relation: "", aadharNumber: "", occupation: "" })
 
 const toDateInput = (d) => {
   if (!d) return ""
@@ -46,6 +61,21 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
   const [loadingQuote, setLoadingQuote] = useState(false)
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
+  const [profileFA, setProfileFA] = useState("") // faculty advisor email from the student's profile
+
+  const earliestStart = toYmd(addWorkingDays(new Date(), MIN_LEAD_WORKING_DAYS))
+
+  // Load the faculty advisor already on the student's profile; if present we show
+  // it read-only instead of letting the student type one.
+  useEffect(() => {
+    if (!open) return
+    let active = true
+    studentApi
+      .getStudent()
+      .then((profile) => { if (active) setProfileFA(profile?.facultyAdvisorEmail || "") })
+      .catch(() => { if (active) setProfileFA("") })
+    return () => { active = false }
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -59,6 +89,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
           name: g.name || "",
           gender: g.gender || "",
           relation: g.relation || "",
+          aadharNumber: g.aadharNumber || "",
           occupation: g.occupation || "",
         })) || [emptyGuest()],
         stay: {
@@ -114,10 +145,13 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       if (form.guests.length === 0) return "Add at least one guest"
       for (const g of form.guests) {
         if (!g.name.trim() || !g.gender) return "Every guest needs a name and gender"
+        if (!g.relation.trim()) return "Every guest needs a relation to you"
+        if (!/^\d{12}$/.test(String(g.aadharNumber || "").trim())) return "Every guest needs a valid 12-digit Aadhaar number"
       }
     }
     if (step === 1) {
       if (!form.stay.fromDate || !form.stay.toDate) return "Stay start and end dates are required"
+      if (form.stay.fromDate < earliestStart) return `The earliest start date is ${earliestStart} (at least ${MIN_LEAD_WORKING_DAYS} working days from today)`
       if (new Date(form.stay.toDate) <= new Date(form.stay.fromDate)) return "End date must be after start date"
       if (!form.stay.purpose.trim()) return "Purpose of visit is required"
     }
@@ -210,10 +244,11 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                   )}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
-                  <Input placeholder="Full name" value={g.name} onChange={(e) => setGuest(i, "name", e.target.value)} />
-                  <Select placeholder="Gender" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
-                  <Input placeholder="Relation (optional)" value={g.relation} onChange={(e) => setGuest(i, "relation", e.target.value)} />
-                  <Input placeholder="Occupation (optional)" value={g.occupation} onChange={(e) => setGuest(i, "occupation", e.target.value)} />
+                  <Input placeholder="Full name *" value={g.name} onChange={(e) => setGuest(i, "name", e.target.value)} />
+                  <Select placeholder="Gender *" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
+                  <Input placeholder="Relation to you *" value={g.relation} onChange={(e) => setGuest(i, "relation", e.target.value)} />
+                  <Input placeholder="Aadhaar number *" inputMode="numeric" maxLength={12} value={g.aadharNumber} onChange={(e) => setGuest(i, "aadharNumber", e.target.value.replace(/\D/g, "").slice(0, 12))} />
+                  <Input placeholder="Occupation (optional)" value={g.occupation} onChange={(e) => setGuest(i, "occupation", e.target.value)} style={{ gridColumn: "1 / -1" }} />
                 </div>
               </div>
             ))}
@@ -226,13 +261,16 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
               <div>
                 <Label required>From</Label>
-                <DatePicker name="fromDate" value={form.stay.fromDate} onChange={(e) => setStay("fromDate", e.target.value)} />
+                <DatePicker name="fromDate" value={form.stay.fromDate} min={earliestStart} onChange={(e) => setStay("fromDate", e.target.value)} />
               </div>
               <div>
                 <Label required>To</Label>
-                <DatePicker name="toDate" value={form.stay.toDate} onChange={(e) => setStay("toDate", e.target.value)} />
+                <DatePicker name="toDate" value={form.stay.toDate} min={form.stay.fromDate || earliestStart} onChange={(e) => setStay("toDate", e.target.value)} />
               </div>
             </div>
+            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "calc(-1 * var(--spacing-2))" }}>
+              Requests must be raised at least {MIN_LEAD_WORKING_DAYS} working days in advance — earliest start date is {earliestStart}.
+            </p>
             <div>
               <Label required>Purpose of visit</Label>
               <Input value={form.stay.purpose} onChange={(e) => setStay("purpose", e.target.value)} placeholder="e.g., Convocation, personal visit" />
@@ -241,10 +279,20 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
               <Label>Permanent address</Label>
               <Textarea value={form.permanentAddress} onChange={(e) => setForm((p) => ({ ...p, permanentAddress: e.target.value }))} rows={2} placeholder="Address of the guests" />
             </div>
-            <div>
-              <Label>Faculty advisor email (optional)</Label>
-              <Input value={form.facultyAdvisorEmail} onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))} placeholder="Leave blank to use the one on your profile" />
-            </div>
+            {profileFA ? (
+              <div>
+                <Label>Faculty advisor email</Label>
+                <div style={{ padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-bg-secondary)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {profileFA}
+                </div>
+                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</p>
+              </div>
+            ) : (
+              <div>
+                <Label>Faculty advisor email (optional)</Label>
+                <Input value={form.facultyAdvisorEmail} onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))} placeholder="Your faculty advisor's email" />
+              </div>
+            )}
           </div>
         )}
 

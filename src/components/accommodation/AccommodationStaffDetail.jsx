@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Modal, Button, Input } from "czero/react"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
-import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye } from "lucide-react"
+import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
 import { accommodationApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
 import { MetaBar, SectionCard, InfoRow, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
@@ -16,7 +16,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [showProof, setShowProof] = useState(false)
 
   const [decision, setDecision] = useState({ action: "approve", reason: "" })
-  const [payForm, setPayForm] = useState({ amount: 0, paymentLink: "", qrRef: "" })
+  const [payForm, setPayForm] = useState({ amount: 0, remarks: "" })
   const [verify, setVerify] = useState({ action: "verify", note: "" })
   const [hostels, setHostels] = useState([])
   const [hostelChoice, setHostelChoice] = useState("")
@@ -34,6 +34,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const assignedRooms = request?.assignedRooms || []
   const isRoomsAssigned = [ACCOMMODATION_STATUS.ROOMS_ASSIGNED, ACCOMMODATION_STATUS.CHECKED_IN, ACCOMMODATION_STATUS.CHECKED_OUT].includes(status)
 
+  const showBypassFa = (isChiefWarden || isCWOffice) && status === ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION
   const showApprove = isChiefWarden && status === ACCOMMODATION_STATUS.PENDING_CW_APPROVAL
   const showIssuePayment = isCWOffice && status === ACCOMMODATION_STATUS.CW_APPROVED
   const showAllot = isCWOffice && status === ACCOMMODATION_STATUS.PAYMENT_VERIFIED
@@ -42,7 +43,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const showAssign = isSupervisor && (status === ACCOMMODATION_STATUS.HOSTEL_ALLOTTED || (reassigning && status === ACCOMMODATION_STATUS.ROOMS_ASSIGNED))
   const showAssignedSummary = isSupervisor && isRoomsAssigned && assignedRooms.length > 0 && !showAssign
   const canReassign = isSupervisor && status === ACCOMMODATION_STATUS.ROOMS_ASSIGNED
-  const hasAction = showApprove || showIssuePayment || showVerify || showAllot || showAssign
+  const hasAction = showBypassFa || showApprove || showIssuePayment || showVerify || showAllot || showAssign
 
   const requestId = request?._id || request?.id
   const student = request?.student
@@ -71,7 +72,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     setReassigning(false)
     setDecision({ action: "approve", reason: "" })
     setVerify({ action: "verify", note: "" })
-    setPayForm({ amount: request.quote?.total || 0, paymentLink: "", qrRef: "" })
+    setPayForm({ amount: request.quote?.total || 0, remarks: "" })
     setHostelChoice("")
     // Prefill room choices from any existing assignment (used when reassigning).
     const count = request.persons || (request.guests?.length || 0)
@@ -108,11 +109,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     if (decision.action !== "approve" && !decision.reason.trim()) throw new Error("Add a reason for the student.")
     return accommodationApi.decision(requestId, { action: decision.action, reason: decision.reason.trim() })
   })
+  const submitBypassFa = run(() => accommodationApi.bypassFacultyAdvisor(requestId))
   const submitIssuePayment = run(() =>
     accommodationApi.issuePaymentRequest(requestId, {
       amount: Number(payForm.amount) || undefined,
-      paymentLink: payForm.paymentLink || undefined,
-      qrRef: payForm.qrRef || undefined,
+      remarks: payForm.remarks.trim() || undefined,
     })
   )
   const submitVerify = run(() => {
@@ -189,6 +190,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</div>
                   <InfoRow label="Amount" value={money(request.payment.amount)} />
                   <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
+                  {request.payment.remarks && <InfoRow label="Remarks" value={request.payment.remarks} />}
                   <div style={{ marginTop: "var(--spacing-2)" }}>
                     <Button size="sm" variant="secondary" onClick={() => setShowProof(true)}>
                       <Eye size={14} /> View payment proof
@@ -229,6 +231,17 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               </SectionCard>
             )}
 
+            {showBypassFa && (
+              <SectionCard icon={UserRoundX} title="Faculty advisor" accentColor="var(--color-warning)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    This request is awaiting the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
+                  </p>
+                  <Button variant="outline" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
+                </div>
+              </SectionCard>
+            )}
+
             {showApprove && (
               <SectionCard icon={Gavel} title="Your decision" accentColor="var(--color-primary)">
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
@@ -251,12 +264,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <div>
                     <Label>Amount</Label>
                     <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
+                    <p style={{ fontSize: "10px", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Calculated total is {money(request.quote?.total)}. Override for a custom amount.</p>
                   </div>
                   <div>
-                    <Label>Payment link (optional — defaults to settings)</Label>
-                    <Input value={payForm.paymentLink} onChange={(e) => setPayForm((p) => ({ ...p, paymentLink: e.target.value }))} placeholder="HCU payment URL" />
+                    <Label>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</Label>
+                    <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
                   </div>
-                  <Button onClick={submitIssuePayment} loading={busy} disabled={busy}>Send payment request</Button>
+                  <p style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>The payment link and QR are taken automatically from settings.</p>
+                  <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (Number(payForm.amount) !== (request.quote?.total || 0) && !payForm.remarks.trim())}>Send payment request</Button>
                 </div>
               </SectionCard>
             )}

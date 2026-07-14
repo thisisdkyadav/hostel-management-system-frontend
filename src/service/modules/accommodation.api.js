@@ -31,6 +31,9 @@ export const accommodationApi = {
   /** body: { action: "approve" | "request_modification" | "reject", reason? } */
   decision: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/decision`, body),
 
+  /** Chief Warden / CW Office skip the faculty-advisor stage. */
+  bypassFacultyAdvisor: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/bypass-fa`),
+
   // ---- Chief Warden Office ----
   /** body: { amount?, paymentLink?, qrRef? } */
   issuePaymentRequest: (requestId, body = {}) =>

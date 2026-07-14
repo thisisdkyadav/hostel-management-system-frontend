@@ -3,7 +3,7 @@ import { Select, Textarea, Label, Alert, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
-import { ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"
+import { MANUAL_ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"
 
 const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const isUnitBased = hostel.type === "unit-based"
@@ -212,7 +212,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
           <div>
             <Label htmlFor="status" required>Status</Label>
-            <Select name="status" value={formData.status} onChange={handleChange} options={ROOM_STATUS_OPTIONS} error={errors.status} />
+            <Select name="status" value={formData.status} onChange={handleChange} options={MANUAL_ROOM_STATUS_OPTIONS} error={errors.status} />
           </div>
         </div>
 
