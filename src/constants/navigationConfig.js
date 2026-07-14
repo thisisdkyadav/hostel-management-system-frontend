@@ -374,7 +374,7 @@ export const getStudentNavItems = (
   { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/student/complaints" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/student/events" },
-  { name: "Visitors", icon: Users, section: "main", path: "/student/visitors" },
+  // { name: "Visitors", icon: Users, section: "main", path: "/student/visitors" },
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/student/feedbacks" },
   { name: "Notifications", icon: Bell, section: "main", path: "/student/notifications", badge: notificationsCount },
   { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
