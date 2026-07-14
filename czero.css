@@ -885,7 +885,7 @@
   --cz-textarea-font-size-md: var(--cz-font-size-md);
   --cz-textarea-font-size-lg: var(--cz-font-size-lg);
   --cz-textarea-focus-border-color: hsl(var(--cz-color-ring));
-  --cz-textarea-focus-shadow: 0 0 0 2px $color-ring / 0.2;
+  --cz-textarea-focus-shadow: 0 0 0 2px hsl(var(--cz-color-ring) / 0.2);
   --cz-textarea-disabled-opacity: 0.5;
 }
 
@@ -902,6 +902,8 @@
   border: var(--cz-textarea-border-width) solid var(--cz-textarea-border-color);
   background-color: var(--cz-textarea-bg);
   color: var(--cz-textarea-color);
+  /* textareas default to a monospace UA font — inherit the app font instead */
+  font-family: inherit;
   resize: vertical;
   transition: all var(--cz-transition-fast);
 }
@@ -938,6 +940,14 @@
 .cz-textarea:disabled {
   cursor: not-allowed;
   opacity: var(--cz-textarea-disabled-opacity);
+}
+
+.cz-textarea-error {
+  border-color: hsl(var(--cz-color-danger));
+}
+.cz-textarea-error:focus {
+  border-color: hsl(var(--cz-color-danger));
+  box-shadow: 0 0 0 2px hsl(var(--cz-color-danger) / 0.2);
 }
 
 .cz-textarea-description {
