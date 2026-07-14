@@ -1327,6 +1327,29 @@
   color: var(--cz-badge-outline-color);
 }
 
+/* Soft (tinted) variants — quieter fills, colored text. Tints derive from the
+   color tokens, so they adapt to light/dark automatically. */
+.cz-badge-soft-default {
+  background-color: hsl(var(--cz-color-muted));
+  color: hsl(var(--cz-color-mutedFg));
+}
+.cz-badge-soft-primary {
+  background-color: hsl(var(--cz-color-primary) / 0.12);
+  color: hsl(var(--cz-color-primary));
+}
+.cz-badge-soft-success {
+  background-color: hsl(var(--cz-color-success) / 0.12);
+  color: hsl(var(--cz-color-success));
+}
+.cz-badge-soft-warning {
+  background-color: hsl(var(--cz-color-warning) / 0.12);
+  color: hsl(var(--cz-color-warning));
+}
+.cz-badge-soft-danger {
+  background-color: hsl(var(--cz-color-danger) / 0.12);
+  color: hsl(var(--cz-color-danger));
+}
+
 
 /* ===== STATUS BADGE ===== */
 

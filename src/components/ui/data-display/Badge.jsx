@@ -1,113 +1,59 @@
 import React, { forwardRef } from "react"
+import { Badge as C0Badge } from "czero/react"
 
 /**
- * Badge Component - Small label/indicator
- * 
- * @param {React.ReactNode} children - Badge content
- * @param {string} variant - Color variant: default, primary, success, warning, danger, info
- * @param {string} size - Size: small, medium, large
- * @param {boolean} dot - Show as dot indicator
- * @param {boolean} outline - Outlined style
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Badge — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Badge` while preserving the legacy HMS API so existing call
+ * sites keep working unchanged:
+ *  - variants default | primary | success | warning | danger | info | outline
+ *    (`info` maps to `primary` — they were identical in the legacy component;
+ *    unknown variants fall back to `default`, matching the old behavior)
+ *  - size names small | medium | large (czero has sm | md, so large → md)
+ *  - `dot` indicator (reproduced as a small circle; czero has no dot mode)
+ *
+ * Uses czero's `soft` (tinted) badge variants to preserve the legacy tinted
+ * look — quiet fills with colored text, rather than czero's default solid fills.
+ *
+ * @param {React.ReactNode} children
+ * @param {"default"|"primary"|"success"|"warning"|"danger"|"info"|"outline"} variant
+ * @param {"small"|"medium"|"large"|"sm"|"md"|"lg"} size
+ * @param {boolean} dot - render as a small circular indicator (no text)
+ * @param {boolean} outline - outlined style
+ * @param {string} className
+ * @param {object} style
  */
-const Badge = forwardRef(({
-  children,
-  variant = "default",
-  size = "medium",
-  dot = false,
-  outline = false,
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
+const SIZE_MAP = { small: "sm", medium: "md", large: "md", sm: "sm", md: "md", lg: "md" }
+// czero has no `info` variant; it was byte-identical to `primary` in the legacy component.
+const VARIANT_MAP = { default: "default", primary: "primary", success: "success", warning: "warning", danger: "danger", info: "primary", outline: "outline" }
+const DOT_SIZE = { small: 6, medium: 8, large: 10 }
 
-  const sizes = {
-    small: {
-      padding: dot ? 0 : "1px 6px",
-      fontSize: "var(--font-size-xs)",
-      height: dot ? "6px" : "auto",
-      width: dot ? "6px" : "auto",
-      minWidth: dot ? "6px" : "auto",
-    },
-    medium: {
-      padding: dot ? 0 : "2px 8px",
-      fontSize: "var(--font-size-xs)",
-      height: dot ? "8px" : "auto",
-      width: dot ? "8px" : "auto",
-      minWidth: dot ? "8px" : "auto",
-    },
-    large: {
-      padding: dot ? 0 : "4px 10px",
-      fontSize: "var(--font-size-sm)",
-      height: dot ? "10px" : "auto",
-      width: dot ? "10px" : "auto",
-      minWidth: dot ? "10px" : "auto",
-    },
+const Badge = forwardRef(
+  ({ children, variant = "default", size = "medium", dot = false, outline = false, className = "", style = {}, ...rest }, ref) => {
+    const czVariant = outline ? "outline" : VARIANT_MAP[variant] || "default"
+    const czSize = SIZE_MAP[size] || "md"
+
+    // Dot indicator: czero has no dot mode — render a small circle using the
+    // variant's badge colors, with no text (matches the legacy behavior).
+    if (dot) {
+      const d = DOT_SIZE[size] || 8
+      return (
+        <span
+          ref={ref}
+          className={`cz-badge cz-badge-soft-${VARIANT_MAP[variant] || "default"} ${className}`.trim()}
+          style={{ width: d, height: d, minWidth: d, padding: 0, borderRadius: "var(--cz-radius-full)", ...style }}
+          {...rest}
+        />
+      )
+    }
+
+    return (
+      <C0Badge ref={ref} variant={czVariant} soft size={czSize} className={className} style={style} {...rest}>
+        {children}
+      </C0Badge>
+    )
   }
-
-  const variants = {
-    default: {
-      background: outline ? "transparent" : "var(--color-bg-tertiary)",
-      color: "var(--color-text-muted)",
-      border: outline ? "1px solid var(--color-border-primary)" : "none",
-    },
-    primary: {
-      background: outline ? "transparent" : "var(--color-primary-bg)",
-      color: "var(--color-primary)",
-      border: outline ? "1px solid var(--color-primary)" : "none",
-    },
-    success: {
-      background: outline ? "transparent" : "var(--color-success-bg)",
-      color: "var(--color-success)",
-      border: outline ? "1px solid var(--color-success)" : "none",
-    },
-    warning: {
-      background: outline ? "transparent" : "var(--color-warning-bg)",
-      color: "var(--color-warning)",
-      border: outline ? "1px solid var(--color-warning)" : "none",
-    },
-    danger: {
-      background: outline ? "transparent" : "var(--color-danger-bg)",
-      color: "var(--color-danger)",
-      border: outline ? "1px solid var(--color-danger)" : "none",
-    },
-    info: {
-      background: outline ? "transparent" : "var(--color-primary-bg)",
-      color: "var(--color-primary)",
-      border: outline ? "1px solid var(--color-primary)" : "none",
-    },
-  }
-
-  const currentSize = sizes[size] || sizes.medium
-  const currentVariant = variants[variant] || variants.default
-
-  const badgeStyles = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: currentSize.padding,
-    fontSize: currentSize.fontSize,
-    fontWeight: "var(--font-weight-medium)",
-    borderRadius: dot ? "var(--radius-full)" : "var(--radius-badge)",
-    background: currentVariant.background,
-    color: currentVariant.color,
-    border: currentVariant.border,
-    whiteSpace: "nowrap",
-    ...(dot && {
-      height: currentSize.height,
-      width: currentSize.width,
-      minWidth: currentSize.minWidth,
-    }),
-    ...style,
-  }
-
-  return (
-    <span ref={ref} className={className} style={badgeStyles} {...rest}>
-      {!dot && children}
-    </span>
-  )
-})
+)
 
 Badge.displayName = "Badge"
 
