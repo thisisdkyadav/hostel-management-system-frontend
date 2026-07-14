@@ -1823,6 +1823,32 @@
 }
 .cz-alert-danger .cz-alert-icon { color: var(--cz-alert-danger-color); }
 
+/* icon SVG sizing + let the content column fill the row so close sits right */
+.cz-alert-icon svg { width: 100%; height: 100%; display: block; }
+.cz-alert-content { flex: 1 1 auto; min-width: 0; }
+
+/* dismiss / close button */
+.cz-alert-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cz-radius-sm);
+  background: transparent;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity var(--cz-transition-fast), background var(--cz-transition-fast);
+}
+.cz-alert-close:hover { opacity: 1; background: hsl(var(--cz-color-fg) / 0.08); }
+.cz-alert-close:focus-visible { outline: none; box-shadow: 0 0 0 2px hsl(var(--cz-color-primary) / 0.4); }
+.cz-alert-close svg { width: 0.875rem; height: 0.875rem; display: block; }
+
 
 /* ===== TOAST ===== */
 

@@ -1,157 +1,61 @@
 import React, { forwardRef, useState } from "react"
-import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaExclamationTriangle, FaTimes } from "react-icons/fa"
+import { Alert as C0Alert } from "czero/react"
 
 /**
- * Alert Component - Static notification/message display
- * 
- * @param {React.ReactNode} children - Alert content
- * @param {string} type - Alert type: info, success, warning, error
- * @param {string} title - Optional title
- * @param {boolean} dismissible - Show close button
- * @param {function} onDismiss - Dismiss handler
- * @param {React.ReactNode} icon - Custom icon (overrides default)
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Alert — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Alert` while preserving the legacy HMS API so existing call
+ * sites keep working unchanged:
+ *  - `type` info | success | warning | error  (error → czero's `danger`)
+ *  - `dismissible` + `onDismiss` — the alert hides itself and calls the handler
+ *  - custom `icon` (a React element) overrides the default variant icon
+ *
+ * Note: czero now ships default per-variant icons (shown by default). The
+ * legacy component only rendered an icon when a real node was passed (a bare
+ * `icon` prop actually rendered nothing), so most alerts now gain their
+ * intended leading icon.
+ *
+ * Prefer importing `Alert` from `@/components/ui`.
+ *
+ * @param {React.ReactNode} children
+ * @param {"info"|"success"|"warning"|"error"} type
+ * @param {string} title
+ * @param {boolean} dismissible
+ * @param {function} onDismiss
+ * @param {React.ReactNode} icon - custom icon (overrides the default)
+ * @param {string} className
+ * @param {object} style
  */
-const Alert = forwardRef(({
-  children,
-  type = "info",
-  title,
-  dismissible = false,
-  onDismiss,
-  icon: customIcon,
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
-  const [isDismissed, setIsDismissed] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+const VARIANT_MAP = { info: "info", success: "success", warning: "warning", error: "danger" }
 
-  const variants = {
-    info: {
-      icon: <FaInfoCircle />,
-      background: "var(--color-primary-bg)",
-      borderColor: "var(--color-primary)",
-      iconColor: "var(--color-primary)",
-      titleColor: "var(--color-primary-dark)",
-    },
-    success: {
-      icon: <FaCheckCircle />,
-      background: "var(--color-success-bg)",
-      borderColor: "var(--color-success)",
-      iconColor: "var(--color-success)",
-      titleColor: "var(--color-success-dark)",
-    },
-    warning: {
-      icon: <FaExclamationTriangle />,
-      background: "var(--color-warning-bg)",
-      borderColor: "var(--color-warning)",
-      iconColor: "var(--color-warning)",
-      titleColor: "var(--color-warning-dark)",
-    },
-    error: {
-      icon: <FaExclamationCircle />,
-      background: "var(--color-danger-bg)",
-      borderColor: "var(--color-danger)",
-      iconColor: "var(--color-danger)",
-      titleColor: "var(--color-danger-dark)",
-    },
-  }
+const Alert = forwardRef(
+  ({ children, type = "info", title, dismissible = false, onDismiss, icon, className = "", style = {}, ...rest }, ref) => {
+    const [dismissed, setDismissed] = useState(false)
+    if (dismissed) return null
 
-  const currentVariant = variants[type] || variants.info
-
-  if (isDismissed) return null
-
-  const handleDismiss = () => {
-    setIsDismissed(true)
-    if (onDismiss) {
-      onDismiss()
+    const handleDismiss = () => {
+      setDismissed(true)
+      onDismiss?.()
     }
-  }
 
-  const alertStyles = {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: "var(--spacing-3)",
-    padding: "var(--spacing-4)",
-    background: currentVariant.background,
-    borderRadius: "var(--radius-lg)",
-    borderLeft: `4px solid ${currentVariant.borderColor}`,
-    ...style,
+    return (
+      <C0Alert
+        ref={ref}
+        variant={VARIANT_MAP[type] || "info"}
+        title={title}
+        dismissible={dismissible}
+        onDismiss={dismissible ? handleDismiss : undefined}
+        // a real element overrides; a bare `icon` boolean falls back to czero's default
+        icon={React.isValidElement(icon) ? icon : undefined}
+        className={className}
+        style={style}
+        {...rest}
+      >
+        {children}
+      </C0Alert>
+    )
   }
-
-  const iconStyles = {
-    flexShrink: 0,
-    color: currentVariant.iconColor,
-    fontSize: "var(--font-size-lg)",
-    marginTop: "2px",
-  }
-
-  const contentStyles = {
-    flex: 1,
-    minWidth: 0,
-  }
-
-  const titleStyles = {
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: currentVariant.titleColor,
-    margin: 0,
-    marginBottom: children ? "var(--spacing-1)" : 0,
-  }
-
-  const messageStyles = {
-    fontSize: "var(--font-size-sm)",
-    color: "var(--color-text-body)",
-    margin: 0,
-    lineHeight: "1.5",
-  }
-
-  const closeButtonStyles = {
-    flexShrink: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "24px",
-    height: "24px",
-    borderRadius: "var(--radius-sm)",
-    background: isHovered ? "rgba(0,0,0,0.1)" : "transparent",
-    border: "none",
-    color: currentVariant.iconColor,
-    cursor: "pointer",
-    transition: "var(--transition-colors)",
-    opacity: isHovered ? 1 : 0.7,
-  }
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={alertStyles}
-      role="alert"
-      {...rest}
-    >
-      <span style={iconStyles}>
-        {customIcon || currentVariant.icon}
-      </span>
-      <div style={contentStyles}>
-        {title && <p style={titleStyles}>{title}</p>}
-        {children && <div style={messageStyles}>{children}</div>}
-      </div>
-      {dismissible && (
-        <button
-          onClick={handleDismiss}
-          style={closeButtonStyles}
-          aria-label="Dismiss alert"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <FaTimes size={12} />
-        </button>
-      )}
-    </div>
-  )
-})
+)
 
 Alert.displayName = "Alert"
 
