@@ -1015,7 +1015,7 @@
 
 /* Select Content (Dropdown) */
 .cz-select-content {
-  z-index: 50;
+  z-index: 9000;
   min-width: 8rem;
   max-height: 15rem;
   overflow: hidden;
@@ -2660,7 +2660,7 @@
   box-shadow: var(--cz-dropdown-content-shadow);
   border: 1px solid hsl(var(--cz-color-border));
   padding: var(--cz-dropdown-content-padding);
-  z-index: 50;
+  z-index: 9000;
   animation: cz-dropdown-fade-in 150ms ease;
 }
 
