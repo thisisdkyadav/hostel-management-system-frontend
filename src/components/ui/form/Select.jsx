@@ -33,12 +33,19 @@ import { Select as C0Select } from "czero/react"
  */
 const SIZE_MAP = { small: "sm", medium: "md", large: "lg", sm: "sm", md: "md", lg: "lg" }
 
+// Radix reserves "" (it clears the selection and shows the placeholder), and
+// throws on <Select.Item value="">. Legacy call sites commonly use an
+// empty-string option as a "none/all" sentinel, so map "" onto a private token
+// internally and translate it back on the way out — call sites still see "".
+const EMPTY = "__cz_empty__"
+const toCz = (v) => (String(v) === "" ? EMPTY : String(v))
+const fromCz = (v) => (v === EMPTY ? "" : v)
+
 const normalizeOptions = (options) =>
-  (options || []).map((o) =>
-    typeof o === "string" || typeof o === "number"
-      ? { value: String(o), label: String(o) }
-      : { ...o, value: String(o.value) }
-  )
+  (options || []).map((o) => {
+    const opt = typeof o === "string" || typeof o === "number" ? { value: o, label: String(o) } : o
+    return { ...opt, value: toCz(opt.value ?? "") }
+  })
 
 const Select = forwardRef((props) => {
   const {
@@ -54,13 +61,21 @@ const Select = forwardRef((props) => {
     id,
   } = props
 
-  const handleValueChange = (v) => onChange?.({ target: { value: v, name, id } })
+  const normalized = normalizeOptions(options)
+  const hasEmptyOption = normalized.some((o) => o.value === EMPTY)
+
+  // `value=""` selects the sentinel option when one exists; otherwise it means
+  // "nothing selected", so leave it undefined and let the placeholder show.
+  const czValue =
+    value == null ? undefined : String(value) === "" ? (hasEmptyOption ? EMPTY : undefined) : String(value)
+
+  const handleValueChange = (v) => onChange?.({ target: { value: fromCz(v), name, id } })
 
   return (
     <C0Select
-      value={value == null ? undefined : String(value)}
+      value={czValue}
       onValueChange={handleValueChange}
-      options={normalizeOptions(options)}
+      options={normalized}
       placeholder={placeholder}
       icon={icon}
       error={Boolean(error) || undefined}
