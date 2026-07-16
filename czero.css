@@ -18,7 +18,7 @@
 
 :root {
   --cz-color-bg: 0 0% 100%;
-  --cz-color-fg: 216 54% 10%;
+  --cz-color-fg: 215 25% 27%;
   --cz-color-primary: 209 79% 37%;
   --cz-color-primaryFg: 0 0% 100%;
   --cz-color-secondary: 210 17% 98%;
@@ -69,7 +69,7 @@
 
 .dark {
   --cz-color-bg: 0 0% 10%;
-  --cz-color-fg: 0 0% 96%;
+  --cz-color-fg: 0 0% 83%;
   --cz-color-primary: 211 76% 65%;
   --cz-color-primaryFg: 0 0% 100%;
   --cz-color-secondary: 0 0% 12%;
@@ -881,9 +881,9 @@
   --cz-textarea-padding-y-sm: 0.375rem;
   --cz-textarea-padding-y-md: 0.5rem;
   --cz-textarea-padding-y-lg: 0.75rem;
-  --cz-textarea-font-size-sm: var(--cz-font-size-sm);
-  --cz-textarea-font-size-md: var(--cz-font-size-md);
-  --cz-textarea-font-size-lg: var(--cz-font-size-lg);
+  --cz-textarea-font-size-sm: var(--font-size-sm, 0.8125rem);
+  --cz-textarea-font-size-md: var(--font-size-base, 0.875rem);
+  --cz-textarea-font-size-lg: var(--font-size-lg, 1rem);
   --cz-textarea-focus-border-color: hsl(var(--cz-color-ring));
   --cz-textarea-focus-shadow: 0 0 0 2px hsl(var(--cz-color-ring) / 0.2);
   --cz-textarea-disabled-opacity: 0.5;
@@ -978,7 +978,7 @@
   border: 1px solid hsl(var(--cz-color-border));
   background-color: hsl(var(--cz-color-bg));
   color: hsl(var(--cz-color-fg));
-  font-size: var(--cz-font-size-md);
+  font-size: var(--font-size-base, 0.875rem);
   transition: all var(--cz-transition-fast);
   cursor: pointer;
 }
@@ -1009,9 +1009,9 @@
 }
 
 /* Select Sizes */
-.cz-select-sm { height: 2rem; padding: 0 0.5rem; font-size: var(--cz-font-size-sm); }
-.cz-select-md { height: 2.5rem; padding: 0 0.75rem; font-size: var(--cz-font-size-md); }
-.cz-select-lg { height: 3rem; padding: 0 1rem; font-size: var(--cz-font-size-lg); }
+.cz-select-sm { height: 2rem; padding: 0 0.5rem; font-size: var(--font-size-sm, 0.8125rem); }
+.cz-select-md { height: 2.5rem; padding: 0 0.75rem; font-size: var(--font-size-base, 0.875rem); }
+.cz-select-lg { height: 3rem; padding: 0 1rem; font-size: var(--font-size-lg, 1rem); }
 
 /* Select Content (Dropdown) */
 .cz-select-content {
