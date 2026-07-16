@@ -979,17 +979,22 @@
   background-color: hsl(var(--cz-color-bg));
   color: hsl(var(--cz-color-fg));
   font-size: var(--font-size-base, 0.875rem);
-  transition: all var(--cz-transition-fast);
+  /* only the properties that actually change — `all` also animates layout */
+  transition: border-color var(--cz-transition-fast), box-shadow var(--cz-transition-fast);
   cursor: pointer;
 }
 
-.cz-select:hover {
+.cz-select:hover:not(:disabled):not([data-disabled]) {
   border-color: hsl(var(--cz-color-primary));
 }
 
-.cz-select:focus-visible {
+/* Focus and open share one emphasis, and match Input's soft ring rather than a
+   hard full-opacity outline. The ring stays while the menu is open. */
+.cz-select:focus-visible,
+.cz-select[data-state="open"] {
   outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--cz-color-ring));
+  border-color: hsl(var(--cz-color-ring));
+  box-shadow: 0 0 0 2px hsl(var(--cz-color-ring) / 0.2);
 }
 
 .cz-select:disabled,
@@ -1006,6 +1011,13 @@
   color: hsl(var(--cz-color-mutedFg));
   margin-left: 0.5rem;
   flex-shrink: 0;
+  transition: transform var(--cz-transition-fast), color var(--cz-transition-fast);
+}
+
+/* the chevron turns over to point at the open menu */
+.cz-select[data-state="open"] .cz-select-icon {
+  transform: rotate(180deg);
+  color: hsl(var(--cz-color-primary));
 }
 
 /* Select Sizes */
@@ -1020,10 +1032,30 @@
   width: var(--radix-select-trigger-width);
   max-height: 15rem;
   overflow: hidden;
+  /* Radix's viewport is `flex: 1; overflow: hidden auto` — without a flex
+     column here it never gets a bounded height, so long lists clip instead
+     of scrolling. */
+  display: flex;
+  flex-direction: column;
   background-color: hsl(var(--cz-color-bg));
   border: 1px solid hsl(var(--cz-color-border));
   border-radius: var(--cz-radius-md);
   box-shadow: var(--cz-shadow-lg);
+  transform-origin: var(--radix-select-content-transform-origin);
+}
+
+/* grow out of the trigger rather than snapping into place */
+.cz-select-content[data-state="open"] {
+  animation: cz-select-in 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cz-select-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-select-content[data-state="open"] { animation: none; }
 }
 
 .cz-select-viewport {
@@ -1037,15 +1069,31 @@
   padding: 0.5rem 0.75rem;
   font-size: var(--cz-font-size-sm);
   color: hsl(var(--cz-color-fg));
-  border-radius: var(--cz-radius-sm);
+  border-radius: var(--cz-radius-md);
   cursor: pointer;
   user-select: none;
   outline: none;
+  white-space: nowrap;
+  transition: background-color var(--cz-transition-fast), color var(--cz-transition-fast);
+}
+
+/* long labels trail off rather than wrapping the row */
+.cz-select-item > span:not(.cz-select-item-indicator) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cz-select-item:hover,
 .cz-select-item[data-highlighted] {
   background-color: hsl(var(--cz-color-muted));
+}
+
+/* the current choice reads as chosen, not just ticked */
+.cz-select-item[data-state="checked"] {
+  color: hsl(var(--cz-color-primary));
+  font-weight: var(--cz-font-weight-medium);
+  background-color: hsl(var(--cz-color-primary) / 0.08);
 }
 
 .cz-select-item[data-disabled] {
@@ -1075,11 +1123,17 @@
 }
 
 /* Error state — mirrors .cz-input-error */
-.cz-select-error {
+.cz-select-error,
+.cz-select-error:hover:not(:disabled):not([data-disabled]) {
   border-color: hsl(var(--cz-color-danger));
 }
-.cz-select-error:focus-visible {
+.cz-select-error:focus-visible,
+.cz-select-error[data-state="open"] {
+  border-color: hsl(var(--cz-color-danger));
   box-shadow: 0 0 0 2px hsl(var(--cz-color-danger) / 0.2);
+}
+.cz-select-error[data-state="open"] .cz-select-icon {
+  color: hsl(var(--cz-color-danger));
 }
 
 /* Trigger value + optional leading icon (keeps the chevron pinned right) */
