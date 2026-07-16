@@ -57,17 +57,28 @@ const Select = forwardRef((props) => {
     icon,
     error,
     disabled = false,
+    required = false,
     size = "medium",
     id,
   } = props
 
   const normalized = normalizeOptions(options)
-  const hasEmptyOption = normalized.some((o) => o.value === EMPTY)
+  // Did the caller supply a real empty-value option, or do we synthesize one?
+  const providedEmpty = normalized.some((o) => o.value === EMPTY)
 
-  // `value=""` selects the sentinel option when one exists; otherwise it means
-  // "nothing selected", so leave it undefined and let the placeholder show.
+  // The legacy component rendered the placeholder as a selectable "clear" entry
+  // when not required — that's how filters reset to e.g. "All Departments".
+  // Radix has no such affordance, so re-add it.
+  const items =
+    placeholder && !required && !providedEmpty
+      ? [{ value: EMPTY, label: placeholder }, ...normalized]
+      : normalized
+
+  // A real empty option is selected on value="" (its label shows as the value).
+  // A synthesized clear entry is not — value="" means "nothing picked", so the
+  // muted placeholder shows instead, matching the legacy behaviour.
   const czValue =
-    value == null ? undefined : String(value) === "" ? (hasEmptyOption ? EMPTY : undefined) : String(value)
+    value == null ? undefined : String(value) === "" ? (providedEmpty ? EMPTY : undefined) : String(value)
 
   const handleValueChange = (v) => onChange?.({ target: { value: fromCz(v), name, id } })
 
@@ -75,7 +86,7 @@ const Select = forwardRef((props) => {
     <C0Select
       value={czValue}
       onValueChange={handleValueChange}
-      options={normalized}
+      options={items}
       placeholder={placeholder}
       icon={icon}
       error={Boolean(error) || undefined}

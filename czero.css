@@ -1017,6 +1017,7 @@
 .cz-select-content {
   z-index: 9000;
   min-width: 8rem;
+  width: var(--radix-select-trigger-width);
   max-height: 15rem;
   overflow: hidden;
   background-color: hsl(var(--cz-color-bg));
