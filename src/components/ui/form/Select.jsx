@@ -74,11 +74,14 @@ const Select = forwardRef((props) => {
       ? [{ value: EMPTY, label: placeholder }, ...normalized]
       : normalized
 
-  // A real empty option is selected on value="" (its label shows as the value).
-  // A synthesized clear entry is not — value="" means "nothing picked", so the
-  // muted placeholder shows instead, matching the legacy behaviour.
+  // Key the value off the *final* item list, not off `providedEmpty`. Async
+  // selects (Department/Degree) ship a `{value:""}` placeholder row while
+  // loading and a plain list afterwards; keying off `providedEmpty` flipped
+  // czValue EMPTY -> undefined mid-life, i.e. controlled -> uncontrolled, which
+  // leaves Radix with a blank trigger. Keying off `hasEmpty` keeps it stable.
+  const hasEmpty = items.some((o) => o.value === EMPTY)
   const czValue =
-    value == null ? undefined : String(value) === "" ? (providedEmpty ? EMPTY : undefined) : String(value)
+    value == null || String(value) === "" ? (hasEmpty ? EMPTY : undefined) : String(value)
 
   const handleValueChange = (v) => onChange?.({ target: { value: fromCz(v), name, id } })
 
