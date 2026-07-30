@@ -529,12 +529,14 @@
 /* ===== CARD ===== */
 
 :root {
-  --cz-card-padding: 1.5rem;
+  --cz-card-padding: 1.25rem;
   --cz-card-border-radius: 16px;
   --cz-card-border-width: 1px;
-  --cz-card-border-color: hsl(var(--cz-color-border));
+  --cz-card-border-color: var(--color-border-secondary, hsl(var(--cz-color-border)));
   --cz-card-bg: hsl(var(--cz-color-bg));
-  --cz-card-shadow: var(--cz-shadow-sm);
+  --cz-card-shadow: var(--shadow-card, var(--cz-shadow-sm));
+  --cz-card-hover-border-color: var(--color-border-hover, hsl(var(--cz-color-primary) / 0.4));
+  --cz-card-hover-shadow: var(--shadow-card-hover, var(--cz-shadow-lg));
   --cz-card-header-padding-bottom: var(--cz-spacing-md);
   --cz-card-header-margin-bottom: var(--cz-spacing-md);
   --cz-card-title-font-size: var(--cz-font-size-lg);
@@ -556,6 +558,23 @@
 }
 
 .cz-card-no-padding { padding: 0; }
+
+/* legacy card padding was p-5 with md:p-6 */
+@media (min-width: 768px) {
+  :root { --cz-card-padding: 1.5rem; }
+}
+
+.cz-card-hoverable {
+  transition: box-shadow var(--cz-transition-normal), border-color var(--cz-transition-normal);
+}
+.cz-card-hoverable:hover {
+  border-color: var(--cz-card-hover-border-color);
+  box-shadow: var(--cz-card-hover-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-card-hoverable { transition: none; }
+}
 
 .cz-card-header {
   display: flex;

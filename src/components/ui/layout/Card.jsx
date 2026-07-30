@@ -1,82 +1,90 @@
-import React, { forwardRef, useState } from "react"
+import React, { forwardRef } from "react"
+import { Card as C0Card } from "czero/react"
 
 /**
- * Card Component - Matches existing design language
- * 
- * @param {React.ReactNode} children - Card content
- * @param {string} className - Additional class names
- * @param {string} padding - Padding class (default: "p-5 md:p-6")
- * @param {string} rounded - Border radius class
- * @param {boolean} border - Show border
- * @param {string} borderColor - Border color CSS variable
- * @param {string} hoverBorderColor - Hover border color CSS variable
- * @param {string} shadow - Box shadow CSS variable
- * @param {string} hoverShadow - Hover box shadow CSS variable
- * @param {boolean} transition - Enable transition
- * @param {function} onClick - Click handler
- * @param {object} style - Additional inline styles
+ * Card — C0-backed compatibility adapter (root only).
+ *
+ * The card surface (background, radius, border, shadow, hover lift) now comes
+ * from czero's `Card`; the legacy customization props map onto czero's
+ * --cz-card-* override hooks, and `padding`/`rounded` stay Tailwind classes so
+ * responsive values like "p-5 md:p-6" keep working.
+ *
+ * The sub-components below (Header / Title / Description / Content / Body /
+ * Footer) intentionally stay HMS layout primitives: czero's equivalents are a
+ * vertical stack with divider borders, whereas HMS's header is a borderless
+ * flex row. Mapping them would change how existing cards look.
+ *
+ * @param {React.ReactNode} children
+ * @param {string} padding - Tailwind padding classes (default "p-5 md:p-6")
+ * @param {string} rounded - Tailwind radius class
+ * @param {boolean} border - show the border
+ * @param {string} borderColor / hoverBorderColor - CSS colour values
+ * @param {string} shadow / hoverShadow - CSS shadow values
+ * @param {boolean} transition - animate the hover change
+ * @param {function} onClick
+ * @param {string} className
+ * @param {object} style
  */
+const DEFAULT_PADDING = "p-5 md:p-6"
+
+// Tailwind v4 puts utilities in @layer utilities, and unlayered CSS always wins
+// over layered CSS — so a `p-4` class can never override czero's .cz-card
+// padding. Translate the scale class into czero's --cz-card-padding hook
+// instead (an inline custom property beats every stylesheet).
+function paddingToToken(padding) {
+  if (!padding || padding === DEFAULT_PADDING) return null // responsive default lives in CSS
+  const arbitrary = padding.match(/(?:^|\s)p-\[([^\]]+)\]/)
+  if (arbitrary) return arbitrary[1]
+  const scale = padding.match(/(?:^|\s)p-(\d+(?:\.\d+)?)(?:\s|$)/)
+  if (scale) return `${parseFloat(scale[1]) * 0.25}rem`
+  return null // unrecognised — leave the default and pass the class through
+}
+
 const Card = forwardRef(({
   children,
   className = "",
-  padding = "p-5 md:p-6",
+  padding = DEFAULT_PADDING,
   rounded = "rounded-[var(--radius-card)]",
   border = true,
-  borderColor = "var(--color-border-secondary)",
-  hoverBorderColor = "var(--color-border-hover)",
-  shadow = "var(--shadow-card)",
-  hoverShadow = "var(--shadow-card-hover)",
+  borderColor,
+  hoverBorderColor,
+  shadow,
+  hoverShadow,
   transition = true,
-  onMouseEnter,
-  onMouseLeave,
   onClick,
   style = {},
   ...rest
 }, ref) => {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleMouseEnter = (e) => {
-    setIsHovered(true)
-    if (onMouseEnter) onMouseEnter(e)
+  // Legacy colour/shadow props drive czero's override hooks, so the styling
+  // still lives in CSS (no hover state in React any more).
+  const paddingToken = paddingToToken(padding)
+  const hooks = {
+    ...(paddingToken ? { "--cz-card-padding": paddingToken } : null),
+    ...(borderColor ? { "--cz-card-border-color": borderColor } : null),
+    ...(hoverBorderColor ? { "--cz-card-hover-border-color": hoverBorderColor } : null),
+    ...(shadow ? { "--cz-card-shadow": shadow } : null),
+    ...(hoverShadow ? { "--cz-card-hover-shadow": hoverShadow } : null),
+    ...(border ? null : { borderWidth: 0 }),
+    ...(transition ? null : { transition: "none" }),
   }
 
-  const handleMouseLeave = (e) => {
-    setIsHovered(false)
-    if (onMouseLeave) onMouseLeave(e)
-  }
-
-  // Dynamic styles for hover state
-  const dynamicStyle = {
-    boxShadow: isHovered ? hoverShadow : shadow,
-    borderColor: isHovered ? hoverBorderColor : borderColor,
-    ...style,
-  }
-
-  // Base classes using CSS variables
-  const baseClasses = `
-    bg-[var(--color-bg-primary)]
-    ${rounded}
-    ${padding}
-    ${transition ? "transition-all duration-300" : ""}
-    ${border ? "border" : ""}
-    ${onClick ? "cursor-pointer" : ""}
-    ${className}
-  `
+  const classes = [rounded, onClick ? "cursor-pointer" : "", className]
+    .filter(Boolean)
+    .join(" ")
     .replace(/\s+/g, " ")
     .trim()
 
   return (
-    <div
+    <C0Card
       ref={ref}
-      className={baseClasses}
-      style={dynamicStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      hoverable
+      className={classes}
+      style={{ ...hooks, ...style }}
       onClick={onClick}
       {...rest}
     >
       {children}
-    </div>
+    </C0Card>
   )
 })
 
