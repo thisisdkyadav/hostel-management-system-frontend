@@ -7,6 +7,7 @@ import { FaQrcode } from "react-icons/fa"
 import OfflineBanner from "../../components/common/OfflineBanner"
 import StudentProfile from "../../components/student/StudentProfile"
 import RoomInfoCard from "../../components/student/RoomInfoCard"
+import InsuranceInfoCard from "../../components/student/InsuranceInfoCard"
 import ComplaintsSummary from "../../components/student/ComplaintsSummary"
 import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
@@ -679,6 +680,7 @@ const DashboardPage = () => {
         {/* Left sidebar - takes 2 columns */}
         <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
           <RoomInfoCard roomData={dashboardData.roomInfo} />
+          <InsuranceInfoCard insurance={dashboardData.insurance} />
           <LostFoundSummary lostAndFoundStats={dashboardData.stats.lostAndFound} />
         </div>
 

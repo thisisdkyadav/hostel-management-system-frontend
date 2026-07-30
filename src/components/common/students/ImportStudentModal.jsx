@@ -40,62 +40,69 @@ const parseIsDayScholar = (value) => {
   return null
 }
 
+// Required column titles are validated once from the header (first) line in
+// parseCSV. Here we validate data rows only: a row that fails is skipped (with a
+// reason) instead of aborting the whole import, so one bad row can't block the file.
 const normalizeCsvRows = (rows, headers) => {
-  const previewRows = rows.map((row) => {
+  const previewRows = []
+  const payload = []
+  const skipped = []
+  const seenEmails = new Set()
+  const seenRollNumbers = new Set()
+
+  rows.forEach((row, index) => {
+    const rowNumber = index + 2
     const normalized = {}
     headers.forEach((header) => {
       normalized[header] = toSafeString(row?.[header])
     })
-    return normalized
-  })
 
-  const payload = []
-  const errors = []
-  const seenEmails = new Set()
-  const seenRollNumbers = new Set()
-
-  previewRows.forEach((row, index) => {
-    const rowNumber = index + 2
-    const name = toSafeString(row.name)
-    const email = toSafeString(row.email)
-    const rollNumber = toSafeString(row.rollNumber).toUpperCase()
-    const gender = normalizeGender(row.gender)
-    const isDayScholar = parseIsDayScholar(row.isDayScholar)
+    const name = toSafeString(normalized.name)
+    const email = toSafeString(normalized.email)
+    const rollNumber = toSafeString(normalized.rollNumber).toUpperCase()
+    const gender = normalizeGender(normalized.gender)
+    const isDayScholar = parseIsDayScholar(normalized.isDayScholar)
 
     if (!name || !email || !rollNumber || !gender || isDayScholar === null) {
-      errors.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber, gender, isDayScholar)`)
+      skipped.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber, gender, isDayScholar)`)
       return
     }
 
     if (!emailRegex.test(email)) {
-      errors.push(`Row ${rowNumber}: Invalid email format`)
+      skipped.push(`Row ${rowNumber}: Invalid email format`)
       return
     }
 
     if (!["Male", "Female", "Other"].includes(gender)) {
-      errors.push(`Row ${rowNumber}: Invalid gender "${gender}". Allowed values: Male, Female, Other`)
+      skipped.push(`Row ${rowNumber}: Invalid gender "${gender}". Allowed values: Male, Female, Other`)
       return
     }
 
     if (seenEmails.has(email.toLowerCase())) {
-      errors.push(`Row ${rowNumber}: Duplicate email ${email} in CSV`)
+      skipped.push(`Row ${rowNumber}: Duplicate email ${email} in CSV`)
       return
     }
 
     if (seenRollNumbers.has(rollNumber)) {
-      errors.push(`Row ${rowNumber}: Duplicate roll number ${rollNumber} in CSV`)
+      skipped.push(`Row ${rowNumber}: Duplicate roll number ${rollNumber} in CSV`)
       return
     }
 
     seenEmails.add(email.toLowerCase())
     seenRollNumbers.add(rollNumber)
 
-    const student = { name, email, rollNumber, gender, isDayScholar }
-
-    payload.push(student)
+    // Preview mirrors the valid rows that will actually be imported.
+    previewRows.push(normalized)
+    payload.push({ name, email, rollNumber, gender, isDayScholar })
   })
 
-  return { previewRows, payload, errors }
+  return { previewRows, payload, skipped }
+}
+
+const formatRowIssues = (issues, max = 8) => {
+  const top = issues.slice(0, max)
+  const remaining = issues.length - top.length
+  return remaining > 0 ? `${top.join("\n")}\n... and ${remaining} more` : top.join("\n")
 }
 
 const normalizeRollNumber = (value) => toSafeString(value).toUpperCase()
@@ -309,6 +316,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   })
   const [importSummary, setImportSummary] = useState(null)
   const [csvImportResultRows, setCsvImportResultRows] = useState([])
+  const [rowWarnings, setRowWarnings] = useState([])
 
   const importJobIdRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -380,6 +388,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     setPreviewRows([])
     setParsedData([])
     setCsvImportResultRows([])
+    setRowWarnings([])
     setActiveTab("csv")
     setManualStudent({
       name: "",
@@ -432,6 +441,10 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      // Trim header names so row keys match the required field names. Without this,
+      // headers like "name, email, ..." (space after each comma) keep the spaces as
+      // row keys, so every value lookup misses and all rows read as empty.
+      transformHeader: (header) => String(header ?? "").replace(/^\uFEFF/, "").trim(),
       complete: (results) => {
         try {
           const rows = Array.isArray(results.data) ? results.data : []
@@ -450,17 +463,17 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             return
           }
 
-          const { previewRows: normalizedRows, payload, errors } = normalizeCsvRows(rows, headers)
+          const { previewRows: normalizedRows, payload, skipped } = normalizeCsvRows(rows, headers)
 
-          if (errors.length > 0) {
-            const topErrors = errors.slice(0, 8)
-            const remaining = errors.length - topErrors.length
-            const message = remaining > 0 ? `${topErrors.join("\n")}\n... and ${remaining} more errors` : topErrors.join("\n")
-            setError(`Invalid CSV data:\n${message}`)
+          // Only a completely unusable file (no valid rows) blocks the import.
+          if (payload.length === 0) {
+            const detail = skipped.length > 0 ? formatRowIssues(skipped) : "No data rows found."
+            setError(`No valid students to import:\n${detail}`)
             setIsLoading(false)
             return
           }
 
+          setRowWarnings(skipped)
           setPreviewRows(normalizedRows)
           setParsedData(payload)
           setStep(2)
@@ -767,6 +780,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     setParsedData([])
     setPreviewRows([])
     setCsvImportResultRows([])
+    setRowWarnings([])
     setActiveTab(nextTab)
   }
 
@@ -859,10 +873,26 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Preview Import Data</h3>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
-                  {parsedData.length} valid students
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                  {rowWarnings.length > 0 && (
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning-text)", backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+                      {rowWarnings.length} skipped
+                    </div>
+                  )}
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+                    {parsedData.length} valid students
+                  </div>
                 </div>
               </div>
+
+              {rowWarnings.length > 0 && (
+                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-warning)", whiteSpace: "pre-line" }}>
+                  <div style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                    {rowWarnings.length} row{rowWarnings.length === 1 ? "" : "s"} skipped (not imported):
+                  </div>
+                  {formatRowIssues(rowWarnings)}
+                </div>
+              )}
 
               <SheetPreviewTable rows={previewRows} />
 
@@ -1017,7 +1047,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             ) : null}
 
             {step === 2 ? (
-              <Button onClick={() => { setStep(1); setError("") }} variant="secondary" size="md" disabled={isImporting}>Back</Button>
+              <Button onClick={() => { setStep(1); setError(""); setRowWarnings([]) }} variant="secondary" size="md" disabled={isImporting}>Back</Button>
             ) : null}
 
             {step === 2 ? (
@@ -1035,6 +1065,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   setParsedData([])
                   setPreviewRows([])
                   setCsvImportResultRows([])
+                  setRowWarnings([])
                   setError("")
                   setImportProgress({
                     phase: "idle",
