@@ -2123,43 +2123,42 @@
 
 /* ===== SPINNER ===== */
 
-:root {
-  --cz-spinner-size-sm: 1rem;
-  --cz-spinner-size-md: 1.5rem;
-  --cz-spinner-size-lg: 2rem;
-  --cz-spinner-border-width-sm: 2px;
-  --cz-spinner-border-width-md: 2px;
-  --cz-spinner-border-width-lg: 3px;
-  --cz-spinner-color: hsl(var(--cz-color-primary));
-  --cz-spinner-track-color: hsl(var(--cz-color-muted));
-  --cz-spinner-duration: 0.6s;
-}
+/* SPINNER (SVG-based, synced from czero) */
+
+/* ===== SPINNER ===== */
 
 .cz-spinner {
-  display: inline-block;
-  border-radius: var(--cz-radius-full);
-  border-style: solid;
-  border-color: var(--cz-spinner-track-color);
-  border-top-color: var(--cz-spinner-color);
-  animation: cz-spin var(--cz-spinner-duration) linear infinite;
+  display: inline-flex;
+  animation: cz-spin 1s linear infinite;
+}
+
+.cz-spinner-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* stroke width is themeable so a consumer can go thinner/thicker */
+.cz-spinner-track,
+.cz-spinner-indicator {
+  stroke-width: var(--cz-spinner-stroke, 3);
+}
+
+.cz-spinner-track {
+  opacity: 0.2;
+}
+
+.cz-spinner-indicator {
+  opacity: 1;
 }
 
 /* Spinner Sizes */
-.cz-spinner-sm {
-  width: var(--cz-spinner-size-sm);
-  height: var(--cz-spinner-size-sm);
-  border-width: var(--cz-spinner-border-width-sm);
-}
-.cz-spinner-md {
-  width: var(--cz-spinner-size-md);
-  height: var(--cz-spinner-size-md);
-  border-width: var(--cz-spinner-border-width-md);
-}
-.cz-spinner-lg {
-  width: var(--cz-spinner-size-lg);
-  height: var(--cz-spinner-size-lg);
-  border-width: var(--cz-spinner-border-width-lg);
-}
+.cz-spinner-sm { width: 1rem; height: 1rem; }
+.cz-spinner-md { width: 1.5rem; height: 1.5rem; }
+.cz-spinner-lg { width: 2rem; height: 2rem; }
+
+/* Spinner Variants */
+.cz-spinner-default { color: hsl(var(--cz-color-fg)); }
+.cz-spinner-primary { color: hsl(var(--cz-color-primary)); }
 
 
 /* ===== SKELETON ===== */

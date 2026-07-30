@@ -1,86 +1,64 @@
 import React, { forwardRef } from "react"
+import { Spinner as C0Spinner } from "czero/react"
 
 /**
- * Spinner Component - Loading indicator
- * 
- * @param {string} size - Size: xsmall, small, medium, large, xlarge
- * @param {string} color - Color: primary, secondary, white, inherit
- * @param {string} thickness - Border thickness: thin, medium, thick
- * @param {string} label - Accessibility label
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Spinner — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Spinner` while preserving the legacy HMS API so existing call
+ * sites keep working unchanged:
+ *  - sizes xsmall | small | medium | large | xlarge
+ *  - colors primary | secondary | white | inherit
+ *  - thickness thin | medium | thick
+ *  - `label` for the accessible name
+ *
+ * czero's sm/md/lg are 16/24/32px, matching the legacy small/medium/large
+ * exactly; xsmall/xlarge fall back to an explicit size. This also drops the
+ * per-instance `<style>` tag the old component injected on every render.
+ *
+ * Prefer importing `Spinner` from `@/components/ui`.
+ *
+ * @param {"xsmall"|"small"|"medium"|"large"|"xlarge"|"sm"|"md"|"lg"} size
+ * @param {"primary"|"secondary"|"white"|"inherit"} color
+ * @param {"thin"|"medium"|"thick"} thickness
+ * @param {string} label - accessible name (default "Loading")
+ * @param {string} className
+ * @param {object} style
  */
-const Spinner = forwardRef(({
-  size = "medium",
-  color = "primary",
-  thickness = "medium",
-  label = "Loading",
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
+const SIZE_MAP = { small: "sm", medium: "md", large: "lg", sm: "sm", md: "md", lg: "lg" }
+// czero has no xs/xl step; drive those from an explicit box size instead.
+const EXPLICIT_SIZE = { xsmall: "12px", xlarge: "48px" }
+const COLOR = {
+  primary: null, // czero's `primary` variant already uses the brand colour
+  secondary: "var(--color-text-muted)",
+  white: "#fff",
+  inherit: "currentColor",
+}
+const STROKE = { thin: 2, medium: 3, thick: 4 }
 
-  const sizes = {
-    xsmall: "12px",
-    small: "16px",
-    medium: "24px",
-    large: "32px",
-    xlarge: "48px",
-  }
+const Spinner = forwardRef(
+  ({ size = "medium", color = "primary", thickness = "medium", label = "Loading", className = "", style = {}, ...rest }, ref) => {
+    const explicit = EXPLICIT_SIZE[size]
+    const czColor = COLOR[color] !== undefined ? COLOR[color] : null
+    const stroke = STROKE[thickness] || STROKE.medium
 
-  const colors = {
-    primary: "var(--color-primary)",
-    secondary: "var(--color-text-muted)",
-    white: "white",
-    inherit: "currentColor",
-  }
-
-  const thicknesses = {
-    thin: "2px",
-    medium: "3px",
-    thick: "4px",
-  }
-
-  const spinnerSize = sizes[size] || sizes.medium
-  const spinnerColor = colors[color] || colors.primary
-  const borderWidth = thicknesses[thickness] || thicknesses.medium
-
-  const spinnerStyles = {
-    display: "inline-block",
-    width: spinnerSize,
-    height: spinnerSize,
-    border: `${borderWidth} solid rgba(0, 0, 0, 0.1)`,
-    borderTopColor: spinnerColor,
-    borderRadius: "50%",
-    animation: "spin 0.7s linear infinite",
-    ...style,
-  }
-
-  return (
-    <>
-      <style>
-        {`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}
-      </style>
-      <div
+    return (
+      <C0Spinner
         ref={ref}
-        className={className}
-        style={spinnerStyles}
-        role="status"
+        size={SIZE_MAP[size] || "md"}
+        variant="primary"
         aria-label={label}
+        className={className}
+        style={{
+          ...(explicit ? { width: explicit, height: explicit } : null),
+          ...(czColor ? { color: czColor } : null),
+          ...(stroke !== STROKE.medium ? { "--cz-spinner-stroke": stroke } : null),
+          ...style,
+        }}
         {...rest}
-      >
-        <span style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0,0,0,0)", border: 0 }}>
-          {label}
-        </span>
-      </div>
-    </>
-  )
-})
+      />
+    )
+  }
+)
 
 Spinner.displayName = "Spinner"
 
