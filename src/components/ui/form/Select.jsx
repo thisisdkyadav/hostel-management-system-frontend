@@ -47,7 +47,10 @@ const normalizeOptions = (options) =>
     return { ...opt, value: toCz(opt.value ?? "") }
   })
 
-const Select = forwardRef((props) => {
+// czero's Select root takes no ref, so the second parameter is accepted and
+// ignored — declared to satisfy React's forwardRef arity check.
+// eslint-disable-next-line no-unused-vars
+const Select = forwardRef((props, _ref) => {
   const {
     name,
     value,
@@ -74,14 +77,14 @@ const Select = forwardRef((props) => {
       ? [{ value: EMPTY, label: placeholder }, ...normalized]
       : normalized
 
-  // Key the value off the *final* item list, not off `providedEmpty`. Async
-  // selects (Department/Degree) ship a `{value:""}` placeholder row while
-  // loading and a plain list afterwards; keying off `providedEmpty` flipped
-  // czValue EMPTY -> undefined mid-life, i.e. controlled -> uncontrolled, which
-  // leaves Radix with a blank trigger. Keying off `hasEmpty` keeps it stable.
   const hasEmpty = items.some((o) => o.value === EMPTY)
-  const czValue =
-    value == null || String(value) === "" ? (hasEmpty ? EMPTY : undefined) : String(value)
+  const desired = value == null || String(value) === "" ? (hasEmpty ? EMPTY : undefined) : String(value)
+
+  // Radix renders *nothing* for a value with no matching item — it only falls
+  // back to the placeholder for ""/undefined — so an unmatched value leaves the
+  // trigger blank. Treat unmatched as "nothing selected" so the placeholder
+  // shows instead; once the real options arrive the value binds normally.
+  const czValue = desired !== undefined && items.some((o) => o.value === desired) ? desired : undefined
 
   const handleValueChange = (v) => onChange?.({ target: { value: fromCz(v), name, id } })
 
