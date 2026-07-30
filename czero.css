@@ -1467,6 +1467,9 @@
   --cz-avatar-size-md: 2.5rem;
   --cz-avatar-size-lg: 3.5rem;
   --cz-avatar-border-radius: var(--cz-radius-full);
+  --cz-avatar-fallback-bg: var(--color-primary-bg, hsl(var(--cz-color-muted)));
+  --cz-avatar-fallback-color: var(--color-primary, hsl(var(--cz-color-mutedFg)));
+  --cz-avatar-fallback-font-weight: var(--font-weight-medium, 500);
 }
 
 .cz-avatar {

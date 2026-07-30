@@ -1,148 +1,96 @@
-import React, { forwardRef, useState } from "react"
-import { FaUser } from "react-icons/fa"
-import { getMediaUrl } from "../../../utils/mediaUtils"
+import React, { forwardRef } from "react"
+import { Avatar as C0Avatar } from "czero/react"
 
 /**
- * Avatar Component - User avatar display
- * 
- * @param {string} src - Image source URL
- * @param {string} alt - Alt text
- * @param {string} name - User name (for fallback initials)
- * @param {string} size - Size: xsmall, small, medium, large, xlarge, xxlarge
- * @param {string} shape - Shape: circle, square, rounded
- * @param {React.ReactNode} fallback - Custom fallback content
- * @param {boolean} showStatus - Show online/offline status
- * @param {string} status - Status: online, offline, away, busy
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Avatar — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Avatar` while preserving the legacy HMS API so existing call
+ * sites keep working unchanged:
+ *  - `name` (or `fallback`/`alt`) drives the initials, `src` the image
+ *  - sizes xsmall | small | medium | large | xlarge | xxlarge
+ *  - shapes circle | square | rounded
+ *  - `showStatus` / `status` render the corner presence dot
+ *
+ * czero's sm/md are 32/40px, matching the legacy small/medium; the other steps
+ * are driven by an explicit box size and font size.
+ *
+ * Prefer importing `Avatar` from `@/components/ui`.
+ *
+ * @param {string} src
+ * @param {string} alt
+ * @param {string} name - used for the fallback initials
+ * @param {"xsmall"|"small"|"medium"|"large"|"xlarge"|"xxlarge"} size
+ * @param {"circle"|"square"|"rounded"} shape
+ * @param {boolean} showStatus
+ * @param {"online"|"offline"|"away"|"busy"} status
+ * @param {string} className
+ * @param {object} style
  */
-const Avatar = forwardRef(({
-  src,
-  alt = "",
-  name = "",
-  size = "medium",
-  shape = "circle",
-  fallback,
-  showStatus = false,
-  status = "offline",
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
-  const [imageError, setImageError] = useState(false)
+const SIZE = {
+  xsmall: { box: "24px", font: "10px", dot: "6px", cz: "sm" },
+  small: { box: "32px", font: "12px", dot: "8px", cz: "sm" },
+  medium: { box: "40px", font: "14px", dot: "10px", cz: "md" },
+  large: { box: "48px", font: "16px", dot: "12px", cz: "md" },
+  xlarge: { box: "64px", font: "20px", dot: "14px", cz: "lg" },
+  xxlarge: { box: "96px", font: "32px", dot: "16px", cz: "lg" },
+}
+const SHAPE = { circle: "var(--radius-full)", square: "0", rounded: "var(--radius-md)" }
+const STATUS_COLOR = {
+  online: "var(--color-success)",
+  offline: "var(--color-text-muted)",
+  away: "var(--color-warning)",
+  busy: "var(--color-danger)",
+}
 
-  const sizes = {
-    xsmall: { size: "24px", fontSize: "10px", statusSize: "6px" },
-    small: { size: "32px", fontSize: "12px", statusSize: "8px" },
-    medium: { size: "40px", fontSize: "14px", statusSize: "10px" },
-    large: { size: "48px", fontSize: "16px", statusSize: "12px" },
-    xlarge: { size: "64px", fontSize: "20px", statusSize: "14px" },
-    xxlarge: { size: "96px", fontSize: "32px", statusSize: "16px" },
-  }
+const Avatar = forwardRef(
+  (
+    { src, alt = "", name = "", size = "medium", shape = "circle", fallback, showStatus = false, status = "offline", className = "", style = {}, ...rest },
+    ref
+  ) => {
+    const s = SIZE[size] || SIZE.medium
 
-  const shapes = {
-    circle: "var(--radius-full)",
-    square: "0",
-    rounded: "var(--radius-md)",
-  }
+    const avatar = (
+      <C0Avatar
+        ref={ref}
+        src={src}
+        alt={alt}
+        fallback={fallback || name || alt}
+        size={s.cz}
+        className={className}
+        // explicit box/font keeps every legacy step exact, and shape is a radius
+        style={{ width: s.box, height: s.box, fontSize: s.font, borderRadius: SHAPE[shape] || SHAPE.circle, ...style }}
+        {...rest}
+      />
+    )
 
-  const statusColors = {
-    online: "var(--color-success)",
-    offline: "var(--color-text-muted)",
-    away: "var(--color-warning)",
-    busy: "var(--color-danger)",
-  }
+    if (!showStatus) return avatar
 
-  const currentSize = sizes[size] || sizes.medium
-
-  // Get initials from name
-  const getInitials = (name) => {
-    if (!name) return ""
-    const parts = name.trim().split(" ")
-    if (parts.length === 1) return parts[0].charAt(0).toUpperCase()
-    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
-  }
-
-  const containerStyles = {
-    position: "relative",
-    display: "inline-block",
-    flexShrink: 0,
-    ...style,
-  }
-
-  const avatarStyles = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: currentSize.size,
-    height: currentSize.size,
-    borderRadius: shapes[shape] || shapes.circle,
-    background: "var(--color-primary-bg)",
-    color: "var(--color-primary)",
-    fontSize: currentSize.fontSize,
-    fontWeight: "var(--font-weight-medium)",
-    overflow: "hidden",
-  }
-
-  const imageStyles = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  }
-
-  const statusStyles = {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: currentSize.statusSize,
-    height: currentSize.statusSize,
-    borderRadius: "var(--radius-full)",
-    background: statusColors[status] || statusColors.offline,
-    border: "2px solid var(--color-bg-primary)",
-  }
-
-  const renderContent = () => {
-    if (src && !imageError) {
-      const normalizedSrc = String(src).trim()
-      const resolvedSrc =
-        normalizedSrc.startsWith("blob:") || normalizedSrc.startsWith("data:")
-          ? normalizedSrc
-          : getMediaUrl(normalizedSrc)
-
-      return (
-        <img
-          src={resolvedSrc}
-          alt={alt || name}
-          style={imageStyles}
-          onError={() => setImageError(true)}
+    return (
+      <span style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
+        {avatar}
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            width: s.dot,
+            height: s.dot,
+            borderRadius: "var(--radius-full)",
+            background: STATUS_COLOR[status] || STATUS_COLOR.offline,
+            border: "2px solid var(--color-bg-primary)",
+            boxSizing: "content-box",
+          }}
         />
-      )
-    }
-
-    if (fallback) {
-      return fallback
-    }
-
-    if (name) {
-      return getInitials(name)
-    }
-
-    return <FaUser />
+      </span>
+    )
   }
-
-  return (
-    <div ref={ref} className={className} style={containerStyles} {...rest}>
-      <div style={avatarStyles}>
-        {renderContent()}
-      </div>
-      {showStatus && <span style={statusStyles} />}
-    </div>
-  )
-})
+)
 
 Avatar.displayName = "Avatar"
 
-// AvatarGroup - Group of avatars with overlap
+// AvatarGroup — group of avatars with overlap. Unchanged from the legacy
+// implementation; it composes the Avatar above, so it inherits czero's styling.
 export const AvatarGroup = forwardRef(({
   children,
   max = 5,
@@ -155,13 +103,6 @@ export const AvatarGroup = forwardRef(({
   const excess = childArray.length - max
   const visibleChildren = excess > 0 ? childArray.slice(0, max) : childArray
 
-  const containerStyles = {
-    display: "flex",
-    flexDirection: "row-reverse",
-    justifyContent: "flex-end",
-    ...style,
-  }
-
   const itemStyles = {
     marginLeft: "-8px",
     border: "2px solid var(--color-bg-primary)",
@@ -169,7 +110,12 @@ export const AvatarGroup = forwardRef(({
   }
 
   return (
-    <div ref={ref} className={className} style={containerStyles} {...rest}>
+    <div
+      ref={ref}
+      className={className}
+      style={{ display: "flex", flexDirection: "row-reverse", justifyContent: "flex-end", ...style }}
+      {...rest}
+    >
       {excess > 0 && (
         <Avatar
           size={size}

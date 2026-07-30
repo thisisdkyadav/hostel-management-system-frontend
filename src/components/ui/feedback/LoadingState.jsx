@@ -1,30 +1,25 @@
 import React from "react"
+import Spinner from "./Spinner"
 
 /**
- * LoadingState Component - Matches existing design language
- * 
+ * LoadingState Component - centred spinner with a message.
+ *
+ * Uses the shared (czero-backed) `Spinner` instead of its own bordered circle,
+ * so every loading indicator in the app is the same component. This also drops
+ * the per-instance `<style>` tag that injected a duplicate @keyframes rule.
+ *
  * @param {string} message - Loading message
  * @param {string} description - Additional description
  */
 const LoadingState = ({ message = "Loading...", description = "Please wait" }) => {
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      <div 
-        className="w-14 h-14 rounded-full mb-4"
-        style={{
-          border: '3px solid var(--color-bg-muted)',
-          borderTopColor: 'var(--color-primary)',
-          animation: 'spin 0.8s linear infinite',
-        }}
+      <Spinner
+        size="xlarge"
+        label={message}
+        className="mb-4"
+        style={{ width: "3.5rem", height: "3.5rem" }}
       />
-      <style>
-        {`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}
-      </style>
       <h3 className="text-lg font-medium text-[var(--color-text-body)]">{message}</h3>
       {description && <p className="text-sm text-[var(--color-text-muted)] mt-1">{description}</p>}
     </div>

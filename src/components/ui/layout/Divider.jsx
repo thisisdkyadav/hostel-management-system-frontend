@@ -1,117 +1,92 @@
 import React, { forwardRef } from "react"
+import { Separator as C0Separator } from "czero/react"
 
 /**
- * Divider Component - Visual separator line
- * 
- * @param {string} orientation - Divider direction: horizontal, vertical
- * @param {string} variant - Style variant: solid, dashed, dotted
- * @param {string} color - Color: default, muted, primary
- * @param {string} spacing - Margin around divider: none, sm, md, lg
- * @param {React.ReactNode} children - Optional label in center
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Divider — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Separator` while preserving the legacy HMS API so existing
+ * call sites keep working unchanged:
+ *  - `orientation` horizontal | vertical
+ *  - `variant` solid | dashed | dotted
+ *  - `color` default | muted | primary
+ *  - `spacing` none | sm | md | lg (margin around the line)
+ *  - optional `children` rendered as a centred label
+ *
+ * Prefer importing `Divider` from `@/components/ui`.
+ *
+ * @param {"horizontal"|"vertical"} orientation
+ * @param {"solid"|"dashed"|"dotted"} variant
+ * @param {"default"|"muted"|"primary"} color
+ * @param {"none"|"sm"|"md"|"lg"} spacing
+ * @param {React.ReactNode} children - optional centred label
+ * @param {string} className
+ * @param {object} style
  */
-const Divider = forwardRef(({
-  orientation = "horizontal",
-  variant = "solid",
-  color = "default",
-  spacing = "md",
-  children,
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
+const SPACING = { none: "0", sm: "var(--spacing-2)", md: "var(--spacing-4)", lg: "var(--spacing-6)" }
+const COLOR = {
+  default: "var(--color-border-primary)",
+  muted: "var(--color-border-light)",
+  primary: "var(--color-primary-muted)",
+}
 
-  const isHorizontal = orientation === "horizontal"
+const Divider = forwardRef(
+  ({ orientation = "horizontal", variant = "solid", color = "default", spacing = "md", children, className = "", style = {}, ...rest }, ref) => {
+    const isHorizontal = orientation === "horizontal"
+    const gap = SPACING[spacing] ?? SPACING.md
+    const line = COLOR[color] || COLOR.default
 
-  // Spacing configurations
-  const spacings = {
-    none: 0,
-    sm: "var(--spacing-2)",
-    md: "var(--spacing-4)",
-    lg: "var(--spacing-6)",
-  }
+    // Solid rides czero's 1px filled separator; dashed/dotted need a real
+    // border, so collapse the box and draw the border instead.
+    const lineStyle =
+      variant === "solid"
+        ? { background: line }
+        : {
+            background: "transparent",
+            ...(isHorizontal
+              ? { height: 0, borderTop: `1px ${variant} ${line}` }
+              : { width: 0, borderLeft: `1px ${variant} ${line}` }),
+          }
 
-  // Color configurations
-  const colors = {
-    default: "var(--color-border-primary)",
-    muted: "var(--color-border-light)",
-    primary: "var(--color-primary-muted)",
-  }
+    const margin = isHorizontal
+      ? { marginTop: gap, marginBottom: gap }
+      : { marginLeft: gap, marginRight: gap }
 
-  // Border style
-  const borderStyle = `1px ${variant} ${colors[color] || colors.default}`
-
-  // Container styles (for labeled divider)
-  const containerStyles = {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-3)",
-    marginTop: isHorizontal ? spacings[spacing] : 0,
-    marginBottom: isHorizontal ? spacings[spacing] : 0,
-    marginLeft: !isHorizontal ? spacings[spacing] : 0,
-    marginRight: !isHorizontal ? spacings[spacing] : 0,
-    ...style,
-  }
-
-  // Line styles
-  const lineStyles = {
-    flex: 1,
-    height: isHorizontal ? 0 : "auto",
-    width: isHorizontal ? "100%" : 0,
-    borderTop: isHorizontal ? borderStyle : "none",
-    borderLeft: !isHorizontal ? borderStyle : "none",
-    alignSelf: !isHorizontal ? "stretch" : undefined,
-  }
-
-  // Label styles
-  const labelStyles = {
-    fontSize: "var(--font-size-sm)",
-    color: "var(--color-text-muted)",
-    flexShrink: 0,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  }
-
-  // Simple divider without label
-  if (!children) {
-    const simpleStyles = {
-      ...lineStyles,
-      marginTop: isHorizontal ? spacings[spacing] : 0,
-      marginBottom: isHorizontal ? spacings[spacing] : 0,
-      marginLeft: !isHorizontal ? spacings[spacing] : 0,
-      marginRight: !isHorizontal ? spacings[spacing] : 0,
-      ...style,
+    if (children) {
+      return (
+        <div
+          ref={ref}
+          className={className}
+          style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", ...margin, ...style }}
+          {...rest}
+        >
+          <C0Separator style={{ flex: 1, ...lineStyle }} />
+          <span
+            style={{
+              fontSize: "var(--font-size-sm)",
+              color: "var(--color-text-muted)",
+              flexShrink: 0,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}
+          >
+            {children}
+          </span>
+          <C0Separator style={{ flex: 1, ...lineStyle }} />
+        </div>
+      )
     }
 
     return (
-      <hr
+      <C0Separator
         ref={ref}
+        orientation={orientation}
         className={className}
-        style={simpleStyles}
-        role="separator"
-        aria-orientation={orientation}
+        style={{ ...margin, ...lineStyle, ...style }}
         {...rest}
       />
     )
   }
-
-  // Labeled divider
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={containerStyles}
-      role="separator"
-      aria-orientation={orientation}
-      {...rest}
-    >
-      <div style={lineStyles} />
-      <span style={labelStyles}>{children}</span>
-      <div style={lineStyles} />
-    </div>
-  )
-})
+)
 
 Divider.displayName = "Divider"
 
