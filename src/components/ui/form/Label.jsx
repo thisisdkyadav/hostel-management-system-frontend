@@ -1,71 +1,52 @@
 import React, { forwardRef } from "react"
+import { Label as C0Label } from "czero/react"
 
 /**
- * Label Component - Form field label
- * 
- * @param {string} htmlFor - Associated input id
- * @param {React.ReactNode} children - Label text
- * @param {boolean} required - Show required indicator
- * @param {boolean} disabled - Disabled styling
- * @param {string} size - Size variant: sm, md, lg
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Label — C0-backed compatibility adapter.
+ *
+ * Wraps czero's `Label` while preserving the legacy HMS API so existing call
+ * sites keep working unchanged:
+ *  - sizes sm | md | lg
+ *  - `required` asterisk, `disabled` dimming, `htmlFor`
+ *
+ * czero's Label is deliberately margin-free (its field wrappers space labels
+ * with flex gap). HMS labels sit directly above their control and rely on a
+ * bottom margin, so the legacy `display: block` + per-size margin is applied
+ * here rather than pushed into the library.
+ *
+ * Prefer importing `Label` from `@/components/ui`.
+ *
+ * @param {string} htmlFor - associated control id
+ * @param {React.ReactNode} children
+ * @param {boolean} required - show the required asterisk
+ * @param {boolean} disabled
+ * @param {"sm"|"md"|"lg"} size
+ * @param {string} className
+ * @param {object} style
  */
-const Label = forwardRef(({
-  htmlFor,
-  children,
-  required = false,
-  disabled = false,
-  size = "md",
-  className = "",
-  style = {},
-  ...rest
-}, ref) => {
-  // Size mappings
-  const sizes = {
-    sm: {
-      fontSize: "var(--font-size-xs)",
-      marginBottom: "var(--spacing-1)",
-    },
-    md: {
-      fontSize: "var(--font-size-sm)",
-      marginBottom: "var(--spacing-1-5)",
-    },
-    lg: {
-      fontSize: "var(--font-size-base)",
-      marginBottom: "var(--spacing-2)",
-    },
+const SIZE_MAP = { sm: "sm", md: "md", lg: "lg", small: "sm", medium: "md", large: "lg" }
+const MARGIN = { sm: "var(--spacing-1)", md: "var(--spacing-1-5)", lg: "var(--spacing-2)" }
+
+const Label = forwardRef(
+  ({ htmlFor, children, required = false, disabled = false, size = "md", className = "", style = {}, ...rest }, ref) => {
+    const czSize = SIZE_MAP[size] || "md"
+
+    return (
+      <C0Label
+        ref={ref}
+        htmlFor={htmlFor}
+        required={required}
+        disabled={disabled}
+        size={czSize}
+        className={className}
+        style={{ display: "block", marginBottom: MARGIN[czSize], ...style }}
+        {...rest}
+      >
+        {children}
+      </C0Label>
+    )
   }
-
-  const currentSize = sizes[size] || sizes.md
-
-  const labelStyles = {
-    display: "block",
-    fontSize: currentSize.fontSize,
-    fontWeight: "var(--font-weight-medium)",
-    color: disabled ? "var(--color-text-disabled)" : "var(--color-text-secondary)",
-    marginBottom: currentSize.marginBottom,
-    ...style,
-  }
-
-  const requiredStyles = {
-    color: "var(--color-danger)",
-    marginLeft: "var(--spacing-0-5)",
-  }
-
-  return (
-    <label
-      ref={ref}
-      htmlFor={htmlFor}
-      style={labelStyles}
-      className={className}
-      {...rest}
-    >
-      {children}
-      {required && <span style={requiredStyles} aria-hidden="true">*</span>}
-    </label>
-  )
-})
+)
 
 Label.displayName = "Label"
 

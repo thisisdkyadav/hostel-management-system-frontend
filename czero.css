@@ -1285,10 +1285,11 @@
 /* ===== LABEL ===== */
 
 :root {
-  --cz-label-font-size: var(--cz-font-size-sm);
+  --cz-label-font-size: var(--font-size-sm, 0.8125rem);
   --cz-label-font-weight: var(--cz-font-weight-medium);
   --cz-label-color: hsl(var(--cz-color-fg));
   --cz-label-required-color: hsl(var(--cz-color-danger));
+  --cz-label-disabled-opacity: 0.5;
 }
 
 .cz-label {
@@ -1297,9 +1298,15 @@
   color: var(--cz-label-color);
 }
 
+/* Sizes. No margin here on purpose — the field wrappers (cz-*-field) space the
+   label with flex gap, so a built-in margin would double up. */
+.cz-label-sm { font-size: var(--font-size-xs, 0.75rem); }
+.cz-label-md { font-size: var(--cz-label-font-size); }
+.cz-label-lg { font-size: var(--font-size-base, 0.875rem); }
+
 .cz-label-required {
   color: var(--cz-label-required-color);
-  margin-left: 0.25rem;
+  margin-left: var(--spacing-0-5, 0.125rem);
 }
 
 .cz-label-disabled {
@@ -3004,23 +3011,6 @@
 /* Hover states */
 .cz-hover-opacity:hover { opacity: 0.9; }
 .cz-hover-muted:hover { background-color: hsl(var(--cz-color-muted)); }
-
-/* Label & Error */
-.cz-label {
-  font-size: var(--cz-font-size-sm);
-  font-weight: var(--cz-font-weight-medium);
-  color: hsl(var(--cz-color-fg));
-}
-
-.cz-label-required {
-  color: hsl(var(--cz-color-danger));
-  margin-left: 0.25rem;
-}
-
-.cz-error {
-  font-size: var(--cz-font-size-sm);
-  color: hsl(var(--cz-color-danger));
-}
 
 /* ===== czero 0.4.0 modal layout (added on upgrade; reads --cz-modal-* brand vars above) ===== */
 .cz-modal-overlay {
