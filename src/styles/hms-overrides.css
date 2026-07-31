@@ -1,0 +1,640 @@
+/* ============================================================
+   HMS overrides for czero
+   ------------------------------------------------------------
+   czero ships its own defaults; this file maps them onto HMS's
+   palette and type scale, and adds the handful of HMS-specific
+   rules czero has no equivalent for.
+
+   Load AFTER "czero/styles.css".
+   ============================================================ */
+
+/* ---- brand tokens: czero's contract, HMS's values ---- */
+:root {
+  --cz-color-bg: 0 0% 100%;
+  --cz-color-fg: 215 25% 27%;
+  --cz-color-primary: 209 79% 37%;
+  --cz-color-primaryFg: 0 0% 100%;
+  --cz-color-secondary: 210 17% 98%;
+  --cz-color-secondaryFg: 216 54% 10%;
+  --cz-color-muted: 214 32% 91%;
+  --cz-color-mutedFg: 215 16% 47%;
+  --cz-color-danger: 0 84% 60%;
+  --cz-color-dangerFg: 0 0% 100%;
+  --cz-color-success: 142 71% 45%;
+  --cz-color-successFg: 0 0% 100%;
+  --cz-color-warning: 38 92% 50%;
+  --cz-color-warningFg: 0 0% 100%;
+  --cz-color-border: 214 32% 91%;
+  --cz-color-ring: 209 79% 37%;
+  --cz-radius-none: 0;
+  --cz-radius-sm: 6px;
+  --cz-radius-md: 8px;
+  --cz-radius-lg: 10px;
+  --cz-radius-xl: 12px;
+  --cz-radius-full: 9999px;
+  --cz-shadow-none: none;
+  --cz-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --cz-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --cz-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --cz-spacing-xs: 0.25rem;
+  --cz-spacing-sm: 0.5rem;
+  --cz-spacing-md: 0.75rem;
+  --cz-spacing-lg: 1rem;
+  --cz-spacing-xl: 1.5rem;
+  --cz-spacing-2xl: 2rem;
+  --cz-font-fontFamily: inherit;
+  --cz-font-size-xs: 0.75rem;
+  --cz-font-size-sm: 0.875rem;
+  --cz-font-size-md: 1rem;
+  --cz-font-size-lg: 1.125rem;
+  --cz-font-size-xl: 1.25rem;
+  --cz-font-weight-normal: 400;
+  --cz-font-weight-medium: 500;
+  --cz-font-weight-semibold: 600;
+  --cz-font-weight-bold: 700;
+  --cz-font-lineHeight-tight: 1.25;
+  --cz-font-lineHeight-normal: 1.5;
+  --cz-font-lineHeight-relaxed: 1.625;
+  --cz-transition-fast: 150ms ease;
+  --cz-transition-normal: 200ms ease;
+  --cz-transition-slow: 300ms ease;
+}
+
+.dark {
+  --cz-color-bg: 0 0% 10%;
+  --cz-color-fg: 0 0% 83%;
+  --cz-color-primary: 211 76% 65%;
+  --cz-color-primaryFg: 0 0% 100%;
+  --cz-color-secondary: 0 0% 12%;
+  --cz-color-secondaryFg: 0 0% 91%;
+  --cz-color-muted: 0 0% 20%;
+  --cz-color-mutedFg: 0 0% 45%;
+  --cz-color-danger: 0 91% 71%;
+  --cz-color-dangerFg: 0 0% 100%;
+  --cz-color-success: 142 69% 58%;
+  --cz-color-successFg: 0 0% 100%;
+  --cz-color-warning: 45 93% 57%;
+  --cz-color-warningFg: 0 0% 0%;
+  --cz-color-border: 0 0% 18%;
+  --cz-color-ring: 211 76% 65%;
+}
+
+/* ---- type scale ----------------------------------------------------------
+   czero's md step is 16px; HMS's form controls are 14px with 13px labels, so
+   pin the controls to HMS's scale rather than restyling every call site. */
+.cz-input-sm, .cz-select-sm, .cz-textarea-sm { font-size: var(--font-size-sm, 0.8125rem); }
+.cz-input-md, .cz-select-md, .cz-textarea-md { font-size: var(--font-size-base, 0.875rem); }
+.cz-input-lg, .cz-select-lg, .cz-textarea-lg { font-size: var(--font-size-lg, 1rem); }
+.cz-select { font-size: var(--font-size-base, 0.875rem); }
+
+.cz-label { font-size: var(--font-size-sm, 0.8125rem); }
+.cz-label-sm { font-size: var(--font-size-xs, 0.75rem); }
+.cz-label-md { font-size: var(--font-size-sm, 0.8125rem); }
+.cz-label-lg { font-size: var(--font-size-base, 0.875rem); }
+.cz-label-required { margin-left: var(--spacing-0-5, 0.125rem); }
+
+/* textareas inherit the app font rather than the UA monospace default */
+.cz-textarea { font-family: inherit; }
+
+/* ---- card: HMS's own card surface + responsive padding ---- */
+.cz-card {
+  border-radius: var(--radius-card, 16px);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-card);
+  padding: var(--spacing-5, 1.25rem);
+}
+@media (min-width: 768px) {
+  .cz-card { padding: var(--spacing-6, 1.5rem); }
+}
+.cz-card-no-padding { padding: 0; }
+.cz-card-hoverable:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* HMS controls size from their padding; czero pins a fixed height. */
+.cz-btn-sm, .cz-btn-md, .cz-btn-lg { height: auto; }
+.cz-badge-sm, .cz-badge-md { height: auto; }
+
+/* ---- popovers must clear HMS's modals/drawers (toasts stay above) ---- */
+.cz-select-content,
+.cz-dropdown-content,
+.cz-tooltip { z-index: 9000; }
+
+
+/* ============================================================
+   HMS component styling that czero has no equivalent for.
+   Ported verbatim from the previously-vendored czero.css: HMS's
+   design language differs from czero's defaults here (button
+   radius/padding, badge shape, status-badge palette, avatar
+   fallback sizing), so these override czero's base rules.
+   ============================================================ */
+
+/* ===== BUTTON ===== */
+
+:root {
+  --cz-btn-height-sm: 2rem;
+  --cz-btn-height-md: 2.5rem;
+  --cz-btn-height-lg: 3rem;
+  --cz-btn-padding-x-sm: 1rem;
+  --cz-btn-padding-x-md: 1.25rem;
+  --cz-btn-padding-x-lg: 1.5rem;
+  --cz-btn-padding-y-sm: 0.5rem;
+  --cz-btn-padding-y-md: 0.625rem;
+  --cz-btn-padding-y-lg: 0.75rem;
+  --cz-btn-font-size-sm: var(--cz-font-size-xs);
+  --cz-btn-font-size-md: var(--cz-font-size-sm);
+  --cz-btn-font-size-lg: var(--cz-font-size-md);
+  --cz-btn-icon-size-sm: 2rem;
+  --cz-btn-icon-size-md: 2.5rem;
+  --cz-btn-icon-size-lg: 3rem;
+  --cz-btn-gap: 0.5rem;
+  --cz-btn-font-weight: var(--cz-font-weight-medium);
+  --cz-btn-border-radius: 12px;
+  --cz-btn-border-width: 1px;
+  --cz-btn-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --cz-btn-hover-opacity: 0.9;
+  --cz-btn-focus-ring-width: 2px;
+  --cz-btn-focus-ring-offset: 2px;
+  --cz-btn-focus-ring-color: hsl(var(--cz-color-ring));
+  --cz-btn-disabled-opacity: 0.5;
+  --cz-btn-loading-duration: 0.75s;
+  --cz-btn-loading-timing: linear;
+  --cz-btn-primary-bg: var(--color-primary, #1360AB);
+  --cz-btn-primary-color: #FFFFFF;
+  --cz-btn-primary-border-color: transparent;
+  --cz-btn-primary-hover-bg: var(--color-primary-hover, #0F4C81);
+  --cz-btn-secondary-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-btn-secondary-color: var(--color-primary, #1360AB);
+  --cz-btn-secondary-border-color: transparent;
+  --cz-btn-secondary-hover-bg: var(--color-primary-bg-hover, #D2E3FC);
+  --cz-btn-outline-bg: var(--color-bg-primary, #FFFFFF);
+  --cz-btn-outline-color: var(--color-primary, #1360AB);
+  --cz-btn-outline-border: 2px solid var(--color-primary, #1360AB);
+  --cz-btn-outline-border-color: hsl(var(--cz-color-border));
+  --cz-btn-outline-hover-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-btn-ghost-bg: transparent;
+  --cz-btn-ghost-color: var(--color-text-muted, #64748B);
+  --cz-btn-ghost-border-color: transparent;
+  --cz-btn-ghost-hover-color: var(--color-primary, #1360AB);
+  --cz-btn-ghost-hover-bg: var(--color-bg-tertiary, #F8FAFC);
+  --cz-btn-danger-bg: var(--color-danger, #EF4444);
+  --cz-btn-danger-color: #FFFFFF;
+  --cz-btn-danger-border-color: transparent;
+  --cz-btn-danger-hover-bg: var(--color-danger-hover, #DC2626);
+  --cz-btn-link-bg: transparent;
+  --cz-btn-link-color: hsl(var(--cz-color-primary));
+  --cz-btn-link-border-color: transparent;
+  --cz-btn-success-bg: var(--color-success, #22C55E);
+  --cz-btn-success-color: #FFFFFF;
+  --cz-btn-success-hover-bg: var(--color-success-hover, #16A34A);
+  --cz-btn-white-bg: var(--color-bg-primary, #FFFFFF);
+  --cz-btn-white-color: var(--color-text-body, #334155);
+  --cz-btn-white-border: 1px solid var(--color-border-primary, #E2E8F0);
+  --cz-btn-white-hover-color: var(--color-text-secondary, #1E293B);
+  --cz-btn-white-hover-bg: var(--color-bg-tertiary, #F8FAFC);
+  --cz-btn-gradient-bg: var(--gradient-primary, linear-gradient(135deg, #1360AB, #2E7BC4));
+  --cz-btn-gradient-color: #FFFFFF;
+  --cz-btn-gradient-hover-bg: var(--gradient-primary-hover, linear-gradient(135deg, #0F4C81, #1360AB));
+}
+
+.cz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cz-btn-gap);
+  border-radius: var(--cz-btn-border-radius);
+  font-weight: var(--cz-btn-font-weight);
+  transition: all var(--cz-btn-transition);
+  cursor: pointer;
+  border: none;
+}
+
+.cz-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--cz-btn-focus-ring-offset) hsl(var(--cz-color-bg)),
+              0 0 0 calc(var(--cz-btn-focus-ring-offset) + var(--cz-btn-focus-ring-width)) var(--cz-btn-focus-ring-color);
+}
+
+.cz-btn:disabled {
+  pointer-events: none;
+  opacity: var(--cz-btn-disabled-opacity);
+}
+
+/* Tactile press feedback (matches the old custom button's active scale). */
+.cz-btn:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-btn { transition-duration: 1ms; }
+  .cz-btn:not(:disabled):active { transform: none; }
+}
+
+/* Button Sizes */
+.cz-btn-sm {
+  padding: var(--cz-btn-padding-y-sm) var(--cz-btn-padding-x-sm);
+  font-size: var(--cz-btn-font-size-sm);
+}
+.cz-btn-md {
+  padding: var(--cz-btn-padding-y-md) var(--cz-btn-padding-x-md);
+  font-size: var(--cz-btn-font-size-md);
+}
+.cz-btn-lg {
+  padding: var(--cz-btn-padding-y-lg) var(--cz-btn-padding-x-lg);
+  font-size: var(--cz-btn-font-size-lg);
+}
+
+/* Button Variants */
+.cz-btn-primary {
+  background: var(--cz-btn-primary-bg);
+  color: var(--cz-btn-primary-color);
+}
+.cz-btn-primary:hover {
+  background: var(--cz-btn-primary-hover-bg);
+}
+.cz-btn-secondary {
+  background: var(--cz-btn-secondary-bg);
+  color: var(--cz-btn-secondary-color);
+}
+.cz-btn-secondary:hover {
+  background: var(--cz-btn-secondary-hover-bg);
+}
+.cz-btn-outline {
+  background: var(--cz-btn-outline-bg);
+  color: var(--cz-btn-outline-color);
+  border: var(--cz-btn-outline-border);
+}
+.cz-btn-outline:hover {
+  background: var(--cz-btn-outline-hover-bg);
+}
+.cz-btn-ghost {
+  background: var(--cz-btn-ghost-bg);
+  color: var(--cz-btn-ghost-color);
+}
+.cz-btn-ghost:hover {
+  background: var(--cz-btn-ghost-hover-bg);
+  color: var(--cz-btn-ghost-hover-color);
+}
+.cz-btn-danger {
+  background: var(--cz-btn-danger-bg);
+  color: var(--cz-btn-danger-color);
+}
+.cz-btn-danger:hover {
+  background: var(--cz-btn-danger-hover-bg);
+}
+.cz-btn-link {
+  background: var(--cz-btn-link-bg);
+  color: var(--cz-btn-link-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cz-btn-success {
+  background: var(--cz-btn-success-bg);
+  color: var(--cz-btn-success-color);
+}
+.cz-btn-success:hover {
+  background: var(--cz-btn-success-hover-bg);
+}
+.cz-btn-white {
+  background: var(--cz-btn-white-bg);
+  color: var(--cz-btn-white-color);
+  border: var(--cz-btn-white-border);
+}
+.cz-btn-white:hover {
+  background: var(--cz-btn-white-hover-bg);
+  color: var(--cz-btn-white-hover-color);
+}
+.cz-btn-gradient {
+  background: var(--cz-btn-gradient-bg);
+  color: var(--cz-btn-gradient-color);
+}
+.cz-btn-gradient:hover {
+  background: var(--cz-btn-gradient-hover-bg);
+}
+
+/* Button Icon Size */
+.cz-btn-icon {
+  padding: 0;
+}
+.cz-btn-icon.cz-btn-sm { width: var(--cz-btn-icon-size-sm); height: var(--cz-btn-icon-size-sm); }
+.cz-btn-icon.cz-btn-md { width: var(--cz-btn-icon-size-md); height: var(--cz-btn-icon-size-md); }
+.cz-btn-icon.cz-btn-lg { width: var(--cz-btn-icon-size-lg); height: var(--cz-btn-icon-size-lg); }
+
+/* Full Width Button */
+.cz-btn-full {
+  width: 100%;
+}
+
+/* Button Loading State */
+.cz-btn-loading { position: relative; }
+.cz-btn-spinner {
+  width: 1rem;
+  height: 1rem;
+  animation: cz-spin var(--cz-btn-loading-duration) var(--cz-btn-loading-timing) infinite;
+  flex-shrink: 0;
+}
+.cz-btn-content { opacity: 1; }
+
+/* ===== BADGE ===== */
+
+:root {
+  --cz-badge-padding-x-sm: 0.375rem;
+  --cz-badge-padding-x-md: 0.5rem;
+  --cz-badge-padding-y-sm: 0.125rem;
+  --cz-badge-padding-y-md: 0.125rem;
+  --cz-badge-font-size-sm: 0.6875rem;
+  --cz-badge-font-size-md: 0.75rem;
+  --cz-badge-font-weight: var(--cz-font-weight-medium);
+  --cz-badge-border-radius: 6px;
+  --cz-badge-default-bg: hsl(var(--cz-color-secondary));
+  --cz-badge-default-color: hsl(var(--cz-color-secondaryFg));
+  --cz-badge-primary-bg: hsl(var(--cz-color-primary));
+  --cz-badge-primary-color: hsl(var(--cz-color-primaryFg));
+  --cz-badge-success-bg: hsl(var(--cz-color-success));
+  --cz-badge-success-color: hsl(var(--cz-color-successFg));
+  --cz-badge-danger-bg: hsl(var(--cz-color-danger));
+  --cz-badge-danger-color: hsl(var(--cz-color-dangerFg));
+  --cz-badge-warning-bg: hsl(var(--cz-color-warning));
+  --cz-badge-warning-color: hsl(var(--cz-color-warningFg));
+  --cz-badge-outline-bg: transparent;
+  --cz-badge-outline-color: hsl(var(--cz-color-fg));
+  --cz-badge-outline-border-color: hsl(var(--cz-color-border));
+}
+
+.cz-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--cz-badge-border-radius);
+  font-weight: var(--cz-badge-font-weight);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+/* Badge Sizes */
+.cz-badge-sm {
+  padding: var(--cz-badge-padding-y-sm) var(--cz-badge-padding-x-sm);
+  font-size: var(--cz-badge-font-size-sm);
+}
+.cz-badge-md {
+  padding: var(--cz-badge-padding-y-md) var(--cz-badge-padding-x-md);
+  font-size: var(--cz-badge-font-size-md);
+}
+
+/* Badge Variants */
+.cz-badge-default {
+  background: var(--cz-badge-default-bg);
+  color: var(--cz-badge-default-color);
+}
+.cz-badge-primary {
+  background: var(--cz-badge-primary-bg);
+  color: var(--cz-badge-primary-color);
+}
+.cz-badge-success {
+  background: var(--cz-badge-success-bg);
+  color: var(--cz-badge-success-color);
+}
+.cz-badge-danger {
+  background: var(--cz-badge-danger-bg);
+  color: var(--cz-badge-danger-color);
+}
+.cz-badge-warning {
+  background: var(--cz-badge-warning-bg);
+  color: var(--cz-badge-warning-color);
+}
+.cz-badge-outline {
+  background: var(--cz-badge-outline-bg);
+  color: var(--cz-badge-outline-color);
+}
+
+/* Soft (tinted) variants — quieter fills, colored text. Tints derive from the
+   color tokens, so they adapt to light/dark automatically. */
+.cz-badge-soft-default {
+  background-color: hsl(var(--cz-color-muted));
+  color: hsl(var(--cz-color-mutedFg));
+}
+.cz-badge-soft-primary {
+  background-color: hsl(var(--cz-color-primary) / 0.12);
+  color: hsl(var(--cz-color-primary));
+}
+.cz-badge-soft-success {
+  background-color: hsl(var(--cz-color-success) / 0.12);
+  color: hsl(var(--cz-color-success));
+}
+.cz-badge-soft-warning {
+  background-color: hsl(var(--cz-color-warning) / 0.12);
+  color: hsl(var(--cz-color-warning));
+}
+.cz-badge-soft-danger {
+  background-color: hsl(var(--cz-color-danger) / 0.12);
+  color: hsl(var(--cz-color-danger));
+}
+
+/* ===== STATUS BADGE ===== */
+
+:root {
+  --cz-status-badge-padding-x: 0.625rem;
+  --cz-status-badge-padding-y: 0.25rem;
+  --cz-status-badge-font-size: var(--font-size-xs, 0.75rem);
+  --cz-status-badge-font-weight: var(--font-weight-medium, 500);
+  --cz-status-badge-line-height: 1rem;
+  --cz-status-badge-border-radius: 9999px;
+  --cz-status-badge-dot-size: 0.5rem;
+  --cz-status-badge-dot-gap: 0.375rem;
+  --cz-status-badge-success-bg: var(--color-success-bg-light, rgba(34, 197, 94, 0.12));
+  --cz-status-badge-success-text: var(--color-success-dark, #16A34A);
+  --cz-status-badge-success-dot: var(--color-success, #22C55E);
+  --cz-status-badge-danger-bg: var(--color-danger-bg-light, rgba(239, 68, 68, 0.12));
+  --cz-status-badge-danger-text: var(--color-danger-dark, #DC2626);
+  --cz-status-badge-danger-dot: var(--color-danger, #EF4444);
+  --cz-status-badge-warning-bg: var(--color-warning-bg-light, rgba(245, 158, 11, 0.12));
+  --cz-status-badge-warning-text: var(--color-warning-dark, #D97706);
+  --cz-status-badge-warning-dot: var(--color-warning, #F59E0B);
+  --cz-status-badge-primary-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-status-badge-primary-text: var(--color-primary, #1360AB);
+  --cz-status-badge-primary-dot: var(--color-primary, #1360AB);
+}
+
+/* ===== ALERT ===== */
+
+:root {
+  --cz-alert-padding-x: var(--cz-spacing-lg);
+  --cz-alert-padding-y: var(--cz-spacing-md);
+  --cz-alert-border-radius: var(--cz-radius-md);
+  --cz-alert-border-width: 1px;
+  --cz-alert-title-font-size: var(--cz-font-size-sm);
+  --cz-alert-title-font-weight: var(--cz-font-weight-semibold);
+  --cz-alert-content-font-size: var(--cz-font-size-sm);
+  --cz-alert-info-bg: hsl(var(--cz-color-primary) / 0.1);
+  --cz-alert-info-border-color: hsl(var(--cz-color-primary) / 0.3);
+  --cz-alert-info-color: hsl(var(--cz-color-primary));
+  --cz-alert-success-bg: hsl(var(--cz-color-success) / 0.1);
+  --cz-alert-success-border-color: hsl(var(--cz-color-success) / 0.3);
+  --cz-alert-success-color: hsl(var(--cz-color-success));
+  --cz-alert-warning-bg: hsl(var(--cz-color-warning) / 0.1);
+  --cz-alert-warning-border-color: hsl(var(--cz-color-warning) / 0.3);
+  --cz-alert-warning-color: hsl(var(--cz-color-warning));
+  --cz-alert-danger-bg: hsl(var(--cz-color-danger) / 0.1);
+  --cz-alert-danger-border-color: hsl(var(--cz-color-danger) / 0.3);
+  --cz-alert-danger-color: hsl(var(--cz-color-danger));
+}
+
+.cz-alert {
+  display: flex;
+  gap: 0.75rem;
+  padding: var(--cz-alert-padding-y) var(--cz-alert-padding-x);
+  border-radius: var(--cz-alert-border-radius);
+  border: var(--cz-alert-border-width) solid transparent;
+}
+
+.cz-alert-icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+}
+
+.cz-alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cz-alert-title {
+  font-size: var(--cz-alert-title-font-size);
+  font-weight: var(--cz-alert-title-font-weight);
+  line-height: var(--cz-font-lineHeight-tight);
+}
+
+.cz-alert-description {
+  font-size: var(--cz-alert-content-font-size);
+  opacity: 0.9;
+}
+
+/* Alert Variants */
+.cz-alert-info {
+  background: var(--cz-alert-info-bg);
+  border-color: var(--cz-alert-info-border-color);
+  color: var(--cz-alert-info-color);
+}
+.cz-alert-info .cz-alert-icon { color: var(--cz-alert-info-color); }
+.cz-alert-success {
+  background: var(--cz-alert-success-bg);
+  border-color: var(--cz-alert-success-border-color);
+  color: var(--cz-alert-success-color);
+}
+.cz-alert-success .cz-alert-icon { color: var(--cz-alert-success-color); }
+.cz-alert-warning {
+  background: var(--cz-alert-warning-bg);
+  border-color: var(--cz-alert-warning-border-color);
+  color: var(--cz-alert-warning-color);
+}
+.cz-alert-warning .cz-alert-icon { color: var(--cz-alert-warning-color); }
+.cz-alert-danger {
+  background: var(--cz-alert-danger-bg);
+  border-color: var(--cz-alert-danger-border-color);
+  color: var(--cz-alert-danger-color);
+}
+.cz-alert-danger .cz-alert-icon { color: var(--cz-alert-danger-color); }
+
+/* icon SVG sizing + let the content column fill the row so close sits right */
+.cz-alert-icon svg { width: 100%; height: 100%; display: block; }
+.cz-alert-content { flex: 1 1 auto; min-width: 0; }
+
+/* dismiss / close button */
+.cz-alert-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cz-radius-sm);
+  background: transparent;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity var(--cz-transition-fast), background var(--cz-transition-fast);
+}
+.cz-alert-close:hover { opacity: 1; background: hsl(var(--cz-color-fg) / 0.08); }
+.cz-alert-close:focus-visible { outline: none; box-shadow: 0 0 0 2px hsl(var(--cz-color-primary) / 0.4); }
+.cz-alert-close svg { width: 0.875rem; height: 0.875rem; display: block; }
+
+/* ===== AVATAR ===== */
+
+:root {
+  --cz-avatar-size-sm: 2rem;
+  --cz-avatar-size-md: 2.5rem;
+  --cz-avatar-size-lg: 3.5rem;
+  --cz-avatar-border-radius: var(--cz-radius-full);
+  --cz-avatar-fallback-bg: var(--color-primary-bg, hsl(var(--cz-color-muted)));
+  --cz-avatar-fallback-color: var(--color-primary, hsl(var(--cz-color-mutedFg)));
+  --cz-avatar-fallback-font-weight: var(--font-weight-medium, 500);
+}
+
+.cz-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--cz-avatar-border-radius);
+  background-color: var(--cz-avatar-fallback-bg);
+  flex-shrink: 0;
+}
+
+.cz-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cz-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: var(--cz-avatar-fallback-font-weight);
+  color: var(--cz-avatar-fallback-color);
+  text-transform: uppercase;
+}
+
+/* Avatar Sizes */
+.cz-avatar-sm {
+  width: var(--cz-avatar-size-sm);
+  height: var(--cz-avatar-size-sm);
+  font-size: calc(var(--cz-avatar-size-sm) * 0.4);
+}
+.cz-avatar-md {
+  width: var(--cz-avatar-size-md);
+  height: var(--cz-avatar-size-md);
+  font-size: calc(var(--cz-avatar-size-md) * 0.4);
+}
+.cz-avatar-lg {
+  width: var(--cz-avatar-size-lg);
+  height: var(--cz-avatar-size-lg);
+  font-size: calc(var(--cz-avatar-size-lg) * 0.4);
+}
+.cz-avatar-xl {
+  width: var(--cz-avatar-size-xl);
+  height: var(--cz-avatar-size-xl);
+  font-size: calc(var(--cz-avatar-size-xl) * 0.4);
+}
+
+/* Avatar Group */
+.cz-avatar-group {
+  display: flex;
+}
+
+.cz-avatar-group .cz-avatar {
+  border: 2px solid hsl(var(--cz-color-bg));
+  margin-left: -0.5rem;
+}
+
+.cz-avatar-group .cz-avatar:first-child {
+  margin-left: 0;
+}
