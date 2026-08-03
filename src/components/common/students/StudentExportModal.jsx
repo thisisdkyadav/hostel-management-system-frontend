@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import Papa from "papaparse"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { CheckCircle2, Download, FileText, Filter, Upload, Users } from "lucide-react"
 import { FileInput } from "@/components/ui"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"

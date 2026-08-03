@@ -6,7 +6,8 @@
  */
 
 import { useState } from "react"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Textarea } from "@/components/ui/form"
 
 const MIN_REASON = 3

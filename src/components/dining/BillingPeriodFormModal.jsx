@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, Modal, Input, StatusBadge } from "czero/react"
+import { Button, Input, StatusBadge } from "czero/react"
+import { Modal } from "@/components/ui"
 import { CalendarClock } from "lucide-react"
 import { Alert, Label, Textarea, VStack } from "@/components/ui"
 import { formatCurrency, formatDateRange, getErrorMessage, getIdValue } from "./diningBillingHelpers"

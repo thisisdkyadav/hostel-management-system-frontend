@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, Modal, StatusBadge, Table } from "czero/react"
+import { Button, StatusBadge, Table } from "czero/react"
+import { Modal } from "@/components/ui"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
 import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"
 import { formatDate, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"

@@ -18,7 +18,8 @@ import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
 import { Select, FileInput } from "@/components/ui"
-import { Button, Input, Modal } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 
 const createManualRowId = () => `allocation-row-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`

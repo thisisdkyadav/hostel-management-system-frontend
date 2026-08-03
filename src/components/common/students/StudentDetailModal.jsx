@@ -42,7 +42,8 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Select } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user } = useAuth()
   const { can } = useAuthz()

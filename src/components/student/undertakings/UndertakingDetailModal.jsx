@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
 import { Checkbox } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
   const [isAccepting, setIsAccepting] = useState(false)
   const [hasConfirmed, setHasConfirmed] = useState(false)

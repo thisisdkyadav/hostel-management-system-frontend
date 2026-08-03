@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
 import {

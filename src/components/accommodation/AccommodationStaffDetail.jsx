@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
-import { Modal, Button, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"

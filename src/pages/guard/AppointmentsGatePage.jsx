@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, DataTable, Modal } from "czero/react"
+import { Button, DataTable } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"

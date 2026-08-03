@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
 import { VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 const styles = {
   form: {
     display: "flex",

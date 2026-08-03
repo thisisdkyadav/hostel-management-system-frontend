@@ -1,6 +1,7 @@
 import React from "react"
 import { VStack, HStack } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { TriangleAlert } from "lucide-react"
 
 const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }) => {

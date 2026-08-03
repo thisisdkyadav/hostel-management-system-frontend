@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Input, Modal, Table } from "czero/react"
+import { Button, Input, Table } from "czero/react"
+import { Modal } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,

@@ -453,6 +453,19 @@
   --cz-status-badge-primary-bg: var(--color-primary-bg, #E8F1FE);
   --cz-status-badge-primary-text: var(--color-primary, #1360AB);
   --cz-status-badge-primary-dot: var(--color-primary, #1360AB);
+  --cz-status-badge-neutral-bg: var(--color-bg-tertiary, hsl(var(--cz-color-muted)));
+  --cz-status-badge-neutral-text: var(--color-text-muted, hsl(var(--cz-color-mutedFg)));
+  --cz-status-badge-neutral-dot: var(--color-text-muted, hsl(var(--cz-color-mutedFg)));
+}
+
+/* ===== MODAL ===== */
+
+/* The header tab strip moved out of czero and into components/ui/overlay/Modal.
+   Focus rings are suppressed here, matching what czero used to do. */
+.hms-modal-tab-btn:focus,
+.hms-modal-tab-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 /* ===== ALERT ===== */

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
 import { VStack, HStack, Alert, SearchInput } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 

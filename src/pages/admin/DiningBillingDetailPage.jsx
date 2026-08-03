@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { Button, DataTable, Modal, StatusBadge } from "czero/react"
+import { Button, DataTable, StatusBadge } from "czero/react"
+import { Modal } from "@/components/ui"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"

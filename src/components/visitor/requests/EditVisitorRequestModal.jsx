@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
 import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { visitorApi } from "../../../service"
 
 const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {

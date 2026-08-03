@@ -71,6 +71,7 @@ export { default as StepIndicator } from './navigation/StepIndicator'
 // ==============================================
 // OVERLAY COMPONENTS
 // ==============================================
+export { default as Modal } from './overlay/Modal'
 export { default as Tooltip } from './overlay/Tooltip'
 export { default as Popover } from './overlay/Popover'
 export { default as Drawer } from './overlay/Drawer'

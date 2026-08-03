@@ -1,6 +1,7 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import Modal from "./Modal"
 
 /**
  * ConfirmDialog Component - Matches existing design language

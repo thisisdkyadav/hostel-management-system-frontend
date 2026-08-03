@@ -1,4 +1,4 @@
-import { Modal } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Mail, Paperclip, Calendar, Users } from "lucide-react"
 
 /**

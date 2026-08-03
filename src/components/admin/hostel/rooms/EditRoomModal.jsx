@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Select, Label, Alert, VStack, HStack } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { DoorOpen, Users, Trash2 } from "lucide-react"
 import { MANUAL_ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"
 

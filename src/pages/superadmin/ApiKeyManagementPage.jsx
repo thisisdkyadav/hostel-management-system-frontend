@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaKey, FaPlus, FaTrash, FaCopy, FaCheckCircle } from "react-icons/fa"
 import { SearchInput } from "@/components/ui"
-import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
+import { Tabs, Button, DataTable, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
 

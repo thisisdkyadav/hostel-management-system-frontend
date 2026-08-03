@@ -3,7 +3,8 @@ import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../service"
 import { Select, Label, VStack, HStack } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 const AddHostelModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
     name: "",

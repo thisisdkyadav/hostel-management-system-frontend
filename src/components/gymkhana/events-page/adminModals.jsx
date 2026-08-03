@@ -1,4 +1,5 @@
-import { Button, Modal, Table } from "czero/react"
+import { Button, Table } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { Textarea } from "@/components/ui/form"

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
-import { Modal, Button, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"

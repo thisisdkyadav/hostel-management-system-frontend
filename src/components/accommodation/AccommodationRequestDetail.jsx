@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Modal, Button, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Label } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"

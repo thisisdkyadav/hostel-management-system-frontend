@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Alert, VStack } from "@/components/ui"
 import CsvUploader from "@/components/common/CsvUploader"
 import { FUND_MODES, getErrorMessage } from "./diningBillingHelpers"

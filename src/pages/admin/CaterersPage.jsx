@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, DataTable, Input, Modal, StatusBadge } from "czero/react"
+import { Button, DataTable, Input, StatusBadge } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"

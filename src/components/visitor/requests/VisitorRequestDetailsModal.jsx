@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Modal } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components

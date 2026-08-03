@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Button, DataTable, Input, Modal } from "czero/react"
+import { Button, DataTable, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { FaSlidersH, FaUserShield } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"

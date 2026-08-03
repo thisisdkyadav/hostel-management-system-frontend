@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
 import { Textarea, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 const ItemTypes = () => {
   const [itemTypes, setItemTypes] = useState([])
   const [totalPages, setTotalPages] = useState(1)

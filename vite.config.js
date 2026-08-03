@@ -38,6 +38,10 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // czero is linked from a sibling checkout during development, and it has
+    // its own react in node_modules. Without this, the symlink resolves to a
+    // second React copy and every hook throws "Invalid hook call".
+    dedupe: ["react", "react-dom"],
   },
 
   build: {

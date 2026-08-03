@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Input, Modal, StatusBadge, Table, Tabs } from "czero/react"
+import { Button, Input, StatusBadge, Table, Tabs } from "czero/react"
+import { Modal } from "@/components/ui"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import { Alert, Card, EmptyState, HStack, Label, StatCards, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"

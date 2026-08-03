@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
-import { Modal, Button } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 
 const todayDateInput = () => new Date().toISOString().split("T")[0]
 

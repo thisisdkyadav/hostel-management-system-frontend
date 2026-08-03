@@ -4,7 +4,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
 import { Select, Textarea } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
   const { user } = useAuth()

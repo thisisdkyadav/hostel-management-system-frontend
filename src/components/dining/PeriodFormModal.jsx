@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
-import { Button, Input, Modal } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import {
   Archive,
   ArchiveRestore,

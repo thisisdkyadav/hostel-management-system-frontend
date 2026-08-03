@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
+import { Button, DataTable, Input, Tabs } from "czero/react"
+import { Modal } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"

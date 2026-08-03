@@ -1,4 +1,5 @@
-import { Button, Modal, StatusBadge } from "czero/react"
+import { Button, StatusBadge } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {

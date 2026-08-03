@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
 import { Select, Checkbox, Textarea } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
 import { useGlobal } from "../../contexts/GlobalProvider"
 

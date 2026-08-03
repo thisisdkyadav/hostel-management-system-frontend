@@ -3,7 +3,8 @@ import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from 
 import { adminApi } from "../../../service"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
 import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 
 const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
   if (!Array.isArray(categoryDefinitions)) return []

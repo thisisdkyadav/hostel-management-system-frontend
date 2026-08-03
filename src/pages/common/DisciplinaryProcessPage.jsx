@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
+import { Tabs, Button, DataTable, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import {
   Eye,
   Plus,

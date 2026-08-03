@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 
 const CATEGORY_DISPLAY_LABELS = {

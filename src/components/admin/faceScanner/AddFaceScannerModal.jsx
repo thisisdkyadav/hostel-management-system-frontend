@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { faceScannerApi, adminApi } from "../../../service"
 import { useEffect } from "react"
 

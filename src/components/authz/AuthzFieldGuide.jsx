@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"
 

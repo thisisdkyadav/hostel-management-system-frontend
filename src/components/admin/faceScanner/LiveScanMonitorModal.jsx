@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { Button, Modal } from "czero/react"
+import { Button } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"
 

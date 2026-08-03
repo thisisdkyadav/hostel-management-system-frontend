@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Modal, Table } from "czero/react"
+import { Button, Table } from "czero/react"
+import { Modal } from "@/components/ui"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"

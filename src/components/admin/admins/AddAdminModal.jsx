@@ -3,7 +3,8 @@ import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import { superAdminApi } from "../../../service"
 import { VStack, HStack, Label, Alert, Select } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { ADMIN_SUBROLE_OPTIONS } from "../../../constants/adminSubRoles"
 
 const AddAdminModal = ({

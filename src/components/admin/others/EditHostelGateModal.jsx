@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
 import { VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
 
 const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {

@@ -3,7 +3,8 @@ import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
 import { Select } from "@/components/ui"
-import { Button, Modal, Input } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 
 const ComplaintForm = ({ isOpen, setIsOpen }) => {
   const { user } = useAuth()

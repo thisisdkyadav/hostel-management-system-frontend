@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, Input, Modal } from "czero/react"
+import { Button, Input } from "czero/react"
+import { Modal } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
