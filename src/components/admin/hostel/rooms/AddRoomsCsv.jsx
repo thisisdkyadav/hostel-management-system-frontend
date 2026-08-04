@@ -4,7 +4,7 @@ import RoomStatsSummary from "../../forms/RoomStatsSummary"
 import { Alert, VStack, HStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Upload } from "lucide-react"
-import { adminApi } from "../../../../service"
+import { hostelApi } from "../../../../service"
 import { MANUAL_ROOM_STATUSES } from "@/constants/roomStatus"
 
 const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
@@ -36,7 +36,16 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
     setIsLoading(true)
 
     try {
-      const response = await adminApi.addRooms(hostel.id, parsedCsvData)
+      // Unit-based hostels need the set of units the rooms belong to; the backend
+      // reuses existing units and creates any that are missing.
+      const units = isUnitBased
+        ? [...new Set(parsedCsvData.map((room) => room.unitNumber).filter(Boolean))].map((unitNumber) => ({ unitNumber }))
+        : undefined
+
+      const response = await hostelApi.addRooms(hostel.id, {
+        rooms: parsedCsvData,
+        units,
+      })
 
       if (response?.success) {
         setSuccessMessage(`Successfully added ${parsedCsvData.length} room(s)`)
