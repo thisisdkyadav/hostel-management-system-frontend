@@ -7,6 +7,11 @@
 @import "./styles/contactmodal.css";
 @import "tailwindcss";
 
+/* hzero's components are written with Tailwind classes, and Tailwind does not
+   scan node_modules — without this, any class used only inside hzero is never
+   generated and the component renders half-styled. */
+@source "../node_modules/hzero/src";
+
 body {
   font-family: "Google Sans", "Roboto", sans-serif;
 }
