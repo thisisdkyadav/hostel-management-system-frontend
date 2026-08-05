@@ -45,6 +45,8 @@ const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 const NotificationCenterPage = lazy(() => import("../pages/common/NotificationCenterPage"))
 const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestPerformerPage"))
 const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
+const AttendancePage = lazy(() => import("../pages/common/AttendancePage"))
+const AttendanceOccurrencePage = lazy(() => import("../pages/common/AttendanceOccurrencePage"))
 
 // Warden pages (shared)
 const FeedbacksPage = lazy(() => import("../pages/warden/FeedbacksPage"))
@@ -99,6 +101,8 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/NotificationCenterPage"),
   () => import("../pages/common/OverallBestPerformerPage"),
   () => import("../pages/common/PorRequestsPage"),
+  () => import("../pages/common/AttendancePage"),
+  () => import("../pages/common/AttendanceOccurrencePage"),
   () => import("../pages/warden/FeedbacksPage"),
 ]
 
@@ -166,6 +170,8 @@ const AdminRoutes = () => {
                 <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
                 <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
                 <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />
+                <Route path="attendance" element={guardRoute("route.admin.attendance", <AttendancePage basePath="/admin/attendance" />)} />
+                <Route path="attendance/:occurrenceId" element={guardRoute("route.admin.attendance", <AttendanceOccurrencePage basePath="/admin/attendance" />)} />
                 <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                 <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
                 <Route path="overall-best-performer" element={guardRoute("route.admin.overallBestPerformer", <OverallBestPerformerPage />)} />

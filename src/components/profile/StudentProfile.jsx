@@ -8,6 +8,7 @@ import { Button } from "czero/react"
 import { studentApi, studentProfileApi } from "../../service"
 import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
+import QRCodeGenerator from "../QRCodeGenerator"
 import { formatDateTime } from "../../utils/dateUtils"
 import { formatDateOnly } from "../../utils/formatters"
 
@@ -156,6 +157,10 @@ const StudentProfile = ({ user }) => {
         </div>
 
         <div>
+          <div style={{ marginBottom: "var(--spacing-6)" }}>
+            <QRCodeGenerator />
+          </div>
+
           <ProfileCard title="Hostel Information">
             <ProfileInfo label="Hostel" value={studentData.hostel} icon={FiHome} />
             <ProfileInfo label="Unit" value={studentData.unit} icon={FiBookmark} />

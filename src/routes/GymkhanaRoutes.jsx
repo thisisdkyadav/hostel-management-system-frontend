@@ -9,6 +9,8 @@ const ElectionsPage = lazy(() => import("../pages/common/ElectionsPage"))
 const GymkhanaEventsPage = lazy(() => import("../pages/common/GymkhanaEventsPage"))
 const MegaEventsPage = lazy(() => import("../pages/common/MegaEventsPage"))
 const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
+const AttendancePage = lazy(() => import("../pages/common/AttendancePage"))
+const AttendanceOccurrencePage = lazy(() => import("../pages/common/AttendanceOccurrencePage"))
 const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 
 // Utility pages
@@ -27,6 +29,8 @@ const gymkhanaPrefetchLoaders = [
   () => import("../pages/common/GymkhanaEventsPage"),
   () => import("../pages/common/MegaEventsPage"),
   () => import("../pages/common/PorRequestsPage"),
+  () => import("../pages/common/AttendancePage"),
+  () => import("../pages/common/AttendanceOccurrencePage"),
   () => import("../pages/common/ProfilePage"),
 ]
 
@@ -139,6 +143,22 @@ const GymkhanaRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.gymkhana.por" fallback={<NotFoundPage />}>
                 <PorRequestsPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="attendance"
+            element={
+              <RouteAccessGuard routeKey="route.gymkhana.attendance" fallback={<NotFoundPage />}>
+                <AttendancePage basePath="/gymkhana/attendance" />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="attendance/:occurrenceId"
+            element={
+              <RouteAccessGuard routeKey="route.gymkhana.attendance" fallback={<NotFoundPage />}>
+                <AttendanceOccurrencePage basePath="/gymkhana/attendance" />
               </RouteAccessGuard>
             }
           />
