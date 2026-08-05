@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
 import { Pagination, Select } from "@/components/ui"
-import { Tabs, Button, Input } from "czero/react"
+import { Button, Input, Table, Tabs } from "czero/react"
 import NoResults from "./common/NoResults"
 import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
@@ -214,47 +214,47 @@ const AccessHistory = ({ cachedData }) => {
             {/* Table View for Larger Screens */}
             <div className="hidden lg:block overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-[var(--color-border-light)]">
-                  <thead className="bg-[var(--color-bg-tertiary)]">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                <Table className="divide-[var(--color-border-light)]">
+                  <Table.Header className="bg-[var(--color-bg-tertiary)]">
+                    <Table.Row>
+                      <Table.Head className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider" scope="col">
                         Type
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                      </Table.Head>
+                      <Table.Head className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider" scope="col">
                         Date
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                      </Table.Head>
+                      <Table.Head className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider" scope="col">
                         Time
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
+                      </Table.Head>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body className="bg-[var(--color-bg-primary)] divide-[var(--color-border-light)]">
                     {entries.map((entry) => (
-                      <tr key={entry._id} className="hover:bg-[var(--color-bg-tertiary)]">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                      <Table.Row className="hover:bg-[var(--color-bg-tertiary)]" key={entry._id}>
+                        <Table.Cell className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)' }}>
                               {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
                             </div>
                             <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        </Table.Cell>
+                        <Table.Cell className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-[var(--color-text-body)]">
                             <FaCalendarAlt className="text-[var(--color-text-disabled)] mr-2 text-xs" />
                             {formatDate(entry.dateAndTime)}
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        </Table.Cell>
+                        <Table.Cell className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-[var(--color-text-body)]">
                             <FaClock className="text-[var(--color-text-disabled)] mr-2 text-xs" />
                             {formatTime(entry.dateAndTime)}
                           </div>
-                        </td>
-                      </tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table>
               </div>
             </div>
 

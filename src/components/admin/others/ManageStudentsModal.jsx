@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
 import { Alert, HStack, SearchInput, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
@@ -88,27 +88,27 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
             <NoResults icon={<FaUsers style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No students found" suggestion={searchTerm ? "Try changing your search term" : "Add students to this undertaking using CSV upload"} />
           ) : (
             <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-              <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ backgroundColor: 'var(--color-bg-hover)' }}>
-                  <tr>
-                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head scope="col">
                       Student
-                    </th>
-                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Roll Number
-                    </th>
-                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Status
-                    </th>
-                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'right', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+                    </Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {filteredStudents.map((student, index) => (
-                    <tr key={student.id} style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
-                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <Table.Row style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)' }} key={student.id}>
+                      <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <div style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', marginRight: 'var(--spacing-3)' }}>{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
                           <div>
@@ -116,20 +116,20 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                             <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                           </div>
                         </div>
-                      </td>
-                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber || "N/A"}</td>
-                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      </Table.Cell>
+                      <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber || "N/A"}</Table.Cell>
+                      <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                         <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)', color: student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)' }}>
                           {student.status === "accepted" ? "Accepted" : student.status === "pending" ? "Pending" : "Not Viewed"}
                         </span>
-                      </td>
-                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                      </Table.Cell>
+                      <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                         <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="sm" title="Remove student"><FaUserMinus /></Button>
-                      </td>
-                    </tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             </div>
           )}
 

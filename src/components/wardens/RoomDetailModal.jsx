@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
 import { Modal } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { isRoomActive } from "@/constants/roomStatus"
@@ -152,26 +152,26 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             ) : room.students && room.students.length > 0 ? (
               <div style={{ backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
                 <div style={{ overflowX: 'auto' }}>
-                  <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
-                      <tr>
-                        <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Student</th>
-                        <th className="hidden sm:table-cell" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Roll Number</th>
-                        <th className="hidden lg:table-cell" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Bed Number</th>
-                        <th className="hidden md:table-cell" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Department</th>
-                        {["Admin"].includes(user.role) && <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'right', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Action</th>}
-                      </tr>
-                    </thead>
-                    <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Head>Student</Table.Head>
+                        <Table.Head className="hidden sm:table-cell">Roll Number</Table.Head>
+                        <Table.Head className="hidden lg:table-cell">Bed Number</Table.Head>
+                        <Table.Head className="hidden md:table-cell">Department</Table.Head>
+                        {["Admin"].includes(user.role) && <Table.Head>Action</Table.Head>}
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
                       {room.students.map((student, index) => (
-                        <tr key={student.id || index} style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => {
+                        <Table.Row style={{ borderTop: `var(--border-1) solid var(--color-border-primary)` }} key={student.id || index}  onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
                         }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
                           }}
                         >
-                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={() => handleStudentClick(student)}
+                          <Table.Cell style={{ whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={() => handleStudentClick(student)}
                           >
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <div style={{ height: 'var(--spacing-8)', width: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -187,19 +187,19 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                               </div>
                             </div>
-                          </td>
-                          <td className="hidden sm:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.rollNumber}</td>
-                          <td className="hidden lg:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.bedNumber}</td>
-                          <td className="hidden md:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.department}</td>
-                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', textAlign: 'right' }}>
+                          </Table.Cell>
+                          <Table.Cell className="hidden sm:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber}</Table.Cell>
+                          <Table.Cell className="hidden lg:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.bedNumber}</Table.Cell>
+                          <Table.Cell className="hidden md:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.department}</Table.Cell>
+                          <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', textAlign: 'right' }}>
                             {["Admin"].includes(user.role) && (
                               <Button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} variant="ghost" size="sm" aria-label="Remove from Room"><FaTrash /></Button>
                             )}
-                          </td>
-                        </tr>
+                          </Table.Cell>
+                        </Table.Row>
                       ))}
-                    </tbody>
-                  </table>
+                    </Table.Body>
+                  </Table>
                 </div>
               </div>
             ) : (

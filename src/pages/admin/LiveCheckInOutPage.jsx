@@ -3,7 +3,7 @@ import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal,
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 
 const formatDateTime = (value) => {
   if (!value) return "-"
@@ -423,64 +423,46 @@ const LiveCheckInOutPage = () => {
           ) : (
             <>
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", fontSize: "var(--font-size-sm)", borderCollapse: "collapse" }}>
-                  <thead style={{ backgroundColor: "var(--color-bg-tertiary)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                    <tr>
+                <Table style={{ fontSize: "var(--font-size-sm)" }}>
+                  <Table.Header style={{ borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
+                    <Table.Row>
                       {["#", "Time", "Student", "Status", "Hostel", "Room", "Type", "Reason"].map((header) => (
-                        <th
-                          key={header}
-                          style={{
-                            padding: "var(--spacing-3)",
-                            textAlign: "left",
-                            fontWeight: "var(--font-weight-semibold)",
-                            fontSize: "var(--font-size-xs)",
-                            color: "var(--color-text-muted)",
-                            textTransform: "uppercase",
-                            letterSpacing: "var(--letter-spacing-wide)",
-                          }}
-                        >
+                        <Table.Head key={header}>
                           {header}
-                        </th>
+                        </Table.Head>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {entries.map((entry, index) => {
                       const isFresh = entry._id === lastRealtimeEntryId
                       return (
-                        <tr
-                          key={entry._id}
-                          style={{
-                            backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent",
-                            transition: "var(--transition-colors)",
-                            borderBottom: "var(--border-1) solid var(--color-border-light)",
-                          }}
-                        >
-                          <td style={{ padding: "var(--spacing-3)", color: "var(--color-text-muted)" }}>{index + 1 + (currentPage - 1) * pageSize}</td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                        <Table.Row style={{ backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent" }} key={entry._id}>
+                          <Table.Cell>{index + 1 + (currentPage - 1) * pageSize}</Table.Cell>
+                          <Table.Cell>
                             <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{formatDateTime(entry.dateAndTime)}</div>
                             <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{getTimeAgo(entry.dateAndTime)}</div>
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId?.name || "Unknown"}</div>
                             <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.userId?.email || "-"}</div>
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             <StatusBadge status={entry.status} />
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.hostelName || "-"}</div>
                             <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.hostelId?.type || "-"}</div>
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)", color: "var(--color-text-body)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             R{entry.room || "?"}
                             {entry.unit ? " U" + entry.unit : ""}
                             {entry.bed ? " B" + entry.bed : ""}
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             <TrajectoryBadge isSameHostel={entry.isSameHostel} />
-                          </td>
-                          <td style={{ padding: "var(--spacing-3)" }}>
+                          </Table.Cell>
+                          <Table.Cell>
                             <p
                               style={{
                                 maxWidth: "200px",
@@ -493,12 +475,12 @@ const LiveCheckInOutPage = () => {
                             >
                               {entry.reason || "-"}
                             </p>
-                          </td>
-                        </tr>
+                          </Table.Cell>
+                        </Table.Row>
                       )
                     })}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table>
               </div>
 
               {/* Pagination */}

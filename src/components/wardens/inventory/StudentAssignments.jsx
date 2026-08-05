@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
 import { Pagination, Select, Spinner, Textarea } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 
@@ -213,21 +213,21 @@ const StudentAssignments = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full" style={{ borderCollapse: 'collapse' }}>
-              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-                <tr>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Student</th>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Item</th>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Count</th>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Issue Date</th>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Status</th>
-                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head className="text-left uppercase">Student</Table.Head>
+                  <Table.Head className="text-left uppercase">Item</Table.Head>
+                  <Table.Head className="text-left uppercase">Count</Table.Head>
+                  <Table.Head className="text-left uppercase">Issue Date</Table.Head>
+                  <Table.Head className="text-left uppercase">Status</Table.Head>
+                  <Table.Head className="text-left uppercase">Actions</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {studentInventory.map((item) => (
-                  <tr key={item._id} style={{ borderTop: `var(--border-1) solid var(--table-border)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
+                  <Table.Row style={{ borderTop: `var(--border-1) solid var(--table-border)` }} key={item._id}  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                           <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
@@ -237,23 +237,23 @@ const StudentAssignments = () => {
                           <div style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)' }}>{item.studentProfileId.rollNumber}</div>
                         </div>
                       </div>
-                    </td>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                           <FaBoxes style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemTypeId.name}</span>
                       </div>
-                    </td>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.count}</td>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)', color: 'var(--color-text-tertiary)' }}>{formatDate(item.issueDate)}</td>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap" style={{ fontWeight: 'var(--font-weight-medium)' }}>{item.count}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap">{formatDate(item.issueDate)}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap">
                       <span style={{ padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-md)', fontWeight: 'var(--font-weight-medium)', backgroundColor: item.status === "Issued" ? 'var(--color-success-bg)' : item.status === "Damaged" ? 'var(--color-danger-bg)' : item.status === "Lost" ? 'var(--color-purple-light-bg)' : 'var(--color-bg-muted)', color: item.status === "Issued" ? 'var(--color-success-text)' : item.status === "Damaged" ? 'var(--color-danger-text)' : item.status === "Lost" ? 'var(--color-purple-text)' : 'var(--color-text-secondary)' }}>
                         {item.status}
                       </span>
-                    </td>
-                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap">
                       {canManageStudentInventory && (
                         <div className="flex items-center" style={{ gap: 'var(--gap-sm)' }}>
                           <Button onClick={() => handleViewEditItem(item)} variant="ghost" size="sm" aria-label="View/Edit Details">
@@ -266,11 +266,11 @@ const StudentAssignments = () => {
                           )}
                         </div>
                       )}
-                    </td>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         )}
       </div>

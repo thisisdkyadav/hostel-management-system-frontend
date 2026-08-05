@@ -1,6 +1,7 @@
 import NoResults from "../common/NoResults"
 import { Pagination } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
+import { Table } from "czero/react"
 
 // Helper function to get status colors using theme variables
 const getStatusStyle = (status) => {
@@ -26,33 +27,33 @@ const getStatusStyle = (status) => {
 const LeavesListView = ({ leaves, onViewDetails }) => {
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', boxShadow: 'var(--shadow-sm)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: `var(--border-1) solid var(--color-border-light)` }}>
-      <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-        <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-          <tr>
-            <th style={{ padding: 'var(--table-cell-padding-md)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Requested By</th>
-            <th style={{ padding: 'var(--table-cell-padding-md)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Reason</th>
-            <th style={{ padding: 'var(--table-cell-padding-md)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Period</th>
-            <th style={{ padding: 'var(--table-cell-padding-md)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Status</th>
-          </tr>
-        </thead>
-        <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>Requested By</Table.Head>
+            <Table.Head>Reason</Table.Head>
+            <Table.Head>Period</Table.Head>
+            <Table.Head>Status</Table.Head>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {leaves.map((leave, index) => (
-            <tr key={leave.id || leave._id || index} style={{ cursor: 'pointer', borderBottom: `var(--border-1) solid var(--table-border)` }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
+            <Table.Row style={{ cursor: 'pointer' }} key={leave.id || leave._id || index}  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               onClick={() => onViewDetails(leave)}
             >
-              <td style={{ padding: 'var(--table-cell-padding-md)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</td>
-              <td style={{ padding: 'var(--table-cell-padding-md)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{leave.reason}</td>
-              <td style={{ padding: 'var(--table-cell-padding-md)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+              <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Table.Cell>
+              <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{leave.reason}</Table.Cell>
+              <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>
                 {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-              </td>
-              <td style={{ padding: 'var(--table-cell-padding-md)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>
+              </Table.Cell>
+              <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>
                 <span style={{ ...getStatusStyle(leave.status), padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)' }}>{leave.status || "Pending"}</span>
-              </td>
-            </tr>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
     </div>
   )
 }

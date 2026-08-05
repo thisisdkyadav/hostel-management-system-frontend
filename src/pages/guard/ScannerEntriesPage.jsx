@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboard, FaArrowDown, FaArrowRight, FaInfoCircle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { Button, StatusBadge } from "czero/react"
+import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ScannerEntriesPage = () => {
@@ -98,40 +98,40 @@ const ScannerEntriesPage = () => {
             <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-lg)" }}>No scanner entries found</p><p style={{ color: "var(--color-text-light)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</p></div>
           ) : (
             <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead style={{ backgroundColor: "var(--table-header-bg)" }}>
-                  <tr>{["Student", "Room", "Date", "Time", "Status", "Scanner", "Cross-Hostel"].map((h) => <th key={h} style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>{h}</th>)}</tr>
-                </thead>
-                <tbody style={{ borderTop: "var(--border-1) solid var(--color-border-primary)" }}>
+              <Table>
+                <Table.Header>
+                  <Table.Row>{["Student", "Room", "Date", "Time", "Status", "Scanner", "Cross-Hostel"].map((h) => <Table.Head key={h}>{h}</Table.Head>)}</Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {scannerEntries.map((entry) => {
                     const { date, time } = formatDateTime(entry.dateAndTime)
                     return (
-                      <tr key={entry._id} className="table-row-hover" style={{ transition: "var(--transition-colors)" }}>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
+                      <Table.Row className="table-row-hover" key={entry._id}>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
                               {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-lg)", height: "var(--icon-lg)" }} /></div>}
                             </div>
                             <div><div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId.name}</div><div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.userId.email}</div></div>
                           </div>
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.room}{entry.bed}-{entry.unit}</div><div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{entry.hostelName}</div></td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{date}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{time}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><StatusBadge status={entry.status} /></td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.room}{entry.bed}-{entry.unit}</div><div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{entry.hostelName}</div></Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{date}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{time}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><StatusBadge status={entry.status} /></Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
                             {entry.scannerType === "checkin" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-success)" }}><FaArrowDown style={{ marginRight: "var(--spacing-1)" }} /><span>Check-in</span></div> : entry.scannerType === "checkout" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-warning)" }}><FaArrowRight style={{ marginRight: "var(--spacing-1)", transform: "rotate(90deg)" }} /><span>Check-out</span></div> : <span style={{ color: "var(--color-text-muted)" }}>Auto</span>}
                           </div>
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           {entry.isSameHostel === false ? <div style={{ display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning)" }}>Yes</span>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</div> : <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No</span>}
-                        </td>
-                      </tr>
+                        </Table.Cell>
+                      </Table.Row>
                     )
                   })}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             </div>
           )}
         </div>

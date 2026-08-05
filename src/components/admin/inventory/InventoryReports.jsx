@@ -3,7 +3,7 @@ import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()
@@ -203,29 +203,25 @@ const InventoryReports = () => {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead style={{ backgroundColor: "var(--table-header-bg)" }}>
-                  <tr>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Student</th>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Roll Number</th>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Total Items</th>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Details</th>
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "var(--color-bg-primary)", borderTop: "1px solid var(--table-border)" }}>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head>Student</Table.Head>
+                    <Table.Head>Roll Number</Table.Head>
+                    <Table.Head>Total Items</Table.Head>
+                    <Table.Head>Details</Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {studentSummary.map((student) => (
-                    <tr
-                      key={student._id}
-                      style={{ borderBottom: "1px solid var(--table-border)", transition: "var(--transition-colors)" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--table-row-hover)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    <Table.Row key={student._id}
                     >
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{student.studentName}</td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", color: "var(--color-text-tertiary)" }}>{student.rollNumber}</td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{student.studentName}</Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>{student.rollNumber}</Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>{student.totalItems}</span>
-                      </td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)" }}>
+                      </Table.Cell>
+                      <Table.Cell>
                         <div className="space-y-1">
                           {student.items.map((item) => (
                             <div key={item.id} style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
@@ -250,11 +246,11 @@ const InventoryReports = () => {
                             </div>
                           ))}
                         </div>
-                      </td>
-                    </tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             </div>
           )}
         </div>
@@ -270,40 +266,36 @@ const InventoryReports = () => {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead style={{ backgroundColor: "var(--table-header-bg)" }}>
-                  <tr>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Item Type</th>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head>Item Type</Table.Head>
+                    <Table.Head>
                       Total Assigned
-                    </th>
-                    <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--table-header-text)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)" }}>Student Count</th>
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "var(--color-bg-primary)", borderTop: "1px solid var(--table-border)" }}>
+                    </Table.Head>
+                    <Table.Head>Student Count</Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {itemTypeSummary.map((item) => (
-                    <tr
-                      key={item._id}
-                      style={{ borderBottom: "1px solid var(--table-border)", transition: "var(--transition-colors)" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--table-row-hover)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    <Table.Row key={item._id}
                     >
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                             <FaBox style={{ color: "var(--color-primary)" }} />
                           </div>
                           <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.itemName}</span>
                         </div>
-                      </td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.totalAssigned}</td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      </Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.totalAssigned}</Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>{item.studentCount}</span>
-                      </td>
-                    </tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             </div>
           )}
         </div>

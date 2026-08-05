@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
 import { Alert, HStack, Label, Pagination, Textarea, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
   const confirm = useConfirm()
@@ -180,35 +180,35 @@ const ItemTypes = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-                <tr>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Name</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Description</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Total Count</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Name</Table.Head>
+                  <Table.Head>Description</Table.Head>
+                  <Table.Head>Total Count</Table.Head>
+                  <Table.Head>Actions</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {itemTypes.map((item) => (
-                  <tr key={item._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.name}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>{item.description}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                  <Table.Row key={item._id}>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)' }}>{item.name}</Table.Cell>
+                    <Table.Cell>{item.description}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <Button onClick={() => handleUpdateCount(item._id, item.totalCount)} variant="ghost" size="sm">
                         {item.totalCount}
                       </Button>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
                         <Button onClick={() => handleEdit(item)} variant="secondary" size="sm"><FaEdit /></Button>
                         <Button onClick={() => handleDelete(item._id)} variant="danger" size="sm"><FaTrash /></Button>
                       </div>
-                    </td>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         )}
       </div>

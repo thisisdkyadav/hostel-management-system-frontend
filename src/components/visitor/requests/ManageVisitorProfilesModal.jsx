@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal, useConfirm } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
@@ -54,32 +54,31 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
             </div>
           ) : (
             <div style={{ overflow: "hidden", borderRadius: "var(--radius-lg)", border: `var(--border-1) solid var(--color-border-primary)` }}>
-              <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
-                <thead style={{ backgroundColor: "var(--color-bg-tertiary)" }}>
-                  <tr>
-                    <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head scope="col">
                       Visitor Details
-                    </th>
-                    <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Contact
-                    </th>
-                    <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Relation
-                    </th>
-                    <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "right", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
+                    </Table.Head>
+                    <Table.Head scope="col">
                       Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody style={{ backgroundColor: "var(--color-bg-primary)" }}>
+                    </Table.Head>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {filteredProfiles.map((profile) => (
-                    <tr
-                      key={profile._id}
-                      style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: "var(--transition-colors)" }}
+                    <Table.Row style={{ borderTop: `var(--border-1) solid var(--color-border-primary)` }} key={profile._id}
+                      
                       onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
                       onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-primary)")}
                     >
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <div style={{ flexShrink: "0", height: "var(--avatar-md)", width: "var(--avatar-md)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-text-muted)" }} />
@@ -88,12 +87,12 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                             <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{profile.name}</div>
                           </div>
                         </div>
-                      </td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      </Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>{profile.email}</div>
                         <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{profile.phone}</div>
-                      </td>
-                      <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      </Table.Cell>
+                      <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <span
                           style={{
                             padding: "var(--badge-padding-sm)",
@@ -108,23 +107,23 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                         >
                           {profile.relation}
                         </span>
-                      </td>
+                      </Table.Cell>
                       {profile.requests && profile.requests.length ? (
                         <div style={{ padding: "var(--spacing-4) var(--spacing-6)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Can't edit a used Visitor.</div>
                       ) : (
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", textAlign: "right", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
+                        <Table.Cell style={{ whiteSpace: "nowrap", textAlign: "right", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
                           <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="sm" aria-label="Edit profile">
                             <FaEdit />
                           </Button>
                           <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="sm" aria-label="Delete profile">
                             <FaTrash />
                           </Button>
-                        </td>
+                        </Table.Cell>
                       )}
-                    </tr>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             </div>
           )}
 

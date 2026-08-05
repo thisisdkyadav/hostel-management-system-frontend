@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
 import { Card, Switch, HStack, VStack, Badge } from "@/components/ui"
-import { Button, StatusBadge } from "czero/react"
+import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const FaceScannerEntriesPage = () => {
@@ -372,47 +372,23 @@ const FaceScannerEntriesPage = () => {
                     ) : (
                         /* Entries Table */
                         <div style={{ overflowX: "auto" }}>
-                            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                                <thead style={{ backgroundColor: "var(--table-header-bg)" }}>
-                                    <tr>
+                            <Table>
+                                <Table.Header>
+                                    <Table.Row>
                                         {["Student", "Room", "Date", "Time", "Status", "Cross-Hostel"].map((h) => (
-                                            <th
-                                                key={h}
-                                                style={{
-                                                    padding: "var(--spacing-3) var(--spacing-6)",
-                                                    textAlign: "left",
-                                                    fontSize: "var(--font-size-xs)",
-                                                    fontWeight: "var(--font-weight-medium)",
-                                                    color: "var(--color-text-muted)",
-                                                    textTransform: "uppercase",
-                                                    letterSpacing: "var(--letter-spacing-wider)",
-                                                }}
-                                            >
+                                            <Table.Head key={h}>
                                                 {h}
-                                            </th>
+                                            </Table.Head>
                                         ))}
-                                    </tr>
-                                </thead>
-                                <tbody style={{ borderTop: "var(--border-1) solid var(--color-border-primary)" }}>
+                                    </Table.Row>
+                                </Table.Header>
+                                <Table.Body>
                                     {entries.map((entry) => {
                                         const { date, time } = formatDateTime(entry.dateAndTime)
                                         const isNewEntry = entry._id === lastRealtimeEntryId
                                         return (
-                                            <tr
-                                                key={entry._id}
-                                                className="table-row-hover"
-                                                style={{
-                                                    transition: "var(--transition-colors)",
-                                                    backgroundColor: isNewEntry ? "var(--color-success-bg-light)" : undefined,
-                                                }}
-                                            >
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                    }}
-                                                >
+                                            <Table.Row className="table-row-hover" style={{ backgroundColor: isNewEntry ? "var(--color-success-bg-light)" : undefined }} key={entry._id}>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     <div style={{ display: "flex", alignItems: "center" }}>
                                                         <div
                                                             style={{
@@ -466,14 +442,8 @@ const FaceScannerEntriesPage = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                    }}
-                                                >
+                                                </Table.Cell>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                                                         {entry.room}
                                                         {entry.bed}-{entry.unit}
@@ -481,45 +451,17 @@ const FaceScannerEntriesPage = () => {
                                                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>
                                                         {entry.hostelName}
                                                     </div>
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                        fontSize: "var(--font-size-sm)",
-                                                        color: "var(--color-text-muted)",
-                                                    }}
-                                                >
+                                                </Table.Cell>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>
                                                     {date}
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                        fontSize: "var(--font-size-sm)",
-                                                        color: "var(--color-text-muted)",
-                                                    }}
-                                                >
+                                                </Table.Cell>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>
                                                     {time}
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                    }}
-                                                >
+                                                </Table.Cell>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     <StatusBadge status={entry.status} />
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        padding: "var(--spacing-4) var(--spacing-6)",
-                                                        whiteSpace: "nowrap",
-                                                        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-                                                    }}
-                                                >
+                                                </Table.Cell>
+                                                <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     {entry.isSameHostel === false ? (
                                                         <div style={{ display: "flex", alignItems: "center" }}>
                                                             <AlertTriangle
@@ -547,12 +489,12 @@ const FaceScannerEntriesPage = () => {
                                                             No
                                                         </span>
                                                     )}
-                                                </td>
-                                            </tr>
+                                                </Table.Cell>
+                                            </Table.Row>
                                         )
                                     })}
-                                </tbody>
-                            </table>
+                                </Table.Body>
+                            </Table>
                         </div>
                     )}
                 </Card>

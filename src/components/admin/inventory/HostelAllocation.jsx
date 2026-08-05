@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
 import { Alert, HStack, Label, Pagination, Select, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 
@@ -282,28 +282,28 @@ const HostelAllocation = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-                <tr>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Hostel</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Item Type</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Allocated Count</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Available Count</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Hostel</Table.Head>
+                  <Table.Head>Item Type</Table.Head>
+                  <Table.Head>Allocated Count</Table.Head>
+                  <Table.Head>Available Count</Table.Head>
+                  <Table.Head>Actions</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {hostelInventory.map((allocation) => (
-                  <tr key={allocation._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                  <Table.Row key={allocation._id}>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                           <FaBuilding style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.hostelId.name}</span>
                       </div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                           <FaBox style={{ color: 'var(--color-primary)' }} />
@@ -313,21 +313,21 @@ const HostelAllocation = () => {
                           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{allocation.itemTypeId.description}</div>
                         </div>
                       </div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.allocatedCount}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)' }}>{allocation.allocatedCount}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: allocation.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)', color: allocation.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}>{allocation.availableCount}</span>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
                         <Button onClick={() => handleEdit(allocation)} variant="secondary" size="sm"><FaEdit /></Button>
                         <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="sm"><FaTrash /></Button>
                       </div>
-                    </td>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         )}
       </div>

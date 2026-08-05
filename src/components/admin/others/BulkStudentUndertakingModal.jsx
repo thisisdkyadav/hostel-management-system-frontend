@@ -2,7 +2,7 @@ import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import { VStack, HStack, Alert, FileInput } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { adminApi } from "../../../service"
@@ -220,22 +220,22 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
           </div>
 
           <div style={{ border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', maxHeight: '24rem', overflowY: 'auto' }}>
-            <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ backgroundColor: 'var(--color-bg-hover)', position: 'sticky', top: 0 }}>
-                <tr>
-                  <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <Table>
+              <Table.Header style={{ position: 'sticky', top: 0 }}>
+                <Table.Row>
+                  <Table.Head scope="col">
                     Roll Number
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {parsedData.map((student, index) => (
-                  <tr key={index} style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.rollNumber}</td>
-                  </tr>
+                  <Table.Row style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)' }} key={index}>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber}</Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
 
           {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}

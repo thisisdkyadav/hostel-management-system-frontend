@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import { Button, StatusBadge } from "czero/react"
+import { Button, StatusBadge, Table } from "czero/react"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
 
@@ -68,56 +68,56 @@ const StudentEntryTable = ({ entries, refresh }) => {
     <>
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-              <tr>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student Name</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Unit</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Room</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Date</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Time</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Status</th>
-                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody style={{ borderTop: `var(--border-1) solid var(--table-border)` }}>
+          <Table>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Student Name</Table.Head>
+                <Table.Head>Unit</Table.Head>
+                <Table.Head>Room</Table.Head>
+                <Table.Head>Date</Table.Head>
+                <Table.Head>Time</Table.Head>
+                <Table.Head>Status</Table.Head>
+                <Table.Head>Actions</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {entries.map((entry) => {
                 const { date, time } = formatDateTime(entry.dateAndTime)
                 return (
-                  <tr key={entry._id} style={{ borderBottom: `var(--border-1) solid var(--table-border)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
+                  <Table.Row key={entry._id}  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{entry.userId.name}</div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{entry.unit || "-"}</div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
                         {entry.room}
                         {entry.bed}
                       </div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{date}</div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{time}</div>
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <StatusBadge status={entry.status} />
-                    </td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                       <Button onClick={() => handleEditClick(entry)} variant="ghost" size="sm" aria-label="Edit entry">
                         <FaEdit />
                       </Button>
-                    </td>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 )
               })}
-            </tbody>
-          </table>
+            </Table.Body>
+          </Table>
         </div>
       </div>
       {showEditModal && selectedEntry && <EditStudentEntryModal entry={selectedEntry} onClose={handleCloseModal} onSave={handleSaveEntry} onDelete={handleDeleteEntry} />}

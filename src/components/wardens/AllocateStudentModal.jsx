@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGraduate } from "react-icons/fa"
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -204,17 +204,17 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                 <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No unallocated students found</div>
               ) : (
                 <div style={{ maxHeight: '256px', overflowY: 'auto', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)' }}>
-                  <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ backgroundColor: 'var(--color-bg-tertiary)', position: 'sticky', top: 0 }}>
-                      <tr>
-                        <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student</th>
-                        <th className="hidden sm:table-cell" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>ID</th>
-                        <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'right', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+                  <Table>
+                    <Table.Header style={{ position: 'sticky', top: 0 }}>
+                      <Table.Row>
+                        <Table.Head>Student</Table.Head>
+                        <Table.Head className="hidden sm:table-cell">ID</Table.Head>
+                        <Table.Head>Action</Table.Head>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
                       {unallocatedStudents.map((student) => (
-                        <tr key={student.id} style={{ transition: 'var(--transition-colors)', backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)', borderTop: `var(--border-1) solid var(--color-border-primary)` }} onMouseEnter={(e) => {
+                        <Table.Row style={{ backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)', borderTop: `var(--border-1) solid var(--color-border-primary)` }} key={student.id}  onMouseEnter={(e) => {
                           if (selectedStudent?.id !== student.id) {
                             e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
                           }
@@ -225,7 +225,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                             }
                           }}
                         >
-                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                          <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <div style={{ height: 'var(--spacing-9)', width: 'var(--spacing-9)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</div>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
@@ -233,9 +233,9 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                                 <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                               </div>
                             </div>
-                          </td>
-                          <td className="hidden sm:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.studentId || student.rollNumber}</td>
-                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                          </Table.Cell>
+                          <Table.Cell className="hidden sm:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.studentId || student.rollNumber}</Table.Cell>
+                          <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                             <button onClick={() => handleStudentSelect(student)}
                               style={{
                                 padding: 'var(--spacing-1) var(--spacing-3)',
@@ -261,11 +261,11 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                             >
                               Select
                             </button>
-                          </td>
-                        </tr>
+                          </Table.Cell>
+                        </Table.Row>
                       ))}
-                    </tbody>
-                  </table>
+                    </Table.Body>
+                  </Table>
                 </div>
               )}
             </>

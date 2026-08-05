@@ -42,7 +42,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Select, useConfirm } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const confirm = useConfirm()
@@ -559,20 +559,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
-                <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
-                  <thead style={{ backgroundColor: "var(--color-bg-tertiary)" }}>
-                    <tr>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Date & Time</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Type</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Recorded By</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Head>Date & Time</Table.Head>
+                      <Table.Head>Type</Table.Head>
+                      <Table.Head>Recorded By</Table.Head>
+                      <Table.Head>Notes</Table.Head>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {accessRecords.map((record) => (
-                      <tr key={record._id} style={{ borderBottom: "var(--border-1) solid var(--color-border-light)" }}>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{formatDateTime(record.dateAndTime)}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      <Table.Row key={record._id}>
+                        <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>{formatDateTime(record.dateAndTime)}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>
                           <span
                             style={{
                               padding: "var(--spacing-1) var(--spacing-2)",
@@ -587,13 +587,13 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           >
                             {record.status === "Checked In" ? "Checked In" : "Checked Out"}
                           </span>
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{record.recordedBy || "System"}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{record.notes || "-"}</td>
-                      </tr>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>{record.recordedBy || "System"}</Table.Cell>
+                        <Table.Cell style={{ fontSize: "var(--font-size-sm)" }}>{record.notes || "-"}</Table.Cell>
+                      </Table.Row>
                     ))}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table>
               </div>
             )}
           </div>
@@ -613,24 +613,24 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
-                <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
-                  <thead style={{ backgroundColor: "var(--color-bg-tertiary)" }}>
-                    <tr>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Request Date</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Visitors</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Visit Date</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Head>Request Date</Table.Head>
+                      <Table.Head>Visitors</Table.Head>
+                      <Table.Head>Visit Date</Table.Head>
+                      <Table.Head>Status</Table.Head>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {visitorRequests.map((request) => (
-                      <tr key={request._id} style={{ borderBottom: "var(--border-1) solid var(--color-border-light)" }}>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{formatDate(request.createdAt)}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>{request.visitors && request.visitors.length > 0 ? request.visitors.map((v) => v.name).join(", ") : request.visitorNames || "-"}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      <Table.Row key={request._id}>
+                        <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>{formatDate(request.createdAt)}</Table.Cell>
+                        <Table.Cell style={{ fontSize: "var(--font-size-sm)" }}>{request.visitors && request.visitors.length > 0 ? request.visitors.map((v) => v.name).join(", ") : request.visitorNames || "-"}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>
                           {formatDate(request.fromDate)} to {formatDate(request.toDate)}
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>
                           <span
                             style={{
                               padding: "var(--spacing-1) var(--spacing-2)",
@@ -645,11 +645,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           >
                             {request.status}
                           </span>
-                        </td>
-                      </tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table>
               </div>
             )}
           </div>
@@ -723,33 +723,33 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
-                <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
-                  <thead style={{ backgroundColor: "var(--color-bg-tertiary)" }}>
-                    <tr>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Item</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Count</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Issue Date</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Status</th>
-                      <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Condition</th>
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Head>Item</Table.Head>
+                      <Table.Head>Count</Table.Head>
+                      <Table.Head>Issue Date</Table.Head>
+                      <Table.Head>Status</Table.Head>
+                      <Table.Head>Condition</Table.Head>
                       {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                        <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
+                        <Table.Head>Actions</Table.Head>
                       )}
-                    </tr>
-                  </thead>
-                  <tbody>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {studentInventory.map((item) => (
-                      <tr key={item._id} style={{ borderBottom: "var(--border-1) solid var(--color-border-light)" }}>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                      <Table.Row key={item._id}>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                               <Package size={16} style={{ color: "var(--color-primary)" }} />
                             </div>
                             <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.itemTypeId.name}</span>
                           </div>
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.count}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", color: "var(--color-text-muted)" }}>{formatDate(item.issueDate)}</td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.count}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>{formatDate(item.issueDate)}</Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>
                           <span
                             style={{
                               padding: "var(--spacing-1) var(--spacing-2-5)",
@@ -762,10 +762,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           >
                             {item.status}
                           </span>
-                        </td>
-                        <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", color: "var(--color-text-muted)" }}>{item.condition}</td>
+                        </Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap" }}>{item.condition}</Table.Cell>
                         {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                          <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
+                          <Table.Cell style={{ whiteSpace: "nowrap" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
                               <Button
                                 onClick={() => {
@@ -812,12 +812,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                 </Button>
                               )}
                             </div>
-                          </td>
+                          </Table.Cell>
                         )}
-                      </tr>
+                      </Table.Row>
                     ))}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table>
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@ import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from 
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
 import { Select } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -332,32 +332,32 @@ const HealthTab = ({ userId }) => {
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
-                <tr>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Date</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Provider</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Hospital</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Amount</th>
-                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Date</Table.Head>
+                  <Table.Head>Provider</Table.Head>
+                  <Table.Head>Hospital</Table.Head>
+                  <Table.Head>Amount</Table.Head>
+                  <Table.Head>Actions</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {insuranceClaims.map((claim) => (
-                  <tr key={claim._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(claim.createdAt)}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{claim.hospitalName}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
-                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                  <Table.Row style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }} key={claim._id}>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{formatDate(claim.createdAt)}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{claim.hospitalName}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</Table.Cell>
+                    <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>
                       <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="sm">
                         <Eye size={16} /> View
                       </Button>
-                    </td>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </tbody>
-            </table>
+              </Table.Body>
+            </Table>
           </div>
         )}
       </div>
