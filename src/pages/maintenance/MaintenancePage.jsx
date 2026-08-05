@@ -74,9 +74,9 @@ const MaintenancePage = () => {
       queryParams.append("limit", filters.limit)
 
       const response = await maintenanceApi.getComplaints(queryParams.toString())
-      setComplaints(response.data || [])
-      setTotalItems(response.meta?.total || 0)
-      setTotalPages(response.meta?.totalPages || 1)
+      setComplaints(response.data?.items || [])
+      setTotalItems(response.data?.pagination?.total || 0)
+      setTotalPages(response.data?.pagination?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching complaints:", error)
     } finally {

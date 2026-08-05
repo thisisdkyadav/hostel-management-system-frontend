@@ -19,7 +19,7 @@ const ComplaintsTab = ({ userId }) => {
     try {
       setLoading(true)
       const response = await studentApi.getStudentComplaints(userId, { limit: 10 })
-      setComplaints(response.data || [])
+      setComplaints(response.data?.items || [])
     } catch (error) {
       console.error("Error fetching student complaints:", error)
       setComplaints([])

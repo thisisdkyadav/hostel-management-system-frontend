@@ -213,9 +213,9 @@ const ComplaintsPage = () => {
       queryParams.append("limit", filters.limit)
 
       const response = await adminApi.getAllComplaints(queryParams.toString())
-      setComplaints(response.data || [])
-      setTotalComplaints(response.meta?.total || 0)
-      setTotalPages(response.meta?.totalPages || 1)
+      setComplaints(response.data?.items || [])
+      setTotalComplaints(response.data?.pagination?.total || 0)
+      setTotalPages(response.data?.pagination?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching complaints:", error)
       setComplaints([])
