@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Textarea } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -363,7 +363,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
             })}
           </div>
         ) : (
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No signatories selected yet.</p>
+          <EmptyState variant="inline" message="No signatories selected yet." />
         )}
 
         {/* Picker */}

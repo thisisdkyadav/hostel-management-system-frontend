@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -236,7 +236,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                           </div>
                         ))
                       ) : (
-                        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
+                        <EmptyState variant="inline" message="No Gymkhana categories configured yet." />
                       )}
                     </div>
                   </div>

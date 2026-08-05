@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaKey, FaPlus, FaTrash, FaCopy, FaCheckCircle } from "react-icons/fa"
-import { SearchInput, useConfirm } from "@/components/ui"
+import { SearchInput, Spinner, useConfirm } from "@/components/ui"
 import { Tabs, Button, DataTable, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
@@ -271,7 +271,7 @@ const ApiKeyManagementPage = () => {
 
       {loading && apiKeys.length === 0 ? (
         <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <Spinner size={32} className="inline-block mb-4" />
           <p className="text-gray-600">Loading API keys...</p>
         </div>
       ) : filteredApiKeys.length === 0 ? (

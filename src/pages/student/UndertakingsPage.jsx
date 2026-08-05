@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState, Spinner } from "@/components/ui"
 import { Tabs, Button } from "czero/react"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -124,7 +124,7 @@ const UndertakingsPage = () => {
         <div>
           {loading ? (
             <div className="flex justify-center items-center" style={{ height: '16rem' }}>
-              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: 'var(--border-2) solid var(--color-info)', borderBottom: 'var(--border-2) solid var(--color-info)' }}></div>
+              <Spinner size={48} thickness="thin" color="inherit" className="text-[var(--color-info)]" />
             </div>
           ) : pendingUndertakings.length === 0 ? (
             <EmptyState icon={FaFileSignature} title="No Pending Undertakings" message="You don't have any undertakings that require your attention." />
@@ -172,7 +172,7 @@ const UndertakingsPage = () => {
         <div>
           {loading ? (
             <div className="flex justify-center items-center" style={{ height: '16rem' }}>
-              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: 'var(--border-2) solid var(--color-info)', borderBottom: 'var(--border-2) solid var(--color-info)' }}></div>
+              <Spinner size={48} thickness="thin" color="inherit" className="text-[var(--color-info)]" />
             </div>
           ) : acceptedUndertakings.length === 0 ? (
             <EmptyState icon={FaCheck} title="No Accepted Undertakings" message="You haven't accepted any undertakings yet." />

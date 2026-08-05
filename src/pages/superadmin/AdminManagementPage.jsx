@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import { SearchInput, Select, useConfirm } from "@/components/ui"
+import { SearchInput, Select, Spinner, useConfirm } from "@/components/ui"
 import { Button, DataTable, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
@@ -225,7 +225,7 @@ const AdminManagementPage = () => {
 
       {loading && admins.length === 0 ? (
         <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <Spinner size={32} className="inline-block mb-4" />
           <p className="text-gray-600">Loading admins...</p>
         </div>
       ) : filteredAdmins.length === 0 ? (

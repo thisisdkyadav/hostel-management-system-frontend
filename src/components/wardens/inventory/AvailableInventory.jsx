@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { Pagination } from "@/components/ui"
+import { Pagination, Spinner } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const AvailableInventory = () => {
@@ -102,7 +102,7 @@ const AvailableInventory = () => {
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
         {loading && !hostelInventory.length ? (
           <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
-            <div className="animate-spin" style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
+            <Spinner size={40} thickness="thick" />
           </div>
         ) : hostelInventory.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>

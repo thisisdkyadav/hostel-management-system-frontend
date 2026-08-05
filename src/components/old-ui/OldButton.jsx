@@ -1,5 +1,6 @@
 import React, { forwardRef, useState } from "react"
 import PropTypes from "prop-types"
+import { Spinner } from "@/components/ui"
 
 /**
  * OLD Button Component - For comparison purposes
@@ -141,7 +142,7 @@ const OldButton = forwardRef(({
         >
             {isLoading ? (
                 <>
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <Spinner size={16} thickness="thin" color="inherit" />
                     <span>Loading...</span>
                 </>
             ) : (

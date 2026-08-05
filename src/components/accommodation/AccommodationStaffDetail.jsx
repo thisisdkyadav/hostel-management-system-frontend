@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { EmptyState, Modal } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -294,7 +294,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <SectionCard icon={Building2} title={`Allot a hostel · ${request.persons} bed(s)`} accentColor="var(--color-primary)">
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
                   {hostels.length === 0 ? (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No hostels with guest rooms are set up yet.</p>
+                    <EmptyState variant="inline" message="No hostels with guest rooms are set up yet." />
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                       {hostels.map((h) => {
@@ -321,7 +321,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 <button type="button" onClick={() => setReassigning(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)" }}>Cancel</button>
               ) : null}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  {roomOptions.length === 0 && <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No guest rooms are free for these dates.</p>}
+                  {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
                   {(request.guests || []).map((g, i) => (
                     <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)", alignItems: "center" }}>
                       <span style={{ fontSize: "var(--font-size-sm)" }}>{g.name}</span>

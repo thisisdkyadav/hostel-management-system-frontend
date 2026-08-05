@@ -3,6 +3,7 @@ import { FaFileUpload, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button } from "czero/react"
 import FileInput from "./ui/FileInput"
+import { Spinner } from "@/components/ui"
 
 const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateHeaders, maxRecords = 500, instructionText }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -132,7 +133,7 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
 
       {isLoading && (
         <div className="flex items-center justify-center py-3">
-          <div className="w-5 h-5 border-2 border-t-2 border-[var(--color-border-primary)] border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+          <Spinner size={20} thickness="thin" />
           <span className="ml-2 text-sm text-[var(--color-text-muted)]">Processing file...</span>
         </div>
       )}

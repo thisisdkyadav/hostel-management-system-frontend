@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, Grid, Select, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, Select, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -218,7 +218,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                   {hostelList && hostelList.length > 0 ? (
                     hostelList.map((hostel) => <Checkbox key={hostel._id} id={`hostel-${hostel._id}`} name="hostelIds" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} label={hostel.name} />)
                   ) : (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No hostels available.</p>
+                    <EmptyState variant="inline" message="No hostels available." />
                   )}
                 </div>
                 <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more hostels</p>
@@ -232,7 +232,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                   ) : availableDepartments && availableDepartments.length > 0 ? (
                     availableDepartments.map((department) => <Checkbox key={department} id={`dept-${department}`} name="departments" value={department} checked={formData.departments.includes(department)} onChange={handleChange} label={department} />)
                   ) : (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No departments available.</p>
+                    <EmptyState variant="inline" message="No departments available." />
                   )}
                 </div>
                 <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more departments</p>
@@ -246,7 +246,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                   ) : availableDegrees && availableDegrees.length > 0 ? (
                     availableDegrees.map((degree) => <Checkbox key={degree} id={`degree-${degree}`} name="degrees" value={degree} checked={formData.degrees.includes(degree)} onChange={handleChange} label={degree} />)
                   ) : (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No degrees available.</p>
+                    <EmptyState variant="inline" message="No degrees available." />
                   )}
                 </div>
                 <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more degrees</p>

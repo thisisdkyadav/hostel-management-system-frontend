@@ -13,11 +13,11 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import { useToast } from "@/components/ui/feedback"
-import { Card, Page, SearchInput, useConfirm } from "@/components/ui"
+import { Card, Page, SearchInput, Spinner, useConfirm } from "@/components/ui"
 
 const TabSpinner = () => (
   <div className="flex justify-center py-6">
-    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+    <Spinner size={40} />
   </div>
 )
 

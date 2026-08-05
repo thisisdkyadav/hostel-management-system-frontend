@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import { ArrowRight } from "lucide-react"
 import { getDefaultHomeRoute, getPostLoginRedirect } from "../../utils/authRedirect"
+import { Spinner } from "@/components/ui"
 
 const SSOLoginPage = () => {
   const [searchParams] = useSearchParams()
@@ -184,7 +185,7 @@ const SSOLoginPage = () => {
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4 animate-fadeIn">
             <div className="px-8 py-4 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-600 text-lg font-medium rounded-xl shadow-lg flex items-center">
-              <div className="w-5 h-5 border-2 border-blue-100 border-t-blue-600 rounded-full animate-spin mr-3"></div>
+              <Spinner size={20} thickness="thin" className="mr-3" />
               <span>{status}</span>
             </div>
           </div>

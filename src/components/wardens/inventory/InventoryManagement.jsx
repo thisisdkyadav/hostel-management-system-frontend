@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Select, Textarea } from "@/components/ui"
+import { Select, Spinner, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const InventoryManagement = () => {
@@ -149,7 +149,7 @@ const InventoryManagement = () => {
 
       {loading ? (
         <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
-          <div className="animate-spin" style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
+          <Spinner size={40} thickness="thick" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--gap-md)' }}>

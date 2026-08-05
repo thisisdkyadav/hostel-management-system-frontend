@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -296,7 +296,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                           </div>
                         ))
                       ) : (
-                        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
+                        <EmptyState variant="inline" message="No Gymkhana categories configured yet." />
                       )}
                     </div>
                   </div>
@@ -449,7 +449,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                     </div>
                   ))
                 ) : (
-                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No hostels available.</p>
+                  <EmptyState variant="inline" message="No hostels available." />
                 )}
               </div>
             </div>

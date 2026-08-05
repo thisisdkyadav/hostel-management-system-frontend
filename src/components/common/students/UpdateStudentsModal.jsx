@@ -8,7 +8,7 @@ import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import { studentApi } from "../../../service"
 import { useToast } from "@/components/ui/feedback"
-import { Select, Checkbox, FileInput } from "@/components/ui"
+import { Checkbox, FileInput, Select, Spinner } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -2642,7 +2642,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
               {(isLoading || configLoading) && (
                 <div className="flex items-center justify-center py-4">
-                  <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
+                  <Spinner size={24} thickness="thin" />
                   <span className="ml-2 text-sm text-gray-600">{isLoading ? "Processing file..." : "Loading configuration..."}</span>
                 </div>
               )}
