@@ -3,16 +3,17 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
+  const confirm = useConfirm()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showBulkUpdateModal, setShowBulkUpdateModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this insurance provider?")) {
+    if (await confirm({ message: "Are you sure you want to delete this insurance provider?", isDestructive: true })) {
       try {
         setIsDeleting(true)
         await insuranceProviderApi.deleteInsuranceProvider(provider.id)

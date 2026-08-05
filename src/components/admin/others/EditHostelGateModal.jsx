@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
-import { VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
 
 const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
+  const confirm = useConfirm()
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -54,7 +55,7 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
   }
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this hostel gate login?")) {
+    if (await confirm({ message: "Are you sure you want to delete this hostel gate login?", isDestructive: true })) {
       try {
         setLoading(true)
 

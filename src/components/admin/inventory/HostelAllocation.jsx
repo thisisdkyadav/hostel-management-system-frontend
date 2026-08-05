@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const HostelAllocation = () => {
+  const confirm = useConfirm()
   const { hostelList } = useGlobal()
 
   const [hostelInventory, setHostelInventory] = useState([])
@@ -122,7 +123,7 @@ const HostelAllocation = () => {
 
   // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this allocation?")) return
+    if (!(await confirm({ message: "Are you sure you want to delete this allocation?", isDestructive: true }))) return
 
     setLoading(true)
     setError(null)

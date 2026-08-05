@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Textarea, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
+  const confirm = useConfirm()
   const [itemTypes, setItemTypes] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
@@ -79,7 +80,7 @@ const ItemTypes = () => {
 
   // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this item type?")) return
+    if (!(await confirm({ message: "Are you sure you want to delete this item type?", isDestructive: true }))) return
 
     setLoading(true)
     setError(null)

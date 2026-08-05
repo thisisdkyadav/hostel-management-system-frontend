@@ -4,17 +4,18 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
+  const confirm = useConfirm()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showManageStudentsModal, setShowManageStudentsModal] = useState(false)
   const [showStatusModal, setShowStatusModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this undertaking?")) {
+    if (await confirm({ message: "Are you sure you want to delete this undertaking?", isDestructive: true })) {
       try {
         setIsDeleting(true)
         await adminApi.deleteUndertaking(undertaking.id)

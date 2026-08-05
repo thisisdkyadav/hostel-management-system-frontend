@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
-import { Card } from "@/components/ui"
+import { Card, useConfirm } from "@/components/ui"
 
 const styles = {
   pageContainer: {
@@ -136,6 +136,7 @@ const styles = {
 }
 
 const UpdatePasswordPage = () => {
+  const confirm = useConfirm()
   const { user } = useAuth()
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [showBulkModal, setShowBulkModal] = useState(false)
@@ -158,7 +159,7 @@ const UpdatePasswordPage = () => {
   }
 
   const handlePasswordUpdate = async (email, newPassword) => {
-    const confirmUpdate = window.confirm("Are you sure you want to update this user's password?")
+    const confirmUpdate = await confirm("Are you sure you want to update this user's password?")
     if (!confirmUpdate) return
     try {
       const response = await adminApi.updateUserPassword(email, newPassword)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import { SearchInput, Select } from "@/components/ui"
+import { SearchInput, Select, useConfirm } from "@/components/ui"
 import { Button, DataTable, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
@@ -8,6 +8,7 @@ import { superAdminApi } from "../../service"
 import { ADMIN_SUBROLE_OPTIONS } from "../../constants/adminSubRoles"
 
 const AdminManagementPage = () => {
+  const confirm = useConfirm()
   const [admins, setAdmins] = useState([])
   const [filteredAdmins, setFilteredAdmins] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -114,7 +115,7 @@ const AdminManagementPage = () => {
       return
     }
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this admin?")
+    const confirmDelete = await confirm({ message: "Are you sure you want to delete this admin?", isDestructive: true })
     if (!confirmDelete) return
 
     try {

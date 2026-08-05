@@ -3,8 +3,10 @@ import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
 import { Button } from "czero/react"
+import { useConfirm } from "@/components/ui"
 
 const FamilyDetails = ({ userId }) => {
+  const confirm = useConfirm()
   const canEditFamilyDetails = true
   const [familyDetails, setFamilyDetails] = useState([])
   const [loading, setLoading] = useState(true)
@@ -54,7 +56,7 @@ const FamilyDetails = ({ userId }) => {
   }
 
   const handleDeleteClick = async (memberId) => {
-    if (window.confirm("Are you sure you want to delete this family member?")) {
+    if (await confirm({ message: "Are you sure you want to delete this family member?", isDestructive: true })) {
       try {
         await adminApi.deleteFamilyMember(memberId)
         fetchFamilyDetails() // Refresh the list

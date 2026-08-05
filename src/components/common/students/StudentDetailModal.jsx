@@ -41,10 +41,11 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Select } from "@/components/ui"
+import { Select, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
+  const confirm = useConfirm()
   const { user } = useAuth()
   const { can } = useAuthz()
   const canAssignInventory = true
@@ -954,7 +955,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   // Handle returning inventory item
   const handleReturnInventory = async () => {
-    if (!window.confirm("Are you sure you want to return this item?")) return
+    if (!(await confirm("Are you sure you want to return this item?"))) return
 
     setLoading(true)
     try {

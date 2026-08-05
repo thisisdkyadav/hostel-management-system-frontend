@@ -78,6 +78,7 @@ export { default as Tooltip } from './overlay/Tooltip'
 export { default as Popover } from './overlay/Popover'
 export { default as Drawer } from './overlay/Drawer'
 export { default as ConfirmDialog } from './overlay/ConfirmDialog'
+export { default as ConfirmProvider, useConfirm } from './overlay/ConfirmProvider'
 
 // ==============================================
 // TABLE COMPONENTS

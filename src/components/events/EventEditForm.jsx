@@ -4,10 +4,11 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { Select } from "@/components/ui"
+import { Select, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
+  const confirm = useConfirm()
   const { hostelList } = useGlobal()
 
   const [formData, setFormData] = useState({
@@ -46,8 +47,8 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
     onSave(updatedEvent)
   }
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+  const handleDelete = async () => {
+    if (await confirm({ message: "Are you sure you want to delete this event? This action cannot be undone.", isDestructive: true })) {
       onDelete(event._id)
     }
   }

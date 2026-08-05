@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import { VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Alert, HStack, SearchInput, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -8,6 +8,7 @@ import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
 
 const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, onUpdate }) => {
+  const confirm = useConfirm()
   const [assignedStudents, setAssignedStudents] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(false)
@@ -44,7 +45,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
 
   // Remove a student from undertaking
   const handleRemoveStudent = async (studentId) => {
-    if (window.confirm("Are you sure you want to remove this student from the undertaking?")) {
+    if (await confirm({ message: "Are you sure you want to remove this student from the undertaking?", isDestructive: true })) {
       try {
         setLoading(true)
         setError(null)

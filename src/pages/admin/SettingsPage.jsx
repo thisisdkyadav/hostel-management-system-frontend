@@ -13,7 +13,7 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import { useToast } from "@/components/ui/feedback"
-import { Card, Page, SearchInput } from "@/components/ui"
+import { Card, Page, SearchInput, useConfirm } from "@/components/ui"
 
 const TabSpinner = () => (
   <div className="flex justify-center py-6">
@@ -22,6 +22,7 @@ const TabSpinner = () => (
 )
 
 const SettingsPage = () => {
+  const confirm = useConfirm()
   const { toast } = useToast()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("studentFields")
@@ -343,7 +344,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update the POR certificate template?")
+    const confirmUpdate = await confirm("Are you sure you want to update the POR certificate template?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, porCertificate: true }))
@@ -366,7 +367,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update student edit permissions?")
+    const confirmUpdate = await confirm("Are you sure you want to update student edit permissions?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, studentFields: true }))
@@ -443,7 +444,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update degrees?")
+    const confirmUpdate = await confirm("Are you sure you want to update degrees?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, degrees: true }))
@@ -466,7 +467,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update departments?")
+    const confirmUpdate = await confirm("Are you sure you want to update departments?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, departments: true }))
@@ -489,7 +490,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update the system settings?")
+    const confirmUpdate = await confirm("Are you sure you want to update the system settings?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, systemSettings: true }))
@@ -512,7 +513,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update the accommodation settings?")
+    const confirmUpdate = await confirm("Are you sure you want to update the accommodation settings?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, accommodation: true }))
@@ -560,7 +561,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update student batches?")
+    const confirmUpdate = await confirm("Are you sure you want to update student batches?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, studentBatches: true }))
@@ -602,7 +603,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update student groups?")
+    const confirmUpdate = await confirm("Are you sure you want to update student groups?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, studentGroups: true }))
@@ -625,7 +626,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update academic holidays?")
+    const confirmUpdate = await confirm("Are you sure you want to update academic holidays?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, academicHolidays: true }))
@@ -648,7 +649,7 @@ const SettingsPage = () => {
       return
     }
 
-    const confirmUpdate = window.confirm("Are you sure you want to update Gymkhana categories?")
+    const confirmUpdate = await confirm("Are you sure you want to update Gymkhana categories?")
     if (!confirmUpdate) return
 
     setLoading((prev) => ({ ...prev, gymkhanaCategories: true }))

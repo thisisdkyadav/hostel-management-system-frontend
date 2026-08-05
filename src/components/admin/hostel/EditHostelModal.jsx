@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Select, Label, Alert, VStack, HStack } from "@/components/ui"
+import { Alert, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { Building, User, DoorOpen, Archive } from "lucide-react"
@@ -7,6 +7,7 @@ import RoomManagementModal from "./RoomManagementModal"
 import { hostelApi } from "../../../service"
 
 const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
+  const confirm = useConfirm()
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
@@ -80,7 +81,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
   const handleArchiveToggle = async () => {
     const message = isArchived ? "Are you sure you want to unarchive this hostel?" : "Are you sure you want to archive this hostel?"
     // confirm the action
-    const confirm = window.confirm(message)
+    const confirm = await confirm(message)
     if (!confirm) return
 
     try {

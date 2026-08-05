@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, useConfirm } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { FaSlidersH, FaUserShield } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
@@ -595,6 +595,7 @@ const StudentAuthzEditorModal = ({
 }
 
 const AuthzManagementPage = () => {
+  const confirm = useConfirm()
   const navigate = useNavigate()
   const canViewAuthz = true
   const canUpdateAuthz = true
@@ -820,7 +821,7 @@ const AuthzManagementPage = () => {
   const handleResetOverride = async () => {
     if (!selectedUserData?.user?._id || !canUpdateAuthz) return
 
-    const confirmed = window.confirm("Reset all AuthZ overrides for this user?")
+    const confirmed = await confirm({ message: "Reset all AuthZ overrides for this user?", isDestructive: true })
     if (!confirmed) return
 
     setSaving(true)

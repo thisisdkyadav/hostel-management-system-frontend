@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaKey, FaPlus, FaTrash, FaCopy, FaCheckCircle } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, useConfirm } from "@/components/ui"
 import { Tabs, Button, DataTable, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
@@ -13,6 +13,7 @@ const API_KEY_FILTER_TABS = [
 ]
 
 const ApiKeyManagementPage = () => {
+  const confirm = useConfirm()
   const [apiKeys, setApiKeys] = useState([])
   const [filteredApiKeys, setFilteredApiKeys] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -114,7 +115,7 @@ const ApiKeyManagementPage = () => {
       return
     }
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this API key?")
+    const confirmDelete = await confirm({ message: "Are you sure you want to delete this API key?", isDestructive: true })
     if (!confirmDelete) return
 
     try {

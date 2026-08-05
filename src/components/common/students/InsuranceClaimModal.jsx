@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { Select } from "@/components/ui"
+import { Select, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
+  const confirm = useConfirm()
   const canEditHealth = true
   const [isEditing, setIsEditing] = useState(isNew)
   const [formData, setFormData] = useState({
@@ -59,8 +60,8 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
     }).format(amount)
   }
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this insurance claim?")) {
+  const handleDelete = async () => {
+    if (await confirm({ message: "Are you sure you want to delete this insurance claim?", isDestructive: true })) {
       onDelete(claim._id)
       onClose()
     }

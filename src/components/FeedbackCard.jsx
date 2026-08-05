@@ -4,10 +4,12 @@ import { feedbackApi } from "../service"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { getMediaUrl } from "../utils/mediaUtils"
+import { useConfirm } from "@/components/ui"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
+  const confirm = useConfirm()
   const canViewFeedback = true
   const canReactFeedback = true
   const canCreateFeedback = true
@@ -42,13 +44,11 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
 
   const handleToggleSeen = async () => {
     const newStatus = status === "Pending" ? "Seen" : "Pending"
-    if (newStatus === "Pending" && feedback.reply) {
-      const confirm = window.confirm("Are you sure you want to mark this feedback as Pending. This will remove the reply. Do you want to proceed?")
-      if (!confirm) return
-    } else {
-      const confirm = window.confirm(`Are you sure you want to mark this feedback as ${newStatus}?`)
-      if (!confirm) return
-    }
+    const losesReply = newStatus === "Pending" && feedback.reply
+    const confirmed = losesReply
+      ? await confirm({ message: "Marking this feedback as Pending removes the reply. Continue?", confirmText: "Remove reply", isDestructive: true })
+      : await confirm(`Are you sure you want to mark this feedback as ${newStatus}?`)
+    if (!confirmed) return
     try {
       setIsUpdating(true)
       const response = await feedbackApi.updateFeedbackStatus(feedback._id, newStatus)
@@ -85,8 +85,8 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   }
 
   const handleDelete = async () => {
-    const confirm = window.confirm("Are you sure you want to delete this feedback?")
-    if (!confirm) return
+    const confirmed = await confirm({ message: "Are you sure you want to delete this feedback?", confirmText: "Delete", isDestructive: true })
+    if (!confirmed) return
 
     try {
       setIsUpdating(true)

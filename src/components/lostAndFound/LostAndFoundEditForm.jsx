@@ -4,10 +4,11 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Select, FileInput, Textarea } from "@/components/ui"
+import { FileInput, Select, Textarea, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
+  const confirm = useConfirm()
   const [formData, setFormData] = useState({
     itemName: item.itemName,
     description: item.description,
@@ -53,8 +54,8 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
     })
   }
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this item? This action cannot be undone.")) {
+  const handleDelete = async () => {
+    if (await confirm({ message: "Are you sure you want to delete this item? This action cannot be undone.", isDestructive: true })) {
       onDelete(item._id)
     }
   }

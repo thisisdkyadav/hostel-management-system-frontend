@@ -3,15 +3,16 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, useConfirm } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
+  const confirm = useConfirm()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedProfile, setSelectedProfile] = useState(null)
   const [showEditModal, setShowEditModal] = useState(false)
 
   const handleDeleteProfile = async (profileId) => {
-    if (window.confirm("Are you sure you want to delete this visitor profile? This action cannot be undone.")) {
+    if (await confirm({ message: "Are you sure you want to delete this visitor profile? This action cannot be undone.", isDestructive: true })) {
       try {
         await visitorApi.deleteVisitorProfile(profileId)
         onRefresh()

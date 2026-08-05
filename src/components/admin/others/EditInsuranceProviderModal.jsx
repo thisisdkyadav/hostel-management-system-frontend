@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCalendarAlt } from "react-icons/fa"
-import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { insuranceProviderApi } from "../../../service"
 
 const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
+  const confirm = useConfirm()
   const [formData, setFormData] = useState({
     name: provider?.name || "",
     email: provider?.email || "",
@@ -44,7 +45,7 @@ const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
   }
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this insurance provider?")) {
+    if (await confirm({ message: "Are you sure you want to delete this insurance provider?", isDestructive: true })) {
       try {
         setLoading(true)
         await insuranceProviderApi.deleteInsuranceProvider(provider.id)

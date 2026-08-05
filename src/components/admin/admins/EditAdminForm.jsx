@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { superAdminApi } from "../../../service"
-import { VStack, HStack, Label, Select } from "@/components/ui"
+import { HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -17,6 +17,7 @@ const EditAdminForm = ({
   fixedSubRole = null,
   subRoleOptions = ADMIN_SUBROLE_OPTIONS,
 }) => {
+  const confirm = useConfirm()
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -102,7 +103,7 @@ const EditAdminForm = ({
   }
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this administrator?")
+    const confirmDelete = await confirm({ message: "Are you sure you want to delete this administrator?", isDestructive: true })
     if (confirmDelete) {
       setIsLoading(true)
       try {

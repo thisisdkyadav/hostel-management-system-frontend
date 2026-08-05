@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -26,6 +26,7 @@ import PaymentInfoViewer from "./details/PaymentInfoViewer"
 import PaymentInfoModal from "./PaymentInfoModal"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
+  const confirm = useConfirm()
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const canAllocateVisitors =
@@ -145,7 +146,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   // API action handlers
   const handleCancelRequest = async () => {
-    if (window.confirm("Are you sure you want to cancel this visitor request?")) {
+    if (await confirm({ message: "Are you sure you want to cancel this visitor request?", isDestructive: true })) {
       try {
         await visitorApi.cancelVisitorRequest(requestId)
         onRefresh()

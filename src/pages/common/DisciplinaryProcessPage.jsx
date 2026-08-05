@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, useConfirm } from "@/components/ui"
 import {
   Eye,
   Plus,
@@ -212,6 +212,7 @@ const documentChipStyle = {
 // ============================================================================
 
 const DisciplinaryProcessPage = () => {
+  const confirm = useConfirm()
   const { user } = useAuth()
   const { toast } = useToast()
 
@@ -845,9 +846,7 @@ const DisciplinaryProcessPage = () => {
   const handleSkipEmail = async () => {
     if (!selectedAdminCase?.id) return
 
-    const confirmed = window.confirm(
-      "Skip committee email for this case and continue to committee minutes?"
-    )
+    const confirmed = await confirm("Skip committee email for this case and continue to committee minutes?")
     if (!confirmed) return
 
     try {

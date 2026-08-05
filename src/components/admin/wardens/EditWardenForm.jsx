@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
+import { Checkbox, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -23,6 +23,7 @@ const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
 }
 
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
+  const confirm = useConfirm()
   const { hostelList } = useGlobal()
   const isGymkhana = staffType === "gymkhana"
   const isAcademics = staffType === "academics"
@@ -174,7 +175,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
   }
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete this ${staffTitle.toLowerCase()}?`)
+    const confirmDelete = await confirm({ message: `Are you sure you want to delete this ${staffTitle.toLowerCase()}?`, isDestructive: true })
     if (!confirmDelete) return
 
     setIsLoading(true)

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
-import { Label } from "@/components/ui"
+import { Label, useConfirm } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
@@ -23,6 +23,7 @@ const CANCELLABLE = [
 ]
 
 const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResubmit }) => {
+  const confirm = useConfirm()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [pay, setPay] = useState({ transactionId: "", screenshotFileRef: "" })
@@ -54,7 +55,11 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
       variant="outline"
       size="sm"
       disabled={busy}
-      onClick={() => { if (window.confirm("Cancel this accommodation request?")) act(() => accommodationApi.cancelRequest(requestId)) }}
+      onClick={async () => {
+        if (await confirm({ message: "Cancel this accommodation request?", confirmText: "Cancel request", cancelText: "Keep it", isDestructive: true })) {
+          act(() => accommodationApi.cancelRequest(requestId))
+        }
+      }}
       style={{ color: "var(--color-danger)", borderColor: "var(--color-danger-light)" }}
     >
       Cancel request

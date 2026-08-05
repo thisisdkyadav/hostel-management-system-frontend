@@ -1,11 +1,12 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, useConfirm } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
+  const confirm = useConfirm()
   const { user } = useAuth()
   const hostelType = user?.hostel?.type
 
@@ -39,7 +40,7 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
   }
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this entry?")) {
+    if (!(await confirm({ message: "Are you sure you want to delete this entry?", isDestructive: true }))) {
       return
     }
     await onDelete(entry._id)

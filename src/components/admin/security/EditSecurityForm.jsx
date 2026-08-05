@@ -2,10 +2,11 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
+  const confirm = useConfirm()
   const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -47,7 +48,7 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   }
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this security staff account?")
+    const confirmDelete = await confirm({ message: "Are you sure you want to delete this security staff account?", isDestructive: true })
     if (confirmDelete) {
       try {
         setLoading(true)

@@ -2,15 +2,16 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
+  const confirm = useConfirm()
   const [showEditModal, setShowEditModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this hostel gate login?")) {
+    if (await confirm({ message: "Are you sure you want to delete this hostel gate login?", isDestructive: true })) {
       try {
         setIsDeleting(true)
         await hostelGateApi.deleteHostelGate(gate.hostelId._id)
