@@ -11,8 +11,15 @@
 @import "./styles/homepage.css";
 @import "./styles/contactmodal.css";
 
-/* No @source for hzero: it compiles the utility classes its own components use
-   into hzero/styles.css, so it styles itself. */
+/* Scan hzero even though it ships its own compiled utilities. Those ship in the
+   `components` layer, which this app's `utilities` outranks — fine for a class
+   only hzero uses, wrong the moment both are on one element. StatCards carries
+   `grid-cols-2 lg:grid-cols-7`: `grid-cols-2` is also generated here, so it won
+   from the higher layer and the grid never left two columns.
+   Scanning hzero puts both classes in one compilation, where Tailwind orders
+   the responsive variant after the plain one. hzero's shipped copy stays as a
+   harmless lower-ranked fallback for apps that don't use Tailwind at all. */
+@source "../node_modules/hzero/dist/*.js";
 
 body {
   font-family: "Google Sans", "Roboto", sans-serif;
