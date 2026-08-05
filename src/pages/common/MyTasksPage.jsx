@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Pagination } from "@/components/ui"
+import { Page, Pagination } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
@@ -164,7 +164,7 @@ const MyTasksPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       {/* Header with Title and Statistics */}
       <MyTasksHeader totalTasks={pagination.total} overdueTasks={stats.overdueTasks} />
 
@@ -376,7 +376,7 @@ const MyTasksPage = () => {
         {/* Task Detail Modal */}
         {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} allowedStatusUpdates={getStatusUpdateOptions()} isUserView={true} />}
       </div>
-    </div>
+    </Page>
   )
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -928,7 +928,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "var(--spacing-3)" }}>
+              <Grid min={160} gap={3}>
                 <div style={{ backgroundColor: "var(--color-info-bg)", border: "var(--border-1) solid var(--color-info-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
                   <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)" }}>Imported</div>
                   <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)" }}>
@@ -949,7 +949,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     {csvDisplayedSheetRows.length}/{csvResultSheetRows.length}
                   </div>
                 </div>
-              </div>
+              </Grid>
 
               <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)" }}>
                 Status table columns: roll number, email, success status, reason.

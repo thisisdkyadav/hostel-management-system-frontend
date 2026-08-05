@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox } from "@/components/ui"
+import { Checkbox, Grid } from "@/components/ui"
 import { Input } from "czero/react"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
@@ -81,11 +81,11 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
           <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Hostels</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "var(--spacing-3)" }}>
+          <Grid min={200} gap={3}>
             {hostels?.map((hostel) => (
               <Checkbox key={hostel.id} id={`hostel-${hostel.id}`} value={hostel.id} checked={targets.hostelIds.includes(hostel.id)} onChange={handleHostelChange} label={hostel.name} />
             ))}
-          </div>
+          </Grid>
         </div>
       )
 
@@ -93,11 +93,11 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
           <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Departments</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "var(--spacing-3)" }}>
+          <Grid min={200} gap={3}>
             {departments?.map((department) => (
               <Checkbox key={department} id={`dept-${department}`} value={department} checked={targets.departments.includes(department)} onChange={handleDepartmentChange} label={department} />
             ))}
-          </div>
+          </Grid>
         </div>
       )
 
@@ -105,11 +105,11 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
           <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Degrees</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "var(--spacing-3)" }}>
+          <Grid min={200} gap={3}>
             {degrees?.map((degree) => (
               <Checkbox key={degree} id={`degree-${degree}`} value={degree} checked={targets.degrees.includes(degree)} onChange={handleDegreeChange} label={degree} />
             ))}
-          </div>
+          </Grid>
         </div>
       )
 
@@ -117,7 +117,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
           <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Admission Year Range</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
+          <Grid min={250} gap={4}>
             <div>
               <label style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Start Year</label>
               <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearStart} onChange={(e) => onChange("admissionYearStart", e.target.value)} placeholder="2020" icon={<FaCalendarAlt />} />
@@ -126,7 +126,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
               <label style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>End Year</label>
               <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearEnd} onChange={(e) => onChange("admissionYearEnd", e.target.value)} placeholder="2023" icon={<FaCalendarAlt />} />
             </div>
-          </div>
+          </Grid>
         </div>
       )
 

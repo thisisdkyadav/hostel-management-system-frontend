@@ -3,15 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Label,
-  FileInput,
-  ToggleButtonGroup,
-  Spinner,
-} from "@/components/ui"
+import { Card, CardContent, CardHeader, FileInput, Grid, Label, Spinner, ToggleButtonGroup } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -179,13 +171,7 @@ const SignatureSettingsCard = ({ user }) => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "var(--spacing-4)",
-              }}
-            >
+            <Grid min={220} gap={4}>
               <div>
                 <Label htmlFor="signature-name" required>
                   Name
@@ -213,7 +199,7 @@ const SignatureSettingsCard = ({ user }) => {
                   </p>
                 ) : null}
               </div>
-            </div>
+            </Grid>
 
             <div>
               <Label>Signature type</Label>

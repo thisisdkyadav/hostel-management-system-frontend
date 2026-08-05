@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserShield } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import AdminCard from "../../components/admin/admins/AdminCard"
 import AddAdminModal from "../../components/admin/admins/AddAdminModal"
@@ -60,14 +60,14 @@ const AdminManagementPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <AdminManagementHeader
         title="HCU Staff Management"
         addButtonLabel="Add HCU Staff"
         onAddAdmin={() => setShowAddModal(true)}
       />
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
 
       <AdminStats admins={admins} />
 
@@ -105,8 +105,8 @@ const AdminManagementPage = () => {
       )}
 
       <AddAdminModal show={showAddModal} fixedSubRole={HCU_SUBROLE} onClose={() => setShowAddModal(false)} onAdd={handleAddAdmin} />
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

@@ -1,6 +1,6 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
-import { SearchInput, EmptyState } from "@/components/ui"
+import { EmptyState, Page, SearchInput } from "@/components/ui"
 import { Search } from "lucide-react"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
@@ -53,7 +53,7 @@ const HostelsPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full">
+      <Page>
         {/* Fixed Header */}
         <HostelsHeader onAddHostel={() => setShowAddModal(true)}
           onArchiveToggle={handleArchiveToggle}
@@ -62,7 +62,7 @@ const HostelsPage = () => {
 
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-scroll px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+        <Page.Body>
           <HostelStats hostels={hostels} />
 
           <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
@@ -97,8 +97,8 @@ const HostelsPage = () => {
               message="No hostels match your search criteria. Try adjusting your filters."
             />
           )}
-        </div>
-      </div>
+        </Page.Body>
+      </Page>
 
       <AddHostelModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchHostels} />
     </>

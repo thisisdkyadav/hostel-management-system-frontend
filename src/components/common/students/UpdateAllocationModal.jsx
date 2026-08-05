@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { Select, FileInput } from "@/components/ui"
+import { FileInput, Grid, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -973,7 +973,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     )}
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-3)" }}>
+                  <Grid min={180} gap={3}>
                     <div>
                       <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
                         Roll Number
@@ -1076,7 +1076,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         error={Boolean(row.validationError && !row.bedNumber)}
                       />
                     </div>
-                  </div>
+                  </Grid>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-3)" }}>
                     {row.student?.currentAllocation && (

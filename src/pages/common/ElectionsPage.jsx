@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
@@ -2777,7 +2777,7 @@ const ElectionsPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gap: "var(--spacing-4)", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+              <Grid min={320} gap={4}>
                 <div style={flatPanelStyle}>
                   <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
                     Students With Active Or Used Link
@@ -2843,7 +2843,7 @@ const ElectionsPage = () => {
                     </Table.Body>
                   </Table>
                 </div>
-              </div>
+              </Grid>
             </div>
           </Modal>
 
@@ -2985,7 +2985,7 @@ const ElectionsPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gap: "var(--spacing-4)", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+              <Grid min={320} gap={4}>
                 <div style={flatPanelStyle}>
                   <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
                     Students Who Received Test Email
@@ -3051,7 +3051,7 @@ const ElectionsPage = () => {
                     </Table.Body>
                   </Table>
                 </div>
-              </div>
+              </Grid>
             </div>
           </Modal>
 

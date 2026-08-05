@@ -1,7 +1,7 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { FaUserTie } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../common/NoResults"
 import WardenCard from "../wardens/WardenCard"
 import AddWardenModal from "../wardens/AddWardenModal"
@@ -64,11 +64,11 @@ const StaffManagement = ({ staffType = "warden" }) => {
   }, [staffType])
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <StaffManagementHeader staffTitle={staffTitle} onAddStaff={() => setShowAddModal(true)}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Page.Body>
 
         <WardenStats wardens={staffList} staffType={staffType} />
 
@@ -88,8 +88,8 @@ const StaffManagement = ({ staffType = "warden" }) => {
         {filteredStaff.length === 0 && <NoResults icon={<FaUserTie style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message={emptyMessage} suggestion="Try changing your search or filter criteria" />}
 
         <AddWardenModal show={showAddModal} staffType={staffType} onClose={() => setShowAddModal(false)} onAdd={fetchStaff} />
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

@@ -3,16 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import {
-  Label,
-  Textarea,
-  Select,
-  Checkbox,
-  Switch,
-  FileInput,
-  Spinner,
-  SearchInput,
-} from "@/components/ui"
+import { Checkbox, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Textarea } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -231,7 +222,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-4)" }}>
+        <Grid min={240} gap={4}>
           <div>
             <Label htmlFor="cert-eyebrow">Eyebrow (small top line)</Label>
             <Input id="cert-eyebrow" value={eyebrow} onChange={(event) => setEyebrow(event.target.value)} placeholder="e.g. Indian Institute of Technology Indore" />
@@ -240,7 +231,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
             <Label htmlFor="cert-title">Title</Label>
             <Input id="cert-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="e.g. Certificate of Appointment" />
           </div>
-        </div>
+        </Grid>
       </section>
 
       {/* Body */}
@@ -277,7 +268,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
         <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
           Appearance
         </h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-4)", alignItems: "end" }}>
+        <Grid min={180} gap={4} align="end">
           <div>
             <Label htmlFor="cert-orientation">Orientation</Label>
             <Select
@@ -313,7 +304,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
               label="Decorative border"
             />
           </div>
-        </div>
+        </Grid>
       </section>
 
       {/* Signatories */}

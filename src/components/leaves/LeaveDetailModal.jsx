@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -141,7 +141,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
           </div>
 
           {/* Leave Details */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-5)' }}>
+          <Grid min={250} gap={5}>
             <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-border-light)` }}>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
                 <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
@@ -175,7 +175,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 })}
               </div>
             </div>
-          </div>
+          </Grid>
 
           {/* Duration */}
           <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)` }}>

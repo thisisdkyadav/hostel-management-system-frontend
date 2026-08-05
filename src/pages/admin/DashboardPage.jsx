@@ -10,7 +10,7 @@ import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
 import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import { Card, Checkbox, Popover } from "@/components/ui"
+import { Card, Checkbox, Page, Popover } from "@/components/ui"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
@@ -427,7 +427,7 @@ const DashboardPage = () => {
   const allHostelsSelected = dashboardData?.hostels ? selectedHostels.length === dashboardData.hostels.length : false
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <DashboardHeader>
         {loading ? (
           <div className="flex gap-[var(--spacing-2-5)]">
@@ -514,7 +514,7 @@ const DashboardPage = () => {
       </DashboardHeader>
 
       {/* Dashboard panels — lightweight bordered regions separated by gaps */}
-      <div className="flex-1 overflow-y-auto p-[var(--spacing-4)]">
+      <Page.Body padded={false} className="p-[var(--spacing-4)]">
         <div className="flex flex-col gap-[var(--spacing-4)]">
           {/* Top band: Student Distribution | Hostel Occupancy */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-4)]">
@@ -604,7 +604,7 @@ const DashboardPage = () => {
                     </div>
 
                     {/* Scrollable Body */}
-                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
+                    <Page.Body padded={false} className="scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
                       <table className="min-w-full table-fixed">
                         <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
                           {dashboardData?.hostels?.map((hostel, index) => {
@@ -637,7 +637,7 @@ const DashboardPage = () => {
                           })}
                         </tbody>
                       </table>
-                    </div>
+                    </Page.Body>
 
                     {/* Fixed Footer */}
                     <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
@@ -680,8 +680,8 @@ const DashboardPage = () => {
             />
           </div>
         </div>
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

@@ -1,5 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
+import { Grid } from "@/components/ui"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category
@@ -30,7 +31,7 @@ const DetailedTaskStats = ({ stats }) => {
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+    <Grid min={250} gap={4}>
       {/* Status Statistics */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Status</h3>
@@ -92,7 +93,7 @@ const DetailedTaskStats = ({ stats }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Grid>
   )
 }
 

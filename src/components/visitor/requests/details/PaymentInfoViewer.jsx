@@ -2,6 +2,7 @@ import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
+import { Grid } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
@@ -54,7 +55,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         {/* Payment Details Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <Grid min={250} gap={4}>
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-2)' }}>
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
@@ -79,7 +80,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             </div>
             <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{formatDate(paymentInfo.dateOfPayment)}</p>
           </div>
-        </div>
+        </Grid>
 
         {/* Transaction ID */}
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>

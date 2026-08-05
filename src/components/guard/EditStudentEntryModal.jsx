@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -64,7 +64,7 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
+        <Grid min={250} gap={4} style={{ marginBottom: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Email</label>
             <Input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly />
@@ -101,7 +101,7 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Time</label>
             <Input type="time" name="time" value={formData.time} onChange={handleChange} required />
           </div>
-        </div>
+        </Grid>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--spacing-2)' }}>
           <Button type="button" variant="danger" onClick={handleDelete}>

@@ -10,6 +10,7 @@ import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import PrintComplaints from "../../components/maintenance/PrintComplaints"
+import { Page } from "@/components/ui"
 
 const MAINTENANCE_STATUS_TABS = [
   { label: "All", value: "all", color: "primary" },
@@ -120,7 +121,7 @@ const MaintenancePage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <ComplaintsHeader
         showFilters={showFilters}
         setShowFilters={setShowFilters}
@@ -168,7 +169,7 @@ const MaintenancePage = () => {
         .filter-responsive { flex-direction: column; }
         @media (min-width: 640px) { .filter-responsive { flex-direction: row; align-items: center; } .filter-responsive > div { width: auto; } }
       `}</style>
-    </div>
+    </Page>
   )
 }
 

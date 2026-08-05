@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Spinner } from "@/components/ui"
+import { Alert, Card, Grid, Spinner } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -130,13 +130,7 @@ const ElectionSupportConfirmationPage = () => {
                 </div>
               </div>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                  gap: "var(--spacing-3)",
-                }}
-              >
+              <Grid min={180} gap={3}>
                 <div>
                   <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Support role</div>
                   <div style={{ fontWeight: "var(--font-weight-medium)" }}>
@@ -151,7 +145,7 @@ const ElectionSupportConfirmationPage = () => {
                   <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Current status</div>
                   <div style={{ fontWeight: "var(--font-weight-medium)" }}>{nomination.supporter?.status || "Pending"}</div>
                 </div>
-              </div>
+              </Grid>
             </div>
           ) : null}
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Input, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,
@@ -579,13 +579,7 @@ export const ElectionWizardModal = ({
 
     body = (
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "var(--spacing-3)",
-          }}
-        >
+        <Grid min={220} gap={3}>
           <div>
             <label style={labelStyle}>Election title</label>
             <Input
@@ -658,7 +652,7 @@ export const ElectionWizardModal = ({
             </select>
             {basicsErrors.votingAccess ? <div style={errorTextStyle}>{basicsErrors.votingAccess}</div> : null}
           </div>
-        </div>
+        </Grid>
 
         {["email", "both"].includes(form.votingAccess?.mode || "both") ? (
           <div style={flatPanelStyle}>
@@ -807,13 +801,7 @@ export const ElectionWizardModal = ({
           </div>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "var(--spacing-3)",
-          }}
-        >
+        <Grid min={220} gap={3}>
           {visibleTimelineFieldDefs.map((field) => (
             <div key={field.key} style={panelStyle}>
               <label style={labelStyle}>{field.label}</label>
@@ -827,7 +815,7 @@ export const ElectionWizardModal = ({
               {timelineErrors[field.key] ? <div style={errorTextStyle}>{timelineErrors[field.key]}</div> : null}
             </div>
           ))}
-        </div>
+        </Grid>
 
         <div style={timelinePreviewStyle}>
           {timelineFieldDefs.slice(0, 6).map((field) => (
@@ -855,13 +843,7 @@ export const ElectionWizardModal = ({
           </div>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "var(--spacing-3)",
-          }}
-        >
+        <Grid min={260} gap={3}>
           <div style={panelStyle}>
             <label style={labelStyle}>Chief election officer roll number</label>
             <Input
@@ -905,7 +887,7 @@ export const ElectionWizardModal = ({
               <div style={errorTextStyle}>{commissionErrors.officerRollNumbers}</div>
             ) : null}
           </div>
-        </div>
+        </Grid>
       </div>
     )
   }
@@ -993,13 +975,7 @@ export const ElectionWizardModal = ({
             ) : null}
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "var(--spacing-3)",
-            }}
-          >
+          <Grid min={220} gap={3}>
             <div>
               <label style={labelStyle}>Post title</label>
               <Input
@@ -1033,7 +1009,7 @@ export const ElectionWizardModal = ({
               </select>
               {activePostErrors.category ? <div style={errorTextStyle}>{activePostErrors.category}</div> : null}
             </div>
-          </div>
+          </Grid>
 
           <div>
             <label style={labelStyle}>Description</label>
@@ -1045,13 +1021,7 @@ export const ElectionWizardModal = ({
             {activePostErrors.description ? <div style={errorTextStyle}>{activePostErrors.description}</div> : null}
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "var(--spacing-3)",
-            }}
-          >
+          <Grid min={320} gap={3}>
             <ScopeEditor
               title="Candidate eligibility"
               scope={activePost.candidateEligibility}
@@ -1080,15 +1050,9 @@ export const ElectionWizardModal = ({
               errorTextStyle={errorTextStyle}
               nominationTemplateHeaders={nominationTemplateHeaders}
             />
-          </div>
+          </Grid>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-              gap: "var(--spacing-3)",
-            }}
-          >
+          <Grid min={180} gap={3}>
             {requirementFieldDefs.map((field) => (
               <div key={field.key}>
                 <label style={labelStyle}>{field.label}</label>
@@ -1102,15 +1066,9 @@ export const ElectionWizardModal = ({
                 {activePostErrors[field.key] ? <div style={errorTextStyle}>{activePostErrors[field.key]}</div> : null}
               </div>
             ))}
-          </div>
+          </Grid>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "var(--spacing-3)",
-            }}
-          >
+          <Grid min={240} gap={3}>
             <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
               <input
                 type="checkbox"
@@ -1121,7 +1079,7 @@ export const ElectionWizardModal = ({
               />
               Restrict by hostel residence
             </label>
-          </div>
+          </Grid>
 
           {activePost.requirements.requireHostelResident ? (
             <div style={flatPanelStyle}>
@@ -1611,14 +1569,7 @@ export const AdminNominationReviewModal = ({
         }
       >
         <div style={modalBodyStyle}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-              gap: "var(--spacing-3)",
-              alignItems: "start",
-            }}
-          >
+          <Grid min={340} gap={3} align="start">
             <SectionCard icon={User} title="Candidate Details">
               <StudentSummaryCard
                 name={nomination.candidateName || nomination.candidateRollNumber}
@@ -1672,16 +1623,9 @@ export const AdminNominationReviewModal = ({
                 </>
               )}
             </div>
-          </div>
+          </Grid>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "var(--spacing-3)",
-              alignItems: "start",
-            }}
-          >
+          <Grid min={320} gap={3} align="start">
             <SectionCard icon={Users} title="Proposers">
               {renderSupporterList(nomination.proposerEntries || [])}
             </SectionCard>
@@ -1689,7 +1633,7 @@ export const AdminNominationReviewModal = ({
             <SectionCard icon={Users} title="Seconders">
               {renderSupporterList(nomination.seconderEntries || [])}
             </SectionCard>
-          </div>
+          </Grid>
 
           <div style={detailGridStyle}>
             {[

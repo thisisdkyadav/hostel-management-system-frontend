@@ -4,7 +4,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards } from "@/components/ui"
 import CapacityBar from "@/components/dining/CapacityBar"
 import BillingPeriodFormModal from "@/components/dining/BillingPeriodFormModal"
 import { billingDateRange, formatCurrency, getErrorMessage } from "@/components/dining/diningBillingHelpers"
@@ -195,7 +195,7 @@ const DiningBillingPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full">
+      <Page>
         <PageHeader title="Dining Billing">
           <Button variant="secondary" onClick={handleArchiveToggle}>
             {fetchArchive ? <ArchiveRestore size={18} /> : <Archive size={18} />}
@@ -206,7 +206,7 @@ const DiningBillingPage = () => {
           </Button>
         </PageHeader>
 
-        <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+        <Page.Body>
           {feedback && (
             <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)} style={{ marginBottom: "var(--spacing-4)" }}>
               {feedback.message}
@@ -240,8 +240,8 @@ const DiningBillingPage = () => {
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </Page.Body>
+      </Page>
 
       {showAddModal && (
         <BillingPeriodFormModal

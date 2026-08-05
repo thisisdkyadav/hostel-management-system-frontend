@@ -4,6 +4,7 @@ import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
+import { Grid } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -90,7 +91,7 @@ const StudentEntryForm = ({ onAddEntry }) => {
       </div>
 
       <form id="studentEntryForm" onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-6)' }}>
+        <Grid min={250} gap={6}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student ID</label>
             <Input type="text" name="studentId" value={entryData.studentId} onChange={handleChange} required />
@@ -132,7 +133,7 @@ const StudentEntryForm = ({ onAddEntry }) => {
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes (Optional)</label>
             <textarea name="notes" value={entryData.notes} onChange={handleChange} style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: 'var(--border-1) solid var(--color-border-input)', fontSize: 'var(--font-size-base)', fontFamily: 'var(--font-family-primary)', resize: 'vertical', minHeight: '80px', outline: 'none', transition: 'var(--transition-all)' }} rows="2" />
           </div>
-        </div>
+        </Grid>
 
         <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end' }}>
           <Button type="submit" variant="primary">

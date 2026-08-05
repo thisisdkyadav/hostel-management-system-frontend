@@ -1,7 +1,7 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { FaTools } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import MaintenanceCard from "../../components/admin/maintenance/MaintenanceCard"
 import AddMaintenanceModal from "../../components/admin/maintenance/AddMaintenanceModal"
@@ -55,10 +55,10 @@ const MaintenanceStaffPage = () => {
   }, [])
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <MaintenanceStaffHeader onAddStaff={() => setShowAddModal(true)} />
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
 
         <MaintenanceStats maintenanceStaff={maintenanceStaff} />
 
@@ -82,8 +82,8 @@ const MaintenanceStaffPage = () => {
         )}
 
         <AddMaintenanceModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchMaintenanceStaff} />
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

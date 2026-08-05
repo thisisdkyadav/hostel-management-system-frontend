@@ -3,7 +3,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, CalendarDays, Plus, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards } from "@/components/ui"
 import PeriodCard from "@/components/dining/PeriodCard"
 import PeriodDetailModal from "@/components/dining/PeriodDetailModal"
 import PeriodFormModal from "@/components/dining/PeriodFormModal"
@@ -198,7 +198,7 @@ const DiningPeriodsPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full">
+      <Page>
         <PageHeader title="Dining Periods">
           <Button variant="secondary" onClick={handleArchiveToggle}>
             {fetchArchive ? <ArchiveRestore size={18} /> : <Archive size={18} />}
@@ -209,7 +209,7 @@ const DiningPeriodsPage = () => {
           </Button>
         </PageHeader>
 
-        <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+        <Page.Body>
           {feedback && (
             <Alert
               type={feedback.type}
@@ -258,8 +258,8 @@ const DiningPeriodsPage = () => {
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </Page.Body>
+      </Page>
 
       <PeriodDetailModal
         period={viewingPeriod}

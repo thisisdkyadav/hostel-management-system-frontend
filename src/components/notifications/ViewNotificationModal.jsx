@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
@@ -29,7 +29,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
           <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{notification.message}</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <Grid min={250} gap={4}>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-success)' }}>
               <FaRegClock />
@@ -49,7 +49,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <p style={{ color: 'var(--color-text-muted)' }}>{formatDate(notification.expiryDate)}</p>
             </div>
           </div>
-        </div>
+        </Grid>
 
         <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Target Audience</h3>

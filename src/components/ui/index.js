@@ -36,6 +36,8 @@ export { default as ToggleButtonGroup } from './button/ToggleButtonGroup'
 // ==============================================
 export { default as Card, CardHeader, CardTitle, CardDescription, CardContent, CardBody, CardFooter } from './layout/Card'
 export { default as Container } from './layout/Container'
+export { default as Grid } from './layout/Grid'
+export { default as Page, PageBody } from './layout/Page'
 export { default as Stack, HStack, VStack } from './layout/Stack'
 export { default as Divider } from './layout/Divider'
 export { default as Spacer } from './layout/Spacer'

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import {
   Archive,
   ArchiveRestore,
@@ -440,7 +440,7 @@ const PeriodFormModal = ({
           {/* SCHEDULE */}
           {activeTab === "schedule" && (
             <VStack gap="large">
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+              <Grid min={220} gap={4}>
                 <div>
                   <Label htmlFor="startDate" required>Start Date</Label>
                   <Input id="startDate" type="date" value={formData.startDate}
@@ -451,8 +451,8 @@ const PeriodFormModal = ({
                   <Input id="endDate" type="date" value={formData.endDate}
                     onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
                 </div>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+              </Grid>
+              <Grid min={220} gap={4}>
                 <div>
                   <Label htmlFor="allocationStartAt" required>Allocation Opens</Label>
                   <Input id="allocationStartAt" type="datetime-local" value={formData.allocationStartAt}
@@ -463,15 +463,15 @@ const PeriodFormModal = ({
                   <Input id="allocationEndAt" type="datetime-local" value={formData.allocationEndAt}
                     onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
                 </div>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-4)" }}>
+              </Grid>
+              <Grid min={220} gap={4}>
                 <div>
                   <Label htmlFor="dailyRate">Daily Rate (₹ / day)</Label>
                   <Input id="dailyRate" type="number" min="0" step="0.01" placeholder="0"
                     value={formData.dailyRate}
                     onChange={(e) => setFormData((p) => ({ ...p, dailyRate: e.target.value }))} />
                 </div>
-              </div>
+              </Grid>
               <Alert type="info" icon>
                 Students can pick a caterer only while the allocation window is open. The period dates control when meals are verified.
                 The daily rate is what each eligible student is billed per day in this period (skipping approved-rebate days) — used by billing periods.
@@ -486,7 +486,7 @@ const PeriodFormModal = ({
               {noCaterers && (
                 <Alert type="warning" icon>No active caterers found. Add a caterer before creating a period.</Alert>
               )}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-2)" }}>
+              <Grid min={240} gap={2}>
                 {caterers.map((caterer) => {
                   const capacity = formData.catererCapacities.find((entry) => entry.catererId === caterer.id)
                   const selected = formData.catererIds.includes(caterer.id)
@@ -533,7 +533,7 @@ const PeriodFormModal = ({
                     </div>
                   )
                 })}
-              </div>
+              </Grid>
             </VStack>
           )}
 
@@ -578,7 +578,7 @@ const PeriodFormModal = ({
           {activeTab === "rebates" && (
             <VStack gap="small">
               <Label required>Short-Term Rebate Rules</Label>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-4)" }}>
+              <Grid min={180} gap={4}>
                 <div>
                   <Label htmlFor="rebate-total-days" required>Max Total Days</Label>
                   <Input id="rebate-total-days" type="number" min="0" value={formData.rebateSettings.shortTermMaxTotalDays}
@@ -599,7 +599,7 @@ const PeriodFormModal = ({
                   <Input id="rebate-advance-days" type="number" min="0" value={formData.rebateSettings.shortTermMinAdvanceDays}
                     onChange={(e) => handleRebateSettingChange("shortTermMinAdvanceDays", e.target.value)} required />
                 </div>
-              </div>
+              </Grid>
               <Alert type="info" icon>
                 Requests within the continuous-day limit are auto-approved only when these rules pass. Longer requests go to admin approval.
               </Alert>

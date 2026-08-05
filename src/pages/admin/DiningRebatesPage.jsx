@@ -3,7 +3,7 @@ import { Button, Tabs } from "czero/react"
 import { RefreshCw } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert } from "@/components/ui"
+import { Alert, Page } from "@/components/ui"
 import RebateRequestsPanel from "@/components/dining/RebateRequestsPanel"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 
@@ -81,14 +81,14 @@ const DiningRebatesPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <PageHeader title="Dining Rebates" subtitle="Review and approve long-term meal rebate requests">
         <Button variant="secondary" onClick={() => fetchRebates()}>
           <RefreshCw size={18} /> Refresh
         </Button>
       </PageHeader>
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
         <Tabs
           variant="pills"
           tabs={STATUS_TABS.map((tab) =>
@@ -125,8 +125,8 @@ const DiningRebatesPage = () => {
             emptyMessage={EMPTY_MESSAGES[status]}
           />
         </div>
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

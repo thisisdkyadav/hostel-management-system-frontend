@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -339,11 +339,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         <StudentDetails studentName={request.studentName} studentEmail={request.studentEmail} studentProfileImage={request.studentProfileImage} />
 
         {/* Visit Information and Accommodation Details */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
+        <Grid min={250} gap={4}>
           <VisitInformation fromDate={request.fromDate} toDate={request.toDate} />
 
           {request.status === "Approved" && <AccommodationDetails hostelName={request.hostelName} allocatedRooms={request.allocatedRooms} />}
-        </div>
+        </Grid>
 
         {/* Reason for Visit */}
         <VisitReason reason={request.reason} approvalInformation={request.approveInfo} isApproved={request.status === "Approved"} />

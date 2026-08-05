@@ -1,7 +1,7 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { FaUserShield } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import SecurityCard from "../../components/admin/security/SecurityCard"
 import AddSecurityModal from "../../components/admin/security/AddSecurityModal"
@@ -36,10 +36,10 @@ const SecurityLoginsPage = () => {
   }, [])
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <SecurityLoginsHeader onAddSecurity={() => setShowAddModal(true)} />
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
 
         <SecurityStats securityStaff={securityStaff} />
 
@@ -63,8 +63,8 @@ const SecurityLoginsPage = () => {
         )}
 
         <AddSecurityModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchSecurityStaff} />
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Select } from "@/components/ui"
+import { Grid, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
@@ -18,7 +18,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
         </Button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+      <Grid min={250} gap={4}>
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Search</label>
           <Input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleChange} placeholder="Search by title or content..." icon={<FaSearch />} />
@@ -62,7 +62,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
             { value: "Other", label: "Other" }
           ]} />
         </div>
-      </div>
+      </Grid>
     </div>
   )
 }

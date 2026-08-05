@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Select, Checkbox, Textarea } from "@/components/ui"
+import { Checkbox, Grid, Select, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -211,7 +211,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>Target Recipients (Optional)</h3>
             <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-4)" }}>Leave all fields empty to target all students</p>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
+            <Grid min={250} gap={4}>
               <div>
                 <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Hostel(s)</label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
@@ -266,7 +266,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                   ]}
                 />
               </div>
-            </div>
+            </Grid>
           </div>
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>

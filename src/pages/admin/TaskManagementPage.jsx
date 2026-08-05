@@ -5,7 +5,7 @@ import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK
 import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Pagination, Select } from "@/components/ui"
+import { Page, Pagination, Select } from "@/components/ui"
 import TaskManagementHeader from "../../components/headers/TaskManagementHeader"
 import { Input } from "czero/react"
 
@@ -149,13 +149,13 @@ const TaskManagementPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       {/* Header with Title and Create Button */}
       <TaskManagementHeader onCreateTask={() => setShowCreateTask(true)}
         userRole={user?.role}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Page.Body>
 
         {/* Task Statistics */}
         {stats && <TaskStats stats={stats} />}
@@ -280,8 +280,8 @@ const TaskManagementPage = () => {
 
         {/* Task Detail Modal */}
         {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} />}
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

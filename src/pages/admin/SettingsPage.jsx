@@ -13,7 +13,7 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import { useToast } from "@/components/ui/feedback"
-import { Card, SearchInput } from "@/components/ui"
+import { Card, Page, SearchInput } from "@/components/ui"
 
 const TabSpinner = () => (
   <div className="flex justify-center py-6">
@@ -740,10 +740,10 @@ const SettingsPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <SettingsHeader />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Page.Body>
 
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
           {/* Settings navigation */}
@@ -952,8 +952,8 @@ const SettingsPage = () => {
 
         {/* Success Modal */}
         {showSuccessModal && <CommonSuccessModal show={showSuccessModal} onClose={() => setShowSuccessModal(false)} title="Settings Updated" message={successMessage} infoText="Changes have been applied" infoIcon={HiSave} buttonText="Done" />}
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

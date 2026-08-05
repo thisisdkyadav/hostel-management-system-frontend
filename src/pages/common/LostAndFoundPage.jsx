@@ -1,6 +1,6 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect, useCallback } from "react"
-import { SearchInput, Pagination } from "@/components/ui"
+import { Page, Pagination, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import LostAndFoundStats from "../../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../../components/lostAndFound/LostAndFoundCard"
@@ -93,13 +93,13 @@ const LostAndFoundPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full">
+      <Page>
         <LostAndFoundHeader onAddItem={() => setShowAddModal(true)}
           canCreate={canCreateLostAndFound}
           userRole={user?.role}
         />
 
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+        <Page.Body>
           <LostAndFoundStats items={lostItems} stats={stats} />
 
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
@@ -122,7 +122,7 @@ const LostAndFoundPage = () => {
               suggestion="Try changing your search or filter criteria"
             />
           )}
-        </div>
+        </Page.Body>
 
         <PageFooter
           leftContent={[
@@ -142,7 +142,7 @@ const LostAndFoundPage = () => {
             />,
           ]}
         />
-      </div>
+      </Page>
 
       <AddLostItemModal show={showAddModal} onClose={() => setShowAddModal(false)} onItemAdded={() => fetchLostItems(currentPage)} />
     </>

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
-import { Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
@@ -113,14 +113,14 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
     <div style={containerStyle}>
       <h3 style={headingStyle}>{getFormTitle()}</h3>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
+      <Grid min={250} gap={4}>
         <VStack gap="xsmall">
           <Label>Visitor Name(s)</Label>
           <div style={readOnlyStyle}>{visitorInfo}</div>
         </VStack>
-      </div>
+      </Grid>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
+      <Grid min={250} gap={4}>
         <VStack gap="xsmall">
           <Label htmlFor="checkInDate">Check-in Date</Label>
           <Input id="checkInDate" type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)} disabled={!isEditMode && isCheckedIn} />
@@ -129,11 +129,11 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
           <Label htmlFor="checkInTime">Check-in Time</Label>
           <Input id="checkInTime" type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)} disabled={!isEditMode && isCheckedIn} />
         </VStack>
-      </div>
+      </Grid>
 
       {/* Show check-out fields if already checked in or checked out */}
       {isCheckedIn && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
+        <Grid min={250} gap={4}>
           <VStack gap="xsmall">
             <Label htmlFor="checkOutDate">Check-out Date</Label>
             <Input id="checkOutDate" type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)} />
@@ -142,7 +142,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
             <Label htmlFor="checkOutTime">Check-out Time</Label>
             <Input id="checkOutTime" type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)} />
           </VStack>
-        </div>
+        </Grid>
       )}
 
       <VStack gap="xsmall">

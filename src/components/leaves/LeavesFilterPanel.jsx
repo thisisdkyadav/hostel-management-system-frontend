@@ -1,6 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Select } from "@/components/ui"
+import { Grid, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
@@ -15,7 +15,7 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         </Button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--gap-md)' }}>
+      <Grid min={200} gap="var(--gap-md)">
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
           <Select value={filters.status} onChange={(e) => updateFilter("status", e.target.value)} options={[
@@ -45,7 +45,7 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
             { value: 50, label: "50" }
           ]} />
         </div>
-      </div>
+      </Grid>
     </div>
   )
 }

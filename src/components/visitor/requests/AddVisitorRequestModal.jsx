@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
@@ -232,7 +232,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         </div>
 
         {/* Visit Details */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <Grid min={250} gap={4}>
           <VStack gap="xsmall">
             <Label htmlFor="fromDate" required>From Date</Label>
             <Input id="fromDate" type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
@@ -243,7 +243,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
             <Label htmlFor="toDate" required>To Date</Label>
             <Input id="toDate" type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
           </VStack>
-        </div>
+        </Grid>
 
         {/* Reason for Visit */}
         <VStack gap="xsmall">

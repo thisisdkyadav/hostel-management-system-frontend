@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { Card } from "@/components/ui"
+import { Card, Page } from "@/components/ui"
 import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
@@ -164,7 +164,7 @@ const DashboardPage = () => {
   )
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <DashboardHeader title={getDashboardTitle()}>
         {loading ? renderHeaderShimmer() : error ? (
           <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
@@ -172,7 +172,7 @@ const DashboardPage = () => {
       </DashboardHeader>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-6)] py-[var(--spacing-6)]">
+      <Page.Body padded={false} className="px-[var(--spacing-6)] py-[var(--spacing-6)]">
         {/* Main grid - 80/20 split */}
         <div className="grid grid-cols-1 xl:grid-cols-5 gap-[var(--spacing-6)]">
           {/* Student Distribution - 80% width (4 cols) */}
@@ -263,8 +263,8 @@ const DashboardPage = () => {
             )}
           </Card>
         </div>
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

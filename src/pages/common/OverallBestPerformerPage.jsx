@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import {
   Download,
   FileText,
@@ -2329,12 +2329,7 @@ const ReviewItemDetailModal = ({
     <Modal title={titleNode} onClose={onClose} width={1200}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", padding: "var(--spacing-1)" }}>
         {/* Main 2-Column Responsive Layout using Pure CSS Grid */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-          gap: "var(--spacing-4)",
-          alignItems: "start"
-        }}>
+        <Grid min={360} gap={4} align="start">
           {/* Left Column: Achievement Details */}
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             <PorDetailCard
@@ -2597,7 +2592,7 @@ const ReviewItemDetailModal = ({
               )}
             </div>
           </div>
-        </div>
+        </Grid>
 
         {/* Footer Actions */}
         <div style={{
@@ -2809,7 +2804,7 @@ const EditProjectThesisGradesModal = ({
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-3)" }}>
+        <Grid min={240} gap={3}>
           <div style={fieldClusterStyle}>
             <label style={fieldLabelStyle}>BTP award</label>
             <Select
@@ -2830,7 +2825,7 @@ const EditProjectThesisGradesModal = ({
               disabled={saving}
             />
           </div>
-        </div>
+        </Grid>
 
         <div
           style={{
@@ -3246,7 +3241,7 @@ const ReviewModal = ({
                   </Button>
                 ) : null}
               >
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--spacing-4)" }}>
+                <Grid min={240} gap={4}>
                   {application.projectThesis?.btpAwardLevel !== "none" ? (
                     <div className="por-detail-hero-box" style={{ background: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)", borderLeft: "4px solid var(--color-warning)" }}>
                       <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
@@ -3298,7 +3293,7 @@ const ReviewModal = ({
                       </div>
                     </div>
                   ) : null}
-                </div>
+                </Grid>
               </PorDetailCard>
             ) : null}
 
@@ -4498,12 +4493,7 @@ const OverallBestPerformerPage = () => {
         ) : (
           <>
             {/* Active Application Round Details Dashboard */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
-              gap: "var(--spacing-4)",
-              marginBottom: "var(--spacing-4)"
-            }}>
+            <Grid min={360} gap={4} style={{ marginBottom: "var(--spacing-4)" }}>
               {/* Left Card: Application Period & Eligibility */}
               <div style={{
                 ...panelStyle,
@@ -4578,7 +4568,7 @@ const OverallBestPerformerPage = () => {
                   <FileText size={16} /> View Marking Scheme
                 </Button>
               </div>
-            </div>
+            </Grid>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
               {/* Personalized Student Profile & Status card */}
@@ -4643,7 +4633,7 @@ const OverallBestPerformerPage = () => {
 
               <SectionPanel title="Score Preview">
                 <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
+                  <Grid min={220} gap={3}>
                     <SummaryMetric icon={Trophy} label="Current Score" value={studentScorePreview.total} />
                     <SummaryMetric
                       icon={Save}
@@ -4660,7 +4650,7 @@ const OverallBestPerformerPage = () => {
                           : "Pending review"
                       }
                     />
-                  </div>
+                  </Grid>
 
                   <div style={helperTextStyle}>
                     This score preview updates as you edit the form. The saved score is the last submitted calculation, and the final review score appears after admin review.

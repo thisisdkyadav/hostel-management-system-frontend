@@ -3,15 +3,16 @@ import ItemTypes from "../../components/admin/inventory/ItemTypes"
 import HostelAllocation from "../../components/admin/inventory/HostelAllocation"
 import InventoryReports from "../../components/admin/inventory/InventoryReports"
 import InventoryHeader from "../../components/headers/InventoryHeader"
+import { Page } from "@/components/ui"
 
 const InventoryPage = () => {
   const [activeTab, setActiveTab] = useState("itemTypes")
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <InventoryHeader />
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
 
         {/* Tabs */}
         <div className="border-b border-[var(--color-border-primary)] mb-[var(--spacing-6)]">
@@ -34,8 +35,8 @@ const InventoryPage = () => {
           {activeTab === "hostelAllocation" && <HostelAllocation />}
           {activeTab === "reports" && <InventoryReports />}
         </div>
-      </div>
-    </div>
+      </Page.Body>
+    </Page>
   )
 }
 

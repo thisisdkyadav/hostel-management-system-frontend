@@ -12,7 +12,7 @@ import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterP
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import useAuthz from "../../hooks/useAuthz"
-import { Pagination } from "@/components/ui"
+import { Page, Pagination } from "@/components/ui"
 import PageFooter from "../../components/common/PageFooter"
 
 const DEFAULT_FILTERS = {
@@ -272,11 +272,11 @@ const ComplaintsPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={showCraftComplaint} setShowCraftComplaint={setShowCraftComplaint} userRole={user?.role} canCreateComplaint={canCreateComplaint} />
 
       {/* Main Content with padding */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Page.Body>
         <div className="hidden sm:block">
           <ComplaintStats statsData={statsData} loading={statsLoading} />
         </div>
@@ -284,7 +284,7 @@ const ComplaintsPage = () => {
         {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
         <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} COMPLAINT_FILTER_TABS={complaintFilterTabs} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} showFilters={showFilters} />
-      </div>
+      </Page.Body>
 
       <PageFooter
         leftContent={[
@@ -308,7 +308,7 @@ const ComplaintsPage = () => {
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />}
 
       {showCraftComplaint && canCreateComplaint && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={fetchComplaints} />}
-    </div>
+    </Page>
   )
 }
 

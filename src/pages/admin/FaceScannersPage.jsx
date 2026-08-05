@@ -1,6 +1,6 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
-import { SearchInput } from "@/components/ui"
+import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"
@@ -63,7 +63,7 @@ const FaceScannersPage = () => {
 
     return (
         <>
-            <div className="flex flex-col h-full">
+            <Page>
                 {/* Fixed Header */}
                 <FaceScannersHeader
                     onAddScanner={() => setShowAddModal(true)}
@@ -71,7 +71,7 @@ const FaceScannersPage = () => {
                 />
 
                 {/* Scrollable Content Area */}
-                <div className="flex-1 overflow-y-scroll px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+                <Page.Body>
                     {/* Stats Summary */}
                     <FaceScannerStats scanners={scanners} />
 
@@ -96,8 +96,8 @@ const FaceScannersPage = () => {
                     </div>
 
                     {!loading && filteredScanners.length === 0 && <NoResults />}
-                </div>
-            </div>
+                </Page.Body>
+            </Page>
 
             <AddFaceScannerModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchScanners} />
             <LiveScanMonitorModal isOpen={showLiveMonitor} onClose={() => setShowLiveMonitor(false)} />

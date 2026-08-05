@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { Select, FileInput } from "@/components/ui"
+import { FileInput, Grid, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -141,7 +141,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--gap-md)' }}>
+          <Grid min={200} gap="var(--gap-md)">
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Date Found</label>
               <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} icon={<FaCalendarAlt />} required />
@@ -154,7 +154,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                 { value: "Claimed", label: "Claimed" }
               ]} required />
             </div>
-          </div>
+          </Grid>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-sm)' }}>

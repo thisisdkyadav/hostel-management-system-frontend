@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
@@ -154,7 +154,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <Grid min={250} gap={4}>
           {/* Payment Amount */}
           <VStack gap="xsmall">
             <Label htmlFor="amount" required>Payment Amount</Label>
@@ -168,7 +168,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
             <Input id="dateOfPayment" type="date" name="dateOfPayment" value={formData.dateOfPayment} onChange={handleInputChange} max={new Date().toISOString().split("T")[0]} error={errors.dateOfPayment} />
             {errors.dateOfPayment && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)' }}>{errors.dateOfPayment}</p>}
           </VStack>
-        </div>
+        </Grid>
 
         {/* Transaction ID */}
         <VStack gap="xsmall">

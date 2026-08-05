@@ -3,7 +3,7 @@ import { Button, DataTable, StatusBadge } from "czero/react"
 import { Plus, Pencil, Trash2, UserCog, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, LoadingState, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, LoadingState, Page, SearchInput, StatCards } from "@/components/ui"
 import DiningOfficeFormModal, { DINING_OFFICE_CATEGORIES } from "@/components/dining/DiningOfficeFormModal"
 import { getErrorMessage } from "@/components/dining/diningBillingHelpers"
 
@@ -98,14 +98,14 @@ const DiningOfficeStaffPage = () => {
   if (loading) return <LoadingState message="Loading dining office logins..." />
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <PageHeader title="Dining Office" subtitle="Manage dining office logins (Dining Warden, Dining Hall Supervisor)">
         <Button variant="primary" onClick={() => setFormState({ mode: "create", data: {} })}>
           <Plus size={18} /> New Login
         </Button>
       </PageHeader>
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
         {feedback && (
           <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)} style={{ marginBottom: "var(--spacing-4)" }}>
             {feedback.message}
@@ -143,7 +143,7 @@ const DiningOfficeStaffPage = () => {
             <DataTable data={filtered} columns={columns} getRowId={(row) => row.id} pagination pageSize={15} />
           )}
         </div>
-      </div>
+      </Page.Body>
 
       {formState && (
         <DiningOfficeFormModal
@@ -165,7 +165,7 @@ const DiningOfficeStaffPage = () => {
         confirmText="Delete"
         isDestructive
       />
-    </div>
+    </Page>
   )
 }
 

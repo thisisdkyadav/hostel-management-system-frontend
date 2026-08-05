@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Select, Card, HStack, VStack, Badge, Divider, DatePicker, Label } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const formatDateTime = (value) => {
@@ -323,7 +323,7 @@ const LiveCheckInOutPage = () => {
             <VStack gap="medium" style={{ marginTop: "var(--spacing-4)" }}>
               <Divider spacing="none" />
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", rowGap: "var(--spacing-4)", columnGap: "var(--spacing-4)", paddingTop: "var(--spacing-4)" }}>
+              <Grid min={180} gap="normal" style={{ rowGap: "var(--spacing-4)", columnGap: "var(--spacing-4)", paddingTop: "var(--spacing-4)" }}>
                 <VStack gap="xsmall">
                   <Label size="sm">Status</Label>
                   <Select
@@ -372,7 +372,7 @@ const LiveCheckInOutPage = () => {
                     ]}
                   />
                 </VStack>
-              </div>
+              </Grid>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
                 <VStack gap="xsmall">

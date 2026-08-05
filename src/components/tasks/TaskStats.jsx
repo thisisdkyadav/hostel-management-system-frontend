@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaTasks, FaCheckCircle, FaHourglass, FaExclamationTriangle, FaChartBar } from "react-icons/fa"
-import { StatCard } from "@/components/ui"
+import { Grid, StatCard } from "@/components/ui"
 import { Button } from "czero/react"
 import DetailedTaskStats from "./DetailedTaskStats"
 
@@ -60,11 +60,11 @@ const TaskStats = ({ stats }) => {
       {showDetailed ? (
         <DetailedTaskStats stats={stats} />
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <Grid min={200} gap={4}>
           {statsData.map((stat, index) => (
             <StatCard key={index} title={stat.title} value={stat.value} subtitle={stat.subtitle} icon={stat.icon} color={stat.color} />
           ))}
-        </div>
+        </Grid>
       )}
     </div>
   )

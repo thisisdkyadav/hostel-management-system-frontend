@@ -6,7 +6,7 @@ import NotificationTable from "../../components/notifications/NotificationTable"
 import NotificationFilterSection from "../../components/notifications/NotificationFilterSection"
 import CreateNotificationModal from "../../components/notifications/CreateNotificationModal"
 import NoResults from "../../components/common/NoResults"
-import { Pagination } from "@/components/ui"
+import { Page, Pagination } from "@/components/ui"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -154,7 +154,7 @@ const NotificationCenterPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       {error && (
         <div
           style={{
@@ -241,7 +241,7 @@ const NotificationCenterPage = () => {
       />
 
       <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
-    </div>
+    </Page>
   )
 }
 

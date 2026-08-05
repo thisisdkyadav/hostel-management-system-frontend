@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal, Page } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -176,7 +176,7 @@ const RebateRequestModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
           </Alert>
           {error && <Alert type="error" icon>{error}</Alert>}
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "var(--spacing-4)" }}>
+          <Grid min={200} gap={4}>
             <div>
               <Label htmlFor="rebate-start" required>Start Date</Label>
               <Input id="rebate-start" type="date" value={formData.startDate}
@@ -187,7 +187,7 @@ const RebateRequestModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
               <Input id="rebate-end" type="date" value={formData.endDate}
                 onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
             </div>
-          </div>
+          </Grid>
 
           <div>
             <Label htmlFor="rebate-reason">Reason</Label>
@@ -500,14 +500,14 @@ const DiningPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <PageHeader title="Dining">
         <Button variant="secondary" onClick={() => fetchPortalState({ silent: true })} disabled={refreshing}>
           <RefreshCw size={18} /> {refreshing ? "Refreshing..." : "Refresh"}
         </Button>
       </PageHeader>
 
-      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] md:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
+      <Page.Body>
         {error && <div className="mb-[var(--spacing-4)]"><Alert type="error" icon dismissible onDismiss={() => setError("")}>{error}</Alert></div>}
         {successMessage && <div className="mb-[var(--spacing-4)]"><Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert></div>}
 
@@ -618,7 +618,7 @@ const DiningPage = () => {
             </Card>
           )}
         </VStack>
-      </div>
+      </Page.Body>
 
       <CatererSelectionModal
         isOpen={showAllocationModal && canSelect}
@@ -650,7 +650,7 @@ const DiningPage = () => {
         message={`Confirm ${pendingCaterer?.caterer?.name || "this caterer"} as your dining caterer for this period?`}
         confirmText="Confirm Selection"
       />
-    </div>
+    </Page>
   )
 }
 

@@ -6,6 +6,7 @@ import LeavesFilterPanel from "../../components/leaves/LeavesFilterPanel"
 import LeavesContent from "../../components/leaves/LeavesContent"
 import LeaveDetailModal from "../../components/leaves/LeaveDetailModal"
 import LeaveForm from "../../components/leaves/LeaveForm"
+import { Page } from "@/components/ui"
 
 const LeavesPage = () => {
   const { user } = useAuth()
@@ -101,14 +102,14 @@ const LeavesPage = () => {
   }, [filters, isAdmin, viewSelfOnly])
 
   return (
-    <div className="flex flex-col h-full">
+    <Page>
       <LeavesHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} onCreate={() => setShowCreateModal(true)} title="Leave Management" isAdmin={isAdmin} viewSelfOnly={viewSelfOnly} setViewSelfOnly={setViewSelfOnly} />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <Page.Body>
         {showFilters && <LeavesFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} isAdmin={isAdmin} />}
 
         <LeavesContent loading={loading} leaves={leaves} viewMode={viewMode} filters={filters} totalPages={totalPages} updateFilter={updateFilter} onViewDetails={onViewDetails} paginate={paginate} />
-      </div>
+      </Page.Body>
 
       {showDetailModal && selectedLeave && (
         <LeaveDetailModal leave={selectedLeave} onClose={() => setShowDetailModal(false)}
@@ -128,7 +129,7 @@ const LeavesPage = () => {
           }}
         />
       )}
-    </div>
+    </Page>
   )
 }
 
