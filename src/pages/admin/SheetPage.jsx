@@ -14,6 +14,7 @@ import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Surface, Text } from "@/components/ui"
+import { escapeCsvValue as escapeCSV, escapeTsvValue } from "@/utils/csvExport"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -516,13 +517,6 @@ const exportToCSV = (data, columns, filename) => {
     const prepared = prepareExportData(data, columns)
     if (!prepared) return
 
-    const escapeCSV = (value) => {
-        const str = String(value)
-        if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-            return `"${str.replace(/"/g, '""')}"`
-        }
-        return str
-    }
 
     const csvContent = [
         prepared.headers.map(escapeCSV).join(","),
@@ -536,10 +530,7 @@ const exportToTSV = (data, columns, filename) => {
     const prepared = prepareExportData(data, columns)
     if (!prepared) return
 
-    const escapeTSV = (value) => {
-        const str = String(value)
-        return str.replace(/\t/g, " ").replace(/\n/g, " ")
-    }
+    const escapeTSV = escapeTsvValue
 
     const tsvContent = [
         prepared.headers.map(escapeTSV).join("\t"),

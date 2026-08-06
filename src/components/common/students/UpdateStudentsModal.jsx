@@ -20,6 +20,7 @@ import FamilyMembersTab from "./update-students/FamilyMembersTab"
 import DayScholarTab from "./update-students/DayScholarTab"
 import RollNumberCheckTab from "./update-students/RollNumberCheckTab"
 import BatchAssignmentTab from "./update-students/BatchAssignmentTab"
+import { escapeCsvValue as escapeCSV } from "@/utils/csvExport"
 import GroupsAssignmentTab from "./update-students/GroupsAssignmentTab"
 
 // Reusable styles using theme CSS variables
@@ -173,13 +174,6 @@ const buildUpdateResultRows = (students = [], outcome = null) => {
   })
 }
 
-const escapeCSV = (value) => {
-  const str = String(value ?? "")
-  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-    return `"${str.replace(/"/g, '""')}"`
-  }
-  return str
-}
 
 const downloadCSV = (rows, filenameBase) => {
   if (!Array.isArray(rows) || rows.length === 0) return false

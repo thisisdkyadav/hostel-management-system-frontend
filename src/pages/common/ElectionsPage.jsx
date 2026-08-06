@@ -21,6 +21,7 @@ import {
   AdminResultsEditModal,
 } from "@/components/elections/ElectionModals"
 import { HeaderSelect } from "@/components/elections/ElectionShared"
+import { escapeCsvValue as escapeCsv } from "@/utils/csvExport"
 
 const pageStyle = {
   display: "flex",
@@ -1865,13 +1866,6 @@ const ElectionsPage = () => {
       return
     }
 
-    const escapeCsv = (value) => {
-      const stringValue = String(value ?? "")
-      if (/[",\n]/.test(stringValue)) {
-        return `"${stringValue.replace(/"/g, '""')}"`
-      }
-      return stringValue
-    }
 
     const flatRows = (selectedAdminElection.results.posts || []).flatMap((postResult) => {
       const draft = resultsDrafts[String(postResult.postId)] || {}
@@ -1980,13 +1974,6 @@ const ElectionsPage = () => {
       return
     }
 
-    const escapeCsv = (value) => {
-      const stringValue = String(value ?? "")
-      if (/[",\n]/.test(stringValue)) {
-        return `"${stringValue.replace(/"/g, '""')}"`
-      }
-      return stringValue
-    }
 
     const countByStatus = (entries = [], status) =>
       (Array.isArray(entries) ? entries : []).filter((entry) => entry?.status === status).length
@@ -2113,7 +2100,6 @@ const ElectionsPage = () => {
       entry.lastError || "",
     ])
 
-    const escapeCsv = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`
     const headers = ["Name", "Roll Number", "Email", "Link Status", "Sent At", "Last Error"]
     const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
     const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
@@ -2183,7 +2169,6 @@ const ElectionsPage = () => {
       entry.lastError || "",
     ])
 
-    const escapeCsv = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`
     const headers = ["Name", "Roll Number", "Email", "Test Email Status", "Sent At", "Last Error"]
     const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
     const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })

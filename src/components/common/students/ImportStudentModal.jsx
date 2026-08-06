@@ -7,6 +7,7 @@ import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import { useSocket } from "../../../contexts/SocketProvider"
+import { escapeCsvValue as escapeCSV } from "@/utils/csvExport"
 
 const REQUIRED_FIELDS = ["name", "email", "rollNumber", "gender", "isDayScholar"]
 const ALLOWED_FIELDS = [...REQUIRED_FIELDS]
@@ -187,13 +188,6 @@ const buildCsvImportResultRows = (students = [], outcome = null) => {
   })
 }
 
-const escapeCSV = (value) => {
-  const str = String(value ?? "")
-  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-    return `"${str.replace(/"/g, '""')}"`
-  }
-  return str
-}
 
 const downloadCSV = (rows, filenameBase) => {
   if (!Array.isArray(rows) || rows.length === 0) return false

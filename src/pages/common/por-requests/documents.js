@@ -1,3 +1,4 @@
+import { escapeCsvValue } from "@/utils/csvExport"
 import { formatStageLabel, formatStatusLabel } from "@/components/por/porStatus"
 import { shouldShowStudentColumn } from "./listView"
 
@@ -5,11 +6,6 @@ export const csvDateTime = (value) => {
   if (!value) return ""
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? "" : date.toLocaleString()
-}
-
-export const escapeCsvValue = (value) => {
-  const str = String(value ?? "")
-  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str
 }
 
 // Column set for the POR CSV export. Mirrors the on-screen table's visibility:

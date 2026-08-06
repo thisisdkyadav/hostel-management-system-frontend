@@ -55,10 +55,8 @@ export const summarizeItemsForExport = (items = []) =>
     .filter(Boolean)
     .join(" || ")
 
-export const escapeCsvValue = (value) => {
-  const normalized = value === null || value === undefined ? "" : String(value)
-  return `"${normalized.replace(/"/g, '""')}"`
-}
+// Re-exported because OverallBestPerformerPage imports it from here.
+export { escapeCsvValue } from "@/utils/csvExport"
 
 export const downloadCsvFile = (content, filename) => {
   const blob = new Blob(["\ufeff" + content], { type: "text/csv;charset=utf-8;" })
