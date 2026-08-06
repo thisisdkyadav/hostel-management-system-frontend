@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Input, Table } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,
@@ -106,10 +106,10 @@ export const ElectionHistoryModal = ({
               <Table.Row key={election.id}>
                 <Table.Cell>
                   <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                    <Text as="span" weight="semibold">
                       {election.title}
                       {election?.mockSettings?.enabled ? " · Mock" : ""}
-                    </span>
+                    </Text>
                     <span style={mutedTextStyle}>{election.academicYear}</span>
                   </div>
                 </Table.Cell>
@@ -248,31 +248,31 @@ export const LiveVotingFullscreenModal = ({
 
           <div style={{ display: "flex", gap: "var(--spacing-5)", fontSize: "var(--font-size-base)", alignItems: "center" }}>
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Eligible Voters</span>
-              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", fontSize: "var(--font-size-md)" }}>
+              <Text as="span" color="muted">Eligible Voters</Text>
+              <Text as="span" weight="semibold" color="heading" size="md">
                 {overview.ballotsSubmitted + overview.ballotsPending || 0}
-              </span>
+              </Text>
             </div>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Votes Submitted</span>
-              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)", fontSize: "var(--font-size-md)" }}>
+              <Text as="span" color="muted">Votes Submitted</Text>
+              <Text as="span" weight="semibold" color="success" size="md">
                 {overview.ballotsSubmitted || 0}
-              </span>
+              </Text>
             </div>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Pending</span>
-              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning)", fontSize: "var(--font-size-md)" }}>
+              <Text as="span" color="muted">Pending</Text>
+              <Text as="span" weight="semibold" color="warning" size="md">
                 {overview.ballotsPending || 0}
-              </span>
+              </Text>
             </div>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Turnout</span>
-              <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", fontSize: "var(--font-size-lg)" }}>
+              <Text as="span" color="muted">Turnout</Text>
+              <Text as="span" weight="bold" color="brand" size="lg">
                 {overview.turnoutPercentage || 0}%
-              </span>
+              </Text>
             </div>
           </div>
         </div>
@@ -339,12 +339,12 @@ export const LiveVotingFullscreenModal = ({
                               {candidate.isNota ? "NOTA" : candidate.candidateName || candidate.candidateRollNumber}
                             </span>
                             <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-                              <span style={{ fontSize: "12px", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                              <Text as="span" size="12px" weight="bold" color="heading">
                                 {candidate.voteCount || 0}
-                              </span>
-                              <span style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
+                              </Text>
+                              <Text as="span" size="10px" color="muted">
                                 ({formatCompactPercentage(candidate.votePercentage)})
-                              </span>
+                              </Text>
                             </div>
                           </div>
                         ))}
@@ -821,11 +821,11 @@ export const ElectionWizardModal = ({
           {timelineFieldDefs.slice(0, 6).map((field) => (
             <div key={`${field.key}-preview`} style={timelineCellStyle}>
               <div style={labelStyle}>{field.label}</div>
-              <div style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
+              <Text as="div" color="body" weight="medium">
                 {form.timeline[field.key]
                   ? formatDateTime(fromDateTimeLocal(form.timeline[field.key]))
                   : "Not set"}
-              </div>
+              </Text>
             </div>
           ))}
         </div>
@@ -958,15 +958,9 @@ export const ElectionWizardModal = ({
           >
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
-              <div
-                style={{
-                  fontSize: "var(--font-size-lg)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: "var(--color-text-heading)",
-                }}
-              >
+              <Text as="div" size="lg" weight="semibold" color="heading">
                 {activePost.title || `Post ${activePostIndex + 1}`}
-              </div>
+              </Text>
             </div>
             {form.posts.length > 1 ? (
               <Button size="sm" variant="ghost" onClick={() => removePost(activePostIndex)}>
@@ -1619,7 +1613,7 @@ export const AdminNominationReviewModal = ({
                     onChange={(event) => setReviewNotes(event.target.value)}
                     placeholder="Add review feedback. This is required when requesting modification."
                   />
-                  {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
+                  {noteError ? <Text as="div" color="danger-text" size="xs">{noteError}</Text> : null}
                 </>
               )}
             </div>
@@ -2039,7 +2033,7 @@ export const StudentNominationModal = ({
 
                         {entry.name ? (
                           <div style={{ display: "grid", gap: "2px" }}>
-                            <div style={{ fontWeight: "var(--font-weight-medium)" }}>{entry.name}</div>
+                            <Text as="div" weight="medium">{entry.name}</Text>
                             <div style={mutedTextStyle}>
                               {entry.lookupMessage || "Verified"}
                             </div>
@@ -2047,9 +2041,9 @@ export const StudentNominationModal = ({
                         ) : null}
 
                         {!entry.name && entry.lookupStatus === "invalid" ? (
-                          <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)" }}>
+                          <Text as="div" color="danger-text" size="sm">
                             {entry.lookupMessage || "Unable to verify this roll number"}
-                          </div>
+                          </Text>
                         ) : null}
                       </div>
                     )
@@ -2268,15 +2262,15 @@ export const AdminResultsEditModal = ({
                         }}
                       />
                       <div style={{ display: "grid", gap: "4px" }}>
-                        <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                        <Text as="span" weight="semibold" color="heading">
                           {candidate.candidateName}
-                        </span>
+                        </Text>
                         {!candidate.isNota && candidate.candidateRollNumber ? (
                           <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
                         ) : null}
                       </div>
                     </div>
-                    <strong style={{ color: "var(--color-text-heading)" }}>{candidate.voteCount}</strong>
+                    <Text as="strong" color="heading">{candidate.voteCount}</Text>
                   </label>
                 )
               })}

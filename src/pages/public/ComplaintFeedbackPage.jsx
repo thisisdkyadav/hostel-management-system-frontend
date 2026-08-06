@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Card, Alert, Spinner } from "@/components/ui"
+import { Alert, Card, Spinner, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -208,12 +208,9 @@ const ComplaintFeedbackPage = () => {
                     }}>
                         Rate Your Resolution
                     </h1>
-                    <p style={{
-                        color: 'var(--color-text-body)',
-                        fontSize: 'var(--font-size-base)'
-                    }}>
+                    <Text color="body" size="base">
                         Hello {complaint.studentName}, please rate the resolution of your complaint.
-                    </p>
+                    </Text>
                 </div>
 
                 <Card>
@@ -236,13 +233,9 @@ const ComplaintFeedbackPage = () => {
                                 }}>
                                     <FaClipboardList style={{ marginRight: 'var(--spacing-1-5)' }} /> Complaint
                                 </h4>
-                                <p style={{
-                                    fontWeight: 'var(--font-weight-semibold)',
-                                    color: 'var(--color-text-primary)',
-                                    fontSize: 'var(--font-size-base)'
-                                }}>
+                                <Text weight="semibold" color="primary" size="base">
                                     {complaint.title}
-                                </p>
+                                </Text>
                             </div>
                             <div style={{ display: 'flex', gap: 'var(--spacing-1-5)' }}>
                                 <span style={{
@@ -278,12 +271,9 @@ const ComplaintFeedbackPage = () => {
                                 }}>
                                     Description
                                 </h5>
-                                <p style={{
-                                    color: 'var(--color-text-body)',
-                                    fontSize: 'var(--font-size-sm)'
-                                }}>
+                                <Text color="body" size="sm">
                                     {complaint.description}
-                                </p>
+                                </Text>
                             </div>
                         )}
 
@@ -299,12 +289,9 @@ const ComplaintFeedbackPage = () => {
                                 }}>
                                     <FaInfoCircle style={{ marginRight: 'var(--spacing-1)' }} /> Resolution Notes
                                 </h5>
-                                <p style={{
-                                    color: 'var(--color-text-body)',
-                                    fontSize: 'var(--font-size-sm)'
-                                }}>
+                                <Text color="body" size="sm">
                                     {complaint.resolutionNotes}
-                                </p>
+                                </Text>
                             </div>
                         )}
                     </div>
@@ -325,7 +312,7 @@ const ComplaintFeedbackPage = () => {
                                 color: 'var(--color-text-body)',
                                 marginBottom: 'var(--spacing-2)'
                             }}>
-                                Rate the resolution <span style={{ color: 'var(--color-danger)' }}>*</span>
+                                Rate the resolution <Text as="span" color="danger">*</Text>
                             </label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-1-5)' }}>
                                 {[1, 2, 3, 4, 5].map((rating) => (
@@ -377,7 +364,7 @@ const ComplaintFeedbackPage = () => {
                                 color: 'var(--color-text-body)',
                                 marginBottom: 'var(--spacing-2)'
                             }}>
-                                Satisfaction status <span style={{ color: 'var(--color-danger)' }}>*</span>
+                                Satisfaction status <Text as="span" color="danger">*</Text>
                             </label>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-2)' }}>
                                 <Button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
-import { Select, Label, VStack, HStack, Badge, Spinner, Pagination } from "@/components/ui"
+import { Badge, HStack, Label, Pagination, Select, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -92,7 +92,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (attendanceRecords.length === 0) {
       return (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>No attendance records found.</p>
+          <Text color="muted">No attendance records found.</Text>
         </div>
       )
     }
@@ -112,8 +112,8 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
             {attendanceRecords.map((record) => (
               <Table.Row key={record._id}>
                 <Table.Cell>
-                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{record.userId.name}</div>
-                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.userId.email}</div>
+                  <Text as="div" size="sm" weight="medium" color="primary">{record.userId.name}</Text>
+                  <Text as="div" size="sm" color="muted">{record.userId.email}</Text>
                 </Table.Cell>
                 <Table.Cell>
                   <Badge variant={record.userId.role === "Security" ? "purple" : "primary"}>
@@ -153,7 +153,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (presentStaff.length === 0) {
       return (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>No staff present during the selected time period.</p>
+          <Text color="muted">No staff present during the selected time period.</Text>
         </div>
       )
     }
@@ -172,7 +172,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
           {presentStaff.map((staff) => (
             <Table.Row key={staff._id}>
               <Table.Cell>
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{staff.name}</div>
+                <Text as="div" size="sm" weight="medium" color="primary">{staff.name}</Text>
               </Table.Cell>
               <Table.Cell>
                 <Badge variant={staff.role === "Security" ? "purple" : "primary"}>

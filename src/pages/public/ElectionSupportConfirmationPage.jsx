@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Grid, Spinner } from "@/components/ui"
+import { Alert, Card, Grid, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -81,9 +81,9 @@ const ElectionSupportConfirmationPage = () => {
         <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
           <div style={{ display: "grid", gap: "6px" }}>
             <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>Election Support Confirmation</h1>
-            <div style={{ color: "var(--color-text-muted)" }}>
+            <Text as="div" color="muted">
               Review the nomination details below and confirm your response.
-            </div>
+            </Text>
           </div>
 
           {error ? <Alert type="error">{error}</Alert> : null}
@@ -120,30 +120,30 @@ const ElectionSupportConfirmationPage = () => {
                   />
                 ) : null}
                 <div style={{ display: "grid", gap: "4px" }}>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+                  <Text as="div" weight="semibold" size="lg">
                     {nomination.candidateName}
-                  </div>
-                  <div style={{ color: "var(--color-text-muted)" }}>{nomination.candidateRollNumber}</div>
-                  <div style={{ color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="div" color="muted">{nomination.candidateRollNumber}</Text>
+                  <Text as="div" color="muted">
                     {nomination.postTitle} · {data?.election?.title}
-                  </div>
+                  </Text>
                 </div>
               </div>
 
               <Grid min={180} gap={3}>
                 <div>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Support role</div>
-                  <div style={{ fontWeight: "var(--font-weight-medium)" }}>
+                  <Text as="div" color="muted" size="sm">Support role</Text>
+                  <Text as="div" weight="medium">
                     {nomination.supportType === "proposer" ? "Proposer" : "Seconder"}
-                  </div>
+                  </Text>
                 </div>
                 <div>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Requested for</div>
-                  <div style={{ fontWeight: "var(--font-weight-medium)" }}>{nomination.supporter?.name || "You"}</div>
+                  <Text as="div" color="muted" size="sm">Requested for</Text>
+                  <Text as="div" weight="medium">{nomination.supporter?.name || "You"}</Text>
                 </div>
                 <div>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Current status</div>
-                  <div style={{ fontWeight: "var(--font-weight-medium)" }}>{nomination.supporter?.status || "Pending"}</div>
+                  <Text as="div" color="muted" size="sm">Current status</Text>
+                  <Text as="div" weight="medium">{nomination.supporter?.status || "Pending"}</Text>
                 </div>
               </Grid>
             </div>

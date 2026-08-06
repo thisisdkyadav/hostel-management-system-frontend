@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
-import { Badge } from "@/components/ui"
+import { Badge, Text } from "@/components/ui"
 import CompactStudentTag from "@/components/ui/data-display/CompactStudentTag"
 import EmailDetailModal from "./EmailDetailModal"
 
@@ -181,27 +181,16 @@ const CaseSummaryView = ({
           {getStatusIcon(finalDecision.status || caseData.caseStatus)}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  fontSize: "var(--font-size-base)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: "var(--color-text-primary)",
-                }}
-              >
+              <Text as="span" size="base" weight="semibold" color="primary">
                 Case #{caseData.id?.slice(-6)}
-              </span>
+              </Text>
               <Badge variant={getStatusVariant(finalDecision.status || caseData.caseStatus)}>
                 {formatStatusLabel(finalDecision.status || caseData.caseStatus)}
               </Badge>
             </div>
-            <span
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-muted)",
-              }}
-            >
+            <Text as="span" size="xs" color="muted">
               Started by {caseData.startedBy?.name || "Unknown"} • {new Date(caseData.createdAt).toLocaleDateString()}
-            </span>
+            </Text>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -536,23 +525,12 @@ const CaseSummaryView = ({
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <Mail size={14} style={{ color: "var(--color-text-muted)" }} />
                       <div>
-                        <div
-                          style={{
-                            fontSize: "var(--font-size-sm)",
-                            fontWeight: "var(--font-weight-medium)",
-                            color: "var(--color-text-primary)",
-                          }}
-                        >
+                        <Text as="div" size="sm" weight="medium" color="primary">
                           {log.subject || "(No subject)"}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "var(--font-size-xs)",
-                            color: "var(--color-text-muted)",
-                          }}
-                        >
+                        </Text>
+                        <Text as="div" size="xs" color="muted">
                           {new Date(log.sentAt).toLocaleString()}
-                        </div>
+                        </Text>
                       </div>
                     </div>
                     <Button
@@ -611,15 +589,9 @@ const CaseSummaryView = ({
                         marginBottom: 8,
                       }}
                     >
-                      <span
-                        style={{
-                          fontSize: "var(--font-size-sm)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-primary)",
-                        }}
-                      >
+                      <Text as="span" size="sm" weight="semibold" color="primary">
                         {action.student?.name || "Student"}
-                      </span>
+                      </Text>
                       {(action.createdDate || action.date) && (
                         <span
                           style={{

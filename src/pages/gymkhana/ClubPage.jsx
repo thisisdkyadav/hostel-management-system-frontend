@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Building2, Mail, ShieldCheck, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Card, CardBody, CardHeader, StatCards } from "@/components/ui"
+import { Card, CardBody, CardHeader, StatCards, Text } from "@/components/ui"
 import { clubApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -132,7 +132,7 @@ const ClubPage = () => {
                   padding: "var(--spacing-4)",
                 }}
               >
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Club Name</div>
+                <Text as="div" size="sm" color="muted">Club Name</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   {club?.name || user?.name || "—"}
                 </div>
@@ -146,7 +146,7 @@ const ClubPage = () => {
                   padding: "var(--spacing-4)",
                 }}
               >
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>GS Category</div>
+                <Text as="div" size="sm" color="muted">GS Category</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   {club?.gymkhanaCategoryLabel || "—"}
                 </div>
@@ -160,7 +160,7 @@ const ClubPage = () => {
                   padding: "var(--spacing-4)",
                 }}
               >
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Login Email</div>
+                <Text as="div" size="sm" color="muted">Login Email</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)", wordBreak: "break-word" }}>
                   {club?.email || user?.email || "—"}
                 </div>
@@ -174,7 +174,7 @@ const ClubPage = () => {
                   padding: "var(--spacing-4)",
                 }}
               >
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Account Type</div>
+                <Text as="div" size="sm" color="muted">Account Type</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   Gymkhana / Club
                 </div>

@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
@@ -72,19 +72,19 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaPhone style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <span style={{ color: 'var(--color-text-muted)' }}>{provider.phone}</span>
+            <Text as="span" color="muted">{provider.phone}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaMapMarkerAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <span style={{ color: 'var(--color-text-muted)' }}>{provider.address}</span>
+            <Text as="span" color="muted">{provider.address}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <div style={{ color: 'var(--color-text-muted)' }}>
+            <Text as="div" color="muted">
               <span>
                 Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}
               </span>
-            </div>
+            </Text>
           </div>
         </CardBody>
 

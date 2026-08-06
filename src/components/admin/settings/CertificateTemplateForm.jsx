@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Text, Textarea } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -197,7 +197,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
             {logoSrc ? (
               <img src={logoSrc} alt="Logo preview" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
             ) : (
-              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No logo</span>
+              <Text as="span" size="xs" color="muted">No logo</Text>
             )}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
@@ -241,7 +241,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
         </Label>
         <Textarea id="cert-body" value={body} onChange={(event) => setBody(event.target.value)} rows={5} placeholder="This is to certify that {{name}}..." />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-1-5)", alignItems: "center" }}>
-          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Insert variable:</span>
+          <Text as="span" size="xs" color="muted">Insert variable:</Text>
           {SUPPORTED_VARIABLES.map((variable) => (
             <button
               key={variable}
@@ -313,10 +313,10 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
           <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
             Signatories
           </h3>
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text size="xs" color="muted">
             Only users who have set a signature in their profile appear here. The order below is the order
             shown on the certificate (1 → right, 2 → left & right, more → evenly spaced).
-          </p>
+          </Text>
         </div>
 
         {/* Selected, ordered */}
@@ -342,12 +342,12 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                     {index + 1}
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-heading)", fontWeight: "var(--font-weight-medium)" }}>
+                    <Text as="div" size="sm" color="heading" weight="medium">
                       {entry?.name || "Unknown user"}
-                    </div>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    </Text>
+                    <Text as="div" size="xs" color="muted">
                       {entry ? entry.position || entry.subRole || entry.role : "No longer has a signature"}
-                    </div>
+                    </Text>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => moveSignatory(index, -1)} disabled={index === 0} ariaLabel="Move up">
                     ↑
@@ -396,11 +396,11 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                     onChange={() => toggleSignatory(entry.userId)}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-heading)" }}>{entry.name}</div>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    <Text as="div" size="sm" color="heading">{entry.name}</Text>
+                    <Text as="div" size="xs" color="muted">
                       {[entry.position, entry.subRole || entry.role].filter(Boolean).join(" · ")}
                       {entry.type === "text" ? " · text signature" : ""}
-                    </div>
+                    </Text>
                   </div>
                 </label>
               ))

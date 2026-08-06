@@ -2,7 +2,7 @@ import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
-import { Grid } from "@/components/ui"
+import { Grid, Text } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
@@ -66,9 +66,9 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Payment Amount</span>
+              <Text as="span" size="sm" weight="medium" color="body">Payment Amount</Text>
             </div>
-            <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{formatAmount(paymentInfo.amount)}</p>
+            <Text size="xl" weight="semibold" color="primary">{formatAmount(paymentInfo.amount)}</Text>
           </div>
 
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
@@ -76,9 +76,9 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
               </svg>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Payment Date</span>
+              <Text as="span" size="sm" weight="medium" color="body">Payment Date</Text>
             </div>
-            <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{formatDate(paymentInfo.dateOfPayment)}</p>
+            <Text size="xl" weight="semibold" color="primary">{formatDate(paymentInfo.dateOfPayment)}</Text>
           </div>
         </Grid>
 
@@ -88,7 +88,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
             </svg>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Transaction ID</span>
+            <Text as="span" size="sm" weight="medium" color="body">Transaction ID</Text>
           </div>
           <p style={{ fontSize: 'var(--font-size-xl)', fontFamily: 'monospace', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)` }}>{paymentInfo.transactionId}</p>
         </div>
@@ -100,7 +100,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Payment Screenshot</span>
+              <Text as="span" size="sm" weight="medium" color="body">Payment Screenshot</Text>
             </div>
             <Button onClick={onViewScreenshot} variant="primary" size="sm">
               <FaEye />
@@ -113,7 +113,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
             </div>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Payment screenshot available</p>
+            <Text size="sm" color="muted">Payment screenshot available</Text>
           </div>
         </div>
 
@@ -124,7 +124,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Additional Information</span>
+              <Text as="span" size="sm" weight="medium" color="body">Additional Information</Text>
             </div>
             <p style={{ color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)`, fontSize: 'var(--font-size-base)' }}>{paymentInfo.additionalInfo}</p>
           </div>
@@ -133,13 +133,13 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
         {/* Submission Timestamp */}
         {paymentInfo.submittedAt && (
           <div style={{ textAlign: 'center', paddingTop: 'var(--spacing-2)', borderTop: `var(--border-1) solid var(--color-success-bg)` }}>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-light)' }}>
+            <Text size="xs" color="light">
               Submitted on {formatDate(paymentInfo.submittedAt)} at{" "}
               {new Date(paymentInfo.submittedAt).toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",
               })}
-            </p>
+            </Text>
           </div>
         )}
       </div>

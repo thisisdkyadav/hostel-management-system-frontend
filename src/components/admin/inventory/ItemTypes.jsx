@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Textarea, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
@@ -172,7 +172,7 @@ const ItemTypes = () => {
         ) : itemTypes.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
             <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
-            <p style={{ color: 'var(--color-text-muted)' }}>No inventory item types found</p>
+            <Text color="muted">No inventory item types found</Text>
             <Button onClick={openNewItemModal} variant="primary" size="sm">
               <FaPlus />
               Add your first item

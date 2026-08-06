@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, Modal, useConfirm } from "@/components/ui"
+import { Grid, Modal, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -323,7 +323,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
         <div style={{ padding: "var(--spacing-8)", textAlign: "center" }}>
-          <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No request details found.</p>
+          <Text color="muted" size="base">No request details found.</Text>
         </div>
       </Modal>
     )
@@ -361,7 +361,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                 </div>
                 <div>
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>H2 Form Document</h4>
-                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Guest Room Booking Form</p>
+                  <Text size="sm" color="muted">Guest Room Booking Form</Text>
                 </div>
               </div>
               <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="sm">
@@ -396,7 +396,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Link (Student only) */}
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
-          <div style={{ fontSize: "var(--font-size-sm)" }}>
+          <Text as="div" size="sm">
             <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)", marginRight: "var(--spacing-2)" }}>Payment Link:</span>
             <a
               href={request.visitorPaymentLink}
@@ -408,7 +408,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
             >
               {request.visitorPaymentLink}
             </a>
-          </div>
+          </Text>
         )}
 
         {/* Payment Information Submission (Student only) */}
@@ -423,7 +423,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                 </div>
                 <div>
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" }}>Payment Information Required</h4>
-                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)" }}>Submit your payment details for verification</p>
+                  <Text size="sm" color="brand">Submit your payment details for verification</Text>
                 </div>
               </div>
               <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="sm">

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, StatusBadge } from "czero/react"
-import { Modal, Page } from "@/components/ui"
+import { Modal, Page, Text } from "@/components/ui"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -93,8 +93,8 @@ const CatererFormModal = ({ isOpen, title, submitLabel, initialData = initialFor
 
 const DetailRow = ({ label, value }) => (
   <HStack justify="between" gap="medium">
-    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
-    <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)" }}>{value}</span>
+    <Text as="span" color="muted" size="sm">{label}</Text>
+    <Text as="span" color="secondary" weight="medium" size="sm">{value}</Text>
   </HStack>
 )
 
@@ -218,7 +218,7 @@ const CaterersPage = () => {
       render: (row) => (
         <HStack gap="small" align="center">
           <Avatar name={row.name || "?"} size="small" />
-          <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{row.name}</span>
+          <Text as="span" weight="semibold" color="secondary">{row.name}</Text>
         </HStack>
       ),
     },
@@ -274,9 +274,9 @@ const CaterersPage = () => {
           )}
 
           <div className="flex items-center justify-between gap-[var(--spacing-3)] flex-wrap mb-[var(--spacing-4)]">
-            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            <Text as="span" color="muted" size="sm">
               {filteredCaterers.length} {fetchArchive ? "archived" : "active"} caterer{filteredCaterers.length === 1 ? "" : "s"}
-            </span>
+            </Text>
             <div className="w-full sm:w-[18rem]">
               <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search caterer..." />
             </div>

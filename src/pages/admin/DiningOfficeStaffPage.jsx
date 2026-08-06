@@ -3,7 +3,7 @@ import { Button, DataTable, StatusBadge } from "czero/react"
 import { Plus, Pencil, Trash2, UserCog, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, LoadingState, Page, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, LoadingState, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import DiningOfficeFormModal, { DINING_OFFICE_CATEGORIES } from "@/components/dining/DiningOfficeFormModal"
 import { getErrorMessage } from "@/components/dining/diningBillingHelpers"
 
@@ -78,10 +78,10 @@ const DiningOfficeStaffPage = () => {
   }
 
   const columns = [
-    { key: "name", header: "Name", render: (row) => <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{row.name || "—"}</span> },
-    { key: "email", header: "Email", render: (row) => <span style={{ color: "var(--color-text-muted)" }}>{row.email || "—"}</span> },
+    { key: "name", header: "Name", render: (row) => <Text as="span" weight="semibold" color="secondary">{row.name || "—"}</Text> },
+    { key: "email", header: "Email", render: (row) => <Text as="span" color="muted">{row.email || "—"}</Text> },
     { key: "category", header: "Category", render: (row) => <StatusBadge status={row.category || "—"} tone={row.category === "Dining Warden" ? "success" : "primary"} /> },
-    { key: "phone", header: "Phone", render: (row) => <span style={{ color: "var(--color-text-muted)" }}>{row.phone || "—"}</span> },
+    { key: "phone", header: "Phone", render: (row) => <Text as="span" color="muted">{row.phone || "—"}</Text> },
     {
       key: "actions",
       header: "",

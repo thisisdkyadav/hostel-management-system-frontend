@@ -12,6 +12,7 @@ import { LoadingState, ErrorState, EmptyState } from "@/components/ui/feedback"
 import { CalendarDays, FileText, Clock, AlertCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { Text } from "@/components/ui"
 
 const DashboardPage = () => {
     const navigate = useNavigate()
@@ -79,9 +80,9 @@ const DashboardPage = () => {
                 }}>
                     Welcome, {user?.name || "Gymkhana Member"}
                 </h1>
-                <p style={{ color: "var(--color-text-muted)" }}>
+                <Text color="muted">
                     {user?.subRole || "Gymkhana"} Dashboard
-                </p>
+                </Text>
             </div>
 
             {/* Stats */}
@@ -142,16 +143,16 @@ const DashboardPage = () => {
                 <Card style={{ marginTop: "var(--spacing-4)" }}>
                     <CardContent>
                         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-                            <span style={{ color: "var(--color-text-body)" }}>
+                            <Text as="span" color="body">
                                 Calendar {stats.currentCalendar.academicYear}:
-                            </span>
+                            </Text>
                             <Badge variant={stats.currentCalendar.isLocked ? "warning" : "success"}>
                                 {stats.currentCalendar.isLocked ? "Locked" : "Editable"}
                             </Badge>
                             {stats.currentCalendar.isLocked && isGS && (
-                                <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                                <Text as="span" color="muted" size="sm">
                                     Request amendments through the Events page
-                                </span>
+                                </Text>
                             )}
                         </div>
                     </CardContent>

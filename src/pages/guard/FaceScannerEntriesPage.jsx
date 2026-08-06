@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Card, Switch, HStack, VStack, Badge } from "@/components/ui"
+import { Badge, Card, HStack, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -117,12 +117,12 @@ const FaceScannerEntriesPage = () => {
                                 )}
                             </div>
                             <div>
-                                <p style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                                <Text weight="medium" color="primary">
                                     {entry.userId?.name}
-                                </p>
-                                <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                                </Text>
+                                <Text size="sm" color="muted">
                                     {entry.userId?.email}
-                                </p>
+                                </Text>
                                 <div
                                     style={{
                                         display: "flex",
@@ -161,7 +161,7 @@ const FaceScannerEntriesPage = () => {
                                     marginBottom: "var(--spacing-1)",
                                 }}
                             >
-                                Reason for Cross-Hostel Check-In <span style={{ color: "var(--color-danger)" }}>*</span>
+                                Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text>
                             </label>
                             <textarea
                                 id={`reason-${entry._id}`}
@@ -211,9 +211,9 @@ const FaceScannerEntriesPage = () => {
                             >
                                 Face Scanner Entries
                             </h1>
-                            <p style={{ fontSize: "var(--font-size-base)", color: "var(--color-text-muted)" }}>
+                            <Text size="base" color="muted">
                                 Real-time entries from face scanner devices at the hostel gate.
-                            </p>
+                            </Text>
                         </div>
                         <HStack gap="small">
                             {/* Connection Status */}
@@ -231,12 +231,12 @@ const FaceScannerEntriesPage = () => {
                 <Card style={{ marginBottom: "var(--spacing-6)", padding: "var(--spacing-4)" }}>
                     <HStack justify="between" align="center">
                         <VStack gap="xsmall">
-                            <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                            <Text as="span" weight="medium" color="primary">
                                 Prompt for Cross-Hostel Reason
-                            </span>
-                            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                            </Text>
+                            <Text as="span" size="sm" color="muted">
                                 Show reason input for students from other hostels
-                            </span>
+                            </Text>
                         </VStack>
                         <Switch checked={promptForReason} onChange={(e) => setPromptForReason(e.target.checked)} />
                     </HStack>
@@ -260,7 +260,7 @@ const FaceScannerEntriesPage = () => {
                             style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }}
                             size={16}
                         />
-                        <p style={{ fontSize: "var(--font-size-sm)" }}>{error}</p>
+                        <Text size="sm">{error}</Text>
                     </div>
                 )}
 
@@ -343,7 +343,7 @@ const FaceScannerEntriesPage = () => {
                                     margin: "0 auto var(--spacing-4)",
                                 }}
                             />
-                            <p style={{ color: "var(--color-text-muted)" }}>Loading face scanner entries...</p>
+                            <Text color="muted">Loading face scanner entries...</Text>
                         </div>
                     ) : entries.length === 0 ? (
                         /* Empty State */
@@ -356,9 +356,9 @@ const FaceScannerEntriesPage = () => {
                                     margin: "0 auto var(--spacing-4)",
                                 }}
                             />
-                            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-lg)" }}>
+                            <Text color="muted" size="lg">
                                 No face scanner entries found
-                            </p>
+                            </Text>
                             <p
                                 style={{
                                     color: "var(--color-text-light)",
@@ -428,29 +428,23 @@ const FaceScannerEntriesPage = () => {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <div
-                                                                style={{
-                                                                    fontSize: "var(--font-size-sm)",
-                                                                    fontWeight: "var(--font-weight-medium)",
-                                                                    color: "var(--color-text-primary)",
-                                                                }}
-                                                            >
+                                                            <Text as="div" size="sm" weight="medium" color="primary">
                                                                 {entry.userId?.name}
-                                                            </div>
-                                                            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                                                            </Text>
+                                                            <Text as="div" size="sm" color="muted">
                                                                 {entry.userId?.email}
-                                                            </div>
+                                                            </Text>
                                                         </div>
                                                     </div>
                                                 </Table.Cell>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                                                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                                                    <Text as="div" size="sm" color="muted">
                                                         {entry.room}
                                                         {entry.bed}-{entry.unit}
-                                                    </div>
-                                                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>
+                                                    </Text>
+                                                    <Text as="div" size="xs" color="light">
                                                         {entry.hostelName}
-                                                    </div>
+                                                    </Text>
                                                 </Table.Cell>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>
                                                     {date}
@@ -468,9 +462,9 @@ const FaceScannerEntriesPage = () => {
                                                                 style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }}
                                                                 size={16}
                                                             />
-                                                            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning)" }}>
+                                                            <Text as="span" size="sm" color="warning">
                                                                 Yes
-                                                            </span>
+                                                            </Text>
                                                             {entry.reason && (
                                                                 <div
                                                                     style={{
@@ -485,9 +479,9 @@ const FaceScannerEntriesPage = () => {
                                                             )}
                                                         </div>
                                                     ) : (
-                                                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                                                        <Text as="span" size="sm" color="muted">
                                                             No
-                                                        </span>
+                                                        </Text>
                                                     )}
                                                 </Table.Cell>
                                             </Table.Row>

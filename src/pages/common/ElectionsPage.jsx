@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Table } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
@@ -2616,9 +2616,9 @@ const ElectionsPage = () => {
                     onChange={(event) => setSendVotingEmailReminder(event.target.checked)}
                   />
                   <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                    <Text as="span" weight="semibold" color="heading">
                       Send as reminder
-                    </span>
+                    </Text>
                     <span style={mutedTextStyle}>
                       Adds reminder text with voting end time and current turnout to the email. This is only available while voting is live.
                     </span>
@@ -2635,9 +2635,9 @@ const ElectionsPage = () => {
                   backgroundColor: "var(--color-bg-secondary)",
                 }}
               >
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" color="heading">
                   Optional CSV filter
-                </div>
+                </Text>
                 <div style={mutedTextStyle}>
                   Upload a CSV with a single <code>rollNumber</code> column to send only to those students. Only students who are still valid voters in this election will actually receive the email.
                   {selectedAdminElection?.mockSettings?.enabled
@@ -2685,9 +2685,9 @@ const ElectionsPage = () => {
                     onChange={() => setSendVotingEmailMode("reuse_existing")}
                   />
                   <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                    <Text as="span" weight="semibold" color="heading">
                       Reuse existing link
-                    </span>
+                    </Text>
                     <span style={mutedTextStyle}>
                       Resend the same voting link if an active one already exists for that student.
                     </span>
@@ -2715,9 +2715,9 @@ const ElectionsPage = () => {
                     onChange={() => setSendVotingEmailMode("generate_new")}
                   />
                   <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                    <Text as="span" weight="semibold" color="heading">
                       Generate new link
-                    </span>
+                    </Text>
                     <span style={mutedTextStyle}>
                       Invalidates the old voting link and sends a new one to the student.
                     </span>
@@ -2882,9 +2882,9 @@ const ElectionsPage = () => {
           >
             <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
               <div style={flatPanelStyle}>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" color="heading">
                   Email Preview
-                </div>
+                </Text>
                 <div style={mutedTextStyle}>Hello {"{Student Name}"},</div>
                 <div style={mutedTextStyle}>
                   This is a test email for the election communication system.
@@ -2895,9 +2895,9 @@ const ElectionsPage = () => {
               </div>
 
               <div style={flatPanelStyle}>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" color="heading">
                   Send To One Student
-                </div>
+                </Text>
                 <input
                   value={manualTestEmailRollNumber}
                   onChange={(event) => setManualTestEmailRollNumber(String(event.target.value || "").toUpperCase())}
@@ -2907,9 +2907,9 @@ const ElectionsPage = () => {
               </div>
 
               <div style={flatPanelStyle}>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" color="heading">
                   Or Upload CSV
-                </div>
+                </Text>
                 <div style={mutedTextStyle}>
                   Upload a CSV with a single <code>rollNumber</code> column. Only students who are part of this election will receive the test email.
                 </div>
@@ -3104,9 +3104,9 @@ const ElectionsPage = () => {
                   onChange={() => setResultsExportVariant("flat")}
                 />
                 <div style={{ display: "grid", gap: "4px" }}>
-                  <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  <Text as="span" weight="semibold" color="heading">
                     Flat candidate table
-                  </span>
+                  </Text>
                   <span style={mutedTextStyle}>
                     One row per candidate with post, votes, percentage, winner flags, and notes.
                   </span>
@@ -3134,9 +3134,9 @@ const ElectionsPage = () => {
                   onChange={() => setResultsExportVariant("grouped")}
                 />
                 <div style={{ display: "grid", gap: "4px" }}>
-                  <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  <Text as="span" weight="semibold" color="heading">
                     Post-wise grouped sheet
-                  </span>
+                  </Text>
                   <span style={mutedTextStyle}>
                     Election info on top, then each post in creation order with candidate-wise votes, percentage, and NOTA.
                   </span>

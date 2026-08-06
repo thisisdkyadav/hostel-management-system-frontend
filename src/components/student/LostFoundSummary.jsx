@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FiSearch } from "react-icons/fi"
 import { CgSearchFound } from "react-icons/cg"
+import { Text } from "@/components/ui"
 
 const LostFoundSummary = ({ lostAndFoundStats }) => {
   return (
@@ -20,16 +21,16 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
           <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
             <CgSearchFound style={{ color: 'var(--color-orange-text)', fontSize: 'var(--icon-lg)' }} />
           </div>
-          <span style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-orange-text)' }}>{lostAndFoundStats?.active || 0}</span>
-          <span style={{ fontSize: 'var(--font-size-2xs)', color: 'var(--color-text-tertiary)' }}>Active Items</span>
+          <Text as="span" size="2xl" weight="bold" color="var(--color-orange-text)">{lostAndFoundStats?.active || 0}</Text>
+          <Text as="span" size="2xs" color="tertiary">Active Items</Text>
         </div>
 
         <div style={{ backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           <div style={{ backgroundColor: 'var(--color-success-light)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
             <FiSearch style={{ color: 'var(--color-success)', fontSize: 'var(--icon-lg)' }} />
           </div>
-          <span style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success)' }}>{lostAndFoundStats?.claimed || 0}</span>
-          <span style={{ fontSize: 'var(--font-size-2xs)', color: 'var(--color-text-tertiary)' }}>Claimed Items</span>
+          <Text as="span" size="2xl" weight="bold" color="success">{lostAndFoundStats?.claimed || 0}</Text>
+          <Text as="span" size="2xs" color="tertiary">Claimed Items</Text>
         </div>
       </div>
 

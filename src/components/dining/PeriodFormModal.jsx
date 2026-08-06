@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import {
   Archive,
   ArchiveRestore,
@@ -127,9 +127,9 @@ const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
         }}
       >
         <FileUp size={28} style={{ margin: "0 auto var(--spacing-2)", color: "var(--color-text-muted)" }} />
-        <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+        <Text color="muted" size="sm">
           Upload CSV with a <strong>rollNumber</strong> column
-        </p>
+        </Text>
         {fileName && (
           <p style={{ color: "var(--color-primary)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
             Selected: {fileName}
@@ -142,9 +142,9 @@ const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
         <Button type="button" variant="secondary" size="sm" onClick={downloadTemplate}>
           <FileDown size={16} /> Download Template
         </Button>
-        <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+        <Text as="span" color="muted" size="sm">
           {rollNumbers.length} roll number{rollNumbers.length === 1 ? "" : "s"} loaded
-        </span>
+        </Text>
       </HStack>
 
       {error && <Alert type="error" icon>{error}</Alert>}
@@ -523,9 +523,9 @@ const PeriodFormModal = ({
                               onChange={(e) => handleCapacityChange(caterer.id, e.target.value)}
                             />
                             {Number(capacity?.allocatedCount || 0) > 0 && (
-                              <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                              <Text as="span" color="muted" size="xs">
                                 Already allocated: {capacity?.allocatedCount}
-                              </span>
+                              </Text>
                             )}
                           </span>
                         )}

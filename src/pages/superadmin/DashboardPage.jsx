@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { FaUserCog, FaKey } from "react-icons/fa"
 import { superAdminApi } from "../../service"
 import { Link } from "react-router-dom"
+import { Text } from "@/components/ui"
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({
@@ -46,7 +47,7 @@ const DashboardPage = () => {
         <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: '4px solid var(--color-danger)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
           <div className="flex">
             <div style={{ marginLeft: 'var(--spacing-3)' }}>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)' }}>{error}</p>
+              <Text size="sm" color="danger-text">{error}</Text>
             </div>
           </div>
         </div>
@@ -55,7 +56,7 @@ const DashboardPage = () => {
       {loading ? (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0' }}>
           <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', borderRadius: 'var(--radius-full)', height: '2rem', width: '2rem', borderTop: '2px solid var(--color-primary)', borderBottom: '2px solid var(--color-primary)', marginBottom: 'var(--spacing-4)' }}></div>
-          <p style={{ color: 'var(--color-text-muted)' }}>Loading dashboard statistics...</p>
+          <Text color="muted">Loading dashboard statistics...</Text>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
@@ -65,8 +66,8 @@ const DashboardPage = () => {
                 <FaUserCog style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-primary)' }} />
               </div>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)' }}>Total Admins</p>
-                <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{stats.totalAdmins}</p>
+                <Text size="sm" weight="medium" color="muted">Total Admins</Text>
+                <Text size="xl" weight="semibold" color="primary">{stats.totalAdmins}</Text>
               </div>
             </div>
             <div style={{ padding: 'var(--spacing-2) var(--spacing-6)', backgroundColor: 'var(--color-bg-secondary)' }}>
@@ -82,8 +83,8 @@ const DashboardPage = () => {
                 <FaKey style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-coed-text)' }} />
               </div>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)' }}>Total API Keys</p>
-                <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{stats.totalApiKeys}</p>
+                <Text size="sm" weight="medium" color="muted">Total API Keys</Text>
+                <Text size="xl" weight="semibold" color="primary">{stats.totalApiKeys}</Text>
               </div>
             </div>
             <div style={{ padding: 'var(--spacing-2) var(--spacing-6)', backgroundColor: 'var(--color-bg-secondary)' }}>
@@ -99,8 +100,8 @@ const DashboardPage = () => {
                 <FaKey style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-success)' }} />
               </div>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)' }}>Active API Keys</p>
-                <p style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{stats.activeApiKeys}</p>
+                <Text size="sm" weight="medium" color="muted">Active API Keys</Text>
+                <Text size="xl" weight="semibold" color="primary">{stats.activeApiKeys}</Text>
               </div>
             </div>
             <div style={{ padding: 'var(--spacing-2) var(--spacing-6)', backgroundColor: 'var(--color-bg-secondary)' }}>
@@ -114,15 +115,15 @@ const DashboardPage = () => {
 
       <div style={{ marginTop: 'var(--spacing-10)', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', padding: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-4)' }}>System Overview</h2>
-        <p style={{ color: 'var(--color-text-muted)' }}>Welcome to the Super Admin portal. From here, you can manage system administrators and API keys. This dashboard provides a high-level overview of your system configuration.</p>
+        <Text color="muted">Welcome to the Super Admin portal. From here, you can manage system administrators and API keys. This dashboard provides a high-level overview of your system configuration.</Text>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ marginTop: 'var(--spacing-4)', gap: 'var(--spacing-4)' }}>
           <div style={{ border: '1px solid var(--color-border-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>Admin Management</h3>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Create, view, update, and delete system administrators. Each admin has access to the admin portal to manage hostels, wardens, and other system resources.</p>
+            <Text color="muted" size="sm">Create, view, update, and delete system administrators. Each admin has access to the admin portal to manage hostels, wardens, and other system resources.</Text>
           </div>
           <div style={{ border: '1px solid var(--color-border-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>API Key Management</h3>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Generate and manage API keys for external integrations. You can activate or deactivate keys as needed to control system access.</p>
+            <Text color="muted" size="sm">Generate and manage API keys for external integrations. You can activate or deactivate keys as needed to control system access.</Text>
           </div>
         </div>
       </div>

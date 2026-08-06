@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { Select, useConfirm } from "@/components/ui"
+import { Select, Text, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -94,41 +94,41 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
             <FaMedkit style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Claim Information
           </h3>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Submitted:</span> {formatDate(claim.createdAt)}
-          </div>
+          <Text as="div" size="sm" color="muted">
+            <Text as="span" weight="medium">Submitted:</Text> {formatDate(claim.createdAt)}
+          </Text>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaHospital style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Hospital</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{claim.hospitalName}</p>
+              <Text size="sm" color="muted">Hospital</Text>
+              <Text weight="medium" color="body">{claim.hospitalName}</Text>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaDollarSign style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Claim Amount</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatCurrency(claim.amount)}</p>
+              <Text size="sm" color="muted">Claim Amount</Text>
+              <Text weight="medium" color="body">{formatCurrency(claim.amount)}</Text>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaMedkit style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Provider</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</p>
+              <Text size="sm" color="muted">Insurance Provider</Text>
+              <Text weight="medium" color="body">{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</Text>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaCalendarAlt style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Last Updated</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(claim.updatedAt)}</p>
+              <Text size="sm" color="muted">Last Updated</Text>
+              <Text weight="medium" color="body">{formatDate(claim.updatedAt)}</Text>
             </div>
           </div>
 
@@ -137,16 +137,16 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
                 <FaCalendarCheck style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy Start Date</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.startDate)}</p>
+                  <Text size="sm" color="muted">Policy Start Date</Text>
+                  <Text weight="medium" color="body">{formatDate(selectedProvider.startDate)}</Text>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
                 <FaCalendarCheck style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy End Date</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.endDate)}</p>
+                  <Text size="sm" color="muted">Policy End Date</Text>
+                  <Text weight="medium" color="body">{formatDate(selectedProvider.endDate)}</Text>
                 </div>
               </div>
             </>
@@ -156,7 +156,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
         <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', alignItems: 'flex-start' }}>
           <FaFileAlt style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Description</p>
+            <Text size="sm" color="muted">Description</Text>
             <p style={{ marginTop: 'var(--spacing-1)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-primary)', minHeight: '80px' }}>{claim.description || "No description provided."}</p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -112,7 +112,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 </svg>
               </div>
               <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)' }}>{error}</p>
+                <Text size="sm" color="danger-text">{error}</Text>
               </div>
             </div>
           )}
@@ -136,7 +136,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               </svg>
               Requested By
             </h4>
-            <div style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--font-weight-medium)' }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</div>
+            <Text as="div" color="primary" weight="medium">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
             {leave.userId?.email && <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>{leave.userId.email}</div>}
           </div>
 
@@ -149,14 +149,14 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 </svg>
                 Start Date
               </h4>
-              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>
+              <Text as="div" size="lg" weight="medium" color="primary">
                 {new Date(leave.startDate).toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
-              </div>
+              </Text>
             </div>
 
             <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-border-light)` }}>
@@ -166,14 +166,14 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 </svg>
                 End Date
               </h4>
-              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>
+              <Text as="div" size="lg" weight="medium" color="primary">
                 {new Date(leave.endDate).toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
-              </div>
+              </Text>
             </div>
           </Grid>
 
@@ -183,7 +183,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               <svg style={{ ...iconSizeLg, color: 'var(--color-info)', marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-info-text)' }}>Duration: {Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</span>
+              <Text as="span" size="sm" weight="medium" color="info-text">Duration: {Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
             </div>
           </div>
 
@@ -292,9 +292,9 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                   </p>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <Text as="div" align="right">
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', margin: 0 }}>{Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</p>
-                </div>
+                </Text>
               </div>
             </div>
 
@@ -366,9 +366,9 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                   </p>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <Text as="div" align="right">
                   <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', border: `var(--border-1) solid var(--color-success-bg)` }}>Approved</span>
-                </div>
+                </Text>
               </div>
             </div>
 

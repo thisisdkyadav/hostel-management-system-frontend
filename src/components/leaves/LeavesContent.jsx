@@ -1,5 +1,5 @@
 import NoResults from "../common/NoResults"
-import { Pagination } from "@/components/ui"
+import { Pagination, Text } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
 import { Table } from "czero/react"
 
@@ -69,7 +69,7 @@ const LeavesCardView = ({ leaves, onViewDetails }) => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary)' }}>
               <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)' }} />
-              <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</span>
+              <Text as="span" weight="semibold">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
             </div>
             <span style={{ ...getStatusStyle(leave.status), padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)' }}>{leave.status || "Pending"}</span>
           </div>

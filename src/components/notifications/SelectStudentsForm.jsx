@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox, Grid } from "@/components/ui"
+import { Checkbox, Grid, Text } from "@/components/ui"
 import { Input } from "czero/react"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
@@ -170,10 +170,10 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
                     >
                       <Checkbox checked={isSelected} onChange={() => {}} />
                       <div style={{ marginLeft: "var(--spacing-3)" }}>
-                        <p style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{student.name}</p>
-                        <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        <Text size="sm" weight="medium" color="primary">{student.name}</Text>
+                        <Text size="xs" color="muted">
                           {student.email} • {student.rollNumber || "No Roll Number"}
-                        </p>
+                        </Text>
                       </div>
                     </li>
                   )
@@ -183,7 +183,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
           </div>
 
           <div style={{ marginTop: "var(--spacing-2)" }}>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{selectedStudents.length} student(s) selected</p>
+            <Text size="sm" color="muted">{selectedStudents.length} student(s) selected</Text>
           </div>
         </div>
       )

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { visitorApi } from "../../../service"
@@ -92,23 +92,23 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         {error && (
           <div style={{ backgroundColor: "var(--color-danger-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
             <FaExclamationTriangle style={{ color: "var(--color-danger)", marginTop: "var(--spacing-1)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
-            <p style={{ color: "var(--color-danger-text)" }}>{error}</p>
+            <Text color="danger-text">{error}</Text>
           </div>
         )}
 
         <div style={{ backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
+          <Text size="sm" color="info-text">
             <strong>Note:</strong> You can only modify the dates and reason for your visit. If you need to change visitors, please cancel this request and create a new one.
-          </p>
+          </Text>
         </div>
 
         {/* Visitor Information (Non-editable) */}
         <div>
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Visitor Information</h3>
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-secondary)" }}>
-              <span style={{ fontWeight: "var(--font-weight-medium)" }}>Visitors:</span> {request.visitors?.map((v) => v.name).join(", ")}
-            </p>
+            <Text size="sm" color="secondary">
+              <Text as="span" weight="medium">Visitors:</Text> {request.visitors?.map((v) => v.name).join(", ")}
+            </Text>
           </div>
         </div>
 
@@ -117,7 +117,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
           <VStack gap="xsmall">
             <Label htmlFor="fromDate" required>From Date</Label>
             <Input id="fromDate" type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Must be at least 2 days from today</p>
+            <Text size="xs" color="muted">Must be at least 2 days from today</Text>
           </VStack>
 
           <VStack gap="xsmall">

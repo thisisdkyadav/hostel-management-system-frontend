@@ -1,6 +1,6 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect, useCallback } from "react"
-import { Page, Pagination, SearchInput } from "@/components/ui"
+import { Page, Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import LostAndFoundStats from "../../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../../components/lostAndFound/LostAndFoundCard"
@@ -127,8 +127,8 @@ const LostAndFoundPage = () => {
         <PageFooter
           leftContent={[
             <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{lostItems.length}</span> of{" "}
-              <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{pagination.total || 0}</span> items
+              Showing <Text as="span" weight="semibold">{lostItems.length}</Text> of{" "}
+              <Text as="span" weight="semibold">{pagination.total || 0}</Text> items
             </span>,
           ]}
           rightContent={[

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -99,9 +99,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
           </div>
         )}
 
-        <div style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', }} >
+        <Text as="div" color="muted" size="sm">
           <p>Below are all your active sessions across different devices. You can log out from any session that you don't recognize or no longer need.</p>
-        </div>
+        </Text>
 
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8) 0', }} >

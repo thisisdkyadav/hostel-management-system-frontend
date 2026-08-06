@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
 import { DataTable } from "czero/react"
 import PorRequestDetailModal from "@/components/por/PorRequestDetailModal"
-import { Badge, EmptyState } from "@/components/ui"
+import { Badge, EmptyState, Text } from "@/components/ui"
 import { porApi } from "@/service"
 
 const STATUS_META = {
@@ -178,12 +178,12 @@ const PorTab = ({ userId }) => {
         key: "positionTitle",
         render: (request) => (
           <div style={{ display: "grid", gap: "4px", minWidth: 0 }}>
-            <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+            <Text as="span" size="sm" weight="semibold" color="primary">
               {request.positionTitle || "—"}
-            </span>
-            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            </Text>
+            <Text as="span" size="xs" color="muted">
               {request.tenure || "—"}
-            </span>
+            </Text>
           </div>
         ),
       },
@@ -191,9 +191,9 @@ const PorTab = ({ userId }) => {
         header: "Category",
         key: "porCategoryName",
         render: (request) => (
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+          <Text as="span" size="sm" color="body">
             {request.porCategoryName || "—"}
-          </span>
+          </Text>
         ),
       },
       {
@@ -207,18 +207,18 @@ const PorTab = ({ userId }) => {
         header: "Current Stage",
         key: "currentApprovalStage",
         render: (request) => (
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+          <Text as="span" size="sm" color="body">
             {formatStageLabel(request.currentApprovalStage)}
-          </span>
+          </Text>
         ),
       },
       {
         header: "Updated",
         key: "updatedAt",
         render: (request) => (
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="sm" color="muted">
             {formatDateTime(request.updatedAt || request.createdAt)}
-          </span>
+          </Text>
         ),
       },
     ],

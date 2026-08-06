@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Tabs } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
@@ -740,15 +740,9 @@ const PorCategoryFormModal = ({
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div
-                  style={{
-                    fontSize: "var(--font-size-sm)",
-                    fontWeight: "var(--font-weight-semibold)",
-                    color: "var(--color-text-heading)",
-                  }}
-                >
+                <Text as="div" size="sm" weight="semibold" color="heading">
                   Gymkhana Review Steps
-                </div>
+                </Text>
                 <div
                   style={{
                     marginTop: "4px",
@@ -918,13 +912,13 @@ const PorCategoryManagementModal = ({
       key: "name",
       render: (category) => (
         <div style={{ display: "grid", gap: "4px" }}>
-          <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+          <Text as="div" weight="medium" color="primary">
             {category.name || "—"}
-          </div>
-          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          </Text>
+          <Text as="div" size="sm" color="muted">
             {(category.gymkhanaSteps?.length || category.stepCount || 0)} Gymkhana step
             {(category.gymkhanaSteps?.length || category.stepCount || 0) === 1 ? "" : "s"}
-          </div>
+          </Text>
         </div>
       ),
     },
@@ -1268,9 +1262,9 @@ const PorRequestDetailModal = ({
                 </div>
               ) : (
                 <div className="por-detail-success-card">
-                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-success)", fontSize: "var(--font-size-sm)" }}>
+                  <Text as="div" weight="bold" color="success" size="sm">
                     ✓ No Disciplinary Action Declared
-                  </div>
+                  </Text>
                   <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
                     The student has declared that they have no past or active disciplinary actions.
                   </div>
@@ -1998,12 +1992,12 @@ const PorRequestsPage = () => {
           const student = row.rowType === "group" ? row.student : row.request?.student
           return (
           <div style={{ display: "grid", gap: "4px" }}>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            <Text as="div" weight="medium" color="primary">
                 {student?.name || "—"}
-            </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            </Text>
+            <Text as="div" size="sm" color="muted">
                 {student?.rollNumber || "—"}
-            </div>
+            </Text>
           </div>
           )
         },
@@ -2032,20 +2026,20 @@ const PorRequestsPage = () => {
 
             return (
               <div style={{ display: "grid", gap: "4px" }}>
-                <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                <Text as="div" weight="medium" color="primary">
                   {row.requestCount} POR requests
-                </div>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="div" size="sm" color="muted">
                   {categoryLabel}
-                </div>
+                </Text>
                 {clubs.length > 0 ? (
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  <Text as="div" size="sm" color="muted">
                     {clubs.length === 1 ? clubs[0] : `${clubs.length} clubs`}
-                  </div>
+                  </Text>
                 ) : null}
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text as="div" size="sm" color="muted">
                   {positionsPreview || "Multiple positions"}
-                </div>
+                </Text>
               </div>
             )
           }
@@ -2053,16 +2047,16 @@ const PorRequestsPage = () => {
           const request = row.request
           return (
             <div style={{ display: "grid", gap: "4px" }}>
-              <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+              <Text as="div" weight="medium" color="primary">
                 {request.porCategoryName || "—"}
-              </div>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              </Text>
+              <Text as="div" size="sm" color="muted">
                 {request.positionTitle || "—"}
-              </div>
+              </Text>
               {request.club?.name ? (
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text as="div" size="sm" color="muted">
                   Club: {request.club.name}
-                </div>
+                </Text>
               ) : null}
             </div>
           )

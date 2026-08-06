@@ -6,7 +6,7 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { LoadingState, ErrorState, EmptyState, Pagination } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState, Pagination, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -159,7 +159,7 @@ const VisitorRequestsPage = () => {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div style={{ backgroundColor: "var(--color-danger-bg)", borderLeft: "var(--border-4) solid var(--color-danger)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-6)", borderRadius: "var(--radius-lg)" }}>
-          <p style={{ fontWeight: "var(--font-weight-medium)" }}>Access Denied</p>
+          <Text weight="medium">Access Denied</Text>
           <p>You do not have permission to view visitor requests.</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ const VisitorRequestsPage = () => {
           />
         ) : totalRequests === 0 ? (
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
-            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No requests found matching your filters.</p>
+            <Text color="muted" size="base">No requests found matching your filters.</Text>
           </div>
         ) : (
           <VisitorRequestTable requests={visitorRequests} onRefresh={fetchVisitorData} />
@@ -242,8 +242,8 @@ const VisitorRequestsPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{visitorRequests.length}</span> of{" "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalRequests}</span> requests
+            Showing <Text as="span" weight="semibold">{visitorRequests.length}</Text> of{" "}
+            <Text as="span" weight="semibold">{totalRequests}</Text> requests
           </span>,
         ]}
         rightContent={[

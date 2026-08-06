@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Textarea, RadioGroup, Spinner } from "@/components/ui"
+import { Alert, RadioGroup, Spinner, Text, Textarea } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { FileText, UserCheck, GraduationCap } from "lucide-react"
 import { accommodationApi } from "@/service"
@@ -59,7 +59,7 @@ const AccommodationRecommendationPage = () => {
       <Shell>
         <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-card)", border: "1px solid var(--color-border-primary)", padding: "var(--spacing-12)", display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--spacing-3)" }}>
           <Spinner size="large" />
-          <p style={{ color: "var(--color-text-muted)" }}>Loading the request…</p>
+          <Text color="muted">Loading the request…</Text>
         </div>
       </Shell>
     )
@@ -75,12 +75,12 @@ const AccommodationRecommendationPage = () => {
 
   return (
     <Shell>
-      <div style={{ textAlign: "center" }}>
+      <Text as="div" align="center">
         <h1 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>Faculty advisor recommendation</h1>
         <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>
           {student?.name || request.applicantName || "A student"} has requested hostel accommodation for visitors.
         </p>
-      </div>
+      </Text>
 
       {student && (
         <SectionCard icon={GraduationCap} title="Student" accentColor="var(--color-primary)">
@@ -121,7 +121,7 @@ const AccommodationRecommendationPage = () => {
           </RadioGroup>
           <Textarea name="reason" value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Optional remarks for the student / chief warden" />
           <Button onClick={handleSubmit} loading={submitting} disabled={submitting} fullWidth>Submit recommendation</Button>
-          <p style={{ fontSize: "10px", color: "var(--color-text-muted)", textAlign: "center" }}>Secure single-use link · no login required</p>
+          <Text size="10px" color="muted" align="center">Secure single-use link · no login required</Text>
         </div>
       </SectionCard>
     </Shell>

@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
 import { DataTable } from "czero/react"
+import { Text } from "@/components/ui"
 
 const NotificationTable = ({ notifications, onRefresh }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)
@@ -50,19 +51,19 @@ const NotificationTable = ({ notifications, onRefresh }) => {
       render: (notification) => (
         <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
           <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-1)' }}>{notification.title}</div>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{getTargetAudience(notification)}</div>
+          <Text as="div" size="xs" color="muted">{getTargetAudience(notification)}</Text>
         </div>
       ),
     },
     {
       header: "Created",
       key: "createdAt",
-      render: (notification) => <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(notification.createdAt)}</span>,
+      render: (notification) => <Text as="span" size="sm" color="muted">{formatDate(notification.createdAt)}</Text>,
     },
     {
       header: "Expires",
       key: "expiryDate",
-      render: (notification) => <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(notification.expiryDate)}</span>,
+      render: (notification) => <Text as="span" size="sm" color="muted">{formatDate(notification.expiryDate)}</Text>,
     },
   ]
 

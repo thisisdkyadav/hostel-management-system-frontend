@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
@@ -80,29 +80,29 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Email</span>
+              <Text as="span" color="muted" weight="medium">Email</Text>
               <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Role</span>
-              <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-semibold)' }}>{warden.role || 'Gymkhana'}</span>
+              <Text as="span" color="muted" weight="medium">Role</Text>
+              <Text as="span" color="secondary" weight="semibold">{warden.role || 'Gymkhana'}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Sub Role</span>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.subRole || 'Not assigned'}</span>
+              <Text as="span" color="muted" weight="medium">Sub Role</Text>
+              <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Position</span>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.position || 'Not set'}</span>
+              <Text as="span" color="muted" weight="medium">Position</Text>
+              <Text as="span" color="body" align="right">{warden.position || 'Not set'}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Categories</span>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{gymkhanaCategoryText}</span>
+              <Text as="span" color="muted" weight="medium">Categories</Text>
+              <Text as="span" color="body" align="right">{gymkhanaCategoryText}</Text>
             </div>
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Gymkhana user</div>
+            <Text as="div" size="xs" color="muted">Gymkhana user</Text>
             <Button onClick={() => setShowEditForm(true)} variant="ghost" size="sm" aria-label={`Edit ${staffTitle.toLowerCase()}`}><FaEdit /></Button>
           </CardFooter>
         </Card>
@@ -134,21 +134,21 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Email</span>
+              <Text as="span" color="muted" weight="medium">Email</Text>
               <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Role</span>
-              <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-semibold)' }}>{warden.role || 'Academics'}</span>
+              <Text as="span" color="muted" weight="medium">Role</Text>
+              <Text as="span" color="secondary" weight="semibold">{warden.role || 'Academics'}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Sub Role</span>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.subRole || 'Not assigned'}</span>
+              <Text as="span" color="muted" weight="medium">Sub Role</Text>
+              <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
             </div>
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Academics user</div>
+            <Text as="div" size="xs" color="muted">Academics user</Text>
             <Button onClick={() => setShowEditForm(true)} variant="ghost" size="sm" aria-label={`Edit ${staffTitle.toLowerCase()}`}><FaEdit /></Button>
           </CardFooter>
         </Card>
@@ -195,7 +195,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaPhone style={{ color: 'var(--color-text-muted)' }} />
             </div>
-            {warden.phone ? <span style={{ color: 'var(--color-text-body)' }}>{warden.phone}</span> : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Not provided</span>}
+            {warden.phone ? <Text as="span" color="body">{warden.phone}</Text> : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Not provided</span>}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -209,7 +209,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
         </CardBody>
 
         <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+          <Text as="div" size="xs" color="muted">
             Joined on{" "}
             {warden.joinDate
               ? new Date(warden.joinDate).toLocaleDateString("en-US", {
@@ -218,7 +218,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
                 day: "numeric",
               })
               : "N/A"}
-          </div>
+          </Text>
 
           <Button onClick={() => setShowEditForm(true)} variant="ghost" size="sm" aria-label={`Edit ${staffTitle.toLowerCase()}`}><FaEdit /></Button>
         </CardFooter>

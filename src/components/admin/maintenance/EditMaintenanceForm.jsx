@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaTools, FaPhone } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
-import { Alert, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -114,7 +114,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               </div>
             </div>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Click the camera icon to change profile photo</span>
+            <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </div>
 
           {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { VStack, HStack, Label } from "@/components/ui"
+import { HStack, Label, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 
@@ -99,10 +99,10 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
       <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
       <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>roomNumber:</span> String (e.g., 101)
+          <Text as="span" weight="medium">roomNumber:</Text> String (e.g., 101)
         </li>
         <li>
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>capacity:</span> Number
+          <Text as="span" weight="medium">capacity:</Text> Number
         </li>
       </ul>
     </div>
@@ -158,7 +158,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           <div style={{ marginTop: "var(--spacing-4)" }}>
             <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-2)" }}>
               <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Floor Room Exceptions</h5>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Override default rooms per floor for a specific floor</p>
+              <Text size="xs" color="muted">Override default rooms per floor for a specific floor</Text>
             </div>
             {roomConfig.exceptions.map((ex, index) => (
               <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
@@ -186,9 +186,9 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           </div>
 
           <div style={{ marginTop: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)" }}>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+            <Text size="sm" color="body">
               This will create {roomConfig.floors} floors with {roomConfig.defaultRoomsPerFloor} rooms per floor by default.
-            </p>
+            </Text>
             <p style={{ fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)", color: "var(--color-text-body)" }}>Total capacity: {roomConfig.floors * roomConfig.defaultRoomsPerFloor * roomConfig.standardCapacity} students (exceptions may override room counts)</p>
           </div>
         </>

@@ -1,5 +1,6 @@
 import React from "react"
 import { format } from "date-fns"
+import { Text } from "@/components/ui"
 
 const SecurityCheck = ({ checkInTime, checkOutTime }) => {
   const formatDateTime = (dateTimeString) => {
@@ -18,7 +19,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
           <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-in Time</h4>
           <div className="mt-1 flex items-center">
             <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkInTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDateTime(checkInTime)}</p>
+            <Text size="sm" color="primary">{formatDateTime(checkInTime)}</Text>
           </div>
         </div>
 
@@ -26,7 +27,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
           <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-out Time</h4>
           <div className="mt-1 flex items-center">
             <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkOutTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDateTime(checkOutTime)}</p>
+            <Text size="sm" color="primary">{formatDateTime(checkOutTime)}</Text>
           </div>
         </div>
       </div>

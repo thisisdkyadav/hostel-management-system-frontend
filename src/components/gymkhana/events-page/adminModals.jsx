@@ -1,5 +1,5 @@
 import { Button, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { Textarea } from "@/components/ui/form"
@@ -24,15 +24,9 @@ export const GymkhanaPendingProposalsModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-      <span
-        style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-warning)",
-          fontWeight: "var(--font-weight-medium)",
-        }}
-      >
+      <Text as="span" size="xs" color="warning" weight="medium">
         {pendingProposalsForSelectedCalendar.length} pending in current calendar
-      </span>
+      </Text>
       <Table>
         <Table.Header>
           <Table.Row>
@@ -49,17 +43,12 @@ export const GymkhanaPendingProposalsModal = ({
             <Table.Row key={proposal._id}>
               <Table.Cell>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
-                  <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                  <Text as="span" weight="medium">
                     {proposal.eventId?.title || "Unknown event"}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
+                  </Text>
+                  <Text as="span" size="xs" color="muted">
                     By {proposal.submittedBy?.name || "Unknown"}
-                  </span>
+                  </Text>
                 </div>
               </Table.Cell>
               <Table.Cell>
@@ -123,15 +112,9 @@ export const GymkhanaPendingBillsModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-      <span
-        style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-warning)",
-          fontWeight: "var(--font-weight-medium)",
-        }}
-      >
+      <Text as="span" size="xs" color="warning" weight="medium">
         {pendingExpenseApprovalsForSelectedCalendar.length} pending in current calendar
-      </span>
+      </Text>
       <Table>
         <Table.Header>
           <Table.Row>
@@ -148,9 +131,9 @@ export const GymkhanaPendingBillsModal = ({
           {pendingExpenseApprovalsForSelectedCalendar.map((expense) => (
             <Table.Row key={expense._id}>
               <Table.Cell>
-                <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                <Text as="span" weight="medium">
                   {expense.eventId?.title || "Unknown event"}
-                </span>
+                </Text>
               </Table.Cell>
               <Table.Cell>
                 {formatDateRange(
@@ -210,15 +193,9 @@ export const GymkhanaOverlapDetailsModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-      <span
-        style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-warning)",
-          fontWeight: "var(--font-weight-medium)",
-        }}
-      >
+      <Text as="span" size="xs" color="warning" weight="medium">
         {dateConflicts.length} overlaps detected
-      </span>
+      </Text>
       {dateConflicts.map((conflict, index) => (
         <div
           key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
@@ -229,15 +206,15 @@ export const GymkhanaOverlapDetailsModal = ({
             fontSize: "var(--font-size-xs)",
           }}
         >
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+          <Text as="span" weight="medium">
             {conflict.eventA.title}
-          </span>
+          </Text>
           <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>
             ↔
           </span>
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+          <Text as="span" weight="medium">
             {conflict.eventB.title}
-          </span>
+          </Text>
         </div>
       ))}
     </div>
@@ -308,9 +285,9 @@ export const GymkhanaApprovalModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+      <Text as="span" size="xs" color="muted">
         Reviewing {calendar?.academicYear} calendar with {events.length} events
-      </span>
+      </Text>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)" }}>
         {categoryOrder.map((category) => (
@@ -340,10 +317,10 @@ export const GymkhanaApprovalModal = ({
       </div>
 
       {dateConflicts.length > 0 && (
-        <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)" }}>
+        <Text as="span" size="xs" color="warning">
           <AlertTriangle size={12} style={{ marginRight: "var(--spacing-1)" }} />
           {dateConflicts.length} overlap(s) detected
-        </span>
+        </Text>
       )}
 
       {requiresCalendarNextApprovalSelection && (
@@ -359,14 +336,9 @@ export const GymkhanaApprovalModal = ({
               borderRadius: "var(--radius-card-sm)",
             }}
           >
-            <span
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-muted)",
-              }}
-            >
+            <Text as="span" size="xs" color="muted">
               Leave a row blank to skip that stage.
-            </span>
+            </Text>
             {postStudentAffairsStageOptions.map((stage) => (
               <div
                 key={`calendar-stage-${stage}`}
@@ -377,9 +349,9 @@ export const GymkhanaApprovalModal = ({
                   alignItems: "center",
                 }}
               >
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="span" size="sm" color="body">
                   {stage}
-                </span>
+                </Text>
                 <Select
                   name={`calendar-next-approver-${stage}`}
                   value={calendarNextApproversByStage?.[stage] || ""}
@@ -437,9 +409,9 @@ export const GymkhanaOverlapConfirmModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)" }}>
+      <Text as="span" size="xs" color="warning">
         {submitOverlapInfo?.message || "Events have overlapping date ranges."}
-      </span>
+      </Text>
       {(submitOverlapInfo?.overlaps || []).slice(0, 5).map((overlap, index) => (
         <div
           key={`${overlap.eventA?.eventId || overlap.eventA?.title}-${overlap.eventB?.eventId || overlap.eventB?.title}-${index}`}
@@ -450,15 +422,15 @@ export const GymkhanaOverlapConfirmModal = ({
             fontSize: "var(--font-size-xs)",
           }}
         >
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+          <Text as="span" weight="medium">
             {overlap.eventA?.title}
-          </span>
+          </Text>
           <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>
             ↔
           </span>
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+          <Text as="span" weight="medium">
             {overlap.eventB?.title}
-          </span>
+          </Text>
         </div>
       ))}
     </div>

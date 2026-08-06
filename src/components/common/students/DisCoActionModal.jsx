@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FormField } from "@/components/ui"
+import { FormField, Text } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
@@ -291,13 +291,13 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
 
           <div style={styles.reminderSection}>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            <Text as="div" weight="medium" color="primary">
               Reminder Items (Optional)
-            </div>
+            </Text>
             {formData.reminderItems.length === 0 ? (
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              <Text as="div" color="muted" size="sm">
                 No reminders added yet
-              </div>
+              </Text>
             ) : (
               formData.reminderItems.map((item, index) => (
                 <div key={item._id || `reminder-${index}`} style={styles.reminderRow}>

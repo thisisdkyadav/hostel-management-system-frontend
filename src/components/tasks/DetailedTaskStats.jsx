@@ -1,6 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
-import { Grid } from "@/components/ui"
+import { Grid, Text } from "@/components/ui"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category
@@ -39,7 +39,7 @@ const DetailedTaskStats = ({ stats }) => {
           {Object.entries(statusCounts || {}).map(([status, count]) => (
             <div key={status} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColorClass(status)}`}>{status}</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
+              <Text as="span" size="sm" weight="medium">{count}</Text>
             </div>
           ))}
         </div>
@@ -52,7 +52,7 @@ const DetailedTaskStats = ({ stats }) => {
           {Object.entries(priorityCounts || {}).map(([priority, count]) => (
             <div key={priority} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColorClass(priority)}`}>{priority}</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
+              <Text as="span" size="sm" weight="medium">{count}</Text>
             </div>
           ))}
         </div>
@@ -65,7 +65,7 @@ const DetailedTaskStats = ({ stats }) => {
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
             <div key={category} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)', color: categoryColors[category]?.text || 'var(--color-text-muted)' }}>{category}</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
+              <Text as="span" size="sm" weight="medium">{count}</Text>
             </div>
           ))}
         </div>
@@ -76,20 +76,20 @@ const DetailedTaskStats = ({ stats }) => {
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Overview</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)' }}>Total Tasks</span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</span>
+            <Text as="span" size="sm">Total Tasks</Text>
+            <Text as="span" size="sm" weight="medium">{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</Text>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)' }}>Completed</span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-success-text)' }}>{statusCounts?.Completed || 0}</span>
+            <Text as="span" size="sm">Completed</Text>
+            <Text as="span" size="sm" weight="medium" color="success-text">{statusCounts?.Completed || 0}</Text>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)' }}>In Progress</span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{statusCounts?.["In Progress"] || 0}</span>
+            <Text as="span" size="sm">In Progress</Text>
+            <Text as="span" size="sm" weight="medium" color="brand">{statusCounts?.["In Progress"] || 0}</Text>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)' }}>Overdue</span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-danger-text)' }}>{overdueTasks || 0}</span>
+            <Text as="span" size="sm">Overdue</Text>
+            <Text as="span" size="sm" weight="medium" color="danger-text">{overdueTasks || 0}</Text>
           </div>
         </div>
       </div>

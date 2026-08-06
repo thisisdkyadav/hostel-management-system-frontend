@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -148,18 +148,18 @@ export const GymkhanaExpenseModal = ({
                     borderRadius: "var(--radius-sm)",
                   }}
                 >
-                  <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <Text as="span" size="xs" color="muted">
                     Budget:{" "}
-                    <strong style={{ color: "var(--color-text-heading)" }}>
+                    <Text as="strong" color="heading">
                       ₹{assignedExpenseBudget.toLocaleString()}
-                    </strong>
-                  </span>
-                  <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    </Text>
+                  </Text>
+                  <Text as="span" size="xs" color="muted">
                     Total:{" "}
-                    <strong style={{ color: "var(--color-text-heading)" }}>
+                    <Text as="strong" color="heading">
                       ₹{expenseTotal.toLocaleString()}
-                    </strong>
-                  </span>
+                    </Text>
+                  </Text>
                   {expenseData && (
                     <Badge
                       variant={
@@ -179,14 +179,9 @@ export const GymkhanaExpenseModal = ({
                   )}
                   {expenseData?.currentApprovalStage &&
                     expenseData.approvalStatus !== "approved" && (
-                      <span
-                        style={{
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
-                      >
+                      <Text as="span" size="xs" color="muted">
                         @ {expenseData.currentApprovalStage}
-                      </span>
+                      </Text>
                     )}
                 </div>
               )}
@@ -221,15 +216,9 @@ export const GymkhanaExpenseModal = ({
                         gap: "var(--spacing-2)",
                       }}
                     >
-                      <span
-                        style={{
-                          fontSize: "var(--font-size-xs)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-heading)",
-                        }}
-                      >
+                      <Text as="span" size="xs" weight="semibold" color="heading">
                         Bill #{index + 1}
-                      </span>
+                      </Text>
                       {formEditable && (expenseForm.bills || []).length > 1 && (
                         <Button
                           size="sm"
@@ -454,14 +443,9 @@ export const GymkhanaExpenseModal = ({
                     <label style={{ ...formLabelStyles, marginBottom: 0 }}>
                       Next Approvers
                     </label>
-                    <span
-                      style={{
-                        fontSize: "var(--font-size-xs)",
-                        color: "var(--color-text-muted)",
-                      }}
-                    >
+                    <Text as="span" size="xs" color="muted">
                       Leave a row blank to skip that stage.
-                    </span>
+                    </Text>
                     {postStudentAffairsStageOptions.map((stage) => (
                       <div
                         key={`expense-stage-${stage}`}
@@ -472,9 +456,9 @@ export const GymkhanaExpenseModal = ({
                           alignItems: "center",
                         }}
                       >
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                        <Text as="span" size="sm" color="body">
                           {stage}
-                        </span>
+                        </Text>
                         <Select
                           name={`expense-next-approver-${stage}`}
                           value={expenseNextApproversByStage?.[stage] || ""}

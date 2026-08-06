@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Page, Pagination } from "@/components/ui"
+import { Page, Pagination, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
@@ -294,16 +294,11 @@ const MyTasksPage = () => {
                           style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}
                         >
                           <span>Category: {task.category}</span>
-                          <span
-                            style={{
-                              color: isPastDue(task.dueDate) && task.status !== "Completed"
+                          <Text as="span" color={isPastDue(task.dueDate) && task.status !== "Completed"
                                 ? 'var(--color-danger)'
-                                : 'var(--color-text-muted)',
-                              fontWeight: isPastDue(task.dueDate) && task.status !== "Completed" ? 500 : 400
-                            }}
-                          >
+                                : 'var(--color-text-muted)'} weight={isPastDue(task.dueDate) && task.status !== "Completed" ? 500 : 400}>
                             Due: {new Date(task.dueDate).toLocaleDateString()}
-                          </span>
+                          </Text>
                         </div>
                       </div>
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -155,26 +155,21 @@ export const GymkhanaProposalModal = ({
                     borderRadius: "var(--radius-sm)",
                   }}
                 >
-                  <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <Text as="span" size="xs" color="muted">
                     Budget:{" "}
-                    <strong style={{ color: "var(--color-text-heading)" }}>
+                    <Text as="strong" color="heading">
                       ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
-                    </strong>
-                  </span>
+                    </Text>
+                  </Text>
                   {(() => {
                     const proposalDueDate = getProposalDueDate(proposalEvent)
                     return proposalDueDate ? (
-                      <span
-                        style={{
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
-                      >
+                      <Text as="span" size="xs" color="muted">
                         Due:{" "}
-                        <strong style={{ color: "var(--color-text-heading)" }}>
+                        <Text as="strong" color="heading">
                           {proposalDueDate.toLocaleDateString()}
-                        </strong>
-                      </span>
+                        </Text>
+                      </Text>
                     ) : null
                   })()}
                   {proposalData && (
@@ -191,9 +186,9 @@ export const GymkhanaProposalModal = ({
                     </Badge>
                   )}
                   {proposalData?.currentApprovalStage && (
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    <Text as="span" size="xs" color="muted">
                       @ {proposalData.currentApprovalStage}
-                    </span>
+                    </Text>
                   )}
                 </div>
               )}
@@ -213,15 +208,9 @@ export const GymkhanaProposalModal = ({
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-sm)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-heading)",
-                    }}
-                  >
+                  <Text as="div" size="sm" weight="semibold" color="heading">
                     {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
-                  </div>
+                  </Text>
                   <div
                     style={{
                       fontSize: "var(--font-size-xs)",
@@ -233,10 +222,10 @@ export const GymkhanaProposalModal = ({
                     {proposalForm.proposalDetails.programmeDetails.programmeType} ·{" "}
                     {proposalForm.proposalDetails.programmeDetails.mode}
                   </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <Text as="div" size="xs" color="muted">
                     {proposalForm.proposalDetails.programmeDetails.datesAndDuration ||
                       "Dates not added"}
-                  </div>
+                  </Text>
                 </div>
                 <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
                   {formEditable ? "Edit Details" : "View Details"}
@@ -419,14 +408,9 @@ export const GymkhanaProposalModal = ({
                     <label style={{ ...formLabelStyles, marginBottom: 0 }}>
                       Next Recommenders
                     </label>
-                    <span
-                      style={{
-                        fontSize: "var(--font-size-xs)",
-                        color: "var(--color-text-muted)",
-                      }}
-                    >
+                    <Text as="span" size="xs" color="muted">
                       Leave a row blank to skip that stage.
-                    </span>
+                    </Text>
                     {postStudentAffairsStageOptions.map((stage) => (
                       <div
                         key={`proposal-stage-${stage}`}
@@ -437,9 +421,9 @@ export const GymkhanaProposalModal = ({
                           alignItems: "center",
                         }}
                       >
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                        <Text as="span" size="sm" color="body">
                           {stage}
-                        </span>
+                        </Text>
                         <Select
                           name={`proposal-next-approver-${stage}`}
                           value={proposalNextApproversByStage?.[stage] || ""}

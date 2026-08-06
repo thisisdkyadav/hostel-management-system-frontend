@@ -4,7 +4,7 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
@@ -61,20 +61,20 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
         </CardHeader>
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
-          <div style={{ color: 'var(--color-text-muted)' }}>
+          <Text as="div" color="muted">
             <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
-          </div>
+          </Text>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <div style={{ color: 'var(--color-text-muted)' }}>
+            <Text as="div" color="muted">
               <span>Deadline: {formatDate(undertaking.deadline)}</span>
-            </div>
+            </Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaUsers style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <div style={{ color: 'var(--color-text-muted)' }}>
+            <Text as="div" color="muted">
               <span>Students: {undertaking.totalStudents || 0}</span>
-            </div>
+            </Text>
           </div>
 
           {/* Acceptance progress bar */}

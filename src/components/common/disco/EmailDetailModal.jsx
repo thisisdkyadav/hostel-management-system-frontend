@@ -1,4 +1,4 @@
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Mail, Paperclip, Calendar, Users } from "lucide-react"
 
 /**
@@ -103,9 +103,9 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
             <Mail size={12} />
             Subject
           </div>
-          <div style={{ ...valueStyle, fontWeight: "var(--font-weight-semibold)" }}>
+          <Text as="div" weight="semibold">
             {emailLog.subject || "(No subject)"}
-          </div>
+          </Text>
         </div>
 
         {/* Body */}

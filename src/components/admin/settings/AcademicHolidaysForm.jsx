@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
 import { Button, Input } from "czero/react"
+import { Text } from "@/components/ui"
 
 const YEAR_REGEX = /^\d{4}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -258,9 +259,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
             >
               <div style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                 <HiCalendar size={16} style={{ color: "var(--color-primary)" }} />
-                <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                <Text as="span" weight="semibold" color="heading">
                   Holidays for {selectedYear}
-                </span>
+                </Text>
                 <span
                   style={{
                     padding: "var(--spacing-0-5) var(--spacing-2)",
@@ -323,9 +324,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
             </div>
 
             {selectedYearHolidays.length === 0 ? (
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              <Text as="div" color="muted" size="sm">
                 No holidays added for this year.
-              </div>
+              </Text>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                 {selectedYearHolidays.map((holiday) => (
@@ -342,9 +343,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                       backgroundColor: "var(--color-bg-secondary)",
                     }}
                   >
-                    <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
+                    <Text as="span" color="body" size="sm" weight="medium">
                       {holiday.title}
-                    </span>
+                    </Text>
                     <span
                       style={{
                         color: "var(--color-text-muted)",

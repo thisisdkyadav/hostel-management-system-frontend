@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/feedback"
 import { Label } from "@/components/ui/form"
 import { resolveUploadedFileRef } from "@/service"
 import PdfViewerModal from "./PdfViewerModal"
+import { Text } from "@/components/ui"
 
 const resolveUploadedUrl = (uploadResult) => {
   return resolveUploadedFileRef(uploadResult)
@@ -99,9 +100,9 @@ const PdfUploadField = ({
 
         {value ? (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", padding: "var(--spacing-3)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" }}>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+            <Text as="span" size="sm" color="body">
               {uploadedText}
-            </span>
+            </Text>
 
             <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
               <Button size="sm" variant="secondary" onClick={() => setShowViewer(true)}>
@@ -118,9 +119,9 @@ const PdfUploadField = ({
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", padding: "var(--spacing-3)", border: "var(--border-1) dashed var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" }}>
             {selectedFile ? (
               <>
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="span" size="sm" color="body">
                   {selectedFile.name}
-                </span>
+                </Text>
                 {!disabled && (
                   <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                     <Button size="sm" variant="secondary" onClick={() => applySelectedFile(null)}>
@@ -134,9 +135,9 @@ const PdfUploadField = ({
               </>
             ) : (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text as="span" size="sm" color="muted">
                   {acceptHint} (max {maxSizeMb}MB)
-                </span>
+                </Text>
                 {!disabled && (
                   <label style={{ margin: 0 }}>
                     <input

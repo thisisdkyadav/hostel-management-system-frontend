@@ -3,6 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import { Button, StatusBadge, Table } from "czero/react"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
+import { Text } from "@/components/ui"
 
 const StudentEntryTable = ({ entries, refresh }) => {
   const [selectedEntry, setSelectedEntry] = useState(null)
@@ -59,7 +60,7 @@ const StudentEntryTable = ({ entries, refresh }) => {
   if (entries.length === 0) {
     return (
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--spacing-6)', textAlign: 'center' }}>
-        <p style={{ color: 'var(--color-text-muted)' }}>No student entries found</p>
+        <Text color="muted">No student entries found</Text>
       </div>
     )
   }
@@ -88,22 +89,22 @@ const StudentEntryTable = ({ entries, refresh }) => {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{entry.userId.name}</div>
+                      <Text as="div" size="sm" weight="medium" color="primary">{entry.userId.name}</Text>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{entry.unit || "-"}</div>
+                      <Text as="div" size="sm" color="muted">{entry.unit || "-"}</Text>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                      <Text as="div" size="sm" color="muted">
                         {entry.room}
                         {entry.bed}
-                      </div>
+                      </Text>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{date}</div>
+                      <Text as="div" size="sm" color="muted">{date}</Text>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{time}</div>
+                      <Text as="div" size="sm" color="muted">{time}</Text>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <StatusBadge status={entry.status} />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import {
   Download,
   FileText,
@@ -1174,12 +1174,12 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
           <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>POR Submission</span>
-              <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+              <Text as="div" size="lg" weight="semibold" color="primary">
                 {porRequest.positionTitle || "—"}
-              </div>
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              </Text>
+              <Text as="div" color="muted" size="sm">
                 Tenure: {porRequest.tenure || "—"}
-              </div>
+              </Text>
               <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
                 {porRequest.positionDetails || "—"}
               </div>
@@ -1187,9 +1187,9 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
 
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Disciplinary Disclosure</span>
-              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+              <Text as="div" size="sm" weight="semibold" color="primary">
                 {porRequest.hasDisciplinaryAction ? "Disciplinary action disclosed" : "No disciplinary action declared"}
-              </div>
+              </Text>
               {porRequest.hasDisciplinaryAction ? (
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
                   {porRequest.disciplinaryActionDetails || "No details provided."}
@@ -1319,12 +1319,12 @@ const SupportingProofField = ({
                 }}
               >
                 <div style={{ display: "grid", gap: "4px" }}>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                  <Text as="div" size="sm" weight="semibold" color="primary">
                     {selectedPor.positionTitle || "Verified POR"}
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="div" size="xs" color="muted">
                     {selectedPor.club?.name || "—"} · {selectedPor.gymkhanaCategoryLabel || "—"} · {selectedPor.tenure || "—"}
-                  </div>
+                  </Text>
                 </div>
                 <Button size="sm" variant="secondary" onClick={() => setShowPorModal(true)}>
                   <Eye size={14} /> View POR
@@ -1598,15 +1598,9 @@ const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
   <section style={panelStyle}>
     <div style={panelHeaderStyle}>
       <div>
-        <div
-          style={{
-            fontSize: "var(--font-size-lg)",
-            fontWeight: "var(--font-weight-semibold)",
-            color: "var(--color-text-primary)",
-          }}
-        >
+        <Text as="div" size="lg" weight="semibold" color="primary">
           {title}
-        </div>
+        </Text>
         {subtitle && (
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
             {subtitle}
@@ -1703,9 +1697,9 @@ const ScoreBreakdownCard = ({ breakdown }) => {
           backgroundColor: "var(--color-bg-secondary)",
         }}
       >
-        <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+        <Text as="div" size="lg" weight="semibold" color="primary">
           Score Breakdown
-        </div>
+        </Text>
       </div>
       <div style={{ padding: "var(--spacing-3) var(--spacing-4)" }}>
         {rows.map(([label, value, max]) => {
@@ -1739,10 +1733,10 @@ const ScoreBreakdownCard = ({ breakdown }) => {
             alignItems: "center",
           }}
         >
-          <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>Total Score</span>
-          <span style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)" }}>
+          <Text as="span" weight="semibold" color="primary">Total Score</Text>
+          <Text as="span" size="xl" weight="bold" color="brand">
             {breakdown?.total || 0}
-          </span>
+          </Text>
         </div>
       </div>
     </div>
@@ -1859,9 +1853,9 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                         <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>
                           {row.categorySubtitle}
                         </div>
-                        <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>
+                        <Text as="div" size="sm" weight="semibold" color="brand">
                           Max {row.maxMarks} marks
-                        </div>
+                        </Text>
                       </div>
                     </td>
                     <td
@@ -1875,9 +1869,9 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                         {row.scoringBlocks.map((block, index) => (
                           <div key={`${row.serial}-block-${index}`} style={{ display: "grid", gap: "4px" }}>
                             {block.title ? (
-                              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                              <Text as="div" size="sm" weight="semibold" color="primary">
                                 {block.title}
-                              </div>
+                              </Text>
                             ) : null}
                             <div style={{ display: "grid", gap: "3px" }}>
                               {block.lines.map((line) => (
@@ -1928,12 +1922,12 @@ const MarkingSchemeModal = ({ open, onClose }) => {
 
 const ProofActionButton = ({ proof, onViewPor, onViewPdf }) => {
   if (!proof) {
-    return <span style={{ color: "var(--color-text-muted)" }}>—</span>
+    return <Text as="span" color="muted">—</Text>
   }
 
   if (proof.sourceType === "por") {
     if (!proof.linkedPor) {
-      return <span style={{ color: "var(--color-text-muted)" }}>Verified POR linked</span>
+      return <Text as="span" color="muted">Verified POR linked</Text>
     }
 
     return (
@@ -1960,7 +1954,7 @@ const ProofActionButton = ({ proof, onViewPor, onViewPdf }) => {
     )
   }
 
-  return <span style={{ color: "var(--color-text-muted)" }}>—</span>
+  return <Text as="span" color="muted">—</Text>
 }
 
 const PorDetailCard = ({
@@ -2411,12 +2405,12 @@ const ReviewItemDetailModal = ({
                       <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
                         +{currentPoints}
                       </span>
-                      <span style={{ color: nextPointColor }}>+{nextPoints}</span>
+                      <Text as="span" color={nextPointColor}>+{nextPoints}</Text>
                     </>
                   ) : (
-                    <span style={{ color: currentPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+                    <Text as="span" color={currentPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
                       +{currentPoints}
-                    </span>
+                    </Text>
                   )}
                 </div>
                 <span
@@ -2478,9 +2472,9 @@ const ReviewItemDetailModal = ({
                     }}
                   >
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: selectedExcludedFromScoring ? "var(--color-danger)" : "var(--color-text-primary)" }}>
+                      <Text as="div" size="sm" weight="semibold" color={selectedExcludedFromScoring ? "var(--color-danger)" : "var(--color-text-primary)"}>
                         {selectedExcludedFromScoring ? "Excluded from scoring" : "Included in scoring"}
-                      </div>
+                      </Text>
                       <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
                         {selectedExcludedFromScoring
                           ? "This entry will count as 0 points after saving."
@@ -2503,9 +2497,9 @@ const ReviewItemDetailModal = ({
                 </div>
               ) : (
                 <div>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                  <Text as="div" size="sm" weight="semibold" color="primary">
                     {formatScoreTypeLabel(item.scoreType)}
-                  </div>
+                  </Text>
                   <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
                     Verified category (Read-only view)
                   </div>
@@ -2564,9 +2558,9 @@ const ReviewItemDetailModal = ({
                             <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                               {proof?.label || `Proof ${index + 1}`}
                             </div>
-                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            <Text as="div" size="xs" color="muted">
                               {isPor ? "Verified Gymkhana POR" : "Uploaded PDF Document"}
-                            </div>
+                            </Text>
                           </div>
                         </div>
                         <ProofActionButton proof={proof} onViewPor={onViewPor} onViewPdf={onViewPdf} />
@@ -2587,7 +2581,7 @@ const ReviewItemDetailModal = ({
                   textAlign: "center"
                 }}>
                   <XCircle size={24} style={{ color: "var(--color-text-muted)", marginBottom: "8px" }} />
-                  <span style={{ fontSize: "var(--font-size-sm)" }}>No supporting proof attached.</span>
+                  <Text as="span" size="sm">No supporting proof attached.</Text>
                 </div>
               )}
             </div>
@@ -2649,12 +2643,12 @@ const HodVerificationsCard = ({ verifications = [] }) => {
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
                 <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                  <Text as="div" size="sm" weight="semibold" color="primary">
                     {entry?.verifierName || "HOD"}
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="div" size="xs" color="muted">
                     {entry?.verifierEmail || "Email not available"}
-                  </div>
+                  </Text>
                 </div>
                 <Badge variant={entry?.action === "verified" ? "success" : "info"}>
                   {formatHodVerificationActionLabel(entry?.action)}
@@ -2663,9 +2657,9 @@ const HodVerificationsCard = ({ verifications = [] }) => {
               <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
                 {entry?.remarks || "No remarks provided."}
               </div>
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              <Text as="div" size="xs" color="muted">
                 {entry?.verifiedAt ? new Date(entry.verifiedAt).toLocaleString() : "Timestamp unavailable"}
-              </div>
+              </Text>
             </div>
           ))}
         </div>
@@ -2723,9 +2717,9 @@ const EditCourseworkScoreModal = ({
             disabled={saving}
             placeholder="Enter CGPA / CPI"
           />
-          <div style={{ ...helperTextStyle, color: isValidScore ? "var(--color-text-muted)" : "var(--color-danger)" }}>
+          <Text as="div" color={isValidScore ? "var(--color-text-muted)" : "var(--color-danger)"}>
             Enter a value between 6.50 and 10.00.
-          </div>
+          </Text>
         </div>
 
         <div
@@ -2740,12 +2734,12 @@ const EditCourseworkScoreModal = ({
             backgroundColor: "var(--color-bg-secondary)",
           }}
         >
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="sm" color="muted">
             Coursework points preview
-          </span>
-          <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)" }}>
+          </Text>
+          <Text as="span" weight="bold" color="brand">
             +{previewPoints}
-          </span>
+          </Text>
         </div>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
@@ -2838,23 +2832,23 @@ const EditProjectThesisGradesModal = ({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>BTP award points</span>
-            <span style={{ fontWeight: "var(--font-weight-bold)", color: btpPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+            <Text as="span" size="sm" color="muted">BTP award points</Text>
+            <Text as="span" weight="bold" color={btpPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               +{btpPoints}
-            </span>
+            </Text>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Project grade points</span>
-            <span style={{ fontWeight: "var(--font-weight-bold)", color: projectGradePoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+            <Text as="span" size="sm" color="muted">Project grade points</Text>
+            <Text as="span" weight="bold" color={projectGradePoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               +{projectGradePoints}
-            </span>
+            </Text>
           </div>
           <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
           <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+            <Text as="span" size="sm" color="primary" weight="semibold">
               Total preview
-            </span>
-            <span style={{ fontWeight: "var(--font-weight-bold)", color: previewPoints === 0 ? "var(--color-danger)" : "var(--color-primary)" }}>
+            </Text>
+            <Text as="span" weight="bold" color={previewPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               {hasChanges ? (
                 <>
                   <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through", marginRight: 6 }}>+{currentPoints}</span>
@@ -2863,7 +2857,7 @@ const EditProjectThesisGradesModal = ({
               ) : (
                 <>+{previewPoints}</>
               )}
-            </span>
+            </Text>
           </div>
         </div>
 
@@ -3181,7 +3175,7 @@ const ReviewModal = ({
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
                   <div className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Passing Out Student</div>
+                    <Text as="div" size="xs" color="muted">Passing Out Student</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.isPassingOutStudent ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Yes</>
@@ -3191,7 +3185,7 @@ const ReviewModal = ({
                     </div>
                   </div>
                   <div className={application.personalAcademic?.hasNoDisciplinaryAction ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No Disciplinary Action</div>
+                    <Text as="div" size="xs" color="muted">No Disciplinary Action</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoDisciplinaryAction ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Declared Clean</>
@@ -3201,7 +3195,7 @@ const ReviewModal = ({
                     </div>
                   </div>
                   <div className={application.personalAcademic?.hasNoFrGrade ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No FR Grade</div>
+                    <Text as="div" size="xs" color="muted">No FR Grade</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoFrGrade ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> None</>
@@ -3211,7 +3205,7 @@ const ReviewModal = ({
                     </div>
                   </div>
                   <div className={application.personalAcademic?.declarationAccepted ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Undertaking Accepted</div>
+                    <Text as="div" size="xs" color="muted">Undertaking Accepted</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.declarationAccepted ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Confirmed</>
@@ -3247,9 +3241,9 @@ const ReviewModal = ({
                       <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
                         BTP Award
                       </div>
-                      <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-md)" }}>
+                      <Text as="div" weight="bold" color="primary" size="md">
                         {BTP_AWARD_OPTIONS.find((option) => option.value === application.projectThesis?.btpAwardLevel)?.label || application.projectThesis?.btpAwardLevel}
-                      </div>
+                      </Text>
                       <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                         {application.projectThesis?.btpAwardTitle || "—"}
                       </div>
@@ -3273,9 +3267,9 @@ const ReviewModal = ({
                       <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
                         Project Grade
                       </div>
-                      <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-md)" }}>
+                      <Text as="div" weight="bold" color="primary" size="md">
                         {PROJECT_GRADE_OPTIONS.find((option) => option.value === application.projectThesis?.projectGrade)?.label || application.projectThesis?.projectGrade}
-                      </div>
+                      </Text>
                       <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                         {application.projectThesis?.projectGradeTitle || "—"}
                       </div>
@@ -4507,23 +4501,23 @@ const OverallBestPerformerPage = () => {
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-primary)" }}>
                   <CalendarDays size={18} />
-                  <span style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                  <Text as="span" size="md" weight="bold" color="heading">
                     Active Application Round
-                  </span>
+                  </Text>
                 </div>
                 
                 <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)" }}>Submissions Open</span>
-                    <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    <Text as="span" size="xs" color="muted" weight="medium">Submissions Open</Text>
+                    <Text as="span" size="xs" weight="semibold" color="primary">
                       {currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
-                    </span>
+                    </Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)" }}>Submissions Close</span>
-                    <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    <Text as="span" size="xs" color="muted" weight="medium">Submissions Close</Text>
+                    <Text as="span" size="xs" weight="semibold" color="primary">
                       {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
-                    </span>
+                    </Text>
                   </div>
                 </div>
 
@@ -4555,9 +4549,9 @@ const OverallBestPerformerPage = () => {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-info)" }}>
                     <BookOpen size={18} />
-                    <span style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                    <Text as="span" size="md" weight="bold" color="heading">
                       Reference & Evaluation
-                    </span>
+                    </Text>
                   </div>
                   <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6 }}>
                     Achievements are mapped to specific point scales. Review the official marking scheme to ensure correct categories and supporting proof documents are uploaded.
@@ -4590,9 +4584,9 @@ const OverallBestPerformerPage = () => {
                     size="medium"
                   />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                    <Text as="div" size="lg" weight="bold" color="heading">
                       {portalState?.data?.student?.name || "Student"}
-                    </div>
+                    </Text>
                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "2px", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                       <span>Roll Number: <strong>{portalState?.data?.student?.rollNumber || "—"}</strong></span>
                       <span>•</span>
@@ -4601,7 +4595,7 @@ const OverallBestPerformerPage = () => {
                   </div>
 
                   <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Status:</span>
+                    <Text as="span" size="xs" color="muted">Status:</Text>
                     <Badge variant={statusTone(currentApplication?.review?.status)}>
                       {currentApplication?.review?.status || "draft"}
                     </Badge>
@@ -5147,9 +5141,9 @@ const OverallBestPerformerPage = () => {
                     <span style={sectionLabelStyle}>Current list</span>
                     <div style={{ display: "grid", gap: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                       <div>{occurrenceForm.eligibleRollNumbers.length || 0} eligible students configured for this occurrence.</div>
-                      <div style={{ color: "var(--color-text-muted)" }}>
+                      <Text as="div" color="muted">
                         Editing this list will not remove or delete already submitted applications for this occurrence.
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </div>
@@ -5262,9 +5256,9 @@ const OverallBestPerformerPage = () => {
                       }}
                     >
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                        <Text as="div" size="sm" weight="semibold" color="primary">
                           {student.name || "Student record will be validated on save"}
-                        </div>
+                        </Text>
                         <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
                           {student.rollNumber}
                         </div>
@@ -5284,9 +5278,9 @@ const OverallBestPerformerPage = () => {
                     </div>
                   ))
                 ) : (
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  <Text as="div" color="muted" size="sm">
                     No students match the current search.
-                  </div>
+                  </Text>
                 )}
               </div>
             </SectionPanel>

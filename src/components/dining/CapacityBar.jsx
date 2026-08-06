@@ -1,4 +1,5 @@
 import { capacityToneColor } from "./diningPeriodHelpers"
+import { Text } from "@/components/ui"
 
 /**
  * Token-driven capacity utilisation bar.
@@ -23,13 +24,13 @@ const CapacityBar = ({ allocated = 0, total = 0, size = "md", showLabel = true, 
             marginBottom: "var(--spacing-1-5)",
           }}
         >
-          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)" }}>
+          <Text as="span" size="xs" color="muted" weight="medium">
             {label || "Capacity"}
-          </span>
-          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
+          </Text>
+          <Text as="span" size="xs" color="secondary" weight="semibold">
             {safeAllocated}/{safeTotal}
             {safeTotal > 0 ? ` · ${percent}%` : ""}
-          </span>
+          </Text>
         </div>
       )}
       <div

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Alert, HStack, SearchInput, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -85,20 +85,20 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         {/* Statistics */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-4)' }}>
           <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)', fontWeight: 'var(--font-weight-medium)' }}>Total Students</div>
-            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary-dark)' }}>{totalStudents}</div>
+            <Text as="div" size="sm" color="brand" weight="medium">Total Students</Text>
+            <Text as="div" size="2xl" weight="bold" color="var(--color-primary-dark)">{totalStudents}</Text>
           </div>
           <div style={{ backgroundColor: 'var(--color-success-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-success)', fontWeight: 'var(--font-weight-medium)' }}>Accepted</div>
-            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success-dark)' }}>{acceptedCount}</div>
+            <Text as="div" size="sm" color="success" weight="medium">Accepted</Text>
+            <Text as="div" size="2xl" weight="bold" color="var(--color-success-dark)">{acceptedCount}</Text>
           </div>
           <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)', fontWeight: 'var(--font-weight-medium)' }}>Pending</div>
-            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-warning-dark)' }}>{pendingCount}</div>
+            <Text as="div" size="sm" color="warning" weight="medium">Pending</Text>
+            <Text as="div" size="2xl" weight="bold" color="var(--color-warning-dark)">{pendingCount}</Text>
           </div>
           <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Not Viewed</div>
-            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{notViewedCount}</div>
+            <Text as="div" size="sm" color="muted" weight="medium">Not Viewed</Text>
+            <Text as="div" size="2xl" weight="bold" color="secondary">{notViewedCount}</Text>
           </div>
         </div>
 
@@ -172,8 +172,8 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', marginRight: 'var(--spacing-3)' }}>{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
                         <div>
-                          <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.name}</div>
-                          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
+                          <Text as="div" size="sm" weight="medium" color="secondary">{student.name}</Text>
+                          <Text as="div" size="sm" color="muted">{student.email}</Text>
                         </div>
                       </div>
                     </Table.Cell>

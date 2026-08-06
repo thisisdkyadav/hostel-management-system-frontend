@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
+import { Text } from "@/components/ui"
 
 const UnitListView = ({ units, onUnitClick }) => {
   const columns = [
@@ -13,9 +14,9 @@ const UnitListView = ({ units, onUnitClick }) => {
             <FaBuilding style={{ color: "var(--color-primary)" }} />
           </div>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            <Text as="div" size="sm" weight="medium" color="primary">
               {unit.unitNumber || unit.name}
-            </div>
+            </Text>
             <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
               {unit.hostel}
             </div>
@@ -58,9 +59,9 @@ const UnitListView = ({ units, onUnitClick }) => {
             }}
             ></div>
           </div>
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+          <Text as="span" size="sm" color="body">
             {unit.occupancy || 0}/{unit.capacity || 0}
-          </span>
+          </Text>
         </div>
       ),
     },

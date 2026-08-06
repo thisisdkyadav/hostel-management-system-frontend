@@ -3,7 +3,7 @@ import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } 
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import { Card, CardHeader, CardBody, CardFooter, VStack, HStack } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
@@ -64,9 +64,9 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             </div>
             <div>
               <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{hostel.name}</h3>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+              <Text size="sm" color="muted">
                 {hostel.gender} {hostel.type && `(${hostel.type})`}
-              </p>
+              </Text>
             </div>
           </HStack>
         </CardHeader>
@@ -107,10 +107,10 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               </svg>
               {/* Center: number only */}
               <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{hostel.occupancyRate}%</span>
+                <Text as="span" size="md" weight="bold" color="primary">{hostel.occupancyRate}%</Text>
               </div>
             </div>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Occupancy</span>
+            <Text as="span" size="xs" color="muted" weight="medium">Occupancy</Text>
           </div>
         </CardBody>
 

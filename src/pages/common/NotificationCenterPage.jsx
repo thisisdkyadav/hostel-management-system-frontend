@@ -6,7 +6,7 @@ import NotificationTable from "../../components/notifications/NotificationTable"
 import NotificationFilterSection from "../../components/notifications/NotificationFilterSection"
 import CreateNotificationModal from "../../components/notifications/CreateNotificationModal"
 import NoResults from "../../components/common/NoResults"
-import { Page, Pagination } from "@/components/ui"
+import { Page, Pagination, Text } from "@/components/ui"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -166,7 +166,7 @@ const NotificationCenterPage = () => {
             borderRadius: 'var(--radius-lg)'
           }}
         >
-          <p style={{ fontWeight: 500 }}>Error:</p>
+          <Text weight={500}>Error:</Text>
           <p>{error}</p>
         </div>
       )}
@@ -224,8 +224,8 @@ const NotificationCenterPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{notifications.length}</span> of{" "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalCount}</span> notifications
+            Showing <Text as="span" weight="semibold">{notifications.length}</Text> of{" "}
+            <Text as="span" weight="semibold">{totalCount}</Text> notifications
           </span>,
         ]}
         rightContent={[

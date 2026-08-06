@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"
@@ -138,12 +138,12 @@ const AppointmentsGatePage = () => {
         header: "Visitor",
         render: (item) => (
           <div>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            <Text as="div" weight="medium" color="primary">
               {item.visitorName}
-            </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            </Text>
+            <Text as="div" size="sm" color="muted">
               {item.mobileNumber}
-            </div>
+            </Text>
           </div>
         ),
       },
@@ -257,9 +257,9 @@ const AppointmentsGatePage = () => {
             >
               Prev
             </Button>
-            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            <Text as="span" color="muted" size="sm">
               Page {page} / {totalPages}
-            </span>
+            </Text>
             <Button
               variant="outline"
               size="sm"
@@ -291,16 +291,16 @@ const AppointmentsGatePage = () => {
         }
       >
         {!selectedAppointment ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Appointment details unavailable</div>
+          <Text as="div" color="muted" size="sm">Appointment details unavailable</Text>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
 
             {/* Visitor header */}
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
               <div>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-base)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
-                </div>
+                </Text>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
                   {selectedAppointment.mobileNumber} · {selectedAppointment.email}
                 </div>
@@ -314,37 +314,37 @@ const AppointmentsGatePage = () => {
             <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
               <div>
                 <span style={labelStyle}>Appointment With</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {selectedAppointment.targetOfficial?.name || "-"}
-                </div>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="div" size="xs" color="muted">
                   {selectedAppointment.targetSubRole || "-"}
-                </div>
+                </Text>
               </div>
               <div>
                 <span style={labelStyle}>Approved Meeting</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {formatDate(selectedAppointment.approvedMeeting?.date)}
-                </div>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="div" size="xs" color="muted">
                   {selectedAppointment.approvedMeeting?.time || "-"}
-                </div>
+                </Text>
               </div>
               <div>
                 <span style={labelStyle}>Identity</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {selectedAppointment.idType}: {selectedAppointment.idNumber}
-                </div>
+                </Text>
               </div>
               {selectedAppointment.gateEntry?.entered && (
                 <div>
                   <span style={labelStyle}>Entered At</span>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  <Text as="div" size="sm" color="body">
                     {formatDateTime(selectedAppointment.gateEntry.enteredAt)}
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="div" size="xs" color="muted">
                     by {selectedAppointment.gateEntry?.markedBy?.name || "Hostel Gate"}
-                  </div>
+                  </Text>
                 </div>
               )}
             </div>
@@ -372,9 +372,9 @@ const AppointmentsGatePage = () => {
               selectedAppointment.gateEntry?.note ? (
                 <div style={sectionStyle}>
                   <span style={labelStyle}>Gate Note</span>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  <Text as="div" size="sm" color="body">
                     {selectedAppointment.gateEntry.note}
-                  </div>
+                  </Text>
                 </div>
               ) : null
             )}

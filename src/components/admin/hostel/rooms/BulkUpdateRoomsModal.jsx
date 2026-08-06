@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Checkbox, Alert, VStack, HStack } from "@/components/ui"
+import { Alert, Checkbox, HStack, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import CsvUploader from "../../../common/CsvUploader"
@@ -68,21 +68,21 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
       <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
-            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>unitNumber:</span> String (e.g., 101) <span style={{ color: 'var(--color-danger)' }}>*</span>
+            <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101) <Text as="span" color="danger">*</Text>
           </li>
         )}
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"} <span style={{ color: 'var(--color-danger)' }}>*</span>
+          <Text as="span" weight="medium">roomNumber:</Text> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"} <Text as="span" color="danger">*</Text>
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>capacity:</span> Number (optional)
+          <Text as="span" weight="medium">capacity:</Text> Number (optional)
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> One of: {MANUAL_ROOM_STATUSES.join(", ")} (optional)
+          <Text as="span" weight="medium">status:</Text> One of: {MANUAL_ROOM_STATUSES.join(", ")} (optional)
         </li>
       </ul>
       <p style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-2)' }}>
-        <span style={{ color: 'var(--color-danger)' }}>*</span> Required fields
+        <Text as="span" color="danger">*</Text> Required fields
       </p>
     </div>
   )
@@ -94,7 +94,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
       <VStack gap="large">
         <Alert type="warning" icon={<TriangleAlert size={16} />}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Important Warnings</h3>
-          <div style={{ fontSize: 'var(--font-size-sm)' }}>
+          <Text as="div" size="sm">
             <p>
               <strong>1. Allocation Loss:</strong> Updating rooms will <strong>delete all allocations</strong> associated with these rooms. This action cannot be undone.
             </p>
@@ -105,7 +105,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
               <strong>3. Capacity Restrictions:</strong> The capacity of a room cannot be changed if the room is inactive.
             </p>
             <p style={{ marginTop: 'var(--spacing-1)' }}>Please ensure you have backed up any necessary allocation data before proceeding.</p>
-          </div>
+          </Text>
         </Alert>
 
         {successMessage && (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Pencil, Trash2, Search, Filter, FileUp } from "lucide-react"
-import { Select, IconButton, VStack, HStack } from "@/components/ui"
+import { HStack, IconButton, Select, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table, Input } from "czero/react"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
@@ -126,7 +126,7 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
       {filteredRooms.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>No rooms found. Add rooms or adjust your filters.</p>
+          <Text color="muted">No rooms found. Add rooms or adjust your filters.</Text>
         </div>
       ) : (
         <Table>

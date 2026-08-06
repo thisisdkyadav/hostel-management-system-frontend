@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, VStack } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const formatDateTime = (value) => {
@@ -89,15 +89,9 @@ const StatCard = ({ icon: Icon, label, value, color, dotColor }) => (
       >
         {label}
       </p>
-      <p
-        style={{
-          fontSize: "var(--font-size-xl)",
-          fontWeight: "var(--font-weight-semibold)",
-          color: "var(--color-text-primary)",
-        }}
-      >
+      <Text size="xl" weight="semibold" color="primary">
         {value}
-      </p>
+      </Text>
     </div>
   </div>
 )
@@ -288,7 +282,7 @@ const LiveCheckInOutPage = () => {
               color: "var(--color-danger-text)",
             }}
           >
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>Error:</span> {error}
+            <Text as="span" weight="semibold">Error:</Text> {error}
           </div>
         )}
 
@@ -418,7 +412,7 @@ const LiveCheckInOutPage = () => {
           ) : entries.length === 0 ? (
             <div style={{ display: "flex", height: "256px", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--spacing-2)", color: "var(--color-text-muted)" }}>
               <Activity size={48} />
-              <p style={{ fontSize: "var(--font-size-sm)" }}>No entries match filters</p>
+              <Text size="sm">No entries match filters</Text>
             </div>
           ) : (
             <>
@@ -440,19 +434,19 @@ const LiveCheckInOutPage = () => {
                         <Table.Row style={{ backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent" }} key={entry._id}>
                           <Table.Cell>{index + 1 + (currentPage - 1) * pageSize}</Table.Cell>
                           <Table.Cell>
-                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{formatDateTime(entry.dateAndTime)}</div>
-                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{getTimeAgo(entry.dateAndTime)}</div>
+                            <Text as="div" weight="medium" color="primary">{formatDateTime(entry.dateAndTime)}</Text>
+                            <Text as="div" size="xs" color="light">{getTimeAgo(entry.dateAndTime)}</Text>
                           </Table.Cell>
                           <Table.Cell>
-                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId?.name || "Unknown"}</div>
-                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.userId?.email || "-"}</div>
+                            <Text as="div" weight="medium" color="primary">{entry.userId?.name || "Unknown"}</Text>
+                            <Text as="div" size="xs" color="muted">{entry.userId?.email || "-"}</Text>
                           </Table.Cell>
                           <Table.Cell>
                             <StatusBadge status={entry.status} />
                           </Table.Cell>
                           <Table.Cell>
-                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.hostelName || "-"}</div>
-                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.hostelId?.type || "-"}</div>
+                            <Text as="div" weight="medium" color="primary">{entry.hostelName || "-"}</Text>
+                            <Text as="div" size="xs" color="muted">{entry.hostelId?.type || "-"}</Text>
                           </Table.Cell>
                           <Table.Cell>
                             R{entry.room || "?"}
@@ -495,9 +489,9 @@ const LiveCheckInOutPage = () => {
                     fontSize: "var(--font-size-sm)",
                   }}
                 >
-                  <p style={{ color: "var(--color-text-muted)" }}>
+                  <Text color="muted">
                     {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalRecords)} of {totalRecords}
-                  </p>
+                  </Text>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
                     <button
                       onClick={prevPage}
@@ -604,7 +598,7 @@ const LiveCheckInOutPage = () => {
                       >
                         {hostel.hostelName}
                       </p>
-                      <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.hostelType}</p>
+                      <Text size="xs" color="muted">{hostel.hostelType}</Text>
                     </div>
                     <Badge variant="info" size="small">
                       {hostel.total}
@@ -613,15 +607,15 @@ const LiveCheckInOutPage = () => {
                   <HStack gap="medium" style={{ marginTop: "var(--spacing-2)" }}>
                     <HStack gap="xsmall" align="center">
                       <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success)" }} />
-                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.checkedIn}</span>
+                      <Text as="span" size="xs" color="muted">{hostel.checkedIn}</Text>
                     </HStack>
                     <HStack gap="xsmall" align="center">
                       <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-danger)" }} />
-                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.checkedOut}</span>
+                      <Text as="span" size="xs" color="muted">{hostel.checkedOut}</Text>
                     </HStack>
                     <HStack gap="xsmall" align="center">
                       <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-purple-text)" }} />
-                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.crossHostel}</span>
+                      <Text as="span" size="xs" color="muted">{hostel.crossHostel}</Text>
                     </HStack>
                   </HStack>
                 </Card>

@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -391,7 +391,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               </div>
             </div>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Click the camera icon to change profile photo</span>
+            <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </div>
 
           {isImageModalOpen && (

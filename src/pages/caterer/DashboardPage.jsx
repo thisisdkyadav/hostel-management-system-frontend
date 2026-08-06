@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button, StatusBadge } from "czero/react"
 import { ArrowRight, CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
-import { Alert, Card, LoadingState, Page, StatCards, VStack } from "@/components/ui"
+import { Alert, Card, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -138,11 +138,11 @@ const DashboardPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
                 {rebateSummary.days.map((day) => (
                   <div key={day.date} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
-                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{formatDate(day.date)}</p>
-                    <p style={{ color: "var(--color-text-heading)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-2xl)" }}>{day.availableStudentCount || 0}</p>
-                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                    <Text color="muted" size="sm">{formatDate(day.date)}</Text>
+                    <Text color="heading" weight="bold" size="2xl">{day.availableStudentCount || 0}</Text>
+                    <Text color="muted" size="xs">
                       of {day.allocatedStudentCount || 0} allocated · {day.approvedRebateCount || 0} on rebate
-                    </p>
+                    </Text>
                   </div>
                 ))}
               </div>

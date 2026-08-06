@@ -4,6 +4,7 @@ import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },
@@ -225,9 +226,9 @@ const AdminElectionWorkspace = ({
     <>
       <div style={infoBannerStyle}>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-        <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+        <Text as="span" weight="semibold" color="heading">
           {selectedAdminElection.title}
-        </span>
+        </Text>
         <div style={badgeRowStyle}>
           <StatusPill
             tone={getStatusTone(selectedAdminElection.currentStage)}
@@ -256,14 +257,14 @@ const AdminElectionWorkspace = ({
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+        <Text as="span" size="sm" color="muted">
           {selectedAdminElection.academicYear} · {formatStageLabel(selectedAdminElection.phase)}
-        </span>
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+        </Text>
+        <Text as="span" size="sm" color="body">
           <strong>{adminOverview.postCount}</strong> posts · <strong>{adminOverview.nominationCount}</strong>{" "}
           nominations · <strong>{adminOverview.verifiedCount}</strong> verified ·{" "}
           <strong>{adminOverview.voteCount}</strong> votes
-        </span>
+        </Text>
       </div>
       </div>
 
@@ -286,7 +287,7 @@ const AdminElectionWorkspace = ({
             key: "title",
             render: (post) => (
               <div style={{ display: "grid", gap: "2px" }}>
-                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.title}</span>
+                <Text as="span" weight="semibold">{post.title}</Text>
                 <span style={mutedTextStyle}>
                   {formatStageLabel(post.category)}
                   {post.code ? ` · ${post.code}` : ""}
@@ -299,9 +300,9 @@ const AdminElectionWorkspace = ({
             key: "candidateEligibility",
             render: (post) => (
               <div style={{ display: "grid", gap: "2px" }}>
-                <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                <Text as="span" weight="medium">
                   {post.candidateEligibleCount || 0} student(s)
-                </span>
+                </Text>
                 <span style={mutedTextStyle}>{summarizeScope(post.candidateEligibility)}</span>
               </div>
             ),
@@ -311,9 +312,9 @@ const AdminElectionWorkspace = ({
             key: "voterEligibility",
             render: (post) => (
               <div style={{ display: "grid", gap: "2px" }}>
-                <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                <Text as="span" weight="medium">
                   {post.voterEligibleCount || 0} student(s)
-                </span>
+                </Text>
                 <span style={mutedTextStyle}>{summarizeScope(post.voterEligibility)}</span>
               </div>
             ),
@@ -322,31 +323,31 @@ const AdminElectionWorkspace = ({
             header: "Requirements",
             key: "requirements",
             render: (post) => (
-              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Text as="span" size="sm" color="body">
                 CGPA {post.requirements.minCgpa} · P {post.requirements.proposersRequired} · S{" "}
                 {post.requirements.secondersRequired}
-              </span>
+              </Text>
             ),
           },
           {
             header: "Nominations",
             key: "nominationCounts",
             render: (post) => (
-              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Text as="span" size="sm" color="body">
                 {(post.nominationCounts?.submitted || 0) +
                   (post.nominationCounts?.modification_requested || 0) +
                   (post.nominationCounts?.verified || 0)}{" "}
                 total · {post.nominationCounts?.verified || 0} verified
-              </span>
+              </Text>
             ),
           },
           {
             header: "Votes",
             key: "voteCount",
             render: (post) => (
-              <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+              <Text as="span" weight="medium" color="primary">
                 {post.voteCount || 0}
-              </span>
+              </Text>
             ),
           },
           ]}
@@ -409,9 +410,9 @@ const AdminElectionWorkspace = ({
                         flexWrap: "wrap",
                       }}
                     >
-                      <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                      <Text as="span" weight="semibold" color="heading">
                         {group.postTitle}
-                      </span>
+                      </Text>
                       <span style={mutedTextStyle}>{group.nominations.length} nomination(s)</span>
                     </div>
                     <DataTable
@@ -501,7 +502,7 @@ const AdminElectionWorkspace = ({
                 key: "postTitle",
                 render: (postResult) => (
                   <div style={{ display: "grid", gap: "2px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{postResult.postTitle}</span>
+                    <Text as="span" weight="semibold">{postResult.postTitle}</Text>
                     <span style={mutedTextStyle}>{postResult.totalVotes || 0} vote(s)</span>
                   </div>
                 ),
@@ -652,7 +653,7 @@ const AdminElectionWorkspace = ({
                 key: "postTitle",
                 render: (post) => (
                   <div style={{ display: "grid", gap: "2px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.postTitle}</span>
+                    <Text as="span" weight="semibold">{post.postTitle}</Text>
                     <span style={mutedTextStyle}>{post.verifiedCandidateCount || 0} verified candidate(s)</span>
                   </div>
                 ),
@@ -816,9 +817,9 @@ const AdminElectionWorkspace = ({
               gap: "var(--spacing-2)",
             }}
           >
-            <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+            <Text as="div" weight="semibold" color="heading">
               Copy Election
-            </div>
+            </Text>
             <div style={mutedTextStyle}>
               Create a clean copy of this election for mock testing, then adjust voter eligibility in the copied posts.
             </div>

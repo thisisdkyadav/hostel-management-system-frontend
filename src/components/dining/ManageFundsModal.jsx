@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Alert, VStack } from "@/components/ui"
 import CsvUploader from "@/components/common/CsvUploader"
 import { FUND_MODES, getErrorMessage } from "./diningBillingHelpers"
@@ -110,10 +110,10 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
               <span><strong>{report.updated}</strong> account(s) updated{report.skipped?.length ? `, ${report.skipped.length} skipped` : ""}.</span>
               {report.skipped?.length > 0 && (
-                <span style={{ fontSize: "var(--font-size-xs)" }}>
+                <Text as="span" size="xs">
                   Skipped: {report.skipped.slice(0, 10).map((row) => `${row.rollNumber} (${row.reason})`).join(", ")}
                   {report.skipped.length > 10 ? ` and ${report.skipped.length - 10} more` : ""}
-                </span>
+                </Text>
               )}
             </div>
           </Alert>

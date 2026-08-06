@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, DataTable, StatusBadge, Tabs } from "czero/react"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, Text } from "@/components/ui"
 import { Plus } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"
@@ -69,12 +69,12 @@ const AttendancePage = ({ basePath = "/admin/attendance" }) => {
       header: "Occurrence",
       render: (row) => (
         <div>
-          <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+          <Text as="div" weight="semibold" color="heading">
             {row.title}
-          </div>
-          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          </Text>
+          <Text as="div" size="sm" color="muted">
             {[row.location, formatDateTime(row.startAt)].filter((x) => x && x !== "—").join(" · ") || "No date set"}
-          </div>
+          </Text>
         </div>
       ),
     },

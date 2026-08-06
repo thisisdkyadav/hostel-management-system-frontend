@@ -2,6 +2,7 @@ import React from "react"
 import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
   const columns = [
@@ -28,9 +29,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
             )}
           </div>
           <div style={{ marginLeft: "var(--spacing-3)" }}>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)", }} >
+            <Text as="div" weight="medium" color="primary" size="sm">
               {student.name}
-            </div>
+            </Text>
             <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "150px", }} >
               {student.email}
             </div>
@@ -42,9 +43,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       header: "Roll Number",
       key: "rollNumber",
       render: (student) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)", }} >
+        <Text as="span" size="sm" color="body" weight="medium">
           {student.rollNumber}
-        </span>
+        </Text>
       ),
     },
     {
@@ -72,9 +73,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       key: "batch",
       className: "hidden lg:table-cell",
       render: (student) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
+        <Text as="span" size="sm" color="body" weight="medium">
           {student.batch || "—"}
-        </span>
+        </Text>
       ),
     },
     {
@@ -82,9 +83,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       key: "room",
       className: "hidden sm:table-cell",
       render: (student) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", fontWeight: "var(--font-weight-medium)", }} >
+        <Text as="span" size="sm" color="tertiary" weight="medium">
           {student.displayRoom}
-        </span>
+        </Text>
       ),
     },
   ]

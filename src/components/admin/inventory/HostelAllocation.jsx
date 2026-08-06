@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Select, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -202,7 +202,7 @@ const HostelAllocation = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Hostel Inventory Allocation</h3>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Allocate inventory items to hostels</p>
+          <Text size="sm" color="muted">Allocate inventory items to hostels</Text>
         </div>
         <Button
           onClick={openNewAllocationModal}
@@ -269,7 +269,7 @@ const HostelAllocation = () => {
         ) : hostelInventory.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
             <FaWarehouse style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
-            <p style={{ color: 'var(--color-text-muted)' }}>No hostel inventory allocations found</p>
+            <Text color="muted">No hostel inventory allocations found</Text>
             <Button
               onClick={openNewAllocationModal}
               variant="primary"
@@ -300,7 +300,7 @@ const HostelAllocation = () => {
                         <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                           <FaBuilding style={{ color: 'var(--color-primary)' }} />
                         </div>
-                        <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.hostelId.name}</span>
+                        <Text as="span" weight="medium" color="secondary">{allocation.hostelId.name}</Text>
                       </div>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
@@ -309,8 +309,8 @@ const HostelAllocation = () => {
                           <FaBox style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <div>
-                          <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.itemTypeId.name}</div>
-                          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{allocation.itemTypeId.description}</div>
+                          <Text as="div" weight="medium" color="secondary">{allocation.itemTypeId.name}</Text>
+                          <Text as="div" size="sm" color="muted">{allocation.itemTypeId.description}</Text>
                         </div>
                       </div>
                     </Table.Cell>

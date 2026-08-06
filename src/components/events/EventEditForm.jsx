@@ -4,7 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { Select, useConfirm } from "@/components/ui"
+import { Select, Text, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
@@ -62,7 +62,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           </div>
           <div style={{ width: '100%' }}>
             <Input type="text" name="eventName" value={formData.eventName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', borderBottom: 'var(--border-1) solid var(--color-border-input)', borderRadius: 0, paddingBottom: 'var(--spacing-1)' }} required />
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {event._id.substring(0, 8)}</span>
+            <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
           </div>
         </div>
 

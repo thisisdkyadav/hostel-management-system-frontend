@@ -4,7 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { FileInput, Select, Textarea, useConfirm } from "@/components/ui"
+import { FileInput, Select, Text, Textarea, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
@@ -107,7 +107,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
           </div>
           <div style={{ width: "100%" }}>
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} required style={{ fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xl)" }} />
-            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>ID: {item._id.substring(0, 8)}</span>
+            <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
           </div>
         </div>
 

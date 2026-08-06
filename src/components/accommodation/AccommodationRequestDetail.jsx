@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Label, useConfirm } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
@@ -105,7 +105,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                       return <InfoRow key={i} label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`} value={`Room ${roomLabel}`} />
                     })
                   ) : (
-                    <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Room numbers will appear once the hostel supervisor assigns them.</p>
+                    <Text size="xs" color="muted">Room numbers will appear once the hostel supervisor assigns them.</Text>
                   )}
                 </div>
               </SectionCard>
@@ -161,7 +161,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
             {status === ACCOMMODATION_STATUS.PAYMENT_SUBMITTED && (
               <SectionCard icon={Clock3} title="Awaiting verification" accentColor="var(--color-info)">
-                <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>The accounts office is checking your payment. You’ll be notified once it’s confirmed.</p>
+                <Text size="sm" color="muted">The accounts office is checking your payment. You’ll be notified once it’s confirmed.</Text>
               </SectionCard>
             )}
 

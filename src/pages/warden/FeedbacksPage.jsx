@@ -1,7 +1,7 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect, useCallback } from "react"
 import { HiAnnotation } from "react-icons/hi"
-import { SearchInput, Pagination } from "@/components/ui"
+import { Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FeedbackStats from "../../components/FeedbackStats"
 import FeedbackCard from "../../components/FeedbackCard"
@@ -158,8 +158,8 @@ const FeedbacksPage = () => {
         <PageFooter
           leftContent={[
             <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{feedbacks.length}</span> of{" "}
-              <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalFeedbacks}</span> feedbacks
+              Showing <Text as="span" weight="semibold">{feedbacks.length}</Text> of{" "}
+              <Text as="span" weight="semibold">{totalFeedbacks}</Text> feedbacks
             </span>,
           ]}
           rightContent={[

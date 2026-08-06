@@ -1,5 +1,5 @@
 import React from "react"
-import { VStack, HStack } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { TriangleAlert } from "lucide-react"
@@ -15,12 +15,12 @@ const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }
         </div>
 
         <VStack gap="medium" style={{ textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)' }}>CRITICAL WARNING</p>
-          <p style={{ color: 'var(--color-text-secondary)' }}>
-            This will remove <span style={{ fontWeight: 'var(--font-weight-bold)' }}>ALL</span> student room allocations from <span style={{ fontWeight: 'var(--font-weight-bold)' }}>{hostelName}</span>.
-          </p>
-          <p style={{ color: 'var(--color-text-secondary)' }}>All students will be immediately removed from their rooms.</p>
-          <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-semibold)' }}>This action CANNOT be undone.</p>
+          <Text color="danger" weight="bold" size="lg">CRITICAL WARNING</Text>
+          <Text color="secondary">
+            This will remove <Text as="span" weight="bold">ALL</Text> student room allocations from <Text as="span" weight="bold">{hostelName}</Text>.
+          </Text>
+          <Text color="secondary">All students will be immediately removed from their rooms.</Text>
+          <Text color="danger" weight="semibold">This action CANNOT be undone.</Text>
         </VStack>
 
         <HStack justify="center" gap="medium" style={{ paddingTop: 'var(--spacing-4)' }}>

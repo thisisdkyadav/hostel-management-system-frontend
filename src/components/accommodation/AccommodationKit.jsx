@@ -14,6 +14,7 @@ import {
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
+import { Text } from "@/components/ui"
 
 export const money = (n) =>
   `₹${(Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -57,8 +58,8 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
 
 export const InfoRow = ({ label, value, strong }) => (
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-3)" }}>
-    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
-    <span style={{ fontWeight: strong ? "var(--font-weight-semibold)" : "var(--font-weight-medium)", color: "var(--color-text-body)", fontSize: strong ? "var(--font-size-base)" : "var(--font-size-sm)", textAlign: "right" }}>{value}</span>
+    <Text as="span" color="muted" size="sm">{label}</Text>
+    <Text as="span" weight={strong ? "var(--font-weight-semibold)" : "var(--font-weight-medium)"} color="body" size={strong ? "var(--font-size-base)" : "var(--font-size-sm)"} align="right">{value}</Text>
   </div>
 )
 
@@ -75,14 +76,14 @@ export const PersonCard = ({ person, fallbackName }) => {
         </div>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{name}</div>
-        {meta && <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{meta}</div>}
+        <Text as="div" weight="semibold" color="primary">{name}</Text>
+        {meta && <Text as="div" size="xs" color="muted">{meta}</Text>}
         {(person?.email || person?.phone) && (
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {[person?.email, person?.phone].filter(Boolean).join(" · ")}
           </div>
         )}
-        {person?.hostel && <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{person.hostel}{person.displayRoom ? ` · Room ${person.displayRoom}` : ""}</div>}
+        {person?.hostel && <Text as="div" size="xs" color="muted">{person.hostel}{person.displayRoom ? ` · Room ${person.displayRoom}` : ""}</Text>}
       </div>
     </div>
   )
@@ -114,7 +115,7 @@ export const ApplicantCell = ({ request }) => {
 export const StayCell = ({ request }) => (
   <div style={{ minWidth: 0 }}>
     <div style={{ color: "var(--color-text-body)", whiteSpace: "nowrap" }}>{fmtDate(request?.stay?.fromDate)} → {fmtDate(request?.stay?.toDate)}</div>
-    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{request?.nights || 0} night(s)</div>
+    <Text as="div" size="xs" color="muted">{request?.nights || 0} night(s)</Text>
   </div>
 )
 
@@ -155,9 +156,9 @@ export const GuestList = ({ guests = [] }) => (
         <span style={{ width: 26, height: 26, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", flexShrink: 0 }}>
           {(g.name || "?").charAt(0).toUpperCase()}
         </span>
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-          {g.name} <span style={{ color: "var(--color-text-muted)" }}>· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</span>
-        </span>
+        <Text as="span" size="sm" color="body">
+          {g.name} <Text as="span" color="muted">· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</Text>
+        </Text>
       </div>
     ))}
   </div>
@@ -196,8 +197,8 @@ export const JourneyTimeline = ({ status, timeline = [] }) => {
               {!last && <span style={{ width: 2, flex: 1, minHeight: 20, backgroundColor: doneSet.has(i) ? "var(--color-success)" : "var(--color-border-light)" }} />}
             </div>
             <div style={{ paddingBottom: "var(--spacing-3)" }}>
-              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: s === "upcoming" ? 400 : 600, color: s === "upcoming" ? "var(--color-text-muted)" : "var(--color-text-primary)" }}>{step.label}</div>
-              {ts && <div style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>{fmtDateTime(ts)}</div>}
+              <Text as="div" size="sm" weight={s === "upcoming" ? 400 : 600} color={s === "upcoming" ? "var(--color-text-muted)" : "var(--color-text-primary)"}>{step.label}</Text>
+              {ts && <Text as="div" size="10px" color="muted">{fmtDateTime(ts)}</Text>}
             </div>
           </div>
         )
@@ -205,7 +206,7 @@ export const JourneyTimeline = ({ status, timeline = [] }) => {
       {terminalNegative && (
         <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
           <span style={{ width: 12, height: 12, borderRadius: "50%", marginTop: 2, backgroundColor: "var(--color-danger)", border: "2px solid var(--color-danger)", flexShrink: 0 }} />
-          <div style={{ fontSize: "var(--font-size-sm)", fontWeight: 600, color: "var(--color-danger)" }}>{status}</div>
+          <Text as="div" size="sm" weight={600} color="danger">{status}</Text>
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Pagination, Select, Spinner, Textarea } from "@/components/ui"
+import { Pagination, Select, Spinner, Text, Textarea } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -163,7 +163,7 @@ const StudentAssignments = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Student Inventory Assignments</h3>
-          <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>View and manage items assigned to students</p>
+          <Text size="var(--text-body-sm)" color="muted">View and manage items assigned to students</Text>
         </div>
       </div>
 
@@ -209,7 +209,7 @@ const StudentAssignments = () => {
         ) : studentInventory.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
             <FaUserGraduate className="mx-auto" style={{ color: 'var(--color-border-dark)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} />
-            <p style={{ color: 'var(--color-text-muted)' }}>No inventory assignments found</p>
+            <Text color="muted">No inventory assignments found</Text>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -233,8 +233,8 @@ const StudentAssignments = () => {
                           <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <div>
-                          <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.studentProfileId.userId.name}</div>
-                          <div style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)' }}>{item.studentProfileId.rollNumber}</div>
+                          <Text as="div" weight="medium" color="secondary">{item.studentProfileId.userId.name}</Text>
+                          <Text as="div" size="var(--text-caption)" color="muted">{item.studentProfileId.rollNumber}</Text>
                         </div>
                       </div>
                     </Table.Cell>
@@ -243,7 +243,7 @@ const StudentAssignments = () => {
                         <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                           <FaBoxes style={{ color: 'var(--color-primary)' }} />
                         </div>
-                        <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemTypeId.name}</span>
+                        <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap" style={{ fontWeight: 'var(--font-weight-medium)' }}>{item.count}</Table.Cell>
@@ -289,37 +289,37 @@ const StudentAssignments = () => {
                 </div>
                 <div>
                   <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.studentProfileId.userId.name}</h3>
-                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{currentItem.studentProfileId.rollNumber}</p>
+                  <Text size="var(--text-body-sm)" color="muted">{currentItem.studentProfileId.rollNumber}</Text>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--gap-md)', marginBottom: 'var(--spacing-4)' }}>
                 <div>
-                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Item</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.itemTypeId.name}</p>
+                  <Text size="var(--text-body-sm)" color="muted">Item</Text>
+                  <Text weight="medium">{currentItem.itemTypeId.name}</Text>
                 </div>
                 <div>
-                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Count</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.count}</p>
+                  <Text size="var(--text-body-sm)" color="muted">Count</Text>
+                  <Text weight="medium">{currentItem.count}</Text>
                 </div>
                 <div>
-                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Issue Date</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{formatDate(currentItem.issueDate)}</p>
+                  <Text size="var(--text-body-sm)" color="muted">Issue Date</Text>
+                  <Text weight="medium">{formatDate(currentItem.issueDate)}</Text>
                 </div>
                 <div>
-                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Issued By</p>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.issuedBy?.name || "Unknown"}</p>
+                  <Text size="var(--text-body-sm)" color="muted">Issued By</Text>
+                  <Text weight="medium">{currentItem.issuedBy?.name || "Unknown"}</Text>
                 </div>
                 {currentItem.returnDate && (
                   <div>
-                    <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Return Date</p>
-                    <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{formatDate(currentItem.returnDate)}</p>
+                    <Text size="var(--text-body-sm)" color="muted">Return Date</Text>
+                    <Text weight="medium">{formatDate(currentItem.returnDate)}</Text>
                   </div>
                 )}
                 {currentItem.returnedBy && (
                   <div>
-                    <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Returned By</p>
-                    <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.returnedBy.name}</p>
+                    <Text size="var(--text-body-sm)" color="muted">Returned By</Text>
+                    <Text weight="medium">{currentItem.returnedBy.name}</Text>
                   </div>
                 )}
               </div>
@@ -373,9 +373,9 @@ const StudentAssignments = () => {
                 <div>
                   <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.itemTypeId.name}</h3>
                   <div className="flex" style={{ gap: 'var(--gap-sm)', fontSize: 'var(--text-body-sm)' }}>
-                    <span style={{ color: 'var(--color-text-muted)' }}>Qty: {currentItem.count}</span>
-                    <span style={{ color: 'var(--color-text-muted)' }}>•</span>
-                    <span style={{ color: 'var(--color-text-muted)' }}>Assigned to: {currentItem.studentProfileId.userId.name}</span>
+                    <Text as="span" color="muted">Qty: {currentItem.count}</Text>
+                    <Text as="span" color="muted">•</Text>
+                    <Text as="span" color="muted">Assigned to: {currentItem.studentProfileId.userId.name}</Text>
                   </div>
                 </div>
               </div>

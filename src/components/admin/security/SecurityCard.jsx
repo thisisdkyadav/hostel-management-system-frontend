@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye 
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
@@ -60,7 +60,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
               <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
             </div>
             <div>
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{hostelName}</span>
+              <Text as="span" size="sm" color="body" weight="medium">{hostelName}</Text>
             </div>
           </div>
         </CardBody>

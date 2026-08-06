@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
@@ -239,7 +239,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             {form.guests.map((g, i) => (
               <div key={i} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>Guest {i + 1}</span>
+                  <Text as="span" size="sm" weight="medium">Guest {i + 1}</Text>
                   {form.guests.length > 1 && (
                     <IconButton icon={<Trash2 size={16} />} variant="ghost" size="small" ariaLabel="Remove guest" onClick={() => removeGuest(i)} />
                   )}
@@ -301,20 +301,20 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             <div style={{ backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", fontSize: "var(--font-size-sm)", display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
               <div><strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} → {form.stay.toDate || "—"}</div>
-              {form.stay.purpose && <div style={{ color: "var(--color-text-muted)" }}>{form.stay.purpose}</div>}
+              {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
             </div>
             {loadingQuote ? (
-              <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Calculating estimate…</p>
+              <Text color="muted" size="sm">Calculating estimate…</Text>
             ) : quote ? (
               <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", padding: "var(--spacing-3)" }}>
                 <ChargesRows quote={quote} />
               </div>
             ) : (
-              <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Estimate unavailable.</p>
+              <Text color="muted" size="sm">Estimate unavailable.</Text>
             )}
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <Text size="xs" color="muted">
               Final amount is confirmed by the Chief Warden office at approval.
-            </p>
+            </Text>
           </div>
         )}
       </div>

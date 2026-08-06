@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table, Tabs } from "czero/react"
-import { Modal, Page } from "@/components/ui"
+import { Modal, Page, Text } from "@/components/ui"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import { Alert, Card, EmptyState, HStack, Label, StatCards, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -73,9 +73,9 @@ const StudentListModal = ({ isOpen, onClose, students = [], loading = false, mea
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Students for Current Meal" width={880}>
       <VStack gap="medium">
-        <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+        <Text color="muted" size="sm">
           {mealSlot ? `${mealSlot.name} · ${mealSlot.startTime}–${mealSlot.endTime}` : "No meal slot is active right now."}
-        </p>
+        </Text>
         {!loading && students.length === 0 ? (
           <Alert type="info" icon>No students are allocated to this caterer for the active period yet.</Alert>
         ) : (
@@ -93,8 +93,8 @@ const StudentListModal = ({ isOpen, onClose, students = [], loading = false, mea
                 {students.map((entry) => (
                   <Table.Row key={entry.allocationId || entry.rollNumber}>
                     <Table.Cell>
-                      <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{entry.student?.name || "Student"}</div>
-                      <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{entry.student?.email || "-"}</div>
+                      <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Student"}</Text>
+                      <Text as="div" color="muted" size="sm">{entry.student?.email || "-"}</Text>
                     </Table.Cell>
                     <Table.Cell>{entry.rollNumber}</Table.Cell>
                     <Table.Cell>
@@ -321,11 +321,11 @@ const MealVerificationPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
                 {rebateSummary.days.map((day) => (
                   <div key={day.date} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
-                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{formatDate(day.date)}</p>
-                    <p style={{ color: "var(--color-text-heading)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-2xl)" }}>{day.availableStudentCount || 0}</p>
-                    <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                    <Text color="muted" size="sm">{formatDate(day.date)}</Text>
+                    <Text color="heading" weight="bold" size="2xl">{day.availableStudentCount || 0}</Text>
+                    <Text color="muted" size="xs">
                       of {day.allocatedStudentCount || 0} allocated · {day.approvedRebateCount || 0} on rebate
-                    </p>
+                    </Text>
                   </div>
                 ))}
               </div>
@@ -380,8 +380,8 @@ const MealVerificationPage = () => {
                           </HStack>
                         </Table.Cell>
                         <Table.Cell>
-                          <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{entry.student?.name || "Unknown Student"}</div>
-                          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{entry.rollNumber}</div>
+                          <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Unknown Student"}</Text>
+                          <Text as="div" color="muted" size="sm">{entry.rollNumber}</Text>
                         </Table.Cell>
                         <Table.Cell>{entry.mealSlotName || "-"}</Table.Cell>
                         <Table.Cell>

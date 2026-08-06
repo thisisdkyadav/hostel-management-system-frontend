@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, Clock, FileText, Send, X } from "lucide-react"
 import { porApi } from "@/service"
+import { Text } from "@/components/ui"
 
 const ACTION_ICONS = {
   submitted: Send,
@@ -181,43 +182,22 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   }}
                 >
                   <Badge variant={color}>{actionLabel}</Badge>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      color: "var(--color-text-placeholder)",
-                    }}
-                  >
+                  <Text as="span" size="11px" color="placeholder">
                     {formatTimestamp(log.createdAt)}
-                  </span>
+                  </Text>
                 </div>
 
                 <div style={{ marginTop: "var(--spacing-2)", display: "grid", gap: "4px" }}>
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-secondary)",
-                    }}
-                  >
+                  <Text as="span" size="xs" weight="semibold" color="secondary">
                     {formatStageLabel(log.stage)}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
+                  </Text>
+                  <Text as="span" size="xs" color="muted">
                     {safeActorName}
-                  </span>
+                  </Text>
                   {safeActorRole ? (
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        color: "var(--color-text-placeholder)",
-                      }}
-                    >
+                    <Text as="span" size="11px" color="placeholder">
                       {safeActorRole}
-                    </span>
+                    </Text>
                   ) : null}
                 </div>
               </div>
@@ -244,41 +224,20 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                 textAlign: "right",
               }}
             >
-              <span
-                style={{
-                  fontSize: "var(--font-size-xs)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: "var(--color-text-secondary)",
-                }}
-              >
+              <Text as="span" size="xs" weight="semibold" color="secondary">
                 {formatStageLabel(log.stage)}
-              </span>
-              <span
-                style={{
-                  fontSize: "var(--font-size-xs)",
-                  color: "var(--color-text-muted)",
-                }}
-              >
+              </Text>
+              <Text as="span" size="xs" color="muted">
                 {safeActorName}
-              </span>
+              </Text>
               {safeActorRole ? (
-                <span
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--color-text-placeholder)",
-                  }}
-                >
+                <Text as="span" size="11px" color="placeholder">
                   {safeActorRole}
-                </span>
+                </Text>
               ) : null}
-              <span
-                style={{
-                  fontSize: "11px",
-                  color: "var(--color-text-placeholder)",
-                }}
-              >
+              <Text as="span" size="11px" color="placeholder">
                 {formatTimestamp(log.createdAt)}
-              </span>
+              </Text>
             </div>
 
             <div style={timelineRailStyle}>
@@ -321,14 +280,9 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                 }}
               >
                 <Badge variant={color}>{actionLabel}</Badge>
-                <span
-                  style={{
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
+                <Text as="span" size="xs" color="muted">
                   {safeActorName}
-                </span>
+                </Text>
               </div>
 
               {safeComments ? (

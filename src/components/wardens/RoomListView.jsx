@@ -3,6 +3,7 @@ import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { isRoomActive } from "@/constants/roomStatus"
+import { Text } from "@/components/ui"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -17,7 +18,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
             <FaDoorOpen style={{ color: "var(--color-info)" }} />
           </div>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{room.roomNumber}</div>
+            <Text as="div" size="sm" weight="medium" color="primary">{room.roomNumber}</Text>
             <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
               {room.type || "Standard"}
             </div>
@@ -30,7 +31,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "type",
       className: "hidden sm:table-cell",
       render: (room) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{room.type || "Standard"}</span>
+        <Text as="span" size="sm" color="body">{room.type || "Standard"}</Text>
       ),
     },
     {
@@ -38,7 +39,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "capacity",
       className: "hidden md:table-cell",
       render: (room) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{room.capacity || 0} students</span>
+        <Text as="span" size="sm" color="body">{room.capacity || 0} students</Text>
       ),
     },
     {
@@ -46,7 +47,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "occupancy",
       render: (room) =>
         !isRoomActive(room.status) ? (
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{room.status}</span>
+          <Text as="span" size="sm" color="muted">{room.status}</Text>
         ) : (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ width: "var(--spacing-16)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2)", marginRight: "var(--spacing-2)", }} >
@@ -60,9 +61,9 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
               }}
               ></div>
             </div>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+            <Text as="span" size="sm" color="body">
               {room.currentOccupancy || 0}/{room.capacity || 0}
-            </span>
+            </Text>
           </div>
         ),
     },

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
@@ -1660,9 +1660,9 @@ const MegaEventsPage = () => {
         )}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text size="sm" color="muted">
             Select the date range for this occurrence.
-          </p>
+          </Text>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
             <FormField label="Start Date" htmlFor="mega-occurrence-start-date" required>
               <Input
@@ -1719,15 +1719,15 @@ const MegaEventsPage = () => {
           {/* Details card with action */}
           <div style={{ ...infoBoxStyle, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+              <Text as="div" size="sm" weight="semibold" color="heading">
                 {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
-              </div>
+              </Text>
               <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
                 {proposalForm.proposalDetails.organisingUnit.unitType} · {proposalForm.proposalDetails.programmeDetails.programmeType} · {proposalForm.proposalDetails.programmeDetails.mode}
               </div>
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              <Text as="div" size="xs" color="muted">
                 {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates not added"}
-              </div>
+              </Text>
             </div>
             <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
               {canCreateOrEditProposal ? "Edit Details" : "View Details"}
@@ -2220,7 +2220,7 @@ const MegaEventsPage = () => {
             </div>
             {REGISTRATION_CATEGORIES.map((category) => (
               <div key={category.key} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
-                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{category.label}</span>
+                <Text as="span" size="sm" weight="medium" color="primary">{category.label}</Text>
                 <Input
                   id={`mega-registration-fee-${category.key}`}
                   type="number"
@@ -2327,7 +2327,7 @@ const MegaEventsPage = () => {
           {(expenseForm.bills || []).map((bill, index) => (
             <div key={`bill-${index}`} style={{ ...compactCardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
-                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>Bill {index + 1}</span>
+                <Text as="span" size="sm" weight="semibold" color="secondary">Bill {index + 1}</Text>
                 {canCreateOrEditExpense && expenseForm.bills.length > 1 && (
                   <Button
                     size="sm"

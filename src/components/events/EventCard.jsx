@@ -6,7 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import { Card } from "@/components/ui"
+import { Card, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const EventCard = ({ event, refresh }) => {
@@ -76,7 +76,7 @@ const EventCard = ({ event, refresh }) => {
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }} className="md:text-lg line-clamp-1">{event.eventName}</h3>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {event._id.substring(0, 8)}</span>
+                <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
               </div>
             </div>
             <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--spacing-1) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
@@ -87,20 +87,20 @@ const EventCard = ({ event, refresh }) => {
           <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{date}</span>
+              <Text as="span" size="sm" color="body">{date}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{time}</span>
+              <Text as="span" size="sm" color="body">{time}</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{event.hostel?.name || "All Hostels"}</span>
+              <Text as="span" size="sm" color="body" weight="medium">{event.hostel?.name || "All Hostels"}</Text>
             </div>
             {event.gender && (
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-1)' }}>
                 <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</span>
+                <Text as="span" size="sm" color="body" weight="medium">{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</Text>
               </div>
             )}
           </div>

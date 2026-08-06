@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { Select } from "@/components/ui"
+import { Select, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -273,16 +273,16 @@ const HealthTab = ({ userId }) => {
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 'var(--spacing-4)' }}>
               <div>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Blood Group</p>
-                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.bloodGroup || "Not specified"}</p>
+                <Text size="sm" color="muted">Blood Group</Text>
+                <Text weight="medium" color="body">{healthData?.bloodGroup || "Not specified"}</Text>
               </div>
               <div>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Provider</p>
-                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.insurance?.insuranceProvider?.name || "Not specified"}</p>
+                <Text size="sm" color="muted">Insurance Provider</Text>
+                <Text weight="medium" color="body">{healthData?.insurance?.insuranceProvider?.name || "Not specified"}</Text>
               </div>
               <div>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Number</p>
-                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.insurance?.insuranceNumber || "Not specified"}</p>
+                <Text size="sm" color="muted">Insurance Number</Text>
+                <Text weight="medium" color="body">{healthData?.insurance?.insuranceNumber || "Not specified"}</Text>
               </div>
 
               {selectedProvider && (
@@ -290,15 +290,15 @@ const HealthTab = ({ userId }) => {
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
-                      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy Start Date</p>
-                      <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.startDate)}</p>
+                      <Text size="sm" color="muted">Policy Start Date</Text>
+                      <Text weight="medium" color="body">{formatDate(selectedProvider.startDate)}</Text>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
-                      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy End Date</p>
-                      <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.endDate)}</p>
+                      <Text size="sm" color="muted">Policy End Date</Text>
+                      <Text weight="medium" color="body">{formatDate(selectedProvider.endDate)}</Text>
                     </div>
                   </div>
                 </>
@@ -328,7 +328,7 @@ const HealthTab = ({ userId }) => {
         ) : insuranceClaims.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
             <Hospital size={48} style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', display: 'block' }} />
-            <p style={{ color: 'var(--color-text-muted)' }}>No insurance claims found</p>
+            <Text color="muted">No insurance claims found</Text>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>

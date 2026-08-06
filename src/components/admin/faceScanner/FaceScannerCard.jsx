@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
@@ -100,9 +100,9 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                         <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>
                             {scanner.name}
                         </h3>
-                        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                        <Text size="sm" color="muted">
                             {scanner.type === "hostel-gate" ? "Hostel Gate" : "Dining Meal"}
-                        </p>
+                        </Text>
                     </div>
                     <Badge variant={scanner.isActive ? "success" : "danger"}>
                         {scanner.isActive ? "Active" : "Inactive"}
@@ -134,9 +134,9 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                 </div>
 
                 {scanner.lastActiveAt && (
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    <Text as="div" size="xs" color="muted">
                         Last active: {new Date(scanner.lastActiveAt).toLocaleString()}
-                    </div>
+                    </Text>
                 )}
             </CardBody>
 
@@ -156,7 +156,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>Password:</span>
+                            <Text as="span" size="sm" color="tertiary">Password:</Text>
                             <Button variant="secondary" size="sm" onClick={() => copyToClipboard(newCredentials.password)}>
                                 Copy Password
                             </Button>

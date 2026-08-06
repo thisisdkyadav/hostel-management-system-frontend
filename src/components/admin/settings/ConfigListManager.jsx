@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import { VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
+import { ConfirmDialog, HStack, Label, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const styles = {
@@ -350,7 +350,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         <Modal isOpen={showItemModal} title={`Manage ${itemLabel}`} onClose={() => { setShowItemModal(false); setError("") }} width={400}>
           <VStack gap="medium">
             <p style={styles.modalText}>
-              Current {itemLabel}: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{selectedItem}</span>
+              Current {itemLabel}: <Text as="span" weight="medium">{selectedItem}</Text>
             </p>
             <div>
               <Label>Rename {itemLabel}</Label>

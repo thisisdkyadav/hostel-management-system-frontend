@@ -8,7 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Card } from "@/components/ui"
+import { Card, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
@@ -97,7 +97,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{item.itemName}</h3>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {item._id.substring(0, 8)}</span>
+                <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
               </div>
             </div>
             <span style={{ ...getStatusStyle(item.status), fontSize: 'var(--font-size-xs)', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)' }}>{item.status}</span>
@@ -121,7 +121,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
           <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--gap-sm)' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{formatDate(item.dateFound)}</span>
+              <Text as="span" size="sm" color="secondary">{formatDate(item.dateFound)}</Text>
             </div>
             <div style={{ backgroundColor: 'var(--table-header-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.description}</p>

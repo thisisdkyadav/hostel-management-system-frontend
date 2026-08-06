@@ -1,5 +1,6 @@
 import React from "react"
 import { FiEdit } from "react-icons/fi"
+import { Text } from "@/components/ui"
 
 const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
   return (
@@ -9,7 +10,7 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
       </div>
       <div style={{ marginLeft: "var(--spacing-4)", flexGrow: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{label}</p>
+          <Text size="sm" color="muted">{label}</Text>
           {isEditable && (
             <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-xs)", color: "var(--color-info)", }} >
               <FiEdit size={12} style={{ marginRight: "var(--spacing-1)" }} />

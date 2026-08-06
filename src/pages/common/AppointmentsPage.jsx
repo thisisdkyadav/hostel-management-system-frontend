@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Eye, Search, CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -276,12 +276,12 @@ const AppointmentsPage = () => {
         header: "Visitor",
         render: (item) => (
           <div>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            <Text as="div" weight="medium" color="primary">
               {item.visitorName}
-            </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            </Text>
+            <Text as="div" size="sm" color="muted">
               {item.mobileNumber}
-            </div>
+            </Text>
           </div>
         ),
       },
@@ -441,13 +441,13 @@ const AppointmentsPage = () => {
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
             Showing{" "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+            <Text as="span" weight="semibold">
               {loading ? 0 : appointments.length}
-            </span>{" "}
+            </Text>{" "}
             of{" "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+            <Text as="span" weight="semibold">
               {loading ? 0 : totalCount}
-            </span>{" "}
+            </Text>{" "}
             appointments
           </span>,
         ]}
@@ -487,18 +487,18 @@ const AppointmentsPage = () => {
         }
       >
         {detailsLoading ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Loading...</div>
+          <Text as="div" color="muted" size="sm">Loading...</Text>
         ) : !selectedAppointment ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Details unavailable</div>
+          <Text as="div" color="muted" size="sm">Details unavailable</Text>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
 
             {/* Visitor header */}
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
               <div>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-base)", color: "var(--color-text-heading)" }}>
+                <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
-                </div>
+                </Text>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
                   {selectedAppointment.email} · {selectedAppointment.mobileNumber}
                 </div>
@@ -510,27 +510,27 @@ const AppointmentsPage = () => {
             <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
               <div>
                 <span style={labelStyle}>With</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {selectedAppointment.targetOfficial?.name || "-"}
-                </div>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="div" size="xs" color="muted">
                   {selectedAppointment.targetSubRole || "-"}
-                </div>
+                </Text>
               </div>
               <div>
                 <span style={labelStyle}>Identity</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {selectedAppointment.idType}: {selectedAppointment.idNumber}
-                </div>
+                </Text>
               </div>
               <div>
                 <span style={labelStyle}>Preferred</span>
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="div" size="sm" color="body">
                   {formatDate(selectedAppointment.preferredDate)}
-                </div>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="div" size="xs" color="muted">
                   {selectedAppointment.preferredTime}
-                </div>
+                </Text>
               </div>
             </div>
 
@@ -589,19 +589,19 @@ const AppointmentsPage = () => {
                 {selectedAppointment.approvedMeeting?.date && (
                   <div>
                     <span style={labelStyle}>Approved Meeting</span>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                    <Text as="div" size="sm" color="body">
                       {formatDate(selectedAppointment.approvedMeeting.date)} · {selectedAppointment.approvedMeeting.time}
-                    </div>
+                    </Text>
                   </div>
                 )}
                 <div>
                   <span style={labelStyle}>Reviewed By</span>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  <Text as="div" size="sm" color="body">
                     {selectedAppointment.review?.reviewedBy?.name || "-"}
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="div" size="xs" color="muted">
                     {formatDateTime(selectedAppointment.review?.reviewedAt)}
-                  </div>
+                  </Text>
                 </div>
                 {selectedAppointment.review?.description && (
                   <div style={{ gridColumn: "1 / -1" }}>

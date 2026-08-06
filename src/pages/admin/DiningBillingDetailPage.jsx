@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Modal, Page } from "@/components/ui"
+import { Modal, Page, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -30,9 +30,9 @@ const BreakdownModal = ({ account, onClose }) => {
     <Modal isOpen={Boolean(account)} onClose={onClose} title={`${account.rollNumber || "Student"} — charge breakdown`} width={620}>
       <VStack gap="large">
         <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            {account.name || "—"} · Allocated <strong style={{ color: "var(--color-text-secondary)" }}>{formatCurrency(account.allocatedAmount)}</strong>
-          </span>
+          <Text as="span" size="sm" color="muted">
+            {account.name || "—"} · Allocated <Text as="strong" color="secondary">{formatCurrency(account.allocatedAmount)}</Text>
+          </Text>
           <StatusBadge status={formatClearance(account.clearance)} tone={clearanceTone(account.clearance)} />
         </div>
 
@@ -46,17 +46,17 @@ const BreakdownModal = ({ account, onClose }) => {
                 style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-secondary)" }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", marginBottom: "var(--spacing-1)" }}>
-                  <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                  <Text as="span" size="sm" weight="medium" color="secondary">
                     {formatDateRange(row.startDate, row.endDate)}
-                  </span>
-                  <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  </Text>
+                  <Text as="span" size="sm" weight="semibold" color="heading">
                     {formatCurrency(row.amount)}
-                  </span>
+                  </Text>
                 </div>
-                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                <Text as="span" size="xs" color="muted">
                   {row.chargeableDays} chargeable day{row.chargeableDays === 1 ? "" : "s"} × {formatCurrency(row.dailyRate)}
                   {" · "}{row.totalDays} elapsed − {row.rebateDays} on rebate
-                </span>
+                </Text>
               </div>
             ))}
           </div>
@@ -131,8 +131,8 @@ const DiningBillingDetailPage = () => {
   ]
 
   const columns = [
-    { key: "rollNumber", header: "Roll No", render: (row) => <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{row.rollNumber || "—"}</span> },
-    { key: "name", header: "Name", render: (row) => <span style={{ color: "var(--color-text-muted)" }}>{row.name || "—"}</span> },
+    { key: "rollNumber", header: "Roll No", render: (row) => <Text as="span" weight="semibold" color="secondary">{row.rollNumber || "—"}</Text> },
+    { key: "name", header: "Name", render: (row) => <Text as="span" color="muted">{row.name || "—"}</Text> },
     { key: "allocatedAmount", header: "Allocated", align: "right", render: (row) => formatCurrency(row.allocatedAmount) },
     { key: "totalCharged", header: "Charged", align: "right", render: (row) => formatCurrency(row.totalCharged) },
     {
@@ -140,9 +140,9 @@ const DiningBillingDetailPage = () => {
       header: "Balance",
       align: "right",
       render: (row) => (
-        <span style={{ fontWeight: "var(--font-weight-semibold)", color: balanceTone(row.balance) === "danger" ? "var(--color-danger)" : "var(--color-text-secondary)" }}>
+        <Text as="span" weight="semibold" color={balanceTone(row.balance) === "danger" ? "var(--color-danger)" : "var(--color-text-secondary)"}>
           {formatCurrency(row.balance)}
-        </span>
+        </Text>
       ),
     },
     { key: "clearance", header: "Status", render: (row) => <StatusBadge status={formatClearance(row.clearance)} tone={clearanceTone(row.clearance)} /> },

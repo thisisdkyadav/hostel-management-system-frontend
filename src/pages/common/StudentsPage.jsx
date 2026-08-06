@@ -7,7 +7,7 @@ import ImportStudentModal from "../../components/common/students/ImportStudentMo
 import UpdateStudentsModal from "../../components/common/students/UpdateStudentsModal"
 import StudentExportModal from "../../components/common/students/StudentExportModal"
 import StudentTableView from "../../components/common/students/StudentTableView"
-import { Pagination } from "@/components/ui"
+import { Pagination, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
@@ -296,7 +296,7 @@ const StudentsPage = () => {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
-          <p style={{ fontWeight: 'var(--font-weight-medium)' }}>Access Denied</p>
+          <Text weight="medium">Access Denied</Text>
           <p>You do not have permission to view students.</p>
         </div>
       </div>
@@ -307,7 +307,7 @@ const StudentsPage = () => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {error && (
         <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
-          <p style={{ fontWeight: 'var(--font-weight-medium)' }}>Error:</p>
+          <Text weight="medium">Error:</Text>
           <p>{error}</p>
         </div>
       )}
@@ -360,7 +360,7 @@ const StudentsPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{loading ? 0 : students.length}</span> of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{loading ? 0 : totalCount}</span> students
+            Showing <Text as="span" weight="semibold">{loading ? 0 : students.length}</Text> of <Text as="span" weight="semibold">{loading ? 0 : totalCount}</Text> students
           </span>
         ]}
         rightContent={[

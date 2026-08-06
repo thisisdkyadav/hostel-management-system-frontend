@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { EmptyState, ErrorState, LoadingState, Spinner } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState, Spinner, Text } from "@/components/ui"
 import { Tabs, Button } from "czero/react"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -141,7 +141,7 @@ const UndertakingsPage = () => {
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
                       <FaClock style={{ color: 'var(--color-text-placeholder)', marginRight: 'var(--spacing-1)' }} />
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Due: {formatDate(undertaking.deadline)}</span>
+                      <Text as="span" size="xs" color="muted">Due: {formatDate(undertaking.deadline)}</Text>
 
                       {isDeadlineApproaching(undertaking.deadline) && (
                         <span className="flex items-center" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-warning-text)' }}>
@@ -189,7 +189,7 @@ const UndertakingsPage = () => {
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
                       <FaCheck style={{ color: 'var(--color-success)', marginRight: 'var(--spacing-1)' }} />
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Accepted on: {formatDate(undertaking.acceptedAt)}</span>
+                      <Text as="span" size="xs" color="muted">Accepted on: {formatDate(undertaking.acceptedAt)}</Text>
                     </div>
                   </div>
                 </div>

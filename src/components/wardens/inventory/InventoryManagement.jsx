@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Select, Spinner, Textarea } from "@/components/ui"
+import { Select, Spinner, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const InventoryManagement = () => {
@@ -141,7 +141,7 @@ const InventoryManagement = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Assign Inventory to Students</h3>
-          <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Select a student to assign inventory items</p>
+          <Text size="var(--text-body-sm)" color="muted">Select a student to assign inventory items</Text>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ const InventoryManagement = () => {
               </div>
               <div>
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.userId.name}</h4>
-                <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</p>
+                <Text size="var(--text-body-sm)" color="muted">{student.rollNumber}</Text>
               </div>
               <div className="ml-auto">
                 <Button onClick={() => handleSelectStudent(student)} variant="ghost" size="sm" aria-label="Assign inventory">

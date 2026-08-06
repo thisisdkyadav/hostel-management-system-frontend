@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
@@ -172,7 +172,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
             <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
+            <Text color="danger-text">{error}</Text>
           </div>
         )}
 
@@ -188,7 +188,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
           {visitorProfiles.length === 0 ? (
             <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>No visitor profiles found. Add some profiles first.</p>
+              <Text color="muted" size="sm">No visitor profiles found. Add some profiles first.</Text>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--spacing-3)', maxHeight: '240px', overflowY: 'auto', padding: 'var(--spacing-2)' }}>
@@ -219,10 +219,10 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                     </div>
                     <div>
                       <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{visitor.name}</h4>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+                      <Text as="div" size="xs" color="muted">
                         <p>{visitor.relation}</p>
                         <p>{visitor.phone}</p>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </div>
@@ -236,7 +236,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           <VStack gap="xsmall">
             <Label htmlFor="fromDate" required>From Date</Label>
             <Input id="fromDate" type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Must be at least 2 days from today</p>
+            <Text size="xs" color="muted">Must be at least 2 days from today</Text>
           </VStack>
 
           <VStack gap="xsmall">
@@ -264,13 +264,13 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
           {!h2FormUploaded ? (
             <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
-              <div style={{ textAlign: 'center' }}>
+              <Text as="div" align="center">
                 <div style={{ margin: '0 auto var(--spacing-3)', width: '48px', height: '48px', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)' }}>Upload filled H2 form</p>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>PDF only (max 5MB)</p>
+                  <Text color="secondary" size="sm">Upload filled H2 form</Text>
+                  <Text color="muted" size="xs">PDF only (max 5MB)</Text>
                 </div>
 
                 {h2FormFile ? (
@@ -278,7 +278,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                     <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)' }}>
                         <FaFileAlt style={{ color: 'var(--color-text-tertiary)' }} />
-                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{h2FormFile.name}</span>
+                        <Text as="span" size="sm" color="secondary">{h2FormFile.name}</Text>
                       </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-3)' }}>
@@ -303,7 +303,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                     </label>
                   </div>
                 )}
-              </div>
+              </Text>
             </div>
           ) : (
             <div style={{ backgroundColor: 'var(--color-success-bg-light)', border: 'var(--border-1) solid var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
@@ -312,8 +312,8 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ color: 'var(--color-success-text)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>H2 Form Uploaded Successfully</p>
-                  <p style={{ color: 'var(--color-success)', fontSize: 'var(--font-size-xs)' }}>Ready to submit visitor request</p>
+                  <Text color="success-text" weight="medium" size="sm">H2 Form Uploaded Successfully</Text>
+                  <Text color="success" size="xs">Ready to submit visitor request</Text>
                 </div>
                 <Button type="button" onClick={removeH2Form} variant="ghost" size="sm">
                   Change

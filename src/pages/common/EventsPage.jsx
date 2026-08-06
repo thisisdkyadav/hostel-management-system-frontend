@@ -1,7 +1,7 @@
 import { Tabs } from "czero/react"
 import { useState, useEffect, useCallback } from "react"
 import { FaCalendarAlt } from "react-icons/fa"
-import { Page, Pagination, SearchInput } from "@/components/ui"
+import { Page, Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import EventStats from "../../components/events/EventStats"
 import EventCard from "../../components/events/EventCard"
@@ -139,8 +139,8 @@ const EventsPage = () => {
         <PageFooter
           leftContent={[
             <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{events.length}</span> of{" "}
-              <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{pagination.total || 0}</span> events
+              Showing <Text as="span" weight="semibold">{events.length}</Text> of{" "}
+              <Text as="span" weight="semibold">{pagination.total || 0}</Text> events
             </span>,
           ]}
           rightContent={[

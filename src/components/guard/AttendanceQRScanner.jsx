@@ -3,6 +3,7 @@ import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { Button } from "czero/react"
+import { Text } from "@/components/ui"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -161,14 +162,14 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       {error && (
         <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>
           <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
-          <p style={{ fontSize: 'var(--font-size-sm)' }}>{error}</p>
+          <Text size="sm">{error}</Text>
         </div>
       )}
 
       {success && (
         <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-success)`, display: 'flex', alignItems: 'flex-start' }}>
           <FaUser style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
-          <p style={{ fontSize: 'var(--font-size-sm)' }}>{success}</p>
+          <Text size="sm">{success}</Text>
         </div>
       )}
 
@@ -190,7 +191,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       {loading && (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
           <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', margin: '0 auto var(--spacing-4)' }}></div>
-          <p style={{ color: 'var(--color-text-muted)' }}>Processing QR code...</p>
+          <Text color="muted">Processing QR code...</Text>
         </div>
       )}
 
@@ -198,7 +199,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
         <div style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-tertiary)' }}>
           <div style={{ marginBottom: 'var(--spacing-4)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</h3>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>{scannedPerson.email}</p>
+            <Text color="muted" size="sm">{scannedPerson.email}</Text>
             <div style={{ marginTop: 'var(--spacing-2)', display: 'inline-block', padding: 'var(--spacing-1) var(--spacing-2)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
           </div>
 

@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Checkbox, Select, Textarea } from "@/components/ui/form"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
@@ -569,15 +569,9 @@ export const GymkhanaProposalDetailsModal = ({
               backgroundColor: "var(--color-bg-secondary)",
             }}
           >
-            <span
-              style={{
-                fontSize: "var(--font-size-sm)",
-                fontWeight: "var(--font-weight-medium)",
-                color: "var(--color-text-primary)",
-              }}
-            >
+            <Text as="span" size="sm" weight="medium" color="primary">
               {category.label}
-            </span>
+            </Text>
             <Input
               id={`gymkhana-registration-fee-${category.key}`}
               type="number"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import { Select, DatePicker, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { studentApi } from "../../../service"
 
@@ -185,7 +185,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
               />
               {error && (
                 <HStack gap="small" align="center">
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{error}</span>
+                  <Text as="span" size="xs" color="danger">{error}</Text>
                   <Button onClick={fetchDepartments} variant="ghost" size="sm" disabled={loading}>
                     Retry
                   </Button>
@@ -204,7 +204,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
               />
               {degreesError && (
                 <HStack gap="small" align="center">
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{degreesError}</span>
+                  <Text as="span" size="xs" color="danger">{degreesError}</Text>
                   <Button onClick={fetchDegrees} variant="ghost" size="sm" disabled={degreesLoading}>
                     Retry
                   </Button>
@@ -237,7 +237,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
               />
               {batchError && (
                 <HStack gap="small" align="center">
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{batchError}</span>
+                  <Text as="span" size="xs" color="danger">{batchError}</Text>
                   <Button onClick={fetchBatches} variant="ghost" size="sm" disabled={batchLoading}>
                     Retry
                   </Button>

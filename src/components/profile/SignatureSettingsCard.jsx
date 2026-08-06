@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, FileInput, Grid, Label, Spinner, ToggleButtonGroup } from "@/components/ui"
+import { Card, CardContent, CardHeader, FileInput, Grid, Label, Spinner, Text, ToggleButtonGroup } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -232,9 +232,9 @@ const SignatureSettingsCard = ({ user }) => {
                         style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                       />
                     ) : (
-                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                      <Text as="span" size="xs" color="muted">
                         No image
-                      </span>
+                      </Text>
                     )}
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
@@ -253,9 +253,9 @@ const SignatureSettingsCard = ({ user }) => {
                     >
                       <Upload size={15} /> {imageRef ? "Replace image" : "Upload image"}
                     </Button>
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    <Text as="span" size="xs" color="muted">
                       PNG with transparent background works best. Auto-compressed to a small size.
-                    </span>
+                    </Text>
                   </div>
                 </div>
               </div>

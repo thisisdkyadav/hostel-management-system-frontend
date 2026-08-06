@@ -4,7 +4,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import CapacityBar from "@/components/dining/CapacityBar"
 import BillingPeriodFormModal from "@/components/dining/BillingPeriodFormModal"
 import { billingDateRange, formatCurrency, getErrorMessage } from "@/components/dining/diningBillingHelpers"
@@ -64,8 +64,8 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", fontSize: "var(--font-size-sm)" }}>
-        <span style={{ color: "var(--color-text-muted)" }}>Allocated <strong style={{ color: "var(--color-text-secondary)" }}>{formatCurrency(summary.totalAllocated)}</strong></span>
-        <span style={{ color: "var(--color-text-muted)" }}>Charged <strong style={{ color: "var(--color-text-secondary)" }}>{formatCurrency(summary.totalCharged)}</strong></span>
+        <Text as="span" color="muted">Allocated <Text as="strong" color="secondary">{formatCurrency(summary.totalAllocated)}</Text></Text>
+        <Text as="span" color="muted">Charged <Text as="strong" color="secondary">{formatCurrency(summary.totalCharged)}</Text></Text>
       </div>
 
       <CapacityBar allocated={summary.totalCharged} total={summary.totalAllocated} showLabel={false} size="sm" />
@@ -74,7 +74,7 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
         <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
           <Users size={13} /> {summary.studentCount} student{summary.studentCount === 1 ? "" : "s"}
           {summary.duesCount > 0 && (
-            <span style={{ color: "var(--color-danger)", fontWeight: "var(--font-weight-semibold)" }}>· {summary.duesCount} in dues</span>
+            <Text as="span" color="danger" weight="semibold">· {summary.duesCount} in dues</Text>
           )}
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>

@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Select, Textarea } from "@/components/ui"
+import { Select, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -143,7 +143,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         {/* Title Field */}
         <div>
           <label htmlFor="title" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
-            Title <span style={{ color: "var(--color-danger-text)" }}>*</span>
+            Title <Text as="span" color="danger-text">*</Text>
           </label>
           <Input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} error={errors.title} />
           {errors.title && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.title}</p>}
@@ -152,7 +152,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         {/* Description Field */}
         <div>
           <label htmlFor="description" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
-            Description <span style={{ color: "var(--color-danger-text)" }}>*</span>
+            Description <Text as="span" color="danger-text">*</Text>
           </label>
           <Textarea id="description" name="description" rows={3} value={taskData.description} onChange={handleChange} error={errors.description} />
           {errors.description && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.description}</p>}
@@ -178,7 +178,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         {/* Due Date Field */}
         <div>
           <label htmlFor="dueDate" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
-            Due Date <span style={{ color: "var(--color-danger-text)" }}>*</span>
+            Due Date <Text as="span" color="danger-text">*</Text>
           </label>
           <Input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} error={errors.dueDate} />
           {errors.dueDate && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.dueDate}</p>}

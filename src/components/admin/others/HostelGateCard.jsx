@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
@@ -58,15 +58,15 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)' }}>Created</span>
+              <Text as="span" size="xs" weight="medium">Created</Text>
             </div>
-            <span style={{ color: 'var(--color-text-muted)' }}>{formatDate(gate.createdAt)}</span>
+            <Text as="span" color="muted">{formatDate(gate.createdAt)}</Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)' }}>Updated</span>
+              <Text as="span" size="xs" weight="medium">Updated</Text>
             </div>
-            <span style={{ color: 'var(--color-text-muted)' }}>{formatDate(gate.updatedAt)}</span>
+            <Text as="span" color="muted">{formatDate(gate.updatedAt)}</Text>
           </div>
         </CardBody>
       </Card>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const PdfViewerModal = ({
@@ -54,7 +54,7 @@ const PdfViewerModal = ({
             </div>
             <div>
               <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{title}</h3>
-              <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{subtitle}</p>
+              <Text size="sm" color="muted">{subtitle}</Text>
             </div>
           </div>
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
@@ -99,7 +99,7 @@ const PdfViewerModal = ({
                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-bg-tertiary)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
                     <FaSpinner style={{ width: "var(--icon-lg)", height: "var(--icon-lg)", color: "var(--color-primary)", animation: "spin 1s linear infinite" }} />
-                    <span style={{ color: "var(--color-text-muted)" }}>Loading document...</span>
+                    <Text as="span" color="muted">Loading document...</Text>
                   </div>
                 </div>
               )}

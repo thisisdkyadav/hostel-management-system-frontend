@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -102,28 +102,28 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-4">
             <div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Room Number</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.roomNumber}</p>
+              <Text weight="medium" size="base">{room.roomNumber}</Text>
             </div>
             <div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Floor</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.floorNumber || room.floor || "Ground"}</p>
+              <Text weight="medium" size="base">{room.floorNumber || room.floor || "Ground"}</Text>
             </div>
             <div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Capacity</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.capacity}</p>
+              <Text weight="medium" size="base">{room.capacity}</Text>
             </div>
             <div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Currently Occupied</p>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>
+              <Text weight="medium" size="base">
                 {room.occupiedCount || room.currentOccupancy} / {room.capacity}
-              </p>
+              </Text>
             </div>
           </div>
 
           {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
             <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <p style={{ fontSize: 'var(--font-size-sm)' }}>This room is already at full capacity.</p>
+              <Text size="sm">This room is already at full capacity.</Text>
             </div>
           )}
         </div>
@@ -140,7 +140,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           {availableBeds.length === 0 ? (
             <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-bg-light)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <p style={{ fontSize: 'var(--font-size-base)' }}>No beds available in this room</p>
+              <Text size="base">No beds available in this room</Text>
             </div>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
@@ -182,7 +182,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         {error && (
           <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
             <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-            <p style={{ fontSize: 'var(--font-size-base)' }}>{error}</p>
+            <Text size="base">{error}</Text>
           </div>
         )}
 
@@ -229,8 +229,8 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <div style={{ height: 'var(--spacing-9)', width: 'var(--spacing-9)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</div>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.fullName}</div>
-                                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
+                                <Text as="div" size="sm" weight="medium" color="primary">{student.fullName}</Text>
+                                <Text as="div" size="sm" color="muted">{student.email}</Text>
                               </div>
                             </div>
                           </Table.Cell>

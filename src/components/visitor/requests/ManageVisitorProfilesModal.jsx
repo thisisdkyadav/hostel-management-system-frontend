@@ -3,7 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input, Table } from "czero/react"
-import { Modal, useConfirm } from "@/components/ui"
+import { Modal, Text, useConfirm } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()
@@ -84,13 +84,13 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                             <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-text-muted)" }} />
                           </div>
                           <div style={{ marginLeft: "var(--spacing-4)" }}>
-                            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{profile.name}</div>
+                            <Text as="div" size="sm" weight="medium" color="primary">{profile.name}</Text>
                           </div>
                         </div>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>{profile.email}</div>
-                        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{profile.phone}</div>
+                        <Text as="div" size="sm" color="primary">{profile.email}</Text>
+                        <Text as="div" size="sm" color="muted">{profile.phone}</Text>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <span

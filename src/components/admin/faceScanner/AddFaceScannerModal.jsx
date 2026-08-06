@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { faceScannerApi, adminApi } from "../../../service"
@@ -123,9 +123,9 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
                             Scanner created successfully!
                         </p>
-                        <p style={{ fontSize: "var(--font-size-sm)" }}>
+                        <Text size="sm">
                             Save these credentials now. The password will not be shown again.
-                        </p>
+                        </Text>
                     </Alert>
 
                     <div>

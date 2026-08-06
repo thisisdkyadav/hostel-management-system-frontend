@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -75,24 +75,24 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Room Number:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.roomNumber}</span>
+                  <Text as="span" color="muted" size="base">Room Number:</Text>
+                  <Text as="span" weight="medium" size="base">{room.roomNumber}</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Type:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.type || "Standard"}</span>
+                  <Text as="span" color="muted" size="base">Type:</Text>
+                  <Text as="span" weight="medium" size="base">{room.type || "Standard"}</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Capacity:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.capacity} students</span>
+                  <Text as="span" color="muted" size="base">Capacity:</Text>
+                  <Text as="span" weight="medium" size="base">{room.capacity} students</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Current Occupancy:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{isActive ? `${room.currentOccupancy}/${room.capacity}` : room.status}</span>
+                  <Text as="span" color="muted" size="base">Current Occupancy:</Text>
+                  <Text as="span" weight="medium" size="base">{isActive ? `${room.currentOccupancy}/${room.capacity}` : room.status}</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Floor:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.floor || "Ground"}</span>
+                  <Text as="span" color="muted" size="base">Floor:</Text>
+                  <Text as="span" weight="medium" size="base">{room.floor || "Ground"}</Text>
                 </li>
               </ul>
             </div>
@@ -103,15 +103,15 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Hostel:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.hostel?.name || "N/A"}</span>
+                  <Text as="span" color="muted" size="base">Hostel:</Text>
+                  <Text as="span" weight="medium" size="base">{room.hostel?.name || "N/A"}</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Unit:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.unit?.name || "N/A"}</span>
+                  <Text as="span" color="muted" size="base">Unit:</Text>
+                  <Text as="span" weight="medium" size="base">{room.unit?.name || "N/A"}</Text>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Status:</span>
+                  <Text as="span" color="muted" size="base">Status:</Text>
                   <span style={{
                     fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: !isActive ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
                     color: !isActive ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
@@ -147,7 +147,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             {!isActive ? (
               <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
                 <FaToggleOff style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
-                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>{`This room is currently ${room.status.toLowerCase()} and not available for allocation`}</p>
+                <Text color="muted" size="base">{`This room is currently ${room.status.toLowerCase()} and not available for allocation`}</Text>
               </div>
             ) : room.students && room.students.length > 0 ? (
               <div style={{ backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
@@ -182,9 +182,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                                 )}
                               </div>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.name}</div>
+                                <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
                                 <div className="sm:hidden" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</div>
-                                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.email}</div>
+                                <Text as="div" size="xs" color="muted">{student.email}</Text>
                               </div>
                             </div>
                           </Table.Cell>
@@ -205,7 +205,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             ) : (
               <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
                 <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
-                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No students allocated to this room</p>
+                <Text color="muted" size="base">No students allocated to this room</Text>
                 {room.capacity > 0 && (
                   <Button onClick={onAllocate} variant="primary" size="md">
                     <FaUserPlus /> Allocate Student

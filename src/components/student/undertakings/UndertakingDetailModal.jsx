@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
-import { Checkbox } from "@/components/ui"
+import { Checkbox, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
@@ -58,10 +58,10 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <FaCalendarAlt style={{ color: "var(--color-text-placeholder)", marginRight: "var(--spacing-2)" }} />
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+            <Text as="span" size="sm" color="tertiary">
               Deadline: {formatDate(undertaking.deadline)}
               {deadlinePassed && <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-danger-text)" }}>(Overdue)</span>}
-            </span>
+            </Text>
           </div>
         </div>
 

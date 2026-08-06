@@ -15,7 +15,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Checkbox, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Badge, Card, Checkbox, Divider, HStack, Label, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { MdMeetingRoom } from "react-icons/md"
 
@@ -403,10 +403,10 @@ const UnitsAndRoomsPage = () => {
         </Card>
 
         <div style={{ marginTop: 'var(--spacing-6)' }}>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
+          <Text as="div" size="sm" color="muted">
+            Showing <Text as="span" weight="semibold">{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</Text> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
             {totalItems > 0 && ` of ${totalItems} total`}
-          </div>
+          </Text>
         </div>
 
         {loading ? (

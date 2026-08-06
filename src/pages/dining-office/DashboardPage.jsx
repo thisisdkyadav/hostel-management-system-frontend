@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, StatusBadge, DataTable } from "czero/react"
 import { CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users, Wallet, ClipboardCheck } from "lucide-react"
-import { Alert, Card, EmptyState, LoadingState, Page, StatCards, VStack } from "@/components/ui"
+import { Alert, Card, EmptyState, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { formatCurrency } from "@/components/dining/diningBillingHelpers"
@@ -74,7 +74,7 @@ const DashboardPage = () => {
   ]
 
   const catererColumns = [
-    { key: "name", header: "Caterer", render: (row) => <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{row.name || "—"}</span> },
+    { key: "name", header: "Caterer", render: (row) => <Text as="span" weight="semibold" color="secondary">{row.name || "—"}</Text> },
     { key: "allocatedCount", header: "Allocated", align: "right", render: (row) => row.allocatedCount },
     { key: "maxStudentCount", header: "Capacity", align: "right", render: (row) => row.maxStudentCount || "—" },
     {
@@ -170,8 +170,8 @@ const DashboardPage = () => {
                 { label: "Upcoming approved", value: rebates.upcoming, tone: "var(--color-primary)" },
               ].map((item) => (
                 <div key={item.label} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
-                  <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{item.label}</p>
-                  <p style={{ color: item.tone, fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-2xl)" }}>{item.value}</p>
+                  <Text color="muted" size="sm">{item.label}</Text>
+                  <Text color={item.tone} weight="bold" size="2xl">{item.value}</Text>
                 </div>
               ))}
             </div>

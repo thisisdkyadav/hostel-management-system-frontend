@@ -1,5 +1,5 @@
 import React from "react"
-import { Select, Textarea } from "@/components/ui"
+import { Select, Text, Textarea } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
@@ -65,7 +65,7 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
       {/* Hostel Selection */}
       <div style={{ marginBottom: "var(--spacing-3)" }}>
         <label htmlFor="hostel-select" style={labelStyle}>
-          Assign Hostel <span style={{ color: "var(--color-danger)" }}>*</span>
+          Assign Hostel <Text as="span" color="danger">*</Text>
         </label>
         <Select id="hostel-select" value={selectedHostel} onChange={(e) => onHostelChange(e.target.value)} placeholder="Select a hostel" options={hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))} />
       </div>

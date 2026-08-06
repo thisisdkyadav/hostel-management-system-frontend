@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"
 import {
@@ -537,9 +537,9 @@ export const GymkhanaSettingsModal = ({
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+      <Text as="span" size="xs" color="muted">
         Configure lock state, proposal rules, and category budget caps for {calendar?.academicYear}
-      </span>
+      </Text>
       <div
         style={{
           borderRadius: "var(--radius-card-sm)",
@@ -552,15 +552,9 @@ export const GymkhanaSettingsModal = ({
         }}
       >
         <div>
-          <span
-            style={{
-              fontWeight: "var(--font-weight-medium)",
-              fontSize: "var(--font-size-sm)",
-              color: "var(--color-text-heading)",
-            }}
-          >
+          <Text as="span" weight="medium" size="sm" color="heading">
             Calendar Lock
-          </span>
+          </Text>
           <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
             {calendar?.isLocked ? "Locked. GS cannot edit." : "Unlocked. GS can edit."}
           </p>
@@ -627,15 +621,9 @@ export const GymkhanaSettingsModal = ({
         }}
       >
         <div>
-          <span
-            style={{
-              fontWeight: "var(--font-weight-medium)",
-              fontSize: "var(--font-size-sm)",
-              color: "var(--color-text-heading)",
-            }}
-          >
+          <Text as="span" weight="medium" size="sm" color="heading">
             Category Budget Caps
-          </span>
+          </Text>
           <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
             Leave a field blank to keep that category unlimited. Event saves will be blocked once a category total exceeds its cap.
             <br />
@@ -663,9 +651,9 @@ export const GymkhanaSettingsModal = ({
                   disabled={submitting}
                   onChange={(event) => onBudgetCapChange?.(category.key, event.target.value)}
                 />
-                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                <Text as="span" size="xs" color="muted">
                   Current allocated budget: ₹{allocated.toLocaleString()}
-                </span>
+                </Text>
               </div>
             )
           })}

@@ -2,6 +2,7 @@ import React from "react"
 import { BsDoorOpenFill } from "react-icons/bs"
 import { FaUserFriends } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
@@ -24,7 +25,7 @@ const RoomInfoCard = ({ roomData }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-md)', marginTop: 'var(--spacing-3)' }}>
-        <p style={{ fontSize: 'var(--font-size-4xl)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{roomData.roomNumber}</p>
+        <Text size="4xl" weight="medium" color="brand">{roomData.roomNumber}</Text>
         <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>
           <FaUserFriends style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} />
           <span>

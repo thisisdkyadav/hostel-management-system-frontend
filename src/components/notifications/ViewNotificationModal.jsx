@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
@@ -36,7 +36,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
             </div>
             <div>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Created</h4>
-              <p style={{ color: 'var(--color-text-muted)' }}>{formatDate(notification.createdAt)}</p>
+              <Text color="muted">{formatDate(notification.createdAt)}</Text>
             </div>
           </div>
 
@@ -46,7 +46,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
             </div>
             <div>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Expires</h4>
-              <p style={{ color: 'var(--color-text-muted)' }}>{formatDate(notification.expiryDate)}</p>
+              <Text color="muted">{formatDate(notification.expiryDate)}</Text>
             </div>
           </div>
         </Grid>
@@ -58,7 +58,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-info)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Hostels:</span>
+                  <Text as="span" size="sm" weight="medium">Hostels:</Text>
                   <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.hostelId.map((h) => h.name).join(", ")}</span>
                 </div>
               </div>
@@ -68,7 +68,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaGraduationCap style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Departments:</span>
+                  <Text as="span" size="sm" weight="medium">Departments:</Text>
                   <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.department.join(", ")}</span>
                 </div>
               </div>
@@ -78,7 +78,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaUserAlt style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Degrees:</span>
+                  <Text as="span" size="sm" weight="medium">Degrees:</Text>
                   <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.degree.join(", ")}</span>
                 </div>
               </div>
@@ -88,7 +88,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaVenusMars style={{ color: 'var(--color-girls-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Gender:</span>
+                  <Text as="span" size="sm" weight="medium">Gender:</Text>
                   <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.gender}</span>
                 </div>
               </div>
@@ -97,7 +97,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
             {!notification.hostelId?.length && !notification.department?.length && !notification.degree?.length && !notification.gender && (
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaUserAlt style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-2)' }} />
-                <span style={{ fontSize: 'var(--font-size-sm)' }}>All Students</span>
+                <Text as="span" size="sm">All Students</Text>
               </div>
             )}
           </div>

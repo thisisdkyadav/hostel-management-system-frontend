@@ -3,6 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -37,14 +38,14 @@ const ScannerEntriesPage = () => {
                 {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} /></div>}
               </div>
               <div>
-                <p style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId.name}</p>
-                <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.userId.rollNumber}</p>
+                <Text weight="medium" color="primary">{entry.userId.name}</Text>
+                <Text size="sm" color="muted">{entry.userId.rollNumber}</Text>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}><span>Room: {entry.room}{entry.bed}</span><StatusBadge status={entry.status} /></div>
               </div>
             </div>
             <p style={{ color: "var(--color-warning-text)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</p>
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <span style={{ color: "var(--color-danger)" }}>*</span></label>
+              <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text></label>
               <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)} placeholder="Enter reason..." style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }} rows="3" disabled={isUpdating} data-no-scanner="true" />
             </div>
             <Button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} variant="warning" size="sm" loading={isUpdating}>
@@ -61,7 +62,7 @@ const ScannerEntriesPage = () => {
       <div style={{ maxWidth: "var(--container-xl)", margin: "0 auto" }}>
         <div style={{ marginBottom: "var(--spacing-6)" }}>
           <h1 style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>External QR Scanner Entries</h1>
-          <p style={{ fontSize: "var(--font-size-base)", color: "var(--color-text-muted)" }}>Entries recorded from external QR scanners with keyboard input.</p>
+          <Text size="base" color="muted">Entries recorded from external QR scanners with keyboard input.</Text>
         </div>
         <div style={{ marginBottom: "var(--spacing-6)", backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
           <div style={{ display: "flex", alignItems: "flex-start" }}>
@@ -75,7 +76,7 @@ const ScannerEntriesPage = () => {
             </div>
           </div>
         </div>
-        {error && <div style={{ marginBottom: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", display: "flex", alignItems: "flex-start" }}><FaTimes style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} /><p style={{ fontSize: "var(--font-size-sm)" }}>{error}</p></div>}
+        {error && <div style={{ marginBottom: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", display: "flex", alignItems: "flex-start" }}><FaTimes style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} /><Text size="sm">{error}</Text></div>}
         {pendingCrossHostelEntries.length > 0 && (
           <div style={{ marginBottom: "var(--spacing-8)" }}>
             <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-4)", display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-2)" }} />Pending Cross-Hostel Check-In Entries ({pendingCrossHostelEntries.length})</h2>
@@ -93,9 +94,9 @@ const ScannerEntriesPage = () => {
             </Button>
           </div>
           {loading && scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTop: "var(--border-4) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", margin: "0 auto var(--spacing-4)" }}></div><p style={{ color: "var(--color-text-muted)" }}>Loading scanner entries...</p></div>
+            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTop: "var(--border-4) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", margin: "0 auto var(--spacing-4)" }}></div><Text color="muted">Loading scanner entries...</Text></div>
           ) : scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-lg)" }}>No scanner entries found</p><p style={{ color: "var(--color-text-light)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</p></div>
+            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><p style={{ color: "var(--color-text-light)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</p></div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <Table>
@@ -112,20 +113,20 @@ const ScannerEntriesPage = () => {
                             <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
                               {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-lg)", height: "var(--icon-lg)" }} /></div>}
                             </div>
-                            <div><div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId.name}</div><div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.userId.email}</div></div>
+                            <div><Text as="div" size="sm" weight="medium" color="primary">{entry.userId.name}</Text><Text as="div" size="sm" color="muted">{entry.userId.email}</Text></div>
                           </div>
                         </Table.Cell>
-                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{entry.room}{entry.bed}-{entry.unit}</div><div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{entry.hostelName}</div></Table.Cell>
+                        <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><Text as="div" size="sm" color="muted">{entry.room}{entry.bed}-{entry.unit}</Text><Text as="div" size="xs" color="light">{entry.hostelName}</Text></Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{date}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{time}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><StatusBadge status={entry.status} /></Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
-                            {entry.scannerType === "checkin" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-success)" }}><FaArrowDown style={{ marginRight: "var(--spacing-1)" }} /><span>Check-in</span></div> : entry.scannerType === "checkout" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-warning)" }}><FaArrowRight style={{ marginRight: "var(--spacing-1)", transform: "rotate(90deg)" }} /><span>Check-out</span></div> : <span style={{ color: "var(--color-text-muted)" }}>Auto</span>}
+                            {entry.scannerType === "checkin" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-success)" }}><FaArrowDown style={{ marginRight: "var(--spacing-1)" }} /><span>Check-in</span></div> : entry.scannerType === "checkout" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-warning)" }}><FaArrowRight style={{ marginRight: "var(--spacing-1)", transform: "rotate(90deg)" }} /><span>Check-out</span></div> : <Text as="span" color="muted">Auto</Text>}
                           </div>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          {entry.isSameHostel === false ? <div style={{ display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning)" }}>Yes</span>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</div> : <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No</span>}
+                          {entry.isSameHostel === false ? <div style={{ display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</div> : <Text as="span" size="sm" color="muted">No</Text>}
                         </Table.Cell>
                       </Table.Row>
                     )

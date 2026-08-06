@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaStar } from "react-icons/fa"
-import { Select } from "@/components/ui"
+import { Select, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { complaintApi } from "../../service"
@@ -42,7 +42,7 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
           <div className="border-l-4" style={{ backgroundColor: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }} >
-            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
+            <Text color="danger-text">{error}</Text>
           </div>
         )}
 

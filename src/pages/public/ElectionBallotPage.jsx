@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Spinner } from "@/components/ui"
+import { Alert, Card, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -169,18 +169,12 @@ const ElectionBallotPage = () => {
             }}
           >
             <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: "var(--font-size-lg)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: "var(--color-text-heading)",
-                }}
-              >
+              <Text as="div" size="lg" weight="semibold" color="heading">
                 {ballot?.election?.title || "Election Voting Page"}
-              </div>
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              </Text>
+              <Text as="div" color="muted" size="sm">
                 {votingWindowLabel}
-              </div>
+              </Text>
             </div>
             {ballot?.voter?.name ? (
               <div
@@ -191,18 +185,12 @@ const ElectionBallotPage = () => {
                   minWidth: 0,
                 }}
               >
-                <div
-                  style={{
-                    fontSize: "var(--font-size-sm)",
-                    fontWeight: "var(--font-weight-medium)",
-                    color: "var(--color-text-heading)",
-                  }}
-                >
+                <Text as="div" size="sm" weight="medium" color="heading">
                   {ballot.voter.name}
-                </div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                </Text>
+                <Text as="div" color="muted" size="sm">
                   {ballot.voter.rollNumber}
-                </div>
+                </Text>
               </div>
             ) : null}
           </div>
@@ -217,9 +205,9 @@ const ElectionBallotPage = () => {
                 <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>
                   {ballot?.election?.title || "Election Voting Page"}
                 </h1>
-                <div style={{ color: "var(--color-text-muted)" }}>
+                <Text as="div" color="muted">
                   {votingWindowLabel}
-                </div>
+                </Text>
               </div>
             ) : null}
 
@@ -251,9 +239,9 @@ const ElectionBallotPage = () => {
                       padding: "var(--spacing-5)",
                     }}
                   >
-                    <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+                    <Text as="div" weight="semibold" size="lg">
                       {post.postTitle}
-                    </div>
+                    </Text>
 
                     <div style={{ display: "grid", gap: "10px" }}>
                       {(post.candidates || []).map((candidate) => {
@@ -297,11 +285,11 @@ const ElectionBallotPage = () => {
                               />
                             ) : null}
                             <div style={{ display: "grid", gap: "2px" }}>
-                              <div style={{ fontWeight: "var(--font-weight-medium)" }}>{candidate.candidateName}</div>
+                              <Text as="div" weight="medium">{candidate.candidateName}</Text>
                               {!candidate.isNota && candidate.candidateRollNumber ? (
-                                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                                <Text as="div" color="muted" size="sm">
                                   {candidate.candidateRollNumber}
-                                </div>
+                                </Text>
                               ) : null}
                             </div>
                           </label>

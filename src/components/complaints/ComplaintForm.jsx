@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Select } from "@/components/ui"
+import { Select, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -66,7 +66,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
             <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
+            <Text color="danger-text">{error}</Text>
           </div>
         )}
 

@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
@@ -214,10 +214,10 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
                   <div key={user._id || idx} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ marginRight: 'var(--spacing-3)', height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{user.name ? user.name.charAt(0) : "U"}</div>
                     <div>
-                      <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{user.name}</p>
-                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+                      <Text size="sm" weight="medium" color="primary">{user.name}</Text>
+                      <Text size="xs" color="muted">
                         {user.email} - {user.role}
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 ))}

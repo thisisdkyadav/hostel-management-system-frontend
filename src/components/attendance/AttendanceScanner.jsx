@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { Button, StatusBadge, Input } from "czero/react"
-import { Avatar, Alert } from "@/components/ui"
+import { Alert, Avatar, Text } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import { Camera, CameraOff, Keyboard, UserCheck } from "lucide-react"
 import { attendanceApi } from "../../service"
@@ -225,13 +225,13 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
         >
           <Avatar src={lastResult.student.profileImage} name={lastResult.student.name} size="medium" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+            <Text as="div" weight="semibold" color="heading">
               {lastResult.student.name || lastResult.student.rollNumber}
-            </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            </Text>
+            <Text as="div" size="sm" color="muted">
               {lastResult.student.rollNumber}
               {lastResult.student.department ? ` · ${lastResult.student.department}` : ""}
-            </div>
+            </Text>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)", alignItems: "flex-end" }}>
             <StatusBadge

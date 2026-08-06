@@ -1,6 +1,7 @@
 import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
+import { Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -97,9 +98,9 @@ const StudentElectionWorkspace = ({
             key: "title",
             render: (post) => (
               <div style={{ display: "grid", gap: "4px" }}>
-                <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                <Text as="div" weight="medium" color="primary">
                   {post.title}
-                </div>
+                </Text>
                 <div style={mutedTextStyle}>
                   {formatStageLabel(post.category)}
                   {post.code ? ` · ${post.code}` : ""}
@@ -193,15 +194,9 @@ const StudentElectionWorkspace = ({
                     }}
                   >
                     <div>
-                      <div
-                        style={{
-                          fontSize: "var(--font-size-base)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-heading)",
-                        }}
-                      >
+                      <Text as="div" size="base" weight="semibold" color="heading">
                         {post.title}
-                      </div>
+                      </Text>
                       {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
                     </div>
 
@@ -236,15 +231,9 @@ const StudentElectionWorkspace = ({
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-base)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-heading)",
-                    }}
-                  >
+                  <Text as="div" size="base" weight="semibold" color="heading">
                     {post.title}
-                  </div>
+                  </Text>
                   {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
                 </div>
 
@@ -282,14 +271,9 @@ const StudentElectionWorkspace = ({
                           }
                         />
                         <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontWeight: "var(--font-weight-medium)",
-                              color: "var(--color-text-primary)",
-                            }}
-                          >
+                          <Text as="div" weight="medium" color="primary">
                             {candidate.candidateName || candidate.candidateUserId?.name || candidate.candidateRollNumber}
-                          </div>
+                          </Text>
                           {candidate.candidateRollNumber ? (
                             <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
                           ) : null}
@@ -347,15 +331,9 @@ const StudentElectionWorkspace = ({
                   }}
                 >
                   <div>
-                    <div
-                      style={{
-                        fontSize: "var(--font-size-base)",
-                        fontWeight: "var(--font-weight-semibold)",
-                        color: "var(--color-text-heading)",
-                      }}
-                    >
+                    <Text as="div" size="base" weight="semibold" color="heading">
                       {postResult.postTitle}
-                    </div>
+                    </Text>
                     <div style={mutedTextStyle}>
                       {showVoteCountToStudents ? `${postResult.totalVotes || 0} vote(s)` : "Vote count hidden"}
                       {winners.length > 0
@@ -425,14 +403,9 @@ const StudentElectionWorkspace = ({
                               #{index + 1}
                             </div>
                             <div style={{ minWidth: 0 }}>
-                              <div
-                                style={{
-                                  fontWeight: "var(--font-weight-medium)",
-                                  color: "var(--color-text-heading)",
-                                }}
-                              >
+                              <Text as="div" weight="medium" color="heading">
                                 {candidate.candidateName}
-                              </div>
+                              </Text>
                               {!candidate.isNota && candidate.candidateRollNumber ? (
                                 <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
                               ) : null}
@@ -459,14 +432,9 @@ const StudentElectionWorkspace = ({
                             ) : null}
                             {showVoteCountToStudents ? (
                               <>
-                                <span
-                                  style={{
-                                    fontWeight: "var(--font-weight-semibold)",
-                                    color: "var(--color-text-heading)",
-                                  }}
-                                >
+                                <Text as="span" weight="semibold" color="heading">
                                   {candidate.voteCount} vote(s)
-                                </span>
+                                </Text>
                                 <span style={mutedTextStyle}>{percentage}</span>
                               </>
                             ) : null}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Alert, Avatar, ConfirmDialog, IconButton } from "@/components/ui"
+import { Alert, Avatar, ConfirmDialog, IconButton, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Pencil, Trash2, Lock, LockOpen } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"
@@ -49,7 +49,7 @@ const StatTile = ({ label, value, tone = "default" }) => {
       <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
         {label}
       </div>
-      <div style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)", color }}>{value}</div>
+      <Text as="div" size="3xl" weight="bold">{value}</Text>
     </div>
   )
 }
@@ -141,7 +141,7 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
       render: (row) => (
         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
           <Avatar src={row.userId?.profileImage} name={row.userId?.name} size="small" />
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>{row.userId?.name || "—"}</span>
+          <Text as="span" weight="medium">{row.userId?.name || "—"}</Text>
         </div>
       ),
     },
@@ -218,13 +218,13 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
         {error && <Alert type="error" icon>{error}</Alert>}
 
         {loading && !data ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Loading…</div>
+          <Text as="div" color="muted">Loading…</Text>
         ) : occurrence ? (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
               <StatusBadge tone={isClosed ? "warning" : "success"}>{isClosed ? "Closed" : "Open"}</StatusBadge>
               {occurrence.description && (
-                <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{occurrence.description}</span>
+                <Text as="span" color="muted" size="sm">{occurrence.description}</Text>
               )}
             </div>
 
@@ -297,7 +297,7 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
             )}
           </>
         ) : (
-          !error && <div style={{ color: "var(--color-text-muted)" }}>Occurrence not found.</div>
+          !error && <Text as="div" color="muted">Occurrence not found.</Text>
         )}
       </div>
 

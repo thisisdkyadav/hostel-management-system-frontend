@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -51,7 +51,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             </div>
             <div>
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h3>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Guest Room Booking Form</p>
+              <Text size="sm" color="muted">Guest Room Booking Form</Text>
             </div>
           </div>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
@@ -85,7 +85,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                 <div style={{ position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg-tertiary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
                     <FaSpinner style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
-                    <span style={{ color: 'var(--color-text-muted)' }}>Loading document...</span>
+                    <Text as="span" color="muted">Loading document...</Text>
                   </div>
                 </div>
               )}

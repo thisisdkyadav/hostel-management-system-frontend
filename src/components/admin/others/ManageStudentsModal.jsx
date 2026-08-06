@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import { Alert, HStack, SearchInput, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, SearchInput, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -112,8 +112,8 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <div style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', marginRight: 'var(--spacing-3)' }}>{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
                           <div>
-                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.name}</div>
-                            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
+                            <Text as="div" size="sm" weight="medium" color="secondary">{student.name}</Text>
+                            <Text as="div" size="sm" color="muted">{student.email}</Text>
                           </div>
                         </div>
                       </Table.Cell>

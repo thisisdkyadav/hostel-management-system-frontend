@@ -1,5 +1,5 @@
 import { Button, StatusBadge } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
@@ -34,10 +34,10 @@ const Section = ({ icon, title, children }) => (
 
 const Field = ({ label, value }) => (
   <div>
-    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{label}</div>
-    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
+    <Text as="div" size="xs" color="muted">{label}</Text>
+    <Text as="div" size="sm" color="secondary" weight="medium">
       {value}
-    </div>
+    </Text>
   </div>
 )
 
@@ -99,17 +99,17 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
           <CapacityBar allocated={period.totalAllocated} total={period.totalCapacity} label="Overall capacity" />
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
             {period.catererCapacities.length === 0 && (
-              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No caterers configured.</span>
+              <Text as="span" size="sm" color="muted">No caterers configured.</Text>
             )}
             {period.catererCapacities.map((entry) => (
               <div key={entry.catererId} style={tile}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", marginBottom: "var(--spacing-2)" }}>
-                  <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>
+                  <Text as="span" size="sm" weight="semibold" color="secondary">
                     {entry.caterer?.name || "Caterer"}
-                  </span>
-                  <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  </Text>
+                  <Text as="span" size="xs" color="muted">
                     {entry.remainingSeats} seats left
-                  </span>
+                  </Text>
                 </div>
                 <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
                 <div style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
@@ -127,12 +127,12 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
                 key={`${slot.name}-${index}`}
                 style={{ ...tile, display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
-                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                <Text as="span" size="sm" weight="medium" color="secondary">
                   {slot.name}
-                </span>
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text as="span" size="sm" color="muted">
                   {slot.startTime} – {slot.endTime}
-                </span>
+                </Text>
               </div>
             ))}
           </div>

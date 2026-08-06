@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react"
 import { Button, Tabs } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Spinner } from "@/components/ui/feedback"
 import { useToast } from "@/components/ui"
 import { Clock, RotateCcw } from "lucide-react"
@@ -42,17 +42,17 @@ const DeletedRow = ({ item, onRestore, restoring, lastRow }) => (
       >
         {item.eventId?.title || "Untitled event"}
         {item.eventId?.category ? (
-          <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
+          <Text as="span" color="muted" weight="normal">
             {" "}· {item.eventId.category}
-          </span>
+          </Text>
         ) : null}
       </p>
-      <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+      <Text size="xs" color="muted">
         Submitted by {item.submittedBy?.name || "Unknown"}
-      </p>
-      <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+      </Text>
+      <Text size="xs" color="muted">
         Deleted by {item.deletedBy?.name || "Unknown"} · {formatTimestamp(item.deletedAt)}
-      </p>
+      </Text>
       {item.deleteReason ? (
         <p
           style={{

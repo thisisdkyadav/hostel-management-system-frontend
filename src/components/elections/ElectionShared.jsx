@@ -4,6 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
+import { Text } from "@/components/ui"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
@@ -64,15 +65,9 @@ export const MetaList = ({ items = [], mutedTextStyle }) => (
         }}
       >
         <span style={mutedTextStyle}>{item.label}</span>
-        <span
-          style={{
-            color: "var(--color-text-body)",
-            fontWeight: "var(--font-weight-medium)",
-            textAlign: "right",
-          }}
-        >
+        <Text as="span" color="body" weight="medium" align="right">
           {item.value || "—"}
-        </span>
+        </Text>
       </div>
     ))}
   </div>
@@ -464,9 +459,9 @@ export const DocumentUploadField = ({
         </label>
         {value ? (
           <div style={{ display: "grid", gap: "10px" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+            <Text as="div" size="sm" color="body">
               {isPdfDocument(value) ? "PDF uploaded" : "Document uploaded"}
-            </div>
+            </Text>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <Button size="sm" variant="secondary" onClick={() => setViewerOpen(true)}>
                 View

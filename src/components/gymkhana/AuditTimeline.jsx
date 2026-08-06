@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Plus, Pencil, Trash2, RotateCcw, Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { Text } from "@/components/ui"
 
 // Edit actions (kind: "edit") and approval actions (kind: "approval") share one map.
 const ACTION_ICONS = {
@@ -101,14 +102,14 @@ const ChangeRow = ({ change }) => (
             fontSize: "var(--font-size-xs)",
         }}
     >
-        <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+        <Text as="span" weight="medium" color="secondary">
             {humanizeField(change.field)}:
-        </span>
+        </Text>
         <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
             {formatValue(change.from)}
         </span>
-        <span style={{ color: "var(--color-text-placeholder)" }}>→</span>
-        <span style={{ color: "var(--color-text-body)" }}>{formatValue(change.to)}</span>
+        <Text as="span" color="placeholder">→</Text>
+        <Text as="span" color="body">{formatValue(change.to)}</Text>
     </div>
 )
 
@@ -194,14 +195,14 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                             }}
                         >
                             <Icon size={14} style={{ color: `var(--color-${color})`, flexShrink: 0 }} />
-                            <span style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
+                            <Text as="span" color="body" weight="medium">
                                 {formatActionLabel(item.action)}
-                            </span>
-                            <span style={{ color: "var(--color-text-muted)" }}>by {actorName(actor)}</span>
+                            </Text>
+                            <Text as="span" color="muted">by {actorName(actor)}</Text>
                             {item.kind === "edit" && changeCount > 0 ? (
-                                <span style={{ color: "var(--color-text-placeholder)" }}>
+                                <Text as="span" color="placeholder">
                                     · {changeCount} change{changeCount === 1 ? "" : "s"}
-                                </span>
+                                </Text>
                             ) : null}
                             <span style={{ color: "var(--color-text-placeholder)", marginLeft: "auto" }}>
                                 {formatTimestamp(item.at)}
@@ -266,14 +267,14 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                             >
                                 <Badge variant={color}>{formatActionLabel(item.action)}</Badge>
                                 {!isEdit && item.stage && (
-                                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                                    <Text as="span" size="xs" color="muted">
                                         by {formatStageLabel(item.stage)}
-                                    </span>
+                                    </Text>
                                 )}
                                 {isEdit && actor.role && (
-                                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                                    <Text as="span" size="xs" color="muted">
                                         {actor.subRole || actor.role}
-                                    </span>
+                                    </Text>
                                 )}
                             </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { HStack, useConfirm, VStack } from "@/components/ui"
+import { HStack, Text, useConfirm, VStack } from "@/components/ui"
 import { Tabs, Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { Table, Pencil, Trash2 } from "lucide-react"
@@ -24,12 +24,12 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
       isDestructive: true,
       message: (
         <VStack gap="medium" align="center">
-          <p style={{ color: "var(--color-danger)", fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-lg)" }}>CRITICAL WARNING</p>
+          <Text color="danger" weight="bold" size="lg">CRITICAL WARNING</Text>
           <p>
             This will remove <strong>ALL</strong> student room allocations from <strong>{hostel.name}</strong>.
           </p>
           <p>All students will be immediately removed from their rooms.</p>
-          <p style={{ color: "var(--color-danger)", fontWeight: "var(--font-weight-semibold)" }}>This action CANNOT be undone.</p>
+          <Text color="danger" weight="semibold">This action CANNOT be undone.</Text>
         </VStack>
       ),
     })

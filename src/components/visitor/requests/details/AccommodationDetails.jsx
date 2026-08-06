@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding } from "react-icons/fa"
 import { useGlobal } from "../../../../contexts/GlobalProvider"
+import { Text } from "@/components/ui"
 
 const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
   return (
@@ -11,12 +12,12 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
       </h3>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", }} >
+          <Text as="span" color="muted" size="sm">
             Hostel:
-          </span>
-          <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", }} >
+          </Text>
+          <Text as="span" weight="medium" size="sm">
             {hostelName}
-          </span>
+          </Text>
         </div>
         {allocatedRooms && allocatedRooms.length > 0 ? (
           <div>
@@ -33,12 +34,12 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
           </div>
         ) : (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", }} >
+            <Text as="span" color="muted" size="sm">
               Room:
-            </span>
-            <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", }} >
+            </Text>
+            <Text as="span" weight="medium" size="sm">
               Not allocated yet
-            </span>
+            </Text>
           </div>
         )}
       </div>

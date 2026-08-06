@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { EmptyState, Modal } from "@/components/ui"
+import { EmptyState, Modal, Text } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -223,8 +223,8 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     const roomLabel = `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`
                     return (
                       <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}</span>
-                        <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>Room {roomLabel}</span>
+                        <Text as="span" size="sm" color="body">{r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}</Text>
+                        <Text as="span" size="sm" weight="semibold" color="heading">Room {roomLabel}</Text>
                       </div>
                     )
                   })}
@@ -235,9 +235,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             {showBypassFa && (
               <SectionCard icon={UserRoundX} title="Faculty advisor" accentColor="var(--color-warning)">
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  <Text size="sm" color="muted">
                     This request is awaiting the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
-                  </p>
+                  </Text>
                   <Button variant="outline" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
                 </div>
               </SectionCard>
@@ -271,7 +271,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     <Label>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</Label>
                     <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
                   </div>
-                  <p style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>The payment link and QR are taken automatically from settings.</p>
+                  <Text size="10px" color="muted">The payment link and QR are taken automatically from settings.</Text>
                   <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (Number(payForm.amount) !== (request.quote?.total || 0) && !payForm.remarks.trim())}>Send payment request</Button>
                 </div>
               </SectionCard>
@@ -303,9 +303,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                           <label key={h.hostelId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", padding: "var(--spacing-2) var(--spacing-3)", border: `1px solid ${hostelChoice === h.hostelId ? "var(--color-primary)" : "var(--color-border-primary)"}`, borderRadius: "var(--radius-md)", opacity: ok ? 1 : 0.5, cursor: ok ? "pointer" : "not-allowed" }}>
                             <span style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                               <input type="radio" name="hostel" value={h.hostelId} disabled={!ok} checked={hostelChoice === h.hostelId} onChange={() => setHostelChoice(h.hostelId)} />
-                              <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>{h.name}</span>
+                              <Text as="span" size="sm" weight="medium">{h.name}</Text>
                             </span>
-                            <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: ok ? "var(--color-success)" : "var(--color-danger)" }}>{h.available}/{h.totalBeds} free</span>
+                            <Text as="span" size="xs" weight="semibold" color={ok ? "var(--color-success)" : "var(--color-danger)"}>{h.available}/{h.totalBeds} free</Text>
                           </label>
                         )
                       })}
@@ -324,7 +324,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
                   {(request.guests || []).map((g, i) => (
                     <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)", alignItems: "center" }}>
-                      <span style={{ fontSize: "var(--font-size-sm)" }}>{g.name}</span>
+                      <Text as="span" size="sm">{g.name}</Text>
                       <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
                     </div>
                   ))}

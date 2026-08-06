@@ -1,5 +1,6 @@
 import React from "react"
 import { FaTools, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserTie } from "react-icons/fa"
+import { Text } from "@/components/ui"
 
 const MaintenanceStats = ({ maintenanceStaff }) => {
   // Count staff by category
@@ -66,7 +67,7 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
       {statCards.map((stat) => (
         <div key={stat.name} style={{ backgroundColor: stat.bgColor, borderRadius: "var(--radius-xl)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", boxShadow: "var(--shadow-sm)" }}>
           <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "var(--spacing-2)" }}>{stat.icon}</div>
-          <div style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)" }}>{stat.value}</div>
+          <Text as="div" size="3xl" weight="bold">{stat.value}</Text>
           <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>{stat.name}</div>
         </div>
       ))}

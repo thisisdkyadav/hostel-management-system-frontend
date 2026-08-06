@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
-import { VStack, HStack, Label, Spinner, Pagination, EmptyState, Badge, StatCards } from "@/components/ui"
+import { Badge, EmptyState, HStack, Label, Pagination, Spinner, StatCards, Text, VStack } from "@/components/ui"
 import { Tabs, Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -221,7 +221,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)", marginBottom: "var(--spacing-2)" }}>Total Work Done</h3>
-                      <p style={{ fontSize: "var(--font-size-4xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-info)" }}>{workStats.totalWorkDone}</p>
+                      <Text size="4xl" weight="bold" color="info">{workStats.totalWorkDone}</Text>
                       <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info)", marginTop: "var(--spacing-1)" }}>Complaints Resolved</p>
                     </div>
                     <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)" }}>
@@ -235,7 +235,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)", marginBottom: "var(--spacing-2)" }}>Today's Work</h3>
-                      <p style={{ fontSize: "var(--font-size-4xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-success)" }}>{workStats.todayWorkDone}</p>
+                      <Text size="4xl" weight="bold" color="success">{workStats.todayWorkDone}</Text>
                       <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-success)", marginTop: "var(--spacing-1)" }}>Complaints Resolved Today</p>
                     </div>
                     <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-success-bg)", borderRadius: "var(--radius-full)" }}>

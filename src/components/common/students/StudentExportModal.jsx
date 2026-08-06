@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { CheckCircle2, Download, FileText, Filter, Upload, Users } from "lucide-react"
 import { FileInput } from "@/components/ui"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -211,9 +211,9 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
           >
             <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-3)", alignItems: "center", justifyContent: "space-between" }}>
               <div>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                <Text as="div" weight="semibold" color="primary">
                   {fileName || "No file selected"}
-                </div>
+                </Text>
                 <div style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                   {rollNumbers.length > 0 ? `${rollNumbers.length} unique roll numbers ready` : "Upload a CSV file to continue"}
                 </div>

@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Select, useConfirm } from "@/components/ui"
+import { Select, Text, useConfirm } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -321,15 +321,15 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-4)", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.email || "N/A"}</span>
+                      <Text as="span" color="body" size="sm">{studentDetails.email || "N/A"}</Text>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.secondaryEmail || "N/A"}</span>
+                      <Text as="span" color="body" size="sm">{studentDetails.secondaryEmail || "N/A"}</Text>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Phone size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.phone || "N/A"}</span>
+                      <Text as="span" color="body" size="sm">{studentDetails.phone || "N/A"}</Text>
                     </div>
                   </div>
                 </div>
@@ -398,30 +398,30 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Department:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.department || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Department:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.department || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Degree:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.degree || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Degree:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.degree || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Batch:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.batch || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Batch:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.batch || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Groups:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right" }}>
+                    <Text as="span" weight="medium" size="sm" color="body" align="right">
                       {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
-                    </span>
+                    </Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Year:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.year || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Year:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.year || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Admission Date:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{formatDate(studentDetails.admissionDate)}</span>
+                    <Text as="span" color="muted" size="sm">Admission Date:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.admissionDate)}</Text>
                   </div>
                 </div>
               </div>
@@ -433,22 +433,22 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Hostel:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.hostel || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Hostel:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.hostel || "N/A"}</Text>
                   </div>
                   {studentDetails.hostelType === "unit-based" && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Unit Number:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.unit || "N/A"}</span>
+                      <Text as="span" color="muted" size="sm">Unit Number:</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.unit || "N/A"}</Text>
                     </div>
                   )}
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Room Number:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.room || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Room Number:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.room || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Bed Number:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.bedNumber || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Bed Number:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.bedNumber || "N/A"}</Text>
                   </div>
                 </div>
               </div>
@@ -460,16 +460,16 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Gender:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.gender || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Gender:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.gender || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Date of Birth:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{formatDate(studentDetails.dateOfBirth)}</span>
+                    <Text as="span" color="muted" size="sm">Date of Birth:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.dateOfBirth)}</Text>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Address:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.address || "N/A"}</span>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Secondary Email:</span>
@@ -487,20 +487,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Guardian Name:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.guardian || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Guardian Name:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardian || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Guardian Phone:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.guardianPhone || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Guardian Phone:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianPhone || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Guardian Email:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.guardianEmail || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Guardian Email:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianEmail || "N/A"}</Text>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Faculty Advisor Email:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.facultyAdvisorEmail || "N/A"}</span>
+                    <Text as="span" color="muted" size="sm">Faculty Advisor Email:</Text>
+                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.facultyAdvisorEmail || "N/A"}</Text>
                   </div>
                 </div>
               </div>
@@ -513,20 +513,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Address:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.dayScholarDetails.address || "N/A"}</span>
+                      <Text as="span" color="muted" size="sm">Address:</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.address || "N/A"}</Text>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Owner Name:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.dayScholarDetails.ownerName || "N/A"}</span>
+                      <Text as="span" color="muted" size="sm">Owner Name:</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerName || "N/A"}</Text>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Owner Phone:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</span>
+                      <Text as="span" color="muted" size="sm">Owner Phone:</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</Text>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Owner Email:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</span>
+                      <Text as="span" color="muted" size="sm">Owner Email:</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</Text>
                     </div>
                   </div>
                 </div>
@@ -555,7 +555,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : accessRecords.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                 <History size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <p style={{ color: "var(--color-text-muted)" }}>No access records found for this student</p>
+                <Text color="muted">No access records found for this student</Text>
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
@@ -609,7 +609,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : visitorRequests.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                 <Users size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <p style={{ color: "var(--color-text-muted)" }}>No visitor requests found for this student</p>
+                <Text color="muted">No visitor requests found for this student</Text>
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
@@ -665,7 +665,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : feedbacks.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                 <MessageSquare size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <p style={{ color: "var(--color-text-muted)" }}>No feedback found for this student</p>
+                <Text color="muted">No feedback found for this student</Text>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -691,7 +691,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>{feedback.description}</p>
                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", justifyContent: "space-between" }}>
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
-                      {feedback.reply && <span style={{ color: "var(--color-success)" }}>Replied: Yes</span>}
+                      {feedback.reply && <Text as="span" color="success">Replied: Yes</Text>}
                     </div>
                   </div>
                 ))}
@@ -719,7 +719,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : studentInventory.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                 <Package size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <p style={{ color: "var(--color-text-muted)" }}>No inventory items assigned to this student</p>
+                <Text color="muted">No inventory items assigned to this student</Text>
               </div>
             ) : (
               <div style={{ overflowX: "auto" }}>
@@ -744,7 +744,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                             <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                               <Package size={16} style={{ color: "var(--color-primary)" }} />
                             </div>
-                            <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.itemTypeId.name}</span>
+                            <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                           </div>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.count}</Table.Cell>
@@ -834,7 +834,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : !idCardData.front && !idCardData.back ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                 <CreditCard size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <p style={{ color: "var(--color-text-muted)" }}>No ID card images found for this student</p>
+                <Text color="muted">No ID card images found for this student</Text>
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
@@ -856,7 +856,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
                       <FaIdCard style={{ color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
-                      <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Front side not uploaded</p>
+                      <Text color="muted" size="sm">Front side not uploaded</Text>
                     </div>
                   )}
                 </div>
@@ -879,7 +879,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
                       <FaIdCard style={{ color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
-                      <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Back side not uploaded</p>
+                      <Text color="muted" size="sm">Back side not uploaded</Text>
                     </div>
                   )}
                 </div>
@@ -1125,9 +1125,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div>
                     <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{selectedInventoryItem.itemTypeId.name}</h3>
                     <div style={{ display: "flex", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
-                      <span style={{ color: "var(--color-text-muted)" }}>Qty: {selectedInventoryItem.count}</span>
-                      <span style={{ color: "var(--color-text-muted)" }}>•</span>
-                      <span style={{ color: "var(--color-text-muted)" }}>Issued: {formatDate(selectedInventoryItem.issueDate)}</span>
+                      <Text as="span" color="muted">Qty: {selectedInventoryItem.count}</Text>
+                      <Text as="span" color="muted">•</Text>
+                      <Text as="span" color="muted">Issued: {formatDate(selectedInventoryItem.issueDate)}</Text>
                     </div>
                   </div>
                 </div>

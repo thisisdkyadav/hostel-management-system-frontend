@@ -1,5 +1,6 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 const StudentDetails = ({ studentName, studentEmail, studentProfileImage }) => {
   return (
     <div className="rounded-md p-4 border" style={{ backgroundColor: 'var(--color-bg-primary)', borderColor: 'var(--color-border-primary)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-4)' }}>
@@ -9,18 +10,18 @@ const StudentDetails = ({ studentName, studentEmail, studentProfileImage }) => {
           <img src={getMediaUrl(studentProfileImage)} alt={studentName} className="rounded-full object-cover mr-4" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-avatar)' }} />
         ) : (
           <div className="rounded-full flex items-center justify-center mr-4" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-avatar)' }} >
-            <span style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)' }}>
+            <Text as="span" color="placeholder" size="lg" weight="medium">
               {studentName ? studentName.charAt(0).toUpperCase() : "?"}
-            </span>
+            </Text>
           </div>
         )}
         <div>
-          <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)' }}>
+          <Text weight="medium" color="primary" size="base">
             {studentName || "Not provided"}
-          </p>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-placeholder)' }}>
+          </Text>
+          <Text size="sm" color="placeholder">
             {studentEmail || "Email not provided"}
-          </p>
+          </Text>
         </div>
       </div>
     </div>

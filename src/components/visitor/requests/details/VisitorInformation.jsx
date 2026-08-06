@@ -1,5 +1,6 @@
 import React from "react"
 import { FaUser } from "react-icons/fa"
+import { Text } from "@/components/ui"
 
 const VisitorInformation = ({ visitors }) => {
   return (
@@ -13,11 +14,11 @@ const VisitorInformation = ({ visitors }) => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)' }}>{visitor.name}</h4>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Relation: {visitor.relation}</p>
+                <Text size="sm" color="muted">Relation: {visitor.relation}</Text>
               </div>
               <div className="flex flex-col items-start sm:items-end">
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{visitor.phone}</span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{visitor.email}</span>
+                <Text as="span" size="sm" color="muted">{visitor.phone}</Text>
+                <Text as="span" size="sm" color="muted">{visitor.email}</Text>
               </div>
             </div>
           </div>

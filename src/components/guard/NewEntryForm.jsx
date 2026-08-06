@@ -3,6 +3,7 @@ import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
+import { Text } from "@/components/ui"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -83,46 +84,46 @@ const NewEntryForm = ({ onAddEntry }) => {
         {hostelType === "unit-based" ? (
           <>
             <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Unit</label>
+              <Text as="label" size="xs" weight="medium" color="body">Unit</Text>
               <Input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="Unit" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Room</label>
+              <Text as="label" size="xs" weight="medium" color="body">Room</Text>
               <Input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Bed #</label>
+              <Text as="label" size="xs" weight="medium" color="body">Bed #</Text>
               <Input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" required />
             </div>
           </>
         ) : (
           <>
             <div style={{ gridColumn: 'span 4' }}>
-              <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Room Number</label>
+              <Text as="label" size="xs" weight="medium" color="body">Room Number</Text>
               <Input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room Number" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Bed #</label>
+              <Text as="label" size="xs" weight="medium" color="body">Bed #</Text>
               <Input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" required />
             </div>
           </>
         )}
 
         <div style={{ gridColumn: 'span 2' }}>
-          <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Date</label>
+          <Text as="label" size="xs" weight="medium" color="body">Date</Text>
           <Input type="date" name="date" value={formData.date} onChange={handleChange} />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>
-          <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Time</label>
+          <Text as="label" size="xs" weight="medium" color="body">Time</Text>
           <Input type="time" name="time" value={formData.time} onChange={handleChange} />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>
-          <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>&nbsp;</label>
+          <Text as="label" size="xs" weight="medium" color="body">&nbsp;</Text>
           <Button type="submit" variant="primary" size="sm" fullWidth>
             <FaPlus /> Add
           </Button>

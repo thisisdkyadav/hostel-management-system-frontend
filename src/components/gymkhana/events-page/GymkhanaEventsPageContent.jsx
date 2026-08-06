@@ -2,7 +2,7 @@ import { Button, DataTable, Tabs } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { EmptyState, LoadingState } from "@/components/ui/feedback"
 import { StatCards } from "@/components/ui/data-display"
-import { ToggleButtonGroup } from "@/components/ui"
+import { Text, ToggleButtonGroup } from "@/components/ui"
 import {
   AlertTriangle,
   Bell,
@@ -138,9 +138,9 @@ function MonthCalendarView({
             }}
           >
             {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
-            <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
+            <Text as="span" color="muted" weight="normal">
               {calendarMonth.getFullYear()}
-            </span>
+            </Text>
           </h3>
           {monthEventCount > 0 && (
             <span
@@ -497,18 +497,12 @@ function YearCalendarView({
                 marginBottom: "var(--spacing-2)",
               }}
             >
-              <span
-                style={{
-                  fontSize: "var(--font-size-sm)",
-                  fontWeight: "var(--font-weight-bold)",
-                  color: "var(--color-text-heading)",
-                }}
-              >
+              <Text as="span" size="sm" weight="bold" color="heading">
                 {monthDate.toLocaleString("default", { month: "short" })}{" "}
-                <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
+                <Text as="span" color="muted" weight="normal">
                   &rsquo;{String(monthDate.getFullYear()).slice(2)}
-                </span>
-              </span>
+                </Text>
+              </Text>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
                 {isCurrentMonth && (
                   <span
@@ -807,15 +801,9 @@ export default function GymkhanaEventsPageContent({
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                   <Bell size={14} style={{ color: "var(--color-warning)" }} />
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-sm)",
-                      fontWeight: "var(--font-weight-medium)",
-                      color: "var(--color-text-heading)",
-                    }}
-                  >
+                  <Text as="span" size="sm" weight="medium" color="heading">
                     {pendingProposalReminders.length} event(s) in proposal window
-                  </span>
+                  </Text>
                 </div>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
@@ -841,18 +829,12 @@ export default function GymkhanaEventsPageContent({
                       eventNode.currentTarget.style.borderColor = "var(--color-border-primary)"
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: "var(--font-size-xs)",
-                        fontWeight: "var(--font-weight-medium)",
-                        color: "var(--color-text-heading)",
-                      }}
-                    >
+                    <Text as="span" size="xs" weight="medium" color="heading">
                       {event.title}
-                    </span>
-                    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    </Text>
+                    <Text as="span" size="xs" color="muted">
                       {formatDateRange(event.startDate, event.endDate)}
-                    </span>
+                    </Text>
                     <FileText size={12} style={{ color: "var(--color-warning)" }} />
                   </div>
                 ))}
@@ -877,9 +859,9 @@ export default function GymkhanaEventsPageContent({
           >
             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
               <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
-              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Text as="span" size="sm" color="body">
                 <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s)
-              </span>
+              </Text>
             </div>
             <Button size="sm" variant="ghost" onClick={() => setShowPendingProposalModal(true)}>
               View Proposals
@@ -908,9 +890,9 @@ export default function GymkhanaEventsPageContent({
             >
               <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                 <Receipt size={14} style={{ color: "var(--color-info)" }} />
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="span" size="sm" color="body">
                   <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong> pending bill approval(s)
-                </span>
+                </Text>
               </div>
               <Button size="sm" variant="ghost" onClick={() => setShowPendingBillsModal(true)}>
                 View Bills
@@ -935,9 +917,9 @@ export default function GymkhanaEventsPageContent({
           >
             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
               <AlertTriangle size={14} style={{ color: "var(--color-warning)" }} />
-              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Text as="span" size="sm" color="body">
                 <strong>{dateConflicts.length}</strong> date overlap(s) detected
-              </span>
+              </Text>
             </div>
             <Button size="sm" variant="ghost" onClick={() => setShowOverlapDetailsModal(true)}>
               View Details

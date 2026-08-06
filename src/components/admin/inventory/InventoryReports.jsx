@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -88,7 +88,7 @@ const InventoryReports = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Inventory Reports</h3>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>View inventory distribution across hostels and students</p>
+          <Text size="sm" color="muted">View inventory distribution across hostels and students</Text>
         </div>
 
         {/* Hostel Filter (only for student and item type tabs) */}
@@ -137,7 +137,7 @@ const InventoryReports = () => {
           {hostelSummary.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-12) 0" }}>
               <FaBoxes style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
-              <p style={{ color: "var(--color-text-muted)" }}>No hostel inventory data available</p>
+              <Text color="muted">No hostel inventory data available</Text>
             </div>
           ) : (
             hostelSummary.map((hostel) => (
@@ -151,16 +151,16 @@ const InventoryReports = () => {
                   <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                     <FaBuilding style={{ color: "var(--color-primary)" }} />
                   </div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{hostel.hostelName}</div>
+                  <Text as="div" size="lg" weight="medium" color="secondary">{hostel.hostelName}</Text>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                   <div>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Total Allocated</div>
-                    <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)" }}>{hostel.totalAllocated}</div>
+                    <Text as="div" size="sm" color="muted">Total Allocated</Text>
+                    <Text as="div" size="lg" weight="semibold">{hostel.totalAllocated}</Text>
                   </div>
                   <div>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Available</div>
-                    <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)" }}>{hostel.totalAvailable}</div>
+                    <Text as="div" size="sm" color="muted">Available</Text>
+                    <Text as="div" size="lg" weight="semibold" color="success">{hostel.totalAvailable}</Text>
                   </div>
                 </div>
                 <div style={{ borderTop: "1px solid var(--color-border-light)", paddingTop: "var(--spacing-3)" }}>
@@ -177,12 +177,12 @@ const InventoryReports = () => {
                           <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-2)" }}>
                             <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
                           </div>
-                          <span style={{ fontSize: "var(--font-size-sm)" }}>{item.itemName}</span>
+                          <Text as="span" size="sm">{item.itemName}</Text>
                         </div>
-                        <div style={{ fontSize: "var(--font-size-sm)" }}>
-                          <span style={{ fontWeight: "var(--font-weight-medium)", color: item.available < 10 ? "var(--color-danger)" : "var(--color-success)" }}>{item.available}</span>
-                          <span style={{ color: "var(--color-text-muted)" }}> / {item.allocated}</span>
-                        </div>
+                        <Text as="div" size="sm">
+                          <Text as="span" weight="medium" color={item.available < 10 ? "var(--color-danger)" : "var(--color-success)"}>{item.available}</Text>
+                          <Text as="span" color="muted"> / {item.allocated}</Text>
+                        </Text>
                       </div>
                     ))}
                   </div>
@@ -199,7 +199,7 @@ const InventoryReports = () => {
           {studentSummary.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-12) 0" }}>
               <FaUserGraduate style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
-              <p style={{ color: "var(--color-text-muted)" }}>No student inventory data available</p>
+              <Text color="muted">No student inventory data available</Text>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -228,9 +228,9 @@ const InventoryReports = () => {
                               <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-2)" }}>
                                 <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
                               </div>
-                              <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)" }}>{item.itemName}</span>
+                              <Text as="span" weight="medium" color="body">{item.itemName}</Text>
                               <span style={{ margin: "0 var(--spacing-1)", color: "var(--color-text-placeholder)" }}>•</span>
-                              <span style={{ color: "var(--color-text-tertiary)" }}>{item.count}</span>
+                              <Text as="span" color="tertiary">{item.count}</Text>
                               <span style={{ margin: "0 var(--spacing-1)", color: "var(--color-text-placeholder)" }}>•</span>
                               <span
                                 style={{
@@ -262,7 +262,7 @@ const InventoryReports = () => {
           {itemTypeSummary.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-12) 0" }}>
               <FaBox style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
-              <p style={{ color: "var(--color-text-muted)" }}>No item type summary data available</p>
+              <Text color="muted">No item type summary data available</Text>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -285,7 +285,7 @@ const InventoryReports = () => {
                           <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                             <FaBox style={{ color: "var(--color-primary)" }} />
                           </div>
-                          <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.itemName}</span>
+                          <Text as="span" weight="medium" color="secondary">{item.itemName}</Text>
                         </div>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.totalAssigned}</Table.Cell>

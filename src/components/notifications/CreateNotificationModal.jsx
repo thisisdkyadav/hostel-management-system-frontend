@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Grid, Select, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, Select, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -228,7 +228,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                 <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Department(s)</label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Loading departments...</p>
+                    <Text size="sm" color="muted">Loading departments...</Text>
                   ) : availableDepartments && availableDepartments.length > 0 ? (
                     availableDepartments.map((department) => <Checkbox key={department} id={`dept-${department}`} name="departments" value={department} checked={formData.departments.includes(department)} onChange={handleChange} label={department} />)
                   ) : (
@@ -242,7 +242,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                 <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Degree(s)</label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Loading degrees...</p>
+                    <Text size="sm" color="muted">Loading degrees...</Text>
                   ) : availableDegrees && availableDegrees.length > 0 ? (
                     availableDegrees.map((degree) => <Checkbox key={degree} id={`degree-${degree}`} name="degrees" value={degree} checked={formData.degrees.includes(degree)} onChange={handleChange} label={degree} />)
                   ) : (
@@ -301,16 +301,16 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Notification Summary</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "var(--color-text-muted)" }}>Title:</span>
-                <span style={{ fontWeight: "var(--font-weight-medium)" }}>{formData.title}</span>
+                <Text as="span" color="muted">Title:</Text>
+                <Text as="span" weight="medium">{formData.title}</Text>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "var(--color-text-muted)" }}>Type:</span>
+                <Text as="span" color="muted">Type:</Text>
                 <span style={{ fontWeight: "var(--font-weight-medium)", textTransform: "capitalize" }}>{formData.type}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "var(--color-text-muted)" }}>Expiry:</span>
-                <span style={{ fontWeight: "var(--font-weight-medium)" }}>{new Date(formData.expiryDate).toLocaleDateString()}</span>
+                <Text as="span" color="muted">Expiry:</Text>
+                <Text as="span" weight="medium">{new Date(formData.expiryDate).toLocaleDateString()}</Text>
               </div>
             </div>
           </div>
@@ -319,31 +319,31 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Target Recipients</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
               {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
-                <p style={{ color: "var(--color-text-body)" }}>All Students</p>
+                <Text color="body">All Students</Text>
               ) : (
                 <>
                   {formData.hostelIds.length > 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)" }}>Hostel(s):</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{getHostelNamesByIds(formData.hostelIds)}</span>
+                      <Text as="span" color="muted">Hostel(s):</Text>
+                      <Text as="span" weight="medium" align="right">{getHostelNamesByIds(formData.hostelIds)}</Text>
                     </div>
                   )}
                   {formData.departments.length > 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)" }}>Department(s):</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{formData.departments.join(", ")}</span>
+                      <Text as="span" color="muted">Department(s):</Text>
+                      <Text as="span" weight="medium" align="right">{formData.departments.join(", ")}</Text>
                     </div>
                   )}
                   {formData.degrees.length > 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)" }}>Degree(s):</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{formData.degrees.join(", ")}</span>
+                      <Text as="span" color="muted">Degree(s):</Text>
+                      <Text as="span" weight="medium" align="right">{formData.degrees.join(", ")}</Text>
                     </div>
                   )}
                   {formData.gender && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--color-text-muted)" }}>Gender:</span>
-                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>{formData.gender}</span>
+                      <Text as="span" color="muted">Gender:</Text>
+                      <Text as="span" weight="medium">{formData.gender}</Text>
                     </div>
                   )}
                 </>

@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, Select } from "@/components/ui"
+import { FileInput, Grid, Select, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -819,11 +819,11 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     >
                       <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
                       <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
-                        <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)</li>
-                        <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>room:</span> String/Number (Required)</li>
-                        <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>bedNumber:</span> Number (Required)</li>
+                        <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
+                        <li><Text as="span" weight="medium">room:</Text> String/Number (Required)</li>
+                        <li><Text as="span" weight="medium">bedNumber:</Text> Number (Required)</li>
                         {hostelType === "unit-based" && (
-                          <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>unit:</span> String (Required)</li>
+                          <li><Text as="span" weight="medium">unit:</Text> String (Required)</li>
                         )}
                       </ul>
                     </div>
@@ -846,9 +846,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
-                    Selected file: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{csvFile.name}</span>
-                  </span>
+                  <Text as="span" size="sm" color="info-text">
+                    Selected file: <Text as="span" weight="medium">{csvFile.name}</Text>
+                  </Text>
                   <Button
                     onClick={(event) => {
                       event.stopPropagation()
@@ -963,9 +963,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-3)" }}>
-                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>
+                    <Text as="div" size="sm" weight="semibold" color="secondary">
                       Row {index + 1}
-                    </div>
+                    </Text>
                     {!isManualRowBlank(row) && (
                       <Button onClick={() => removeManualRow(row.id)} variant="ghost" size="sm">
                         <FaTrash />
@@ -1153,10 +1153,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     )}
 
                     {currentHostel && currentHostel.type === "unit-based" && row.hostelId && !row.unit && !row.unitError && units.length > 0 && (
-                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                      <Text as="div" size="xs" color="muted">
                         Available units include: {units.slice(0, 6).map((unit) => unit.unitNumber).join(", ")}
                         {units.length > 6 ? "..." : ""}
-                      </div>
+                      </Text>
                     )}
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -479,9 +479,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Student Status
             </h3>
-            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            <Text color="muted" size="sm">
               Change the lifecycle status for {studentData.name || studentData.rollNumber}.
-            </p>
+            </Text>
           </div>
 
           <div>
@@ -510,9 +510,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Day Scholar Details
             </h3>
-            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            <Text color="muted" size="sm">
               Turn day scholar mode on or off here. The additional residence fields are optional.
-            </p>
+            </Text>
           </div>
 
           <Checkbox
@@ -583,9 +583,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Allocation
             </h3>
-            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            <Text color="muted" size="sm">
               Use the same guarded allocation flow here: select a valid hostel, validate the unit when required, choose an existing room, and then choose a bed.
-            </p>
+            </Text>
           </div>
 
           {allocationLookupLoading ? (
@@ -729,10 +729,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 )}
 
                 {currentHostel && currentHostel.type === "unit-based" && allocationForm.hostelId && !allocationForm.unit && !allocationForm.unitError && units.length > 0 && (
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <Text as="div" size="xs" color="muted">
                     Available units include: {units.slice(0, 6).map((unit) => unit.unitNumber).join(", ")}
                     {units.length > 6 ? "..." : ""}
-                  </div>
+                  </Text>
                 )}
               </div>
             </>

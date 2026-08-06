@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { Pagination, Spinner } from "@/components/ui"
+import { Pagination, Spinner, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const AvailableInventory = () => {
@@ -72,7 +72,7 @@ const AvailableInventory = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Available Hostel Inventory</h3>
-          <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>View inventory items available for assignment to students</p>
+          <Text size="var(--text-body-sm)" color="muted">View inventory items available for assignment to students</Text>
         </div>
       </div>
 
@@ -107,7 +107,7 @@ const AvailableInventory = () => {
         ) : hostelInventory.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
             <FaBoxes className="mx-auto" style={{ color: 'var(--color-border-dark)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} />
-            <p style={{ color: 'var(--color-text-muted)' }}>No inventory items found in your hostel</p>
+            <Text color="muted">No inventory items found in your hostel</Text>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -128,7 +128,7 @@ const AvailableInventory = () => {
                         <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                           <FaBoxes style={{ color: 'var(--color-primary)' }} />
                         </div>
-                        <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemTypeId.name}</span>
+                        <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>
                     </Table.Cell>
                     <Table.Cell>{item.itemTypeId.description}</Table.Cell>

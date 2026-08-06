@@ -1,6 +1,7 @@
 import React from "react"
 import { FaKeyboard, FaArrowDown, FaArrowRight, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
+import { Text } from "@/components/ui"
 
 const ScannerStatusIndicator = () => {
   const { pendingCrossHostelEntries, error } = useQRScanner()
@@ -11,7 +12,7 @@ const ScannerStatusIndicator = () => {
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>External Scanner Status</h3>
         <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success)' }}>
           <div style={{ width: 'var(--spacing-2)', height: 'var(--spacing-2)', backgroundColor: 'var(--color-success)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}></div>
-          <span style={{ fontSize: 'var(--font-size-xs)' }}>Active</span>
+          <Text as="span" size="xs">Active</Text>
         </div>
       </div>
 
@@ -43,9 +44,9 @@ const ScannerStatusIndicator = () => {
         <div style={{ marginTop: 'var(--spacing-3)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-primary)` }}>
           <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-warning)' }}>
             <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)' }}>
+            <Text as="span" size="xs">
               {pendingCrossHostelEntries.length} cross-hostel check-in {pendingCrossHostelEntries.length === 1 ? "entry" : "entries"} pending reason
-            </span>
+            </Text>
           </div>
         </div>
       )}
@@ -54,7 +55,7 @@ const ScannerStatusIndicator = () => {
         <div style={{ marginTop: 'var(--spacing-3)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-primary)` }}>
           <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-danger)' }}>
             <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)' }}>Scanner Error</span>
+            <Text as="span" size="xs">Scanner Error</Text>
           </div>
         </div>
       )}

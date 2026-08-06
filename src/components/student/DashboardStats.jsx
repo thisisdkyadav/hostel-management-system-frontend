@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationCircle, FaCheckCircle, FaRegCalendarAlt, FaSearch } from "react-icons/fa"
+import { Text } from "@/components/ui"
 
 const StatCard = ({ icon, title, value, linkTo, color }) => {
   return (
@@ -8,7 +9,7 @@ const StatCard = ({ icon, title, value, linkTo, color }) => {
       <div className={color} style={{ padding: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', marginRight: 'var(--spacing-3)' }}>{icon}</div>
       <div>
         <span className="block" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>{title}</span>
-        <span style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>{value}</span>
+        <Text as="span" size="2xl" weight="bold">{value}</Text>
       </div>
     </Link>
   )

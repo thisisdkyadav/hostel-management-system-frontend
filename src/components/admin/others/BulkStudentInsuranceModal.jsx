@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Alert, FileInput, HStack, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -157,19 +157,19 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
               <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
               <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-1) var(--spacing-4)' }}>
                 <li>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)' }}>rollNumber:</span> String (Required)
+                  <Text as="span" weight="medium">rollNumber:</Text> String (Required)
                 </li>
                 <li>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)' }}>insuranceNumber:</span> String (Required)
+                  <Text as="span" weight="medium">insuranceNumber:</Text> String (Required)
                 </li>
               </ul>
             </div>
           </div>
           {csvFile && (
             <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary-dark)' }}>
-                Selected file: <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{csvFile.name}</span>
-              </span>
+              <Text as="span" size="sm" color="var(--color-primary-dark)">
+                Selected file: <Text as="span" weight="medium">{csvFile.name}</Text>
+              </Text>
               <Button onClick={(e) => {
                 e.stopPropagation()
                 setCsvFile(null)

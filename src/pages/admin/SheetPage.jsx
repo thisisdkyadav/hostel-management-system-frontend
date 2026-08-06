@@ -13,6 +13,7 @@ import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -1019,10 +1020,10 @@ const SheetPage = () => {
                                 >
                                     <format.icon style={{ fontSize: "14px", color: "var(--color-primary)", flexShrink: 0 }} />
                                     <div>
-                                        <div style={{ fontWeight: "var(--font-weight-medium)" }}>{format.label}</div>
-                                        <div style={{ fontSize: "var(--font-size-2xs)", color: "var(--color-text-muted)" }}>
+                                        <Text as="div" weight="medium">{format.label}</Text>
+                                        <Text as="div" size="2xs" color="muted">
                                             {format.description}
-                                        </div>
+                                        </Text>
                                     </div>
                                 </button>
                             ))}

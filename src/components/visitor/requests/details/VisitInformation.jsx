@@ -1,5 +1,6 @@
 import React from "react"
 import { FaCalendarAlt } from "react-icons/fa"
+import { Text } from "@/components/ui"
 
 const VisitInformation = ({ fromDate, toDate }) => {
   const formatDate = (dateString) => {
@@ -23,16 +24,16 @@ const VisitInformation = ({ fromDate, toDate }) => {
       </h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>From Date:</span>
-          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDate(fromDate)}</span>
+          <Text as="span" color="muted" size="sm">From Date:</Text>
+          <Text as="span" weight="medium" size="sm" color="primary">{formatDate(fromDate)}</Text>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>To Date:</span>
-          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDate(toDate)}</span>
+          <Text as="span" color="muted" size="sm">To Date:</Text>
+          <Text as="span" weight="medium" size="sm" color="primary">{formatDate(toDate)}</Text>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Duration:</span>
-          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{calculateDuration(fromDate, toDate)} days</span>
+          <Text as="span" color="muted" size="sm">Duration:</Text>
+          <Text as="span" weight="medium" size="sm" color="primary">{calculateDuration(fromDate, toDate)} days</Text>
         </div>
       </div>
     </div>

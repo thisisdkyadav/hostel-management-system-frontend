@@ -2,6 +2,7 @@ import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 
 const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
   const { user } = useAuth()
@@ -14,7 +15,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       key: "title",
       render: (complaint) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-placeholder)' }}>{complaint.id?.substring(0, 8)}</div>
+          <Text as="div" size="xs" color="placeholder">{complaint.id?.substring(0, 8)}</Text>
           <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.title}</div>
         </div>
       ),
@@ -36,7 +37,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
           </div>
           <div style={{ marginLeft: 'var(--spacing-3)' }}>
             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-placeholder)' }}>{getTimeSince(complaint.createdDate)}</div>
+            <Text as="div" size="xs" color="placeholder">{getTimeSince(complaint.createdDate)}</Text>
           </div>
         </div>
       ),
@@ -48,7 +49,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       render: (complaint) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }} className="truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
-          {complaint.roomNumber ? <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Room {complaint.roomNumber}</div> : complaint.hostel ? <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }} className="truncate max-w-[150px]">{complaint.location}</div> : null}
+          {complaint.roomNumber ? <Text as="div" size="xs" color="muted">Room {complaint.roomNumber}</Text> : complaint.hostel ? <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }} className="truncate max-w-[150px]">{complaint.location}</div> : null}
         </div>
       ),
     },

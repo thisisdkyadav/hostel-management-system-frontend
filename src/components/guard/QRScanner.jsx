@@ -5,6 +5,7 @@ import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 import { Button } from "czero/react"
+import { Text } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -181,7 +182,7 @@ const QRScanner = ({ onRefresh }) => {
       {error && (
         <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>
           <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
-          <p style={{ fontSize: 'var(--font-size-sm)' }}>{error}</p>
+          <Text size="sm">{error}</Text>
         </div>
       )}
 
@@ -203,7 +204,7 @@ const QRScanner = ({ onRefresh }) => {
       {loading && (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
           <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', margin: '0 auto var(--spacing-4)' }}></div>
-          <p style={{ color: 'var(--color-text-muted)' }}>Processing QR code...</p>
+          <Text color="muted">Processing QR code...</Text>
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
-import { Alert, VStack, HStack } from "@/components/ui"
+import { Alert, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -69,17 +69,17 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
       <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
-            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>unitNumber:</span> String (e.g., 101)
+            <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101)
           </li>
         )}
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"}
+          <Text as="span" weight="medium">roomNumber:</Text> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"}
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>capacity:</span> Number
+          <Text as="span" weight="medium">capacity:</Text> Number
         </li>
         <li>
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> One of: {MANUAL_ROOM_STATUSES.join(", ")}
+          <Text as="span" weight="medium">status:</Text> One of: {MANUAL_ROOM_STATUSES.join(", ")}
         </li>
       </ul>
     </div>

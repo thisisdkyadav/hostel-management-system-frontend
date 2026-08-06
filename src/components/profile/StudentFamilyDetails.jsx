@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { Select, Textarea, ConfirmDialog } from "@/components/ui"
+import { ConfirmDialog, Select, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -211,25 +211,25 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
         </div>
 
         <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
-          Relationship: <span style={{ color: "var(--color-text-secondary)" }}>{member.relationship || "Not specified"}</span>
+          Relationship: <Text as="span" color="secondary">{member.relationship || "Not specified"}</Text>
         </div>
 
         {member.phone && (
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
-            Phone: <span style={{ color: "var(--color-text-secondary)" }}>{member.phone}</span>
+            Phone: <Text as="span" color="secondary">{member.phone}</Text>
           </div>
         )}
 
         {member.email && (
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
-            Email: <span style={{ color: "var(--color-text-secondary)" }}>{member.email}</span>
+            Email: <Text as="span" color="secondary">{member.email}</Text>
           </div>
         )}
 
         {member.address && (
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-            Address: <span style={{ color: "var(--color-text-secondary)" }}>{member.address}</span>
-          </div>
+          <Text as="div" size="xs" color="muted">
+            Address: <Text as="span" color="secondary">{member.address}</Text>
+          </Text>
         )}
       </div>
     )
@@ -335,7 +335,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
 
           {familyMembers.length === 0 && !showAddForm ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-6) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-              <p style={{ color: "var(--color-text-muted)" }}>No family members added yet.</p>
+              <Text color="muted">No family members added yet.</Text>
               {editable && (
                 <Button onClick={() => setShowAddForm(true)} variant="outline" size="sm">
                   <FiPlus /> Add Family Member

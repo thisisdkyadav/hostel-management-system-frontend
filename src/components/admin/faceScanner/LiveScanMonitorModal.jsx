@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"
 
@@ -72,9 +72,9 @@ const ScanEventRow = ({ event, showHeaders }) => {
           </Pill>
         )}
 
-        <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>
+        <Text as="span" weight="semibold" color="secondary">
           {event.scanner?.name || "Unrecognized device"}
-        </span>
+        </Text>
 
         {event.scanner?.type && (
           <Pill color="var(--color-text-muted)" bg="var(--color-bg-hover)">
@@ -95,7 +95,7 @@ const ScanEventRow = ({ event, showHeaders }) => {
       </div>
 
       <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-        <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>{event.method}</span>
+        <Text as="span" weight="semibold" color="secondary">{event.method}</Text>
         <span style={{ fontFamily: "var(--font-family-mono, monospace)" }}>{event.path}</span>
         {event.ip && <span>· {event.ip}</span>}
       </div>
@@ -145,9 +145,9 @@ const LiveScanMonitorModal = ({ isOpen, onClose }) => {
       width={760}
       footer={
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", width: "100%" }}>
-          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="xs" color="muted">
             {events.length} event{events.length === 1 ? "" : "s"} · newest first · keeps last {MAX_EVENTS}
-          </span>
+          </Text>
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
             <Button variant="secondary" onClick={() => setEvents([])} disabled={events.length === 0}>
               <Trash2 size={16} /> Clear

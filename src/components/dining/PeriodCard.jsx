@@ -1,6 +1,6 @@
 import { Button, StatusBadge } from "czero/react"
 import { CalendarClock, Eye, Pencil, Users, UtensilsCrossed } from "lucide-react"
-import { Card } from "@/components/ui"
+import { Card, Text } from "@/components/ui"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -25,10 +25,10 @@ const MealSlotChip = ({ slot }) => (
     }}
   >
     <UtensilsCrossed size={12} style={{ color: "var(--color-text-muted)" }} />
-    <strong style={{ fontWeight: "var(--font-weight-medium)" }}>{slot.name}</strong>
-    <span style={{ color: "var(--color-text-muted)" }}>
+    <Text as="strong" weight="medium">{slot.name}</Text>
+    <Text as="span" color="muted">
       {slot.startTime}–{slot.endTime}
-    </span>
+    </Text>
   </span>
 )
 

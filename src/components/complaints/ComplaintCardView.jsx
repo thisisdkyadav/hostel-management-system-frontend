@@ -2,7 +2,7 @@ import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Card } from "@/components/ui"
+import { Card, Text } from "@/components/ui"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
@@ -13,7 +13,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
           <Card.Header style={{ marginBottom: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{complaint.id?.substring(0, 8)}</span>
+                <Text as="span" size="xs" color="muted">{complaint.id?.substring(0, 8)}</Text>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-xl)', marginTop: 'var(--spacing-1)', color: 'var(--color-text-secondary)' }} className="line-clamp-1">{complaint.title}</h3>
               </div>
               <span className={`${getStatusColor(complaint.status)}`} style={{ padding: 'var(--badge-padding-sm)', fontSize: 'var(--badge-font-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
@@ -35,9 +35,9 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
             <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <BiSolidCategory style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{complaint.category}</span>
+                <Text as="span" size="sm" color="body">{complaint.category}</Text>
               </div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{getTimeSince(complaint.createdDate)}</span>
+              <Text as="span" size="xs" color="muted">{getTimeSince(complaint.createdDate)}</Text>
             </div>
           </Card.Body>
 
@@ -50,7 +50,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
               )}
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Reporter</div>
+                <Text as="div" size="xs" color="muted">Reporter</Text>
               </div>
             </div>
           </Card.Footer>

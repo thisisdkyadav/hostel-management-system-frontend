@@ -2,6 +2,7 @@ import { createElement } from "react"
 import { Input } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
+import { Text } from "@/components/ui"
 
 export const footerTabStyles = {
   tabsBar: {
@@ -226,19 +227,12 @@ export const EventDetailInfoRow = ({ label, value, valueColor }) => (
       padding: "var(--spacing-1) 0",
     }}
   >
-    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+    <Text as="span" size="xs" color="muted">
       {label}
-    </span>
-    <span
-      style={{
-        fontSize: "var(--font-size-sm)",
-        fontWeight: "var(--font-weight-medium)",
-        color: valueColor || "var(--color-text-body)",
-        textAlign: "right",
-      }}
-    >
+    </Text>
+    <Text as="span" size="sm" weight="medium" color={valueColor || "var(--color-text-body)"} align="right">
       {value}
-    </span>
+    </Text>
   </div>
 )
 
@@ -257,9 +251,9 @@ export const DateOverlapSummary = ({
       <Alert type="error">End date cannot be before start date.</Alert>
     )}
     {overlapCheckInProgressForCurrentDates && (
-      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info)" }}>
+      <Text as="span" size="xs" color="info">
         Checking overlap...
-      </span>
+      </Text>
     )}
     {dateOverlapInfo.status === "error" && overlapCheckKey && (
       <Alert type="error">
@@ -286,9 +280,9 @@ export const DateOverlapSummary = ({
       </Alert>
     )}
     {overlapCheckCompletedForCurrentDates && !dateOverlapInfo.hasOverlap && (
-      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success)" }}>
+      <Text as="span" size="xs" color="success">
         ✓ No overlaps
-      </span>
+      </Text>
     )}
     {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
       <div

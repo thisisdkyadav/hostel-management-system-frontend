@@ -12,7 +12,7 @@ import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterP
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import useAuthz from "../../hooks/useAuthz"
-import { Page, Pagination } from "@/components/ui"
+import { Page, Pagination, Text } from "@/components/ui"
 import PageFooter from "../../components/common/PageFooter"
 
 const DEFAULT_FILTERS = {
@@ -289,8 +289,8 @@ const ComplaintsPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{complaints.length}</span> of{" "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalComplaints}</span> complaints
+            Showing <Text as="span" weight="semibold">{complaints.length}</Text> of{" "}
+            <Text as="span" weight="semibold">{totalComplaints}</Text> complaints
           </span>,
         ]}
         rightContent={[

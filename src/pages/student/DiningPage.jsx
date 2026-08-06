@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Grid, Modal, Page } from "@/components/ui"
+import { Grid, Modal, Page, Text } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -107,9 +107,9 @@ const CatererIdentity = ({ caterer, selectedAt }) => (
     <HStack gap="medium" align="center">
       <Avatar name={caterer?.name || "?"} size="medium" />
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+        <Text as="div" size="lg" weight="bold" color="heading">
           {caterer?.name || "Not selected"}
-        </div>
+        </Text>
         {caterer?.email && (
           <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
             <Mail size={14} /> {caterer.email}
@@ -118,15 +118,15 @@ const CatererIdentity = ({ caterer, selectedAt }) => (
       </div>
     </HStack>
     {selectedAt && (
-      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Selected on {formatDateTime(selectedAt)}</div>
+      <Text as="div" size="xs" color="muted">Selected on {formatDateTime(selectedAt)}</Text>
     )}
   </div>
 )
 
 const Detail = ({ label, value }) => (
   <div>
-    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{label}</div>
-    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{value || "-"}</div>
+    <Text as="div" size="xs" color="muted">{label}</Text>
+    <Text as="div" size="sm" color="secondary" weight="medium">{value || "-"}</Text>
   </div>
 )
 
@@ -225,10 +225,10 @@ const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCat
                 <HStack gap="medium" align="center">
                   <Avatar name={capacity.caterer?.name || "?"} size="small" />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                    <Text as="div" size="md" weight="bold" color="heading">
                       {capacity.caterer?.name || "Caterer"}
-                    </div>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{capacity.caterer?.email || ""}</div>
+                    </Text>
+                    <Text as="div" size="xs" color="muted">{capacity.caterer?.email || ""}</Text>
                   </div>
                   {isSelected && <div style={{ marginLeft: "auto" }}><StatusBadge status="Selected" tone="success" /></div>}
                 </HStack>
@@ -260,16 +260,10 @@ const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCat
 
 const BillingFigure = ({ label, value, tone }) => (
   <div>
-    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{label}</div>
-    <div
-      style={{
-        fontSize: "var(--font-size-md)",
-        fontWeight: "var(--font-weight-bold)",
-        color: tone === "danger" ? "var(--color-danger)" : tone === "success" ? "var(--color-success)" : "var(--color-text-heading)",
-      }}
-    >
+    <Text as="div" size="xs" color="muted">{label}</Text>
+    <Text as="div" size="md" weight="bold" color={tone === "danger" ? "var(--color-danger)" : tone === "success" ? "var(--color-success)" : "var(--color-text-heading)"}>
       {value}
-    </div>
+    </Text>
   </div>
 )
 
@@ -281,12 +275,12 @@ const StudentBillingCard = ({ billingPeriod }) => {
     <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-4)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+          <Text as="div" size="md" weight="bold" color="heading">
             {billingPeriod.name}
-          </div>
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          </Text>
+          <Text as="div" size="xs" color="muted">
             {billingPeriod.startDate ? `${formatDate(billingPeriod.startDate)} – ${formatDate(billingPeriod.endDate)}` : "No dining periods"}
-          </div>
+          </Text>
         </div>
         <StatusBadge status={formatClearance(billingPeriod.clearance)} tone={clearanceTone(billingPeriod.clearance)} />
       </div>
@@ -320,7 +314,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
                     {formatDate(row.startDate)} – {formatDate(row.endDate)} · {row.chargeableDays}d × {formatCurrency(row.dailyRate)}
                     {row.rebateDays > 0 ? ` (−${row.rebateDays} rebate)` : ""}
                   </span>
-                  <span style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>{formatCurrency(row.amount)}</span>
+                  <Text as="span" color="secondary" weight="medium">{formatCurrency(row.amount)}</Text>
                 </div>
               ))}
             </div>

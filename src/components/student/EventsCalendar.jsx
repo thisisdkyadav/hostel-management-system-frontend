@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FaCalendarAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
+import { Text } from "@/components/ui"
 
 const EventsCalendar = ({ events = [] }) => {
   const formatDate = (dateString) => {
@@ -28,7 +29,7 @@ const EventsCalendar = ({ events = [] }) => {
       {events.length === 0 ? (
         <div style={{ padding: 'var(--spacing-4)', textAlign: 'center', color: 'var(--color-text-muted)' }}>
           <FaCalendarAlt style={{ margin: '0 auto', fontSize: 'var(--icon-2xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-1)' }} />
-          <p style={{ fontSize: 'var(--font-size-xs)' }}>No upcoming events</p>
+          <Text size="xs">No upcoming events</Text>
         </div>
       ) : (
         <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
@@ -38,8 +39,8 @@ const EventsCalendar = ({ events = [] }) => {
             return (
               <div key={event._id} style={{ display: 'flex', alignItems: 'flex-start', padding: `var(--spacing-2) var(--spacing-3)`, borderBottom: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-colors)', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                 <div style={{ marginRight: 'var(--spacing-2)', flexShrink: 0, width: 'var(--spacing-10)', height: '48px', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-primary-bg-light)' }}>
-                  <span style={{ fontSize: 'var(--font-size-2xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{month}</span>
-                  <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary)' }}>{day}</span>
+                  <Text as="span" size="2xs" weight="medium" color="brand">{month}</Text>
+                  <Text as="span" size="lg" weight="bold" color="brand">{day}</Text>
                 </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>

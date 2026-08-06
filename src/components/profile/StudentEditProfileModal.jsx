@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { Select, Textarea } from "@/components/ui"
+import { Select, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -309,7 +309,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
           ) : (
             <>
               <div style={{ backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-6)" }}>
-                <p style={{ fontSize: "var(--font-size-sm)" }}>You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
+                <Text size="sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</Text>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>

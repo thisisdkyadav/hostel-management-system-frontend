@@ -7,6 +7,7 @@ import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 import AcademicsProfile from "../../components/profile/AcademicsProfile"
 import SignatureSettingsCard from "../../components/profile/SignatureSettingsCard"
+import { Text } from "@/components/ui"
 
 const ProfilePage = () => {
   const { user } = useAuth()
@@ -41,7 +42,7 @@ const ProfilePage = () => {
       <div style={{ maxWidth: 'var(--container-xl)', margin: '0 auto' }}>
         <div style={{ marginBottom: 'var(--spacing-6)' }}>
           <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>My Profile</h1>
-          <p style={{ color: 'var(--color-text-muted)' }}>View and manage your profile information</p>
+          <Text color="muted">View and manage your profile information</Text>
         </div>
 
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>

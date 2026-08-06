@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { Text } from "@/components/ui"
 
 const ACTION_ICONS = {
     submitted: Send,
@@ -143,12 +144,9 @@ const ApprovalHistory = ({
                                 <Badge variant={color}>
                                     {actionLabel}
                                 </Badge>
-                                <span style={{
-                                    fontSize: "var(--font-size-xs)",
-                                    color: "var(--color-text-muted)"
-                                }}>
+                                <Text as="span" size="xs" color="muted">
                                     by {formatStageLabel(log.stage)}
-                                </span>
+                                </Text>
                             </div>
 
                             <p style={{

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
@@ -56,7 +56,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)' }}>
-            <p style={{ color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
+            <Text color="danger-text" size="sm">{error}</Text>
           </div>
         )}
 
@@ -99,7 +99,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
         {/* Rating Section - Compact */}
         <div>
           <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
-            Rate the resolution <span style={{ color: 'var(--color-danger)' }}>*</span>
+            Rate the resolution <Text as="span" color="danger">*</Text>
           </label>
           <div className="flex items-center" style={{ gap: 'var(--spacing-1-5)' }}>
             {[1, 2, 3, 4, 5].map((rating) => (
@@ -123,7 +123,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
         {/* Satisfaction Status - Compact */}
         <div>
           <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
-            Satisfaction status <span style={{ color: 'var(--color-danger)' }}>*</span>
+            Satisfaction status <Text as="span" color="danger">*</Text>
           </label>
           <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
             <Button type="button" onClick={() => setSatisfactionStatus("Satisfied")}

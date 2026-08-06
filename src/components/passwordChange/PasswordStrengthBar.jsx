@@ -1,4 +1,5 @@
 import React from "react"
+import { Text } from "@/components/ui"
 
 const PasswordStrengthBar = ({ password }) => {
   const getStrength = (pwd) => {
@@ -37,9 +38,9 @@ const PasswordStrengthBar = ({ password }) => {
           <div key={level} style={{ height: '100%', borderRadius: 'var(--radius-full)', flex: 1, backgroundColor: level <= strength ? colors[strength - 1] : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} ></div>
         ))}
       </div>
-      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+      <Text size="xs" color="muted">
         Password strength: {strength > 0 ? labels[strength - 1] : "Too weak"}
-      </p>
+      </Text>
     </div>
   )
 }

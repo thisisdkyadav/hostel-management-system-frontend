@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { Card, Page } from "@/components/ui"
+import { Card, Page, Text } from "@/components/ui"
 import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
@@ -58,7 +58,7 @@ const DashboardPage = () => {
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
           <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
-          <div style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-muted)' }}>Loading profile...</div>
+          <Text as="div" size="xl" color="muted">Loading profile...</Text>
         </div>
       </div>
     )
@@ -69,7 +69,7 @@ const DashboardPage = () => {
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
           <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
-          <div style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-muted)' }}>Loading dashboard data...</div>
+          <Text as="div" size="xl" color="muted">Loading dashboard data...</Text>
         </div>
       </div>
     )

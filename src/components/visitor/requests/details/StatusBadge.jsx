@@ -1,5 +1,6 @@
 import React from "react"
 import { FaInfoCircle } from "react-icons/fa"
+import { Text } from "@/components/ui"
 
 const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
   const formatDate = (dateString) => {
@@ -52,20 +53,20 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <FaInfoCircle className="mr-2" />
-            <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>
+            <Text as="span" weight="medium" size="base">
               Status: {status.charAt(0).toUpperCase() + status.slice(1)}
-            </span>
+            </Text>
           </div>
-          <div style={{ fontSize: 'var(--font-size-sm)' }}>Request ID: #{requestId?.substring(0, 8)}</div>
+          <Text as="div" size="sm">Request ID: #{requestId?.substring(0, 8)}</Text>
         </div>
         {status === "Rejected" && rejectionReason && (
           <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Reason for rejection:</span> {rejectionReason}
+            <Text as="span" weight="medium">Reason for rejection:</Text> {rejectionReason}
           </div>
         )}
         {/* {status === "Approved" && (
           <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Approved on:</span> {formatDate(approvedAt || new Date())}
+            <Text as="span" weight="medium">Approved on:</Text> {formatDate(approvedAt || new Date())}
           </div>
         )} */}
       </div>

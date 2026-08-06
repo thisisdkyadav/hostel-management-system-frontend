@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
 import {
@@ -368,9 +368,9 @@ const PorRequestDetailModal = ({
                 </div>
               ) : (
                 <div className="por-detail-success-card">
-                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-success)", fontSize: "var(--font-size-sm)" }}>
+                  <Text as="div" weight="bold" color="success" size="sm">
                     ✓ No Disciplinary Action Declared
-                  </div>
+                  </Text>
                   <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
                     The student has declared that they have no past or active disciplinary actions.
                   </div>

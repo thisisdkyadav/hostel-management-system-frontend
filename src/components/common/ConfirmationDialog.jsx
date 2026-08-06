@@ -1,7 +1,7 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed?", confirmText = "Confirm", cancelText = "Cancel", isDestructive = false }) => {
   const handleConfirm = () => {
@@ -35,7 +35,7 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
             </div>
           </div>
         )}
-        <p style={{ textAlign: 'center', color: 'var(--color-text-body)' }}>{message}</p>
+        <Text align="center" color="body">{message}</Text>
       </div>
     </Modal>
   )

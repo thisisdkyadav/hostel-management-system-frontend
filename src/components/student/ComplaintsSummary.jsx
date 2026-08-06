@@ -3,6 +3,7 @@ import { FaExclamationCircle, FaEye } from "react-icons/fa"
 import { MdPendingActions } from "react-icons/md"
 import { Link } from "react-router-dom"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
+import { Text } from "@/components/ui"
 
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {
@@ -28,7 +29,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
         </div>
         <div className="flex flex-col items-center justify-center" style={{ paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)', color: 'var(--color-text-muted)' }}>
           <FaExclamationCircle style={{ color: 'var(--color-bg-muted)', fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-1)' }} />
-          <p style={{ fontSize: 'var(--font-size-xs)' }}>No active complaints</p>
+          <Text size="xs">No active complaints</Text>
           <Link to="complaints" className="hover:underline" style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             Submit a new complaint
           </Link>

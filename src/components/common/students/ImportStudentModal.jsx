@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Modal, Text } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -704,21 +704,21 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", backgroundColor: summaryBg, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
         <div>
           <h4 style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{summaryTitle}</h4>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{importSummary.message}</p>
+          <Text size="sm" color="body">{importSummary.message}</Text>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Total</div>
-            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{importSummary.total}</div>
+            <Text as="div" size="xs" color="muted">Total</Text>
+            <Text as="div" size="lg" weight="semibold" color="primary">{importSummary.total}</Text>
           </div>
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Successfully Done</div>
-            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)" }}>{importSummary.successCount}</div>
+            <Text as="div" size="xs" color="muted">Successfully Done</Text>
+            <Text as="div" size="lg" weight="semibold" color="success">{importSummary.successCount}</Text>
           </div>
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Not Done (Errors)</div>
-            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-danger)" }}>{importSummary.errorCount}</div>
+            <Text as="div" size="xs" color="muted">Not Done (Errors)</Text>
+            <Text as="div" size="lg" weight="semibold" color="danger">{importSummary.errorCount}</Text>
           </div>
         </div>
 
@@ -726,7 +726,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
             <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Done</div>
             {shownSuccessItems.length === 0 ? (
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No successful records.</div>
+              <Text as="div" size="xs" color="muted">No successful records.</Text>
             ) : (
               <>
                 <ul style={{ margin: 0, paddingLeft: "var(--spacing-4)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
@@ -744,7 +744,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
             <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Not Done</div>
             {shownFailedItems.length === 0 ? (
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No failed records.</div>
+              <Text as="div" size="xs" color="muted">No failed records.</Text>
             ) : (
               <>
                 <ul style={{ margin: 0, paddingLeft: "var(--spacing-4)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
@@ -824,11 +824,11 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "30rem" }}>
                   <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
                   <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>name:</span> String (Required)</li>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>email:</span> Email (Required)</li>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)</li>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>gender:</span> Male/Female/Other (Required)</li>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>isDayScholar:</span> true/false (Required)</li>
+                    <li><Text as="span" weight="medium">name:</Text> String (Required)</li>
+                    <li><Text as="span" weight="medium">email:</Text> Email (Required)</li>
+                    <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
+                    <li><Text as="span" weight="medium">gender:</Text> Male/Female/Other (Required)</li>
+                    <li><Text as="span" weight="medium">isDayScholar:</Text> true/false (Required)</li>
                   </ul>
                   <p style={{ marginTop: "var(--spacing-2)" }}>
                     Day scholar details (owner/home details) are not imported here and should be updated separately in bulk update.
@@ -838,9 +838,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               {csvFile && (
                 <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)" }}>
-                    Selected file: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{csvFile.name}</span>
-                  </span>
+                  <Text as="span" size="sm" color="brand">
+                    Selected file: <Text as="span" weight="medium">{csvFile.name}</Text>
+                  </Text>
                   <Button
                     onClick={(event) => {
                       event.stopPropagation()
@@ -930,24 +930,24 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               <Grid min={160} gap={3}>
                 <div style={{ backgroundColor: "var(--color-info-bg)", border: "var(--border-1) solid var(--color-info-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)" }}>Imported</div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)" }}>
+                  <Text as="div" size="xs" color="info-text">Imported</Text>
+                  <Text as="div" size="lg" weight="semibold" color="info-text">
                     {importProgress.processed}/{importProgress.total || parsedData.length}
-                  </div>
+                  </Text>
                 </div>
                 <div style={{ backgroundColor: "var(--color-success-bg)", border: "var(--border-1) solid var(--color-success-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success-text)" }}>Successful</div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)" }}>{csvSuccessCount}</div>
+                  <Text as="div" size="xs" color="success-text">Successful</Text>
+                  <Text as="div" size="lg" weight="semibold" color="success-text">{csvSuccessCount}</Text>
                 </div>
                 <div style={{ backgroundColor: "var(--color-danger-bg)", border: "var(--border-1) solid var(--color-danger-border)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-danger-text)" }}>Failed</div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-danger-text)" }}>{csvFailedCount}</div>
+                  <Text as="div" size="xs" color="danger-text">Failed</Text>
+                  <Text as="div" size="lg" weight="semibold" color="danger-text">{csvFailedCount}</Text>
                 </div>
                 <div style={{ backgroundColor: "var(--color-warning-bg)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning-text)" }}>Shown In Sheet</div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning-text)" }}>
+                  <Text as="div" size="xs" color="warning-text">Shown In Sheet</Text>
+                  <Text as="div" size="lg" weight="semibold" color="warning-text">
                     {csvDisplayedSheetRows.length}/{csvResultSheetRows.length}
-                  </div>
+                  </Text>
                 </div>
               </Grid>
 

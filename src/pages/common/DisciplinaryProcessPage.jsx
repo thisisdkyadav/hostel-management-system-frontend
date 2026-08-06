@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { Modal, useConfirm } from "@/components/ui"
+import { Modal, Text, useConfirm } from "@/components/ui"
 import {
   Eye,
   Plus,
@@ -1140,12 +1140,12 @@ const DisciplinaryProcessPage = () => {
       header: "Started By",
       render: (item) => (
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)" }}>
+          <Text as="span" color="primary" weight="medium" size="sm">
             {item.startedBy?.name || "Unknown"}
-          </span>
-          <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+          </Text>
+          <Text as="span" color="muted" size="xs">
             {item.startedBy?.email || ""}
-          </span>
+          </Text>
         </div>
       ),
     },
@@ -1162,18 +1162,18 @@ const DisciplinaryProcessPage = () => {
       key: "currentStep",
       header: "Current Step",
       render: (item) => (
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+        <Text as="span" size="sm" color="body">
           {getStepLabel(deriveAdminStage(item))}
-        </span>
+        </Text>
       ),
     },
     {
       key: "updatedAt",
       header: "Updated",
       render: (item) => (
-        <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+        <Text as="span" size="xs" color="muted">
           {new Date(item.updatedAt).toLocaleDateString()}
-        </span>
+        </Text>
       ),
     },
   ]
@@ -1347,13 +1347,13 @@ const DisciplinaryProcessPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+            <Text as="span" weight="semibold">
               {adminCasesLoading ? 0 : filteredAdminCases.length}
-            </span>
+            </Text>
             {" / "}
-            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+            <Text as="span" weight="semibold">
               {adminCasesLoading ? 0 : adminTotalCount}
-            </span>
+            </Text>
             {" cases"}
           </span>,
         ]}
@@ -1492,9 +1492,9 @@ const DisciplinaryProcessPage = () => {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Text as="span" size="sm" color="body">
                   Started by <strong>{selectedAdminCase.startedBy?.name || "Unknown"}</strong>
-                </span>
+                </Text>
                 <Badge variant={getStatusVariant(selectedAdminCase.caseStatus)}>
                   {formatStatusLabel(selectedAdminCase.caseStatus)}
                 </Badge>
@@ -1528,9 +1528,9 @@ const DisciplinaryProcessPage = () => {
                 }}
               >
                 <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
-                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
+                <Text as="span" size="sm" color="info-text">
                   Viewing history: {getStepLabel(viewingHistoryStep)} (read-only)
-                </span>
+                </Text>
               </div>
             )}
 
@@ -1580,8 +1580,8 @@ const DisciplinaryProcessPage = () => {
                         }}
                       >
                         <User size={12} style={{ color: "var(--color-text-muted)" }} />
-                        <span style={{ fontWeight: "var(--font-weight-medium)" }}>{student.rollNumber}</span>
-                        <span style={{ color: "var(--color-text-muted)" }}>{student.name}</span>
+                        <Text as="span" weight="medium">{student.rollNumber}</Text>
+                        <Text as="span" color="muted">{student.name}</Text>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -1968,9 +1968,9 @@ const DisciplinaryProcessPage = () => {
                   Committee Minutes
                 </div>
 
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text as="div" size="sm" color="muted">
                   Email step completed (sent or skipped). Upload the meeting minutes to proceed.
-                </div>
+                </Text>
 
                 <PdfUploadField
                   label="Committee Minutes PDF"
@@ -2185,9 +2185,9 @@ const DisciplinaryProcessPage = () => {
                                   gap: "var(--spacing-2)",
                                 }}
                               >
-                                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)" }}>
+                                <Text as="div" weight="semibold" color="primary" size="sm">
                                   {student.name}
-                                </div>
+                                </Text>
                                 <Input
                                   placeholder="Reason"
                                   value={studentAction.reason}

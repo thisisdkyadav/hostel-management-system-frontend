@@ -38,6 +38,7 @@ import {
 } from "@/components/gymkhana/events-page/shared"
 import { CalendarDays, FileText } from "lucide-react"
 import { Badge } from "@/components/ui/data-display"
+import { Text } from "@/components/ui"
 
 export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [loading, setLoading] = useState(false)
@@ -228,7 +229,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         key: "title",
         header: "Event",
         render: (event) => (
-          <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
+          <Text as="span" weight="medium">{event.title}</Text>
         ),
       },
       {

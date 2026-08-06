@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, StatusBadge, Table } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
 import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"
 import { formatDate, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
@@ -74,12 +74,12 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
             {rebates.map((rebate) => (
               <Table.Row key={rebate.id}>
                 <Table.Cell>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>
+                  <Text as="div" weight="semibold" color="secondary">
                     {rebate.student?.name || "Student"}
-                  </div>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  </Text>
+                  <Text as="div" color="muted" size="sm">
                     {rebate.rollNumber}
-                  </div>
+                  </Text>
                 </Table.Cell>
                 <Table.Cell>
                   {formatDate(rebate.startDate)} – {formatDate(rebate.endDate)}
@@ -101,7 +101,7 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
                       </Button>
                     </div>
                   ) : (
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>—</span>
+                    <Text as="span" color="muted" size="sm">—</Text>
                   )}
                 </Table.Cell>
               </Table.Row>
@@ -141,10 +141,10 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
           }
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-            <p style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+            <Text color="body" size="sm">
               Rejecting the request for <strong>{rejectTarget.rollNumber}</strong> (
               {formatDate(rejectTarget.startDate)} – {formatDate(rejectTarget.endDate)}).
-            </p>
+            </Text>
             <div>
               <Label htmlFor="reject-comment">Reason / comment (optional)</Label>
               <Textarea

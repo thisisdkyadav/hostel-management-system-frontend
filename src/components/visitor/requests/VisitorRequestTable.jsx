@@ -4,6 +4,7 @@ import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import { Text } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -83,8 +84,8 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             </div>
           )}
           <div style={{ marginLeft: "var(--spacing-2)" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{request.studentName || "N/A"}</div>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{request.studentEmail || "No email"}</div>
+            <Text as="div" size="sm" weight="medium" color="primary">{request.studentName || "N/A"}</Text>
+            <Text as="div" size="xs" color="muted">{request.studentEmail || "No email"}</Text>
           </div>
         </div>
       ),
@@ -94,22 +95,22 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       key: "visitors",
       render: (request) => (
         <div>
-          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>
+          <Text as="div" size="sm" color="primary">
             {request.visitorCount} visitor{request.visitorCount !== 1 ? "s" : ""}
-          </div>
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{request.visitorNames}</div>
+          </Text>
+          <Text as="div" size="xs" color="muted">{request.visitorNames}</Text>
         </div>
       ),
     },
     {
       header: "From Date",
       key: "fromDate",
-      render: (request) => <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>{formatDate(request.fromDate)}</div>,
+      render: (request) => <Text as="div" size="sm" color="primary">{formatDate(request.fromDate)}</Text>,
     },
     {
       header: "To Date",
       key: "toDate",
-      render: (request) => <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" }}>{formatDate(request.toDate)}</div>,
+      render: (request) => <Text as="div" size="sm" color="primary">{formatDate(request.toDate)}</Text>,
     },
     {
       header: "Status",
@@ -156,7 +157,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
   if (!requests || requests.length === 0) {
     return (
       <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
-        <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No requests found matching your filters.</p>
+        <Text color="muted" size="base">No requests found matching your filters.</Text>
       </div>
     )
   }

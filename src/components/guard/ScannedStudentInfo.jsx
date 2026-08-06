@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Button } from "czero/react"
-import { Grid } from "@/components/ui"
+import { Grid, Text } from "@/components/ui"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -29,7 +29,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', padding: 'var(--spacing-6)' }}>
       <div style={{ backgroundColor: 'var(--color-success-bg-light)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-success)`, marginBottom: 'var(--spacing-6)' }}>
-        <p style={{ color: 'var(--color-success-text)', fontWeight: 'var(--font-weight-medium)' }}>Student verified successfully!</p>
+        <Text color="success-text" weight="medium">Student verified successfully!</Text>
       </div>
 
       {/* Cross-Hostel Alert */}
@@ -44,7 +44,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <p style={{ color: 'var(--color-warning-text)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                 <label htmlFor="crossHostelReason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>
-                  Reason for Cross-Hostel Entry <span style={{ color: 'var(--color-danger)' }}>*</span>
+                  Reason for Cross-Hostel Entry <Text as="span" color="danger">*</Text>
                 </label>
                 <textarea id="crossHostelReason" value={crossHostelReason} onChange={(e) => setCrossHostelReason(e.target.value)}
                   placeholder="Enter reason for allowing this cross-hostel entry..."
@@ -101,15 +101,15 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
                 <FaIdCard style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Roll Number</p>
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.rollNumber}</p>
+                  <Text size="xs" color="muted">Roll Number</Text>
+                  <Text size="sm" weight="medium" color="primary">{student.rollNumber}</Text>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
                 <FaEnvelope style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Email</p>
+                  <Text size="xs" color="muted">Email</Text>
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', wordBreak: 'break-all' }}>{student.email}</p>
                 </div>
               </div>
@@ -117,15 +117,15 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
                 <FaPhone style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Phone</p>
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.phone || "N/A"}</p>
+                  <Text size="xs" color="muted">Phone</Text>
+                  <Text size="sm" weight="medium" color="primary">{student.phone || "N/A"}</Text>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
                 <FaVenusMars style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Gender</p>
+                  <Text size="xs" color="muted">Gender</Text>
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', textTransform: 'capitalize' }}>{student.gender || "N/A"}</p>
                 </div>
               </div>
@@ -133,10 +133,10 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Hostel & Room</p>
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>
+                  <Text size="xs" color="muted">Hostel & Room</Text>
+                  <Text size="sm" weight="medium" color="primary">
                     {student.hostel}, Room {student.displayRoom}
-                  </p>
+                  </Text>
                 </div>
               </div>
             </Grid>
@@ -148,11 +148,11 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-4)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)' }}>{formatDate(lastCheckInOut.dateAndTime)}</span>
+                    <Text as="span" size="sm">{formatDate(lastCheckInOut.dateAndTime)}</Text>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <FaClock style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)' }}>{formatTime(lastCheckInOut.dateAndTime)}</span>
+                    <Text as="span" size="sm">{formatTime(lastCheckInOut.dateAndTime)}</Text>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     {lastCheckInOut.status === "Checked In" ? (
@@ -160,7 +160,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                     ) : (
                       <FaSignOutAlt style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-2)' }} />
                     )}
-                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{lastCheckInOut.status}</span>
+                    <Text as="span" size="sm" weight="medium">{lastCheckInOut.status}</Text>
                   </div>
                 </div>
               </div>
