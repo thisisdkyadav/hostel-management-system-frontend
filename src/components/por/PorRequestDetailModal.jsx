@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react"
 import { Button } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
 import {
@@ -258,7 +258,7 @@ const PorRequestDetailModal = ({
               title="POR Submission"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <Grid cols={1} gap={4}>
                 <div className="por-detail-hero-box">
                   <div className="por-detail-hero-title">
                     {request.positionTitle || "—"}
@@ -290,7 +290,7 @@ const PorRequestDetailModal = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </Grid>
             </PorDetailCard>
 
             <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)" }}>
@@ -381,7 +381,7 @@ const PorRequestDetailModal = ({
                 title="Review Decision"
                 accentColor="var(--color-primary)"
               >
-                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                <Grid cols={1} gap={3}>
                   <div>
                     <Label htmlFor="por-review-comment">
                       {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
@@ -458,7 +458,7 @@ const PorRequestDetailModal = ({
                       {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
                     </Button>
                   </div>
-                </div>
+                </Grid>
               </PorDetailCard>
             ) : null}
           </VStack>

@@ -1,7 +1,7 @@
 import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
-import { Heading, HStack, Text } from "@/components/ui"
+import { Grid, Heading, HStack, Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -97,7 +97,7 @@ const StudentElectionWorkspace = ({
             header: "Post",
             key: "title",
             render: (post) => (
-              <div style={{ display: "grid", gap: "4px" }}>
+              <Grid cols={1} gap="4px">
                 <Text as="div" weight="medium" color="primary">
                   {post.title}
                 </Text>
@@ -105,14 +105,14 @@ const StudentElectionWorkspace = ({
                   {formatStageLabel(post.category)}
                   {post.code ? ` · ${post.code}` : ""}
                 </div>
-              </div>
+              </Grid>
             ),
           },
           {
             header: "Status",
             key: "status",
             render: (post) => (
-              <div style={{ display: "grid", gap: "6px" }}>
+              <Grid cols={1} gap="6px">
                 <HStack gap="8px" align="center" wrap>
                   <StatusPill
                     tone={
@@ -165,7 +165,7 @@ const StudentElectionWorkspace = ({
                       ? `${post.myNomination.supporterSummary.accepted || 0}/${post.myNomination.supporterSummary.total || 0} supporter confirmations received`
                       : `Click row to ${post.myNomination ? "review or update nomination" : "open nomination form"}`}
                 </div>
-              </div>
+              </Grid>
             ),
           },
         ]}
@@ -178,12 +178,12 @@ const StudentElectionWorkspace = ({
             Your voting link is sent by email for this election. Student portal voting is not enabled here.
           </Alert>
         ) : hasSubmittedVote ? (
-          <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+          <Grid cols={1} gap={3}>
             <Alert type="success" title="Vote already submitted">
               Your vote has already been submitted for this election.
             </Alert>
 
-            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Grid cols={1} gap={3}>
               {votingPosts.map((post) => {
                 return (
                   <div
@@ -212,10 +212,10 @@ const StudentElectionWorkspace = ({
                   </div>
                 )
               })}
-            </div>
-          </div>
+            </Grid>
+          </Grid>
         ) : (
-          <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+          <Grid cols={1} gap={3}>
             {emailVotingEnabled ? (
               <Alert type="info">
                 You can submit your vote here in the student portal or through the email link sent for this election.
@@ -237,7 +237,7 @@ const StudentElectionWorkspace = ({
                   {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
                 </div>
 
-                <div style={{ display: "grid", gap: "10px" }}>
+                <Grid cols={1} gap="10px">
                   {(post.votingCandidates || []).map((candidate) => {
                     const inputName = `vote-${selectedStudentElection.id}-${post.id || post.postId}`
                     const candidateId = String(candidate.id || candidate.nominationId)
@@ -270,18 +270,18 @@ const StudentElectionWorkspace = ({
                             }))
                           }
                         />
-                        <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+                        <Grid cols={1} gap="2px" style={{ minWidth: 0 }}>
                           <Text as="div" weight="medium" color="primary">
                             {candidate.candidateName || candidate.candidateUserId?.name || candidate.candidateRollNumber}
                           </Text>
                           {candidate.candidateRollNumber ? (
                             <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
                           ) : null}
-                        </div>
+                        </Grid>
                       </label>
                     )
                   })}
-                </div>
+                </Grid>
               </div>
             ))}
 
@@ -294,13 +294,13 @@ const StudentElectionWorkspace = ({
                 Submit Vote
               </Button>
             </HStack>
-          </div>
+          </Grid>
         )
       ) : null}
 
     {selectedStudentElection.mode === "results" ? (
       selectedStudentElection.results?.isPublished ? (
-        <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+        <Grid cols={1} gap={3}>
           {(selectedStudentElection.results?.posts || []).map((postResult) => {
             const showVoteCountToStudents = postResult.showVoteCountToStudents !== false
             const rankedCandidates = showVoteCountToStudents
@@ -347,7 +347,7 @@ const StudentElectionWorkspace = ({
                   </StatusPill>
                 </HStack>
 
-                <div style={{ display: "grid", gap: "8px" }}>
+                <Grid cols={1} gap="8px">
                   {rankedCandidates.map((candidate, index) => {
                     const isWinner = winnerIds.has(String(candidate.nominationId))
                     const percentage = showVoteCountToStudents
@@ -356,17 +356,7 @@ const StudentElectionWorkspace = ({
                     const numericPercentage = Number.parseFloat(percentage)
 
                     return (
-                      <div
-                        key={candidate.nominationId}
-                        style={{
-                          display: "grid",
-                          gap: "8px",
-                          padding: "12px",
-                          border: "1px solid var(--color-border-primary)",
-                          borderRadius: "var(--radius-lg)",
-                          backgroundColor: isWinner ? "var(--color-success-bg)" : "var(--color-bg-primary)",
-                        }}
-                      >
+                      <Grid cols={1} gap="8px" style={{ padding: "12px", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: isWinner ? "var(--color-success-bg)" : "var(--color-bg-primary)" }} key={candidate.nominationId}>
                         <HStack gap={3} align="center" justify="between" wrap>
                           <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
                             <div
@@ -439,14 +429,14 @@ const StudentElectionWorkspace = ({
                             />
                           </div>
                         ) : null}
-                      </div>
+                      </Grid>
                     )
                   })}
-                </div>
+                </Grid>
               </div>
             )
           })}
-        </div>
+        </Grid>
       ) : (
         <Alert type="info">Results will be published soon.</Alert>
       )

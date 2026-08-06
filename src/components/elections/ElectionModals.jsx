@@ -105,13 +105,13 @@ export const ElectionHistoryModal = ({
             visibleElections.map((election) => (
               <Table.Row key={election.id}>
                 <Table.Cell>
-                  <div style={{ display: "grid", gap: "4px" }}>
+                  <Grid cols={1} gap="4px">
                     <Text as="span" weight="semibold">
                       {election.title}
                       {election?.mockSettings?.enabled ? " · Mock" : ""}
                     </Text>
                     <span style={mutedTextStyle}>{election.academicYear}</span>
-                  </div>
+                  </Grid>
                 </Table.Cell>
                 <Table.Cell>{formatStageLabel(election.phase)}</Table.Cell>
                 <Table.Cell>
@@ -172,7 +172,7 @@ export const CloneElectionModal = ({
       </>
     }
   >
-    <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+    <Grid cols={1} gap={3}>
       <div style={mutedTextStyle}>
         This creates a fresh draft copy of the current election configuration and nominations. Votes, results, and voting email state are not copied.
       </div>
@@ -190,7 +190,7 @@ export const CloneElectionModal = ({
           <div style={errorTextStyle}>Election name is required.</div>
         ) : null}
       </div>
-    </div>
+    </Grid>
   </Modal>
 )
 
@@ -578,7 +578,7 @@ export const ElectionWizardModal = ({
       : 0
 
     body = (
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <Grid min={220} gap={3}>
           <div>
             <label style={labelStyle}>Election title</label>
@@ -719,7 +719,7 @@ export const ElectionWizardModal = ({
           </HStack>
 
           {form.mockSettings?.enabled ? (
-            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Grid cols={1} gap={3}>
               <Alert
                 type="warning"
                 title="Mock election enabled"
@@ -752,16 +752,16 @@ export const ElectionWizardModal = ({
 
               <div style={mutedTextStyle}>{mockVoterCount} mock voter(s) uploaded</div>
               {basicsErrors.mockSettings ? <div style={errorTextStyle}>{basicsErrors.mockSettings}</div> : null}
-            </div>
+            </Grid>
           ) : null}
         </div>
-      </div>
+      </Grid>
     )
   }
 
   if (currentStep === "timeline") {
     body = (
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <div style={flatPanelStyle}>
           <HStack gap={3} align="center" justify="between" wrap>
             <div>
@@ -804,13 +804,13 @@ export const ElectionWizardModal = ({
             </div>
           ))}
         </div>
-      </div>
+      </Grid>
     )
   }
 
   if (currentStep === "commission") {
     body = (
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <div style={flatPanelStyle}>
           <div style={{ ...labelStyle, marginBottom: "4px" }}>Election Commission</div>
           <div style={mutedTextStyle}>
@@ -863,13 +863,13 @@ export const ElectionWizardModal = ({
             ) : null}
           </div>
         </Grid>
-      </div>
+      </Grid>
     )
   }
 
   if (currentStep === "posts" && activePost) {
     body = (
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <div style={flatPanelStyle}>
           <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <div>
@@ -912,7 +912,7 @@ export const ElectionWizardModal = ({
           </div>
         </div>
 
-        <div style={{ ...panelStyle, display: "grid", gap: "var(--spacing-4)" }}>
+        <Grid cols={1} gap={4}>
           <HStack gap={3} align="start" justify="between" wrap>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
@@ -1062,8 +1062,8 @@ export const ElectionWizardModal = ({
             />
             {activePostErrors.notes ? <div style={errorTextStyle}>{activePostErrors.notes}</div> : null}
           </div>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     )
   }
 
@@ -1214,16 +1214,7 @@ export const AdminNominationReviewModal = ({
   }
 
   const SectionCard = ({ icon: Icon, title, children }) => (
-    <div
-      style={{
-        background: "var(--color-bg-tertiary)",
-        borderRadius: "var(--radius-lg)",
-        padding: "var(--spacing-3) var(--spacing-4)",
-        border: "1px solid var(--color-border-light)",
-        display: "grid",
-        gap: "var(--spacing-3)",
-      }}
-    >
+    <Grid cols={1} gap={3} style={{ background: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3) var(--spacing-4)", border: "1px solid var(--color-border-light)" }}>
       <HStack gap={2} align="center">
         <div
           style={{
@@ -1244,7 +1235,7 @@ export const AdminNominationReviewModal = ({
         </Text>
       </HStack>
       {children}
-    </div>
+    </Grid>
   )
 
   const StudentSummaryCard = ({
@@ -1297,7 +1288,7 @@ export const AdminNominationReviewModal = ({
           {(name || "?").trim().charAt(0).toUpperCase()}
         </IconCircle>
       )}
-      <div style={{ minWidth: 0, flex: 1, display: "grid", gap: "2px" }}>
+      <Grid cols={1} gap="2px" style={{ minWidth: 0, flex: 1 }}>
         <div
           style={{
             fontWeight: "var(--font-weight-semibold)",
@@ -1323,7 +1314,7 @@ export const AdminNominationReviewModal = ({
             {email}
           </div>
         ) : null}
-      </div>
+      </Grid>
       {loading ? <span style={mutedTextStyle}>Opening...</span> : null}
     </div>
   )
@@ -1334,7 +1325,7 @@ export const AdminNominationReviewModal = ({
     }
 
     return (
-      <div style={{ display: "grid", gap: "10px" }}>
+      <Grid cols={1} gap="10px">
         {entries.map((entry) => (
           <div
             key={`${entry.userId || entry.rollNumber}`}
@@ -1414,7 +1405,7 @@ export const AdminNominationReviewModal = ({
             </StatusPill>
           </div>
         ))}
-      </div>
+      </Grid>
     )
   }
 
@@ -1788,7 +1779,7 @@ export const StudentNominationModal = ({
                   <div key={item.label} style={flatPanelStyle}>
                     <div style={{ ...labelStyle, marginBottom: "8px" }}>{item.label}</div>
                     {item.value ? (
-                      <div style={{ display: "grid", gap: "10px" }}>
+                      <Grid cols={1} gap="10px">
                         <div
                           style={{
                             border: "1px solid var(--color-border-primary)",
@@ -1820,7 +1811,7 @@ export const StudentNominationModal = ({
                             Open
                           </a>
                         </HStack>
-                      </div>
+                      </Grid>
                     ) : (
                       <span style={mutedTextStyle}>Not uploaded</span>
                     )}
@@ -1892,21 +1883,12 @@ export const StudentNominationModal = ({
                   </Button>
                 </HStack>
 
-                <div style={{ display: "grid", gap: "10px" }}>
+                <Grid cols={1} gap="10px">
                   {section.entries.map((entry, index) => {
                     const rowKey = `${election?.id}:${post?.id}:${section.supportType}:${index}`
                     const isLookingUp = supportLookupKey === rowKey
                     return (
-                      <div
-                        key={rowKey}
-                        style={{
-                          border: "1px solid var(--color-border-primary)",
-                          borderRadius: "var(--radius-lg)",
-                          padding: "var(--spacing-3)",
-                          display: "grid",
-                          gap: "8px",
-                        }}
-                      >
+                      <Grid cols={1} gap="8px" style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)" }} key={rowKey}>
                         <HStack gap="8px" align="center">
                           <Input
                             value={entry.rollNumber || ""}
@@ -1942,12 +1924,12 @@ export const StudentNominationModal = ({
                         ) : null}
 
                         {entry.name ? (
-                          <div style={{ display: "grid", gap: "2px" }}>
+                          <Grid cols={1} gap="2px">
                             <Text as="div" weight="medium">{entry.name}</Text>
                             <div style={mutedTextStyle}>
                               {entry.lookupMessage || "Verified"}
                             </div>
-                          </div>
+                          </Grid>
                         ) : null}
 
                         {!entry.name && entry.lookupStatus === "invalid" ? (
@@ -1955,10 +1937,10 @@ export const StudentNominationModal = ({
                             {entry.lookupMessage || "Unable to verify this roll number"}
                           </Text>
                         ) : null}
-                      </div>
+                      </Grid>
                     )
                   })}
-                </div>
+                </Grid>
               </div>
             ))}
           </div>
@@ -2056,7 +2038,7 @@ export const AdminResultsEditModal = ({
           </div>
         ) : (
           <>
-            <div style={{ ...flatPanelStyle, display: "grid", gap: "10px" }}>
+            <Grid cols={1} gap="10px">
               <label
                 style={{
                   display: "flex",
@@ -2077,9 +2059,9 @@ export const AdminResultsEditModal = ({
                 Leave this on to show candidate vote counts and percentages to students after result publication.
                 Turn it off to publish only the winner/result without the counts.
               </div>
-            </div>
+            </Grid>
 
-            <div style={{ ...flatPanelStyle, display: "grid", gap: "10px" }}>
+            <Grid cols={1} gap="10px">
               <label
                 style={{
                   display: "flex",
@@ -2123,9 +2105,9 @@ export const AdminResultsEditModal = ({
                 Turn this on to select multiple tied winners for the published result. Leave it off to publish a
                 single winner.
               </div>
-            </div>
+            </Grid>
 
-            <div style={{ display: "grid", gap: "12px" }}>
+            <Grid cols={1} gap="12px">
               {(postResult.candidates || []).map((candidate) => {
                 const selectedWinnerIds = Array.isArray(draft?.winnerNominationIds)
                   ? draft.winnerNominationIds.map((value) => String(value))
@@ -2171,20 +2153,20 @@ export const AdminResultsEditModal = ({
                           })
                         }}
                       />
-                      <div style={{ display: "grid", gap: "4px" }}>
+                      <Grid cols={1} gap="4px">
                         <Text as="span" weight="semibold" color="heading">
                           {candidate.candidateName}
                         </Text>
                         {!candidate.isNota && candidate.candidateRollNumber ? (
                           <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
                         ) : null}
-                      </div>
+                      </Grid>
                     </HStack>
                     <Text as="strong" color="heading">{candidate.voteCount}</Text>
                   </label>
                 )
               })}
-            </div>
+            </Grid>
 
             {draft?.winnerIsTie && (draft?.winnerNominationIds || []).length < 2 ? (
               <div style={mutedTextStyle}>Select at least two options to publish this post as a tie.</div>

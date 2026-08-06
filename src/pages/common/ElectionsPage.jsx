@@ -2592,7 +2592,7 @@ const ElectionsPage = () => {
               </>
             }
           >
-            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Grid cols={1} gap={3}>
               <div style={mutedTextStyle}>
                 Queue the voting email for students who are still eligible to vote in this election.
               </div>
@@ -2615,26 +2615,17 @@ const ElectionsPage = () => {
                     checked={sendVotingEmailReminder}
                     onChange={(event) => setSendVotingEmailReminder(event.target.checked)}
                   />
-                  <div style={{ display: "grid", gap: "4px" }}>
+                  <Grid cols={1} gap="4px">
                     <Text as="span" weight="semibold" color="heading">
                       Send as reminder
                     </Text>
                     <span style={mutedTextStyle}>
                       Adds reminder text with voting end time and current turnout to the email. This is only available while voting is live.
                     </span>
-                  </div>
+                  </Grid>
                 </label>
               ) : null}
-              <div
-                style={{
-                  display: "grid",
-                  gap: "var(--spacing-2)",
-                  padding: "var(--spacing-3)",
-                  border: "1px solid var(--color-border-primary)",
-                  borderRadius: "var(--radius-card-sm)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                }}
-              >
+              <Grid cols={1} gap={2} style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
                 <Text as="div" weight="semibold" color="heading">
                   Optional CSV filter
                 </Text>
@@ -2662,8 +2653,8 @@ const ElectionsPage = () => {
                     ? `${sendVotingEmailRollNumbers.length} uploaded roll number(s) will be checked against the election voter list${selectedAdminElection?.mockSettings?.enabled ? " and the mock voter list" : ""}.`
                     : "No CSV uploaded. Email will be queued for all eligible voters."}
                 </div>
-              </div>
-              <div style={{ display: "grid", gap: "10px" }}>
+              </Grid>
+              <Grid cols={1} gap="10px">
                 <label
                   style={{
                     display: "flex",
@@ -2684,14 +2675,14 @@ const ElectionsPage = () => {
                     checked={sendVotingEmailMode === "reuse_existing"}
                     onChange={() => setSendVotingEmailMode("reuse_existing")}
                   />
-                  <div style={{ display: "grid", gap: "4px" }}>
+                  <Grid cols={1} gap="4px">
                     <Text as="span" weight="semibold" color="heading">
                       Reuse existing link
                     </Text>
                     <span style={mutedTextStyle}>
                       Resend the same voting link if an active one already exists for that student.
                     </span>
-                  </div>
+                  </Grid>
                 </label>
 
                 <label
@@ -2714,17 +2705,17 @@ const ElectionsPage = () => {
                     checked={sendVotingEmailMode === "generate_new"}
                     onChange={() => setSendVotingEmailMode("generate_new")}
                   />
-                  <div style={{ display: "grid", gap: "4px" }}>
+                  <Grid cols={1} gap="4px">
                     <Text as="span" weight="semibold" color="heading">
                       Generate new link
                     </Text>
                     <span style={mutedTextStyle}>
                       Invalidates the old voting link and sends a new one to the student.
                     </span>
-                  </div>
+                  </Grid>
                 </label>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
           </Modal>
 
           <Modal
@@ -2755,7 +2746,7 @@ const ElectionsPage = () => {
               </>
             }
           >
-            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <Grid cols={1} gap={4}>
               <div style={infoGridStyle}>
                 <div style={compactStatStyle}>
                   <span style={compactStatLabelStyle}>With Link</span>
@@ -2844,7 +2835,7 @@ const ElectionsPage = () => {
                   </Table>
                 </div>
               </Grid>
-            </div>
+            </Grid>
           </Modal>
 
           <Modal
@@ -2880,7 +2871,7 @@ const ElectionsPage = () => {
               </>
             }
           >
-            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <Grid cols={1} gap={4}>
               <div style={flatPanelStyle}>
                 <Text as="div" weight="semibold" color="heading">
                   Email Preview
@@ -2932,7 +2923,7 @@ const ElectionsPage = () => {
                     : "Add one student manually or upload a CSV to send a test email."}
                 </div>
               </div>
-            </div>
+            </Grid>
           </Modal>
 
           <Modal
@@ -2963,7 +2954,7 @@ const ElectionsPage = () => {
               </>
             }
           >
-            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <Grid cols={1} gap={4}>
               <div style={infoGridStyle}>
                 <div style={compactStatStyle}>
                   <span style={compactStatLabelStyle}>Received Test Email</span>
@@ -3052,7 +3043,7 @@ const ElectionsPage = () => {
                   </Table>
                 </div>
               </Grid>
-            </div>
+            </Grid>
           </Modal>
 
           <Modal
@@ -3078,7 +3069,7 @@ const ElectionsPage = () => {
               </>
             }
           >
-            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Grid cols={1} gap={3}>
               <div style={mutedTextStyle}>
                 Choose the CSV format you want to export for this election result.
               </div>
@@ -3103,14 +3094,14 @@ const ElectionsPage = () => {
                   checked={resultsExportVariant === "flat"}
                   onChange={() => setResultsExportVariant("flat")}
                 />
-                <div style={{ display: "grid", gap: "4px" }}>
+                <Grid cols={1} gap="4px">
                   <Text as="span" weight="semibold" color="heading">
                     Flat candidate table
                   </Text>
                   <span style={mutedTextStyle}>
                     One row per candidate with post, votes, percentage, winner flags, and notes.
                   </span>
-                </div>
+                </Grid>
               </label>
 
               <label
@@ -3133,16 +3124,16 @@ const ElectionsPage = () => {
                   checked={resultsExportVariant === "grouped"}
                   onChange={() => setResultsExportVariant("grouped")}
                 />
-                <div style={{ display: "grid", gap: "4px" }}>
+                <Grid cols={1} gap="4px">
                   <Text as="span" weight="semibold" color="heading">
                     Post-wise grouped sheet
                   </Text>
                   <span style={mutedTextStyle}>
                     Election info on top, then each post in creation order with candidate-wise votes, percentage, and NOTA.
                   </span>
-                </div>
+                </Grid>
               </label>
-            </div>
+            </Grid>
           </Modal>
 
           <ConfirmationDialog

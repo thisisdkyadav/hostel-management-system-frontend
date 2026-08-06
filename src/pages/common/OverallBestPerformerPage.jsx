@@ -1171,7 +1171,7 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
         </HStack>
 
         <Grid cols="minmax(0, 1.15fr) minmax(0, 0.85fr)" gap={4}>
-          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+          <Grid cols={1} gap={4}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>POR Submission</span>
               <Text as="div" size="lg" weight="semibold" color="primary">
@@ -1196,32 +1196,32 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
                 </Text>
               ) : null}
             </div>
-          </div>
+          </Grid>
 
-          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+          <Grid cols={1} gap={4}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Student Details</span>
-              <div style={{ display: "grid", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Grid cols={1} gap={2} style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
                 <div><strong>Name:</strong> {porRequest.student?.name || "—"}</div>
                 <div><strong>Roll Number:</strong> {porRequest.student?.rollNumber || "—"}</div>
                 <div><strong>Email:</strong> {porRequest.student?.email || "—"}</div>
                 <div><strong>Department:</strong> {porRequest.student?.department || "—"}</div>
                 <div><strong>Degree:</strong> {porRequest.student?.degree || "—"}</div>
                 <div><strong>Batch:</strong> {porRequest.student?.batch || "—"}</div>
-              </div>
+              </Grid>
             </div>
 
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Routing Details</span>
-              <div style={{ display: "grid", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Grid cols={1} gap={2} style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
                 <div><strong>Club:</strong> {porRequest.club?.name || "—"}</div>
                 <div><strong>Club Email:</strong> {porRequest.club?.email || "—"}</div>
                 <div><strong>GS Category:</strong> {porRequest.gymkhanaCategoryLabel || "—"}</div>
                 <div><strong>Current Stage:</strong> {porRequest.currentApprovalStage || "Completed"}</div>
                 <div><strong>Revision Count:</strong> {porRequest.revisionCount || 0}</div>
-              </div>
+              </Grid>
             </div>
-          </div>
+          </Grid>
         </Grid>
       </VStack>
     </Modal>
@@ -1263,7 +1263,7 @@ const SupportingProofField = ({
 
   return (
     <>
-      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+      <Grid cols={1} gap={3}>
         {canUsePor ? (
           <div style={fieldClusterStyle}>
             <span style={sectionLabelStyle}>Proof Source</span>
@@ -1318,14 +1318,14 @@ const SupportingProofField = ({
                   flexWrap: "wrap",
                 }}
               >
-                <div style={{ display: "grid", gap: "4px" }}>
+                <Grid cols={1} gap="4px">
                   <Text as="div" size="sm" weight="semibold" color="primary">
                     {selectedPor.positionTitle || "Verified POR"}
                   </Text>
                   <Text as="div" size="xs" color="muted">
                     {selectedPor.club?.name || "—"} · {selectedPor.gymkhanaCategoryLabel || "—"} · {selectedPor.tenure || "—"}
                   </Text>
-                </div>
+                </Grid>
                 <Button size="sm" variant="secondary" onClick={() => setShowPorModal(true)}>
                   <Eye size={14} /> View POR
                 </Button>
@@ -1355,7 +1355,7 @@ const SupportingProofField = ({
         {!canUsePor ? (
           <div style={helperTextStyle}>Only uploaded PDFs are available right now because you do not have any verified PORs yet.</div>
         ) : null}
-      </div>
+      </Grid>
 
       <PorProofDetailModal
         open={showPorModal}
@@ -1412,17 +1412,7 @@ const MinimalScoredItemsEditor = ({
         ) : null}
  
         {rows.map((item, index) => (
-          <div
-            key={`${title}-${index}`}
-            style={{
-              padding: "var(--spacing-4)",
-              borderRadius: "var(--radius-card-sm)",
-              border: "1px solid var(--color-border-primary)",
-              backgroundColor: "var(--color-bg-secondary)",
-              display: "grid",
-              gap: "var(--spacing-3)",
-            }}
-          >
+          <Grid cols={1} gap={3} style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border-primary)", backgroundColor: "var(--color-bg-secondary)" }} key={`${title}-${index}`}>
             <HStack gap={3} align="center" justify="between" wrap>
               <HStack gap={2} align="center" wrap>
                 <span style={sectionLabelStyle}>Item {index + 1}</span>
@@ -1439,7 +1429,7 @@ const MinimalScoredItemsEditor = ({
               ) : null}
             </HStack>
  
-            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Grid cols={1} gap={3}>
               <div>
                 <label style={fieldLabelStyle}>Marking category</label>
                 <Select
@@ -1484,8 +1474,8 @@ const MinimalScoredItemsEditor = ({
                   viewerTitle={`${title} supporting document`}
                 />
               </div>
-            </div>
-          </div>
+            </Grid>
+          </Grid>
         ))}
       </VStack>
     </>
@@ -1493,7 +1483,7 @@ const MinimalScoredItemsEditor = ({
  
   if (embedded) {
     return (
-      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+      <Grid cols={1} gap={3}>
         <HStack gap={3} align="start" justify="between" wrap>
           <div>
             <div style={sectionLabelStyle}>{title}</div>
@@ -1501,7 +1491,7 @@ const MinimalScoredItemsEditor = ({
           {!disabled ? <Button size="sm" variant="secondary" onClick={addItem}><Plus size={14} /> Add item</Button> : null}
         </HStack>
         {content}
-      </div>
+      </Grid>
     )
   }
  
@@ -1535,8 +1525,8 @@ const SingleSelectionAchievementEditor = ({
   descriptionLabel = "Description",
   descriptionPlaceholder = "",
 }) => (
-  <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
-    <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+  <Grid cols={1} gap={3}>
+    <Grid cols={1} gap={3}>
       <div>
         <label style={fieldLabelStyle}>{heading} category</label>
         <Select
@@ -1590,8 +1580,8 @@ const SingleSelectionAchievementEditor = ({
           Leave this as `No entry` if it does not apply to you.
         </Text>
       )}
-    </div>
-  </div>
+    </Grid>
+  </Grid>
 )
 
 const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
@@ -1823,7 +1813,7 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                         borderLeft: "1px solid var(--color-border-primary)",
                       }}
                     >
-                      <div style={{ display: "grid", gap: "6px" }}>
+                      <Grid cols={1} gap="6px">
                         <Text as="div" size="base" weight="semibold" color="primary" leading={1.45}>
                           {row.categoryTitle}
                         </Text>
@@ -1833,7 +1823,7 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                         <Text as="div" size="sm" weight="semibold" color="brand">
                           Max {row.maxMarks} marks
                         </Text>
-                      </div>
+                      </Grid>
                     </td>
                     <td
                       style={{
@@ -1842,24 +1832,24 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                         borderLeft: "1px solid var(--color-border-primary)",
                       }}
                     >
-                      <div style={{ display: "grid", gap: "10px" }}>
+                      <Grid cols={1} gap="10px">
                         {row.scoringBlocks.map((block, index) => (
-                          <div key={`${row.serial}-block-${index}`} style={{ display: "grid", gap: "4px" }}>
+                          <Grid cols={1} gap="4px" key={`${row.serial}-block-${index}`}>
                             {block.title ? (
                               <Text as="div" size="sm" weight="semibold" color="primary">
                                 {block.title}
                               </Text>
                             ) : null}
-                            <div style={{ display: "grid", gap: "3px" }}>
+                            <Grid cols={1} gap="3px">
                               {block.lines.map((line) => (
                                 <Text as="div" size="sm" color="body" leading={1.55} key={line}>
                                   {line}
                                 </Text>
                               ))}
-                            </div>
-                          </div>
+                            </Grid>
+                          </Grid>
                         ))}
-                      </div>
+                      </Grid>
                     </td>
                   </tr>
                 ))}
@@ -2605,28 +2595,18 @@ const HodVerificationsCard = ({ verifications = [] }) => {
       accentColor="var(--color-info)"
     >
       {entries.length > 0 ? (
-        <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+        <Grid cols={1} gap={3}>
           {entries.map((entry, index) => (
-            <div
-              key={entry?.id || `${entry?.verifiedBy || "hod"}-${entry?.verifiedAt || index}`}
-              style={{
-                display: "grid",
-                gap: "var(--spacing-2)",
-                padding: "var(--spacing-3)",
-                border: "1px solid var(--color-border-primary)",
-                borderRadius: "var(--radius-lg)",
-                backgroundColor: "var(--color-bg-secondary)",
-              }}
-            >
+            <Grid cols={1} gap={2} style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" }} key={entry?.id || `${entry?.verifiedBy || "hod"}-${entry?.verifiedAt || index}`}>
               <HStack gap={3} align="center" justify="between" wrap>
-                <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+                <Grid cols={1} gap="2px" style={{ minWidth: 0 }}>
                   <Text as="div" size="sm" weight="semibold" color="primary">
                     {entry?.verifierName || "HOD"}
                   </Text>
                   <Text as="div" size="xs" color="muted">
                     {entry?.verifierEmail || "Email not available"}
                   </Text>
-                </div>
+                </Grid>
                 <Badge variant={entry?.action === "verified" ? "success" : "info"}>
                   {formatHodVerificationActionLabel(entry?.action)}
                 </Badge>
@@ -2637,9 +2617,9 @@ const HodVerificationsCard = ({ verifications = [] }) => {
               <Text as="div" size="xs" color="muted">
                 {entry?.verifiedAt ? new Date(entry.verifiedAt).toLocaleString() : "Timestamp unavailable"}
               </Text>
-            </div>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       ) : (
         <Text as="div" size="sm" color="muted" leading={1.7}>
           No HOD verification or comments have been recorded yet.
@@ -2674,7 +2654,7 @@ const EditCourseworkScoreModal = ({
 
   return (
     <Modal title="Edit CGPA / CPI" onClose={onClose} width={520}>
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <div style={infoBoxStyle}>
           <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Coursework Score</div>
           <Text as="div" color="body" size="sm" leading={1.6}>
@@ -2731,7 +2711,7 @@ const EditCourseworkScoreModal = ({
             <Save size={14} /> Save CGPA / CPI
           </Button>
         </HStack>
-      </div>
+      </Grid>
     </Modal>
   )
 }
@@ -2767,7 +2747,7 @@ const EditProjectThesisGradesModal = ({
 
   return (
     <Modal title="Edit BTP & Project Grade" onClose={onClose} width={620}>
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <div style={infoBoxStyle}>
           <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>BTP / Project Grade Score</div>
           <Text as="div" color="body" size="sm" leading={1.6}>
@@ -2798,16 +2778,7 @@ const EditProjectThesisGradesModal = ({
           </div>
         </Grid>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "var(--spacing-2)",
-            padding: "var(--spacing-3)",
-            border: "1px solid var(--color-border-primary)",
-            borderRadius: "var(--radius-card-sm)",
-            backgroundColor: "var(--color-bg-secondary)",
-          }}
-        >
+        <Grid cols={1} gap={2} style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
           <HStack gap={3} justify="between">
             <Text as="span" size="sm" color="muted">BTP award points</Text>
             <Text as="span" weight="bold" color={btpPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
@@ -2836,7 +2807,7 @@ const EditProjectThesisGradesModal = ({
               )}
             </Text>
           </HStack>
-        </div>
+        </Grid>
 
         <HStack gap={2} justify="end">
           <Button variant="ghost" onClick={onClose} disabled={saving}>
@@ -2850,7 +2821,7 @@ const EditProjectThesisGradesModal = ({
             <Save size={14} /> Save BTP Grades
           </Button>
         </HStack>
-      </div>
+      </Grid>
     </Modal>
   )
 }
@@ -3351,7 +3322,7 @@ const ReviewModal = ({
                   </div>
                 </div>
               ) : (
-                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                <Grid cols={1} gap={3}>
                   <div className="por-detail-info-grid">
                     <PorDetailInfoRow label="Review Status" value={application.review?.status || "submitted"} />
                     <PorDetailInfoRow label="Final Score" value={application.finalScore ?? "—"} />
@@ -3362,7 +3333,7 @@ const ReviewModal = ({
                       {application.review?.remarks || "No review remarks have been added yet."}
                     </Text>
                   </div>
-                </div>
+                </Grid>
               )}
             </PorDetailCard>
           </VStack>
@@ -4136,7 +4107,7 @@ const OverallBestPerformerPage = () => {
         header: "Student",
         key: "studentName",
         render: (application) => (
-          <div style={{ display: "grid", gap: "4px", minWidth: 0 }}>
+          <Grid cols={1} gap="4px" style={{ minWidth: 0 }}>
             <div
               style={{
                 color: "var(--color-text-primary)",
@@ -4170,35 +4141,35 @@ const OverallBestPerformerPage = () => {
             >
               {application.department || "—"}{application.degree ? ` · ${application.degree}` : ""}
             </div>
-          </div>
+          </Grid>
         ),
       },
       {
         header: "Calculated",
         key: "calculatedTotal",
         render: (application) => (
-          <div style={{ display: "grid", gap: "4px" }}>
+          <Grid cols={1} gap="4px">
             <Text as="div" color="primary" weight="semibold" style={{ whiteSpace: "nowrap" }}>
               {application.calculatedTotal ?? "—"}
             </Text>
             <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
               Auto score
             </Text>
-          </div>
+          </Grid>
         ),
       },
       {
         header: "Final",
         key: "finalScore",
         render: (application) => (
-          <div style={{ display: "grid", gap: "4px" }}>
+          <Grid cols={1} gap="4px">
             <div>
               <Badge variant="info">{application.finalScore ?? "—"}</Badge>
             </div>
             <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
               Reviewed score
             </Text>
-          </div>
+          </Grid>
         ),
       },
       {
@@ -4217,14 +4188,14 @@ const OverallBestPerformerPage = () => {
           if (!application.updatedAt) return "—"
           const updatedAt = new Date(application.updatedAt)
           return (
-            <div style={{ display: "grid", gap: "4px" }}>
+            <Grid cols={1} gap="4px">
               <Text as="div" size="sm" color="primary" weight="medium" style={{ whiteSpace: "nowrap" }}>
                 {updatedAt.toLocaleDateString()}
               </Text>
               <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
                 {updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </Text>
-            </div>
+            </Grid>
           )
         },
       },
@@ -4452,7 +4423,7 @@ const OverallBestPerformerPage = () => {
                   </Text>
                 </div>
                 
-                <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                <Grid cols={1} gap={2}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
                     <Text as="span" size="xs" color="muted" weight="medium">Submissions Open</Text>
                     <Text as="span" size="xs" weight="semibold" color="primary">
@@ -4465,7 +4436,7 @@ const OverallBestPerformerPage = () => {
                       {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
                     </Text>
                   </div>
-                </div>
+                </Grid>
 
                 <HStack gap="6px" wrap style={{ marginTop: "var(--spacing-1)" }}>
                   <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
@@ -4572,7 +4543,7 @@ const OverallBestPerformerPage = () => {
               </div>
 
               <SectionPanel title="Score Preview">
-                <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                <Grid cols={1} gap={4}>
                   <Grid min={220} gap={3}>
                     <SummaryMetric icon={Trophy} label="Current Score" value={studentScorePreview.total} />
                     <SummaryMetric
@@ -4597,12 +4568,12 @@ const OverallBestPerformerPage = () => {
                   </div>
 
                   <ScoreBreakdownCard breakdown={studentScorePreview} />
-                </div>
+                </Grid>
               </SectionPanel>
 
               <SectionPanel title="1. Academic achievements">
-                <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-                  <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                <Grid cols={1} gap={4}>
+                  <Grid cols={1} gap={2}>
                     <span style={sectionLabelStyle}>Programme Type</span>
                     <HStack gap={2} wrap>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
@@ -4616,9 +4587,9 @@ const OverallBestPerformerPage = () => {
                         </Button>
                       ))}
                     </HStack>
-                  </div>
+                  </Grid>
  
-                  <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                  <Grid cols={1} gap={3}>
                     <div>
                       <label style={fieldLabelStyle}>
                         {applicantStage === "ug" ? "CGPA" : "CPI"}
@@ -4671,13 +4642,13 @@ const OverallBestPerformerPage = () => {
                         viewerTitle="Academic transcript / coursework proof"
                       />
                     </div>
-                  </div>
-                </div>
+                  </Grid>
+                </Grid>
               </SectionPanel>
  
               <SectionPanel title="2. Project / thesis work">
-                <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-                  <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                <Grid cols={1} gap={4}>
+                  <Grid cols={1} gap={2}>
                     <span style={sectionLabelStyle}>Project Track</span>
                     <HStack gap={2} wrap>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
@@ -4691,7 +4662,7 @@ const OverallBestPerformerPage = () => {
                         </Button>
                       ))}
                     </HStack>
-                  </div>
+                  </Grid>
 
                   {applicantStage === "ug" ? (
                     <>
@@ -4858,7 +4829,7 @@ const OverallBestPerformerPage = () => {
                       embedded
                     />
                   ) : null}
-                </div>
+                </Grid>
               </SectionPanel>
 
               <MinimalScoredItemsEditor
@@ -5008,7 +4979,7 @@ const OverallBestPerformerPage = () => {
                     </Text>
                   </label>
 
-                  <div style={{ ...infoBoxStyle, display: "grid", gap: "var(--spacing-3)" }}>
+                  <Grid cols={1} gap={3}>
                     <span style={sectionLabelStyle}>Submission Action</span>
                     <Button onClick={handleSaveStudentApplication} loading={savingApplication} disabled={!canEditStudentForm}>
                       <Save size={16} /> Save application
@@ -5018,7 +4989,7 @@ const OverallBestPerformerPage = () => {
                         This application is read-only because the deadline has passed or the submission has already been reviewed.
                       </Text>
                     ) : null}
-                  </div>
+                  </Grid>
                 </div>
               </SectionPanel>
             </VStack>
@@ -5082,17 +5053,17 @@ const OverallBestPerformerPage = () => {
                   </Button>
                 )}
               >
-                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                <Grid cols={1} gap={3}>
                   <div style={fieldClusterStyle}>
                     <span style={sectionLabelStyle}>Current list</span>
-                    <div style={{ display: "grid", gap: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                    <Grid cols={1} gap="6px" style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                       <div>{occurrenceForm.eligibleRollNumbers.length || 0} eligible students configured for this occurrence.</div>
                       <Text as="div" color="muted">
                         Editing this list will not remove or delete already submitted applications for this occurrence.
                       </Text>
-                    </div>
+                    </Grid>
                   </div>
-                </div>
+                </Grid>
               </SectionPanel>
             ) : (
               <SectionPanel
@@ -5135,7 +5106,7 @@ const OverallBestPerformerPage = () => {
           width={1080}
           minHeight="60vh"
         >
-          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+          <Grid cols={1} gap={4}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Important</span>
               <Text as="div" color="body" size="sm" leading={1.6}>
@@ -5185,7 +5156,7 @@ const OverallBestPerformerPage = () => {
               title="Eligible students"
               subtitle={`${occurrenceForm.eligibleRollNumbers.length || 0} students currently in this edit list.`}
             >
-              <div style={{ display: "grid", gap: "var(--spacing-2)", maxHeight: "42vh", overflowY: "auto" }}>
+              <Grid cols={1} gap={2} style={{ maxHeight: "42vh", overflowY: "auto" }}>
                 {filteredEligibleStudents.length > 0 ? (
                   filteredEligibleStudents.map((student) => (
                     <Grid cols="minmax(0,1.2fr) minmax(0,1fr) auto" gap={3} align="center" style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={student.rollNumber}>
@@ -5216,7 +5187,7 @@ const OverallBestPerformerPage = () => {
                     No students match the current search.
                   </Text>
                 )}
-              </div>
+              </Grid>
             </SectionPanel>
 
             <HStack gap={2} justify="end">
@@ -5224,7 +5195,7 @@ const OverallBestPerformerPage = () => {
                 Done
               </Button>
             </HStack>
-          </div>
+          </Grid>
         </Modal>
       ) : null}
 

@@ -165,7 +165,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   </Text>
                 </HStack>
 
-                <div style={{ marginTop: "var(--spacing-2)", display: "grid", gap: "4px" }}>
+                <Grid cols={1} gap="4px" style={{ marginTop: "var(--spacing-2)" }}>
                   <Text as="span" size="xs" weight="semibold" color="secondary">
                     {formatStageLabel(log.stage)}
                   </Text>
@@ -177,7 +177,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                       {safeActorRole}
                     </Text>
                   ) : null}
-                </div>
+                </Grid>
               </div>
             </Grid>
           )
@@ -185,15 +185,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
 
         return (
           <Grid cols="minmax(140px, 190px) 32px minmax(0, 1fr)" gap={3} align="start" key={log._id || idx}>
-                <div
-                  style={{
-                paddingTop: "4px",
-                display: "grid",
-                gap: "4px",
-                justifyItems: "end",
-                textAlign: "right",
-              }}
-            >
+                <Grid cols={1} gap="4px" style={{ paddingTop: "4px", justifyItems: "end", textAlign: "right" }}>
               <Text as="span" size="xs" weight="semibold" color="secondary">
                 {formatStageLabel(log.stage)}
               </Text>
@@ -208,7 +200,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
               <Text as="span" size="11px" color="placeholder">
                 {formatTimestamp(log.createdAt)}
               </Text>
-            </div>
+            </Grid>
 
             <div style={timelineRailStyle}>
               {!isLast ? <div style={timelineLineStyle} /> : null}

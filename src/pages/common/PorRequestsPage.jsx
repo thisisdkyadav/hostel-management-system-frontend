@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Tabs } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
@@ -897,7 +897,7 @@ const PorCategoryManagementModal = ({
       header: "Category",
       key: "name",
       render: (category) => (
-        <div style={{ display: "grid", gap: "4px" }}>
+        <Grid cols={1} gap="4px">
           <Text as="div" weight="medium" color="primary">
             {category.name || "—"}
           </Text>
@@ -905,20 +905,20 @@ const PorCategoryManagementModal = ({
             {(category.gymkhanaSteps?.length || category.stepCount || 0)} Gymkhana step
             {(category.gymkhanaSteps?.length || category.stepCount || 0) === 1 ? "" : "s"}
           </Text>
-        </div>
+        </Grid>
       ),
     },
     {
       header: "Review Flow",
       key: "steps",
       render: (category) => (
-        <div style={{ display: "grid", gap: "4px" }}>
+        <Grid cols={1} gap="4px">
           {(Array.isArray(category.gymkhanaSteps) ? category.gymkhanaSteps : []).map((step, index) => (
             <Text as="div" size="sm" color="muted" key={`${category.id}-table-step-${index}`}>
               {index + 1}. {step.label || "Step"}
             </Text>
           ))}
-        </div>
+        </Grid>
       ),
     },
     {
@@ -1131,7 +1131,7 @@ const PorRequestDetailModal = ({
               title="POR Submission"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <Grid cols={1} gap={4}>
                 <div className="por-detail-hero-box">
                   <div className="por-detail-hero-title">
                     {request.positionTitle || "—"}
@@ -1163,7 +1163,7 @@ const PorRequestDetailModal = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </Grid>
             </PorDetailCard>
 
             <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)" }}>
@@ -1255,7 +1255,7 @@ const PorRequestDetailModal = ({
                 title="Review Decision"
                 accentColor="var(--color-primary)"
               >
-                <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                <Grid cols={1} gap={3}>
                   <div>
                     <Label htmlFor="por-review-comment">
                       {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
@@ -1330,7 +1330,7 @@ const PorRequestDetailModal = ({
                       {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
                     </Button>
                   </div>
-                </div>
+                </Grid>
               </PorDetailCard>
             ) : null}
           </VStack>
@@ -1551,7 +1551,7 @@ const PorRequestGroupModal = ({
                         />
                       </div>
 
-                      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                      <Grid cols={1} gap={3}>
                         <div style={infoBoxStyle}>
                           <span style={sectionLabelStyle}>Responsibilities</span>
                           <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
@@ -1582,7 +1582,7 @@ const PorRequestGroupModal = ({
                             downloadFileName={request.supportingDocumentName || "por-document.pdf"}
                           />
                         ) : null}
-                      </div>
+                      </Grid>
                     </div>
 
                     {!useCommonComment ? (
@@ -1611,7 +1611,7 @@ const PorRequestGroupModal = ({
               title="Grouped Review Decision"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <Grid cols={1} gap={3}>
                 <Checkbox
                   id="por-group-common-comment"
                   checked={useCommonComment}
@@ -1699,7 +1699,7 @@ const PorRequestGroupModal = ({
                     {isStudentAffairsApproval ? "Approve All" : `${primaryDecisionLabel} All`}
                   </Button>
                 </div>
-              </div>
+              </Grid>
             </PorDetailCard>
           </VStack>
         </div>
@@ -1945,14 +1945,14 @@ const PorRequestsPage = () => {
         render: (row) => {
           const student = row.rowType === "group" ? row.student : row.request?.student
           return (
-          <div style={{ display: "grid", gap: "4px" }}>
+          <Grid cols={1} gap="4px">
             <Text as="div" weight="medium" color="primary">
                 {student?.name || "—"}
             </Text>
             <Text as="div" size="sm" color="muted">
                 {student?.rollNumber || "—"}
             </Text>
-          </div>
+          </Grid>
           )
         },
       })
@@ -1979,7 +1979,7 @@ const PorRequestsPage = () => {
                 : `${positions.slice(0, 2).join(", ")} +${positions.length - 2} more`
 
             return (
-              <div style={{ display: "grid", gap: "4px" }}>
+              <Grid cols={1} gap="4px">
                 <Text as="div" weight="medium" color="primary">
                   {row.requestCount} POR requests
                 </Text>
@@ -1994,13 +1994,13 @@ const PorRequestsPage = () => {
                 <Text as="div" size="sm" color="muted">
                   {positionsPreview || "Multiple positions"}
                 </Text>
-              </div>
+              </Grid>
             )
           }
 
           const request = row.request
           return (
-            <div style={{ display: "grid", gap: "4px" }}>
+            <Grid cols={1} gap="4px">
               <Text as="div" weight="medium" color="primary">
                 {request.porCategoryName || "—"}
               </Text>
@@ -2012,7 +2012,7 @@ const PorRequestsPage = () => {
                   Club: {request.club.name}
                 </Text>
               ) : null}
-            </div>
+            </Grid>
           )
         },
       },

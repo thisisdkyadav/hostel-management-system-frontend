@@ -546,7 +546,7 @@ const PeriodFormModal = ({
                   <Plus size={16} /> Add Slot
                 </Button>
               </HStack>
-              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <Grid cols={1} gap={3}>
                 {formData.mealSlots.map((slot, index) => (
                   <div key={`${slot.name}-${index}`} style={sectionTile}>
                     <div>
@@ -570,7 +570,7 @@ const PeriodFormModal = ({
                     </Button>
                   </div>
                 ))}
-              </div>
+              </Grid>
             </VStack>
           )}
 

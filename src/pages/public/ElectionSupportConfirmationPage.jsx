@@ -78,13 +78,13 @@ const ElectionSupportConfirmationPage = () => {
   return (
     <div style={pageShellStyle}>
       <Card style={{ width: "100%", maxWidth: "680px", padding: "var(--spacing-7)" }}>
-        <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
-          <div style={{ display: "grid", gap: "6px" }}>
+        <Grid cols={1} gap={5}>
+          <Grid cols={1} gap="6px">
             <Heading as="h1" size="2xl" style={{ margin: 0 }}>Election Support Confirmation</Heading>
             <Text as="div" color="muted">
               Review the nomination details below and confirm your response.
             </Text>
-          </div>
+          </Grid>
 
           {error ? <Alert type="error">{error}</Alert> : null}
           {successMessage ? <Alert type="success">{successMessage}</Alert> : null}
@@ -97,15 +97,7 @@ const ElectionSupportConfirmationPage = () => {
           ) : null}
 
           {nomination ? (
-            <div
-              style={{
-                display: "grid",
-                gap: "var(--spacing-4)",
-                border: "1px solid var(--color-border-primary)",
-                borderRadius: "var(--radius-xl)",
-                padding: "var(--spacing-5)",
-              }}
-            >
+            <Grid cols={1} gap={4} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)" }}>
               <HStack gap={4} align="center">
                 {nomination.candidateProfileImage ? (
                   <img
@@ -119,7 +111,7 @@ const ElectionSupportConfirmationPage = () => {
                     }}
                   />
                 ) : null}
-                <div style={{ display: "grid", gap: "4px" }}>
+                <Grid cols={1} gap="4px">
                   <Text as="div" weight="semibold" size="lg">
                     {nomination.candidateName}
                   </Text>
@@ -127,7 +119,7 @@ const ElectionSupportConfirmationPage = () => {
                   <Text as="div" color="muted">
                     {nomination.postTitle} · {data?.election?.title}
                   </Text>
-                </div>
+                </Grid>
               </HStack>
 
               <Grid min={180} gap={3}>
@@ -146,7 +138,7 @@ const ElectionSupportConfirmationPage = () => {
                   <Text as="div" weight="medium">{nomination.supporter?.status || "Pending"}</Text>
                 </div>
               </Grid>
-            </div>
+            </Grid>
           ) : null}
 
           <HStack gap="12px" wrap>
@@ -164,7 +156,7 @@ const ElectionSupportConfirmationPage = () => {
               <Button variant="secondary">Go to Login</Button>
             </Link>
           </HStack>
-        </div>
+        </Grid>
       </Card>
     </div>
   )

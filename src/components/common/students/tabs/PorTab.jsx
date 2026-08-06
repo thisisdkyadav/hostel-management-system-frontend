@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
 import { DataTable } from "czero/react"
 import PorRequestDetailModal from "@/components/por/PorRequestDetailModal"
-import { Badge, EmptyState, Surface, Text } from "@/components/ui"
+import { Badge, EmptyState, Grid, Surface, Text } from "@/components/ui"
 import { porApi } from "@/service"
 
 const STATUS_META = {
@@ -177,14 +177,14 @@ const PorTab = ({ userId }) => {
         header: "Position",
         key: "positionTitle",
         render: (request) => (
-          <div style={{ display: "grid", gap: "4px", minWidth: 0 }}>
+          <Grid cols={1} gap="4px" style={{ minWidth: 0 }}>
             <Text as="span" size="sm" weight="semibold" color="primary">
               {request.positionTitle || "—"}
             </Text>
             <Text as="span" size="xs" color="muted">
               {request.tenure || "—"}
             </Text>
-          </div>
+          </Grid>
         ),
       },
       {

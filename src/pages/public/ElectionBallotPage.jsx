@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Heading, HStack, Spinner, Text } from "@/components/ui"
+import { Alert, Card, Grid, Heading, HStack, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -168,30 +168,23 @@ const ElectionBallotPage = () => {
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+            <Grid cols={1} gap="2px" style={{ minWidth: 0 }}>
               <Text as="div" size="lg" weight="semibold" color="heading">
                 {ballot?.election?.title || "Election Voting Page"}
               </Text>
               <Text as="div" color="muted" size="sm">
                 {votingWindowLabel}
               </Text>
-            </div>
+            </Grid>
             {ballot?.voter?.name ? (
-              <div
-                style={{
-                  display: "grid",
-                  gap: "2px",
-                  textAlign: "right",
-                  minWidth: 0,
-                }}
-              >
+              <Grid cols={1} gap="2px" style={{ textAlign: "right", minWidth: 0 }}>
                 <Text as="div" size="sm" weight="medium" color="heading">
                   {ballot.voter.name}
                 </Text>
                 <Text as="div" color="muted" size="sm">
                   {ballot.voter.rollNumber}
                 </Text>
-              </div>
+              </Grid>
             ) : null}
           </div>
         </div>
@@ -199,16 +192,16 @@ const ElectionBallotPage = () => {
 
       <div style={{ maxWidth: "960px", margin: "0 auto", padding: "var(--spacing-5)" }}>
         <Card style={{ width: "100%", padding: "var(--spacing-7)" }}>
-          <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
+          <Grid cols={1} gap={5}>
             {!hasStickyIdentity && isActiveVotingView ? (
-              <div style={{ display: "grid", gap: "6px" }}>
+              <Grid cols={1} gap="6px">
                 <Heading as="h1" size="2xl" style={{ margin: 0 }}>
                   {ballot?.election?.title || "Election Voting Page"}
                 </Heading>
                 <Text as="div" color="muted">
                   {votingWindowLabel}
                 </Text>
-              </div>
+              </Grid>
             ) : null}
 
             {error ? <Alert type="error">{error}</Alert> : null}
@@ -227,23 +220,14 @@ const ElectionBallotPage = () => {
             ) : null}
 
             {posts.length > 0 ? (
-              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <Grid cols={1} gap={4}>
                 {posts.map((post) => (
-                  <div
-                    key={post.postId}
-                    style={{
-                      display: "grid",
-                      gap: "var(--spacing-3)",
-                      border: "1px solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-xl)",
-                      padding: "var(--spacing-5)",
-                    }}
-                  >
+                  <Grid cols={1} gap={3} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)" }} key={post.postId}>
                     <Text as="div" weight="semibold" size="lg">
                       {post.postTitle}
                     </Text>
 
-                    <div style={{ display: "grid", gap: "10px" }}>
+                    <Grid cols={1} gap="10px">
                       {(post.candidates || []).map((candidate) => {
                         const isSelected = selections[post.postId] === candidate.nominationId
                         return (
@@ -284,21 +268,21 @@ const ElectionBallotPage = () => {
                                 }}
                               />
                             ) : null}
-                            <div style={{ display: "grid", gap: "2px" }}>
+                            <Grid cols={1} gap="2px">
                               <Text as="div" weight="medium">{candidate.candidateName}</Text>
                               {!candidate.isNota && candidate.candidateRollNumber ? (
                                 <Text as="div" color="muted" size="sm">
                                   {candidate.candidateRollNumber}
                                 </Text>
                               ) : null}
-                            </div>
+                            </Grid>
                           </label>
                         )
                       })}
-                    </div>
-                  </div>
+                    </Grid>
+                  </Grid>
                 ))}
-              </div>
+              </Grid>
             ) : null}
 
             <HStack gap="12px" wrap>
@@ -308,7 +292,7 @@ const ElectionBallotPage = () => {
                 </Button>
               ) : null}
             </HStack>
-          </div>
+          </Grid>
         </Card>
       </div>
     </div>

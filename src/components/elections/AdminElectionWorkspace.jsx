@@ -4,7 +4,7 @@ import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
-import { HStack, IconCircle, Text } from "@/components/ui"
+import { Grid, HStack, IconCircle, Text } from "@/components/ui"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },
@@ -136,7 +136,7 @@ const AdminElectionWorkspace = ({
                   initials || "?"
                 )}
               </IconCircle>
-              <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+              <Grid cols={1} gap="2px" style={{ minWidth: 0 }}>
                 <span
                   style={{
                     fontWeight: "var(--font-weight-semibold)",
@@ -149,7 +149,7 @@ const AdminElectionWorkspace = ({
                   {candidateLabel}
                 </span>
                 <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
-              </div>
+              </Grid>
             </div>
           )
         },
@@ -270,37 +270,37 @@ const AdminElectionWorkspace = ({
             header: "Post",
             key: "title",
             render: (post) => (
-              <div style={{ display: "grid", gap: "2px" }}>
+              <Grid cols={1} gap="2px">
                 <Text as="span" weight="semibold">{post.title}</Text>
                 <span style={mutedTextStyle}>
                   {formatStageLabel(post.category)}
                   {post.code ? ` · ${post.code}` : ""}
                 </span>
-              </div>
+              </Grid>
             ),
           },
           {
             header: "Candidate Pool",
             key: "candidateEligibility",
             render: (post) => (
-              <div style={{ display: "grid", gap: "2px" }}>
+              <Grid cols={1} gap="2px">
                 <Text as="span" weight="medium">
                   {post.candidateEligibleCount || 0} student(s)
                 </Text>
                 <span style={mutedTextStyle}>{summarizeScope(post.candidateEligibility)}</span>
-              </div>
+              </Grid>
             ),
           },
           {
             header: "Voter Pool",
             key: "voterEligibility",
             render: (post) => (
-              <div style={{ display: "grid", gap: "2px" }}>
+              <Grid cols={1} gap="2px">
                 <Text as="span" weight="medium">
                   {post.voterEligibleCount || 0} student(s)
                 </Text>
                 <span style={mutedTextStyle}>{summarizeScope(post.voterEligibility)}</span>
-              </div>
+              </Grid>
             ),
           },
           {
@@ -363,19 +363,9 @@ const AdminElectionWorkspace = ({
           </HStack>
           {nominationViewMode === "grouped" ? (
             groupedNominations.length ? (
-              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <Grid cols={1} gap={3}>
                 {groupedNominations.map((group) => (
-                  <div
-                    key={group.postTitle}
-                    style={{
-                      display: "grid",
-                      gap: "var(--spacing-2)",
-                      border: "1px solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-xl)",
-                      backgroundColor: "var(--color-bg-primary)",
-                      padding: "var(--spacing-3)",
-                    }}
-                  >
+                  <Grid cols={1} gap={2} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-3)" }} key={group.postTitle}>
                     <HStack gap={3} align="center" justify="between" wrap>
                       <Text as="span" weight="semibold" color="heading">
                         {group.postTitle}
@@ -388,9 +378,9 @@ const AdminElectionWorkspace = ({
                       onRowClick={setReviewNomination}
                       columns={nominationColumns.filter((column) => column.key !== "postTitle")}
                     />
-                  </div>
+                  </Grid>
                 ))}
-              </div>
+              </Grid>
             ) : (
               <DataTable data={[]} emptyMessage="No nominations in this view." columns={nominationColumns} />
             )
@@ -459,10 +449,10 @@ const AdminElectionWorkspace = ({
                 header: "Post",
                 key: "postTitle",
                 render: (postResult) => (
-                  <div style={{ display: "grid", gap: "2px" }}>
+                  <Grid cols={1} gap="2px">
                     <Text as="span" weight="semibold">{postResult.postTitle}</Text>
                     <span style={mutedTextStyle}>{postResult.totalVotes || 0} vote(s)</span>
-                  </div>
+                  </Grid>
                 ),
               },
               {
@@ -601,10 +591,10 @@ const AdminElectionWorkspace = ({
                 header: "Post",
                 key: "postTitle",
                 render: (post) => (
-                  <div style={{ display: "grid", gap: "2px" }}>
+                  <Grid cols={1} gap="2px">
                     <Text as="span" weight="semibold">{post.postTitle}</Text>
                     <span style={mutedTextStyle}>{post.verifiedCandidateCount || 0} verified candidate(s)</span>
-                  </div>
+                  </Grid>
                 ),
               },
               {
@@ -747,16 +737,7 @@ const AdminElectionWorkspace = ({
             </div>
           </div>
 
-          <div
-            style={{
-              border: "1px solid var(--color-border-primary)",
-              borderRadius: "var(--radius-card-sm)",
-              backgroundColor: "var(--color-bg-secondary)",
-              padding: "var(--spacing-3)",
-              display: "grid",
-              gap: "var(--spacing-2)",
-            }}
-          >
+          <Grid cols={1} gap={2} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-3)" }}>
             <Text as="div" weight="semibold" color="heading">
               Copy Election
             </Text>
@@ -775,7 +756,7 @@ const AdminElectionWorkspace = ({
                 Copy Election
               </Button>
             </div>
-          </div>
+          </Grid>
         </>
       ) : null}
 

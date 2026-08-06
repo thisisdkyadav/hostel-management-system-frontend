@@ -88,7 +88,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
 
       <div>
         <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Floor Statistics</Heading>
-        <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+        <Grid cols={1} gap={2}>
           {Object.entries(floorStats)
             .sort(([a], [b]) => parseInt(a) - parseInt(b))
             .map(([floor, stats]) => (
@@ -99,7 +99,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
                 </Text>
               </div>
             ))}
-        </div>
+        </Grid>
       </div>
 
       {isUnitBased && exceptions.length > 0 && (

@@ -4,7 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
-import { HStack, Text } from "@/components/ui"
+import { Grid, HStack, Text } from "@/components/ui"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
@@ -53,7 +53,7 @@ export const HeaderSelect = ({
 )
 
 export const MetaList = ({ items = [], mutedTextStyle }) => (
-  <div style={{ display: "grid", gap: "10px" }}>
+  <Grid cols={1} gap="10px">
     {items.map((item) => (
       <HStack gap={3} align="start" justify="between" key={item.label}>
         <span style={mutedTextStyle}>{item.label}</span>
@@ -62,7 +62,7 @@ export const MetaList = ({ items = [], mutedTextStyle }) => (
         </Text>
       </HStack>
     ))}
-  </div>
+  </Grid>
 )
 
 export const ScopeEditor = ({
@@ -310,7 +310,7 @@ export const ScopeEditor = ({
           }}
         />
         {(scope.extraRollNumbers || []).length > 0 ? (
-          <div style={{ display: "grid", gap: "8px", marginTop: "var(--spacing-3)" }}>
+          <Grid cols={1} gap="8px" style={{ marginTop: "var(--spacing-3)" }}>
             <div style={mutedTextStyle}>
               {(scope.extraRollNumbers || []).length} manually/CSV added student(s)
             </div>
@@ -333,7 +333,7 @@ export const ScopeEditor = ({
                 </button>
               ))}
             </HStack>
-          </div>
+          </Grid>
         ) : null}
         {error ? <div style={errorTextStyle}>{error}</div> : null}
       </div>
@@ -442,7 +442,7 @@ export const DocumentUploadField = ({
           {required ? " *" : ""}
         </label>
         {value ? (
-          <div style={{ display: "grid", gap: "10px" }}>
+          <Grid cols={1} gap="10px">
             <Text as="div" size="sm" color="body">
               {isPdfDocument(value) ? "PDF uploaded" : "Document uploaded"}
             </Text>
@@ -478,9 +478,9 @@ export const DocumentUploadField = ({
                 </label>
               ) : null}
             </HStack>
-          </div>
+          </Grid>
         ) : (
-          <div style={{ display: "grid", gap: "10px" }}>
+          <Grid cols={1} gap="10px">
               <div style={mutedTextStyle}>PDF only, max 10MB</div>
             <label style={{ margin: 0 }}>
               <input
@@ -508,7 +508,7 @@ export const DocumentUploadField = ({
                 {uploading ? "Uploading..." : `Upload ${label}`}
               </span>
             </label>
-          </div>
+          </Grid>
         )}
       </div>
 

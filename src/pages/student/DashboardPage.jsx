@@ -13,7 +13,7 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
@@ -437,7 +437,7 @@ const DashboardPage = () => {
 
   const VotingActivePopup = ({ electionTitle, onClose, onGoToVoting }) => (
     <Modal title="Voting In Progress" onClose={onClose} width={520}>
-      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+      <Grid cols={1} gap={4}>
         <Text color="body" size="base" leading={1.6} style={{ margin: 0 }}>
           Voting for <strong>{electionTitle || "the current election"}</strong> is currently active. Go to the elections page to cast your vote now.
         </Text>
@@ -449,7 +449,7 @@ const DashboardPage = () => {
             Go to Voting
           </Button>
         </HStack>
-      </div>
+      </Grid>
     </Modal>
   )
 
