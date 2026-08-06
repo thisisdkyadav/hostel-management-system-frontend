@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Grid, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, Heading, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -208,7 +208,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-4)" }}>
-            <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>Target Recipients (Optional)</h3>
+            <Heading as="h3" size="sm" weight="medium" color="body" style={{ marginBottom: "var(--spacing-3)" }}>Target Recipients (Optional)</Heading>
             <Text size="xs" color="muted" style={{ marginBottom: "var(--spacing-4)" }}>Leave all fields empty to target all students</Text>
 
             <Grid min={250} gap={4}>
@@ -298,7 +298,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           )}
 
           <Surface bg="tertiary" padding={5} radius="xl">
-            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Notification Summary</h3>
+            <Heading as="h3" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Notification Summary</Heading>
             <VStack gap={3}>
               <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Title:</Text>
@@ -316,7 +316,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </Surface>
 
           <Surface bg="tertiary" padding={5} radius="xl">
-            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Target Recipients</h3>
+            <Heading as="h3" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Target Recipients</Heading>
             <VStack gap={2}>
               {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
                 <Text color="body">All Students</Text>
@@ -352,7 +352,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </Surface>
 
           <Surface bg="tertiary" padding={5} radius="xl">
-            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Message</h3>
+            <Heading as="h3" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Message</Heading>
             <Text color="body" style={{ whiteSpace: "pre-line" }}>{formData.message}</Text>
           </Surface>
 

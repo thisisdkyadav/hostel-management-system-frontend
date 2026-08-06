@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Checkbox, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Checkbox, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import CsvUploader from "../../../common/CsvUploader"
@@ -93,7 +93,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
     <Modal isOpen={show} onClose={onClose} title="Bulk Update Rooms" width={800}>
       <VStack gap="large">
         <Alert type="warning" icon={<TriangleAlert size={16} />}>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Important Warnings</h3>
+          <Heading as="h3" size="sm" weight="medium" style={{ marginBottom: 'var(--spacing-2)' }}>Important Warnings</Heading>
           <Text as="div" size="sm">
             <p>
               <strong>1. Allocation Loss:</strong> Updating rooms will <strong>delete all allocations</strong> associated with these rooms. This action cannot be undone.
@@ -125,7 +125,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
         {parsedCsvData.length > 0 && (
           <VStack gap="medium">
             <Surface bg="brand" padding="var(--spacing-4) var(--spacing-4)" radius="lg">
-              <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
+              <Heading as="h5" size="sm" weight="medium" color="var(--color-primary-dark)">CSV Data Preview</Heading>
               <Text size="xs" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>
                 Ready to update {parsedCsvData.length} room(s) in {hostel.name}
               </Text>

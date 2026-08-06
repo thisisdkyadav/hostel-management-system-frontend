@@ -1,4 +1,5 @@
 import React from "react"
+import { Heading } from "@/components/ui"
 
 const ShimmerBar = ({ width, height, style }) => (
   <div
@@ -51,9 +52,9 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
         {loading ? (
           <ShimmerBar width="3.5rem" height={24} style={{ marginBottom: 2 }} />
         ) : (
-          <h3 className="text-xl md:text-2xl font-bold leading-none" style={{ color: colorValue }} >
+          <Heading as="h3" color={colorValue} className="text-xl md:text-2xl font-bold leading-none">
             {value}
-          </h3>
+          </Heading>
         )}
         <p className="text-xs text-[var(--color-text-light)] mt-0.5">{subtitle}</p>
       </div>

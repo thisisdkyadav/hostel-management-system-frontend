@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -167,7 +167,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   return (
     <VStack gap="large">
       <Surface bg="brand" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>Add New {isUnitBased ? "Unit Rooms" : "Rooms"}</h4>
+        <Heading as="h4" size="sm" weight="medium" color="var(--color-primary-dark)">Add New {isUnitBased ? "Unit Rooms" : "Rooms"}</Heading>
         <Text size="xs" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>{isUnitBased ? "Enter a unit number and specify room letters to add multiple rooms to a unit" : "Add one or multiple rooms at once"}</Text>
       </Surface>
 

@@ -1,7 +1,7 @@
 import React from "react"
 import { FaUser, FaGraduationCap, FaIdCard } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { IconCircle } from "@/components/ui"
+import { Heading, IconCircle } from "@/components/ui"
 
 const StudentProfile = ({ profile }) => {
   if (!profile) return null
@@ -104,7 +104,7 @@ const StudentProfile = ({ profile }) => {
         </div>
 
         <div className="student-profile-info">
-          <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{profile.name}</h2>
+          <Heading as="h2" size="2xl" weight="bold" color="secondary">{profile.name}</Heading>
           <div className="student-profile-details">
             <span className="student-profile-detail-item">
               <FaIdCard style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.rollNumber}

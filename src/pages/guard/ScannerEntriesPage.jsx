@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -32,7 +32,7 @@ const ScannerEntriesPage = () => {
         <HStack gap="none" align="start">
           <FaExclamationTriangle style={{ height: "var(--icon-xl)", width: "var(--icon-xl)", color: "var(--color-warning)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
           <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-2)" }}>Cross-Hostel Entry Requires Reason</h3>
+            <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: "var(--spacing-2)" }}>Cross-Hostel Entry Requires Reason</Heading>
             <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
               <IconCircle size="var(--icon-4xl)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                 {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} /></div>}
@@ -61,7 +61,7 @@ const ScannerEntriesPage = () => {
     <Surface bg="var(--color-bg-page)" padding="var(--spacing-6) var(--spacing-4)">
       <div style={{ maxWidth: "var(--container-xl)", margin: "0 auto" }}>
         <div style={{ marginBottom: "var(--spacing-6)" }}>
-          <h1 style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>External QR Scanner Entries</h1>
+          <Heading as="h1" size="3xl" weight="bold" color="secondary" style={{ marginBottom: "var(--spacing-2)" }}>External QR Scanner Entries</Heading>
           <Text size="base" color="muted">Entries recorded from external QR scanners with keyboard input.</Text>
         </div>
         <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-6)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
@@ -87,7 +87,7 @@ const ScannerEntriesPage = () => {
           <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
             <HStack gap="none" align="center">
               <div style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)", color: "var(--color-primary)" }}><FaHistory size={20} /></div>
-              <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>Recent Scanner Entries</h2>
+              <Heading as="h2" size="2xl" weight="bold" color="secondary">Recent Scanner Entries</Heading>
             </HStack>
             <Button onClick={fetchScannerEntries} disabled={loading} variant="primary" size="sm" loading={loading}>
               {loading ? null : <FaHistory />} {loading ? "Loading..." : "Refresh"}

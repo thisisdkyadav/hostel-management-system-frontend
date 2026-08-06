@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Badge, Card, HStack, IconCircle, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
+import { Badge, Card, Heading, HStack, IconCircle, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -66,16 +66,9 @@ const FaceScannerEntriesPage = () => {
                         }}
                     />
                     <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
-                        <h3
-                            style={{
-                                fontSize: "var(--font-size-lg)",
-                                fontWeight: "var(--font-weight-semibold)",
-                                color: "var(--color-warning-text)",
-                                marginBottom: "var(--spacing-2)",
-                            }}
-                        >
+                        <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: "var(--spacing-2)" }}>
                             Cross-Hostel Entry Requires Reason
-                        </h3>
+                        </Heading>
                         <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                             <IconCircle size="var(--icon-4xl)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                                 {entry.userId?.profileImage ? (
@@ -178,16 +171,9 @@ const FaceScannerEntriesPage = () => {
                 <div style={{ marginBottom: "var(--spacing-6)" }}>
                     <HStack justify="between" align="start">
                         <div>
-                            <h1
-                                style={{
-                                    fontSize: "var(--font-size-3xl)",
-                                    fontWeight: "var(--font-weight-bold)",
-                                    color: "var(--color-text-secondary)",
-                                    marginBottom: "var(--spacing-2)",
-                                }}
-                            >
+                            <Heading as="h1" size="3xl" weight="bold" color="secondary" style={{ marginBottom: "var(--spacing-2)" }}>
                                 Face Scanner Entries
-                            </h1>
+                            </Heading>
                             <Text size="base" color="muted">
                                 Real-time entries from face scanner devices at the hostel gate.
                             </Text>
@@ -278,15 +264,9 @@ const FaceScannerEntriesPage = () => {
                             >
                                 <Scan size={20} />
                             </div>
-                            <h2
-                                style={{
-                                    fontSize: "var(--font-size-2xl)",
-                                    fontWeight: "var(--font-weight-bold)",
-                                    color: "var(--color-text-secondary)",
-                                }}
-                            >
+                            <Heading as="h2" size="2xl" weight="bold" color="secondary">
                                 Recent Face Scanner Entries
-                            </h2>
+                            </Heading>
                         </HStack>
                         <Button
                             onClick={refresh}

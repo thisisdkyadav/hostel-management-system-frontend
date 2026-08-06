@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Grid, HStack, Select, Surface } from "@/components/ui"
+import { Grid, Heading, HStack, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
@@ -12,7 +12,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   return (
     <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" style={{ marginBottom: 'var(--spacing-6)' }}>
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Filter Notifications</h3>
+        <Heading as="h3" weight="medium" color="body">Filter Notifications</Heading>
         <Button onClick={resetFilters} variant="ghost" size="sm">
           <FaTimes /> Reset Filters
         </Button>

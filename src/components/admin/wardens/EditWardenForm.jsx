@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, IconCircle, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Heading, HStack, IconCircle, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -216,7 +216,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             <Surface bg="brand" padding={4} radius="lg">
               <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
                 <FiUser style={{ marginRight: "var(--spacing-2)" }} />
-                <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>{staffTitle} User Information</h4>
+                <Heading as="h4" weight="medium">{staffTitle} User Information</Heading>
               </div>
             </Surface>
 
@@ -332,7 +332,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           <Surface bg="brand" padding={4} radius="lg">
             <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
               <FaBuilding style={{ marginRight: "var(--spacing-2)" }} />
-              <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>{staffTitle} Information</h4>
+              <Heading as="h4" weight="medium">{staffTitle} Information</Heading>
             </div>
           </Surface>
 

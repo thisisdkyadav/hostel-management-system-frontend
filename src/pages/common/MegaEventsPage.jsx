@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
@@ -1481,7 +1481,7 @@ const MegaEventsPage = () => {
                 <>
                   <div style={layoutStyles.detailHeader}>
                     <div>
-                      <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedSeries.name}</h2>
+                      <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ margin: 0 }}>{selectedSeries.name}</Heading>
                       <Text size="sm" color="muted" style={{ margin: 0, marginTop: 2 }}>
                         {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
                       </Text>
@@ -1552,7 +1552,7 @@ const MegaEventsPage = () => {
                   </div>
 
                   <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
-                    <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
+                    <Heading as="h4" size="base" weight="semibold" color="heading" style={{ margin: 0 }}>{selectedOccurrence.title}</Heading>
                     {selectedOccurrence.description ? (
                       <Text size="sm" color="body" leading={1.55} style={{ marginTop: "var(--spacing-3)" }}>{selectedOccurrence.description}</Text>
                     ) : (

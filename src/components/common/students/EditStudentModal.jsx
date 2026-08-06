@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -476,9 +476,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       return (
         <VStack gap={4}>
           <div>
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-1)" }}>
               Update Student Status
-            </h3>
+            </Heading>
             <Text color="muted" size="sm">
               Change the lifecycle status for {studentData.name || studentData.rollNumber}.
             </Text>
@@ -507,9 +507,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       return (
         <VStack gap={4}>
           <div>
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-1)" }}>
               Update Day Scholar Details
-            </h3>
+            </Heading>
             <Text color="muted" size="sm">
               Turn day scholar mode on or off here. The additional residence fields are optional.
             </Text>
@@ -580,9 +580,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       return (
         <VStack gap={4}>
           <div>
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-1)" }}>
               Update Allocation
-            </h3>
+            </Heading>
             <Text color="muted" size="sm">
               Use the same guarded allocation flow here: select a valid hostel, validate the unit when required, choose an existing room, and then choose a bed.
             </Text>

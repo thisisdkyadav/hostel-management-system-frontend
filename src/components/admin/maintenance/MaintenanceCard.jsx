@@ -3,7 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, IconCircle } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle } from "@/components/ui"
 import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
@@ -79,7 +79,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
               )}
             </IconCircle>
             <div>
-              <h3 style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", fontSize: "var(--font-size-lg)" }}>{staff.name}</h3>
+              <Heading as="h3" weight="bold" color="secondary" size="lg">{staff.name}</Heading>
               <div style={{ display: "flex", alignItems: "center", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                 {getCategoryIcon(staff.category)}
                 <span style={{ marginLeft: "var(--spacing-1-5)" }}>{getCategoryDisplayLabel(staff.category)}</span>

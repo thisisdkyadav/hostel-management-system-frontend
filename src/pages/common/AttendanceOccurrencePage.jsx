@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Alert, Avatar, ConfirmDialog, HStack, IconButton, Surface, Text } from "@/components/ui"
+import { Alert, Avatar, ConfirmDialog, Heading, HStack, IconButton, Surface, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Pencil, Trash2, Lock, LockOpen } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"
@@ -244,17 +244,17 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
 
             {/* Scanner */}
             <Surface bg="primary" padding={5} radius="card" border="1px solid var(--color-border-primary)">
-              <h3 style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-4)" }}>
+              <Heading as="h3" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-4)" }}>
                 Scan attendance
-              </h3>
+              </Heading>
               <AttendanceScanner occurrenceId={occurrenceId} disabled={isClosed} onMarked={fetchData} />
             </Surface>
 
             {/* Present records */}
             <div>
-              <h3 style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+              <Heading as="h3" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                 Present students ({records.length})
-              </h3>
+              </Heading>
               <DataTable
                 data={records}
                 columns={recordColumns}
@@ -266,9 +266,9 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
             {/* Absent list */}
             {reconciliation?.hasRoster && reconciliation.absentRollNumbers?.length > 0 && (
               <div>
-                <h3 style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                <Heading as="h3" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                   Absent ({reconciliation.absentCount})
-                </h3>
+                </Heading>
                 <HStack gap={2} wrap>
                   {reconciliation.absentRollNumbers.map((roll) => (
                     <span

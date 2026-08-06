@@ -1,6 +1,6 @@
 import React from "react"
 import { FaCalendarAlt } from "react-icons/fa"
-import { Surface, Text } from "@/components/ui"
+import { Heading, Surface, Text } from "@/components/ui"
 
 const VisitInformation = ({ fromDate, toDate }) => {
   const formatDate = (dateString) => {
@@ -19,9 +19,9 @@ const VisitInformation = ({ fromDate, toDate }) => {
 
   return (
     <Surface bg="tertiary" padding={4} radius="lg" className="p-4 rounded-lg">
-      <h3 className="font-medium mb-3 flex items-center" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
+      <Heading as="h3" weight="medium" color="secondary" size="base" style={{ marginBottom: 'var(--spacing-3)' }} className="font-medium mb-3 flex items-center">
         <FaCalendarAlt className="mr-2" style={{ color: 'var(--color-primary)' }} /> Visit Information
-      </h3>
+      </Heading>
       <div className="space-y-2">
         <div className="flex justify-between">
           <Text as="span" color="muted" size="sm">From Date:</Text>

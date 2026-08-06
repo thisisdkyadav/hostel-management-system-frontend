@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { EmptyState, ErrorState, LoadingState, Spinner, Surface, Text } from "@/components/ui"
+import { EmptyState, ErrorState, Heading, LoadingState, Spinner, Surface, Text } from "@/components/ui"
 import { Tabs, Button } from "czero/react"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -100,7 +100,7 @@ const UndertakingsPage = () => {
       <header className="flex justify-between items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-4) var(--spacing-6)', marginBottom: 'var(--spacing-6)' }}>
         <div className="flex items-center">
           <FaFileSignature style={{ color: 'var(--color-info)', fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} />
-          <h1 className="font-bold" style={{ fontSize: 'var(--font-size-2xl)', color: 'var(--color-text-secondary)' }}>My Undertakings</h1>
+          <Heading as="h1" size="2xl" color="secondary" className="font-bold">My Undertakings</Heading>
         </div>
       </header>
 
@@ -133,7 +133,7 @@ const UndertakingsPage = () => {
               {pendingUndertakings.map((undertaking) => (
                 <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-info)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
-                    <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
+                    <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)', color: undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)' }}>{undertaking.status === "not_viewed" ? "New" : "Pending"}</span>
                   </div>
                   <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>
@@ -181,7 +181,7 @@ const UndertakingsPage = () => {
               {acceptedUndertakings.map((undertaking) => (
                 <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-success)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
-                    <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
+                    <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Accepted</span>
                   </div>
                   <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>

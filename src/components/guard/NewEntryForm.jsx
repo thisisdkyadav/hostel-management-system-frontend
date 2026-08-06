@@ -3,7 +3,7 @@ import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
-import { HStack, Surface, Text } from "@/components/ui"
+import { Heading, HStack, Surface, Text } from "@/components/ui"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -64,7 +64,7 @@ const NewEntryForm = ({ onAddEntry }) => {
   return (
     <Surface bg="primary" padding={4} radius="xl" shadow="sm" style={{ marginBottom: 'var(--spacing-4)' }}>
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
-        <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>New Check In/Out Entry</h2>
+        <Heading as="h2" size="base" weight="medium" color="brand">New Check In/Out Entry</Heading>
 
         <ToggleButtonGroup
           options={[

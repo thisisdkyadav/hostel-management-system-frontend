@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -120,7 +120,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
           {/* Header with status */}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 'var(--spacing-4)', borderBottom: `var(--border-1) solid var(--color-border-primary)`, gap: 'var(--gap-md)', flexWrap: 'wrap' }}>
             <div>
-              <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', margin: 0 }}>Leave Request</h3>
+              <Heading as="h3" size="lg" weight="semibold" color="primary" style={{ margin: 0 }}>Leave Request</Heading>
               <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>Submitted on {new Date(leave.createdAt || Date.now()).toLocaleDateString()}</Text>
             </div>
             <div>
@@ -287,7 +287,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid ${decisionType === "approve" ? 'var(--color-success-bg)' : 'var(--color-danger-border)'}`, backgroundColor: decisionType === "approve" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)' }}>
               <HStack gap="none" align="center" justify="between">
                 <div>
-                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}</h4>
+                  <Heading as="h4" weight="medium" color="primary" style={{ margin: 0 }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}</Heading>
                   <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                   </Text>
@@ -361,7 +361,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
               <HStack gap="none" align="center" justify="between">
                 <div>
-                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>Join Your Leave</h4>
+                  <Heading as="h4" weight="medium" color="primary" style={{ margin: 0 }}>Join Your Leave</Heading>
                   <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                   </Text>

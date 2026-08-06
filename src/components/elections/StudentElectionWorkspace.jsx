@@ -1,7 +1,7 @@
 import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
-import { HStack, Text } from "@/components/ui"
+import { Heading, HStack, Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -41,9 +41,9 @@ const StudentElectionWorkspace = ({
     <>
     <div style={infoBannerStyle}>
       <HStack gap="12px" align="center" wrap>
-        <h2 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)" }}>
+        <Heading as="h2" size="lg" weight="semibold" style={{ margin: 0 }}>
           {selectedStudentElection.title}
-        </h2>
+        </Heading>
       </HStack>
       <div
         style={{

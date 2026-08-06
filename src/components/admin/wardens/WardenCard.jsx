@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardBody, CardFooter, CardHeader, HStack, IconCircle, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
@@ -70,7 +70,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
                 </IconCircle>
               </div>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
+                <Heading as="h3" weight="bold" size="lg" color="secondary">{warden.name}</Heading>
                 <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {warden.position || warden.subRole || 'No sub role assigned'}
                 </Text>
@@ -124,7 +124,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
                 </IconCircle>
               </div>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
+                <Heading as="h3" weight="bold" size="lg" color="secondary">{warden.name}</Heading>
                 <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {warden.subRole || 'No sub role assigned'}
                 </Text>

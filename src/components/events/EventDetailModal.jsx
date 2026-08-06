@@ -1,7 +1,7 @@
 import React from "react"
 import { FaCalendarAlt, FaInfoCircle, FaBuilding, FaUserFriends, FaMapMarkerAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { HStack, Modal, Surface, Text } from "@/components/ui"
+import { Heading, HStack, Modal, Surface, Text } from "@/components/ui"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 
 const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
@@ -20,7 +20,7 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
 
         {/* Header */}
         <div style={{ marginBottom: 'var(--spacing-6)', paddingTop: 'var(--spacing-2)' }}>
-          <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-3)' }}>{selectedEvent.eventName}</h2>
+          <Heading as="h2" size="2xl" weight="bold" color="primary" style={{ marginBottom: 'var(--spacing-3)' }}>{selectedEvent.eventName}</Heading>
 
           <HStack gap="var(--gap-sm) var(--spacing-0)" wrap>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
@@ -54,7 +54,7 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
         <Surface bg="tertiary" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
             <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
-            <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
+            <Heading as="h3" weight="semibold">Description</Heading>
           </div>
           <Text color="body" leading="var(--line-height-relaxed)">{selectedEvent.description}</Text>
         </Surface>
@@ -64,7 +64,7 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
           <Surface bg="tertiary" padding={6} radius="xl">
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
               <FaUserFriends style={{ marginRight: 'var(--spacing-2)' }} />
-              <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Organizer</h3>
+              <Heading as="h3" weight="semibold">Organizer</Heading>
             </div>
             <Text color="body">{selectedEvent.organizer}</Text>
           </Surface>

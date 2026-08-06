@@ -2,7 +2,7 @@ import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Card, HStack, IconCircle, Text, VStack } from "@/components/ui"
+import { Card, Heading, HStack, IconCircle, Text, VStack } from "@/components/ui"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
@@ -14,7 +14,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
             <HStack gap="none" align="start" justify="between">
               <VStack gap="none">
                 <Text as="span" size="xs" color="muted">{complaint.id?.substring(0, 8)}</Text>
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-xl)', marginTop: 'var(--spacing-1)', color: 'var(--color-text-secondary)' }} className="line-clamp-1">{complaint.title}</h3>
+                <Heading as="h3" weight="bold" size="xl" color="secondary" style={{ marginTop: 'var(--spacing-1)' }} className="line-clamp-1">{complaint.title}</Heading>
               </VStack>
               <span className={`${getStatusColor(complaint.status)}`} style={{ padding: 'var(--badge-padding-sm)', fontSize: 'var(--badge-font-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
             </HStack>

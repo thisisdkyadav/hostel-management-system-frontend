@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Alert, HStack, IconCircle, Label, Pagination, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, Heading, HStack, IconCircle, Label, Pagination, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -201,7 +201,7 @@ const HostelAllocation = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Hostel Inventory Allocation</h3>
+          <Heading as="h3" size="lg" weight="medium" color="secondary">Hostel Inventory Allocation</Heading>
           <Text size="sm" color="muted">Allocate inventory items to hostels</Text>
         </div>
         <Button

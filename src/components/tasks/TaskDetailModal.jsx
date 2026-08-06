@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
@@ -176,7 +176,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           {/* Task Header */}
           <div>
             <HStack gap="none" align="start" justify="between">
-              <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{selectedTask.title}</h2>
+              <Heading as="h2" size="2xl" weight="semibold" color="primary">{selectedTask.title}</Heading>
               <HStack gap={2}>
                 {getPriorityBadge(selectedTask.priority)}
                 {getStatusBadge(currentStatus)}
@@ -187,7 +187,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
 
           {/* Task Description */}
           <div>
-            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Description</h4>
+            <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Description</Heading>
             <Surface bg="tertiary" padding={4} radius="lg">
               <Text color="body" style={{ whiteSpace: 'pre-line' }}>{selectedTask.description}</Text>
             </Surface>
@@ -196,18 +196,18 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           {/* Task Details */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
             <div>
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Category</h4>
+              <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Category</Heading>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)' }}>{selectedTask.category}</div>
             </div>
             <div>
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Due Date</h4>
+              <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Due Date</Heading>
               <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)', backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)', color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)' }}>{formatDate(selectedTask.dueDate)}</div>
             </div>
           </div>
 
           {/* Assigned Users */}
           <div>
-            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Assigned To</h4>
+            <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Assigned To</Heading>
             {selectedTask.assignedUsers && selectedTask.assignedUsers.length > 0 ? (
               <VStack gap={2}>
                 {selectedTask.assignedUsers.map((user, idx) => (

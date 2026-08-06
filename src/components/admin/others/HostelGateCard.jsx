@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
@@ -42,7 +42,7 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </Surface>
-              <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{gate.userId?.name || "Unknown Hostel"}</h3>
+              <Heading as="h3" weight="semibold" size="lg" color="secondary">{gate.userId?.name || "Unknown Hostel"}</Heading>
             </HStack>
             <HStack gap={2}>
               <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit hostel gate login"><FaEdit /></Button>

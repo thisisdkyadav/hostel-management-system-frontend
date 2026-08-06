@@ -6,7 +6,7 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { EmptyState, ErrorState, LoadingState, Pagination, Surface, Text, VStack } from "@/components/ui"
+import { EmptyState, ErrorState, Heading, LoadingState, Pagination, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -175,7 +175,7 @@ const VisitorRequestsPage = () => {
           <Surface bg="primary" padding={4} radius="xl" shadow="sm" style={{ marginBottom: "var(--spacing-6)" }}>
             <VStack gap={4}>
               <div>
-                <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Status:</h3>
+                <Heading as="h3" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Filter by Status:</Heading>
                 <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                   {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                     ? ["all", "approved"].map((status) => (
@@ -199,7 +199,7 @@ const VisitorRequestsPage = () => {
 
               {canAllocateVisitors && (
                 <div>
-                  <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</h3>
+                  <Heading as="h3" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</Heading>
                   <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                     {["all", "allocated", "unallocated"].map((status) => (
                       <Button key={status} onClick={() => {

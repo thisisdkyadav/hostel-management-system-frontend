@@ -1,5 +1,5 @@
 import React from "react"
-import { Surface, Text } from "@/components/ui"
+import { Heading, Surface, Text } from "@/components/ui"
 
 const RoomStatsSummary = ({ data, isUnitBased }) => {
   const totalRooms = data.length
@@ -87,7 +87,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
       </div>
 
       <div>
-        <h5 style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }}>Floor Statistics</h5>
+        <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Floor Statistics</Heading>
         <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
           {Object.entries(floorStats)
             .sort(([a], [b]) => parseInt(a) - parseInt(b))
@@ -104,7 +104,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
 
       {isUnitBased && exceptions.length > 0 && (
         <div>
-          <h5 style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }}>Unit Exceptions</h5>
+          <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Unit Exceptions</Heading>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)", }} className="sm:grid-cols-3" >
             {exceptions.map(({ unit, roomCount }) => (
               <Surface bg="warning" padding={2} radius="md" key={unit}>

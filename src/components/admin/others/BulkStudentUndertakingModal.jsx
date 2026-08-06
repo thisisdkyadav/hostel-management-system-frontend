@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, HStack, Spinner, Text, VStack } from "@/components/ui"
+import { Alert, FileInput, Heading, HStack, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -215,7 +215,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
       {step === 2 && (
         <VStack gap={5}>
           <VStack gap="none" align="start" justify="between" style={{ marginBottom: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center">
-            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Preview Students</h3>
+            <Heading as="h3" size="lg" weight="medium" color="secondary">Preview Students</Heading>
             <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)' }} className="sm:mt-0">{parsedData.length} students will be added</div>
           </VStack>
 

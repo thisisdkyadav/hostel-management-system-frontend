@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
@@ -21,7 +21,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
     <Modal title="Notification Details" onClose={onClose} width={700} isOpen={isOpen}>
       <VStack gap={5}>
         <header style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
-          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>{notification.title}</h2>
+          <Heading as="h2" size="xl" weight="semibold" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>{notification.title}</Heading>
           <div>{isExpired ? <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }}>Expired</span> : <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Active</span>}</div>
         </header>
 
@@ -35,7 +35,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <FaRegClock />
             </Text>
             <div>
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Created</h4>
+              <Heading as="h4" size="sm" weight="medium" color="body">Created</Heading>
               <Text color="muted">{formatDate(notification.createdAt)}</Text>
             </div>
           </HStack>
@@ -45,14 +45,14 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <FaRegClock />
             </Text>
             <div>
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Expires</h4>
+              <Heading as="h4" size="sm" weight="medium" color="body">Expires</Heading>
               <Text color="muted">{formatDate(notification.expiryDate)}</Text>
             </div>
           </HStack>
         </Grid>
 
         <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: 'var(--spacing-4)' }}>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Target Audience</h3>
+          <Heading as="h3" size="sm" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }}>Target Audience</Heading>
           <VStack gap={3}>
             {notification.hostelId && notification.hostelId.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>

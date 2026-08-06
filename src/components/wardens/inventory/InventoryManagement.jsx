@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { IconCircle, Select, Spinner, Text, Textarea } from "@/components/ui"
+import { Heading, IconCircle, Select, Spinner, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const InventoryManagement = () => {
@@ -140,7 +140,7 @@ const InventoryManagement = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Assign Inventory to Students</h3>
+          <Heading as="h3" size="var(--text-heading-3)" weight="medium" color="secondary">Assign Inventory to Students</Heading>
           <Text size="var(--text-body-sm)" color="muted">Select a student to assign inventory items</Text>
         </div>
       </div>
@@ -159,7 +159,7 @@ const InventoryManagement = () => {
                 <FaUserGraduate style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </IconCircle>
               <div>
-                <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.userId.name}</h4>
+                <Heading as="h4" weight="medium" color="secondary">{student.userId.name}</Heading>
                 <Text size="var(--text-body-sm)" color="muted">{student.rollNumber}</Text>
               </div>
               <div className="ml-auto">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { SearchInput, Spinner, VStack } from "@/components/ui"
+import { Heading, SearchInput, Spinner, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import HostelGateCard from "./HostelGateCard"
@@ -53,7 +53,7 @@ const HostelLogins = () => {
   return (
     <div>
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Hostel Gate Logins</h2>
+        <Heading as="h2" size="xl" weight="semibold" color="body">Hostel Gate Logins</Heading>
         <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
           <FaPlus />
           Add Hostel Gate Login

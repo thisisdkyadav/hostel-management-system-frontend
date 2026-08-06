@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, RadioGroup, Spinner, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Heading, RadioGroup, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { FileText, UserCheck, GraduationCap } from "lucide-react"
 import { accommodationApi } from "@/service"
@@ -76,7 +76,7 @@ const AccommodationRecommendationPage = () => {
   return (
     <Shell>
       <Text as="div" align="center">
-        <h1 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>Faculty advisor recommendation</h1>
+        <Heading as="h1" size="2xl" weight="semibold" color="heading">Faculty advisor recommendation</Heading>
         <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
           {student?.name || request.applicantName || "A student"} has requested hostel accommodation for visitors.
         </Text>

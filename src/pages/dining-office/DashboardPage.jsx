@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, StatusBadge, DataTable } from "czero/react"
 import { CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users, Wallet, ClipboardCheck } from "lucide-react"
-import { Alert, Card, EmptyState, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, EmptyState, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { formatCurrency } from "@/components/dining/diningBillingHelpers"
@@ -114,9 +114,9 @@ const DashboardPage = () => {
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <HStack gap={2} align="center" wrap>
-                      <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                      <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>
                         {hasActiveMeal ? today.mealSlot : "No active meal"}
-                      </h2>
+                      </Heading>
                       <StatusBadge status={activePeriod ? "Active period" : "No active period"} tone={activePeriod ? "success" : "primary"} showDot={Boolean(activePeriod)} />
                     </HStack>
                     <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
@@ -138,14 +138,14 @@ const DashboardPage = () => {
 
           {/* Today's meal service */}
           <div>
-            <h3 style={{ margin: "0 0 var(--spacing-3)", fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Today&apos;s Meal Service</h3>
+            <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: "0 0 var(--spacing-3)" }}>Today&apos;s Meal Service</Heading>
             <StatCards columns={4} stats={todayStats} />
           </div>
 
           {/* Caterer utilization */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Caterer Utilization</h3>
+              <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Caterer Utilization</Heading>
               <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                 Allocation against capacity for the active dining period.
               </Text>
@@ -161,7 +161,7 @@ const DashboardPage = () => {
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             <HStack gap={2} align="center">
               <ClipboardCheck size={18} style={{ color: "var(--color-text-muted)" }} />
-              <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Rebates</h3>
+              <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Rebates</Heading>
             </HStack>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
               {[
@@ -179,7 +179,7 @@ const DashboardPage = () => {
 
           {/* Billing health */}
           <div>
-            <h3 style={{ margin: "0 0 var(--spacing-3)", fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Billing Health</h3>
+            <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: "0 0 var(--spacing-3)" }}>Billing Health</Heading>
             <StatCards columns={4} stats={billingStats} />
           </div>
         </VStack>

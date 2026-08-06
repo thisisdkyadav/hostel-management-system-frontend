@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, IconCircle, Modal, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaCheck } from "react-icons/fa"
 
@@ -19,9 +19,9 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
           </svg>
         </IconCircle>
 
-        <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>
+        <Heading as="h3" size="xl" weight="bold" color="primary" style={{ marginBottom: 'var(--spacing-2)' }}>
           Password Changed Successfully
-        </h3>
+        </Heading>
 
         <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', maxWidth: 'var(--container-md)' }}>
           <svg

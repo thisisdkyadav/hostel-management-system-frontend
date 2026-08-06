@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye 
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Card, CardBody, CardFooter, CardHeader, HStack, IconCircle, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
@@ -38,7 +38,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
               <FaShieldAlt />
             </IconCircle>
             <div>
-              <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-lg)' }}>{security.name}</h3>
+              <Heading as="h3" weight="bold" color="primary" size="lg">{security.name}</Heading>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
                 <FaIdCard style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', opacity: 'var(--opacity-70)' }} />
                 <span>Security Staff</span>

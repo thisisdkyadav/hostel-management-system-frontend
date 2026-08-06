@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Heading, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { DoorOpen, Users, Trash2 } from "lucide-react"
@@ -75,7 +75,7 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
     <Modal isOpen={true} onClose={onClose} title="Edit Room Details" width={500}>
       {confirmDelete ? (
         <VStack gap="medium" style={{ padding: 'var(--spacing-4)' }}>
-          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Confirm Deletion</h3>
+          <Heading as="h3" size="lg" weight="medium" color="primary">Confirm Deletion</Heading>
           <Text color="tertiary">Are you sure you want to delete this room? This action cannot be undone.</Text>
           <HStack justify="end" gap="small">
             <Button onClick={() => setConfirmDelete(false)} variant="outline" size="sm">

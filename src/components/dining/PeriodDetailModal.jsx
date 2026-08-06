@@ -1,5 +1,5 @@
 import { Button, StatusBadge } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
@@ -15,18 +15,9 @@ const Section = ({ icon, title, children }) => (
   <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
     <HStack gap={2} align="center">
       {icon}
-      <h3
-        style={{
-          margin: 0,
-          fontSize: "var(--font-size-sm)",
-          fontWeight: "var(--font-weight-semibold)",
-          textTransform: "uppercase",
-          letterSpacing: "0.04em",
-          color: "var(--color-text-muted)",
-        }}
-      >
+      <Heading as="h3" size="sm" weight="semibold" color="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.04em" }}>
         {title}
-      </h3>
+      </Heading>
     </HStack>
     {children}
   </section>

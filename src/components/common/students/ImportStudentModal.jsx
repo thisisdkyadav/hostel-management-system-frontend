@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -703,7 +703,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     return (
       <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", backgroundColor: summaryBg, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
         <div>
-          <h4 style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{summaryTitle}</h4>
+          <Heading as="h4" size="base" weight="semibold" color="primary">{summaryTitle}</Heading>
           <Text size="sm" color="body">{importSummary.message}</Text>
         </div>
 
@@ -873,7 +873,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           {step === 2 && (
             <VStack gap={4}>
               <HStack gap="none" align="center" justify="between">
-                <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Preview Import Data</h3>
+                <Heading as="h3" size="lg" weight="medium" color="secondary">Preview Import Data</Heading>
                 <HStack gap={2} align="center">
                   {rowWarnings.length > 0 && (
                     <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning-text)", backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
@@ -907,9 +907,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
           {step === 3 && (
             <VStack gap={4}>
-              <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+              <Heading as="h3" size="lg" weight="medium" color="secondary">
                 Import Progress
-              </h3>
+              </Heading>
 
               <Surface bg="tertiary" padding={3} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
@@ -983,7 +983,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
       {activeTab === "manual" && (
         <VStack gap={4}>
-          <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Add Single Student</h3>
+          <Heading as="h3" size="lg" weight="medium" color="secondary">Add Single Student</Heading>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
             <div>
               <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Name *</label>

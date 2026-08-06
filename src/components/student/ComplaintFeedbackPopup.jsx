@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Modal, Surface, Text, VStack } from "@/components/ui"
+import { Heading, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
@@ -64,9 +64,9 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
         <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
           <div className="flex items-start justify-between" style={{ gap: 'var(--spacing-3)' }}>
             <div className="flex-1 min-w-0">
-              <h4 className="flex items-center" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-1)' }}>
+              <Heading as="h4" size="sm" weight="medium" color="brand" style={{ marginBottom: 'var(--spacing-1)' }} className="flex items-center">
                 <FaClipboardList className="flex-shrink-0" style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Complaint
-              </h4>
+              </Heading>
               <Text weight="semibold" color="primary" size="base" leading="var(--line-height-tight)">{complaint.title}</Text>
             </div>
             <div className="flex flex-shrink-0" style={{ gap: 'var(--spacing-1-5)' }}>
@@ -79,16 +79,16 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             <div className="grid grid-cols-1" style={{ gap: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-1)' }}>
               {complaint.description && (
                 <div>
-                  <h5 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-0-5)' }}>Description</h5>
+                  <Heading as="h5" size="xs" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-0-5)' }}>Description</Heading>
                   <Text color="body" size="sm" leading="var(--line-height-snug)" className="line-clamp-2">{complaint.description}</Text>
                 </div>
               )}
 
               {complaint.resolutionNotes && (
                 <div>
-                  <h5 className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-0-5)' }}>
+                  <Heading as="h5" size="xs" weight="medium" color="brand" style={{ marginBottom: 'var(--spacing-0-5)' }} className="flex items-center">
                     <FaInfoCircle style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-xs)' }} /> Resolution
-                  </h5>
+                  </Heading>
                   <Text color="body" size="sm" leading="var(--line-height-snug)" className="line-clamp-2">{complaint.resolutionNotes}</Text>
                 </div>
               )}

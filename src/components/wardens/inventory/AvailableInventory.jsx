@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { IconCircle, Pagination, Spinner, Surface, Text } from "@/components/ui"
+import { Heading, IconCircle, Pagination, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const AvailableInventory = () => {
@@ -71,16 +71,16 @@ const AvailableInventory = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Available Hostel Inventory</h3>
+          <Heading as="h3" size="var(--text-heading-3)" weight="medium" color="secondary">Available Hostel Inventory</Heading>
           <Text size="var(--text-body-sm)" color="muted">View inventory items available for assignment to students</Text>
         </div>
       </div>
 
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
-        <h3 className="flex items-center" style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>
+        <Heading as="h3" size="var(--text-body-sm)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }} className="flex items-center">
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Inventory
-        </h3>
+        </Heading>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
             <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by item name..." icon={<FaSearch />} />

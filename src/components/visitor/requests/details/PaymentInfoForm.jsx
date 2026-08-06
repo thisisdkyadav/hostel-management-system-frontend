@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Grid, HStack, IconCircle, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
@@ -148,7 +148,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           </svg>
         </IconCircle>
         <div>
-          <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)' }}>Submit Payment Information</h4>
+          <Heading as="h4" weight="semibold" color="secondary" size="base">Submit Payment Information</Heading>
           <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>Upload your payment details and screenshot for verification</Text>
         </div>
       </HStack>

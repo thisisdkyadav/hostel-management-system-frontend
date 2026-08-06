@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaUserCog, FaKey } from "react-icons/fa"
 import { superAdminApi } from "../../service"
 import { Link } from "react-router-dom"
-import { Spinner, Surface, Text } from "@/components/ui"
+import { Heading, Spinner, Surface, Text } from "@/components/ui"
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({
@@ -39,7 +39,7 @@ const DashboardPage = () => {
   return (
     <div style={{ padding: 'var(--spacing-6) var(--spacing-4)', flex: 1 }}>
       <header className="mb-8">
-        <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>Super Admin Dashboard</h1>
+        <Heading as="h1" size="2xl" weight="bold" color="primary">Super Admin Dashboard</Heading>
         <Text color="muted" style={{ marginTop: 'var(--spacing-1)' }}>Welcome to the system admin control panel</Text>
       </header>
 
@@ -114,15 +114,15 @@ const DashboardPage = () => {
       )}
 
       <Surface bg="primary" padding={6} radius="xl" shadow="md" style={{ marginTop: 'var(--spacing-10)' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-4)' }}>System Overview</h2>
+        <Heading as="h2" size="xl" weight="semibold" color="primary" style={{ marginBottom: 'var(--spacing-4)' }}>System Overview</Heading>
         <Text color="muted">Welcome to the Super Admin portal. From here, you can manage system administrators and API keys. This dashboard provides a high-level overview of your system configuration.</Text>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ marginTop: 'var(--spacing-4)', gap: 'var(--spacing-4)' }}>
           <Surface padding={4} radius="lg" border="1px solid var(--color-border-primary)">
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>Admin Management</h3>
+            <Heading as="h3" weight="medium" color="primary" style={{ marginBottom: 'var(--spacing-2)' }}>Admin Management</Heading>
             <Text color="muted" size="sm">Create, view, update, and delete system administrators. Each admin has access to the admin portal to manage hostels, wardens, and other system resources.</Text>
           </Surface>
           <Surface padding={4} radius="lg" border="1px solid var(--color-border-primary)">
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>API Key Management</h3>
+            <Heading as="h3" weight="medium" color="primary" style={{ marginBottom: 'var(--spacing-2)' }}>API Key Management</Heading>
             <Text color="muted" size="sm">Generate and manage API keys for external integrations. You can activate or deactivate keys as needed to control system access.</Text>
           </Surface>
         </div>

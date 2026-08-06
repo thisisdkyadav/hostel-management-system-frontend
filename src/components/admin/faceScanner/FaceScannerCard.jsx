@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
@@ -97,9 +97,9 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                         <FaCamera />
                     </div>
                     <div style={{ flex: 1 }}>
-                        <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>
+                        <Heading as="h3" size="xl" weight="bold" color="secondary">
                             {scanner.name}
-                        </h3>
+                        </Heading>
                         <Text size="sm" color="muted">
                             {scanner.type === "hostel-gate" ? "Hostel Gate" : "Dining Meal"}
                         </Text>

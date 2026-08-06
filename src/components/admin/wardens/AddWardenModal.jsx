@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -145,7 +145,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
           <Surface bg="brand" padding={4} radius="lg">
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
               <FiUser style={{ marginRight: 'var(--spacing-2)' }} />
-              <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Basic Information</h4>
+              <Heading as="h4" weight="medium">Basic Information</Heading>
             </div>
           </Surface>
 

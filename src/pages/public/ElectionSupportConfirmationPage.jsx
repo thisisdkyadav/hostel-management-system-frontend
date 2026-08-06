@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Grid, HStack, Spinner, Text } from "@/components/ui"
+import { Alert, Card, Grid, Heading, HStack, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -80,7 +80,7 @@ const ElectionSupportConfirmationPage = () => {
       <Card style={{ width: "100%", maxWidth: "680px", padding: "var(--spacing-7)" }}>
         <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
           <div style={{ display: "grid", gap: "6px" }}>
-            <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>Election Support Confirmation</h1>
+            <Heading as="h1" size="2xl" style={{ margin: 0 }}>Election Support Confirmation</Heading>
             <Text as="div" color="muted">
               Review the nomination details below and confirm your response.
             </Text>

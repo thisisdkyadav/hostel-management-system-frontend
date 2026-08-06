@@ -1,15 +1,15 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
-import { Card, Checkbox, HStack, Label, Select, VStack } from "@/components/ui"
+import { Card, Checkbox, Heading, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
   return (
     <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)' }}>
+        <Heading as="h3" weight="bold" color="secondary" size="lg">
           Filters
-        </h3>
+        </Heading>
         <Button onClick={resetFilters} variant="ghost" size="sm">
           <RotateCcw size={14} /> Reset
         </Button>

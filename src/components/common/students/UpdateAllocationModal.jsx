@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, HStack, Select, Surface, Text, VStack } from "@/components/ui"
+import { FileInput, Grid, Heading, HStack, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -877,9 +877,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
           {step === 2 && (
             <VStack gap={5}>
               <VStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-4)" }} className="sm:flex-row sm:items-center">
-                <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                <Heading as="h3" size="lg" weight="medium" color="secondary">
                   Preview Room Allocations - {selectedHostel?.name}
-                </h3>
+                </Heading>
                 <div
                   style={{
                     marginTop: "var(--spacing-2)",
@@ -907,9 +907,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
         <VStack gap={4}>
           <HStack gap={4} align="center" justify="between" wrap>
             <div>
-              <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+              <Heading as="h3" size="lg" weight="medium" color="secondary">
                 Manual Allocation Rows
-              </h3>
+              </Heading>
               <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                 Fill a row and the next empty row appears automatically. Roll number lookup runs on blur.
               </Text>

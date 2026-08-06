@@ -3,7 +3,7 @@ import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { Button } from "czero/react"
-import { HStack, Spinner, Surface, Text } from "@/components/ui"
+import { Heading, HStack, Spinner, Surface, Text } from "@/components/ui"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -156,7 +156,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
         <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Staff Attendance QR Code</h2>
+        <Heading as="h2" size="xl" weight="bold" color="secondary">Scan Staff Attendance QR Code</Heading>
       </HStack>
 
       {error && (
@@ -198,7 +198,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       {scannedPerson && !loading && (
         <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)" style={{ marginTop: 'var(--spacing-4)' }}>
           <div style={{ marginBottom: 'var(--spacing-4)' }}>
-            <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</h3>
+            <Heading as="h3" weight="semibold" size="lg" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</Heading>
             <Text color="muted" size="sm">{scannedPerson.email}</Text>
             <div style={{ marginTop: 'var(--spacing-2)', display: 'inline-block', padding: 'var(--spacing-1) var(--spacing-2)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
           </div>

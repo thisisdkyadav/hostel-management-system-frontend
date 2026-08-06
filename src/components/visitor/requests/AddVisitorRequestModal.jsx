@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Alert, Grid, HStack, IconCircle, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, Heading, HStack, IconCircle, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
@@ -179,7 +179,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         {/* Visitor Selection */}
         <div>
           <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Select Visitors</h3>
+            <Heading as="h3" weight="medium" color="secondary">Select Visitors</Heading>
             <Button type="button" onClick={handleAddProfile} variant="ghost" size="sm">
               <FaPlus size={12} />
               Add New Profile
@@ -218,7 +218,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                       <FaUserAlt size={12} />
                     </IconCircle>
                     <div>
-                      <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{visitor.name}</h4>
+                      <Heading as="h4" weight="medium" color="primary">{visitor.name}</Heading>
                       <Text as="div" size="xs" color="muted">
                         <p>{visitor.relation}</p>
                         <p>{visitor.phone}</p>

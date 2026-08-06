@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { IconCircle, Page, Pagination, Surface, Text } from "@/components/ui"
+import { Heading, IconCircle, Page, Pagination, Surface, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
@@ -254,16 +254,9 @@ const MyTasksPage = () => {
                   >
                     <Surface padding={5}>
                       <div className="flex justify-between items-start mb-3" onClick={() => viewTaskDetails(task)}>
-                        <h3
-                          className="truncate w-3/4"
-                          style={{
-                            fontSize: 'var(--font-size-lg)',
-                            fontWeight: 500,
-                            color: 'var(--color-text-secondary)'
-                          }}
-                        >
+                        <Heading as="h3" size="lg" weight={500} color="secondary" className="truncate w-3/4">
                           {task.title}
-                        </h3>
+                        </Heading>
                         <div className="flex flex-col items-end space-y-2">
                           {getTaskPriorityBadge(task.priority)}
                           {getTaskStatusBadge(task.status)}

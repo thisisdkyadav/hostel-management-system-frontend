@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
-import { Badge, EmptyState, HStack, Label, Pagination, Spinner, StatCards, Surface, Text, VStack } from "@/components/ui"
+import { Badge, EmptyState, Heading, HStack, Label, Pagination, Spinner, StatCards, Surface, Text, VStack } from "@/components/ui"
 import { Tabs, Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -220,7 +220,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                 <div style={{ background: "linear-gradient(to right, var(--color-info-bg-light), var(--color-info-bg))", padding: "var(--spacing-6)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-info-light)" }}>
                   <HStack gap="none" align="center" justify="between">
                     <div>
-                      <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)", marginBottom: "var(--spacing-2)" }}>Total Work Done</h3>
+                      <Heading as="h3" size="lg" weight="semibold" color="info-text" style={{ marginBottom: "var(--spacing-2)" }}>Total Work Done</Heading>
                       <Text size="4xl" weight="bold" color="info">{workStats.totalWorkDone}</Text>
                       <Text size="sm" color="info" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved</Text>
                     </div>
@@ -234,7 +234,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                 <div style={{ background: "linear-gradient(to right, var(--color-success-bg-light), var(--color-success-bg))", padding: "var(--spacing-6)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-success-light)" }}>
                   <HStack gap="none" align="center" justify="between">
                     <div>
-                      <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)", marginBottom: "var(--spacing-2)" }}>Today's Work</h3>
+                      <Heading as="h3" size="lg" weight="semibold" color="success-text" style={{ marginBottom: "var(--spacing-2)" }}>Today's Work</Heading>
                       <Text size="4xl" weight="bold" color="success">{workStats.todayWorkDone}</Text>
                       <Text size="sm" color="success" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved Today</Text>
                     </div>

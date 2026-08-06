@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
@@ -56,7 +56,7 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </Surface>
-              <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
+              <Heading as="h3" weight="semibold" size="lg" color="secondary">{provider.name}</Heading>
             </HStack>
             <HStack gap={2}>
               <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit provider"><FaEdit /></Button>

@@ -3,7 +3,7 @@ import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } 
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Text, VStack } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
@@ -63,7 +63,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <Building size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{hostel.name}</h3>
+              <Heading as="h3" size="xl" weight="bold" color="secondary">{hostel.name}</Heading>
               <Text size="sm" color="muted">
                 {hostel.gender} {hostel.type && `(${hostel.type})`}
               </Text>

@@ -3,7 +3,7 @@ import { FaExclamationCircle, FaEye } from "react-icons/fa"
 import { MdPendingActions } from "react-icons/md"
 import { Link } from "react-router-dom"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
-import { Surface, Text, VStack } from "@/components/ui"
+import { Heading, Surface, Text, VStack } from "@/components/ui"
 
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {
@@ -22,7 +22,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
     return (
       <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-3)' }}>
-          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>Your Complaints</h3>
+          <Heading as="h3" weight="medium" color="primary" size="sm">Your Complaints</Heading>
           <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             View All
           </Link>
@@ -41,10 +41,10 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   return (
     <Surface bg="primary" radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" className="overflow-hidden">
       <Surface padding="var(--spacing-3) var(--spacing-4)" style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }} className="flex justify-between items-center">
-        <h3 className="flex items-center" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>
+        <Heading as="h3" weight="medium" color="primary" size="sm" className="flex items-center">
           <MdPendingActions style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)' }} />
           Your Active Complaints
-        </h3>
+        </Heading>
         <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
           View All
         </Link>
@@ -54,7 +54,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
           <div key={complaint.id} className="last:border-0" style={{ padding: 'var(--spacing-2) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
             <div className="flex justify-between items-start">
               <div>
-                <h4 className="line-clamp-1" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>{complaint.title}</h4>
+                <Heading as="h4" weight="medium" color="primary" size="sm" className="line-clamp-1">{complaint.title}</Heading>
                 <Text as="div" size="xs" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {complaint.hostel} · Room {complaint.roomNumber} · {complaint.category}
                 </Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { HStack, IconCircle, Modal, Spinner, Text, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Spinner, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -115,9 +115,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
             <IconCircle size="var(--avatar-xl)" bg="muted" color="var(--color-text-placeholder)" style={{ margin: '0 auto', marginBottom: 'var(--spacing-4)' }}>
               <HiDesktopComputer size={30} />
             </IconCircle>
-            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', }} >
+            <Heading as="h3" size="lg" weight="medium" color="secondary">
               No Active Sessions
-            </h3>
+            </Heading>
             <Text color="placeholder" style={{ marginTop: 'var(--spacing-2)' }}>
               You don't have any other active sessions at the moment.
             </Text>
@@ -131,9 +131,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
                     {getDeviceIcon(device.userAgent)}
                   </div>
                   <div>
-                    <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', }} >
+                    <Heading as="h4" weight="medium" color="secondary">
                       {device.deviceName || "Unknown Device"}
-                    </h4>
+                    </Heading>
                     <Text as="div" size="xs" color="placeholder" style={{ marginTop: 'var(--spacing-1)' }}>
                       <p>IP: {device.ip || "Unknown"}</p>
                       <p>Login time: {device.loginTime ? new Date(device.loginTime).toLocaleString() : "Unknown"}</p>

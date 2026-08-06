@@ -1,14 +1,14 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Text } from "@/components/ui"
+import { Heading, Text } from "@/components/ui"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
     <div className="border p-4 rounded-lg animate-fadeIn" style={{ backgroundColor: 'var(--color-primary-bg)', borderColor: 'var(--color-primary-pale)' }}>
-      <h3 className="font-medium mb-3 flex items-center" style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)' }}>
+      <Heading as="h3" color="brand" size="lg" weight="medium" className="font-medium mb-3 flex items-center">
         <FaBuilding className="mr-2" /> Allocate Rooms for Visitors
-      </h3>
+      </Heading>
       <Text size="sm" color="muted" className="mb-4">Assign rooms for the visitors.</Text>
 
       <div className="space-y-3">

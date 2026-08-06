@@ -1,7 +1,7 @@
 import React from "react"
 import { FaKeyboard, FaArrowDown, FaArrowRight, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { HStack, Surface, Text } from "@/components/ui"
+import { Heading, HStack, Surface, Text } from "@/components/ui"
 
 const ScannerStatusIndicator = () => {
   const { pendingCrossHostelEntries, error } = useQRScanner()
@@ -9,7 +9,7 @@ const ScannerStatusIndicator = () => {
   return (
     <Surface bg="primary" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
-        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>External Scanner Status</h3>
+        <Heading as="h3" size="sm" weight="medium" color="body">External Scanner Status</Heading>
         <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success)' }}>
           <div style={{ width: 'var(--spacing-2)', height: 'var(--spacing-2)', backgroundColor: 'var(--color-success)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}></div>
           <Text as="span" size="xs">Active</Text>

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Spinner, Text, VStack } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, Heading, HStack, Label, Select, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const formatDateTime = (value) => {
@@ -203,15 +203,9 @@ const LiveCheckInOutPage = () => {
         <HStack justify="between" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
           <div>
             <HStack gap="small" align="center">
-              <h1
-                style={{
-                  fontSize: "var(--font-size-2xl)",
-                  fontWeight: "var(--font-weight-bold)",
-                  color: "var(--color-text-primary)",
-                }}
-              >
+              <Heading as="h1" size="2xl" weight="bold" color="primary">
                 Live Check-In/Out Monitor
-              </h1>
+              </Heading>
               <Badge variant={socketStatus === "connected" ? "success" : "danger"} size="small">
                 <HStack gap="xsmall" align="center">
                   <div
@@ -552,16 +546,9 @@ const LiveCheckInOutPage = () => {
         {/* Hostel-wise summary */}
         {hostelWiseStats.length > 0 && (
           <div style={{ marginTop: "var(--spacing-4)" }}>
-            <h2
-              style={{
-                fontSize: "var(--font-size-lg)",
-                fontWeight: "var(--font-weight-semibold)",
-                color: "var(--color-text-primary)",
-                marginBottom: "var(--spacing-3)",
-              }}
-            >
+            <Heading as="h2" size="lg" weight="semibold" color="primary" style={{ marginBottom: "var(--spacing-3)" }}>
               Hostel-wise Summary
-            </h2>
+            </Heading>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--spacing-3)" }}>
               {hostelWiseStats.map((hostel) => (
                 <Card key={hostel.hostelId || hostel.hostelName} padding="p-4">

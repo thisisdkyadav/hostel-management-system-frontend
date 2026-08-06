@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { IconCircle, Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
+import { Heading, IconCircle, Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -162,16 +162,16 @@ const StudentAssignments = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Student Inventory Assignments</h3>
+          <Heading as="h3" size="var(--text-heading-3)" weight="medium" color="secondary">Student Inventory Assignments</Heading>
           <Text size="var(--text-body-sm)" color="muted">View and manage items assigned to students</Text>
         </div>
       </div>
 
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
-        <h3 className="flex items-center" style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>
+        <Heading as="h3" size="var(--text-body-sm)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }} className="flex items-center">
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Assignments
-        </h3>
+        </Heading>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
             <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Status</Text>
@@ -288,7 +288,7 @@ const StudentAssignments = () => {
                   <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
                 </IconCircle>
                 <div>
-                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.studentProfileId.userId.name}</h3>
+                  <Heading as="h3" weight="medium" color="primary">{currentItem.studentProfileId.userId.name}</Heading>
                   <Text size="var(--text-body-sm)" color="muted">{currentItem.studentProfileId.rollNumber}</Text>
                 </div>
               </div>
@@ -371,7 +371,7 @@ const StudentAssignments = () => {
                   <FaBoxes style={{ color: 'var(--color-primary)' }} />
                 </IconCircle>
                 <div>
-                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.itemTypeId.name}</h3>
+                  <Heading as="h3" weight="medium" color="primary">{currentItem.itemTypeId.name}</Heading>
                   <div className="flex" style={{ gap: 'var(--gap-sm)', fontSize: 'var(--text-body-sm)' }}>
                     <Text as="span" color="muted">Qty: {currentItem.count}</Text>
                     <Text as="span" color="muted">•</Text>

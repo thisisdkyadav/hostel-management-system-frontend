@@ -1,6 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
-import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category
@@ -34,7 +34,7 @@ const DetailedTaskStats = ({ stats }) => {
     <Grid min={250} gap={4}>
       {/* Status Statistics */}
       <Surface bg="var(--card-bg)" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
-        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Status</h3>
+        <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }}>By Status</Heading>
         <VStack gap={2}>
           {Object.entries(statusCounts || {}).map(([status, count]) => (
             <HStack gap="none" align="center" justify="between" key={status}>
@@ -47,7 +47,7 @@ const DetailedTaskStats = ({ stats }) => {
 
       {/* Priority Statistics */}
       <Surface bg="var(--card-bg)" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
-        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Priority</h3>
+        <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }}>By Priority</Heading>
         <VStack gap={2}>
           {Object.entries(priorityCounts || {}).map(([priority, count]) => (
             <HStack gap="none" align="center" justify="between" key={priority}>
@@ -60,7 +60,7 @@ const DetailedTaskStats = ({ stats }) => {
 
       {/* Category Statistics */}
       <Surface bg="var(--card-bg)" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
-        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Category</h3>
+        <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }}>By Category</Heading>
         <VStack gap={2}>
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
             <HStack gap="none" align="center" justify="between" key={category}>
@@ -73,7 +73,7 @@ const DetailedTaskStats = ({ stats }) => {
 
       {/* Overdue Tasks Alert */}
       <Surface bg="var(--card-bg)" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
-        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Overview</h3>
+        <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }}>Overview</Heading>
         <VStack gap={3}>
           <HStack gap="none" align="center" justify="between">
             <Text as="span" size="sm">Total Tasks</Text>

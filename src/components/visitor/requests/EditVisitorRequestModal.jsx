@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, Heading, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { visitorApi } from "../../../service"
@@ -104,7 +104,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
         {/* Visitor Information (Non-editable) */}
         <div>
-          <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Visitor Information</h3>
+          <Heading as="h3" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Visitor Information</Heading>
           <Surface bg="tertiary" padding={4} radius="lg">
             <Text size="sm" color="secondary">
               <Text as="span" weight="medium">Visitors:</Text> {request.visitors?.map((v) => v.name).join(", ")}

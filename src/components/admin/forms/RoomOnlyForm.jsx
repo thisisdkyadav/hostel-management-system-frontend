@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { HStack, Label, Surface, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 
@@ -157,7 +157,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
           <div style={{ marginTop: "var(--spacing-4)" }}>
             <Surface bg="brand" padding={3} radius="lg" style={{ marginBottom: "var(--spacing-2)" }}>
-              <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Floor Room Exceptions</h5>
+              <Heading as="h5" size="sm" weight="medium" color="brand">Floor Room Exceptions</Heading>
               <Text size="xs" color="muted">Override default rooms per floor for a specific floor</Text>
             </Surface>
             {roomConfig.exceptions.map((ex, index) => (
@@ -199,7 +199,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           {parsedCsvData.length > 0 && (
             <div style={{ marginTop: "var(--spacing-4)" }}>
               <Surface bg="brand" padding={3} radius="lg" style={{ marginBottom: "var(--spacing-3)" }}>
-                <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Imported Room Data Summary</h5>
+                <Heading as="h5" size="sm" weight="medium" color="brand">Imported Room Data Summary</Heading>
               </Surface>
               <RoomStatsSummary data={parsedCsvData} isUnitBased={false} />
             </div>

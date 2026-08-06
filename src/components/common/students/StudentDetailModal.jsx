@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, IconCircle, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -302,7 +302,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
                 {/* Details - Middle */}
                 <div style={{ marginLeft: "var(--spacing-6)", flex: 1, textAlign: "left" }}>
-                  <h3 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>{studentDetails.name || "N/A"}</h3>
+                  <Heading as="h3" size="2xl" weight="bold" color="secondary" style={{ marginBottom: "var(--spacing-1)" }}>{studentDetails.name || "N/A"}</Heading>
                   <Text color="muted" style={{ marginBottom: "var(--spacing-2)", fontFamily: "var(--font-mono)" }}>{studentDetails.rollNumber || "N/A"}</Text>
 
                   <HStack gap={4} align="center">
@@ -381,7 +381,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                   <GraduationCap size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Academic Information</h4>
+                  <Heading as="h4" size="sm" weight="semibold" color="brand">Academic Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
                   <HStack gap="none" justify="between">
@@ -416,7 +416,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                   <Building size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Hostel Information</h4>
+                  <Heading as="h4" size="sm" weight="semibold" color="brand">Hostel Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
                   <HStack gap="none" justify="between">
@@ -443,7 +443,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                   <Calendar size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Personal Information</h4>
+                  <Heading as="h4" size="sm" weight="semibold" color="brand">Personal Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
                   <HStack gap="none" justify="between">
@@ -470,7 +470,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                   <MapPin size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Emergency Contact</h4>
+                  <Heading as="h4" size="sm" weight="semibold" color="brand">Emergency Contact</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
                   <HStack gap="none" justify="between">
@@ -496,7 +496,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               {studentDetails.isDayScholar && (
                 <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                   <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                    <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Day Scholar Details</h4>
+                    <Heading as="h4" size="sm" weight="semibold" color="brand">Day Scholar Details</Heading>
                   </div>
                   <VStack gap="var(--spacing-2-5)">
                     <HStack gap="none" justify="between">
@@ -534,7 +534,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       case "access":
         return (
           <Surface bg="primary">
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Access History</h3>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Access History</Heading>
             {loadingAccessRecords ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
                 <Spinner size="var(--spacing-8)" thickness="thin" />
@@ -588,7 +588,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       case "visitors":
         return (
           <Surface bg="primary">
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Visitor Requests</h3>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Visitor Requests</Heading>
             {loadingVisitorRequests ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
                 <Spinner size="var(--spacing-8)" thickness="thin" />
@@ -644,7 +644,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       case "feedback":
         return (
           <Surface bg="primary">
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Feedback History</h3>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Feedback History</Heading>
             {loadingFeedbacks ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
                 <Spinner size="var(--spacing-8)" thickness="thin" />
@@ -659,7 +659,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 {feedbacks.map((feedback) => (
                   <Surface bg="tertiary" padding={4} radius="lg" key={feedback._id}>
                     <HStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
-                      <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{feedback.title}</h4>
+                      <Heading as="h4" weight="medium" color="secondary">{feedback.title}</Heading>
                       <span
                         style={{
                           padding: "var(--spacing-1) var(--spacing-2)",
@@ -690,7 +690,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         return (
           <Surface bg="primary">
             <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
-              <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
+              <Heading as="h3" size="lg" weight="semibold" color="body">Student Inventory</Heading>
               {user && canAssignInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                 <Button onClick={handleOpenAssignInventory} variant="primary" size="sm">
                   <Plus size={14} />
@@ -812,7 +812,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       case "idcard":
         return (
           <Surface bg="primary">
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Student ID Card</h3>
+            <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Student ID Card</Heading>
 
             {loadingIdCard ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
@@ -827,7 +827,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
                 {/* Front ID Card */}
                 <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)", border: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <h4 style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>ID Card Front</h4>
+                  <Heading as="h4" size="base" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-3)" }}>ID Card Front</Heading>
                   {idCardData.front ? (
                     <div style={{ position: "relative", width: "100%" }}>
                       <div style={{ overflow: "hidden", borderRadius: "var(--radius-lg)", maxHeight: "280px", display: "flex", alignItems: "center", justifyContent: "center", border: "var(--border-1) solid var(--color-border-primary)" }}>
@@ -850,7 +850,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
                 {/* Back ID Card */}
                 <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)", border: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <h4 style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>ID Card Back</h4>
+                  <Heading as="h4" size="base" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-3)" }}>ID Card Back</Heading>
                   {idCardData.back ? (
                     <div style={{ position: "relative", width: "100%" }}>
                       <div style={{ overflow: "hidden", borderRadius: "var(--radius-lg)", maxHeight: "280px", display: "flex", alignItems: "center", justifyContent: "center", border: "var(--border-1) solid var(--color-border-primary)" }}>
@@ -1110,7 +1110,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <FaBoxes style={{ color: "var(--color-primary)" }} />
                   </IconCircle>
                   <div>
-                    <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{selectedInventoryItem.itemTypeId.name}</h3>
+                    <Heading as="h3" weight="medium" color="primary">{selectedInventoryItem.itemTypeId.name}</Heading>
                     <div style={{ display: "flex", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
                       <Text as="span" color="muted">Qty: {selectedInventoryItem.count}</Text>
                       <Text as="span" color="muted">•</Text>

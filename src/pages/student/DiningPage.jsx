@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Grid, Modal, Page, Surface, Text } from "@/components/ui"
+import { Grid, Heading, Modal, Page, Surface, Text } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -74,9 +74,9 @@ const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) =
         {Icon && <Icon size={26} />}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+        <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>
           {title}
-        </h2>
+        </Heading>
         {subtitle && (
           <Text color="body" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{subtitle}</Text>
         )}
@@ -93,9 +93,9 @@ const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) =
 const InfoCard = ({ title, badge, children }) => (
   <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
     <HStack gap={2} align="center" justify="between">
-      <h3 style={{ margin: 0, fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--color-text-muted)" }}>
+      <Heading as="h3" size="sm" weight="semibold" color="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.04em" }}>
         {title}
-      </h3>
+      </Heading>
       {badge}
     </HStack>
     {children}
@@ -547,9 +547,9 @@ const DiningPage = () => {
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             <HStack gap={3} align="center" justify="between" wrap>
               <div>
-                <h3 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                <Heading as="h3" size="lg" weight="bold" color="heading" style={{ margin: 0 }}>
                   Rebate Requests
-                </h3>
+                </Heading>
                 <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Your approved, pending and rejected dining rebate requests.
                 </Text>

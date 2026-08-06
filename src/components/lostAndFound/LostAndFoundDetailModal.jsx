@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Modal, Surface, Text } from "@/components/ui"
+import { Heading, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -58,7 +58,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
 
           {/* Header */}
           <div style={{ marginBottom: 'var(--spacing-6)', paddingTop: 'var(--spacing-2)' }}>
-            <h2 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-1)' }}>{selectedItem.itemName}</h2>
+            <Heading as="h2" size="3xl" weight="bold" color="primary" style={{ marginBottom: 'var(--spacing-1)' }}>{selectedItem.itemName}</Heading>
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-muted)' }}>
               <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)' }} />
               <span>{formatDate(selectedItem.dateFound)}</span>
@@ -70,7 +70,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
             <div style={{ marginBottom: 'var(--spacing-6)' }}>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
                 <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
-                <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Item Images</h3>
+                <Heading as="h3" weight="semibold">Item Images</Heading>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
                 {selectedItem.images.map((imageUrl, index) => (
@@ -96,7 +96,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
           <Surface bg="var(--table-header-bg)" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
               <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
-              <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
+              <Heading as="h3" weight="semibold">Description</Heading>
             </div>
             <Text color="secondary" leading="var(--line-height-relaxed)">{selectedItem.description}</Text>
           </Surface>

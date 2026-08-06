@@ -5,7 +5,7 @@ import ManageSessionsButton from "../sessions/ManageSessionsButton"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
-import { HStack, Text } from "@/components/ui"
+import { Heading, HStack, Text } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
@@ -48,9 +48,9 @@ const ProfileHeader = ({ user, role, subtitle }) => {
       <ProfileAvatar user={user} size="large" />
       <div>
         <div className="flex flex-col sm:flex-row items-center sm:items-start">
-          <h2 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", }} >
+          <Heading as="h2" size="xl" weight="bold" color="secondary">
             {user.name}
-          </h2>
+          </Heading>
           <div style={{ marginTop: "var(--spacing-1)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", }} className="sm:mt-0 sm:ml-4" >
             {role}
           </div>

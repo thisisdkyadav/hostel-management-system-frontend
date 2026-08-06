@@ -2,7 +2,7 @@ import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
-import { Grid, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
@@ -15,7 +15,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             </svg>
           </IconCircle>
           <div>
-            <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)', fontSize: 'var(--font-size-base)' }}>Payment Information Not Submitted</h4>
+            <Heading as="h4" weight="medium" color="warning-text" size="base">Payment Information Not Submitted</Heading>
             <Text size="sm" color="warning" style={{ marginTop: 'var(--spacing-0-5)' }}>Student has not yet submitted payment information</Text>
           </div>
         </HStack>
@@ -48,7 +48,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
           </svg>
         </IconCircle>
         <div>
-          <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success-text)', fontSize: 'var(--font-size-base)' }}>Payment Information</h4>
+          <Heading as="h4" weight="semibold" color="success-text" size="base">Payment Information</Heading>
           <Text size="sm" color="success" style={{ marginTop: 'var(--spacing-0-5)' }}>Student payment details and verification</Text>
         </div>
       </HStack>

@@ -1,10 +1,10 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { Heading, Text } from "@/components/ui"
 const StudentDetails = ({ studentName, studentEmail, studentProfileImage }) => {
   return (
     <div className="rounded-md p-4 border" style={{ backgroundColor: 'var(--color-bg-primary)', borderColor: 'var(--color-border-primary)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-4)' }}>
-      <h3 className="font-medium mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Student Information</h3>
+      <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }} className="font-medium mb-3">Student Information</Heading>
       <div className="flex items-center">
         {studentProfileImage ? (
           <img src={getMediaUrl(studentProfileImage)} alt={studentName} className="rounded-full object-cover mr-4" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-avatar)' }} />

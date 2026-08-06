@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, HStack, IconCircle, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -360,7 +360,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   </svg>
                 </IconCircle>
                 <div>
-                  <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>H2 Form Document</h4>
+                  <Heading as="h4" weight="medium" color="secondary">H2 Form Document</Heading>
                   <Text size="sm" color="muted">Guest Room Booking Form</Text>
                 </div>
               </HStack>
@@ -422,7 +422,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   </svg>
                 </IconCircle>
                 <div>
-                  <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" }}>Payment Information Required</h4>
+                  <Heading as="h4" weight="medium" color="info-text">Payment Information Required</Heading>
                   <Text size="sm" color="brand">Submit your payment details for verification</Text>
                 </div>
               </HStack>

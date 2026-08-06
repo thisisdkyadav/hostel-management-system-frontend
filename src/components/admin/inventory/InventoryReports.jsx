@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, HStack, IconCircle, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Heading, HStack, IconCircle, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -87,7 +87,7 @@ const InventoryReports = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Inventory Reports</h3>
+          <Heading as="h3" size="lg" weight="medium" color="secondary">Inventory Reports</Heading>
           <Text size="sm" color="muted">View inventory distribution across hostels and students</Text>
         </div>
 

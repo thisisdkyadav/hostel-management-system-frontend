@@ -6,7 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import { Card, HStack, Text } from "@/components/ui"
+import { Card, Heading, HStack, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const EventCard = ({ event, refresh }) => {
@@ -75,7 +75,7 @@ const EventCard = ({ event, refresh }) => {
                 <FaCalendarAlt size={20} />
               </div>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }} className="md:text-lg line-clamp-1">{event.eventName}</h3>
+                <Heading as="h3" weight="bold" color="primary" size="base" leading="var(--line-height-tight)" className="md:text-lg line-clamp-1">{event.eventName}</Heading>
                 <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
               </div>
             </HStack>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, HStack, Spinner, Text } from "@/components/ui"
+import { Alert, Card, Heading, HStack, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -202,9 +202,9 @@ const ElectionBallotPage = () => {
           <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
             {!hasStickyIdentity && isActiveVotingView ? (
               <div style={{ display: "grid", gap: "6px" }}>
-                <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>
+                <Heading as="h1" size="2xl" style={{ margin: 0 }}>
                   {ballot?.election?.title || "Election Voting Page"}
-                </h1>
+                </Heading>
                 <Text as="div" color="muted">
                   {votingWindowLabel}
                 </Text>

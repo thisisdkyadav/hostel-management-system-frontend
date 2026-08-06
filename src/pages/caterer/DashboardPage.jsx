@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button, StatusBadge } from "czero/react"
 import { ArrowRight, CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
-import { Alert, Card, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -99,9 +99,9 @@ const DashboardPage = () => {
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <HStack gap={2} align="center" wrap>
-                      <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                      <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>
                         {hasActiveMeal ? mealSlot.name : "No active meal"}
-                      </h2>
+                      </Heading>
                       <StatusBadge status={hasActiveMeal ? "Serving now" : "Idle"} tone={hasActiveMeal ? "success" : "primary"} showDot={hasActiveMeal} />
                     </HStack>
                     <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
@@ -130,7 +130,7 @@ const DashboardPage = () => {
           {rebateSummary.days.length > 0 && (
             <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Availability Forecast</h3>
+                <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Availability Forecast</Heading>
                 <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Expected diners today and the next two days, after approved rebates.
                 </Text>

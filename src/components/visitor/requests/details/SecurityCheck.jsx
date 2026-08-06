@@ -1,6 +1,6 @@
 import React from "react"
 import { format } from "date-fns"
-import { Text } from "@/components/ui"
+import { Heading, Text } from "@/components/ui"
 
 const SecurityCheck = ({ checkInTime, checkOutTime }) => {
   const formatDateTime = (dateTimeString) => {
@@ -12,11 +12,11 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
 
   return (
     <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border-primary)' }}>
-      <h3 className="font-medium mb-3" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Security Check Status</h3>
+      <Heading as="h3" size="lg" weight="medium" color="primary" className="font-medium mb-3">Security Check Status</Heading>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-in Time</h4>
+          <Heading as="h4" size="sm" weight="medium" color="secondary" className="font-medium">Check-in Time</Heading>
           <div className="mt-1 flex items-center">
             <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkInTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
             <Text size="sm" color="primary">{formatDateTime(checkInTime)}</Text>
@@ -24,7 +24,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
         </div>
 
         <div>
-          <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-out Time</h4>
+          <Heading as="h4" size="sm" weight="medium" color="secondary" className="font-medium">Check-out Time</Heading>
           <div className="mt-1 flex items-center">
             <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkOutTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
             <Text size="sm" color="primary">{formatDateTime(checkOutTime)}</Text>

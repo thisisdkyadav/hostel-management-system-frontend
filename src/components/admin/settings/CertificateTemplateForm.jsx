@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, FileInput, Grid, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, FileInput, Grid, Heading, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -177,9 +177,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
     <VStack gap={6}>
       {/* Branding */}
       <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-        <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+        <Heading as="h3" size="md" weight="semibold" color="heading">
           Header & logo
-        </h3>
+        </Heading>
         <HStack gap={4} align="center" wrap>
           <div
             style={{
@@ -265,9 +265,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
 
       {/* Theme */}
       <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-        <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+        <Heading as="h3" size="md" weight="semibold" color="heading">
           Appearance
-        </h3>
+        </Heading>
         <Grid min={180} gap={4} align="end">
           <div>
             <Label htmlFor="cert-orientation">Orientation</Label>
@@ -310,9 +310,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
       {/* Signatories */}
       <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
         <div>
-          <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+          <Heading as="h3" size="md" weight="semibold" color="heading">
             Signatories
-          </h3>
+          </Heading>
           <Text size="xs" color="muted">
             Only users who have set a signature in their profile appear here. The order below is the order
             shown on the certificate (1 → right, 2 → left & right, more → evenly spaced).

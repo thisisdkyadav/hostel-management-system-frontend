@@ -5,7 +5,7 @@ import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 import { Button } from "czero/react"
-import { HStack, Spinner, Text } from "@/components/ui"
+import { Heading, HStack, Spinner, Text } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -176,7 +176,7 @@ const QRScanner = ({ onRefresh }) => {
         <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Student QR Code</h2>
+        <Heading as="h2" size="xl" weight="bold" color="secondary">Scan Student QR Code</Heading>
       </HStack>
 
       {error && (

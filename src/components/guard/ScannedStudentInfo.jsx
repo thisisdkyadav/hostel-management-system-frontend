@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Button } from "czero/react"
-import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -40,7 +40,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <FaExclamationTriangle style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }} />
             </div>
             <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
-              <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-warning-text)', marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</h3>
+              <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</Heading>
               <Text color="warning-text" size="sm" style={{ marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</Text>
               <VStack gap={2}>
                 <label htmlFor="crossHostelReason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>
@@ -144,7 +144,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
             {/* Last Check In/Out Section */}
             {lastCheckInOut && (
               <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" style={{ marginTop: 'var(--spacing-6)' }}>
-                <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Last {lastCheckInOut.status}</h4>
+                <Heading as="h4" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }}>Last {lastCheckInOut.status}</Heading>
                 <HStack gap={4} wrap>
                   <HStack gap="none" align="center">
                     <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />

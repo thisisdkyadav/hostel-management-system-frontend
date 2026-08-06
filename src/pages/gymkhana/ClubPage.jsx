@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Building2, Mail, ShieldCheck, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Card, CardBody, CardHeader, StatCards, Surface, Text } from "@/components/ui"
+import { Card, CardBody, CardHeader, Heading, StatCards, Surface, Text } from "@/components/ui"
 import { clubApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -86,15 +86,9 @@ const ClubPage = () => {
                 <ShieldCheck size={18} />
               </div>
               <div>
-                <h2
-                  style={{
-                    fontSize: "var(--font-size-xl)",
-                    fontWeight: "var(--font-weight-semibold)",
-                    color: "var(--color-text-secondary)",
-                  }}
-                >
+                <Heading as="h2" size="xl" weight="semibold" color="secondary">
                   Club Login
-                </h2>
+                </Heading>
                 <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                   This account is tied to the club record created by the admin. If you ever need to set or reset your password, use the Forgot Password option on the login page.
                 </Text>

@@ -3,7 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input, Table } from "czero/react"
-import { HStack, IconCircle, Modal, Text, useConfirm, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Text, useConfirm, VStack } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()
@@ -49,7 +49,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
           {filteredProfiles.length === 0 ? (
             <div style={{ paddingTop: "var(--spacing-8)", paddingBottom: "var(--spacing-8)", textAlign: "center" }}>
               <FaUserAlt style={{ margin: "0 auto", height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-border-primary)" }} />
-              <h3 style={{ marginTop: "var(--spacing-4)", fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>No visitor profiles found</h3>
+              <Heading as="h3" size="lg" weight="medium" color="primary" style={{ marginTop: "var(--spacing-4)" }}>No visitor profiles found</Heading>
               <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</Text>
             </div>
           ) : (

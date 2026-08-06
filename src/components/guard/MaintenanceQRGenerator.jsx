@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
 import { Button } from "czero/react"
-import { HStack, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Text, VStack } from "@/components/ui"
 
 const MaintenanceQRGenerator = () => {
   const { user } = useAuth()
@@ -89,7 +89,7 @@ const MaintenanceQRGenerator = () => {
         <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Maintenance Attendance QR Code</h2>
+        <Heading as="h2" size="xl" weight="bold" color="secondary">Maintenance Attendance QR Code</Heading>
       </HStack>
 
       <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-5)', display: 'flex', alignItems: 'flex-start' }}>

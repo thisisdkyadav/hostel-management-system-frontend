@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { HStack, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
+import { Heading, HStack, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -326,7 +326,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
                 {editableFields.includes("emergencyContact") && (
                   <>
                     <div style={{ marginTop: "var(--spacing-6)", marginBottom: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: "var(--spacing-4)" }}>
-                      <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Emergency Contact Information</h3>
+                      <Heading as="h3" size="md" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Emergency Contact Information</Heading>
                     </div>
                     {renderField("guardian")}
                     {renderField("guardianPhone", "tel")}

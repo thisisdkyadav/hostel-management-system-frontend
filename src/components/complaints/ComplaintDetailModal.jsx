@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { MapPin, User, ClipboardList, FileText, Pencil, Star, CheckCircle, CalendarDays, MessageSquare } from "lucide-react"
 import { getStatusColor } from "../../utils/adminUtils"
-import { Badge, Divider, HStack, IconCircle, Text, VStack } from "@/components/ui"
+import { Badge, Divider, Heading, HStack, IconCircle, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -118,16 +118,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           }}>
             <Icon size={13} style={{ color: accentColor }} />
           </div>
-          <h4 style={{
-            fontSize: "var(--font-size-xs)",
-            fontWeight: "var(--font-weight-semibold)",
-            color: accentColor,
-            margin: 0,
-            textTransform: "uppercase",
-            letterSpacing: "0.5px"
-          }}>
+          <Heading as="h4" size="xs" weight="semibold" color={accentColor} style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.5px" }}>
             {title}
-          </h4>
+          </Heading>
         </HStack>
         {headerAction}
       </HStack>

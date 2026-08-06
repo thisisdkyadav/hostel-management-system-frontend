@@ -12,7 +12,7 @@ import { LoadingState, ErrorState, EmptyState } from "@/components/ui/feedback"
 import { CalendarDays, FileText, Clock, AlertCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { HStack, Text } from "@/components/ui"
+import { Heading, HStack, Text } from "@/components/ui"
 
 const DashboardPage = () => {
     const navigate = useNavigate()
@@ -72,14 +72,9 @@ const DashboardPage = () => {
         <div style={{ padding: "var(--spacing-6)" }}>
             {/* Header */}
             <div style={{ marginBottom: "var(--spacing-6)" }}>
-                <h1 style={{
-                    fontSize: "var(--font-size-2xl)",
-                    fontWeight: "var(--font-weight-semibold)",
-                    color: "var(--color-text-heading)",
-                    marginBottom: "var(--spacing-2)"
-                }}>
+                <Heading as="h1" size="2xl" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-2)" }}>
                     Welcome, {user?.name || "Gymkhana Member"}
-                </h1>
+                </Heading>
                 <Text color="muted">
                     {user?.subRole || "Gymkhana"} Dashboard
                 </Text>

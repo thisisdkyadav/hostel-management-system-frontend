@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, HStack, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { ConfirmDialog, Heading, HStack, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -197,7 +197,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
     return (
       <Surface bg="primary" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)" style={{ marginBottom: "var(--spacing-4)" }} key={member.id}>
         <HStack gap="none" align="start" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
-          <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{member.name}</h3>
+          <Heading as="h3" weight="medium" color="primary">{member.name}</Heading>
           {editable && (
             <HStack gap={1}>
               <Button onClick={() => startEdit(member)} variant="ghost" size="sm" aria-label="Edit">
@@ -239,7 +239,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
     return (
       <Surface bg="brand" padding={4} radius="lg" shadow="sm" style={{ marginBottom: "var(--spacing-4)" }}>
         <form onSubmit={handleAdd}>
-          <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", marginBottom: "var(--spacing-3)" }}>Add New Family Member</h3>
+          <Heading as="h3" weight="medium" color="primary" style={{ marginBottom: "var(--spacing-3)" }}>Add New Family Member</Heading>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
             <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Name</label>
@@ -316,7 +316,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       )}
 
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
-        <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>Family Members</h2>
+        <Heading as="h2" size="lg" weight="medium" color="primary">Family Members</Heading>
         {editable && !showAddForm && (
           <Button onClick={() => setShowAddForm(true)} variant="primary" size="sm">
             <FiPlus />

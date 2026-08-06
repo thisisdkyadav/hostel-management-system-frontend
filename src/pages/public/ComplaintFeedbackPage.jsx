@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
+import { Alert, Card, Heading, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -100,14 +100,9 @@ const ComplaintFeedbackPage = () => {
                     <IconCircle size="64px" bg="danger" style={{ margin: '0 auto var(--spacing-4)' }}>
                         <FaExclamationTriangle size={32} style={{ color: 'var(--color-danger)' }} />
                     </IconCircle>
-                    <h2 style={{
-                        fontSize: 'var(--font-size-xl)',
-                        fontWeight: 'var(--font-weight-semibold)',
-                        color: 'var(--color-text-heading)',
-                        marginBottom: 'var(--spacing-2)'
-                    }}>
+                    <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Unable to Load Feedback Form
-                    </h2>
+                    </Heading>
                     <Text color="body" size="base" style={{ marginBottom: 'var(--spacing-4)' }}>
                         {error}
                     </Text>
@@ -136,14 +131,9 @@ const ComplaintFeedbackPage = () => {
                     <IconCircle size="64px" bg="success" style={{ margin: '0 auto var(--spacing-4)' }}>
                         <FaCheck size={32} style={{ color: 'var(--color-success)' }} />
                     </IconCircle>
-                    <h2 style={{
-                        fontSize: 'var(--font-size-xl)',
-                        fontWeight: 'var(--font-weight-semibold)',
-                        color: 'var(--color-text-heading)',
-                        marginBottom: 'var(--spacing-2)'
-                    }}>
+                    <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Thank You for Your Feedback!
-                    </h2>
+                    </Heading>
                     <Text color="body" size="base" style={{ marginBottom: 'var(--spacing-4)' }}>
                         Your feedback helps us improve our services and resolve issues more effectively.
                     </Text>
@@ -170,14 +160,9 @@ const ComplaintFeedbackPage = () => {
             <div style={{ maxWidth: '600px', width: '100%' }}>
                 {/* Header */}
                 <Text as="div" align="center" style={{ marginBottom: 'var(--spacing-6)' }}>
-                    <h1 style={{
-                        fontSize: 'var(--font-size-2xl)',
-                        fontWeight: 'var(--font-weight-bold)',
-                        color: 'var(--color-text-heading)',
-                        marginBottom: 'var(--spacing-2)'
-                    }}>
+                    <Heading as="h1" size="2xl" weight="bold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Rate Your Resolution
-                    </h1>
+                    </Heading>
                     <Text color="body" size="base">
                         Hello {complaint.studentName}, please rate the resolution of your complaint.
                     </Text>
@@ -228,14 +213,9 @@ const ComplaintFeedbackPage = () => {
 
                         {complaint.description && (
                             <div style={{ marginBottom: 'var(--spacing-2-5)' }}>
-                                <h5 style={{
-                                    fontSize: 'var(--font-size-xs)',
-                                    fontWeight: 'var(--font-weight-medium)',
-                                    color: 'var(--color-text-muted)',
-                                    marginBottom: 'var(--spacing-0-5)'
-                                }}>
+                                <Heading as="h5" size="xs" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-0-5)' }}>
                                     Description
-                                </h5>
+                                </Heading>
                                 <Text color="body" size="sm">
                                     {complaint.description}
                                 </Text>

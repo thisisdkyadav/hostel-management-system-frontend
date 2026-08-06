@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table, Tabs } from "czero/react"
-import { Modal, Page, Text } from "@/components/ui"
+import { Heading, Modal, Page, Text } from "@/components/ui"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import { Alert, Card, EmptyState, HStack, Label, StatCards, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -271,7 +271,7 @@ const MealVerificationPage = () => {
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <HStack gap={2} align="center">
-                      <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>{currentMealLabel}</h2>
+                      <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>{currentMealLabel}</Heading>
                       <LiveIndicator connected={isConnected} />
                     </HStack>
                     <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{currentMealTime}</Text>
@@ -313,7 +313,7 @@ const MealVerificationPage = () => {
           {rebateSummary.days.length > 0 && (
             <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Availability Forecast</h3>
+                <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Availability Forecast</Heading>
                 <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Today and the next two days, after approved rebates are excluded.
                 </Text>
@@ -336,7 +336,7 @@ const MealVerificationPage = () => {
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             <HStack gap={3} align="center" justify="between" wrap>
               <HStack gap={2} align="center">
-                <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Live Verification Feed</h3>
+                <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Live Verification Feed</Heading>
                 <LiveIndicator connected={isConnected} />
               </HStack>
               <Tabs

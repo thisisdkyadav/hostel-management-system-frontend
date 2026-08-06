@@ -1,7 +1,7 @@
 import React from "react"
 import { FaTimes, FaUserCircle, FaDoorOpen, FaClock, FaCalendarAlt } from "react-icons/fa"
 import { Button } from "czero/react"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 
 const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null
@@ -10,7 +10,7 @@ const EntryDetails = ({ entry, onClose }) => {
     <div style={{ position: 'fixed', inset: 0, backgroundColor: 'var(--modal-backdrop)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 'var(--z-modal)' }}>
       <div style={{ backgroundColor: 'var(--modal-bg)', borderRadius: 'var(--modal-radius)', boxShadow: 'var(--modal-shadow)', width: '100%', maxWidth: 'var(--container-md)', margin: '0 var(--spacing-4)', padding: 'var(--spacing-6)' }}>
         <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
-          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--modal-title-color)' }}>Entry Details</h2>
+          <Heading as="h2" size="xl" weight="bold" color="var(--modal-title-color)">Entry Details</Heading>
           <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close"><FaTimes /></Button>
         </HStack>
 
@@ -20,7 +20,7 @@ const EntryDetails = ({ entry, onClose }) => {
               <FaUserCircle size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-2xl'))} />
             </div>
             <div>
-              <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{entry.name}</h3>
+              <Heading as="h3" size="lg" weight="semibold" color="primary">{entry.name}</Heading>
               <Text color="muted" size="sm">{entry.id}</Text>
             </div>
           </HStack>

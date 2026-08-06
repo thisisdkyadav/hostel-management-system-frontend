@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, StatusBadge } from "czero/react"
-import { Modal, Page, Text } from "@/components/ui"
+import { Heading, Modal, Page, Text } from "@/components/ui"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -123,7 +123,7 @@ const CatererDetailsModal = ({ caterer, onClose, onEdit, onToggleArchive }) => {
         <HStack gap="medium" align="center">
           <Avatar name={caterer.name || "?"} size="large" />
           <div>
-            <h3 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>{caterer.name}</h3>
+            <Heading as="h3" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>{caterer.name}</Heading>
             <StatusBadge status={caterer.isArchived ? "Archived" : "Active"} tone={caterer.isArchived ? "primary" : "success"} />
           </div>
         </HStack>

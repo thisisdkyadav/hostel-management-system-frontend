@@ -2,7 +2,7 @@ import { Button, DataTable, Tabs } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { EmptyState, LoadingState } from "@/components/ui/feedback"
 import { StatCards } from "@/components/ui/data-display"
-import { HStack, Surface, Text, ToggleButtonGroup } from "@/components/ui"
+import { Heading, HStack, Surface, Text, ToggleButtonGroup } from "@/components/ui"
 import {
   AlertTriangle,
   Bell,
@@ -128,20 +128,12 @@ function MonthCalendarView({
         }}
       >
         <HStack gap="var(--spacing-2-5)" align="baseline">
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "var(--font-size-xl)",
-              fontWeight: "var(--font-weight-bold)",
-              color: "var(--color-text-heading)",
-              letterSpacing: "-0.02em",
-            }}
-          >
+          <Heading as="h3" size="xl" weight="bold" color="heading" style={{ margin: 0, letterSpacing: "-0.02em" }}>
             {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
             <Text as="span" color="muted" weight="normal">
               {calendarMonth.getFullYear()}
             </Text>
-          </h3>
+          </Heading>
           {monthEventCount > 0 && (
             <span
               style={{

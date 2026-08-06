@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -50,7 +50,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
               <FaFileAlt style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
             </IconCircle>
             <div>
-              <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h3>
+              <Heading as="h3" weight="medium" color="secondary">H2 Form Document</Heading>
               <Text size="sm" color="muted">Guest Room Booking Form</Text>
             </div>
           </HStack>
@@ -99,7 +99,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                 {/* Fallback for when PDF object fails */}
                 <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8)', textAlign: 'center' }}>
                   <FaFileAlt style={{ width: 'var(--icon-4xl)', height: 'var(--icon-4xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-4)' }} />
-                  <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</h3>
+                  <Heading as="h3" size="lg" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</Heading>
                   <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</Text>
                   <HStack gap={3}>
                     <Button onClick={handleDownload} variant="success" size="md">

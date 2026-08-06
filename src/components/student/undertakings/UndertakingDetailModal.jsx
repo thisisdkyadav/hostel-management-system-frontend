@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
-import { Checkbox, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Checkbox, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
@@ -67,13 +67,13 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
 
         {/* Description */}
         <div>
-          <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Description</h3>
+          <Heading as="h3" size="sm" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Description</Heading>
           <p style={{ color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)" }}>{undertaking.description}</p>
         </div>
 
         {/* Content */}
         <div>
-          <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Undertaking Content</h3>
+          <Heading as="h3" size="sm" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Undertaking Content</Heading>
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)", border: `var(--border-1) solid var(--color-border-primary)`, maxHeight: "15rem", overflowY: "auto" }}>
             <Text as="div" color="body" size="sm" style={{ whiteSpace: "pre-wrap" }}>{undertaking.content}</Text>
           </div>
