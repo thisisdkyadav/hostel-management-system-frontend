@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "lint:imports": "NODE_OPTIONS='--max-old-space-size=4096' eslint . --rule 'import/no-unresolved: error'",
     "preview": "vite preview",
-    "flatten-jsx": "node scripts/flatten-jsx.js"
+    "flatten-jsx": "node scripts/flatten-jsx.js",
+    "lint:jsx-refs": "node scripts/check-jsx-references.js",
+    "check": "npm run lint:jsx-refs && npm run lint"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
