@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Grid, HStack, Select } from "@/components/ui"
+import { Grid, HStack, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
@@ -10,7 +10,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)', border: `var(--border-1) solid var(--color-border-light)` }}>
+    <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" style={{ marginBottom: 'var(--spacing-6)' }}>
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Filter Notifications</h3>
         <Button onClick={resetFilters} variant="ghost" size="sm">
@@ -63,7 +63,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
           ]} />
         </div>
       </Grid>
-    </div>
+    </Surface>
   )
 }
 

@@ -2,7 +2,7 @@ import { Button, DataTable, Tabs } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { EmptyState, LoadingState } from "@/components/ui/feedback"
 import { StatCards } from "@/components/ui/data-display"
-import { HStack, Text, ToggleButtonGroup } from "@/components/ui"
+import { HStack, Surface, Text, ToggleButtonGroup } from "@/components/ui"
 import {
   AlertTriangle,
   Bell,
@@ -237,7 +237,7 @@ function MonthCalendarView({
         </span>
       </div>
 
-      <div style={{ padding: "var(--spacing-3)" }}>
+      <Surface padding={3}>
         <div
           style={{
             display: "grid",
@@ -421,7 +421,7 @@ function MonthCalendarView({
             )
           })}
         </div>
-      </div>
+      </Surface>
     </div>
   )
 }
@@ -773,15 +773,7 @@ export default function GymkhanaEventsPageContent({
           canCreateEventsCapability &&
           (isGS || isPresident) &&
           pendingProposalReminders.length > 0 && (
-            <div
-              style={{
-                marginBottom: "var(--spacing-3)",
-                padding: "var(--spacing-3)",
-                backgroundColor: "var(--color-warning-bg)",
-                border: "var(--border-1) solid var(--color-warning)",
-                borderRadius: "var(--radius-card-sm)",
-              }}
-            >
+            <Surface bg="warning" padding={3} radius="card-sm" border="var(--border-1) solid var(--color-warning)" style={{ marginBottom: "var(--spacing-3)" }}>
               <HStack gap={2} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-2)" }}>
                 <HStack gap={2} align="center">
                   <Bell size={14} style={{ color: "var(--color-warning)" }} />
@@ -823,7 +815,7 @@ export default function GymkhanaEventsPageContent({
                   </div>
                 ))}
               </HStack>
-            </div>
+            </Surface>
           )}
 
         {!loading && calendar && pendingProposalsForSelectedCalendar.length > 0 && (
@@ -970,9 +962,9 @@ export default function GymkhanaEventsPageContent({
         {viewMode === "calendar" &&
           (loading ? (
             <div style={calendarCardStyle}>
-              <div style={{ padding: "var(--spacing-6)" }}>
+              <Surface padding={6}>
                 <LoadingState message={`Loading calendar for ${selectedYear || "selected year"}...`} />
-              </div>
+              </Surface>
             </div>
           ) : !calendar ? null : (
             <MonthCalendarView
@@ -990,9 +982,9 @@ export default function GymkhanaEventsPageContent({
         {viewMode === "year" &&
           (loading ? (
             <div style={calendarCardStyle}>
-              <div style={{ padding: "var(--spacing-6)" }}>
+              <Surface padding={6}>
                 <LoadingState message={`Loading calendar for ${selectedYear || "selected year"}...`} />
-              </div>
+              </Surface>
             </div>
           ) : !calendar ? null : (
             <YearCalendarView

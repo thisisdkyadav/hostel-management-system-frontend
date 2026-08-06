@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { HStack, Select, Text, useConfirm } from "@/components/ui"
+import { HStack, Select, Surface, Text, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -88,7 +88,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   const renderViewMode = () => (
     <>
-      <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--spacing-6)', border: 'var(--border-1) solid var(--color-primary-light)' }}>
+      <Surface bg="brand" padding={5} radius="xl" border="var(--border-1) solid var(--color-primary-light)" style={{ marginBottom: 'var(--spacing-6)' }}>
         <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center' }}>
             <FaMedkit style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
@@ -160,7 +160,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
             <p style={{ marginTop: 'var(--spacing-1)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-primary)', minHeight: '80px' }}>{claim.description || "No description provided."}</p>
           </div>
         </HStack>
-      </div>
+      </Surface>
 
       <HStack gap={3} justify="end" style={{ marginTop: 'var(--spacing-6)' }}>
         {canEditHealth && (
@@ -182,7 +182,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   const renderEditMode = () => (
     <form onSubmit={handleSubmit}>
-      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-6)' }}>
+      <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-6)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
@@ -215,7 +215,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
             <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter claim description" required></textarea>
           </div>
         </div>
-      </div>
+      </Surface>
 
       <HStack gap={3} justify="end">
         <Button type="submit" variant="primary" size="md">
@@ -236,7 +236,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   return (
     <Modal title={isNew ? "Add Insurance Claim" : isEditing ? "Edit Insurance Claim" : "Insurance Claim Details"} onClose={onClose} width={600}>
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)' }}>{isNew || isEditing ? renderEditMode() : renderViewMode()}</div>
+      <Surface bg="primary" padding={4}>{isNew || isEditing ? renderEditMode() : renderViewMode()}</Surface>
     </Modal>
   )
 }

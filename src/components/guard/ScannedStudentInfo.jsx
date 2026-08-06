@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Button } from "czero/react"
-import { Grid, HStack, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -27,14 +27,14 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', padding: 'var(--spacing-6)' }}>
-      <div style={{ backgroundColor: 'var(--color-success-bg-light)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-success)`, marginBottom: 'var(--spacing-6)' }}>
+    <Surface bg="primary" padding={6} radius="xl" shadow="md">
+      <Surface bg="var(--color-success-bg-light)" padding={3} radius="lg" style={{ borderLeft: `var(--border-4) solid var(--color-success)`, marginBottom: 'var(--spacing-6)' }}>
         <Text color="success-text" weight="medium">Student verified successfully!</Text>
-      </div>
+      </Surface>
 
       {/* Cross-Hostel Alert */}
       {student.isSameHostel === false && (
-        <div style={{ backgroundColor: 'var(--color-warning-bg-light)', border: `var(--border-2) solid var(--color-warning)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+        <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-2) solid var(--color-warning)" style={{ marginBottom: 'var(--spacing-6)' }}>
           <HStack gap="none" align="start">
             <div style={{ flexShrink: 0 }}>
               <FaExclamationTriangle style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }} />
@@ -72,7 +72,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               </VStack>
             </div>
           </HStack>
-        </div>
+        </Surface>
       )}
 
       <VStack gap={6}>
@@ -143,7 +143,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
 
             {/* Last Check In/Out Section */}
             {lastCheckInOut && (
-              <div style={{ marginTop: 'var(--spacing-6)', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-info-bg-light)', borderRadius: 'var(--radius-lg)' }}>
+              <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" style={{ marginTop: 'var(--spacing-6)' }}>
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Last {lastCheckInOut.status}</h4>
                 <HStack gap={4} wrap>
                   <HStack gap="none" align="center">
@@ -163,7 +163,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                     <Text as="span" size="sm" weight="medium">{lastCheckInOut.status}</Text>
                   </HStack>
                 </HStack>
-              </div>
+              </Surface>
             )}
 
             {/* Action Buttons */}
@@ -183,7 +183,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
           </div>
         </VStack>
       </VStack>
-    </div>
+    </Surface>
   )
 }
 

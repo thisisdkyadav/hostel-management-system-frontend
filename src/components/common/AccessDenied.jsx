@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "czero/react"
-import { HStack } from "@/components/ui"
+import { HStack, Surface } from "@/components/ui"
 
 const AccessDenied = ({ title = "Access Denied", message = "You do not have permission to access this page.", icon, suggestion, buttonText = "Return to Home", to = "/" }) => {
   const navigate = useNavigate()
@@ -26,14 +26,14 @@ const AccessDenied = ({ title = "Access Denied", message = "You do not have perm
 
         {/* Render suggestion if available */}
         {suggestion && (
-          <div style={{ backgroundColor: 'var(--color-primary-bg)', border: 'var(--border-1) solid var(--color-primary-light)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', marginBottom: 'var(--spacing-6)' }}>
+          <Surface bg="brand" padding={3} radius="lg" border="var(--border-1) solid var(--color-primary-light)" style={{ marginBottom: 'var(--spacing-6)' }}>
             <p style={{ color: 'var(--color-primary-dark)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center' }}>
               <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-sm)', width: 'var(--icon-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>{suggestion}</span>
             </p>
-          </div>
+          </Surface>
         )}
 
         {!suggestion && <div style={{ marginBottom: 'var(--spacing-3)' }}></div>}

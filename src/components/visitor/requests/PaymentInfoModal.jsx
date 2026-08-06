@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Surface, Text } from "@/components/ui"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {
@@ -7,7 +7,7 @@ const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {
 
   return (
     <Modal title="Payment Screenshot" onClose={onClose} width={800}>
-      <div style={{ padding: 'var(--spacing-4)' }}>
+      <Surface padding={4}>
         {paymentScreenshot ? (
           <HStack gap="none" justify="center">
             <img src={getMediaUrl(paymentScreenshot)} alt="Payment Screenshot" style={{ maxWidth: '100%', maxHeight: '24rem', objectFit: 'contain', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-lg)' }} />
@@ -22,7 +22,7 @@ const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {
             <Text color="muted" size="base">No payment screenshot available</Text>
           </div>
         )}
-      </div>
+      </Surface>
     </Modal>
   )
 }

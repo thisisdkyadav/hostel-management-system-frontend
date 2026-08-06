@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { HStack, Select, Text } from "@/components/ui"
+import { HStack, Select, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -193,7 +193,7 @@ const HealthTab = ({ userId }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+    <Surface bg="primary">
       <div style={{ marginBottom: 'var(--spacing-6)' }}>
         <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
@@ -270,7 +270,7 @@ const HealthTab = ({ userId }) => {
             </HStack>
           </form>
         ) : (
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-lg)' }}>
+          <Surface bg="tertiary" padding={5} radius="lg">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 'var(--spacing-4)' }}>
               <div>
                 <Text size="sm" color="muted">Blood Group</Text>
@@ -304,7 +304,7 @@ const HealthTab = ({ userId }) => {
                 </>
               )}
             </div>
-          </div>
+          </Surface>
         )}
       </div>
 
@@ -363,7 +363,7 @@ const HealthTab = ({ userId }) => {
       </div>
 
       {showClaimModal && <InsuranceClaimModal claim={selectedClaim} onClose={() => setShowClaimModal(false)} onSave={handleSaveClaim} onDelete={handleDeleteClaim} insuranceProviders={insuranceProviders} isNew={isNewClaim} />}
-    </div>
+    </Surface>
   )
 }
 

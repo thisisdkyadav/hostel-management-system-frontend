@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -708,18 +708,18 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
-          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+          <Surface bg="primary" padding={3} radius="md">
             <Text as="div" size="xs" color="muted">Total</Text>
             <Text as="div" size="lg" weight="semibold" color="primary">{importSummary.total}</Text>
-          </div>
-          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+          </Surface>
+          <Surface bg="primary" padding={3} radius="md">
             <Text as="div" size="xs" color="muted">Successfully Done</Text>
             <Text as="div" size="lg" weight="semibold" color="success">{importSummary.successCount}</Text>
-          </div>
-          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+          </Surface>
+          <Surface bg="primary" padding={3} radius="md">
             <Text as="div" size="xs" color="muted">Not Done (Errors)</Text>
             <Text as="div" size="lg" weight="semibold" color="danger">{importSummary.errorCount}</Text>
-          </div>
+          </Surface>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
@@ -911,7 +911,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 Import Progress
               </h3>
 
-              <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)" }}>
+              <Surface bg="tertiary" padding={3} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
                   <span>{importProgress.message || "Importing students..."}</span>
                   <span>{progressPercent}%</span>
@@ -926,29 +926,29 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     }}
                   />
                 </div>
-              </div>
+              </Surface>
 
               <Grid min={160} gap={3}>
-                <div style={{ backgroundColor: "var(--color-info-bg)", border: "var(--border-1) solid var(--color-info-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                <Surface bg="info" padding={3} radius="md" border="var(--border-1) solid var(--color-info-light)">
                   <Text as="div" size="xs" color="info-text">Imported</Text>
                   <Text as="div" size="lg" weight="semibold" color="info-text">
                     {importProgress.processed}/{importProgress.total || parsedData.length}
                   </Text>
-                </div>
-                <div style={{ backgroundColor: "var(--color-success-bg)", border: "var(--border-1) solid var(--color-success-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                </Surface>
+                <Surface bg="success" padding={3} radius="md" border="var(--border-1) solid var(--color-success-light)">
                   <Text as="div" size="xs" color="success-text">Successful</Text>
                   <Text as="div" size="lg" weight="semibold" color="success-text">{csvSuccessCount}</Text>
-                </div>
-                <div style={{ backgroundColor: "var(--color-danger-bg)", border: "var(--border-1) solid var(--color-danger-border)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                </Surface>
+                <Surface bg="danger" padding={3} radius="md" border="var(--border-1) solid var(--color-danger-border)">
                   <Text as="div" size="xs" color="danger-text">Failed</Text>
                   <Text as="div" size="lg" weight="semibold" color="danger-text">{csvFailedCount}</Text>
-                </div>
-                <div style={{ backgroundColor: "var(--color-warning-bg)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                </Surface>
+                <Surface bg="warning" padding={3} radius="md" border="var(--border-1) solid var(--color-warning-light)">
                   <Text as="div" size="xs" color="warning-text">Shown In Sheet</Text>
                   <Text as="div" size="lg" weight="semibold" color="warning-text">
                     {csvDisplayedSheetRows.length}/{csvResultSheetRows.length}
                   </Text>
-                </div>
+                </Surface>
               </Grid>
 
               <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)" }}>

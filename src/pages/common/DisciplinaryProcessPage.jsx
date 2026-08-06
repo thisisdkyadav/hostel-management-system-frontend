@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import {
   Eye,
   Plus,
@@ -1855,20 +1855,17 @@ const DisciplinaryProcessPage = () => {
 
                 {/* Attachments */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)" }}>
-                  <div style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
+                  <Surface bg="secondary" padding={2} radius="md">
                     <Checkbox
                       checked={includeInitialComplaint}
                       onChange={(e) => setIncludeInitialComplaint(e.target.checked)}
                       label="Include Complaint PDF"
                       size="small"
                     />
-                  </div>
+                  </Surface>
 
                   {(selectedAdminCase.statements || []).map((statement) => (
-                    <div
-                      key={statement.id}
-                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
-                    >
+                    <Surface bg="secondary" padding={2} radius="md" key={statement.id}>
                       <Checkbox
                         checked={Boolean(selectedStatementAttachmentIds[statement.id])}
                         onChange={(e) =>
@@ -1880,14 +1877,11 @@ const DisciplinaryProcessPage = () => {
                         label={`${statement.student?.name || "Student"} (${getStatementRoleLabel(statement.studentRole)})`}
                         size="small"
                       />
-                    </div>
+                    </Surface>
                   ))}
 
                   {(selectedAdminCase.evidenceDocuments || []).map((doc) => (
-                    <div
-                      key={doc.id}
-                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
-                    >
+                    <Surface bg="secondary" padding={2} radius="md" key={doc.id}>
                       <Checkbox
                         checked={Boolean(selectedEvidenceAttachmentIds[doc.id])}
                         onChange={(e) =>
@@ -1899,14 +1893,11 @@ const DisciplinaryProcessPage = () => {
                         label={doc.pdfName || "Evidence"}
                         size="small"
                       />
-                    </div>
+                    </Surface>
                   ))}
 
                   {(selectedAdminCase.extraDocuments || []).map((doc) => (
-                    <div
-                      key={doc.id}
-                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
-                    >
+                    <Surface bg="secondary" padding={2} radius="md" key={doc.id}>
                       <Checkbox
                         checked={Boolean(selectedExtraDocumentAttachmentIds[doc.id])}
                         onChange={(e) =>
@@ -1918,7 +1909,7 @@ const DisciplinaryProcessPage = () => {
                         label={doc.pdfName || "Extra Document"}
                         size="small"
                       />
-                    </div>
+                    </Surface>
                   ))}
                 </div>
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import {
   Download,
   FileText,
@@ -1690,18 +1690,12 @@ const ScoreBreakdownCard = ({ breakdown }) => {
 
   return (
     <div style={{ ...surfaceStyle, overflow: "hidden" }}>
-      <div
-        style={{
-          padding: "var(--spacing-3) var(--spacing-4)",
-          borderBottom: "1px solid var(--color-border-primary)",
-          backgroundColor: "var(--color-bg-secondary)",
-        }}
-      >
+      <Surface bg="secondary" padding="var(--spacing-3) var(--spacing-4)" style={{ borderBottom: "1px solid var(--color-border-primary)" }}>
         <Text as="div" size="lg" weight="semibold" color="primary">
           Score Breakdown
         </Text>
-      </div>
-      <div style={{ padding: "var(--spacing-3) var(--spacing-4)" }}>
+      </Surface>
+      <Surface padding="var(--spacing-3) var(--spacing-4)">
         {rows.map(([label, value, max]) => {
           const pct = Math.min(100, Math.max(0, (value / max) * 100))
           return (
@@ -1730,7 +1724,7 @@ const ScoreBreakdownCard = ({ breakdown }) => {
             {breakdown?.total || 0}
           </Text>
         </HStack>
-      </div>
+      </Surface>
     </div>
   )
 }
@@ -3157,7 +3151,7 @@ const ReviewModal = ({
                   Disclosures & Declarations
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
-                  <div className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                  <Surface padding="10px 12px" className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Passing Out Student</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.isPassingOutStudent ? (
@@ -3166,8 +3160,8 @@ const ReviewModal = ({
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> No</>
                       )}
                     </div>
-                  </div>
-                  <div className={application.personalAcademic?.hasNoDisciplinaryAction ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                  </Surface>
+                  <Surface padding="10px 12px" className={application.personalAcademic?.hasNoDisciplinaryAction ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">No Disciplinary Action</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoDisciplinaryAction ? (
@@ -3176,8 +3170,8 @@ const ReviewModal = ({
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Action Disclosed</>
                       )}
                     </div>
-                  </div>
-                  <div className={application.personalAcademic?.hasNoFrGrade ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                  </Surface>
+                  <Surface padding="10px 12px" className={application.personalAcademic?.hasNoFrGrade ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">No FR Grade</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoFrGrade ? (
@@ -3186,8 +3180,8 @@ const ReviewModal = ({
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Has FR Grade</>
                       )}
                     </div>
-                  </div>
-                  <div className={application.personalAcademic?.declarationAccepted ? "por-detail-success-card" : "por-detail-alert-card"} style={{ padding: "10px 12px" }}>
+                  </Surface>
+                  <Surface padding="10px 12px" className={application.personalAcademic?.declarationAccepted ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Undertaking Accepted</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
                       {application.personalAcademic?.declarationAccepted ? (
@@ -3196,7 +3190,7 @@ const ReviewModal = ({
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Pending</>
                       )}
                     </div>
-                  </div>
+                  </Surface>
                 </div>
               </div>
             </PorDetailCard>
@@ -4281,7 +4275,7 @@ const OverallBestPerformerPage = () => {
     return (
       <VStack gap={4}>
         <PageHeader title="Overall Best Performer" subtitle="Student portal" showDate={false} />
-        <div style={{ padding: "var(--spacing-6)" }}>
+        <Surface padding={6}>
           <EmptyState
             title={
               portalState?.data?.studentStatusAllowed === false
@@ -4302,7 +4296,7 @@ const OverallBestPerformerPage = () => {
                     : "There is no active Overall Best Performer occurrence for you right now."
             }
           />
-        </div>
+        </Surface>
       </VStack>
     )
   }
@@ -4434,11 +4428,11 @@ const OverallBestPerformerPage = () => {
             ) : null}
 
             {!isReviewerView && currentOccurrence.description ? (
-              <div style={{ ...panelStyle, backgroundColor: "var(--color-primary-bg)" }}>
+              <Surface bg="brand">
                 <div style={{ ...panelBodyStyle, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
                   {currentOccurrence.description}
                 </div>
-              </div>
+              </Surface>
             ) : null}
           </>
         ) : null}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes } from "react-icons/fa"
-import { VStack, HStack, Label, Spinner, Pagination, EmptyState, Badge } from "@/components/ui"
+import { Badge, EmptyState, HStack, Label, Pagination, Spinner, Surface, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -72,7 +72,7 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
     <Modal isOpen={true} title={`${staff.name} - Attendance History`} onClose={onClose} width={900}>
       <VStack gap="large">
         {/* Filters */}
-        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+        <Surface bg="tertiary" padding={4} radius="lg">
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
             <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
           </h3>
@@ -97,10 +97,10 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
               </Button>
             </div>
           </HStack>
-        </div>
+        </Surface>
 
         {/* Content */}
-        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+        <Surface bg="primary" radius="lg" border="var(--border-1) solid var(--color-border-primary)">
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
               <Spinner size="large" />
@@ -136,7 +136,7 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
               description="No attendance records found for the selected filters."
             />
           )}
-        </div>
+        </Surface>
 
         {/* Pagination */}
         {attendanceRecords.length > 0 && (

@@ -13,7 +13,7 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { HStack, Modal, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
@@ -37,23 +37,23 @@ const normalizeDashboardData = (payload) => {
 }
 
 // Enhanced shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)] ${className}`} style={{ height, width, borderRadius: 'var(--radius-md)' }}></div>
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <Surface radius="md" className={`animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)] ${className}`}></Surface>
 
 // Shimmer with blurred preview for cards
 const CardShimmer = ({ height, className = "" }) => (
-  <div className={`relative overflow-hidden ${className}`} style={{ height, borderRadius: 'var(--radius-lg)' }}>
-    <div className="absolute inset-0 backdrop-blur-sm" style={{ backgroundColor: 'var(--color-bg-muted)' }}></div>
+  <Surface radius="lg" className={`relative overflow-hidden ${className}`}>
+    <Surface bg="muted" className="absolute inset-0 backdrop-blur-sm"></Surface>
     <div className="absolute inset-0 flex items-center justify-center">
       <ShimmerLoader height="70%" width="90%" />
     </div>
     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent" style={{ height: 'var(--spacing-8)', backgroundColor: 'var(--skeleton-base)' }}></div>
     <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)]" style={{ opacity: 'var(--opacity-20)' }}></div>
-  </div>
+  </Surface>
 )
 
 // Shimmer for profile card
 const ProfileShimmer = () => (
-  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+  <Surface bg="primary" padding={4} radius="xl" shadow="sm" style={{ marginBottom: 'var(--spacing-6)' }}>
     <div className="flex flex-col md:flex-row" style={{ gap: 'var(--gap-md)' }}>
       <ShimmerLoader height="120px" width="120px" className="rounded-full" />
       <VStack gap="var(--gap-md)" className="flex-1">
@@ -66,17 +66,17 @@ const ProfileShimmer = () => (
         </div>
       </VStack>
     </div>
-  </div>
+  </Surface>
 )
 
 // Shimmer for stats cards
 const StatsShimmer = () => (
   <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 'var(--gap-md)', marginBottom: 'var(--spacing-6)' }}>
     {[...Array(4)].map((_, i) => (
-      <div key={i} style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)' }}>
+      <Surface bg="primary" padding={4} radius="xl" shadow="sm" key={i}>
         <ShimmerLoader height="1rem" width="60%" className="mb-2" />
         <ShimmerLoader height="2rem" width="40%" />
-      </div>
+      </Surface>
     ))}
   </div>
 )
@@ -630,23 +630,23 @@ const DashboardPage = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full" style={{ padding: 'var(--spacing-6)' }}>
-        <div className="max-w-md w-full text-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)' }}>
+      <Surface padding={6} className="flex flex-col items-center justify-center h-full">
+        <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>
-        </div>
-      </div>
+        </Surface>
+      </Surface>
     )
   }
 
   if (!dashboardData?.profile) {
     return (
-      <div className="flex flex-col items-center justify-center h-full" style={{ padding: 'var(--spacing-6)' }}>
-        <div className="max-w-md w-full text-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)' }}>
+      <Surface padding={6} className="flex flex-col items-center justify-center h-full">
+        <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Dashboard Data Error</h2>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>
@@ -655,8 +655,8 @@ const DashboardPage = () => {
           <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>
-        </div>
-      </div>
+        </Surface>
+      </Surface>
     )
   }
 

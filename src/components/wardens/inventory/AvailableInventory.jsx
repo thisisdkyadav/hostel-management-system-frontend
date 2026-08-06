@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { Pagination, Spinner, Text } from "@/components/ui"
+import { Pagination, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const AvailableInventory = () => {
@@ -77,7 +77,7 @@ const AvailableInventory = () => {
       </div>
 
       {/* Filters */}
-      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
         <h3 className="flex items-center" style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Inventory
         </h3>
@@ -94,12 +94,12 @@ const AvailableInventory = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Surface>
 
       {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Inventory List */}
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <Surface bg="primary" radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
         {loading && !hostelInventory.length ? (
           <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
             <Spinner size={40} thickness="thick" />
@@ -142,7 +142,7 @@ const AvailableInventory = () => {
             </Table>
           </div>
         )}
-      </div>
+      </Surface>
 
       {/* Pagination */}
       {!loading && hostelInventory.length > 0 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}

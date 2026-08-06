@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../service"
-import { Select, Label, VStack, HStack } from "@/components/ui"
+import { HStack, Label, Select, Surface, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const AddHostelModal = ({ show, onClose, onAdd }) => {
@@ -47,9 +47,9 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
       <form onSubmit={handleSubmit}>
         <VStack gap="large">
           <VStack gap="medium">
-            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-3) var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-2)' }}>
+            <Surface bg="brand" padding="var(--spacing-3) var(--spacing-4)" radius="lg" style={{ marginBottom: 'var(--spacing-2)' }}>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>Basic Information</h4>
-            </div>
+            </Surface>
 
             <div>
               <Label htmlFor="name" required>Hostel Name</Label>
@@ -70,11 +70,11 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
           </VStack>
 
           <div style={{ paddingTop: 'var(--spacing-2)' }}>
-            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-3) var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+            <Surface bg="brand" padding="var(--spacing-3) var(--spacing-4)" radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>Room Configuration</h4>
-            </div>
+            </Surface>
 
-            <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) solid var(--color-border-light)' }}>{formData.type === "unit-based" ? <UnitBasedForm formData={formData} setFormData={setFormData} /> : <RoomOnlyForm formData={formData} setFormData={setFormData} />}</div>
+            <Surface bg="var(--color-bg-hover)" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">{formData.type === "unit-based" ? <UnitBasedForm formData={formData} setFormData={setFormData} /> : <RoomOnlyForm formData={formData} setFormData={setFormData} />}</Surface>
           </div>
 
           <HStack justify="end" gap="small" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

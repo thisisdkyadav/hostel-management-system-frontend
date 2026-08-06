@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
 import { Button } from "czero/react"
+import { Surface } from "@/components/ui"
 
 const QRCodeGenerator = () => {
   const { user } = useAuth()
@@ -91,10 +92,10 @@ const QRCodeGenerator = () => {
         <h2 className="text-xl font-bold text-gray-800">Campus Access QR Code</h2>
       </div>
 
-      <div className="p-4 rounded-lg mb-5 flex items-start" style={{ backgroundColor: 'var(--color-primary-bg-light)' }}>
+      <Surface bg="var(--color-primary-bg-light)" className="p-4 rounded-lg mb-5 flex items-start">
         <FaInfoCircle className="mt-0.5 mr-2 flex-shrink-0" style={{ color: 'var(--color-primary)' }} />
         <p className="text-sm text-gray-700">This QR code acts as your digital ID. Security personnel will scan this code to verify your identity. For security reasons, each code expires after 5 minutes.</p>
-      </div>
+      </Surface>
 
       {!showQR ? (
         <Button onClick={generateQR} loading={loading} variant="primary" fullWidth>

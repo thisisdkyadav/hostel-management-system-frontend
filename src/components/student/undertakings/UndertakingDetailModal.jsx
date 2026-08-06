@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
-import { Checkbox, HStack, Text, VStack } from "@/components/ui"
+import { Checkbox, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
@@ -51,9 +51,9 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
         {/* Undertaking metadata */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)" }}>
           <HStack gap="none" align="center">
-            <div style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-info-bg)" }}>
+            <Surface bg="info" padding={2} radius="full">
               <FaFileSignature style={{ color: "var(--color-info)" }} />
-            </div>
+            </Surface>
             <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>{undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}</span>
           </HStack>
           <HStack gap="none" align="center">

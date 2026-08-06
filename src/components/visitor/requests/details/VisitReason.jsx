@@ -1,9 +1,9 @@
 import React from "react"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const VisitReason = ({ reason, approvalInformation, isApproved }) => {
   return (
-    <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+    <Surface bg="tertiary" padding={4} radius="lg" className="p-4 rounded-lg">
       <h3 className="font-medium mb-3" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>Reason for Visit</h3>
       <Text size="sm" color="muted">{reason}</Text>
 
@@ -13,7 +13,7 @@ const VisitReason = ({ reason, approvalInformation, isApproved }) => {
           <p className="whitespace-pre-line" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{approvalInformation}</p>
         </div>
       )}
-    </div>
+    </Surface>
   )
 }
 

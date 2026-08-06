@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Grid, Modal, Page, Text } from "@/components/ui"
+import { Grid, Modal, Page, Surface, Text } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -272,7 +272,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
   const hasBreakdown = Array.isArray(billingPeriod.perPeriod) && billingPeriod.perPeriod.length > 0
 
   return (
-    <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-4)" }}>
+    <Surface bg="secondary" padding={4} radius="lg" border="1px solid var(--color-border-primary)">
       <HStack gap={2} align="start" justify="between">
         <div style={{ minWidth: 0 }}>
           <Text as="div" size="md" weight="bold" color="heading">
@@ -321,7 +321,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
           )}
         </>
       )}
-    </div>
+    </Surface>
   )
 }
 

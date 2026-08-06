@@ -1,11 +1,11 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Grid, Select } from "@/components/ui"
+import { Grid, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (
-    <div style={{ marginTop: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
+    <Surface bg="primary" padding={5} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" style={{ marginTop: 'var(--spacing-4)' }}>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-md)', flexWrap: 'wrap' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', marginBottom: 0 }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
@@ -46,7 +46,7 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
           ]} />
         </div>
       </Grid>
-    </div>
+    </Surface>
   )
 }
 

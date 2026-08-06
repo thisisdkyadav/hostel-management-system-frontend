@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, HStack, Spinner, Text } from "@/components/ui"
+import { Alert, Card, HStack, Spinner, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -215,12 +215,7 @@ const ComplaintFeedbackPage = () => {
 
                 <Card>
                     {/* Complaint Details */}
-                    <div style={{
-                        backgroundColor: 'var(--color-bg-tertiary)',
-                        padding: 'var(--spacing-4)',
-                        borderRadius: 'var(--radius-lg)',
-                        marginBottom: 'var(--spacing-5)'
-                    }}>
+                    <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-5)' }}>
                         <HStack gap="none" align="start" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
                             <div style={{ flex: 1 }}>
                                 <h4 style={{
@@ -294,7 +289,7 @@ const ComplaintFeedbackPage = () => {
                                 </Text>
                             </div>
                         )}
-                    </div>
+                    </Surface>
 
                     {submitError && (
                         <Alert type="error" style={{ marginBottom: 'var(--spacing-4)' }}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
-import { Pagination, Select } from "@/components/ui"
+import { Pagination, Select, Surface } from "@/components/ui"
 import { Button, Input, Table, Tabs } from "czero/react"
 import NoResults from "./common/NoResults"
 import { securityApi } from "../service"
@@ -233,9 +233,9 @@ const AccessHistory = ({ cachedData }) => {
                       <Table.Row className="hover:bg-[var(--color-bg-tertiary)]" key={entry._id}>
                         <Table.Cell className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)' }}>
+                            <Surface bg={entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)'} className="p-1.5 rounded-md mr-2">
                               {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
-                            </div>
+                            </Surface>
                             <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                           </div>
                         </Table.Cell>
@@ -264,9 +264,9 @@ const AccessHistory = ({ cachedData }) => {
                 <div key={entry._id} className="bg-[var(--color-bg-tertiary)] rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)' }}>
+                      <Surface bg={entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)'} className="p-1.5 rounded-md mr-2">
                         {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
-                      </div>
+                      </Surface>
                       <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                     </div>
                   </div>

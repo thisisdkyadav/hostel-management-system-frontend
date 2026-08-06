@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import { SearchInput, Select, Spinner, useConfirm } from "@/components/ui"
+import { SearchInput, Select, Spinner, Surface, useConfirm } from "@/components/ui"
 import { Button, DataTable, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
@@ -137,14 +137,14 @@ const AdminManagementPage = () => {
       key: "name",
       render: (admin) => (
         <div className="flex items-center">
-          <div className="h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--button-primary-bg)' }}>
+          <Surface bg="var(--button-primary-bg)" className="h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center">
             <span className="text-white font-medium text-sm">
               {admin.name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </span>
-          </div>
+          </Surface>
           <div className="ml-4">
             <div className="text-sm font-medium text-gray-900">{admin.name}</div>
           </div>

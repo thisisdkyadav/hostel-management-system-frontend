@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Modal, Surface } from "@/components/ui"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -93,13 +93,13 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
           )}
 
           {/* Description */}
-          <div style={{ backgroundColor: 'var(--table-header-bg)', padding: 'var(--spacing-6)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--spacing-6)' }}>
+          <Surface bg="var(--table-header-bg)" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
               <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
             </div>
             <p style={{ color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-relaxed)' }}>{selectedItem.description}</p>
-          </div>
+          </Surface>
         </div>
       </Modal>
 

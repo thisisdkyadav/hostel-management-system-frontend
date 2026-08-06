@@ -1,12 +1,12 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationCircle, FaCheckCircle, FaRegCalendarAlt, FaSearch } from "react-icons/fa"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const StatCard = ({ icon, title, value, linkTo, color }) => {
   return (
     <Link to={linkTo} className="flex items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', transition: 'var(--transition-shadow)', transitionDuration: 'var(--duration-slow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
-      <div className={color} style={{ padding: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', marginRight: 'var(--spacing-3)' }}>{icon}</div>
+      <Surface padding={3} radius="xl" style={{ marginRight: 'var(--spacing-3)' }} className={color}>{icon}</Surface>
       <div>
         <span className="block" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>{title}</span>
         <Text as="span" size="2xl" weight="bold">{value}</Text>

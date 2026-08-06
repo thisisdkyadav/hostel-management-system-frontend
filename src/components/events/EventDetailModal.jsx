@@ -1,7 +1,7 @@
 import React from "react"
 import { FaCalendarAlt, FaInfoCircle, FaBuilding, FaUserFriends, FaMapMarkerAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Surface, Text } from "@/components/ui"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 
 const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
@@ -51,23 +51,23 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
         </div>
 
         {/* Description */}
-        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-6)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--spacing-6)' }}>
+        <Surface bg="tertiary" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
             <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
             <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
           </div>
           <p style={{ color: 'var(--color-text-body)', lineHeight: 'var(--line-height-relaxed)' }}>{selectedEvent.description}</p>
-        </div>
+        </Surface>
 
         {/* Organizer */}
         {selectedEvent.organizer && (
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-6)', borderRadius: 'var(--radius-xl)' }}>
+          <Surface bg="tertiary" padding={6} radius="xl">
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
               <FaUserFriends style={{ marginRight: 'var(--spacing-2)' }} />
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Organizer</h3>
             </div>
             <Text color="body">{selectedEvent.organizer}</Text>
-          </div>
+          </Surface>
         )}
       </div>
     </Modal>

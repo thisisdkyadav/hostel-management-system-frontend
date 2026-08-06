@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
-import { FormField } from "@/components/ui"
+import { FormField, Surface } from "@/components/ui"
 import ImageUploadModal from "../../../ImageUploadModal"
 import { getMediaUrl } from "../../../../../utils/mediaUtils"
 const PersonalInfoSection = ({ data, onChange }) => {
@@ -32,9 +32,9 @@ const PersonalInfoSection = ({ data, onChange }) => {
               <FaUserGraduate className="h-12 w-12" style={{ color: 'var(--color-primary)' }} />
             </div>
           )}
-          <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 text-white p-1.5 rounded-full cursor-pointer transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
+          <Surface bg="var(--button-primary-bg)" onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 text-white p-1.5 rounded-full cursor-pointer transition-colors" onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
             <HiCamera className="w-4 h-4" />
-          </div>
+          </Surface>
         </div>
         <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
       </div>

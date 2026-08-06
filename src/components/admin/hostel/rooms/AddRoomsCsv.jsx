@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
-import { Alert, HStack, Text, VStack } from "@/components/ui"
+import { Alert, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -103,10 +103,10 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
       {parsedCsvData.length > 0 && (
         <VStack gap="medium">
-          <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-3) var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+          <Surface bg="brand" padding="var(--spacing-3) var(--spacing-3)" radius="lg">
             <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Review the rooms that will be added to {hostel.name}</p>
-          </div>
+          </Surface>
 
           <RoomStatsSummary data={parsedCsvData} isUnitBased={isUnitBased} />
 

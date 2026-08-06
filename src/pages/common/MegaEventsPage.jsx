@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
@@ -1567,14 +1567,7 @@ const MegaEventsPage = () => {
                     />
                   </div>
 
-                  <div
-                    style={{
-                      padding: "var(--spacing-4)",
-                      borderRadius: "var(--radius-card-sm)",
-                      border: "var(--border-1) solid var(--color-border-primary)",
-                      backgroundColor: "var(--color-bg-primary)",
-                    }}
-                  >
+                  <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
                     <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
                     {selectedOccurrence.description ? (
                       <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>{selectedOccurrence.description}</p>
@@ -1606,7 +1599,7 @@ const MegaEventsPage = () => {
                         You have read-only access for this occurrence.
                       </p>
                     )}
-                  </div>
+                  </Surface>
                 </>
               )}
             </section>
@@ -1880,7 +1873,7 @@ const MegaEventsPage = () => {
       >
         <VStack gap={4}>
           {/* Programme Title - Full Width Header */}
-          <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-1) solid var(--color-primary)", }}>
+          <Surface bg="brand" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-primary)">
             <FormField label="Programme Title" htmlFor="mega-proposal-programme-title" required>
               <Input
                 id="mega-proposal-programme-title"
@@ -1890,7 +1883,7 @@ const MegaEventsPage = () => {
                 disabled={!canCreateOrEditProposal}
               />
             </FormField>
-          </div>
+          </Surface>
 
           {/* Two Column Layout */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>

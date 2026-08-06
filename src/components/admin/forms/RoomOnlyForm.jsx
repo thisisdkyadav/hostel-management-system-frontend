@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { HStack, Label, Text, VStack } from "@/components/ui"
+import { HStack, Label, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 
@@ -156,10 +156,10 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           </VStack>
 
           <div style={{ marginTop: "var(--spacing-4)" }}>
-            <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-2)" }}>
+            <Surface bg="brand" padding={3} radius="lg" style={{ marginBottom: "var(--spacing-2)" }}>
               <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Floor Room Exceptions</h5>
               <Text size="xs" color="muted">Override default rooms per floor for a specific floor</Text>
-            </div>
+            </Surface>
             {roomConfig.exceptions.map((ex, index) => (
               <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
                 <Input type="number" placeholder="Floor Number" value={ex.floor} onChange={(e) => handleExceptionChange(index, "floor", e.target.value)} min="1" />
@@ -185,12 +185,12 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             </Button>
           </div>
 
-          <div style={{ marginTop: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)" }}>
+          <Surface bg="brand" padding={3} radius="lg" style={{ marginTop: "var(--spacing-4)" }}>
             <Text size="sm" color="body">
               This will create {roomConfig.floors} floors with {roomConfig.defaultRoomsPerFloor} rooms per floor by default.
             </Text>
             <p style={{ fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)", color: "var(--color-text-body)" }}>Total capacity: {roomConfig.floors * roomConfig.defaultRoomsPerFloor * roomConfig.standardCapacity} students (exceptions may override room counts)</p>
-          </div>
+          </Surface>
         </>
       ) : (
         <VStack gap={6}>
@@ -198,9 +198,9 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
           {parsedCsvData.length > 0 && (
             <div style={{ marginTop: "var(--spacing-4)" }}>
-              <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-3)" }}>
+              <Surface bg="brand" padding={3} radius="lg" style={{ marginBottom: "var(--spacing-3)" }}>
                 <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Imported Room Data Summary</h5>
-              </div>
+              </Surface>
               <RoomStatsSummary data={parsedCsvData} isUnitBased={false} />
             </div>
           )}

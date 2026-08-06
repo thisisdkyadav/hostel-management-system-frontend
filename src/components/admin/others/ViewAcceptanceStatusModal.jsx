@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Alert, HStack, SearchInput, Text, VStack } from "@/components/ui"
+import { Alert, HStack, SearchInput, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -84,22 +84,22 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
 
         {/* Statistics */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-4)' }}>
-          <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          <Surface bg="brand" padding={4} radius="lg">
             <Text as="div" size="sm" color="brand" weight="medium">Total Students</Text>
             <Text as="div" size="2xl" weight="bold" color="var(--color-primary-dark)">{totalStudents}</Text>
-          </div>
-          <div style={{ backgroundColor: 'var(--color-success-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          </Surface>
+          <Surface bg="success" padding={4} radius="lg">
             <Text as="div" size="sm" color="success" weight="medium">Accepted</Text>
             <Text as="div" size="2xl" weight="bold" color="var(--color-success-dark)">{acceptedCount}</Text>
-          </div>
-          <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          </Surface>
+          <Surface bg="warning" padding={4} radius="lg">
             <Text as="div" size="sm" color="warning" weight="medium">Pending</Text>
             <Text as="div" size="2xl" weight="bold" color="var(--color-warning-dark)">{pendingCount}</Text>
-          </div>
-          <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          </Surface>
+          <Surface bg="var(--color-bg-hover)" padding={4} radius="lg">
             <Text as="div" size="sm" color="muted" weight="medium">Not Viewed</Text>
             <Text as="div" size="2xl" weight="bold" color="secondary">{notViewedCount}</Text>
-          </div>
+          </Surface>
         </div>
 
         {/* Progress bar */}

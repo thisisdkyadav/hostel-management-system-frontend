@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -546,7 +546,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       case "access":
         return (
-          <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+          <Surface bg="primary">
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Access History</h3>
             {loadingAccessRecords ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
@@ -596,11 +596,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </Table>
               </div>
             )}
-          </div>
+          </Surface>
         )
       case "visitors":
         return (
-          <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+          <Surface bg="primary">
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Visitor Requests</h3>
             {loadingVisitorRequests ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
@@ -652,11 +652,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </Table>
               </div>
             )}
-          </div>
+          </Surface>
         )
       case "feedback":
         return (
-          <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+          <Surface bg="primary">
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Feedback History</h3>
             {loadingFeedbacks ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
@@ -670,7 +670,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             ) : (
               <VStack gap={4}>
                 {feedbacks.map((feedback) => (
-                  <div key={feedback._id} style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+                  <Surface bg="tertiary" padding={4} radius="lg" key={feedback._id}>
                     <HStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                       <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{feedback.title}</h4>
                       <span
@@ -693,15 +693,15 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
                       {feedback.reply && <Text as="span" color="success">Replied: Yes</Text>}
                     </div>
-                  </div>
+                  </Surface>
                 ))}
               </VStack>
             )}
-          </div>
+          </Surface>
         )
       case "inventory":
         return (
-          <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+          <Surface bg="primary">
             <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
               {user && canAssignInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
@@ -820,11 +820,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </Table>
               </div>
             )}
-          </div>
+          </Surface>
         )
       case "idcard":
         return (
-          <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+          <Surface bg="primary">
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Student ID Card</h3>
 
             {loadingIdCard ? (
@@ -885,7 +885,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
               </div>
             )}
-          </div>
+          </Surface>
         )
       case "disco":
         return <DisCoActions userId={selectedStudent.userId} />
@@ -1117,7 +1117,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <form id="inventory-form" onSubmit={handleInventorySubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             {/* Item details for edit/return modals */}
             {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-4)" }}>
+              <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-4)" }}>
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                   <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                     <FaBoxes style={{ color: "var(--color-primary)" }} />
@@ -1131,7 +1131,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                   </div>
                 </HStack>
-              </div>
+              </Surface>
             )}
 
             {/* Item selection - only for assign */}

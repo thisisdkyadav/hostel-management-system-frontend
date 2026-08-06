@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"
 import {
@@ -562,13 +562,7 @@ export const GymkhanaSettingsModal = ({
           </Button>
         )}
       </div>
-      <div
-        style={{
-          borderRadius: "var(--radius-card-sm)",
-          padding: "var(--spacing-3)",
-          backgroundColor: "var(--color-bg-secondary)",
-        }}
-      >
+      <Surface bg="secondary" padding={3} radius="card-sm">
         <Checkbox
           checked={Boolean(settingsForm?.allowProposalBeforeApproval)}
           disabled={submitting}
@@ -576,7 +570,7 @@ export const GymkhanaSettingsModal = ({
           description="If enabled, proposals can be submitted and approved even while this calendar is still draft or pending approval."
           onChange={(event) => onSettingsChange?.("allowProposalBeforeApproval", event.target.checked)}
         />
-      </div>
+      </Surface>
       <div
         style={{
           borderRadius: "var(--radius-card-sm)",

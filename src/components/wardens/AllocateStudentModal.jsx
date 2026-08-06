@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -95,7 +95,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   return (
     <Modal title={`Allocate Student to Room ${room.roomNumber}`} onClose={onClose} width={650}>
       <VStack gap={6}>
-        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+        <Surface bg="brand" padding={5} radius="xl">
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
             <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
           </h3>
@@ -126,7 +126,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
               <Text size="sm">This room is already at full capacity.</Text>
             </div>
           )}
-        </div>
+        </Surface>
 
         <div>
           <Input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} icon={<FaSearch />} />

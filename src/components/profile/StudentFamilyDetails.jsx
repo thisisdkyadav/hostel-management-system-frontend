@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, HStack, Select, Text, Textarea, VStack } from "@/components/ui"
+import { ConfirmDialog, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -135,7 +135,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
 
     if (isEditing) {
       return (
-        <div key={member.id} style={{ backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)", boxShadow: "var(--shadow-sm)" }}>
+        <Surface bg="brand" padding={4} radius="lg" shadow="sm" style={{ marginBottom: "var(--spacing-4)" }} key={member.id}>
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -190,12 +190,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
               </Button>
             </HStack>
           </form>
-        </div>
+        </Surface>
       )
     }
 
     return (
-      <div key={member.id} style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)", border: `var(--border-1) solid var(--color-border-primary)`, boxShadow: "var(--shadow-sm)" }}>
+      <Surface bg="primary" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)" style={{ marginBottom: "var(--spacing-4)" }} key={member.id}>
         <HStack gap="none" align="start" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{member.name}</h3>
           {editable && (
@@ -231,13 +231,13 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             Address: <Text as="span" color="secondary">{member.address}</Text>
           </Text>
         )}
-      </div>
+      </Surface>
     )
   }
 
   const renderAddForm = () => {
     return (
-      <div style={{ backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)", boxShadow: "var(--shadow-sm)" }}>
+      <Surface bg="brand" padding={4} radius="lg" shadow="sm" style={{ marginBottom: "var(--spacing-4)" }}>
         <form onSubmit={handleAdd}>
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", marginBottom: "var(--spacing-3)" }}>Add New Family Member</h3>
 
@@ -297,12 +297,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             </Button>
           </HStack>
         </form>
-      </div>
+      </Surface>
     )
   }
 
   return (
-    <div style={{ padding: "var(--spacing-2) var(--spacing-1)" }}>
+    <Surface padding="var(--spacing-2) var(--spacing-1)">
       {error && (
         <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
           <p>{error}</p>
@@ -360,7 +360,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           isDestructive={true}
         />
       )}
-    </div>
+    </Surface>
   )
 }
 

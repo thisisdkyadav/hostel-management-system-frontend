@@ -8,7 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Card, HStack, Text, VStack } from "@/components/ui"
+import { Card, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
@@ -92,9 +92,9 @@ const LostAndFoundCard = ({ item, refresh }) => {
         <Card.Header style={{ marginBottom: 0 }}>
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
-              <div style={{ ...getStatusStyle(item.status), padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+              <Surface padding="var(--spacing-2-5)" radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
                 <MdInventory size={20} />
-              </div>
+              </Surface>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{item.itemName}</h3>
                 <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
@@ -123,9 +123,9 @@ const LostAndFoundCard = ({ item, refresh }) => {
               <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" size="sm" color="secondary">{formatDate(item.dateFound)}</Text>
             </HStack>
-            <div style={{ backgroundColor: 'var(--table-header-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+            <Surface bg="var(--table-header-bg)" padding={3} radius="lg">
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.description}</p>
-            </div>
+            </Surface>
           </VStack>
         </Card.Body>
 

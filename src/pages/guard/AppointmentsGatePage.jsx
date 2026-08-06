@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"
@@ -237,7 +237,7 @@ const AppointmentsGatePage = () => {
         </div>
       </PageHeader>
 
-      <div style={{ padding: "var(--spacing-4) var(--spacing-6)" }}>
+      <Surface padding="var(--spacing-4) var(--spacing-6)">
         <VStack gap={3}>
           <h3 style={sectionTitleStyle}>Approved Requests</h3>
           <DataTable
@@ -270,7 +270,7 @@ const AppointmentsGatePage = () => {
             </Button>
           </HStack>
         </VStack>
-      </div>
+      </Surface>
 
       <Modal
         title={selectedAppointment ? `Appointment — #${selectedAppointment.id?.slice(-6).toUpperCase()}` : "Appointment"}

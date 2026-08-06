@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Tabs } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
@@ -774,15 +774,7 @@ const PorCategoryFormModal = ({
                   }))
 
                 return (
-                  <div
-                    key={`por-category-step-${stepIndex}`}
-                    style={{
-                      border: "1px solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-card-sm)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      padding: "var(--spacing-4)",
-                    }}
-                  >
+                  <Surface bg="secondary" padding={4} radius="card-sm" border="1px solid var(--color-border-primary)" key={`por-category-step-${stepIndex}`}>
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
                       <div className="space-y-4">
                         <div>
@@ -876,7 +868,7 @@ const PorCategoryFormModal = ({
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </Surface>
                 )
               })}
             </div>
@@ -1542,15 +1534,7 @@ const PorRequestGroupModal = ({
             >
               <VStack gap={4}>
                 {requests.map((request, index) => (
-                  <div
-                    key={request.id}
-                    style={{
-                      border: "1px solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-card-sm)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      padding: "var(--spacing-4)",
-                    }}
-                  >
+                  <Surface bg="secondary" padding={4} radius="card-sm" border="1px solid var(--color-border-primary)" key={request.id}>
                     <HStack gap={2} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
                       <HStack gap={2} align="center" wrap>
                         <span className="por-detail-meta-chip por-detail-meta-chip-id">
@@ -1588,14 +1572,14 @@ const PorRequestGroupModal = ({
                         </div>
 
                         {request.hasDisciplinaryAction ? (
-                          <div className="por-detail-alert-card" style={{ padding: "var(--spacing-3) var(--spacing-4)" }}>
+                          <Surface padding="var(--spacing-3) var(--spacing-4)" className="por-detail-alert-card">
                             <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
                               Disciplinary Action Details
                             </div>
                             <div style={detailTextStyle}>
                               {request.disciplinaryActionDetails || "No details provided."}
                             </div>
-                          </div>
+                          </Surface>
                         ) : null}
 
                         {request.supportingDocumentUrl ? (
@@ -1627,7 +1611,7 @@ const PorRequestGroupModal = ({
                         />
                       </div>
                     ) : null}
-                  </div>
+                  </Surface>
                 ))}
               </VStack>
             </PorDetailCard>

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -142,7 +142,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
           {/* Leave Details */}
           <Grid min={250} gap={5}>
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-border-light)` }}>
+            <Surface bg="tertiary" padding={5} radius="xl" border="var(--border-1) solid var(--color-border-light)">
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
                 <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
@@ -157,9 +157,9 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   day: "numeric",
                 })}
               </Text>
-            </div>
+            </Surface>
 
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-border-light)` }}>
+            <Surface bg="tertiary" padding={5} radius="xl" border="var(--border-1) solid var(--color-border-light)">
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
                 <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-danger)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
@@ -174,18 +174,18 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   day: "numeric",
                 })}
               </Text>
-            </div>
+            </Surface>
           </Grid>
 
           {/* Duration */}
-          <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)` }}>
+          <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
             <HStack gap="none" align="center">
               <svg style={{ ...iconSizeLg, color: 'var(--color-info)', marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
               <Text as="span" size="sm" weight="medium" color="info-text">Duration: {Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
             </HStack>
-          </div>
+          </Surface>
 
           {/* Reason */}
           <div>
@@ -207,7 +207,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 </svg>
                 Join Information
               </h4>
-              <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)` }}>
+              <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
                 <HStack gap="none" align="start">
                   <div style={{ flexShrink: 0 }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', border: `var(--border-1) solid var(--color-info-bg)` }}>Joined</span>
@@ -216,7 +216,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                     <p style={{ color: 'var(--color-info-text)', lineHeight: 'var(--line-height-relaxed)', margin: 0 }}>{leave.joinInfo}</p>
                   </div>
                 </HStack>
-              </div>
+              </Surface>
             </div>
           )}
 
@@ -358,7 +358,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             )}
 
             {/* Leave Summary */}
-            <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)`, backgroundColor: 'var(--color-info-bg-light)' }}>
+            <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
               <HStack gap="none" align="center" justify="between">
                 <div>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>Join Your Leave</h4>
@@ -370,7 +370,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', border: `var(--border-1) solid var(--color-success-bg)` }}>Approved</span>
                 </Text>
               </HStack>
-            </div>
+            </Surface>
 
             <div>
               <label style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--spacing-3)' }}>

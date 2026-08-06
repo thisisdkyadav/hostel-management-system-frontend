@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Checkbox, HStack, Text, VStack } from "@/components/ui"
+import { Alert, Checkbox, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import CsvUploader from "../../../common/CsvUploader"
@@ -124,12 +124,12 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
 
         {parsedCsvData.length > 0 && (
           <VStack gap="medium">
-            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4) var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <Surface bg="brand" padding="var(--spacing-4) var(--spacing-4)" radius="lg">
               <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>
                 Ready to update {parsedCsvData.length} room(s) in {hostel.name}
               </p>
-            </div>
+            </Surface>
 
             <Table>
               <Table.Header>

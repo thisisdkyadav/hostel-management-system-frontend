@@ -2,11 +2,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FiSearch } from "react-icons/fi"
 import { CgSearchFound } from "react-icons/cg"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const LostFoundSummary = ({ lostAndFoundStats }) => {
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-light)` }}>
+    <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center' }}>
           <FiSearch style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', fontSize: 'var(--icon-sm)' }} /> Lost & Found
@@ -18,17 +18,17 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--gap-sm)' }}>
         <div style={{ backgroundColor: 'var(--color-orange-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-          <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
+          <Surface bg="warning" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
             <CgSearchFound style={{ color: 'var(--color-orange-text)', fontSize: 'var(--icon-lg)' }} />
-          </div>
+          </Surface>
           <Text as="span" size="2xl" weight="bold" color="var(--color-orange-text)">{lostAndFoundStats?.active || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Active Items</Text>
         </div>
 
         <div style={{ backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-          <div style={{ backgroundColor: 'var(--color-success-light)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
+          <Surface bg="var(--color-success-light)" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
             <FiSearch style={{ color: 'var(--color-success)', fontSize: 'var(--icon-lg)' }} />
-          </div>
+          </Surface>
           <Text as="span" size="2xl" weight="bold" color="success">{lostAndFoundStats?.claimed || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Claimed Items</Text>
         </div>
@@ -45,7 +45,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
           Browse Active Items
         </Link>
       </div>
-    </div>
+    </Surface>
   )
 }
 

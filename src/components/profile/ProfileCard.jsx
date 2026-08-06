@@ -1,4 +1,5 @@
 import React from "react"
+import { Surface } from "@/components/ui"
 
 const ProfileCard = ({ title, children, actionButton }) => {
   return (
@@ -9,7 +10,7 @@ const ProfileCard = ({ title, children, actionButton }) => {
         </h3>
         {actionButton && actionButton}
       </div>
-      <div style={{ padding: "var(--spacing-5)" }}>{children}</div>
+      <Surface padding={5}>{children}</Surface>
     </div>
   )
 }

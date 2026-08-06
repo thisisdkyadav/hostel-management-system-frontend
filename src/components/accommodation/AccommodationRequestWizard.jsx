@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
@@ -306,9 +306,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             {loadingQuote ? (
               <Text color="muted" size="sm">Calculating estimate…</Text>
             ) : quote ? (
-              <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", padding: "var(--spacing-3)" }}>
+              <Surface padding={3} radius="card-sm" border="1px solid var(--color-border-primary)">
                 <ChargesRows quote={quote} />
-              </div>
+              </Surface>
             ) : (
               <Text color="muted" size="sm">Estimate unavailable.</Text>
             )}

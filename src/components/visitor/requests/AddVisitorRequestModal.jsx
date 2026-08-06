@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
@@ -263,7 +263,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           </HStack>
 
           {!h2FormUploaded ? (
-            <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
+            <Surface padding={6} radius="lg" border="var(--border-2) dashed var(--color-border-input)">
               <Text as="div" align="center">
                 <div style={{ margin: '0 auto var(--spacing-3)', width: '48px', height: '48px', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
@@ -275,12 +275,12 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
                 {h2FormFile ? (
                   <VStack gap={3} style={{ marginTop: 'var(--spacing-4)' }}>
-                    <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+                    <Surface bg="tertiary" padding={3} radius="lg">
                       <HStack gap={2} align="center" justify="center">
                         <FaFileAlt style={{ color: 'var(--color-text-tertiary)' }} />
                         <Text as="span" size="sm" color="secondary">{h2FormFile.name}</Text>
                       </HStack>
-                    </div>
+                    </Surface>
                     <HStack gap={3} justify="center">
                       <Button type="button" onClick={removeH2Form} variant="secondary" size="sm">
                         Remove
@@ -304,9 +304,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   </div>
                 )}
               </Text>
-            </div>
+            </Surface>
           ) : (
-            <div style={{ backgroundColor: 'var(--color-success-bg-light)', border: 'var(--border-1) solid var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
+            <Surface bg="var(--color-success-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-success-bg)">
               <HStack gap="none" align="center">
                 <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                   <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
@@ -319,7 +319,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   Change
                 </Button>
               </HStack>
-            </div>
+            </Surface>
           )}
         </div>
 

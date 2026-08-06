@@ -4,7 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { FileInput, HStack, Select, Text, Textarea, useConfirm, VStack } from "@/components/ui"
+import { FileInput, HStack, Select, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
@@ -102,9 +102,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
     >
       <form onSubmit={handleSubmit}>
         <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
-          <div style={{ ...getStatusStyle(formData.status), padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-lg)" }}>
+          <Surface padding="var(--spacing-2-5)" radius="lg" style={{ marginRight: "var(--spacing-3)" }}>
             <MdInventory size={20} />
-          </div>
+          </Surface>
           <div style={{ width: "100%" }}>
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} required style={{ fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xl)" }} />
             <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -69,7 +69,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
       <Modal title={`Room ${room.roomNumber} Details`} onClose={onClose} width={800}>
         <VStack gap={6}>
           <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--spacing-6)' }}>
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+            <Surface bg="tertiary" padding={5} radius="xl">
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
                 <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Room Information
               </h3>
@@ -95,9 +95,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                   <Text as="span" weight="medium" size="base">{room.floor || "Ground"}</Text>
                 </li>
               </ul>
-            </div>
+            </Surface>
 
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+            <Surface bg="tertiary" padding={5} radius="xl">
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
                 <FaBuilding style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Additional Details
               </h3>
@@ -121,7 +121,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                   </span>
                 </li>
               </ul>
-            </div>
+            </Surface>
           </div>
 
           {["Admin"].includes(user.role) && (

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Modal, Text, VStack } from "@/components/ui"
+import { Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
@@ -55,9 +55,9 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
     <Modal title="Rate Your Resolution" onClose={onClose} width={650} footer={footerContent}>
       <VStack gap={4}>
         {error && (
-          <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)' }}>
+          <Surface bg="danger" padding={3} radius="md" style={{ borderLeft: 'var(--border-4) solid var(--color-danger)' }}>
             <Text color="danger-text" size="sm">{error}</Text>
-          </div>
+          </Surface>
         )}
 
         {/* Complaint Info - Compact */}

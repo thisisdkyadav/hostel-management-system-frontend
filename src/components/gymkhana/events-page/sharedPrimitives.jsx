@@ -2,7 +2,7 @@ import { createElement } from "react"
 import { Input } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 export const footerTabStyles = {
   tabsBar: {
@@ -213,7 +213,7 @@ export const EventDetailSectionCard = ({
       </HStack>
       {headerAction}
     </div>
-    <div style={{ padding: "var(--spacing-3)" }}>{children}</div>
+    <Surface padding={3}>{children}</Surface>
   </div>
 )
 

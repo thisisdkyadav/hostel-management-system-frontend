@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
@@ -39,9 +39,9 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
         <CardHeader style={{ marginBottom: 0 }}>
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
-              <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
+              <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
-              </div>
+              </Surface>
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{gate.userId?.name || "Unknown Hostel"}</h3>
             </HStack>
             <HStack gap={2}>

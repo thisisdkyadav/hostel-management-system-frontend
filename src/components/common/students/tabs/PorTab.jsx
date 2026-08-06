@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
 import { DataTable } from "czero/react"
 import PorRequestDetailModal from "@/components/por/PorRequestDetailModal"
-import { Badge, EmptyState, Text } from "@/components/ui"
+import { Badge, EmptyState, Surface, Text } from "@/components/ui"
 import { porApi } from "@/service"
 
 const STATUS_META = {
@@ -226,7 +226,7 @@ const PorTab = ({ userId }) => {
   )
 
   return (
-    <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <Surface bg="primary">
       {tableRows.length > 0 || loading ? (
         <DataTable
           columns={columns}
@@ -261,7 +261,7 @@ const PorTab = ({ userId }) => {
         actionLoading={actionLoading}
         canViewStudentProfile={false}
       />
-    </div>
+    </Surface>
   )
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { HStack, Modal, Page, Text } from "@/components/ui"
+import { HStack, Modal, Page, Surface, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -41,10 +41,7 @@ const BreakdownModal = ({ account, onClose }) => {
         ) : (
           <VStack gap={2}>
             {account.perPeriod.map((row) => (
-              <div
-                key={row.periodId}
-                style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-secondary)" }}
-              >
+              <Surface bg="secondary" padding={3} radius="lg" border="1px solid var(--color-border-primary)" key={row.periodId}>
                 <HStack gap={2} justify="between" style={{ marginBottom: "var(--spacing-1)" }}>
                   <Text as="span" size="sm" weight="medium" color="secondary">
                     {formatDateRange(row.startDate, row.endDate)}
@@ -57,7 +54,7 @@ const BreakdownModal = ({ account, onClose }) => {
                   {row.chargeableDays} chargeable day{row.chargeableDays === 1 ? "" : "s"} × {formatCurrency(row.dailyRate)}
                   {" · "}{row.totalDays} elapsed − {row.rebateDays} on rebate
                 </Text>
-              </div>
+              </Surface>
             ))}
           </VStack>
         )}

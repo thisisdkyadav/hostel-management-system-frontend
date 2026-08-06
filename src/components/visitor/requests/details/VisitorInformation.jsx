@@ -1,6 +1,6 @@
 import React from "react"
 import { FaUser } from "react-icons/fa"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const VisitorInformation = ({ visitors }) => {
   return (
@@ -10,7 +10,7 @@ const VisitorInformation = ({ visitors }) => {
       </h3>
       <div className="space-y-3">
         {visitors.map((visitor, index) => (
-          <div key={index} className="p-4 rounded-lg" style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          <Surface bg="tertiary" padding={4} radius="lg" key={index} className="p-4 rounded-lg">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)' }}>{visitor.name}</h4>
@@ -21,7 +21,7 @@ const VisitorInformation = ({ visitors }) => {
                 <Text as="span" size="sm" color="muted">{visitor.email}</Text>
               </div>
             </div>
-          </div>
+          </Surface>
         ))}
       </div>
     </div>

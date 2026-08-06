@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { visitorApi } from "../../../service"
@@ -96,20 +96,20 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
           </div>
         )}
 
-        <div style={{ backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+        <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg">
           <Text size="sm" color="info-text">
             <strong>Note:</strong> You can only modify the dates and reason for your visit. If you need to change visitors, please cancel this request and create a new one.
           </Text>
-        </div>
+        </Surface>
 
         {/* Visitor Information (Non-editable) */}
         <div>
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Visitor Information</h3>
-          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+          <Surface bg="tertiary" padding={4} radius="lg">
             <Text size="sm" color="secondary">
               <Text as="span" weight="medium">Visitors:</Text> {request.visitors?.map((v) => v.name).join(", ")}
             </Text>
-          </div>
+          </Surface>
         </div>
 
         {/* Visit Details */}

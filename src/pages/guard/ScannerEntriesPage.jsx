@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -28,7 +28,7 @@ const ScannerEntriesPage = () => {
   const CrossHostelReasonCard = ({ entry }) => {
     const isUpdating = updatingReasons[entry._id], currentReason = reasonInputs[entry._id] || ""
     return (
-      <div style={{ backgroundColor: "var(--color-warning-bg-light)", border: "var(--border-2) solid var(--color-warning)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)" }}>
+      <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-2) solid var(--color-warning)" style={{ marginBottom: "var(--spacing-4)" }}>
         <HStack gap="none" align="start">
           <FaExclamationTriangle style={{ height: "var(--icon-xl)", width: "var(--icon-xl)", color: "var(--color-warning)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
           <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
@@ -53,18 +53,18 @@ const ScannerEntriesPage = () => {
             </Button>
           </div>
         </HStack>
-      </div>
+      </Surface>
     )
   }
 
   return (
-    <div style={{ padding: "var(--spacing-6) var(--spacing-4)", backgroundColor: "var(--color-bg-page)" }}>
+    <Surface bg="var(--color-bg-page)" padding="var(--spacing-6) var(--spacing-4)">
       <div style={{ maxWidth: "var(--container-xl)", margin: "0 auto" }}>
         <div style={{ marginBottom: "var(--spacing-6)" }}>
           <h1 style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>External QR Scanner Entries</h1>
           <Text size="base" color="muted">Entries recorded from external QR scanners with keyboard input.</Text>
         </div>
-        <div style={{ marginBottom: "var(--spacing-6)", backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
+        <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-6)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
           <HStack gap="none" align="start">
             <FaInfoCircle style={{ color: "var(--color-primary)", marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
             <div>
@@ -75,7 +75,7 @@ const ScannerEntriesPage = () => {
               </div>
             </div>
           </HStack>
-        </div>
+        </Surface>
         {error && <div style={{ marginBottom: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", display: "flex", alignItems: "flex-start" }}><FaTimes style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} /><Text size="sm">{error}</Text></div>}
         {pendingCrossHostelEntries.length > 0 && (
           <div style={{ marginBottom: "var(--spacing-8)" }}>
@@ -83,7 +83,7 @@ const ScannerEntriesPage = () => {
             {pendingCrossHostelEntries.map((entry) => <CrossHostelReasonCard key={entry._id} entry={entry} />)}
           </div>
         )}
-        <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-6)", boxShadow: "var(--shadow-sm)", border: "var(--border-1) solid var(--color-border-light)" }}>
+        <Surface bg="primary" padding={6} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
           <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
             <HStack gap="none" align="center">
               <div style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)", color: "var(--color-primary)" }}><FaHistory size={20} /></div>
@@ -135,10 +135,10 @@ const ScannerEntriesPage = () => {
               </Table>
             </div>
           )}
-        </div>
+        </Surface>
       </div>
       <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .info-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-4); } @media (min-width: 768px) { .info-grid { grid-template-columns: 1fr 1fr; } } .table-row-hover:hover { background-color: var(--table-row-hover); }`}</style>
-    </div>
+    </Surface>
   )
 }
 

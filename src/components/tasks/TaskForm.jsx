@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Select, Text, Textarea } from "@/components/ui"
+import { Select, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -185,9 +185,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         </div>
 
         {/* User Selector */}
-        <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+        <Surface bg="brand" padding={4} radius="lg">
           <UserSelector selectedUsers={selectedUsers} onAddUser={handleAddUser} onRemoveUser={handleRemoveUser} title="Assign Users" selectedUsersTitle="Assigned Users" searchPlaceholder="Search users by name or email..." required={true} error={errors.assignedUsers} disabled={loading} />
-        </div>
+        </Surface>
 
         {/* Form Error */}
         {errors.submit && <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", borderRadius: "var(--radius-lg)" }}>{errors.submit}</div>}

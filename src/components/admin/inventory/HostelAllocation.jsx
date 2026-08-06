@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -215,7 +215,7 @@ const HostelAllocation = () => {
       </div>
 
       {/* Filters */}
-      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border-light)' }}>
+      <Surface bg="tertiary" padding={4} radius="lg" border="1px solid var(--color-border-light)">
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Allocations
         </h3>
@@ -256,7 +256,7 @@ const HostelAllocation = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Surface>
 
       {error && <Alert type="error">{error}</Alert>}
 

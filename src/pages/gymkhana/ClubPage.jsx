@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Building2, Mail, ShieldCheck, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Card, CardBody, CardHeader, StatCards, Text } from "@/components/ui"
+import { Card, CardBody, CardHeader, StatCards, Surface, Text } from "@/components/ui"
 import { clubApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -124,61 +124,33 @@ const ClubPage = () => {
             ) : null}
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div
-                style={{
-                  borderRadius: "var(--radius-lg)",
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                  padding: "var(--spacing-4)",
-                }}
-              >
+              <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Club Name</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   {club?.name || user?.name || "—"}
                 </div>
-              </div>
+              </Surface>
 
-              <div
-                style={{
-                  borderRadius: "var(--radius-lg)",
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                  padding: "var(--spacing-4)",
-                }}
-              >
+              <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">GS Category</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   {club?.gymkhanaCategoryLabel || "—"}
                 </div>
-              </div>
+              </Surface>
 
-              <div
-                style={{
-                  borderRadius: "var(--radius-lg)",
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                  padding: "var(--spacing-4)",
-                }}
-              >
+              <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Login Email</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)", wordBreak: "break-word" }}>
                   {club?.email || user?.email || "—"}
                 </div>
-              </div>
+              </Surface>
 
-              <div
-                style={{
-                  borderRadius: "var(--radius-lg)",
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                  padding: "var(--spacing-4)",
-                }}
-              >
+              <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Account Type</Text>
                 <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
                   Gymkhana / Club
                 </div>
-              </div>
+              </Surface>
             </div>
           </CardBody>
         </Card>

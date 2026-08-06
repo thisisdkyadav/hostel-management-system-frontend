@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa'
 import { Button } from 'czero/react'
-import { HStack } from "@/components/ui"
+import { HStack, Surface } from "@/components/ui"
 
 const NotFoundPage = () => {
   return (
@@ -29,20 +29,14 @@ const NotFoundPage = () => {
         }}
       >
         <HStack gap="none" justify="center" style={{ marginBottom: 'var(--spacing-6)' }}>
-          <div
-            style={{
-              backgroundColor: 'var(--color-warning-bg)',
-              borderRadius: 'var(--radius-full)',
-              padding: 'var(--spacing-6)'
-            }}
-          >
+          <Surface bg="warning" padding={6} radius="full">
             <FaExclamationTriangle
               style={{
                 fontSize: 'var(--font-size-5xl)',
                 color: 'var(--color-warning)'
               }}
             />
-          </div>
+          </Surface>
         </HStack>
 
         <h1

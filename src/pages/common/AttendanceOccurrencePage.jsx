@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Alert, Avatar, ConfirmDialog, HStack, IconButton, Text } from "@/components/ui"
+import { Alert, Avatar, ConfirmDialog, HStack, IconButton, Surface, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Pencil, Trash2, Lock, LockOpen } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"
@@ -243,19 +243,12 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
             )}
 
             {/* Scanner */}
-            <div
-              style={{
-                padding: "var(--spacing-5)",
-                borderRadius: "var(--radius-card)",
-                border: "1px solid var(--color-border-primary)",
-                backgroundColor: "var(--color-bg-primary)",
-              }}
-            >
+            <Surface bg="primary" padding={5} radius="card" border="1px solid var(--color-border-primary)">
               <h3 style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-4)" }}>
                 Scan attendance
               </h3>
               <AttendanceScanner occurrenceId={occurrenceId} disabled={isClosed} onMarked={fetchData} />
-            </div>
+            </Surface>
 
             {/* Present records */}
             <div>

@@ -4,7 +4,7 @@ import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Grid, HStack } from "@/components/ui"
+import { Grid, HStack, Surface } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -68,7 +68,7 @@ const StudentEntryForm = ({ onAddEntry }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-card)' }}>
+    <Surface bg="primary" padding={6} radius="card" shadow="var(--shadow-card)">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>Add New Student Entry</h2>
         <HStack gap={4} align="center">
@@ -141,7 +141,7 @@ const StudentEntryForm = ({ onAddEntry }) => {
           </Button>
         </HStack>
       </form>
-    </div>
+    </Surface>
   )
 }
 

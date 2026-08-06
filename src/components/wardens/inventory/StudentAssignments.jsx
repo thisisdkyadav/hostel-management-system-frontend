@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Pagination, Select, Spinner, Text, Textarea } from "@/components/ui"
+import { Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -168,7 +168,7 @@ const StudentAssignments = () => {
       </div>
 
       {/* Filters */}
-      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
         <h3 className="flex items-center" style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Assignments
         </h3>
@@ -196,12 +196,12 @@ const StudentAssignments = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Surface>
 
       {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Students List */}
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <Surface bg="primary" radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
         {loading && !studentInventory.length ? (
           <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
             <Spinner size={40} thickness="thick" />
@@ -273,7 +273,7 @@ const StudentAssignments = () => {
             </Table>
           </div>
         )}
-      </div>
+      </Surface>
 
       {/* Pagination */}
       {!loading && studentInventory.length > 0 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
@@ -282,7 +282,7 @@ const StudentAssignments = () => {
       {showModal && modalType === "edit" && currentItem && (
         <Modal title="Inventory Item Details" onClose={closeModal}>
           <form onSubmit={submitUpdateForm} className="space-y-4">
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <Surface bg="tertiary" padding={4} radius="lg">
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-4)' }}>
                 <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                   <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
@@ -323,7 +323,7 @@ const StudentAssignments = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </Surface>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
@@ -365,7 +365,7 @@ const StudentAssignments = () => {
       {showModal && modalType === "return" && currentItem && (
         <Modal title="Return Inventory Item" onClose={closeModal}>
           <form onSubmit={submitReturnForm} className="space-y-4">
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+            <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-3)' }}>
                 <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
                   <FaBoxes style={{ color: 'var(--color-primary)' }} />
@@ -379,7 +379,7 @@ const StudentAssignments = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Surface>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>

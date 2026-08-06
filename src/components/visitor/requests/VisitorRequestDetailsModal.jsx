@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -351,7 +351,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* H2 Form Section */}
         {request.h2FormUrl && (
-          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+          <Surface bg="tertiary" padding={4} radius="lg">
             <HStack gap="none" align="center" justify="between">
               <HStack gap={3} align="center">
                 <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -369,7 +369,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                 View H2 Form
               </Button>
             </HStack>
-          </div>
+          </Surface>
         )}
 
         {/* Visitors Information */}
@@ -413,7 +413,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Information Submission (Student only) */}
         {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
-          <div style={{ backgroundColor: "var(--color-info-bg-light)", border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)" }}>
+          <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-info-bg)">
             <HStack gap="none" align="center" justify="between">
               <HStack gap={3} align="center">
                 <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -431,7 +431,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                 Submit Payment Info
               </Button>
             </HStack>
-          </div>
+          </Surface>
         )}
 
         {/* Payment Information Form (Student only) */}

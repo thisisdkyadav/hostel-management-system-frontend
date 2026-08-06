@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
@@ -188,9 +188,9 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           {/* Task Description */}
           <div>
             <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Description</h4>
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <Surface bg="tertiary" padding={4} radius="lg">
               <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{selectedTask.description}</p>
-            </div>
+            </Surface>
           </div>
 
           {/* Task Details */}

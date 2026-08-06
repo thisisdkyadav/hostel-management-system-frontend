@@ -38,6 +38,7 @@ export { default as Card, CardHeader, CardTitle, CardDescription, CardContent, C
 export { default as Container } from './layout/Container'
 export { default as Grid } from './layout/Grid'
 export { default as Page, PageBody } from './layout/Page'
+export { default as Surface } from './layout/Surface'
 export { default as Stack, HStack, VStack } from './layout/Stack'
 export { default as Divider } from './layout/Divider'
 export { default as Spacer } from './layout/Spacer'

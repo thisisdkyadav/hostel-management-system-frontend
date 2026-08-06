@@ -1,7 +1,7 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
 import { Button } from "czero/react"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Surface, Text } from "@/components/ui"
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed?", confirmText = "Confirm", cancelText = "Cancel", isDestructive = false }) => {
   const handleConfirm = () => {
@@ -27,7 +27,7 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
 
   return (
     <Modal title={title} onClose={onClose} footer={renderFooter()} width={400}>
-      <div style={{ padding: 'var(--spacing-4) 0' }}>
+      <Surface padding="var(--spacing-4) 0">
         {isDestructive && (
           <HStack gap="none" justify="center" style={{ marginBottom: 'var(--spacing-4)' }}>
             <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-full)' }}>
@@ -36,7 +36,7 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
           </HStack>
         )}
         <Text align="center" color="body">{message}</Text>
-      </div>
+      </Surface>
     </Modal>
   )
 }

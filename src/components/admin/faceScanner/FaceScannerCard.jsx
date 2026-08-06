@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, Text, VStack } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
@@ -142,15 +142,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
             {/* Credentials Display */}
             {showCredentials && newCredentials && (
-                <div
-                    style={{
-                        backgroundColor: "var(--color-primary-bg)",
-                        padding: "var(--spacing-4)",
-                        borderRadius: "var(--radius-lg)",
-                        marginBottom: "var(--spacing-4)",
-                        border: "var(--border-1) solid var(--color-primary-light)",
-                    }}
-                >
+                <Surface bg="brand" padding={4} radius="lg" border="var(--border-1) solid var(--color-primary-light)" style={{ marginBottom: "var(--spacing-4)" }}>
                     <p style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary-dark)", marginBottom: "var(--spacing-2)" }}>
                         New Credentials (save now!)
                     </p>
@@ -162,7 +154,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                             </Button>
                         </HStack>
                     </VStack>
-                </div>
+                </Surface>
             )}
 
             {/* Action Buttons */}

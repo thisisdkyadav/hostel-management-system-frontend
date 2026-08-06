@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import { Button } from "czero/react"
-import { HStack } from "@/components/ui"
+import { HStack, Surface } from "@/components/ui"
 
 const UndertakingsBanner = () => {
   const [pendingCount, setPendingCount] = useState(0)
@@ -33,7 +33,7 @@ const UndertakingsBanner = () => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-warning-bg-light)', borderLeft: `var(--border-4) solid var(--color-warning)`, padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+    <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" shadow="sm" style={{ borderLeft: `var(--border-4) solid var(--color-warning)`, marginBottom: 'var(--spacing-6)' }}>
       <HStack gap="none" align="center" justify="between">
         <HStack gap="none" align="center">
           <FaExclamationTriangle style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-3)', fontSize: 'var(--icon-xl)' }} />
@@ -58,7 +58,7 @@ const UndertakingsBanner = () => {
           </Button>
         </HStack>
       </HStack>
-    </div>
+    </Surface>
   )
 }
 

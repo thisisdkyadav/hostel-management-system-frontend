@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Button } from "czero/react"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Surface, Text } from "@/components/ui"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const PdfViewerModal = ({
@@ -150,7 +150,7 @@ const PdfViewerModal = ({
 
         {error && (
           <div style={{ textAlign: "center", paddingTop: "var(--spacing-4)", paddingBottom: "var(--spacing-4)" }}>
-            <div style={{ backgroundColor: "var(--color-danger-bg-light)", border: "var(--border-1) solid var(--color-danger-border)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)" }}>
+            <Surface bg="var(--color-danger-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-danger-border)">
               <p style={{ color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
                 Unable to load document
               </p>
@@ -160,7 +160,7 @@ const PdfViewerModal = ({
               <Button onClick={handleDownload} variant="danger" size="md">
                 <FaDownload /> Download Document
               </Button>
-            </div>
+            </Surface>
           </div>
         )}
       </div>

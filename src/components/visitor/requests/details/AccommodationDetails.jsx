@@ -1,11 +1,11 @@
 import React from "react"
 import { FaBuilding } from "react-icons/fa"
 import { useGlobal } from "../../../../contexts/GlobalProvider"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
   return (
-    <div style={{ backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", }} >
+    <Surface bg="muted" padding={4} radius="lg">
       <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)", display: "flex", alignItems: "center", }} >
         <FaBuilding style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)", fontSize: "var(--icon-md)", }} />{" "}
         Accommodation Details
@@ -43,7 +43,7 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
           </HStack>
         )}
       </VStack>
-    </div>
+    </Surface>
   )
 }
 

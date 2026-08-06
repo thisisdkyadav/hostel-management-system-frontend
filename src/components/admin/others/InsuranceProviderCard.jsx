@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Surface, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
@@ -53,9 +53,9 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
         <CardHeader style={{ marginBottom: 0 }}>
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
-              <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
+              <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
-              </div>
+              </Surface>
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
             </HStack>
             <HStack gap={2}>

@@ -1,5 +1,5 @@
 import React from "react"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const RoomStatsSummary = ({ data, isUnitBased }) => {
   const totalRooms = data.length
@@ -65,25 +65,25 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
   return (
     <div style={{ backgroundColor: "var(--color-bg-primary)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)", }} >
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", }} className="sm:grid-cols-4" >
-        <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", }} >
+        <Surface bg="brand" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Total Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{totalRooms}</Text>
-        </div>
+        </Surface>
 
-        <div style={{ backgroundColor: "var(--color-success-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", }} >
+        <Surface bg="success" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Total Capacity</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{totalCapacity}</Text>
-        </div>
+        </Surface>
 
-        <div style={{ backgroundColor: "var(--color-success-bg-light)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", }} >
+        <Surface bg="var(--color-success-bg-light)" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Active Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{activeRooms}</Text>
-        </div>
+        </Surface>
 
-        <div style={{ backgroundColor: "var(--color-orange-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", }} >
+        <Surface bg="var(--color-orange-bg)" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Inactive Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{inactiveRooms}</Text>
-        </div>
+        </Surface>
       </div>
 
       <div>
@@ -107,10 +107,10 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
           <h5 style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }}>Unit Exceptions</h5>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)", }} className="sm:grid-cols-3" >
             {exceptions.map(({ unit, roomCount }) => (
-              <div key={unit} style={{ backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-2)", borderRadius: "var(--radius-md)", }} >
+              <Surface bg="warning" padding={2} radius="md" key={unit}>
                 <Text as="span" weight="medium" color="primary" size="base">Unit {unit}</Text>
                 <Text as="div" size="sm" color="muted">{roomCount} rooms</Text>
-              </div>
+              </Surface>
             ))}
           </div>
         </div>

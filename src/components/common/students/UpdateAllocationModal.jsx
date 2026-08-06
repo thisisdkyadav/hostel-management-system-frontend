@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, HStack, Select, Text, VStack } from "@/components/ui"
+import { FileInput, Grid, HStack, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -953,15 +953,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               }))
 
               return (
-                <div
-                  key={row.id}
-                  style={{
-                    border: "1px solid var(--color-border-primary)",
-                    borderRadius: "var(--radius-card-sm)",
-                    padding: "var(--spacing-4)",
-                    backgroundColor: isManualRowBlank(row) ? "var(--color-bg-secondary)" : "var(--color-bg-primary)",
-                  }}
-                >
+                <Surface bg={isManualRowBlank(row) ? "var(--color-bg-secondary)" : "var(--color-bg-primary)"} padding={4} radius="card-sm" border="1px solid var(--color-border-primary)" key={row.id}>
                   <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-3)" }}>
                     <Text as="div" size="sm" weight="semibold" color="secondary">
                       Row {index + 1}
@@ -1159,7 +1151,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       </Text>
                     )}
                   </VStack>
-                </div>
+                </Surface>
               )
             })}
           </div>

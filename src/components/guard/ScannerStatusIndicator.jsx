@@ -1,13 +1,13 @@
 import React from "react"
 import { FaKeyboard, FaArrowDown, FaArrowRight, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const ScannerStatusIndicator = () => {
   const { pendingCrossHostelEntries, error } = useQRScanner()
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+    <Surface bg="primary" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>External Scanner Status</h3>
         <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success)' }}>
@@ -59,7 +59,7 @@ const ScannerStatusIndicator = () => {
           </div>
         </div>
       )}
-    </div>
+    </Surface>
   )
 }
 

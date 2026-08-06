@@ -14,7 +14,7 @@ import {
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 export const money = (n) =>
   `₹${(Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -52,7 +52,7 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
       </HStack>
       {headerAction}
     </div>
-    <div style={{ padding: "var(--spacing-3)" }}>{children}</div>
+    <Surface padding={3}>{children}</Surface>
   </div>
 )
 

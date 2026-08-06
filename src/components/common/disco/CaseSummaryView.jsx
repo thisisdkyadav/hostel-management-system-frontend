@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
-import { Badge, HStack, Text, VStack } from "@/components/ui"
+import { Badge, HStack, Surface, Text, VStack } from "@/components/ui"
 import CompactStudentTag from "@/components/ui/data-display/CompactStudentTag"
 import EmailDetailModal from "./EmailDetailModal"
 
@@ -572,15 +572,7 @@ const CaseSummaryView = ({
             <div style={sectionContentStyle}>
               <VStack gap={12}>
                 {disciplinaryActions.map((action, index) => (
-                  <div
-                    key={action.actionId || index}
-                    style={{
-                      padding: "var(--spacing-3)",
-                      backgroundColor: "var(--color-bg-tertiary)",
-                      borderRadius: "var(--radius-md)",
-                      border: "1px solid var(--color-border-light)",
-                    }}
-                  >
+                  <Surface bg="tertiary" padding={3} radius="md" border="1px solid var(--color-border-light)" key={action.actionId || index}>
                     <HStack gap="none" align="center" justify="between" style={{ marginBottom: 8 }}>
                       <Text as="span" size="sm" weight="semibold" color="primary">
                         {action.student?.name || "Student"}
@@ -628,7 +620,7 @@ const CaseSummaryView = ({
                         <span style={infoValueStyle}>{action.remarks}</span>
                       </div>
                     )}
-                  </div>
+                  </Surface>
                 ))}
               </VStack>
             </div>

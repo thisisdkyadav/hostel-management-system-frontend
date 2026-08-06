@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Page, Pagination, Text } from "@/components/ui"
+import { Page, Pagination, Surface, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
@@ -168,7 +168,7 @@ const MyTasksPage = () => {
       {/* Header with Title and Statistics */}
       <MyTasksHeader totalTasks={pagination.total} overdueTasks={stats.overdueTasks} />
 
-      <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-6) var(--spacing-4)', paddingLeft: 'var(--spacing-4)', paddingRight: 'var(--spacing-4)' }}>
+      <Surface padding="var(--spacing-6) var(--spacing-4)" style={{ paddingLeft: 'var(--spacing-4)', paddingRight: 'var(--spacing-4)' }} className="flex-1 overflow-y-auto">
 
         {/* Filter Tabs */}
         <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
@@ -221,12 +221,9 @@ const MyTasksPage = () => {
 
         {/* Task Cards with Quick Actions */}
         {loading ? (
-          <div className="flex justify-center items-center" style={{ padding: 'var(--spacing-12) 0' }}>
+          <Surface padding="var(--spacing-12) 0" className="flex justify-center items-center">
             <div className="relative w-16 h-16">
-              <div
-                className="absolute top-0 left-0 w-full h-full rounded-full"
-                style={{ border: '4px solid var(--color-border-primary)' }}
-              ></div>
+              <Surface border="4px solid var(--color-border-primary)" className="absolute top-0 left-0 w-full h-full rounded-full"></Surface>
               <div
                 className="absolute top-0 left-0 w-full h-full rounded-full animate-spin"
                 style={{
@@ -235,7 +232,7 @@ const MyTasksPage = () => {
                 }}
               ></div>
             </div>
-          </div>
+          </Surface>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
@@ -255,7 +252,7 @@ const MyTasksPage = () => {
                     onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)'}
                     onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card)'}
                   >
-                    <div style={{ padding: 'var(--spacing-5)' }}>
+                    <Surface padding={5}>
                       <div className="flex justify-between items-start mb-3" onClick={() => viewTaskDetails(task)}>
                         <h3
                           className="truncate w-3/4"
@@ -350,7 +347,7 @@ const MyTasksPage = () => {
                           }}
                         ></div>
                       </div>
-                    </div>
+                    </Surface>
                   </div>
                 ))
               ) : (
@@ -370,7 +367,7 @@ const MyTasksPage = () => {
 
         {/* Task Detail Modal */}
         {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} allowedStatusUpdates={getStatusUpdateOptions()} isUserView={true} />}
-      </div>
+      </Surface>
     </Page>
   )
 }

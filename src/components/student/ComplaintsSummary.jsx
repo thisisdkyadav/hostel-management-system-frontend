@@ -3,24 +3,24 @@ import { FaExclamationCircle, FaEye } from "react-icons/fa"
 import { MdPendingActions } from "react-icons/md"
 import { Link } from "react-router-dom"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
-import { Text, VStack } from "@/components/ui"
+import { Surface, Text, VStack } from "@/components/ui"
 
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {
     return (
-      <div className="animate-pulse" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-3)' }}>
+      <Surface bg="primary" padding={3} radius="lg" shadow="sm" className="animate-pulse">
         <div style={{ height: 'var(--spacing-5)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-3)', width: '33.333333%' }}></div>
         <VStack gap={2}>
           <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
           <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
         </VStack>
-      </div>
+      </Surface>
     )
   }
 
   if (!complaints || complaints.length === 0) {
     return (
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)' }}>
+      <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-3)' }}>
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>Your Complaints</h3>
           <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
@@ -34,13 +34,13 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
             Submit a new complaint
           </Link>
         </div>
-      </div>
+      </Surface>
     )
   }
 
   return (
-    <div className="overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', border: 'var(--border-1) solid var(--color-border-light)' }}>
-      <div className="flex justify-between items-center" style={{ padding: 'var(--spacing-3) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+    <Surface bg="primary" radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" className="overflow-hidden">
+      <Surface padding="var(--spacing-3) var(--spacing-4)" style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }} className="flex justify-between items-center">
         <h3 className="flex items-center" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>
           <MdPendingActions style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)' }} />
           Your Active Complaints
@@ -48,7 +48,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
         <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
           View All
         </Link>
-      </div>
+      </Surface>
       <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
         {complaints.map((complaint) => (
           <div key={complaint.id} className="last:border-0" style={{ padding: 'var(--spacing-2) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
@@ -74,7 +74,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
           </div>
         ))}
       </div>
-    </div>
+    </Surface>
   )
 }
 

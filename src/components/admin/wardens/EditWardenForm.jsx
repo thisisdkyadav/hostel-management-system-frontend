@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -213,12 +213,12 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
       <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={500}>
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
-            <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+            <Surface bg="brand" padding={4} radius="lg">
               <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
                 <FiUser style={{ marginRight: "var(--spacing-2)" }} />
                 <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>{staffTitle} User Information</h4>
               </div>
-            </div>
+            </Surface>
 
             <VStack gap="medium">
               <div>
@@ -329,12 +329,12 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={500}>
       <form onSubmit={handleSubmit}>
         <VStack gap="large">
-          <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+          <Surface bg="brand" padding={4} radius="lg">
             <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
               <FaBuilding style={{ marginRight: "var(--spacing-2)" }} />
               <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>{staffTitle} Information</h4>
             </div>
-          </div>
+          </Surface>
 
           <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>
             <div style={{ position: "relative", height: "var(--spacing-24)", width: "var(--spacing-24)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>

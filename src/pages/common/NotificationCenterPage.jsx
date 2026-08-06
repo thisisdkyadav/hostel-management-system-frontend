@@ -6,7 +6,7 @@ import NotificationTable from "../../components/notifications/NotificationTable"
 import NotificationFilterSection from "../../components/notifications/NotificationFilterSection"
 import CreateNotificationModal from "../../components/notifications/CreateNotificationModal"
 import NoResults from "../../components/common/NoResults"
-import { Page, Pagination, Text } from "@/components/ui"
+import { Page, Pagination, Surface, Text } from "@/components/ui"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -176,7 +176,7 @@ const NotificationCenterPage = () => {
         userRole={user.role}
       />
 
-      <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-6) var(--spacing-8)' }}>
+      <Surface padding="var(--spacing-6) var(--spacing-8)" className="flex-1 overflow-y-auto">
 
         {stats && <NotificationStats stats={stats} loading={loading} />}
 
@@ -192,10 +192,7 @@ const NotificationCenterPage = () => {
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="relative w-16 h-16">
-                <div
-                  className="absolute top-0 left-0 w-full h-full rounded-full"
-                  style={{ border: '4px solid var(--color-border-primary)' }}
-                ></div>
+                <Surface border="4px solid var(--color-border-primary)" className="absolute top-0 left-0 w-full h-full rounded-full"></Surface>
                 <div
                   className="absolute top-0 left-0 w-full h-full rounded-full animate-spin"
                   style={{
@@ -219,7 +216,7 @@ const NotificationCenterPage = () => {
             </>
           )}
         </div>
-      </div>
+      </Surface>
 
       <PageFooter
         leftContent={[

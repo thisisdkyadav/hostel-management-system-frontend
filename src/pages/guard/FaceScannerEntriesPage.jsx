@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Badge, Card, HStack, Switch, Text, VStack } from "@/components/ui"
+import { Badge, Card, HStack, Surface, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -54,15 +54,7 @@ const FaceScannerEntriesPage = () => {
         const isUpdating = updatingReasons[entry._id]
         const currentReason = reasonInputs[entry._id] || ""
         return (
-            <div
-                style={{
-                    backgroundColor: "var(--color-warning-bg-light)",
-                    border: "var(--border-2) solid var(--color-warning)",
-                    borderRadius: "var(--radius-lg)",
-                    padding: "var(--spacing-4)",
-                    marginBottom: "var(--spacing-4)",
-                }}
-            >
+            <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-2) solid var(--color-warning)" style={{ marginBottom: "var(--spacing-4)" }}>
                 <HStack gap="none" align="start">
                     <AlertTriangle
                         style={{
@@ -190,12 +182,12 @@ const FaceScannerEntriesPage = () => {
                         </Button>
                     </div>
                 </HStack>
-            </div>
+            </Surface>
         )
     }
 
     return (
-        <div style={{ padding: "var(--spacing-6) var(--spacing-4)", backgroundColor: "var(--color-bg-page)" }}>
+        <Surface bg="var(--color-bg-page)" padding="var(--spacing-6) var(--spacing-4)">
             <div style={{ maxWidth: "var(--container-xl)", margin: "0 auto" }}>
                 {/* Header */}
                 <div style={{ marginBottom: "var(--spacing-6)" }}>
@@ -498,7 +490,7 @@ const FaceScannerEntriesPage = () => {
           }
         `}
             </style>
-        </div>
+        </Surface>
     )
 }
 

@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, FileInput, Grid, HStack, Label, SearchInput, Select, Spinner, Switch, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, FileInput, Grid, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -367,7 +367,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
         )}
 
         {/* Picker */}
-        <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)" }}>
+        <Surface padding={3} radius="lg" border="1px solid var(--color-border-primary)">
           <SearchInput value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search users with signatures" size="sm" />
           <div style={{ marginTop: "var(--spacing-2)", maxHeight: 240, overflowY: "auto", display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
             {directoryLoading ? (
@@ -406,7 +406,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
               ))
             )}
           </div>
-        </div>
+        </Surface>
       </section>
 
       <div>

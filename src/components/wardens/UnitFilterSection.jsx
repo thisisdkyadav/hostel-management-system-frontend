@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, Label, Select, VStack } from "@/components/ui"
+import { HStack, Label, Select, Surface, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
@@ -22,7 +22,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
   }
 
   return (
-    <div style={{ backgroundColor: "var(--card-bg)", padding: "var(--spacing-6)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", marginBottom: "var(--spacing-6)", }} >
+    <Surface bg="var(--card-bg)" padding={6} radius="card" shadow="var(--shadow-card)" style={{ marginBottom: "var(--spacing-6)" }}>
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
         <h2 style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xl)" }}>
           Filter {currentView === "units" ? "Units" : "Rooms"}
@@ -80,7 +80,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <Input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} />
         </VStack>
       </div>
-    </div>
+    </Surface>
   )
 }
 

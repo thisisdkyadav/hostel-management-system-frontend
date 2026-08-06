@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
@@ -25,9 +25,9 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
           <div>{isExpired ? <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }}>Expired</span> : <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Active</span>}</div>
         </header>
 
-        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)' }}>
+        <Surface bg="tertiary" padding={4} radius="xl">
           <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{notification.message}</p>
-        </div>
+        </Surface>
 
         <Grid min={250} gap={4}>
           <HStack gap="none" align="start">

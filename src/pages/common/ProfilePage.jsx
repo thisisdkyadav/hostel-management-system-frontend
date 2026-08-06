@@ -7,7 +7,7 @@ import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 import AcademicsProfile from "../../components/profile/AcademicsProfile"
 import SignatureSettingsCard from "../../components/profile/SignatureSettingsCard"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const ProfilePage = () => {
   const { user } = useAuth()
@@ -46,7 +46,7 @@ const ProfilePage = () => {
         </div>
 
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
-          <div style={{ padding: 'var(--spacing-6)' }}>{renderProfile()}</div>
+          <Surface padding={6}>{renderProfile()}</Surface>
         </div>
 
         {user ? <SignatureSettingsCard user={user} /> : null}

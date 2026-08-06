@@ -3,7 +3,7 @@ import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { Button } from "czero/react"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -196,7 +196,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       )}
 
       {scannedPerson && !loading && (
-        <div style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-tertiary)' }}>
+        <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)" style={{ marginTop: 'var(--spacing-4)' }}>
           <div style={{ marginBottom: 'var(--spacing-4)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</h3>
             <Text color="muted" size="sm">{scannedPerson.email}</Text>
@@ -211,7 +211,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
               Cancel
             </Button>
           </HStack>
-        </div>
+        </Surface>
       )}
     </div>
   )

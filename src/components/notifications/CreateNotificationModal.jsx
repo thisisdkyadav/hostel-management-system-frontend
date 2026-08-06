@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Grid, HStack, Select, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -297,7 +297,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
           )}
 
-          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+          <Surface bg="tertiary" padding={5} radius="xl">
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Notification Summary</h3>
             <VStack gap={3}>
               <HStack gap="none" justify="between">
@@ -313,9 +313,9 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                 <Text as="span" weight="medium">{new Date(formData.expiryDate).toLocaleDateString()}</Text>
               </HStack>
             </VStack>
-          </div>
+          </Surface>
 
-          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+          <Surface bg="tertiary" padding={5} radius="xl">
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Target Recipients</h3>
             <VStack gap={2}>
               {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
@@ -349,12 +349,12 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                 </>
               )}
             </VStack>
-          </div>
+          </Surface>
 
-          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+          <Surface bg="tertiary" padding={5} radius="xl">
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Message</h3>
             <p style={{ color: "var(--color-text-body)", whiteSpace: "pre-line" }}>{formData.message}</p>
-          </div>
+          </Surface>
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <HStack gap={4} justify="end">

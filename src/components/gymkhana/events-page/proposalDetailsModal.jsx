@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Checkbox, Select, Textarea } from "@/components/ui/form"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
@@ -45,14 +45,7 @@ export const GymkhanaProposalDetailsModal = ({
     }
   >
     <VStack gap={4}>
-      <div
-        style={{
-          padding: "var(--spacing-4)",
-          borderRadius: "var(--radius-card-sm)",
-          backgroundColor: "var(--color-primary-bg)",
-          border: "var(--border-1) solid var(--color-primary)",
-        }}
-      >
+      <Surface bg="brand" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-primary)">
         <FormField label="Programme Title" htmlFor="gymkhana-proposal-programme-title" required>
           <Input
             id="gymkhana-proposal-programme-title"
@@ -64,7 +57,7 @@ export const GymkhanaProposalDetailsModal = ({
             disabled={!canEditProposalForm}
           />
         </FormField>
-      </div>
+      </Surface>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
         <VStack gap={4}>

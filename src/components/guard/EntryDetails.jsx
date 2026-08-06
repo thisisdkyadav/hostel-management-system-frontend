@@ -1,7 +1,7 @@
 import React from "react"
 import { FaTimes, FaUserCircle, FaDoorOpen, FaClock, FaCalendarAlt } from "react-icons/fa"
 import { Button } from "czero/react"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null
@@ -14,7 +14,7 @@ const EntryDetails = ({ entry, onClose }) => {
           <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close"><FaTimes /></Button>
         </HStack>
 
-        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
+        <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
           <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
             <div style={{ backgroundColor: 'var(--button-primary-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', color: 'var(--color-white)', marginRight: 'var(--spacing-4)' }}>
               <FaUserCircle size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-2xl'))} />
@@ -55,7 +55,7 @@ const EntryDetails = ({ entry, onClose }) => {
               <span style={{ marginTop: 'var(--spacing-1)', padding: 'var(--spacing-1) var(--spacing-3)', display: 'inline-flex', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)', color: entry.status === "Checked In" ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}>{entry.status}</span>
             </div>
           </VStack>
-        </div>
+        </Surface>
 
         <HStack gap="none" justify="end">
           <Button onClick={onClose} variant="secondary" size="md">

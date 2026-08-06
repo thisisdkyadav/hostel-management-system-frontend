@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
 import { Button, Input } from "czero/react"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const YEAR_REGEX = /^\d{4}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -233,14 +233,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
             })}
           </HStack>
 
-          <div
-            style={{
-              border: "var(--border-1) solid var(--color-border-primary)",
-              borderRadius: "var(--radius-card-sm)",
-              padding: "var(--spacing-4)",
-              backgroundColor: "var(--color-bg-primary)",
-            }}
-          >
+          <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
             <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
               <HStack inline gap={2} align="center">
                 <HiCalendar size={16} style={{ color: "var(--color-primary)" }} />
@@ -358,7 +351,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 ))}
               </VStack>
             )}
-          </div>
+          </Surface>
         </>
       )}
 

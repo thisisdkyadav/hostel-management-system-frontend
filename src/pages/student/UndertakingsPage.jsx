@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { EmptyState, ErrorState, LoadingState, Spinner, Text } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState, Spinner, Surface, Text } from "@/components/ui"
 import { Tabs, Button } from "czero/react"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -96,7 +96,7 @@ const UndertakingsPage = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 flex-1" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)', backgroundColor: 'var(--color-bg-page)' }}>
+    <Surface bg="var(--color-bg-page)" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }} className="px-4 sm:px-6 lg:px-8 flex-1">
       <header className="flex justify-between items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-4) var(--spacing-6)', marginBottom: 'var(--spacing-6)' }}>
         <div className="flex items-center">
           <FaFileSignature style={{ color: 'var(--color-info)', fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} />
@@ -105,8 +105,8 @@ const UndertakingsPage = () => {
       </header>
 
       {/* Tabs */}
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
-        <div style={{ padding: '0 var(--spacing-4)' }}>
+      <Surface bg="primary" radius="xl" shadow="sm" style={{ marginBottom: 'var(--spacing-6)' }}>
+        <Surface padding="0 var(--spacing-4)">
           <Tabs variant="underline"
             tabs={[
               { value: "pending", label: `Pending (${pendingUndertakings.length})` },
@@ -116,8 +116,8 @@ const UndertakingsPage = () => {
             onChange={setActiveTab}
             size="md"
           />
-        </div>
-      </div>
+        </Surface>
+      </Surface>
 
       {/* Pending Undertakings */}
       {activeTab === "pending" && (
@@ -131,7 +131,7 @@ const UndertakingsPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {pendingUndertakings.map((undertaking) => (
-                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: 'var(--border-4) solid var(--color-info)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-info)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)', color: undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)' }}>{undertaking.status === "not_viewed" ? "New" : "Pending"}</span>
@@ -160,7 +160,7 @@ const UndertakingsPage = () => {
                       View Details
                     </Button>
                   </div>
-                </div>
+                </Surface>
               ))}
             </div>
           )}
@@ -179,7 +179,7 @@ const UndertakingsPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {acceptedUndertakings.map((undertaking) => (
-                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: 'var(--border-4) solid var(--color-success)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-success)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Accepted</span>
@@ -192,7 +192,7 @@ const UndertakingsPage = () => {
                       <Text as="span" size="xs" color="muted">Accepted on: {formatDate(undertaking.acceptedAt)}</Text>
                     </div>
                   </div>
-                </div>
+                </Surface>
               ))}
             </div>
           )}
@@ -201,7 +201,7 @@ const UndertakingsPage = () => {
 
       {/* Undertaking Detail Modal */}
       {selectedUndertaking && <UndertakingDetailModal show={showDetailModal} undertaking={selectedUndertaking} onClose={() => setShowDetailModal(false)} onAccept={handleAcceptUndertaking} />}
-    </div>
+    </Surface>
   )
 }
 

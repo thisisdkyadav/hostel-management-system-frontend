@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -121,13 +121,13 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
         {/* Error state */}
         {error && (
           <div style={{ textAlign: 'center', paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)' }}>
-            <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
+            <Surface bg="var(--color-danger-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-danger-border)">
               <p style={{ color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Unable to load document</p>
               <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>There was an error loading the document. Please try downloading it instead.</p>
               <Button onClick={handleDownload} variant="danger" size="md">
                 <FaDownload /> Download Document
               </Button>
-            </div>
+            </Surface>
           </div>
         )}
       </div>

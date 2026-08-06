@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Grid, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
+import { Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
@@ -140,7 +140,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-info-bg-light)', border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
+    <Surface bg="var(--color-info-bg-light)" padding={6} radius="lg" border="var(--border-1) solid var(--color-info-bg)">
       <HStack gap={3} align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-info-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
@@ -199,7 +199,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
               </div>
             </div>
           ) : (
-            <div style={{ marginTop: 'var(--spacing-1)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
+            <Surface padding={4} radius="lg" border="var(--border-1) solid var(--color-border-input)" style={{ marginTop: 'var(--spacing-1)' }}>
               <HStack gap="none" align="center" justify="between">
                 <HStack gap={3} align="center">
                   <div style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -216,7 +216,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
                   Remove
                 </Button>
               </HStack>
-            </div>
+            </Surface>
           )}
 
           {uploading && (
@@ -245,7 +245,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           </Button>
         </HStack>
       </form>
-    </div>
+    </Surface>
   )
 }
 

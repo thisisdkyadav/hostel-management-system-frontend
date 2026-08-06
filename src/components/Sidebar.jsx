@@ -30,6 +30,7 @@ import {
   ADMIN_NAV_CATEGORY_DINING,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
+import { Surface } from "@/components/ui"
 
 const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin",
@@ -349,16 +350,10 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] w-[280px] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
-        style={{ boxShadow: "var(--shadow-sm)" }}
-      >
+      <Surface shadow="sm" className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] w-[280px] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
         <div className="flex flex-col h-full">
           {/* Logo, mode switcher and collapse toggle */}
-          <div
-            className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}
-            style={{ backgroundColor: headerTint }}
-          >
+          <Surface bg={headerTint} className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
             <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
               <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
                 <span
@@ -385,7 +380,7 @@ const Sidebar = ({ navItems }) => {
                 </span>
               </div>
             </div>
-          </div>
+          </Surface>
 
           {/* Main navigation (layout depends on role + mode) */}
           {renderNavBody()}
@@ -394,10 +389,7 @@ const Sidebar = ({ navItems }) => {
           <HostelSwitcher />
 
           {/* Profile and logout */}
-          <div
-            className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3"
-            style={{ backgroundColor: headerTint }}
-          >
+          <Surface bg={headerTint} className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3">
             <ProfileCard
               user={user}
               profileItem={profileItem}
@@ -405,12 +397,12 @@ const Sidebar = ({ navItems }) => {
               isActive={active === "Profile"}
               onNavigate={handleNavigation}
             />
-          </div>
+          </Surface>
 
           {/* V2 category bar */}
           {isCategorizedMode && <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} />}
         </div>
-      </div>
+      </Surface>
     </>
   )
 }
