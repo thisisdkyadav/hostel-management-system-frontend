@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -240,13 +240,7 @@ export const GymkhanaProposalModal = ({
               )}
 
               <SectionHeader>Financials</SectionHeader>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: "var(--spacing-2)",
-                }}
-              >
+              <Grid cols={3} gap={2}>
                 <FormField label="Expected Income" htmlFor="gymkhana-total-expected-income">
                   <Input
                     id="gymkhana-total-expected-income"
@@ -282,7 +276,7 @@ export const GymkhanaProposalModal = ({
                     disabled
                   />
                 </FormField>
-              </div>
+              </Grid>
 
               <Checkbox
                 checked={proposalForm.accommodationRequired}
@@ -371,15 +365,7 @@ export const GymkhanaProposalModal = ({
                       Leave a row blank to skip that stage.
                     </Text>
                     {postStudentAffairsStageOptions.map((stage) => (
-                      <div
-                        key={`proposal-stage-${stage}`}
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "minmax(0, 190px) 1fr",
-                          gap: "var(--spacing-2)",
-                          alignItems: "center",
-                        }}
-                      >
+                      <Grid cols="minmax(0, 190px) 1fr" gap={2} align="center" key={`proposal-stage-${stage}`}>
                         <Text as="span" size="sm" color="body">
                           {stage}
                         </Text>
@@ -393,7 +379,7 @@ export const GymkhanaProposalModal = ({
                           ]}
                           placeholder={`Select ${stage}`}
                         />
-                      </div>
+                      </Grid>
                     ))}
                   </div>
                 )}

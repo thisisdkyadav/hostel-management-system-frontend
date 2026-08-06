@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import { Heading, HStack, SearchInput, Spinner } from "@/components/ui"
+import { Grid, Heading, HStack, SearchInput, Spinner } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import UndertakingCard from "./UndertakingCard"
@@ -71,11 +71,11 @@ const Undertakings = () => {
       ) : filteredUndertakings.length === 0 ? (
         <NoResults icon={<FaFileSignature style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-6)' }}>
+        <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredUndertakings.map((undertaking) => (
             <UndertakingCard key={undertaking.id} undertaking={undertaking} onUpdate={fetchUndertakings} onDelete={fetchUndertakings} />
           ))}
-        </div>
+        </Grid>
       )}
 
       <AddUndertakingModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchUndertakings} />

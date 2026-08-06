@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
-import { Heading, SearchInput, Spinner, VStack } from "@/components/ui"
+import { Grid, Heading, SearchInput, Spinner, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
@@ -81,11 +81,11 @@ const InsuranceProviders = () => {
       ) : filteredProviders.length === 0 ? (
         <NoResults icon={<FaBuilding style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
       ) : (
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-6)' }}>
+        <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredProviders.map((provider) => (
             <InsuranceProviderCard key={provider.id} provider={provider} onUpdate={fetchInsuranceProviders} onDelete={fetchInsuranceProviders} />
           ))}
-        </div>
+        </Grid>
       )}
 
       <AddInsuranceProviderModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchInsuranceProviders} />

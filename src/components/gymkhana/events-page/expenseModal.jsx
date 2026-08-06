@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -220,13 +220,7 @@ export const GymkhanaExpenseModal = ({
                       )}
                     </HStack>
 
-                    <div
-                      style={{
-                        display: "grid",
-                        gap: "var(--spacing-2)",
-                        gridTemplateColumns: "repeat(4, 1fr)",
-                      }}
-                    >
+                    <Grid cols={4} gap={2}>
                       <div>
                         <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
                           Description *
@@ -300,11 +294,9 @@ export const GymkhanaExpenseModal = ({
                           disabled={!formEditable}
                         />
                       </div>
-                    </div>
+                    </Grid>
 
-                    <div
-                      style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "1fr 2fr" }}
-                    >
+                    <Grid cols="1fr 2fr" gap={2}>
                       <div>
                         <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
                           Vendor
@@ -340,7 +332,7 @@ export const GymkhanaExpenseModal = ({
                         viewerSubtitle="Bill attachment"
                         downloadFileName={`event-bill-${index + 1}.pdf`}
                       />
-                    </div>
+                    </Grid>
                   </div>
                 ))}
               </VStack>
@@ -351,7 +343,7 @@ export const GymkhanaExpenseModal = ({
                 </Button>
               )}
 
-              <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "1fr 1fr" }}>
+              <Grid cols={2} gap={2}>
                 <PdfUploadField
                   label="Event Report PDF"
                   value={expenseForm.eventReportDocumentUrl}
@@ -379,7 +371,7 @@ export const GymkhanaExpenseModal = ({
                     disabled={!formEditable}
                   />
                 </div>
-              </div>
+              </Grid>
             </VStack>
           </EventDetailSectionCard>
 
@@ -429,15 +421,7 @@ export const GymkhanaExpenseModal = ({
                       Leave a row blank to skip that stage.
                     </Text>
                     {postStudentAffairsStageOptions.map((stage) => (
-                      <div
-                        key={`expense-stage-${stage}`}
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "minmax(0, 190px) 1fr",
-                          gap: "var(--spacing-2)",
-                          alignItems: "center",
-                        }}
-                      >
+                      <Grid cols="minmax(0, 190px) 1fr" gap={2} align="center" key={`expense-stage-${stage}`}>
                         <Text as="span" size="sm" color="body">
                           {stage}
                         </Text>
@@ -451,7 +435,7 @@ export const GymkhanaExpenseModal = ({
                           ]}
                           placeholder={`Select ${stage}`}
                         />
-                      </div>
+                      </Grid>
                     ))}
                   </div>
                 )}

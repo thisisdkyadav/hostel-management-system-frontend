@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Eye, Search, CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -507,7 +507,7 @@ const AppointmentsPage = () => {
             </HStack>
 
             {/* Info grid */}
-            <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
+            <Grid cols={3} gap={3}>
               <div>
                 <span style={labelStyle}>With</span>
                 <Text as="div" size="sm" color="body">
@@ -532,7 +532,7 @@ const AppointmentsPage = () => {
                   {selectedAppointment.preferredTime}
                 </Text>
               </div>
-            </div>
+            </Grid>
 
             {/* Reason */}
             <div style={sectionStyle}>
@@ -546,7 +546,7 @@ const AppointmentsPage = () => {
               <VStack gap={2}>
                 <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
                 <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>Review</Text>
-                <div style={{ display: "grid", gridTemplateColumns: reviewAction === "approve" ? "160px 1fr 1fr" : "160px 1fr", gap: "var(--spacing-2)", alignItems: "end" }}>
+                <Grid cols={reviewAction === "approve" ? "160px 1fr 1fr" : "160px 1fr"} gap={2} align="end">
                   <div>
                     <span style={labelStyle}>Action</span>
                     <Select
@@ -570,7 +570,7 @@ const AppointmentsPage = () => {
                       </div>
                     </>
                   )}
-                </div>
+                </Grid>
                 <Textarea
                   rows={2}
                   placeholder={reviewAction === "reject" ? "Reason for rejection (required)" : "Optional remarks"}
@@ -579,7 +579,7 @@ const AppointmentsPage = () => {
                 />
               </VStack>
             ) : (
-              <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
+              <Grid cols={2} gap={3}>
                 <div>
                   <span style={labelStyle}>Action</span>
                   <Badge variant={statusVariant(selectedAppointment.review?.action === "approve" ? "Approved" : "Rejected")}>
@@ -611,7 +611,7 @@ const AppointmentsPage = () => {
                     </Text>
                   </div>
                 )}
-              </div>
+              </Grid>
             )}
           </VStack>
         )}

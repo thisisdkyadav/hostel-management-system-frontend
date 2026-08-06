@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
-import { Alert, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -66,7 +66,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const templateInstructions = (
     <div>
       <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
-      <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
+      <Grid as="ul" cols={2} gap="0" style={{ columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
             <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101)
@@ -81,7 +81,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         <li>
           <Text as="span" weight="medium">status:</Text> One of: {MANUAL_ROOM_STATUSES.join(", ")}
         </li>
-      </ul>
+      </Grid>
     </div>
   )
 

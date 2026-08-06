@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
-import { Badge, EmptyState, Heading, HStack, Label, Pagination, Spinner, StatCards, Surface, Text, VStack } from "@/components/ui"
+import { Badge, EmptyState, Grid, Heading, HStack, Label, Pagination, Spinner, StatCards, Surface, Text, VStack } from "@/components/ui"
 import { Tabs, Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -215,7 +215,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                 <Spinner size="large" />
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
+              <Grid cols={2} gap={6}>
                 {/* Total Work Done */}
                 <div style={{ background: "linear-gradient(to right, var(--color-info-bg-light), var(--color-info-bg))", padding: "var(--spacing-6)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-info-light)" }}>
                   <HStack gap="none" align="center" justify="between">
@@ -243,7 +243,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     </Surface>
                   </HStack>
                 </div>
-              </div>
+              </Grid>
             )}
           </Surface>
         )}

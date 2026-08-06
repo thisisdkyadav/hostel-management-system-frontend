@@ -2,7 +2,7 @@ import { Button, DataTable, Tabs } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { EmptyState, LoadingState } from "@/components/ui/feedback"
 import { StatCards } from "@/components/ui/data-display"
-import { Heading, HStack, Surface, Text, ToggleButtonGroup } from "@/components/ui"
+import { Grid, Heading, HStack, Surface, Text, ToggleButtonGroup } from "@/components/ui"
 import {
   AlertTriangle,
   Bell,
@@ -230,14 +230,7 @@ function MonthCalendarView({
       </div>
 
       <Surface padding={3}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(7, 1fr)",
-            gap: "var(--spacing-1)",
-            marginBottom: "var(--spacing-1)",
-          }}
-        >
+        <Grid cols={7} gap={1} style={{ marginBottom: "var(--spacing-1)" }}>
           {CALENDAR_WEEKDAY_LABELS.map((day, index) => {
             const isSat = index === 5
             const isSun = index === 6
@@ -268,9 +261,9 @@ function MonthCalendarView({
               </div>
             )
           })}
-        </div>
+        </Grid>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "var(--spacing-1)" }}>
+        <Grid cols={7} gap={1}>
           {days.map((date, index) => {
             if (!date) return <div key={index} />
             const dayEvents = getEventsForDate(date)
@@ -412,7 +405,7 @@ function MonthCalendarView({
               </div>
             )
           })}
-        </div>
+        </Grid>
       </Surface>
     </div>
   )
@@ -436,13 +429,7 @@ function YearCalendarView({
     }).length
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
-        gap: "var(--spacing-3)",
-      }}
-    >
+    <Grid cols="repeat(auto-fill, minmax(230px, 1fr))" gap={3}>
       {months.map((monthDate) => {
         const grid = getDaysInMonth(monthDate)
         const count = monthEventCount(monthDate)
@@ -522,7 +509,7 @@ function YearCalendarView({
               </span>
             </HStack>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 3 }}>
+            <Grid cols={7} gap={2} style={{ marginBottom: 3 }}>
               {CALENDAR_WEEKDAY_LABELS.map((day, index) => (
                 <Text as="span" align="center" size={8.5} weight="semibold" color={index === 6
                         ? "var(--color-danger)"
@@ -532,20 +519,11 @@ function YearCalendarView({
                   {day[0]}
                 </Text>
               ))}
-            </div>
+            </Grid>
 
             <div style={{ position: "relative" }}>
               {/* Full-height Saturday / Sunday column strips behind the day numbers */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
-                  gap: 2,
-                  pointerEvents: "none",
-                }}
-              >
+              <Grid cols={7} gap={2} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
                 {Array.from({ length: 7 }, (_, col) => (
                   <span
                     key={col}
@@ -560,9 +538,9 @@ function YearCalendarView({
                     }}
                   />
                 ))}
-              </div>
+              </Grid>
 
-              <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
+              <Grid cols={7} gap={2} style={{ position: "relative" }}>
                 {grid.map((date, index) => {
                   if (!date) return <span key={index} />
                   const dayEvents = getEventsForDate(date)
@@ -620,12 +598,12 @@ function YearCalendarView({
                     </span>
                   )
                 })}
-              </div>
+              </Grid>
             </div>
           </button>
         )
       })}
-    </div>
+    </Grid>
   )
 }
 

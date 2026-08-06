@@ -1780,13 +1780,7 @@ export const StudentNominationModal = ({
           ) : (
             <div style={detailPanelStyle}>
               <div style={labelStyle}>Student ID card</div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                  gap: "var(--spacing-3)",
-                }}
-              >
+              <Grid cols={2} gap={3}>
                 {[
                   { label: "Front", value: idCard.front },
                   { label: "Back", value: idCard.back },
@@ -1832,16 +1826,16 @@ export const StudentNominationModal = ({
                     )}
                   </div>
                 ))}
-              </div>
+              </Grid>
             </div>
           )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: "var(--spacing-3)" }}>
+          <Grid cols="minmax(0, 1fr)" gap={3}>
             <div style={panelStyle}>
               <label style={labelStyle}>CGPA</label>
               <Input type="number" value={form.cgpa} onChange={(event) => updateForm({ cgpa: event.target.value })} />
             </div>
-          </div>
+          </Grid>
 
           <div style={flatPanelStyle}>
             <label

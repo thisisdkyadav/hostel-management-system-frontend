@@ -3,7 +3,7 @@ import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } 
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Text, VStack } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
@@ -116,7 +116,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
         {/* Action Buttons */}
         <CardFooter style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 0 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-2)' }}>
+          <Grid cols={2} gap={2}>
             <Button
               onClick={() => setShowEditModal(true)}
               variant="secondary"
@@ -134,7 +134,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 <DoorOpen size={16} /> View {hostel.type === "room-only" ? "Rooms" : "Units"}
               </Button>
             </Link>
-          </div>
+          </Grid>
           <Button
             onClick={() => setShowDetailsModal(true)}
             variant="secondary"

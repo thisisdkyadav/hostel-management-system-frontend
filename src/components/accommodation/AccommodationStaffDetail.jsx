@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { EmptyState, HStack, Modal, Text, VStack } from "@/components/ui"
+import { EmptyState, Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -323,10 +323,10 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 <VStack gap={3}>
                   {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
                   {(request.guests || []).map((g, i) => (
-                    <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)", alignItems: "center" }}>
+                    <Grid cols={2} gap={2} align="center" key={i}>
                       <Text as="span" size="sm">{g.name}</Text>
                       <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
-                    </div>
+                    </Grid>
                   ))}
                   <Button onClick={submitAssign} loading={busy} disabled={busy || roomOptions.length === 0}>{reassigning ? "Update assignment" : "Assign rooms"}</Button>
                 </VStack>

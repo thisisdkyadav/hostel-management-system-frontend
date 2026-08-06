@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Heading, HStack, Label, Modal, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Modal, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -522,7 +522,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           />
 
           {dayScholarForm.isDayScholar && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-4)" }}>
+            <Grid cols={2} gap={4}>
               <div style={{ gridColumn: "1 / -1" }}>
                 <Label spacing={1}>
                   Address
@@ -570,7 +570,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                   placeholder="Optional owner email"
                 />
               </div>
-            </div>
+            </Grid>
           )}
         </VStack>
       )
@@ -621,7 +621,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 </div>
               )}
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-4)" }}>
+              <Grid cols={2} gap={4}>
                 <div>
                   <Label spacing={1}>
                     Hostel
@@ -685,7 +685,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     error={Boolean(allocationForm.validationError && !allocationForm.bedNumber)}
                   />
                 </div>
-              </div>
+              </Grid>
 
               <VStack gap={2}>
                 {occupiedBedStudent && occupiedBedStudent.id !== allocationLookup?.id && (

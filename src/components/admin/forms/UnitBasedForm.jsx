@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -147,7 +147,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
   const templateInstructions = (
     <div>
       <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
-      <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
+      <Grid as="ul" cols={2} gap="0" style={{ columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
           <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101)
         </li>
@@ -157,7 +157,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         <li>
           <Text as="span" weight="medium">capacity:</Text> Number
         </li>
-      </ul>
+      </Grid>
     </div>
   )
 
@@ -190,7 +190,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
 
       {inputMethod === "form" ? (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
+          <Grid cols={1} gap={4} className="md:grid-cols-2">
             <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
               <Label htmlFor="floors">Number of Floors</Label>
               <Input id="floors" type="number" name="floors" value={unitConfig.floors} onChange={handleChange} min="1" />
@@ -200,7 +200,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               <Label htmlFor="defaultRoomsPerUnit">Default Rooms per Unit</Label>
               <Input id="defaultRoomsPerUnit" type="number" name="defaultRoomsPerUnit" value={unitConfig.defaultRoomsPerUnit} onChange={handleChange} min="1" />
             </VStack>
-          </div>
+          </Grid>
 
           <VStack gap="small" style={{ marginBottom: "var(--spacing-4)" }}>
             <Label>Floor wise Units:</Label>
@@ -226,7 +226,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               <Text size="xs" color="muted">Override default rooms per unit for a specific unit</Text>
             </Surface>
             {unitConfig.exceptions.map((ex, index) => (
-              <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
+              <Grid cols={2} gap={4} style={{ marginBottom: "var(--spacing-2)" }} key={index}>
                 <Input type="text" placeholder="Unit Number (e.g., 101)" value={ex.unitNumber} onChange={(e) => handleExceptionChange(index, "unitNumber", e.target.value)} />
                 <Input type="number" placeholder="Rooms in Unit" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)} min="1" />
                 <Button
@@ -238,7 +238,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
                 >
                   Remove Exception
                 </Button>
-              </div>
+              </Grid>
             ))}
             <Button
               type="button"

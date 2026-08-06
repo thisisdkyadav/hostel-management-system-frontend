@@ -1,5 +1,5 @@
 import React from "react"
-import { Heading, Surface, Text } from "@/components/ui"
+import { Grid, Heading, Surface, Text } from "@/components/ui"
 
 const RoomStatsSummary = ({ data, isUnitBased }) => {
   const totalRooms = data.length
@@ -64,7 +64,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
 
   return (
     <div style={{ backgroundColor: "var(--color-bg-primary)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)", }} >
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", }} className="sm:grid-cols-4" >
+      <Grid cols={2} gap={4} className="sm:grid-cols-4">
         <Surface bg="brand" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Total Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{totalRooms}</Text>
@@ -84,7 +84,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
           <Text as="div" size="sm" color="muted">Inactive Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{inactiveRooms}</Text>
         </Surface>
-      </div>
+      </Grid>
 
       <div>
         <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Floor Statistics</Heading>
@@ -105,14 +105,14 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
       {isUnitBased && exceptions.length > 0 && (
         <div>
           <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Unit Exceptions</Heading>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)", }} className="sm:grid-cols-3" >
+          <Grid cols={2} gap={2} className="sm:grid-cols-3">
             {exceptions.map(({ unit, roomCount }) => (
               <Surface bg="warning" padding={2} radius="md" key={unit}>
                 <Text as="span" weight="medium" color="primary" size="base">Unit {unit}</Text>
                 <Text as="div" size="sm" color="muted">{roomCount} rooms</Text>
               </Surface>
             ))}
-          </div>
+          </Grid>
         </div>
       )}
     </div>

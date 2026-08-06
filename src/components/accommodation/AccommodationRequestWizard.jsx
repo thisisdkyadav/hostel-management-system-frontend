@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
@@ -244,13 +244,13 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                     <IconButton icon={<Trash2 size={16} />} variant="ghost" size="small" ariaLabel="Remove guest" onClick={() => removeGuest(i)} />
                   )}
                 </HStack>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <Input placeholder="Full name *" value={g.name} onChange={(e) => setGuest(i, "name", e.target.value)} />
                   <Select placeholder="Gender *" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
                   <Input placeholder="Relation to you *" value={g.relation} onChange={(e) => setGuest(i, "relation", e.target.value)} />
                   <Input placeholder="Aadhaar number *" inputMode="numeric" maxLength={12} value={g.aadharNumber} onChange={(e) => setGuest(i, "aadharNumber", e.target.value.replace(/\D/g, "").slice(0, 12))} />
                   <Input placeholder="Occupation (optional)" value={g.occupation} onChange={(e) => setGuest(i, "occupation", e.target.value)} style={{ gridColumn: "1 / -1" }} />
-                </div>
+                </Grid>
               </div>
             ))}
             <Button variant="outline" size="sm" onClick={addGuest}><Plus size={16} /> Add guest</Button>
@@ -259,7 +259,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
 
         {step === 1 && (
           <VStack gap={4}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+            <Grid cols={2} gap={3}>
               <div>
                 <Label required>From</Label>
                 <DatePicker name="fromDate" value={form.stay.fromDate} min={earliestStart} onChange={(e) => setStay("fromDate", e.target.value)} />
@@ -268,7 +268,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <Label required>To</Label>
                 <DatePicker name="toDate" value={form.stay.toDate} min={form.stay.fromDate || earliestStart} onChange={(e) => setStay("toDate", e.target.value)} />
               </div>
-            </div>
+            </Grid>
             <Text size="xs" color="muted" style={{ marginTop: "calc(-1 * var(--spacing-2))" }}>
               Requests must be raised at least {MIN_LEAD_WORKING_DAYS} working days in advance — earliest start date is {earliestStart}.
             </Text>

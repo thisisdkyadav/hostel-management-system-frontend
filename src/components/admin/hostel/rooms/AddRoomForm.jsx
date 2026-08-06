@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -204,7 +204,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</Text>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
+        <Grid cols={1} gap={4} className="md:grid-cols-2">
           <div>
             <Label htmlFor="capacity" required>Capacity</Label>
             <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<Users size={16} />} placeholder="Room capacity" error={errors.capacity} />
@@ -214,7 +214,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
             <Label htmlFor="status" required>Status</Label>
             <Select name="status" value={formData.status} onChange={handleChange} options={MANUAL_ROOM_STATUS_OPTIONS} error={errors.status} />
           </div>
-        </div>
+        </Grid>
 
         <div style={{ paddingTop: 'var(--spacing-4)' }}>
           <Button type="submit" variant="primary" size="md">

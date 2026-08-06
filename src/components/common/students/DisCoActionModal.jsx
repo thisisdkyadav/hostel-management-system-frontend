@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FormField, Text } from "@/components/ui"
+import { FormField, Grid, Text } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
@@ -282,11 +282,11 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
 
           <FormField label="Reason" name="reason" value={formData.reason} onChange={handleChange} required error={errors.reason} placeholder="Enter reason for the action" />
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+          <Grid cols={3} gap={3}>
             <FormField label="Creation Date" name="date" type="date" value={formData.date} onChange={handleChange} required error={errors.date} />
             <FormField label="Punishment Start" name="punishmentStartDate" type="date" value={formData.punishmentStartDate} onChange={handleChange} required error={errors.punishmentStartDate} />
             <FormField label="Punishment End" name="punishmentEndDate" type="date" value={formData.punishmentEndDate} onChange={handleChange} required error={errors.punishmentEndDate} />
-          </div>
+          </Grid>
 
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
 

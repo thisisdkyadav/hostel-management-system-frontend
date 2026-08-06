@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Alert, FileInput, Grid, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -178,11 +178,11 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
 
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
               <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
-              <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-1)' }}>
+              <Grid as="ul" cols={1} gap={1}>
                 <li>
                   <Text as="span" weight="medium">rollNumber:</Text> String (Required) - Student roll number (e.g., CS21B001)
                 </li>
-              </ul>
+              </Grid>
             </div>
           </VStack>
           {csvFile && (

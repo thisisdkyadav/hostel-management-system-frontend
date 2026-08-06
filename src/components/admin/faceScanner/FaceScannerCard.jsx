@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
@@ -159,7 +159,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
             {/* Action Buttons */}
             <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                     <Button onClick={handleRegeneratePassword} variant="secondary" size="md" fullWidth disabled={loading}>
                         <FaKey />
                         New Password
@@ -168,7 +168,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                         <FaPowerOff />
                         {scanner.isActive ? "Deactivate" : "Activate"}
                     </Button>
-                </div>
+                </Grid>
                 <Button onClick={handleDelete} variant="danger" size="md" fullWidth disabled={loading}>
                     <FaTrash />
                     Delete Scanner

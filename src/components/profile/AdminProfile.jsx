@@ -3,7 +3,7 @@ import { FiMail, FiPhone, FiUser, FiShield } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { EmptyState, ErrorState, Grid, LoadingState } from "@/components/ui"
 import { adminApi } from "@/service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -61,7 +61,7 @@ const AdminProfile = () => {
     <div>
       <ProfileHeader user={adminData} role="Administrator" subtitle={`${adminData.role}`} />
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--gap-lg)", marginTop: "var(--spacing-8)", }} className="lg:grid-cols-2" >
+      <Grid cols={1} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }} className="lg:grid-cols-2">
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={adminData.email} icon={FiMail} />
@@ -69,7 +69,7 @@ const AdminProfile = () => {
             <ProfileInfo label="Role" value={adminData.role} icon={FiShield} />
           </ProfileCard>
         </div>
-      </div>
+      </Grid>
     </div>
   )
 }

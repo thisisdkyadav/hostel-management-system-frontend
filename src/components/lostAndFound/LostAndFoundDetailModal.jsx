@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Heading, Modal, Surface, Text } from "@/components/ui"
+import { Grid, Heading, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -72,7 +72,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
                 <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
                 <Heading as="h3" weight="semibold">Item Images</Heading>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
+              <Grid cols={3} gap="var(--gap-sm)">
                 {selectedItem.images.map((imageUrl, index) => (
                   <img key={index} src={getMediaUrl(imageUrl)} alt={`${selectedItem.itemName} ${index + 1}`} onClick={() => openImageViewer(index)}
                     style={{
@@ -88,7 +88,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
                     onMouseLeave={(e) => e.target.style.opacity = '1'}
                   />
                 ))}
-              </div>
+              </Grid>
             </div>
           )}
 

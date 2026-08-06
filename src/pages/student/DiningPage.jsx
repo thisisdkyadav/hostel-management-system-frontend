@@ -285,11 +285,11 @@ const StudentBillingCard = ({ billingPeriod }) => {
         <StatusBadge status={formatClearance(billingPeriod.clearance)} tone={clearanceTone(billingPeriod.clearance)} />
       </HStack>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)" }}>
+      <Grid cols={3} gap={3} style={{ marginTop: "var(--spacing-3)" }}>
         <BillingFigure label="Allocated" value={formatCurrency(billingPeriod.allocatedAmount)} />
         <BillingFigure label="Charged" value={formatCurrency(billingPeriod.totalCharged)} />
         <BillingFigure label="Balance" value={formatCurrency(billingPeriod.balance)} tone={balanceTone(billingPeriod.balance)} />
-      </div>
+      </Grid>
 
       {hasBreakdown && (
         <>

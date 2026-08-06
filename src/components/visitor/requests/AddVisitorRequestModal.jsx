@@ -191,7 +191,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
               <Text color="muted" size="sm">No visitor profiles found. Add some profiles first.</Text>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--spacing-3)', maxHeight: '240px', overflowY: 'auto', padding: 'var(--spacing-2)' }}>
+            <Grid cols="repeat(auto-fill, minmax(250px, 1fr))" gap={3} style={{ maxHeight: '240px', overflowY: 'auto', padding: 'var(--spacing-2)' }}>
               {visitorProfiles.map((visitor) => (
                 <div key={visitor._id} onClick={() => handleVisitorSelection(visitor._id)}
                   style={{
@@ -227,7 +227,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   </HStack>
                 </div>
               ))}
-            </div>
+            </Grid>
           )}
         </div>
 

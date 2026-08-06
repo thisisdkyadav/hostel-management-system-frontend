@@ -15,7 +15,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Badge, Card, Checkbox, Divider, HStack, IconCircle, Label, Spinner, Text, VStack } from "@/components/ui"
+import { Badge, Card, Checkbox, Divider, Grid, HStack, IconCircle, Label, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { MdMeetingRoom } from "react-icons/md"
 
@@ -373,7 +373,7 @@ const UnitsAndRoomsPage = () => {
             <VStack gap="medium" style={{ marginTop: 'var(--spacing-4)' }}>
               <Divider spacing="none" />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+              <Grid cols={3} gap="0" style={{ rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
                 <VStack gap="xsmall">
                   <Label size="sm">Min Capacity</Label>
                   <Input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" />
@@ -397,7 +397,7 @@ const UnitsAndRoomsPage = () => {
                 <VStack gap="xsmall" style={{ justifyContent: 'flex-end' }}>
                   <Checkbox id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} label="Show Empty Units Only" />
                 </VStack>
-              </div>
+              </Grid>
             </VStack>
           )}
         </Card>

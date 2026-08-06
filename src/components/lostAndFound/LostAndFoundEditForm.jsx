@@ -4,7 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { FileInput, HStack, Select, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
+import { FileInput, Grid, HStack, Select, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
@@ -147,7 +147,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
             {uploading && <Text size="xs" color="info-text" style={{ marginTop: "var(--spacing-1)" }}>Uploading...</Text>}
 
             {formData.images && formData.images.length > 0 && (
-              <div style={{ marginTop: "var(--spacing-2)", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--gap-sm)" }}>
+              <Grid cols={3} gap="var(--gap-sm)" style={{ marginTop: "var(--spacing-2)" }}>
                 {formData.images.map((imageUrl, index) => (
                   <div key={index} style={{ position: "relative" }} className="group">
                     <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} style={{ width: "100%", height: "5rem", objectFit: "cover", borderRadius: "var(--radius-lg)", border: `var(--border-1) solid var(--color-border-gray)` }} />
@@ -168,7 +168,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
                     ><FaTimes size={10} /></Button>
                   </div>
                 ))}
-              </div>
+              </Grid>
             )}
           </div>
         </VStack>

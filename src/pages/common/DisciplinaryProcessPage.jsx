@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import {
   Eye,
   Plus,
@@ -1604,7 +1604,7 @@ const DisciplinaryProcessPage = () => {
                 )}
 
                 {/* Selected Students */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+                <Grid cols={2} gap={3}>
                   <StudentTagGroup
                     label="Accused (Required)"
                     students={stage2AccusedStudents}
@@ -1619,7 +1619,7 @@ const DisciplinaryProcessPage = () => {
                     onRemove={(id) => removeStudentFromGroup(id, "accusing")}
                     emptyText="None selected"
                   />
-                </div>
+                </Grid>
 
                 {/* Statements Section */}
                 {allStage2Students.length > 0 && (
@@ -1701,7 +1701,7 @@ const DisciplinaryProcessPage = () => {
                 )}
 
                 {/* Evidence & Extra Documents */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+                <Grid cols={2} gap={3}>
                   <div>
                     <div style={sectionLabelStyle}>Evidence Documents</div>
                     <VStack gap={6}>
@@ -1787,7 +1787,7 @@ const DisciplinaryProcessPage = () => {
                       </HStack>
                     </VStack>
                   </div>
-                </div>
+                </Grid>
 
                 {!viewingHistoryStep && (
                   <HStack gap="none" justify="end">
@@ -1854,7 +1854,7 @@ const DisciplinaryProcessPage = () => {
                 />
 
                 {/* Attachments */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <Surface bg="secondary" padding={2} radius="md">
                     <Checkbox
                       checked={includeInitialComplaint}
@@ -1911,7 +1911,7 @@ const DisciplinaryProcessPage = () => {
                       />
                     </Surface>
                   ))}
-                </div>
+                </Grid>
 
                 {/* Extra Attachment Upload */}
                 <HStack gap={2} align="center">
@@ -2096,7 +2096,7 @@ const DisciplinaryProcessPage = () => {
                           value={finalActionTaken}
                           onChange={(event) => setFinalActionTaken(event.target.value)}
                         />
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-2)" }}>
+                        <Grid cols={2} gap={2}>
                           <div>
                             <div style={sectionLabelStyle}>Creation Date</div>
                             <Input
@@ -2129,12 +2129,12 @@ const DisciplinaryProcessPage = () => {
                               onChange={(event) => setFinalRemarks(event.target.value)}
                             />
                           </div>
-                        </div>
+                        </Grid>
 
                         {/* Reminder Items */}
                         <div style={sectionLabelStyle}>Reminder Items (Optional)</div>
                         {finalReminderItems.map((item, index) => (
-                          <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 140px auto", gap: "var(--spacing-2)", alignItems: "center" }}>
+                          <Grid cols="1fr 140px auto" gap={2} align="center" key={index}>
                             <Input
                               placeholder="Reminder action"
                               value={item.action}
@@ -2148,7 +2148,7 @@ const DisciplinaryProcessPage = () => {
                             <Button size="sm" variant="ghost" onClick={() => removeFinalReminderItem(index)}>
                               <X size={12} />
                             </Button>
-                          </div>
+                          </Grid>
                         ))}
                         <Button size="sm" variant="outline" onClick={addFinalReminderItem}>
                           <Plus size={12} /> Add Reminder
@@ -2189,7 +2189,7 @@ const DisciplinaryProcessPage = () => {
                                   value={studentAction.actionTaken}
                                   onChange={(event) => updateStudentActionField(student.userId, "actionTaken", event.target.value)}
                                 />
-                                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-2)" }}>
+                                <Grid cols={2} gap={2}>
                                   <div>
                                     <div style={sectionLabelStyle}>Creation Date</div>
                                     <Input
@@ -2222,11 +2222,11 @@ const DisciplinaryProcessPage = () => {
                                       onChange={(event) => updateStudentActionField(student.userId, "remarks", event.target.value)}
                                     />
                                   </div>
-                                </div>
+                                </Grid>
 
                                 {/* Student Reminder Items */}
                                 {(studentAction.reminderItems || []).map((item, index) => (
-                                  <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 140px auto", gap: "var(--spacing-2)", alignItems: "center" }}>
+                                  <Grid cols="1fr 140px auto" gap={2} align="center" key={index}>
                                     <Input
                                       placeholder="Reminder action"
                                       value={item.action}
@@ -2240,7 +2240,7 @@ const DisciplinaryProcessPage = () => {
                                     <Button size="sm" variant="ghost" onClick={() => removeStudentReminderItem(student.userId, index)}>
                                       <X size={12} />
                                     </Button>
-                                  </div>
+                                  </Grid>
                                 ))}
                                 <Button size="sm" variant="outline" onClick={() => addStudentReminderItem(student.userId)}>
                                   <Plus size={12} /> Add Reminder

@@ -3,7 +3,7 @@ import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
-import { Heading, HStack, Surface, Text } from "@/components/ui"
+import { Grid, Heading, HStack, Surface, Text } from "@/components/ui"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -80,7 +80,7 @@ const NewEntryForm = ({ onAddEntry }) => {
         />
       </HStack>
 
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--spacing-2)' }}>
+      <Grid as="form" cols={12} gap={2} onSubmit={handleSubmit}>
         {hostelType === "unit-based" ? (
           <>
             <div style={{ gridColumn: 'span 2' }}>
@@ -128,7 +128,7 @@ const NewEntryForm = ({ onAddEntry }) => {
             <FaPlus /> Add
           </Button>
         </div>
-      </form>
+      </Grid>
     </Surface>
   )
 }

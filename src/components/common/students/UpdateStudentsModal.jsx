@@ -8,7 +8,7 @@ import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import { studentApi } from "../../../service"
 import { useToast } from "@/components/ui/feedback"
-import { Checkbox, FileInput, Select, Spinner } from "@/components/ui"
+import { Checkbox, FileInput, Grid, Select, Spinner } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -1331,14 +1331,14 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     const healthInstructionsText = (
       <div>
         <p style={styles.boldText}>Field Input Types:</p>
-        <ul style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-1)" }}>
+        <Grid as="ul" cols={1} gap={1}>
           <li>
             <span style={styles.boldText}>rollNumber:</span> String (Required)
           </li>
           <li>
             <span style={styles.boldText}>bloodGroup:</span> String (A+, B+, AB+, O+, A-, B-, AB-, O-)
           </li>
-        </ul>
+        </Grid>
       </div>
     )
 

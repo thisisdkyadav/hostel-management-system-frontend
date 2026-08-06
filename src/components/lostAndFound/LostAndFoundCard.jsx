@@ -8,7 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Card, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Card, Grid, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
@@ -107,11 +107,11 @@ const LostAndFoundCard = ({ item, refresh }) => {
         <Card.Body>
           {item.images && item.images.length > 0 && (
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
+              <Grid cols={3} gap="var(--gap-sm)">
                 {item.images.slice(0, 3).map((imageUrl, index) => (
                   <img key={index} src={getMediaUrl(imageUrl)} alt={`${item.itemName} ${index + 1}`} style={{ width: '100%', height: '5rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
                 ))}
-              </div>
+              </Grid>
               {item.images.length > 3 && (
                 <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>+{item.images.length - 3} more images</Text>
               )}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, Input } from "czero/react"
-import { Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
@@ -1640,7 +1640,7 @@ const MegaEventsPage = () => {
           <Text size="sm" color="muted">
             Select the date range for this occurrence.
           </Text>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+          <Grid cols={2} gap={2}>
             <FormField label="Start Date" htmlFor="mega-occurrence-start-date" required>
               <Input
                 id="mega-occurrence-start-date"
@@ -1657,7 +1657,7 @@ const MegaEventsPage = () => {
                 onChange={(event) => setOccurrenceForm((prev) => ({ ...prev, endDate: event.target.value }))}
               />
             </FormField>
-          </div>
+          </Grid>
         </VStack>
       </Modal>
 
@@ -1727,7 +1727,7 @@ const MegaEventsPage = () => {
           )}
 
           <SectionHeader>Financials</SectionHeader>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)" }}>
+          <Grid cols={3} gap={2}>
             <FormField label="Expected Income" htmlFor="mega-total-expected-income">
               <Input
                 id="mega-total-expected-income"
@@ -1759,7 +1759,7 @@ const MegaEventsPage = () => {
                 disabled
               />
             </FormField>
-          </div>
+          </Grid>
 
           <Checkbox
             checked={proposalForm.accommodationRequired}
@@ -1778,7 +1778,7 @@ const MegaEventsPage = () => {
           )}
 
           <SectionHeader>Documents</SectionHeader>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+          <Grid cols={2} gap={2}>
             <PdfUploadField
               label="Proposal PDF"
               value={proposalForm.proposalDocumentUrl}
@@ -1795,7 +1795,7 @@ const MegaEventsPage = () => {
               disabled={!canCreateOrEditProposal}
               viewerTitle="Chief Guest Document"
             />
-          </div>
+          </Grid>
 
           {canReviewProposal && (
             <>
@@ -1803,7 +1803,7 @@ const MegaEventsPage = () => {
               {requiresProposalStageSelection && (
                 <div style={infoBoxStyle}>
                   <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+                  <Grid cols={3} gap={2} style={{ marginTop: "var(--spacing-2)" }}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -1813,7 +1813,7 @@ const MegaEventsPage = () => {
                         label={stage}
                       />
                     ))}
-                  </div>
+                  </Grid>
                 </div>
               )}
               <FormField label="Review Comments" htmlFor="mega-proposal-review-comments">
@@ -1870,12 +1870,12 @@ const MegaEventsPage = () => {
           </Surface>
 
           {/* Two Column Layout */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
+          <Grid cols={2} gap={4}>
             {/* Left Column */}
             <VStack gap={4}>
               {/* Programme Details Panel */}
               <Panel title="Programme Details" icon={CalendarDays}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <FormField label="Programme Type" htmlFor="mega-proposal-programme-type" required>
                     <Select
                       id="mega-proposal-programme-type"
@@ -1894,8 +1894,8 @@ const MegaEventsPage = () => {
                       disabled={!canCreateOrEditProposal}
                     />
                   </FormField>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--spacing-2)" }}>
+                </Grid>
+                <Grid cols={3} gap={2}>
                   <FormField label="Dates & Duration" htmlFor="mega-proposal-dates-duration" required>
                     <Input
                       id="mega-proposal-dates-duration"
@@ -1925,7 +1925,7 @@ const MegaEventsPage = () => {
                       disabled={!canCreateOrEditProposal}
                     />
                   </FormField>
-                </div>
+                </Grid>
               </Panel>
 
               {/* Background & Rationale Panel */}
@@ -1973,7 +1973,7 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditProposal}
                   />
                 </FormField>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <FormField label="Secondary Objective" htmlFor="mega-proposal-objective-2">
                     <Input
                       id="mega-proposal-objective-2"
@@ -1992,7 +1992,7 @@ const MegaEventsPage = () => {
                       disabled={!canCreateOrEditProposal}
                     />
                   </FormField>
-                </div>
+                </Grid>
               </Panel>
             </VStack>
 
@@ -2018,7 +2018,7 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditProposal}
                   />
                 </FormField>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <FormField label="Contact Mobile" htmlFor="mega-proposal-contact-mobile" required>
                     <Input
                       id="mega-proposal-contact-mobile"
@@ -2038,7 +2038,7 @@ const MegaEventsPage = () => {
                       disabled={!canCreateOrEditProposal}
                     />
                   </FormField>
-                </div>
+                </Grid>
               </Panel>
 
               {/* Target Participants Panel */}
@@ -2077,7 +2077,7 @@ const MegaEventsPage = () => {
 
               {/* Guest Details Panel */}
               <Panel title="Guest & Speaker Details" icon={Users} accent>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <Grid cols={2} gap={2}>
                   <FormField label="No. of Speakers/Guests" htmlFor="mega-tentative-speakers-guests">
                     <Input
                       id="mega-tentative-speakers-guests"
@@ -2100,7 +2100,7 @@ const MegaEventsPage = () => {
                       disabled={!canCreateOrEditProposal}
                     />
                   </FormField>
-                </div>
+                </Grid>
                 <FormField label="Guest Names, Designations & Affiliations" htmlFor="mega-guests-details-names">
                   <Textarea
                     id="mega-guests-details-names"
@@ -2113,7 +2113,7 @@ const MegaEventsPage = () => {
                 </FormField>
               </Panel>
             </VStack>
-          </div>
+          </Grid>
 
           {/* Programme Schedule - Full Width */}
           <Panel title="Programme Schedule" icon={Clock}>
@@ -2139,7 +2139,7 @@ const MegaEventsPage = () => {
 
           {/* Source of Funds - Full Width */}
           <Panel title="Source of Funds" icon={DollarSign} accent>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--spacing-2)" }}>
+            <Grid cols={4} gap={2}>
               <FormField label="Registration Fee" htmlFor="mega-source-funds-registration-fee-main">
                 <Input
                   id="mega-source-funds-registration-fee-main"
@@ -2184,19 +2184,19 @@ const MegaEventsPage = () => {
                   disabled={!canCreateOrEditProposal}
                 />
               </FormField>
-            </div>
+            </Grid>
           </Panel>
 
           {/* Registration Details - Full Width Table-style */}
           <Panel title="Registration Details by Category" icon={ClipboardCheck}>
-            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
+            <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Category</Text>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Registration Fee</Text>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Accommodation</Text>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Remarks</Text>
-            </div>
+            </Grid>
             {REGISTRATION_CATEGORIES.map((category) => (
-              <div key={category.key} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
+              <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} align="center" style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={category.key}>
                 <Text as="span" size="sm" weight="medium" color="primary">{category.label}</Text>
                 <Input
                   id={`mega-registration-fee-${category.key}`}
@@ -2223,13 +2223,13 @@ const MegaEventsPage = () => {
                   placeholder="Optional remarks"
                   disabled={!canCreateOrEditProposal}
                 />
-              </div>
+              </Grid>
             ))}
           </Panel>
 
           {/* Approval Requested - Full Width */}
           <Panel title="Approval Requested" icon={ClipboardCheck} accent>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+            <Grid cols={2} gap={3}>
               <Checkbox
                 checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
                 onChange={(event) => handleProposalDetailsChange(["approvalRequested", "conductProgrammeAsProposed"], event.target.checked)}
@@ -2254,7 +2254,7 @@ const MegaEventsPage = () => {
                 label="Additional institutional support"
                 disabled={!canCreateOrEditProposal}
               />
-            </div>
+            </Grid>
             {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
               <FormField label="Additional Support Details" htmlFor="mega-additional-support-details">
                 <Textarea
@@ -2330,7 +2330,7 @@ const MegaEventsPage = () => {
                   disabled={!canCreateOrEditExpense}
                 />
               </FormField>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+              <Grid cols={2} gap={2}>
                 <FormField label="Amount (₹)" htmlFor={`mega-bill-amount-${index}`} required>
                   <Input
                     id={`mega-bill-amount-${index}`}
@@ -2351,8 +2351,8 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditExpense}
                   />
                 </FormField>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+              </Grid>
+              <Grid cols={2} gap={2}>
                 <FormField label="Bill Number" htmlFor={`mega-bill-number-${index}`}>
                   <Input
                     id={`mega-bill-number-${index}`}
@@ -2371,7 +2371,7 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditExpense}
                   />
                 </FormField>
-              </div>
+              </Grid>
 
               <PdfUploadField
                 label="Bill PDF"
@@ -2423,7 +2423,7 @@ const MegaEventsPage = () => {
               {requiresExpenseStageSelection && (
                 <div style={infoBoxStyle}>
                   <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+                  <Grid cols={3} gap={2} style={{ marginTop: "var(--spacing-2)" }}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -2433,7 +2433,7 @@ const MegaEventsPage = () => {
                         label={stage}
                       />
                     ))}
-                  </div>
+                  </Grid>
                 </div>
               )}
               <FormField label="Review Comments" htmlFor="mega-expense-review-comments">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import { Badge, Card, DatePicker, Divider, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { studentApi } from "../../../service"
 
@@ -148,7 +148,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
         <VStack gap="medium" style={{ marginTop: 'var(--spacing-4)' }}>
           <Divider spacing="none" />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+          <Grid cols={3} gap="0" style={{ rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
             {hostels.length > 0 && (
               <VStack gap="xsmall">
                 <Label size="sm">Hostel</Label>
@@ -306,9 +306,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
                 <MultiSelectDropdown label="Missing Information" options={missingOptions} selectedValues={filters.missingOptions || []} onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)} placeholder="Select missing fields..." />
               </div>
             )}
-          </div>
+          </Grid>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+          <Grid cols={2} gap={4}>
             <VStack gap="xsmall">
               <Label size="sm">Admission Date From</Label>
               <DatePicker
@@ -329,7 +329,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
                 min={filters.admissionDateFrom}
               />
             </VStack>
-          </div>
+          </Grid>
         </VStack>
       )}
     </Card>

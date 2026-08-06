@@ -809,14 +809,14 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       }}
                     >
                       <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
-                      <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
+                      <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                         <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
                         <li><Text as="span" weight="medium">room:</Text> String/Number (Required)</li>
                         <li><Text as="span" weight="medium">bedNumber:</Text> Number (Required)</li>
                         {hostelType === "unit-based" && (
                           <li><Text as="span" weight="medium">unit:</Text> String (Required)</li>
                         )}
-                      </ul>
+                      </Grid>
                     </div>
                   </VStack>
                 </>

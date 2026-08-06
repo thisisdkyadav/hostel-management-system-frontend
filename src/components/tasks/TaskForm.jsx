@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Label, Select, Surface, Text, Textarea } from "@/components/ui"
+import { Grid, Label, Select, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -139,7 +139,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
   return (
     <Modal title={initialTask ? "Edit Task" : "Create New Task"} onClose={() => setIsOpen(false)} width={600} footer={renderFooter()}>
-      <form id="task-form" onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-5)" }}>
+      <Grid as="form" cols={1} gap={5} id="task-form" onSubmit={handleSubmit}>
         {/* Title Field */}
         <div>
           <Label color="secondary" spacing={2} htmlFor="title">
@@ -159,7 +159,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         </div>
 
         {/* Priority and Category */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
+        <Grid cols={1} gap={4} className="md:grid-cols-2">
           <div>
             <Label color="secondary" spacing={2} htmlFor="priority">
               Priority
@@ -173,7 +173,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             </Label>
             <Select id="category" name="category" value={taskData.category} onChange={handleChange} options={TASK_CATEGORIES.map((category) => ({ value: category, label: category }))} />
           </div>
-        </div>
+        </Grid>
 
         {/* Due Date Field */}
         <div>
@@ -191,7 +191,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
         {/* Form Error */}
         {errors.submit && <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", borderRadius: "var(--radius-lg)" }}>{errors.submit}</div>}
-      </form>
+      </Grid>
     </Modal>
   )
 }

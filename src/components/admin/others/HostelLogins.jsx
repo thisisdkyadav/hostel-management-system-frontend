@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Heading, SearchInput, Spinner, VStack } from "@/components/ui"
+import { Grid, Heading, SearchInput, Spinner, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import HostelGateCard from "./HostelGateCard"
@@ -73,11 +73,11 @@ const HostelLogins = () => {
       ) : filteredHostelGates.length === 0 ? (
         <NoResults icon={<FaBuilding style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No hostel gate logins found" suggestion="Add a new hostel gate login using the button above" />
       ) : (
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-6)' }}>
+        <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredHostelGates.map((gate) => (
             <HostelGateCard key={gate._id} gate={gate} onUpdate={fetchHostelGates} onDelete={fetchHostelGates} />
           ))}
-        </div>
+        </Grid>
       )}
 
       <AddHostelGateModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchHostelGates} hostels={hostelList} />

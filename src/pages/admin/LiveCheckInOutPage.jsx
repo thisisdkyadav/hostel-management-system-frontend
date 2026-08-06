@@ -353,7 +353,7 @@ const LiveCheckInOutPage = () => {
                 </VStack>
               </Grid>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
+              <Grid cols={2} gap={4}>
                 <VStack gap="xsmall">
                   <Label size="sm">Start Date</Label>
                   <DatePicker
@@ -374,7 +374,7 @@ const LiveCheckInOutPage = () => {
                     min={filters.startDate}
                   />
                 </VStack>
-              </div>
+              </Grid>
             </VStack>
           )}
         </Card>
@@ -549,7 +549,7 @@ const LiveCheckInOutPage = () => {
             <Heading as="h2" size="lg" weight="semibold" color="primary" style={{ marginBottom: "var(--spacing-3)" }}>
               Hostel-wise Summary
             </Heading>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--spacing-3)" }}>
+            <Grid cols="repeat(auto-fill, minmax(240px, 1fr))" gap={3}>
               {hostelWiseStats.map((hostel) => (
                 <Card key={hostel.hostelId || hostel.hostelName} padding="p-4">
                   <HStack justify="between" align="start">
@@ -589,7 +589,7 @@ const LiveCheckInOutPage = () => {
                   </HStack>
                 </Card>
               ))}
-            </div>
+            </Grid>
           </div>
         )}
       </div>

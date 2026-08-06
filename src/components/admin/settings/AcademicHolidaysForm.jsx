@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
 import { Button, Input } from "czero/react"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
 
 const YEAR_REGEX = /^\d{4}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -168,14 +168,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
 
   return (
     <VStack gap={6}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(180px, 240px) auto",
-          gap: "var(--spacing-2)",
-          justifyContent: "start",
-        }}
-      >
+      <Grid cols="minmax(180px, 240px) auto" gap={2} style={{ justifyContent: "start" }}>
         <Input
           type="text"
           value={newYear}
@@ -189,7 +182,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
         <Button type="button" variant="primary" onClick={handleAddYear} disabled={isLoading}>
           <HiPlus size={16} /> Add Year
         </Button>
-      </div>
+      </Grid>
 
       {sortedYears.length === 0 ? (
         <div
@@ -264,14 +257,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
               </Button>
             </HStack>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(220px, 1fr) minmax(180px, 220px) auto",
-                gap: "var(--spacing-2)",
-                marginBottom: "var(--spacing-4)",
-              }}
-            >
+            <Grid cols="minmax(220px, 1fr) minmax(180px, 220px) auto" gap={2} style={{ marginBottom: "var(--spacing-4)" }}>
               <Input
                 type="text"
                 value={newHolidayTitle}
@@ -299,7 +285,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
               >
                 <HiPlus size={14} /> Add
               </Button>
-            </div>
+            </Grid>
 
             {selectedYearHolidays.length === 0 ? (
               <Text as="div" color="muted" size="sm">
@@ -308,19 +294,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
             ) : (
               <VStack gap={2}>
                 {selectedYearHolidays.map((holiday) => (
-                  <div
-                    key={`${holiday.date}-${holiday.title}`}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr auto auto",
-                      alignItems: "center",
-                      gap: "var(--spacing-2)",
-                      border: "var(--border-1) solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-md)",
-                      padding: "var(--spacing-2) var(--spacing-3)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                    }}
-                  >
+                  <Grid cols="1fr auto auto" gap={2} align="center" style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-2) var(--spacing-3)", backgroundColor: "var(--color-bg-secondary)" }} key={`${holiday.date}-${holiday.title}`}>
                     <Text as="span" color="body" size="sm" weight="medium">
                       {holiday.title}
                     </Text>
@@ -347,7 +321,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                     >
                       <HiTrash size={14} />
                     </Button>
-                  </div>
+                  </Grid>
                 ))}
               </VStack>
             )}

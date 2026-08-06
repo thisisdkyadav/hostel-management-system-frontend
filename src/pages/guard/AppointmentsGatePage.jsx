@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"
@@ -311,7 +311,7 @@ const AppointmentsGatePage = () => {
             </HStack>
 
             {/* Info grid */}
-            <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
+            <Grid cols={2} gap={3}>
               <div>
                 <span style={labelStyle}>Appointment With</span>
                 <Text as="div" size="sm" color="body">
@@ -347,7 +347,7 @@ const AppointmentsGatePage = () => {
                   </Text>
                 </div>
               )}
-            </div>
+            </Grid>
 
             {/* Reason */}
             <div style={sectionStyle}>

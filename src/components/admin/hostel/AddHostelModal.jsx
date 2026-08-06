@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../service"
-import { Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const AddHostelModal = ({ show, onClose, onAdd }) => {
@@ -56,7 +56,7 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
               <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter hostel name" required />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-2">
+            <Grid cols={1} gap={4} className="sm:grid-cols-2">
               <div>
                 <Label htmlFor="gender" required>Gender</Label>
                 <Select name="gender" value={formData.gender} onChange={handleChange} options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} required />
@@ -66,7 +66,7 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
                 <Label htmlFor="type" required>Hostel Type</Label>
                 <Select name="type" value={formData.type} onChange={handleChange} options={[{ value: "unit-based", label: "Unit-based" }, { value: "room-only", label: "Room-only" }]} required />
               </div>
-            </div>
+            </Grid>
           </VStack>
 
           <div style={{ paddingTop: 'var(--spacing-2)' }}>

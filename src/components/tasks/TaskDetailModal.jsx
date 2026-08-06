@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Heading, HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
@@ -172,7 +172,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
   return (
     <>
       <Modal title="Task Details" onClose={() => setShowDetailModal(false)} width={700} footer={renderFooter()}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-5)' }}>
+        <Grid cols={1} gap={5}>
           {/* Task Header */}
           <div>
             <HStack gap="none" align="start" justify="between">
@@ -194,7 +194,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           </div>
 
           {/* Task Details */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
+          <Grid cols={1} gap={4} className="md:grid-cols-2">
             <div>
               <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Category</Heading>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)' }}>{selectedTask.category}</div>
@@ -203,7 +203,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
               <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Due Date</Heading>
               <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)', backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)', color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)' }}>{formatDate(selectedTask.dueDate)}</div>
             </div>
-          </div>
+          </Grid>
 
           {/* Assigned Users */}
           <div>
@@ -236,7 +236,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
 
           {/* Error Message */}
           {error && <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
-        </div>
+        </Grid>
       </Modal>
 
       {/* Edit Task Modal */}

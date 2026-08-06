@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { HStack, Label, Select, Spinner, Surface, Text } from "@/components/ui"
+import { Grid, HStack, Label, Select, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -220,7 +220,7 @@ const HealthTab = ({ userId }) => {
           </div>
         ) : editHealthData ? (
           <form onSubmit={handleUpdateHealth} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+            <Grid cols={2} gap={4}>
               <div>
                 <Label color="body" spacing={1}>Blood Group</Label>
                 <Select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange}
@@ -258,7 +258,7 @@ const HealthTab = ({ userId }) => {
                 <Label color="body" spacing={1}>Insurance Number</Label>
                 <Input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} placeholder="Enter insurance number" />
               </div>
-            </div>
+            </Grid>
 
             <HStack gap={2} justify="end" style={{ marginTop: 'var(--spacing-4)' }}>
               <Button type="button" onClick={() => setEditHealthData(false)} variant="secondary" size="sm">
@@ -271,7 +271,7 @@ const HealthTab = ({ userId }) => {
           </form>
         ) : (
           <Surface bg="tertiary" padding={5} radius="lg">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 'var(--spacing-4)' }}>
+            <Grid cols={2} gap="0" style={{ rowGap: 'var(--spacing-4)' }}>
               <div>
                 <Text size="sm" color="muted">Blood Group</Text>
                 <Text weight="medium" color="body">{healthData?.bloodGroup || "Not specified"}</Text>
@@ -303,7 +303,7 @@ const HealthTab = ({ userId }) => {
                   </HStack>
                 </>
               )}
-            </div>
+            </Grid>
           </Surface>
         )}
       </div>

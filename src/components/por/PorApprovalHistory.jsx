@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, Clock, FileText, Send, X } from "lucide-react"
 import { porApi } from "@/service"
-import { HStack, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Text, VStack } from "@/components/ui"
 
 const ACTION_ICONS = {
   submitted: Send,
@@ -128,15 +128,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
 
         if (compact) {
           return (
-            <div
-              key={log._id || idx}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "32px minmax(0, 1fr)",
-                gap: "var(--spacing-3)",
-                alignItems: "start",
-              }}
-            >
+            <Grid cols="32px minmax(0, 1fr)" gap={3} align="start" key={log._id || idx}>
               <div style={timelineRailStyle}>
                 {!isLast ? <div style={timelineLineStyle} /> : null}
                 <div
@@ -187,20 +179,12 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   ) : null}
                 </div>
               </div>
-            </div>
+            </Grid>
           )
         }
 
         return (
-          <div
-            key={log._id || idx}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(140px, 190px) 32px minmax(0, 1fr)",
-              gap: "var(--spacing-3)",
-              alignItems: "start",
-            }}
-              >
+          <Grid cols="minmax(140px, 190px) 32px minmax(0, 1fr)" gap={3} align="start" key={log._id || idx}>
                 <div
                   style={{
                 paddingTop: "4px",
@@ -278,7 +262,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                 </p>
               )}
             </div>
-          </div>
+          </Grid>
         )
       })}
     </VStack>

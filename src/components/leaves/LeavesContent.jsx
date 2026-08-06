@@ -1,5 +1,5 @@
 import NoResults from "../common/NoResults"
-import { HStack, IconCircle, Pagination, Spinner, Text } from "@/components/ui"
+import { Grid, HStack, IconCircle, Pagination, Spinner, Text } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
 import { Table } from "czero/react"
 
@@ -60,7 +60,7 @@ const LeavesListView = ({ leaves, onViewDetails }) => {
 
 const LeavesCardView = ({ leaves, onViewDetails }) => {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--gap-md)' }}>
+    <Grid cols="repeat(auto-fill, minmax(300px, 1fr))" gap="var(--gap-md)">
       {leaves.map((leave, index) => (
         <div key={leave.id || leave._id || index} style={{ backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-light)`, borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-4)', boxShadow: 'var(--shadow-sm)', cursor: 'pointer', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
@@ -79,7 +79,7 @@ const LeavesCardView = ({ leaves, onViewDetails }) => {
           </Text>
         </div>
       ))}
-    </div>
+    </Grid>
   )
 }
 

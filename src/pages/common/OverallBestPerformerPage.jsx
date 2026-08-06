@@ -1170,7 +1170,7 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
           </span>
         </HStack>
 
-        <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(0, 0.85fr)", gap: "var(--spacing-4)" }}>
+        <Grid cols="minmax(0, 1.15fr) minmax(0, 0.85fr)" gap={4}>
           <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>POR Submission</span>
@@ -1222,7 +1222,7 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
               </div>
             </div>
           </div>
-        </div>
+        </Grid>
       </VStack>
     </Modal>
   )
@@ -3150,7 +3150,7 @@ const ReviewModal = ({
                 <Text as="div" size="xs" weight="semibold" color="secondary" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-3)" }}>
                   Disclosures & Declarations
                 </Text>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+                <Grid cols={4} gap={3}>
                   <Surface padding="10px 12px" className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Passing Out Student</Text>
                     <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
@@ -3191,7 +3191,7 @@ const ReviewModal = ({
                       )}
                     </div>
                   </Surface>
-                </div>
+                </Grid>
               </div>
             </PorDetailCard>
 
@@ -5042,7 +5042,7 @@ const OverallBestPerformerPage = () => {
           fullHeight={true}
         >
           <VStack gap={4}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+            <Grid cols={2} gap={3}>
               <div>
                 <label style={fieldLabelStyle}>Occurrence title</label>
                 <input value={occurrenceForm.title} onChange={(event) => setOccurrenceForm((current) => ({ ...current, title: event.target.value }))} style={inputStyle} />
@@ -5070,7 +5070,7 @@ const OverallBestPerformerPage = () => {
                 <label style={fieldLabelStyle}>Description / instructions</label>
                 <textarea value={occurrenceForm.description} onChange={(event) => setOccurrenceForm((current) => ({ ...current, description: event.target.value }))} style={textareaStyle} />
               </div>
-            </div>
+            </Grid>
 
             {occurrenceModalMode === "edit" ? (
               <SectionPanel
@@ -5143,7 +5143,7 @@ const OverallBestPerformerPage = () => {
               </Text>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: "var(--spacing-3)", alignItems: "end" }}>
+            <Grid cols="minmax(0,1fr) auto" gap={3} align="end">
               <div>
                 <label style={fieldLabelStyle}>Search students</label>
                 <Input
@@ -5154,7 +5154,7 @@ const OverallBestPerformerPage = () => {
               </div>
               <div style={{ minWidth: 220 }}>
                 <label style={fieldLabelStyle}>Add by roll number</label>
-                <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: "var(--spacing-2)" }}>
+                <Grid cols="minmax(0,1fr) auto" gap={2}>
                   <Input
                     value={manualEligibleRollNumber}
                     onChange={(event) => setManualEligibleRollNumber(event.target.value.toUpperCase())}
@@ -5163,9 +5163,9 @@ const OverallBestPerformerPage = () => {
                   <Button onClick={handleAddEligibleStudent}>
                     <Plus size={16} /> Add
                   </Button>
-                </div>
+                </Grid>
               </div>
-            </div>
+            </Grid>
 
             <SectionPanel
               title="Replace entire list"
@@ -5188,19 +5188,7 @@ const OverallBestPerformerPage = () => {
               <div style={{ display: "grid", gap: "var(--spacing-2)", maxHeight: "42vh", overflowY: "auto" }}>
                 {filteredEligibleStudents.length > 0 ? (
                   filteredEligibleStudents.map((student) => (
-                    <div
-                      key={student.rollNumber}
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "minmax(0,1.2fr) minmax(0,1fr) auto",
-                        gap: "var(--spacing-3)",
-                        alignItems: "center",
-                        padding: "var(--spacing-3)",
-                        border: "1px solid var(--color-border-primary)",
-                        borderRadius: "var(--radius-card-sm)",
-                        backgroundColor: "var(--color-bg-secondary)",
-                      }}
-                    >
+                    <Grid cols="minmax(0,1.2fr) minmax(0,1fr) auto" gap={3} align="center" style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={student.rollNumber}>
                       <div style={{ minWidth: 0 }}>
                         <Text as="div" size="sm" weight="semibold" color="primary">
                           {student.name || "Student record will be validated on save"}
@@ -5221,7 +5209,7 @@ const OverallBestPerformerPage = () => {
                       >
                         <XCircle size={16} /> Remove
                       </Button>
-                    </div>
+                    </Grid>
                   ))
                 ) : (
                   <Text as="div" color="muted" size="sm">

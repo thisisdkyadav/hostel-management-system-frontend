@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Checkbox, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Checkbox, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import CsvUploader from "../../../common/CsvUploader"
@@ -65,7 +65,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
   const templateInstructions = (
     <div>
       <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
-      <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
+      <Grid as="ul" cols={2} gap="0" style={{ columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
             <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101) <Text as="span" color="danger">*</Text>
@@ -80,7 +80,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
         <li>
           <Text as="span" weight="medium">status:</Text> One of: {MANUAL_ROOM_STATUSES.join(", ")} (optional)
         </li>
-      </ul>
+      </Grid>
       <Text size="xs" style={{ marginTop: 'var(--spacing-2)' }}>
         <Text as="span" color="danger">*</Text> Required fields
       </Text>

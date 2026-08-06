@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Heading, HStack, IconCircle, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -377,7 +377,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </HStack>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-5)" }}>
+            <Grid cols={2} gap={5}>
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                   <GraduationCap size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
@@ -518,7 +518,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   </VStack>
                 </div>
               )}
-            </div>
+            </Grid>
           </>
         )
 
@@ -824,7 +824,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Text color="muted">No ID card images found for this student</Text>
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
+              <Grid cols={2} gap={6}>
                 {/* Front ID Card */}
                 <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)", border: "var(--border-1) solid var(--color-border-primary)" }}>
                   <Heading as="h4" size="base" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-3)" }}>ID Card Front</Heading>
@@ -870,7 +870,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                   )}
                 </div>
-              </div>
+              </Grid>
             )}
           </Surface>
         )

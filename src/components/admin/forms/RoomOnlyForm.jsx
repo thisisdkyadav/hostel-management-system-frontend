@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 
@@ -97,14 +97,14 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
   const templateInstructions = (
     <div>
       <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
-      <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
+      <Grid as="ul" cols={2} gap="0" style={{ columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
           <Text as="span" weight="medium">roomNumber:</Text> String (e.g., 101)
         </li>
         <li>
           <Text as="span" weight="medium">capacity:</Text> Number
         </li>
-      </ul>
+      </Grid>
     </div>
   )
 
@@ -137,7 +137,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
       {inputMethod === "form" ? (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
+          <Grid cols={1} gap={4} className="md:grid-cols-2">
             <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
               <Label htmlFor="floors">Number of Floors</Label>
               <Input id="floors" type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" />
@@ -148,7 +148,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
               <Input id="defaultRoomsPerFloor" type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" />
               <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>Room numbers will be generated as 101, 102... (Ground floor), 201, 202... (First floor)</Text>
             </VStack>
-          </div>
+          </Grid>
 
           <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
             <Label htmlFor="standardCapacity">Standard Room Capacity</Label>
@@ -161,7 +161,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
               <Text size="xs" color="muted">Override default rooms per floor for a specific floor</Text>
             </Surface>
             {roomConfig.exceptions.map((ex, index) => (
-              <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
+              <Grid cols={2} gap={4} style={{ marginBottom: "var(--spacing-2)" }} key={index}>
                 <Input type="number" placeholder="Floor Number" value={ex.floor} onChange={(e) => handleExceptionChange(index, "floor", e.target.value)} min="1" />
                 <Input type="number" placeholder="Rooms on Floor" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)} min="1" />
                 <Button
@@ -173,7 +173,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
                 >
                   Remove Exception
                 </Button>
-              </div>
+              </Grid>
             ))}
             <Button
               type="button"

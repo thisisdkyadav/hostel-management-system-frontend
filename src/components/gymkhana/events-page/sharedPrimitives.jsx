@@ -2,7 +2,7 @@ import { createElement } from "react"
 import { Input } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
 
 export const footerTabStyles = {
   tabsBar: {
@@ -333,7 +333,7 @@ export const EventFormFields = ({
         Calendar locked. Amendment will be reviewed by Admin.
       </span>
     )}
-    <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "2fr 1fr" }}>
+    <Grid cols="2fr 1fr" gap={3}>
       <div>
         <label
           style={formLabelStyles}
@@ -365,14 +365,8 @@ export const EventFormFields = ({
           options={categoryOptions}
         />
       </div>
-    </div>
-    <div
-      style={{
-        display: "grid",
-        gap: "var(--spacing-3)",
-        gridTemplateColumns: "repeat(3, 1fr)",
-      }}
-    >
+    </Grid>
+    <Grid cols={3} gap={3}>
       <div>
         <label
           style={formLabelStyles}
@@ -421,7 +415,7 @@ export const EventFormFields = ({
           onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
         />
       </div>
-    </div>
+    </Grid>
     <DateOverlapSummary
       eventForm={eventForm}
       isDateRangeOrdered={isDateRangeOrdered}

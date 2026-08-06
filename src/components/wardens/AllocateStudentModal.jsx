@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -99,7 +99,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
             <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-4">
+          <Grid cols={2} gap={4} className="sm:grid-cols-4">
             <div>
               <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Room Number</Text>
               <Text weight="medium" size="base">{room.roomNumber}</Text>
@@ -118,7 +118,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                 {room.occupiedCount || room.currentOccupancy} / {room.capacity}
               </Text>
             </div>
-          </div>
+          </Grid>
 
           {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
             <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)' }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { HStack, Label, Select, Surface, Text, useConfirm } from "@/components/ui"
+import { Grid, HStack, Label, Select, Surface, Text, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -99,7 +99,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           </Text>
         </HStack>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+        <Grid cols={2} gap={4}>
           <HStack gap="none" align="start">
             <FaHospital style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
@@ -151,7 +151,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
               </HStack>
             </>
           )}
-        </div>
+        </Grid>
 
         <HStack gap="none" align="start" style={{ marginTop: 'var(--spacing-4)' }}>
           <FaFileAlt style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
@@ -183,7 +183,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
   const renderEditMode = () => (
     <form onSubmit={handleSubmit}>
       <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-6)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+        <Grid cols={2} gap={4}>
           <div>
             <Label color="body" spacing={1}>Insurance Provider</Label>
             <Select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} required
@@ -214,7 +214,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
             <Label color="body" spacing={1}>Description</Label>
             <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter claim description" required></textarea>
           </div>
-        </div>
+        </Grid>
       </Surface>
 
       <HStack gap={3} justify="end">

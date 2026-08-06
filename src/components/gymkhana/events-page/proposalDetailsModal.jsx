@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Checkbox, Select, Textarea } from "@/components/ui/form"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
@@ -59,10 +59,10 @@ export const GymkhanaProposalDetailsModal = ({
         </FormField>
       </Surface>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
+      <Grid cols={2} gap={4}>
         <VStack gap={4}>
           <Panel title="Programme Details" icon={CalendarDays}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+            <Grid cols={2} gap={2}>
               <FormField label="Programme Type" htmlFor="gymkhana-proposal-programme-type" required>
                 <Select
                   id="gymkhana-proposal-programme-type"
@@ -91,14 +91,8 @@ export const GymkhanaProposalDetailsModal = ({
                   disabled={!canEditProposalForm}
                 />
               </FormField>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-                gap: "var(--spacing-2)",
-              }}
-            >
+            </Grid>
+            <Grid cols={3} gap={2}>
               <FormField label="Dates & Duration" htmlFor="gymkhana-proposal-dates-duration" required>
                 <Input
                   id="gymkhana-proposal-dates-duration"
@@ -144,7 +138,7 @@ export const GymkhanaProposalDetailsModal = ({
                   disabled={!canEditProposalForm}
                 />
               </FormField>
-            </div>
+            </Grid>
           </Panel>
 
           <Panel title="Background & Rationale" icon={FileText} accent>
@@ -211,7 +205,7 @@ export const GymkhanaProposalDetailsModal = ({
                 disabled={!canEditProposalForm}
               />
             </FormField>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+            <Grid cols={2} gap={2}>
               <FormField label="Secondary Objective" htmlFor="gymkhana-proposal-objective-2">
                 <Input
                   id="gymkhana-proposal-objective-2"
@@ -234,7 +228,7 @@ export const GymkhanaProposalDetailsModal = ({
                   disabled={!canEditProposalForm}
                 />
               </FormField>
-            </div>
+            </Grid>
           </Panel>
         </VStack>
 
@@ -265,7 +259,7 @@ export const GymkhanaProposalDetailsModal = ({
                 disabled={!canEditProposalForm}
               />
             </FormField>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+            <Grid cols={2} gap={2}>
               <FormField label="Contact Mobile" htmlFor="gymkhana-proposal-contact-mobile" required>
                 <Input
                   id="gymkhana-proposal-contact-mobile"
@@ -295,7 +289,7 @@ export const GymkhanaProposalDetailsModal = ({
                   disabled={!canEditProposalForm}
                 />
               </FormField>
-            </div>
+            </Grid>
           </Panel>
 
           <Panel title="Target Participants" icon={Users}>
@@ -353,7 +347,7 @@ export const GymkhanaProposalDetailsModal = ({
           </Panel>
 
           <Panel title="Guest & Speaker Details" icon={Users} accent>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+            <Grid cols={2} gap={2}>
               <FormField label="No. of Speakers/Guests" htmlFor="gymkhana-tentative-speakers-guests">
                 <Input
                   id="gymkhana-tentative-speakers-guests"
@@ -386,7 +380,7 @@ export const GymkhanaProposalDetailsModal = ({
                   disabled={!canEditProposalForm}
                 />
               </FormField>
-            </div>
+            </Grid>
             <FormField label="Guest Names, Designations & Affiliations" htmlFor="gymkhana-guests-details-names">
               <Textarea
                 id="gymkhana-guests-details-names"
@@ -404,7 +398,7 @@ export const GymkhanaProposalDetailsModal = ({
             </FormField>
           </Panel>
         </VStack>
-      </div>
+      </Grid>
 
       <Panel title="Programme Schedule" icon={Clock}>
         <FormField label="Brief Schedule" htmlFor="gymkhana-programme-schedule-brief" required>
@@ -432,9 +426,7 @@ export const GymkhanaProposalDetailsModal = ({
       </Panel>
 
       <Panel title="Source of Funds" icon={DollarSign} accent>
-        <div
-          style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--spacing-2)" }}
-        >
+        <Grid cols={4} gap={2}>
           <FormField label="Registration Fee" htmlFor="gymkhana-source-funds-registration-fee-main">
             <Input
               id="gymkhana-source-funds-registration-fee-main"
@@ -493,21 +485,11 @@ export const GymkhanaProposalDetailsModal = ({
               disabled={!canEditProposalForm}
             />
           </FormField>
-        </div>
+        </Grid>
       </Panel>
 
       <Panel title="Registration Details by Category" icon={ClipboardCheck}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr",
-            gap: "var(--spacing-2)",
-            padding: "var(--spacing-2)",
-            backgroundColor: "var(--color-bg-tertiary)",
-            borderRadius: "var(--radius-card-sm)",
-            marginBottom: "var(--spacing-2)",
-          }}
-        >
+        <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
           <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Category
           </Text>
@@ -520,20 +502,9 @@ export const GymkhanaProposalDetailsModal = ({
           <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Remarks
           </Text>
-        </div>
+        </Grid>
         {registrationCategories.map((category) => (
-          <div
-            key={category.key}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr",
-              gap: "var(--spacing-2)",
-              alignItems: "center",
-              padding: "var(--spacing-2)",
-              borderRadius: "var(--radius-card-sm)",
-              backgroundColor: "var(--color-bg-secondary)",
-            }}
-          >
+          <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} align="center" style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={category.key}>
             <Text as="span" size="sm" weight="medium" color="primary">
               {category.label}
             </Text>
@@ -583,12 +554,12 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="Optional remarks"
               disabled={!canEditProposalForm}
             />
-          </div>
+          </Grid>
         ))}
       </Panel>
 
       <Panel title="Approval Requested" icon={ClipboardCheck} accent>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+        <Grid cols={2} gap={3}>
           <Checkbox
             checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
             onChange={(event) =>
@@ -637,7 +608,7 @@ export const GymkhanaProposalDetailsModal = ({
             label="Additional institutional support"
             disabled={!canEditProposalForm}
           />
-        </div>
+        </Grid>
         {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
           <FormField label="Additional Support Details" htmlFor="gymkhana-additional-support-details">
             <Textarea

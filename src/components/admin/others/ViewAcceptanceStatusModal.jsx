@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Alert, HStack, IconCircle, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, IconCircle, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -83,7 +83,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         {error && <Alert type="error">{error}</Alert>}
 
         {/* Statistics */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-4)' }}>
+        <Grid cols={4} gap={4}>
           <Surface bg="brand" padding={4} radius="lg">
             <Text as="div" size="sm" color="brand" weight="medium">Total Students</Text>
             <Text as="div" size="2xl" weight="bold" color="var(--color-primary-dark)">{totalStudents}</Text>
@@ -100,7 +100,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
             <Text as="div" size="sm" color="muted" weight="medium">Not Viewed</Text>
             <Text as="div" size="2xl" weight="bold" color="secondary">{notViewedCount}</Text>
           </Surface>
-        </div>
+        </Grid>
 
         {/* Progress bar */}
         <div style={{ marginTop: 'var(--spacing-2)' }}>

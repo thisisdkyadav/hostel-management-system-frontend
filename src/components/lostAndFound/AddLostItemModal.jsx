@@ -118,7 +118,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
             </div>
 
             {previewImages.length > 0 && (
-              <div style={{ marginTop: 'var(--spacing-3)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
+              <Grid cols={3} gap="var(--gap-sm)" style={{ marginTop: 'var(--spacing-3)' }}>
                 {previewImages.map((preview, index) => (
                   <div key={index} style={{ position: 'relative' }} className="group">
                     <img src={preview} alt={`Preview ${index + 1}`} style={{ width: '100%', height: '6rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
@@ -137,7 +137,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                     ><FaTimes size={12} /></Button>
                   </div>
                 ))}
-              </div>
+              </Grid>
             )}
           </div>
 

@@ -3,7 +3,7 @@ import { FiMail, FiPhone, FiUser, FiShield } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { EmptyState, ErrorState, Grid, LoadingState } from "@/components/ui"
 import { useAuth } from "../../contexts/AuthProvider"
 import { gymkhanaEventsApi } from "../../service/modules/gymkhanaEvents.api"
 
@@ -60,7 +60,7 @@ const GymkhanaProfile = () => {
     <div>
       <ProfileHeader user={gymkhanaData} role="Gymkhana" subtitle="Student Affairs Events Team" />
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--gap-lg)", marginTop: "var(--spacing-8)" }} className="lg:grid-cols-2">
+      <Grid cols={1} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }} className="lg:grid-cols-2">
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={gymkhanaData.email} icon={FiMail} />
@@ -68,7 +68,7 @@ const GymkhanaProfile = () => {
             <ProfileInfo label="Role" value={gymkhanaData.role} icon={FiShield} />
           </ProfileCard>
         </div>
-      </div>
+      </Grid>
     </div>
   )
 }

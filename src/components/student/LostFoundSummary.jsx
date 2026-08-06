@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FiSearch } from "react-icons/fi"
 import { CgSearchFound } from "react-icons/cg"
-import { HStack, Surface, Text } from "@/components/ui"
+import { Grid, HStack, Surface, Text } from "@/components/ui"
 
 const LostFoundSummary = ({ lostAndFoundStats }) => {
   return (
@@ -16,7 +16,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
         </Link>
       </HStack>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--gap-sm)' }}>
+      <Grid cols={2} gap="var(--gap-sm)">
         <div style={{ backgroundColor: 'var(--color-orange-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           <Surface bg="warning" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
             <CgSearchFound style={{ color: 'var(--color-orange-text)', fontSize: 'var(--icon-lg)' }} />
@@ -32,7 +32,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
           <Text as="span" size="2xl" weight="bold" color="success">{lostAndFoundStats?.claimed || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Claimed Items</Text>
         </div>
-      </div>
+      </Grid>
 
       <div style={{ marginTop: 'var(--spacing-3)', paddingTop: 'var(--spacing-2)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
         <Link to="lost-and-found" style={{ display: 'block', width: '100%', textAlign: 'center', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-all)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', textDecoration: 'none' }} onMouseEnter={(e) => { 

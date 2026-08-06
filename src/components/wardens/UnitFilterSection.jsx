@@ -1,5 +1,5 @@
 import React from "react"
-import { Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
@@ -32,7 +32,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
         </Button>
       </HStack>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="md:grid-cols-3 lg:grid-cols-4" >
+      <Grid cols={1} gap="var(--gap-md)" className="md:grid-cols-3 lg:grid-cols-4">
         {/* Hostel Filter */}
         <VStack gap="xsmall">
           <Label htmlFor="hostelId">Hostel</Label>
@@ -79,7 +79,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <Label htmlFor="searchTerm">Search</Label>
           <Input id="searchTerm" type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} />
         </VStack>
-      </div>
+      </Grid>
     </Surface>
   )
 }

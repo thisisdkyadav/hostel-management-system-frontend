@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
+import { Alert, Card, Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -294,7 +294,7 @@ const ComplaintFeedbackPage = () => {
                             <Label color="body" spacing={2}>
                                 Satisfaction status <Text as="span" color="danger">*</Text>
                             </Label>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-2)' }}>
+                            <Grid cols={3} gap={2}>
                                 <Button
                                     type="button"
                                     onClick={() => setSatisfactionStatus("Satisfied")}
@@ -319,7 +319,7 @@ const ComplaintFeedbackPage = () => {
                                 >
                                     False Fix
                                 </Button>
-                            </div>
+                            </Grid>
                         </div>
 
                         {/* Comments */}

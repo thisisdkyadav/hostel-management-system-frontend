@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Alert, FileInput, Grid, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -155,14 +155,14 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
 
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
               <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
-              <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-1) var(--spacing-4)' }}>
+              <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                 <li>
                   <Text as="span" weight="medium">rollNumber:</Text> String (Required)
                 </li>
                 <li>
                   <Text as="span" weight="medium">insuranceNumber:</Text> String (Required)
                 </li>
-              </ul>
+              </Grid>
             </div>
           </VStack>
           {csvFile && (

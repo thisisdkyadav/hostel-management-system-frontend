@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa"
-import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, Grid, HStack, Label, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { insuranceProviderApi } from "../../../service"
@@ -78,7 +78,7 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
               <Input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="+91 9876543210" required />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
+            <Grid cols={1} gap={4} className="md:grid-cols-2">
               <div>
                 <Label htmlFor="startDate" required>Start Date</Label>
                 <Input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} icon={<FaCalendarAlt />} required />
@@ -87,7 +87,7 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
                 <Label htmlFor="endDate" required>End Date</Label>
                 <Input type="date" id="endDate" name="endDate" value={formData.endDate} onChange={handleChange} icon={<FaCalendarAlt />} required />
               </div>
-            </div>
+            </Grid>
 
             <div>
               <Label htmlFor="address" required>Address</Label>

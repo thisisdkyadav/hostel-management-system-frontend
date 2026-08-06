@@ -1,5 +1,5 @@
 import { Button, Table } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { Textarea } from "@/components/ui/form"
@@ -340,15 +340,7 @@ export const GymkhanaApprovalModal = ({
               Leave a row blank to skip that stage.
             </Text>
             {postStudentAffairsStageOptions.map((stage) => (
-              <div
-                key={`calendar-stage-${stage}`}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 190px) 1fr",
-                  gap: "var(--spacing-2)",
-                  alignItems: "center",
-                }}
-              >
+              <Grid cols="minmax(0, 190px) 1fr" gap={2} align="center" key={`calendar-stage-${stage}`}>
                 <Text as="span" size="sm" color="body">
                   {stage}
                 </Text>
@@ -362,7 +354,7 @@ export const GymkhanaApprovalModal = ({
                   ]}
                   placeholder={`Select ${stage}`}
                 />
-              </div>
+              </Grid>
             ))}
           </div>
         </div>

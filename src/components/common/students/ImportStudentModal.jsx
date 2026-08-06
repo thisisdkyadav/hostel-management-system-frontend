@@ -707,7 +707,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           <Text size="sm" color="body">{importSummary.message}</Text>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+        <Grid cols={3} gap={3}>
           <Surface bg="primary" padding={3} radius="md">
             <Text as="div" size="xs" color="muted">Total</Text>
             <Text as="div" size="lg" weight="semibold" color="primary">{importSummary.total}</Text>
@@ -720,9 +720,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             <Text as="div" size="xs" color="muted">Not Done (Errors)</Text>
             <Text as="div" size="lg" weight="semibold" color="danger">{importSummary.errorCount}</Text>
           </Surface>
-        </div>
+        </Grid>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+        <Grid cols={2} gap={3}>
           <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
             <Text as="div" size="sm" weight="medium" color="primary" style={{ marginBottom: "var(--spacing-2)" }}>Done</Text>
             {shownSuccessItems.length === 0 ? (
@@ -760,7 +760,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </>
             )}
           </div>
-        </div>
+        </Grid>
       </div>
     )
   }
@@ -823,13 +823,13 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 </Button>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "30rem" }}>
                   <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
-                  <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
+                  <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                     <li><Text as="span" weight="medium">name:</Text> String (Required)</li>
                     <li><Text as="span" weight="medium">email:</Text> Email (Required)</li>
                     <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
                     <li><Text as="span" weight="medium">gender:</Text> Male/Female/Other (Required)</li>
                     <li><Text as="span" weight="medium">isDayScholar:</Text> true/false (Required)</li>
-                  </ul>
+                  </Grid>
                   <p style={{ marginTop: "var(--spacing-2)" }}>
                     Day scholar details (owner/home details) are not imported here and should be updated separately in bulk update.
                   </p>
@@ -984,7 +984,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       {activeTab === "manual" && (
         <VStack gap={4}>
           <Heading as="h3" size="lg" weight="medium" color="secondary">Add Single Student</Heading>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
+          <Grid cols={2} gap={4}>
             <div>
               <Label spacing={1}>Name *</Label>
               <Input type="text" value={manualStudent.name} onChange={(event) => handleManualInputChange("name", event.target.value)} placeholder="Enter student's full name" />
@@ -1022,7 +1022,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <option value="false">false (Hosteller)</option>
               </select>
             </div>
-          </div>
+          </Grid>
 
           {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (
             <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
