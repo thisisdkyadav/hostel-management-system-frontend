@@ -1,6 +1,6 @@
 import React from "react"
 import { FaBed } from "react-icons/fa"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   if (!roomDetails) {
@@ -19,7 +19,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   return (
     <div>
       {availableBeds.length === 0 ? (
-        <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-base)' }}>No beds available in this room</div>
+        <Surface bg="warning" padding={3} radius="md" color="warning-text" size="base">No beds available in this room</Surface>
       ) : (
         <>
           <Text size="sm" color="tertiary" style={{ marginBottom: 'var(--spacing-3)' }}>Select a bed number for the student in the new room:</Text>

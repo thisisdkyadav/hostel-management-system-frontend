@@ -2,7 +2,7 @@ import React from "react"
 import { BsDoorOpenFill } from "react-icons/bs"
 import { FaUserFriends } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Heading, HStack, IconCircle, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Surface, Text } from "@/components/ui"
 
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
@@ -21,7 +21,7 @@ const RoomInfoCard = ({ roomData }) => {
           <BsDoorOpenFill style={{ fontSize: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
           <Heading as="h3" color="tertiary" weight="medium" size="lg">Your Room</Heading>
         </HStack>
-        <span style={{ fontSize: 'var(--font-size-xs)', padding: `var(--spacing-0-5) var(--spacing-2)`, borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{roomData.hostelName}</span>
+        <Surface as="span" bg="info" padding={`var(--spacing-0-5) var(--spacing-2)`} radius="full" color="brand" size="xs">{roomData.hostelName}</Surface>
       </HStack>
 
       <HStack gap="var(--gap-md)" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
@@ -39,7 +39,7 @@ const RoomInfoCard = ({ roomData }) => {
           <Heading as="h4" size="xs" color="tertiary" style={{ marginBottom: 'var(--spacing-1-5)' }}>Roommates:</Heading>
           <HStack gap="var(--spacing-1-5)" wrap>
             {roomData.roommates.map((roommate) => (
-              <div key={roommate.rollNumber} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-bg-tertiary)', padding: `var(--spacing-0-5) var(--spacing-1-5)`, borderRadius: 'var(--radius-md)' }}>
+              <Surface bg="tertiary" padding={`var(--spacing-0-5) var(--spacing-1-5)`} radius="md" size="xs" style={{ display: 'flex', alignItems: 'center' }} key={roommate.rollNumber}>
                 {roommate.avatar ? (
                   <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} style={{ width: 'var(--avatar-xs)', height: 'var(--avatar-xs)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-1)' }} />
                 ) : (
@@ -48,7 +48,7 @@ const RoomInfoCard = ({ roomData }) => {
                   </IconCircle>
                 )}
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80px' }}>{roommate.name}</span>
-              </div>
+              </Surface>
             ))}
           </HStack>
         </div>

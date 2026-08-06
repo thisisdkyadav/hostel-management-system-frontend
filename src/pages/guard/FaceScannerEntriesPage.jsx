@@ -261,13 +261,13 @@ const FaceScannerEntriesPage = () => {
 
                     {/* Loading State */}
                     {loading && entries.length === 0 ? (
-                        <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}>
+                        <Surface padding={8} align="center">
                             <Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} />
                             <Text color="muted">Loading face scanner entries...</Text>
-                        </div>
+                        </Surface>
                     ) : entries.length === 0 ? (
                         /* Empty State */
-                        <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}>
+                        <Surface padding={8} align="center">
                             <Scan
                                 style={{
                                     width: "var(--icon-4xl)",
@@ -282,7 +282,7 @@ const FaceScannerEntriesPage = () => {
                             <Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>
                                 Entries will appear here in real-time when students scan their face
                             </Text>
-                        </div>
+                        </Surface>
                     ) : (
                         /* Entries Table */
                         <div style={{ overflowX: "auto" }}>

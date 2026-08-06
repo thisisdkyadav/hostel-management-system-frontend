@@ -197,11 +197,11 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           <Grid cols={{ base: 1, md: 2 }} gap={4}>
             <div>
               <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Category</Heading>
-              <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)' }}>{selectedTask.category}</div>
+              <Surface bg="brand" padding={4} radius="lg" color="brand" weight="medium">{selectedTask.category}</Surface>
             </div>
             <div>
               <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Due Date</Heading>
-              <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)', backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)', color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)' }}>{formatDate(selectedTask.dueDate)}</div>
+              <Surface bg={isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)'} padding={4} radius="lg" color={isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)'} weight="medium">{formatDate(selectedTask.dueDate)}</Surface>
             </div>
           </Grid>
 
@@ -235,7 +235,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           </div>
 
           {/* Error Message */}
-          {error && <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
+          {error && <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">{error}</Surface>}
         </Grid>
       </Modal>
 

@@ -225,9 +225,9 @@ const VisitorRequestsPage = () => {
             buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
           />
         ) : totalRequests === 0 ? (
-          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
+          <Surface bg="primary" padding={8} radius="xl" shadow="sm" align="center">
             <Text color="muted" size="base">No requests found matching your filters.</Text>
-          </div>
+          </Surface>
         ) : (
           <VisitorRequestTable requests={visitorRequests} onRefresh={fetchVisitorData} />
         )}

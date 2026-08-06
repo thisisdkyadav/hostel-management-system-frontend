@@ -13,7 +13,7 @@ import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -986,17 +986,9 @@ const SheetPage = () => {
                             zIndex: 100,
                             overflow: "hidden",
                         }}>
-                            <div style={{
-                                padding: "var(--spacing-2) var(--spacing-3)",
-                                borderBottom: "var(--border-1) solid var(--color-border-light)",
-                                fontSize: "var(--font-size-2xs)",
-                                fontWeight: "var(--font-weight-semibold)",
-                                color: "var(--color-text-muted)",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.05em",
-                            }}>
+                            <Surface padding="var(--spacing-2) var(--spacing-3)" color="muted" size="2xs" weight="semibold" style={{ borderBottom: "var(--border-1) solid var(--color-border-light)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                                 Export As
-                            </div>
+                            </Surface>
                             {EXPORT_FORMATS.map((format) => (
                                 <button
                                     key={format.id}

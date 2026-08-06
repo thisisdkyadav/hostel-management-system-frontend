@@ -189,10 +189,10 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       </div>
 
       {loading && (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+        <Surface padding="var(--spacing-8) 0" align="center">
           <Spinner size="var(--spacing-12)" thickness="thick" style={{ margin: '0 auto var(--spacing-4)' }} />
           <Text color="muted">Processing QR code...</Text>
-        </div>
+        </Surface>
       )}
 
       {scannedPerson && !loading && (
@@ -200,7 +200,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
           <div style={{ marginBottom: 'var(--spacing-4)' }}>
             <Heading as="h3" weight="semibold" size="lg" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</Heading>
             <Text color="muted" size="sm">{scannedPerson.email}</Text>
-            <div style={{ marginTop: 'var(--spacing-2)', display: 'inline-block', padding: 'var(--spacing-1) var(--spacing-2)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
+            <Surface bg="info" padding="var(--spacing-1) var(--spacing-2)" radius="full" color="info-text" size="xs" weight="medium" style={{ marginTop: 'var(--spacing-2)', display: 'inline-block' }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</Surface>
           </div>
 
           <HStack gap={2} style={{ marginTop: 'var(--spacing-4)' }}>

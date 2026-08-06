@@ -1754,41 +1754,15 @@ const MarkingSchemeModal = ({ open, onClose }) => {
             <table style={{ width: "100%", minWidth: 920, borderCollapse: "collapse" }}>
               <thead style={{ backgroundColor: "var(--color-bg-secondary)" }}>
                 <tr>
-                  <th
-                    style={{
-                      width: 68,
-                      padding: "10px 12px",
-                      textAlign: "center",
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <Surface as="th" padding="10px 12px" color="muted" size="xs" align="center" style={{ width: 68, textTransform: "uppercase" }}>
                     Sn.
-                  </th>
-                  <th
-                    style={{
-                      width: "38%",
-                      padding: "10px 12px",
-                      textAlign: "left",
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  </Surface>
+                  <Surface as="th" padding="10px 12px" color="muted" size="xs" align="left" style={{ width: "38%", textTransform: "uppercase" }}>
                     Category Of Achievement
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px 12px",
-                      textAlign: "left",
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  </Surface>
+                  <Surface as="th" padding="10px 12px" color="muted" size="xs" align="left" style={{ textTransform: "uppercase" }}>
                     Marks Distribution
-                  </th>
+                  </Surface>
                 </tr>
               </thead>
               <tbody>
@@ -1855,28 +1829,12 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                 ))}
                 <tr style={{ borderTop: "1px solid var(--color-border-primary)", backgroundColor: "var(--color-bg-secondary)" }}>
                   <td style={{ padding: "12px 10px" }} />
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderLeft: "1px solid var(--color-border-primary)",
-                      fontSize: "var(--font-size-base)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-primary)",
-                    }}
-                  >
+                  <Surface as="td" padding="12px" color="primary" size="base" weight="semibold" style={{ borderLeft: "1px solid var(--color-border-primary)" }}>
                     Total
-                  </td>
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderLeft: "1px solid var(--color-border-primary)",
-                      fontSize: "var(--font-size-xl)",
-                      fontWeight: "var(--font-weight-bold)",
-                      color: "var(--color-primary)",
-                    }}
-                  >
+                  </Surface>
+                  <Surface as="td" padding="12px" color="brand" size="xl" weight="bold" style={{ borderLeft: "1px solid var(--color-border-primary)" }}>
                     100 Marks
-                  </td>
+                  </Surface>
                 </tr>
               </tbody>
             </table>
@@ -2164,8 +2122,8 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore 
           <tbody>
             {items.map((item, index) => (
               <tr key={`${title}-${index}`} className="por-review-table-row" style={{ borderBottom: index < items.length - 1 ? "1px solid var(--color-border-light)" : "none" }}>
-                <td style={{ padding: "12px 16px", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>{item.title}</td>
-                <td style={{ padding: "12px 16px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{formatScoreTypeLabel(item.scoreType)}</td>
+                <Surface as="td" padding="12px 16px" color="primary" size="sm" weight="medium">{item.title}</Surface>
+                <Surface as="td" padding="12px 16px" color="body" size="sm">{formatScoreTypeLabel(item.scoreType)}</Surface>
                 <td style={{ padding: "12px 16px" }}>
                   <span style={getPointBadgeStyle(item.calculatedPoints || 0)}>
                     +{item.calculatedPoints || 0}
@@ -2174,7 +2132,7 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore 
                 <td style={{ padding: "12px 16px", width: 140, minWidth: 140 }}>
                   <ProofActionButton proof={resolvePrimaryProof(item.proofs)} onViewPor={onViewPor} onViewPdf={onViewPdf} />
                 </td>
-                <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                <Surface as="td" padding="12px 16px" align="right">
                   <Button
                     size="sm"
                     onClick={() =>
@@ -2189,7 +2147,7 @@ const ItemsReviewTable = ({ title, items = [], onViewPor, onViewPdf, onOpenMore 
                   >
                     <MoreHorizontal size={14} /> More
                   </Button>
-                </td>
+                </Surface>
               </tr>
             ))}
           </tbody>
@@ -2536,20 +2494,10 @@ const ReviewItemDetailModal = ({
                   })}
                 </VStack>
               ) : (
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "var(--spacing-6)",
-                  border: "1px dashed var(--color-border-primary)",
-                  borderRadius: "var(--radius-md)",
-                  color: "var(--color-text-muted)",
-                  textAlign: "center"
-                }}>
+                <Surface padding={6} radius="md" border="1px dashed var(--color-border-primary)" color="muted" align="center" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                   <XCircle size={24} style={{ color: "var(--color-text-muted)", marginBottom: "8px" }} />
                   <Text as="span" size="sm">No supporting proof attached.</Text>
-                </div>
+                </Surface>
               )}
             </div>
           </VStack>
@@ -4439,15 +4387,15 @@ const OverallBestPerformerPage = () => {
                 </Grid>
 
                 <HStack gap="6px" wrap style={{ marginTop: "var(--spacing-1)" }}>
-                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
+                  <Surface as="span" bg="brand" padding="4px 8px" radius="999px" color="brand" size="xs" weight="semibold" style={{ display: "inline-flex" }}>
                     Min CGPA / CPI: 6.50
-                  </span>
-                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
+                  </Surface>
+                  <Surface as="span" bg="brand" padding="4px 8px" radius="999px" color="brand" size="xs" weight="semibold" style={{ display: "inline-flex" }}>
                     Passing-out students only
-                  </span>
-                  <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
+                  </Surface>
+                  <Surface as="span" bg="brand" padding="4px 8px" radius="999px" color="brand" size="xs" weight="semibold" style={{ display: "inline-flex" }}>
                     Status: Active / Graduated
-                  </span>
+                  </Surface>
                 </HStack>
               </div>
 

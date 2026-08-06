@@ -225,9 +225,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         <StepIndicator steps={STEPS} currentStep={STEPS[step].id} />
 
         {error && (
-          <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }}>
+          <Surface bg="danger" padding={3} radius="md" color="danger-text" size="sm">
             {error}
-          </div>
+          </Surface>
         )}
 
         {step === 0 && (
@@ -283,9 +283,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             {profileFA ? (
               <div>
                 <Label>Faculty advisor email</Label>
-                <div style={{ padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-bg-secondary)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <Surface bg="secondary" padding="var(--spacing-2) var(--spacing-3)" radius="md" border="1px solid var(--color-border-primary)" color="body" size="sm">
                   {profileFA}
-                </div>
+                </Surface>
                 <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</Text>
               </div>
             ) : (
@@ -299,10 +299,10 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
 
         {step === 2 && (
           <VStack gap={4}>
-            <div style={{ backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", fontSize: "var(--font-size-sm)", display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+            <Surface bg="tertiary" padding={4} radius="lg" size="sm" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
               <div><strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} → {form.stay.toDate || "—"}</div>
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
-            </div>
+            </Surface>
             {loadingQuote ? (
               <Text color="muted" size="sm">Calculating estimate…</Text>
             ) : quote ? (

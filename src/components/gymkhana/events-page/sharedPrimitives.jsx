@@ -277,15 +277,7 @@ export const DateOverlapSummary = ({
       </Text>
     )}
     {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
-      <div
-        style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-text-muted)",
-          padding: "var(--spacing-2)",
-          borderRadius: "var(--radius-card-sm)",
-          backgroundColor: "var(--color-bg-secondary)",
-        }}
-      >
+      <Surface bg="secondary" padding={2} radius="card-sm" color="muted" size="xs">
         {dateOverlapInfo.overlaps.slice(0, 3).map((overlap, index) => {
           const conflicting = overlap.eventB || overlap.eventA
           return (
@@ -298,7 +290,7 @@ export const DateOverlapSummary = ({
             </span>
           )
         })}
-      </div>
+      </Surface>
     )}
   </>
 )
@@ -320,18 +312,9 @@ export const EventFormFields = ({
 }) => (
   <VStack gap={3}>
     {showAmendmentReason && (
-      <span
-        style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-warning)",
-          padding: "var(--spacing-1) var(--spacing-2)",
-          backgroundColor: "var(--color-warning-bg)",
-          borderRadius: "var(--radius-card-sm)",
-          display: "inline-block",
-        }}
-      >
+      <Surface as="span" bg="warning" padding="var(--spacing-1) var(--spacing-2)" radius="card-sm" color="warning" size="xs" style={{ display: "inline-block" }}>
         Calendar locked. Amendment will be reviewed by Admin.
-      </span>
+      </Surface>
     )}
     <Grid cols="2fr 1fr" gap={3}>
       <div>

@@ -70,8 +70,8 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               <Text weight="semibold" color="primary" size="base" leading="var(--line-height-tight)">{complaint.title}</Text>
             </div>
             <div className="flex flex-shrink-0" style={{ gap: 'var(--spacing-1-5)' }}>
-              <span className="whitespace-nowrap" style={{ padding: 'var(--spacing-0-5) var(--spacing-2-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)' }}>{complaint.category}</span>
-              <span className="whitespace-nowrap" style={{ padding: 'var(--spacing-0-5) var(--spacing-2-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>{complaint.status}</span>
+              <Surface as="span" bg="muted" padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color="body" size="xs" weight="medium" className="whitespace-nowrap">{complaint.category}</Surface>
+              <Surface as="span" bg="success" padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color="success-text" size="xs" weight="medium" className="whitespace-nowrap">{complaint.status}</Surface>
             </div>
           </div>
 

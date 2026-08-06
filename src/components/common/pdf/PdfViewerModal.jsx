@@ -114,7 +114,7 @@ const PdfViewerModal = ({
                   setIsLoading(false)
                 }}
               >
-                <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "var(--spacing-8)", textAlign: "center" }}>
+                <Surface padding={8} align="center" style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                   <FaFileAlt style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-placeholder)", marginBottom: "var(--spacing-4)" }} />
                   <Heading as="h3" size="lg" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>
                     Cannot display PDF in browser
@@ -142,7 +142,7 @@ const PdfViewerModal = ({
                       <span>Open in New Tab</span>
                     </a>
                   </HStack>
-                </div>
+                </Surface>
               </object>
             </div>
           )}

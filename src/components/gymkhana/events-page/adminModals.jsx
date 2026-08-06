@@ -1,5 +1,5 @@
 import { Button, Table } from "czero/react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { Textarea } from "@/components/ui/form"
@@ -197,15 +197,7 @@ export const GymkhanaOverlapDetailsModal = ({
         {dateConflicts.length} overlaps detected
       </Text>
       {dateConflicts.map((conflict, index) => (
-        <div
-          key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
-          style={{
-            borderRadius: "var(--radius-card-sm)",
-            padding: "var(--spacing-2)",
-            backgroundColor: "var(--color-bg-secondary)",
-            fontSize: "var(--font-size-xs)",
-          }}
-        >
+        <Surface bg="secondary" padding={2} radius="card-sm" size="xs" key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}>
           <Text as="span" weight="medium">
             {conflict.eventA.title}
           </Text>
@@ -215,7 +207,7 @@ export const GymkhanaOverlapDetailsModal = ({
           <Text as="span" weight="medium">
             {conflict.eventB.title}
           </Text>
-        </div>
+        </Surface>
       ))}
     </VStack>
   </Modal>
@@ -303,17 +295,9 @@ export const GymkhanaApprovalModal = ({
             {(budgetSummary.byCategory[category] || 0).toLocaleString()}
           </span>
         ))}
-        <span
-          style={{
-            padding: "var(--spacing-1) var(--spacing-2)",
-            backgroundColor: "var(--color-primary-bg)",
-            borderRadius: "var(--radius-card-sm)",
-            fontWeight: "var(--font-weight-medium)",
-            color: "var(--color-primary)",
-          }}
-        >
+        <Surface as="span" bg="brand" padding="var(--spacing-1) var(--spacing-2)" radius="card-sm" color="brand" weight="medium">
           Total: ₹{budgetSummary.total.toLocaleString()}
-        </span>
+        </Surface>
       </div>
 
       {dateConflicts.length > 0 && (
@@ -405,15 +389,7 @@ export const GymkhanaOverlapConfirmModal = ({
         {submitOverlapInfo?.message || "Events have overlapping date ranges."}
       </Text>
       {(submitOverlapInfo?.overlaps || []).slice(0, 5).map((overlap, index) => (
-        <div
-          key={`${overlap.eventA?.eventId || overlap.eventA?.title}-${overlap.eventB?.eventId || overlap.eventB?.title}-${index}`}
-          style={{
-            borderRadius: "var(--radius-card-sm)",
-            padding: "var(--spacing-2)",
-            backgroundColor: "var(--color-bg-secondary)",
-            fontSize: "var(--font-size-xs)",
-          }}
-        >
+        <Surface bg="secondary" padding={2} radius="card-sm" size="xs" key={`${overlap.eventA?.eventId || overlap.eventA?.title}-${overlap.eventB?.eventId || overlap.eventB?.title}-${index}`}>
           <Text as="span" weight="medium">
             {overlap.eventA?.title}
           </Text>
@@ -423,7 +399,7 @@ export const GymkhanaOverlapConfirmModal = ({
           <Text as="span" weight="medium">
             {overlap.eventB?.title}
           </Text>
-        </div>
+        </Surface>
       ))}
     </VStack>
   </Modal>

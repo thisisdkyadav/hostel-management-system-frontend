@@ -3,7 +3,7 @@ import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { isRoomActive } from "@/constants/roomStatus"
-import { HStack, IconCircle, Text } from "@/components/ui"
+import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -72,24 +72,19 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "status",
       className: "hidden lg:table-cell",
       render: (room) => (
-        <span style={{
-          padding: "var(--badge-padding-sm)", display: "inline-flex", fontSize: "var(--font-size-xs)", lineHeight: "var(--line-height-tight)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: !isRoomActive(room.status) ? "var(--color-danger-bg)" : room.currentOccupancy >= room.capacity
+        <Surface as="span" bg={!isRoomActive(room.status) ? "var(--color-danger-bg)" : room.currentOccupancy >= room.capacity
             ? "var(--color-success-bg)"
             : room.currentOccupancy > 0
               ? "var(--color-info-bg)"
-              : "var(--color-bg-muted)",
-          color:
-            !isRoomActive(room.status)
+              : "var(--color-bg-muted)"} padding="var(--badge-padding-sm)" radius="full" color={!isRoomActive(room.status)
               ? "var(--color-danger-text)"
               : room.currentOccupancy >= room.capacity
                 ? "var(--color-success-text)"
                 : room.currentOccupancy > 0
                   ? "var(--color-info-text)"
-                  : "var(--color-text-body)",
-        }}
-        >
+                  : "var(--color-text-body)"} size="xs" weight="medium" leading="var(--line-height-tight)" style={{ display: "inline-flex" }}>
           {!isRoomActive(room.status) ? room.status : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partial" : "Empty"}
-        </span>
+        </Surface>
       ),
     },
     {

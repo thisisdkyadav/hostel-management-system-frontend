@@ -793,19 +793,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         <>
           {step === 1 && (
             <VStack gap={5}>
-              <div
-                style={{
-                  border: "var(--border-2) dashed var(--color-border-input)",
-                  borderRadius: "var(--radius-xl)",
-                  padding: "var(--spacing-8)",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  backgroundColor: "var(--color-bg-tertiary)",
-                }}
-                onDragOver={handleDragOver}
+              <Surface bg="tertiary" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: "pointer" }} onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
+                onClick={() => fileInputRef.current?.click()}>
                 <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-text-disabled)" }} />
                 <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-2)" }}>
                   Drag and drop a CSV file here, or click to select a file
@@ -814,14 +804,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <strong>Required fields:</strong> {REQUIRED_FIELDS.join(", ")}
                 </Text>
                 <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
-              </div>
+              </Surface>
 
               <VStack gap={2} align="center">
                 <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
                   <FaFileDownload />
                   Download CSV Template
                 </Button>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "30rem" }}>
+                <Surface bg="tertiary" padding={3} radius="lg" color="muted" size="xs" style={{ maxWidth: "30rem" }}>
                   <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
                   <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                     <li><Text as="span" weight="medium">name:</Text> String (Required)</li>
@@ -833,7 +823,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <p style={{ marginTop: "var(--spacing-2)" }}>
                     Day scholar details (owner/home details) are not imported here and should be updated separately in bulk update.
                   </p>
-                </div>
+                </Surface>
               </VStack>
 
               {csvFile && (
@@ -876,13 +866,13 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <Heading as="h3" size="lg" weight="medium" color="secondary">Preview Import Data</Heading>
                 <HStack gap={2} align="center">
                   {rowWarnings.length > 0 && (
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning-text)", backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+                    <Surface bg="warning" padding="var(--spacing-1) var(--spacing-3)" radius="full" color="warning-text" size="sm">
                       {rowWarnings.length} skipped
-                    </div>
+                    </Surface>
                   )}
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+                  <Surface bg="brand" padding="var(--spacing-1) var(--spacing-3)" radius="full" color="muted" size="sm">
                     {parsedData.length} valid students
-                  </div>
+                  </Surface>
                 </HStack>
               </HStack>
 
@@ -951,10 +941,10 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 </Surface>
               </Grid>
 
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="lg" border="var(--border-1) solid var(--color-border-primary)" color="muted" size="xs">
                 Status table columns: roll number, email, success status, reason.
                 {!isConnected && " Socket offline: showing limited progress"}
-              </div>
+              </Surface>
 
               <HStack gap="none" justify="end">
                 <Button onClick={handleExportCsvResults} variant="secondary" size="sm" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
@@ -966,9 +956,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               {isCsvImportCompleted ? (
                 <SheetPreviewTable rows={csvDisplayedSheetRows} />
               ) : (
-                <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)" color="muted" size="sm">
                   Results sheet will appear when import finishes.
-                </div>
+                </Surface>
               )}
 
               {error && (
@@ -1025,9 +1015,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           </Grid>
 
           {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (
-            <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <Surface bg="tertiary" padding={3} radius="lg" border="var(--border-1) solid var(--color-border-primary)" color="muted" size="xs">
               {importProgress.message || "Adding student..."}
-            </div>
+            </Surface>
           )}
 
           {importSummary && renderImportSummary()}

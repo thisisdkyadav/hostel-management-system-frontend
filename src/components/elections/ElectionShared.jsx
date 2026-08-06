@@ -4,7 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
-import { Grid, HStack, Text } from "@/components/ui"
+import { Grid, HStack, Surface, Text } from "@/components/ui"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
@@ -458,23 +458,9 @@ export const DocumentUploadField = ({
                     onChange={handleFileChange}
                     style={{ display: "none" }}
                   />
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minHeight: "36px",
-                      padding: "0 var(--spacing-3)",
-                      borderRadius: "var(--radius-md)",
-                      border: "1px solid var(--color-border-primary)",
-                      backgroundColor: "var(--color-bg-primary)",
-                      color: "var(--color-text-body)",
-                      cursor: uploading ? "wait" : "pointer",
-                      fontSize: "var(--font-size-sm)",
-                    }}
-                  >
+                  <Surface as="span" bg="primary" padding="0 var(--spacing-3)" radius="md" border="1px solid var(--color-border-primary)" color="body" size="sm" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: "36px", cursor: uploading ? "wait" : "pointer" }}>
                     {uploading ? "Uploading..." : "Replace"}
-                  </span>
+                  </Surface>
                 </label>
               ) : null}
             </HStack>
@@ -490,23 +476,9 @@ export const DocumentUploadField = ({
                 style={{ display: "none" }}
                 disabled={disabled || uploading}
               />
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: "36px",
-                  padding: "0 var(--spacing-3)",
-                  borderRadius: "var(--radius-md)",
-                  backgroundColor: "var(--button-primary-bg)",
-                  color: "var(--color-white)",
-                  cursor: disabled || uploading ? "not-allowed" : "pointer",
-                  fontSize: "var(--font-size-sm)",
-                  opacity: disabled ? 0.6 : 1,
-                }}
-              >
+              <Surface as="span" bg="var(--button-primary-bg)" padding="0 var(--spacing-3)" radius="md" color="var(--color-white)" size="sm" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: "36px", cursor: disabled || uploading ? "not-allowed" : "pointer", opacity: disabled ? 0.6 : 1 }}>
                 {uploading ? "Uploading..." : `Upload ${label}`}
-              </span>
+              </Surface>
             </label>
           </Grid>
         )}

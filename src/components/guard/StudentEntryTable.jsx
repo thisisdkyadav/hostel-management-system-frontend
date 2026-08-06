@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import { Button, StatusBadge, Table } from "czero/react"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const StudentEntryTable = ({ entries, refresh }) => {
   const [selectedEntry, setSelectedEntry] = useState(null)
@@ -59,9 +59,9 @@ const StudentEntryTable = ({ entries, refresh }) => {
 
   if (entries.length === 0) {
     return (
-      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--spacing-6)', textAlign: 'center' }}>
+      <Surface bg="primary" padding={6} radius="card" shadow="var(--shadow-card)" align="center">
         <Text color="muted">No student entries found</Text>
-      </div>
+      </Surface>
     )
   }
 

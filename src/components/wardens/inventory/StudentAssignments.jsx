@@ -249,9 +249,9 @@ const StudentAssignments = () => {
                     <Table.Cell className="whitespace-nowrap" style={{ fontWeight: 'var(--font-weight-medium)' }}>{item.count}</Table.Cell>
                     <Table.Cell className="whitespace-nowrap">{formatDate(item.issueDate)}</Table.Cell>
                     <Table.Cell className="whitespace-nowrap">
-                      <span style={{ padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-md)', fontWeight: 'var(--font-weight-medium)', backgroundColor: item.status === "Issued" ? 'var(--color-success-bg)' : item.status === "Damaged" ? 'var(--color-danger-bg)' : item.status === "Lost" ? 'var(--color-purple-light-bg)' : 'var(--color-bg-muted)', color: item.status === "Issued" ? 'var(--color-success-text)' : item.status === "Damaged" ? 'var(--color-danger-text)' : item.status === "Lost" ? 'var(--color-purple-text)' : 'var(--color-text-secondary)' }}>
+                      <Surface as="span" bg={item.status === "Issued" ? 'var(--color-success-bg)' : item.status === "Damaged" ? 'var(--color-danger-bg)' : item.status === "Lost" ? 'var(--color-purple-light-bg)' : 'var(--color-bg-muted)'} padding="var(--badge-padding-md)" radius="full" color={item.status === "Issued" ? 'var(--color-success-text)' : item.status === "Damaged" ? 'var(--color-danger-text)' : item.status === "Lost" ? 'var(--color-purple-text)' : 'var(--color-text-secondary)'} size="var(--badge-font-md)" weight="medium">
                         {item.status}
-                      </span>
+                      </Surface>
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap">
                       {canManageStudentInventory && (

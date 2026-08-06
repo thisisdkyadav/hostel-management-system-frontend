@@ -322,9 +322,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   if (!request) {
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div style={{ padding: "var(--spacing-8)", textAlign: "center" }}>
+        <Surface padding={8} align="center">
           <Text color="muted" size="base">No request details found.</Text>
-        </div>
+        </Surface>
       </Modal>
     )
   }
@@ -379,18 +379,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {request.paymentStatus && (
           <Text as="div" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
             <Text as="span" weight="semibold" color="body" style={{ marginRight: "var(--spacing-2)" }}>Payment Status:</Text>
-            <span
-              style={{
-                padding: "var(--spacing-2) var(--badge-padding-sm)",
-                borderRadius: "var(--radius-full)",
-                fontSize: "var(--font-size-xs)",
-                fontWeight: "var(--font-weight-medium)",
-                backgroundColor: request.paymentStatus === "paid" ? "var(--color-success-bg)" : "var(--color-warning-bg)",
-                color: request.paymentStatus === "paid" ? "var(--color-success-text)" : "var(--color-warning-text)",
-              }}
-            >
+            <Surface as="span" bg={request.paymentStatus === "paid" ? "var(--color-success-bg)" : "var(--color-warning-bg)"} padding="var(--spacing-2) var(--badge-padding-sm)" radius="full" color={request.paymentStatus === "paid" ? "var(--color-success-text)" : "var(--color-warning-text)"} size="xs" weight="medium">
               {request.paymentStatus === "paid" ? "Paid" : "Pending"}
-            </span>
+            </Surface>
           </Text>
         )}
 

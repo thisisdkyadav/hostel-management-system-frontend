@@ -1,7 +1,7 @@
 import React from "react"
 import { FaUser, FaGraduationCap, FaIdCard } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Heading, IconCircle } from "@/components/ui"
+import { Heading, IconCircle, Surface } from "@/components/ui"
 
 const StudentProfile = ({ profile }) => {
   if (!profile) return null
@@ -121,7 +121,7 @@ const StudentProfile = ({ profile }) => {
         </div>
 
         <div className="student-profile-badge-wrapper">
-          <div style={{ padding: `var(--spacing-1) var(--spacing-3)`, borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>{profile.hostelName}</div>
+          <Surface bg="success" padding={`var(--spacing-1) var(--spacing-3)`} radius="full" color="success-text" size="xs">{profile.hostelName}</Surface>
         </div>
       </div>
     </>

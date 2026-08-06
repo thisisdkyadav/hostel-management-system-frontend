@@ -22,7 +22,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
       <VStack gap={5}>
         <header style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
           <Heading as="h2" size="xl" weight="semibold" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>{notification.title}</Heading>
-          <div>{isExpired ? <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }}>Expired</span> : <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Active</span>}</div>
+          <div>{isExpired ? <Surface as="span" bg="danger" padding="var(--badge-padding-sm)" radius="full" color="danger-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Expired</Surface> : <Surface as="span" bg="success" padding="var(--badge-padding-sm)" radius="full" color="success-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Active</Surface>}</div>
         </header>
 
         <Surface bg="tertiary" padding={4} radius="xl">

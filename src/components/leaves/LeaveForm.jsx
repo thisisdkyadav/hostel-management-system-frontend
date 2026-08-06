@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Grid, Label, Modal } from "@/components/ui"
+import { Grid, Label, Modal, Surface } from "@/components/ui"
 import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
@@ -33,7 +33,7 @@ const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
     <Modal title="Create Leave" onClose={() => setIsOpen(false)} width={600}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
-          <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)' }}>{error}</div>
+          <Surface bg="var(--color-danger-bg-light)" padding={3} radius="md" color="danger-text" size="sm">{error}</Surface>
         )}
 
         <div>

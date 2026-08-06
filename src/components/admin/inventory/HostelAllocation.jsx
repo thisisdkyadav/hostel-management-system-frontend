@@ -267,7 +267,7 @@ const HostelAllocation = () => {
             <Spinner size="var(--spacing-12)" thickness="thick" />
           </div>
         ) : hostelInventory.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+          <Surface padding="var(--spacing-12) 0" align="center">
             <FaWarehouse style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
             <Text color="muted">No hostel inventory allocations found</Text>
             <Button
@@ -279,7 +279,7 @@ const HostelAllocation = () => {
               <FaPlus />
               Allocate your first item
             </Button>
-          </div>
+          </Surface>
         ) : (
           <div className="overflow-x-auto">
             <Table>
@@ -316,7 +316,7 @@ const HostelAllocation = () => {
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)' }}>{allocation.allocatedCount}</Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: allocation.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)', color: allocation.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}>{allocation.availableCount}</span>
+                      <Surface as="span" bg={allocation.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)'} padding="var(--badge-padding-sm)" radius="full" color={allocation.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)'} size="xs" weight="medium">{allocation.availableCount}</Surface>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap={3} align="center">

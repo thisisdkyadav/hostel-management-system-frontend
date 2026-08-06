@@ -190,7 +190,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         </Surface>
 
         {/* Form Error */}
-        {errors.submit && <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", borderRadius: "var(--radius-lg)" }}>{errors.submit}</div>}
+        {errors.submit && <Surface bg="danger" padding={3} radius="lg" color="danger-text" size="sm">{errors.submit}</Surface>}
       </Grid>
     </Modal>
   )

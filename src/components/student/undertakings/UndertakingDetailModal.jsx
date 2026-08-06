@@ -68,7 +68,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
         {/* Description */}
         <div>
           <Heading as="h3" size="sm" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Description</Heading>
-          <p style={{ color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)" }}>{undertaking.description}</p>
+          <Surface as="p" bg="tertiary" padding={4} radius="var(--radius-input)" color="tertiary" size="sm">{undertaking.description}</Surface>
         </div>
 
         {/* Content */}

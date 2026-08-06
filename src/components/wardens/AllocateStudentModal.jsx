@@ -201,7 +201,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           ) : (
             <>
               {unallocatedStudents.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No unallocated students found</div>
+                <Surface padding="var(--spacing-8) 0" color="muted" size="base" align="center">No unallocated students found</Surface>
               ) : (
                 <div style={{ maxHeight: '256px', overflowY: 'auto', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)' }}>
                   <Table>

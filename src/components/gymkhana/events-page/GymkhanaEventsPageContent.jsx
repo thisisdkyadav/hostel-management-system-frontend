@@ -135,19 +135,9 @@ function MonthCalendarView({
             </Text>
           </Heading>
           {monthEventCount > 0 && (
-            <span
-              style={{
-                fontSize: "var(--font-size-xs)",
-                fontWeight: "var(--font-weight-semibold)",
-                color: "var(--color-primary)",
-                backgroundColor: "var(--color-primary-bg)",
-                borderRadius: "var(--radius-full)",
-                padding: "2px 10px",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Surface as="span" bg="brand" padding="2px 10px" radius="full" color="brand" size="xs" weight="semibold" style={{ whiteSpace: "nowrap" }}>
               {monthEventCount} event{monthEventCount === 1 ? "" : "s"}
-            </span>
+            </Surface>
           )}
         </HStack>
         <HStack gap="var(--spacing-1-5)" align="center">
@@ -235,30 +225,17 @@ function MonthCalendarView({
             const isSat = index === 5
             const isSun = index === 6
             return (
-              <div
-                key={day}
-                style={{
-                  textAlign: "center",
-                  padding: "var(--spacing-1) 0",
-                  borderRadius: "var(--radius-sm)",
-                  fontSize: "var(--font-size-xs)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: isSun
-                    ? "var(--color-danger)"
-                    : isSat
-                      ? "var(--color-info)"
-                      : "var(--color-text-muted)",
-                  backgroundColor: isSun
+              <Surface bg={isSun
                     ? "var(--color-danger-bg)"
                     : isSat
                       ? "var(--color-info-bg)"
-                      : "transparent",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                }}
-              >
+                      : "transparent"} padding="var(--spacing-1) 0" radius="sm" color={isSun
+                    ? "var(--color-danger)"
+                    : isSat
+                      ? "var(--color-info)"
+                      : "var(--color-text-muted)"} size="xs" weight="semibold" align="center" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }} key={day}>
                 {day}
-              </div>
+              </Surface>
             )
           })}
         </Grid>
@@ -297,46 +274,15 @@ function MonthCalendarView({
                 }}
               >
                 <HStack gap={4} align="center" justify="between">
-                  <span
-                    style={{
-                      minWidth: 22,
-                      height: 22,
-                      padding: "0 6px",
-                      borderRadius: "var(--radius-full)",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight:
-                        isToday || isHoliday || weekday === 0 || weekday === 6
+                  <Surface as="span" bg={isToday ? "var(--color-primary)" : "transparent"} padding="0 6px" radius="full" color={tone.num} size="xs" weight={isToday || isHoliday || weekday === 0 || weekday === 6
                           ? "var(--font-weight-bold)"
-                          : "var(--font-weight-medium)",
-                      color: tone.num,
-                      backgroundColor: isToday ? "var(--color-primary)" : "transparent",
-                    }}
-                  >
+                          : "var(--font-weight-medium)"} style={{ minWidth: 22, height: 22, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                     {date.getDate()}
-                  </span>
+                  </Surface>
                   {isHoliday && (
-                    <span
-                      title={dayHolidays.map((holiday) => holiday.title).join(", ")}
-                      style={{
-                        fontSize: 9,
-                        fontWeight: "var(--font-weight-bold)",
-                        color: "var(--color-warning-text)",
-                        backgroundColor: tint("var(--color-warning)", 20),
-                        padding: "1px 6px",
-                        borderRadius: "var(--radius-full)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.03em",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        maxWidth: "70%",
-                      }}
-                    >
+                    <Surface as="span" bg={tint("var(--color-warning)", 20)} padding="1px 6px" radius="full" color="warning-text" size={9} weight="bold" style={{ textTransform: "uppercase", letterSpacing: "0.03em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }} title={dayHolidays.map((holiday) => holiday.title).join(", ")}>
                       {dayHolidays[0].title}
-                    </span>
+                    </Surface>
                   )}
                 </HStack>
 
@@ -477,34 +423,14 @@ function YearCalendarView({
               </Text>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
                 {isCurrentMonth && (
-                  <span
-                    style={{
-                      fontSize: "0.5625rem",
-                      fontWeight: "var(--font-weight-bold)",
-                      color: "var(--color-white)",
-                      backgroundColor: "var(--color-primary)",
-                      borderRadius: "var(--radius-full)",
-                      padding: "1px 7px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
+                  <Surface as="span" bg="var(--color-primary)" padding="1px 7px" radius="full" color="var(--color-white)" size="0.5625rem" weight="bold" style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Now
-                  </span>
+                  </Surface>
                 )}
                 {count > 0 && (
-                  <span
-                    style={{
-                      fontSize: "0.625rem",
-                      fontWeight: "var(--font-weight-bold)",
-                      color: "var(--color-primary)",
-                      backgroundColor: "var(--color-primary-bg)",
-                      borderRadius: "var(--radius-full)",
-                      padding: "1px 7px",
-                    }}
-                  >
+                  <Surface as="span" bg="brand" padding="1px 7px" radius="full" color="brand" size="0.625rem" weight="bold">
                     {count}
-                  </span>
+                  </Surface>
                 )}
               </span>
             </HStack>

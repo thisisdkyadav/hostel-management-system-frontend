@@ -140,20 +140,20 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
     <Modal title={`Update Student Insurance - ${providerName}`} onClose={onClose} width={700}>
       {step === 1 && (
         <VStack gap={5}>
-          <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-8)', textAlign: 'center', cursor: 'pointer', backgroundColor: 'var(--color-bg-hover)', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
+          <Surface bg="var(--color-bg-hover)" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: 'pointer', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
             <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-muted)' }} />
             <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>Drag and drop a CSV file here, or click to select a file</Text>
             <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-3)' }}>
               <strong>Required fields:</strong> rollNumber, insuranceNumber
             </Text>
             <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
-          </div>
+          </Surface>
           <VStack gap="none" align="center">
             <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
               <FaFileDownload /> Download CSV Template
             </Button>
 
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
+            <Surface bg="var(--color-bg-hover)" padding={3} radius="lg" color="muted" size="xs" style={{ marginTop: 'var(--spacing-2)', maxWidth: '28rem' }}>
               <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
               <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                 <li>
@@ -163,7 +163,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
                   <Text as="span" weight="medium">insuranceNumber:</Text> String (Required)
                 </li>
               </Grid>
-            </div>
+            </Surface>
           </VStack>
           {csvFile && (
             <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -196,7 +196,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
         <VStack gap={5}>
           <VStack gap="none" align="start" justify="between" style={{ marginBottom: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center">
             <Heading as="h3" size="lg" weight="medium" color="secondary">Preview Updates</Heading>
-            <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)' }} className="sm:mt-0">{parsedData.length} students will be updated</div>
+            <Surface bg="brand" padding="var(--spacing-1) var(--spacing-3)" radius="full" color="muted" size="sm" style={{ marginTop: 'var(--spacing-2)' }} className="sm:mt-0">{parsedData.length} students will be updated</Surface>
           </VStack>
 
           <div style={{ border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', maxHeight: '24rem', overflowY: 'auto' }}>

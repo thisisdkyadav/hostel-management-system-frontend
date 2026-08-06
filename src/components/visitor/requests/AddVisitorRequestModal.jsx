@@ -187,9 +187,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           </HStack>
 
           {visitorProfiles.length === 0 ? (
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
+            <Surface bg="tertiary" padding={4} radius="lg" align="center">
               <Text color="muted" size="sm">No visitor profiles found. Add some profiles first.</Text>
-            </div>
+            </Surface>
           ) : (
             <Grid cols="repeat(auto-fill, minmax(250px, 1fr))" gap={3} style={{ maxHeight: '240px', overflowY: 'auto', padding: 'var(--spacing-2)' }}>
               {visitorProfiles.map((visitor) => (
@@ -295,11 +295,10 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   <div style={{ marginTop: 'var(--spacing-4)' }}>
                     <label style={{ display: 'inline-block' }}>
                       <input type="file" style={{ display: 'none' }} accept=".pdf" onChange={handleH2FormFileChange} />
-                      <span style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', display: 'inline-block', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}
-                      >
+                      <Surface as="span" bg="var(--button-primary-bg)" padding="var(--spacing-2) var(--spacing-4)" radius="lg" color="var(--color-white)" size="sm" style={{ cursor: 'pointer', display: 'inline-block', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
                         Select File
-                      </span>
+                      </Surface>
                     </label>
                   </div>
                 )}

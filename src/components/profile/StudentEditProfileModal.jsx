@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { Heading, HStack, Label, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
+import { Heading, HStack, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -301,11 +301,11 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
       return (
         <form id="edit-profile-form" onSubmit={handleSubmit}>
           {editableFields.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8) 0" }}>
+            <Surface padding="var(--spacing-8) 0" align="center">
               <div style={{ backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)" }}>
                 <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
               </div>
-            </div>
+            </Surface>
           ) : (
             <>
               <div style={{ backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-6)" }}>

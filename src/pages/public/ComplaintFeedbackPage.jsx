@@ -188,26 +188,12 @@ const ComplaintFeedbackPage = () => {
                                 </Text>
                             </div>
                             <HStack gap="var(--spacing-1-5)">
-                                <span style={{
-                                    padding: 'var(--spacing-0-5) var(--spacing-2-5)',
-                                    fontSize: 'var(--font-size-xs)',
-                                    fontWeight: 'var(--font-weight-medium)',
-                                    borderRadius: 'var(--radius-full)',
-                                    backgroundColor: 'var(--color-bg-muted)',
-                                    color: 'var(--color-text-body)'
-                                }}>
+                                <Surface as="span" bg="muted" padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color="body" size="xs" weight="medium">
                                     {complaint.category}
-                                </span>
-                                <span style={{
-                                    padding: 'var(--spacing-0-5) var(--spacing-2-5)',
-                                    fontSize: 'var(--font-size-xs)',
-                                    fontWeight: 'var(--font-weight-medium)',
-                                    borderRadius: 'var(--radius-full)',
-                                    backgroundColor: 'var(--color-success-bg)',
-                                    color: 'var(--color-success-text)'
-                                }}>
+                                </Surface>
+                                <Surface as="span" bg="success" padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color="success-text" size="xs" weight="medium">
                                     {complaint.status}
-                                </span>
+                                </Surface>
                             </HStack>
                         </HStack>
 

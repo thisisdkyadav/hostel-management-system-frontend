@@ -767,20 +767,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
               {selectedHostel ? (
                 <>
-                  <div
-                    style={{
-                      border: "2px dashed var(--color-border-input)",
-                      borderRadius: "var(--radius-xl)",
-                      padding: "var(--spacing-8)",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      transition: "var(--transition-colors)",
-                    }}
-                    onDragOver={handleDragOver}
+                  <Surface bg="secondary" padding={8} radius="xl" border="2px dashed var(--color-border-input)" align="center" style={{ cursor: "pointer", transition: "var(--transition-colors)" }} onDragOver={handleDragOver}
                     onDrop={handleDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
+                    onClick={() => fileInputRef.current?.click()}>
                     <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem", color: "var(--color-text-placeholder)" }} />
                     <Text size="sm" color="tertiary" style={{ marginTop: "var(--spacing-2)" }}>
                       Drag and drop a CSV file here, or click to select a file
@@ -789,7 +778,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       <strong>Required fields:</strong> {requiredFields.join(", ")}
                     </Text>
                     <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleCsvFileUpload} />
-                  </div>
+                  </Surface>
 
                   <VStack gap="none" align="center">
                     <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
@@ -797,17 +786,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       Download CSV Template
                     </Button>
 
-                    <div
-                      style={{
-                        fontSize: "var(--font-size-xs)",
-                        color: "var(--color-text-tertiary)",
-                        marginTop: "var(--spacing-2)",
-                        backgroundColor: "var(--color-bg-secondary)",
-                        padding: "var(--spacing-3)",
-                        borderRadius: "var(--radius-lg)",
-                        maxWidth: "28rem",
-                      }}
-                    >
+                    <Surface bg="secondary" padding={3} radius="lg" color="tertiary" size="xs" style={{ marginTop: "var(--spacing-2)", maxWidth: "28rem" }}>
                       <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
                       <Grid as="ul" cols={2} gap="var(--spacing-1) var(--spacing-4)">
                         <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
@@ -817,13 +796,13 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                           <li><Text as="span" weight="medium">unit:</Text> String (Required)</li>
                         )}
                       </Grid>
-                    </div>
+                    </Surface>
                   </VStack>
                 </>
               ) : (
-                <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
+                <Surface padding={8} color="muted" align="center">
                   Please select a hostel to continue with room allocation
-                </div>
+                </Surface>
               )}
 
               {csvFile && (
@@ -871,19 +850,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                 <Heading as="h3" size="lg" weight="medium" color="secondary">
                   Preview Room Allocations - {selectedHostel?.name}
                 </Heading>
-                <div
-                  style={{
-                    marginTop: "var(--spacing-2)",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-tertiary)",
-                    backgroundColor: "var(--color-info-bg)",
-                    padding: "var(--spacing-1) var(--spacing-3)",
-                    borderRadius: "var(--radius-full)",
-                  }}
-                  className="sm:mt-0"
-                >
+                <Surface bg="info" padding="var(--spacing-1) var(--spacing-3)" radius="full" color="tertiary" size="sm" style={{ marginTop: "var(--spacing-2)" }} className="sm:mt-0">
                   {parsedData.length} room allocations found in CSV
-                </div>
+                </Surface>
               </VStack>
 
               <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
@@ -906,9 +875,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </Text>
             </div>
 
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+            <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="full" color="tertiary" size="sm">
               {manualReadyRows.length} ready to submit
-            </div>
+            </Surface>
           </HStack>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", maxHeight: "32rem", overflowY: "auto", paddingRight: "var(--spacing-1)" }}>
@@ -975,19 +944,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       <Label spacing={1}>
                         Student
                       </Label>
-                      <div
-                        style={{
-                          minHeight: "40px",
-                          display: "flex",
-                          alignItems: "center",
-                          padding: "0 var(--spacing-3)",
-                          border: "1px solid var(--color-border-input)",
-                          borderRadius: "var(--radius-input)",
-                          backgroundColor: "var(--color-bg-secondary)",
-                          color: row.student ? "var(--color-text-primary)" : "var(--color-text-muted)",
-                          fontSize: "var(--font-size-sm)",
-                        }}
-                      >
+                      <Surface bg="secondary" padding="0 var(--spacing-3)" radius="var(--radius-input)" border="1px solid var(--color-border-input)" color={row.student ? "var(--color-text-primary)" : "var(--color-text-muted)"} size="sm" style={{ minHeight: "40px", display: "flex", alignItems: "center" }}>
                         {row.studentLookupState === "loading" ? (
                           <>
                             <FaSpinner className="animate-spin" style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} />
@@ -996,7 +953,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         ) : (
                           getStudentDisplayName(row.student)
                         )}
-                      </div>
+                      </Surface>
                     </div>
 
                     <div>
@@ -1063,18 +1020,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                   <VStack gap={2} style={{ marginTop: "var(--spacing-3)" }}>
                     {row.student?.currentAllocation && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "var(--spacing-2)",
-                          padding: "var(--spacing-2) var(--spacing-3)",
-                          borderRadius: "var(--radius-lg)",
-                          backgroundColor: "var(--color-info-bg)",
-                          color: "var(--color-info-text)",
-                          fontSize: "var(--font-size-sm)",
-                        }}
-                      >
+                      <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="info-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
                         <FaInfoCircle style={{ marginTop: "2px" }} />
                         <span>
                           {row.student.name} is currently allocated to{" "}
@@ -1086,46 +1032,35 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                           </strong>.
                           Saving this row will move the student.
                         </span>
-                      </div>
+                      </Surface>
                     )}
 
                     {occupiedBedStudent && row.student && occupiedBedStudent.id !== row.student.id && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "var(--spacing-2)",
-                          padding: "var(--spacing-2) var(--spacing-3)",
-                          borderRadius: "var(--radius-lg)",
-                          backgroundColor: "var(--color-warning-bg)",
-                          color: "var(--color-warning-text)",
-                          fontSize: "var(--font-size-sm)",
-                        }}
-                      >
+                      <Surface bg="warning" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="warning-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
                         <FaExclamationTriangle style={{ marginTop: "2px" }} />
                         <span>
                           Bed {row.bedNumber} is currently occupied by <strong>{occupiedBedStudent.name}</strong>.
                           Assigning {row.student.name} here will unallocate that student.
                         </span>
-                      </div>
+                      </Surface>
                     )}
 
                     {row.studentError && (
-                      <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+                      <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
                         {row.studentError}
-                      </div>
+                      </Surface>
                     )}
 
                     {row.unitError && (
-                      <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+                      <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
                         {row.unitError}
-                      </div>
+                      </Surface>
                     )}
 
                     {row.validationError && (
-                      <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+                      <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
                         {row.validationError}
-                      </div>
+                      </Surface>
                     )}
 
                     {row.roomsLoading && (

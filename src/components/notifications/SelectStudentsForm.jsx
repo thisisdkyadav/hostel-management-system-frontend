@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox, Grid, Label, Spinner, Text, VStack } from "@/components/ui"
+import { Checkbox, Grid, Label, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Input } from "czero/react"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
@@ -139,12 +139,12 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
 
           <div style={{ marginTop: "var(--spacing-3)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", maxHeight: "240px", overflowY: "auto" }}>
             {loading ? (
-              <div style={{ padding: "var(--spacing-4)", textAlign: "center", color: "var(--color-text-muted)" }}>
+              <Surface padding={4} color="muted" align="center">
                 <Spinner size="var(--spacing-6)" thickness="thin" style={{ display: "inline-block", marginRight: "var(--spacing-2)" }} />
                 Loading students...
-              </div>
+              </Surface>
             ) : students.length === 0 ? (
-              <div style={{ padding: "var(--spacing-4)", textAlign: "center", color: "var(--color-text-muted)" }}>{filters.searchTerm ? "No students found matching your search" : "Type to search for students"}</div>
+              <Surface padding={4} color="muted" align="center">{filters.searchTerm ? "No students found matching your search" : "Type to search for students"}</Surface>
             ) : (
               <ul style={{ borderTop: "none" }}>
                 {students.map((student) => {

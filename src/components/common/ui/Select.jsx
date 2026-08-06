@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react"
 import { FaChevronDown, FaCheck } from "react-icons/fa"
+import { Surface } from "@/components/ui"
 
 /**
  * Select Component - Custom styled dropdown select
@@ -300,16 +301,9 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
 
         {/* Empty state */}
         {normalizedOptions.length === 0 && (
-          <div
-            style={{
-              padding: "var(--spacing-3)",
-              color: "var(--color-text-muted)",
-              fontSize: "var(--font-size-sm)",
-              textAlign: "center",
-            }}
-          >
+          <Surface padding={3} color="muted" size="sm" align="center">
             No options available
-          </div>
+          </Surface>
         )}
       </div>
     </div>

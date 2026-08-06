@@ -15,7 +15,7 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
       <div style={{ position: 'relative' }}>
         {/* Status Badge - Positioned at top right */}
         <div style={{ position: 'absolute', top: 'var(--spacing-0)', right: 'var(--spacing-0)' }}>
-          <span style={{ padding: 'var(--spacing-1-5) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', boxShadow: 'var(--shadow-sm)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
+          <Surface as="span" bg={isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)'} padding="var(--spacing-1-5) var(--spacing-4)" radius="full" shadow="sm" color={isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)'} size="sm" weight="medium">{isEventUpcoming ? "Upcoming" : "Past"}</Surface>
         </div>
 
         {/* Header */}

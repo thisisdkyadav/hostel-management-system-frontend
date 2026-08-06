@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const ACTION_ICONS = {
     submitted: Send,
@@ -88,22 +88,18 @@ const ApprovalHistory = ({
 
     if (error) {
         return (
-            <div style={{ color: "var(--color-danger)", textAlign: "center", padding: "var(--spacing-4)" }}>
+            <Surface padding={4} color="danger" align="center">
                 {error}
-            </div>
+            </Surface>
         )
     }
 
     if (history.length === 0) {
         return (
-            <div style={{
-                textAlign: "center",
-                padding: "var(--spacing-6)",
-                color: "var(--color-text-muted)"
-            }}>
+            <Surface padding={6} color="muted" align="center">
                 <Clock size={32} style={{ margin: "0 auto var(--spacing-2)" }} />
                 <p>No approval history yet</p>
-            </div>
+            </Surface>
         )
     }
     return (

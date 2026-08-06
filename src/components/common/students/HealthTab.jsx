@@ -326,10 +326,10 @@ const HealthTab = ({ userId }) => {
             <Spinner size="var(--avatar-sm)" thickness="thin" />
           </div>
         ) : insuranceClaims.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+          <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
             <Hospital size={48} style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', display: 'block' }} />
             <Text color="muted">No insurance claims found</Text>
-          </div>
+          </Surface>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <Table>

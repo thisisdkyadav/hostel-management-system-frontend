@@ -1,7 +1,7 @@
 import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
-import { Grid, Heading, HStack, Text } from "@/components/ui"
+import { Grid, Heading, HStack, Surface, Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -359,24 +359,11 @@ const StudentElectionWorkspace = ({
                       <Grid cols={1} gap="8px" style={{ padding: "12px", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: isWinner ? "var(--color-success-bg)" : "var(--color-bg-primary)" }} key={candidate.nominationId}>
                         <HStack gap={3} align="center" justify="between" wrap>
                           <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
-                            <div
-                              style={{
-                                minWidth: "28px",
-                                height: "28px",
-                                borderRadius: "999px",
-                                backgroundColor: isWinner
+                            <Surface bg={isWinner
                                   ? "var(--color-success)"
-                                  : "var(--color-bg-secondary)",
-                                color: isWinner ? "var(--color-white)" : "var(--color-text-body)",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: "var(--font-size-xs)",
-                                fontWeight: "var(--font-weight-semibold)",
-                              }}
-                            >
+                                  : "var(--color-bg-secondary)"} radius="999px" color={isWinner ? "var(--color-white)" : "var(--color-text-body)"} size="xs" weight="semibold" style={{ minWidth: "28px", height: "28px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                               #{index + 1}
-                            </div>
+                            </Surface>
                             <div style={{ minWidth: 0 }}>
                               <Text as="div" weight="medium" color="heading">
                                 {candidate.candidateName}

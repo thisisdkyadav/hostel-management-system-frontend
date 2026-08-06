@@ -6,18 +6,7 @@ import { Heading, HStack, Surface, Text } from "@/components/ui"
 
 const NotFoundPage = () => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: 'var(--spacing-8)',
-        backgroundColor: 'var(--color-bg-secondary)',
-        textAlign: 'center'
-      }}
-    >
+    <Surface bg="secondary" padding={8} align="center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <div
         style={{
           backgroundColor: 'var(--color-bg-primary)',
@@ -57,7 +46,7 @@ const NotFoundPage = () => {
           </Button>
         </Link>
       </div>
-    </div>
+    </Surface>
   )
 }
 

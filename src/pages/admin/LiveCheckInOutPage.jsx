@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Badge, Card, DatePicker, Divider, Grid, Heading, HStack, Label, Select, Spinner, Text, VStack } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, Heading, HStack, Label, Select, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const formatDateTime = (value) => {
@@ -256,19 +256,9 @@ const LiveCheckInOutPage = () => {
 
         {/* Error Banner */}
         {error && (
-          <div
-            style={{
-              marginBottom: "var(--spacing-4)",
-              borderRadius: "var(--radius-lg)",
-              border: "var(--border-1) solid var(--color-danger-border)",
-              backgroundColor: "var(--color-danger-bg-light)",
-              padding: "var(--spacing-3)",
-              fontSize: "var(--font-size-sm)",
-              color: "var(--color-danger-text)",
-            }}
-          >
+          <Surface bg="var(--color-danger-bg-light)" padding={3} radius="lg" border="var(--border-1) solid var(--color-danger-border)" color="danger-text" size="sm" style={{ marginBottom: "var(--spacing-4)" }}>
             <Text as="span" weight="semibold">Error:</Text> {error}
-          </div>
+          </Surface>
         )}
 
         {/* Filter Section - Like StudentFilterSection */}
@@ -455,16 +445,7 @@ const LiveCheckInOutPage = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderTop: "var(--border-1) solid var(--color-border-primary)",
-                    padding: "var(--spacing-3) var(--spacing-4)",
-                    fontSize: "var(--font-size-sm)",
-                  }}
-                >
+                <Surface padding="var(--spacing-3) var(--spacing-4)" size="sm" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "var(--border-1) solid var(--color-border-primary)" }}>
                   <Text color="muted">
                     {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalRecords)} of {totalRecords}
                   </Text>
@@ -537,7 +518,7 @@ const LiveCheckInOutPage = () => {
                       <ChevronRight size={16} />
                     </button>
                   </HStack>
-                </div>
+                </Surface>
               )}
             </>
           )}

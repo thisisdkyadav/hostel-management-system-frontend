@@ -202,10 +202,10 @@ const QRScanner = ({ onRefresh }) => {
       </div>
 
       {loading && (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+        <Surface padding="var(--spacing-8) 0" align="center">
           <Spinner size="var(--spacing-12)" thickness="thick" style={{ margin: '0 auto var(--spacing-4)' }} />
           <Text color="muted">Processing QR code...</Text>
-        </div>
+        </Surface>
       )}
 
       {scannedStudent && !loading && (

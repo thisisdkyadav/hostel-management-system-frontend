@@ -134,7 +134,7 @@ const UndertakingsPage = () => {
                 <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-info)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
-                    <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)', color: undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)' }}>{undertaking.status === "not_viewed" ? "New" : "Pending"}</span>
+                    <Surface as="span" bg={undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)'} padding="var(--spacing-1) var(--spacing-2)" color={undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)'} size="xs" className="rounded-full">{undertaking.status === "not_viewed" ? "New" : "Pending"}</Surface>
                   </div>
                   <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>
 
@@ -182,7 +182,7 @@ const UndertakingsPage = () => {
                 <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-success)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
-                    <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Accepted</span>
+                    <Surface as="span" bg="success" padding="var(--spacing-1) var(--spacing-2)" color="success-text" size="xs" className="rounded-full">Accepted</Surface>
                   </div>
                   <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>
 

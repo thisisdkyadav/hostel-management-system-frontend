@@ -54,10 +54,10 @@ const DashboardPage = () => {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0' }}>
+        <Surface padding="var(--spacing-10) 0" align="center">
           <Spinner size="2rem" thickness="thin" style={{ display: 'inline-block', marginBottom: 'var(--spacing-4)' }} />
           <Text color="muted">Loading dashboard statistics...</Text>
-        </div>
+        </Surface>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', overflow: 'hidden', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}>

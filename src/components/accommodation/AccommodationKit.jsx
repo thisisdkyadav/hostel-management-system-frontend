@@ -71,9 +71,9 @@ export const PersonCard = ({ person, fallbackName }) => {
       {person?.profileImage ? (
         <img src={getMediaUrl(person.profileImage)} alt={name} style={{ height: 44, width: 44, borderRadius: "var(--radius-full)", objectFit: "cover", border: "2px solid var(--color-primary-bg)" }} />
       ) : (
-        <div style={{ height: 44, width: 44, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)", flexShrink: 0 }}>
+        <Surface bg="brand" radius="full" color="brand" size="lg" weight="semibold" style={{ height: 44, width: 44, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {name.charAt(0).toUpperCase()}
-        </div>
+        </Surface>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <Text as="div" weight="semibold" color="primary">{name}</Text>
@@ -99,9 +99,9 @@ export const ApplicantCell = ({ request }) => {
       {s?.profileImage ? (
         <img src={getMediaUrl(s.profileImage)} alt={name} style={{ height: 32, width: 32, borderRadius: "var(--radius-full)", objectFit: "cover", flexShrink: 0 }} />
       ) : (
-        <span style={{ height: 32, width: 32, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", flexShrink: 0 }}>
+        <Surface as="span" bg="brand" radius="full" color="brand" size="xs" weight="semibold" style={{ height: 32, width: 32, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {name.charAt(0).toUpperCase()}
-        </span>
+        </Surface>
       )}
       <div style={{ minWidth: 0 }}>
         <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
@@ -153,9 +153,9 @@ export const GuestList = ({ guests = [] }) => (
   <VStack gap={2}>
     {guests.map((g, i) => (
       <HStack gap={2} align="center" key={i}>
-        <span style={{ width: 26, height: 26, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", flexShrink: 0 }}>
+        <Surface as="span" bg="brand" radius="full" color="brand" size="xs" weight="semibold" style={{ width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {(g.name || "?").charAt(0).toUpperCase()}
-        </span>
+        </Surface>
         <Text as="span" size="sm" color="body">
           {g.name} <Text as="span" color="muted">· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</Text>
         </Text>

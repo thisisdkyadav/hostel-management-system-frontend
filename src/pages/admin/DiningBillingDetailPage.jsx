@@ -163,12 +163,9 @@ const DiningBillingDetailPage = () => {
   }
 
   const rateChips = (billingPeriod.diningPeriods || []).map((period) => (
-    <span
-      key={period.id}
-      style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-hover)", borderRadius: "var(--radius-full)", padding: "var(--spacing-1) var(--spacing-2)" }}
-    >
+    <Surface as="span" bg="var(--color-bg-hover)" padding="var(--spacing-1) var(--spacing-2)" radius="full" color="muted" size="xs" style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }} key={period.id}>
       {formatDateRange(period.startDate, period.endDate)} · {period.dailyRate > 0 ? `${formatCurrency(period.dailyRate)}/day` : "no rate"}
-    </span>
+    </Surface>
   ))
 
   return (

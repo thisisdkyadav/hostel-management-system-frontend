@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FaCalendarAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { Text } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const EventsCalendar = ({ events = [] }) => {
   const formatDate = (dateString) => {
@@ -27,10 +27,10 @@ const EventsCalendar = ({ events = [] }) => {
       </div>
 
       {events.length === 0 ? (
-        <div style={{ padding: 'var(--spacing-4)', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+        <Surface padding={4} color="muted" align="center">
           <FaCalendarAlt style={{ margin: '0 auto', fontSize: 'var(--icon-2xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-1)' }} />
           <Text size="xs">No upcoming events</Text>
-        </div>
+        </Surface>
       ) : (
         <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
           {events.map((event) => {

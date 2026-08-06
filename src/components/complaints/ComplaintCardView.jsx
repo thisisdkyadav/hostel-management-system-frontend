@@ -2,7 +2,7 @@ import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Card, Heading, HStack, IconCircle, Text, VStack } from "@/components/ui"
+import { Card, Heading, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
@@ -29,7 +29,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
             </HStack>
 
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="line-clamp-3">{complaint.description}</div>
+              <Surface bg="tertiary" padding={3} radius="lg" color="body" size="sm" className="line-clamp-3">{complaint.description}</Surface>
             </div>
 
             <HStack gap="none" align="center" justify="between" style={{ marginTop: 'var(--spacing-4)' }}>

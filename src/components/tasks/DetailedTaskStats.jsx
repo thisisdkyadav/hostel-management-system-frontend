@@ -64,7 +64,7 @@ const DetailedTaskStats = ({ stats }) => {
         <VStack gap={2}>
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
             <HStack gap="none" align="center" justify="between" key={category}>
-              <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)', color: categoryColors[category]?.text || 'var(--color-text-muted)' }}>{category}</span>
+              <Surface as="span" bg={categoryColors[category]?.bg || 'var(--color-bg-muted)'} padding="var(--badge-padding-sm)" radius="full" color={categoryColors[category]?.text || 'var(--color-text-muted)'} size="xs" weight="medium">{category}</Surface>
               <Text as="span" size="sm" weight="medium">{count}</Text>
             </HStack>
           ))}

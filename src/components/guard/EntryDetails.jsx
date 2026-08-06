@@ -52,7 +52,7 @@ const EntryDetails = ({ entry, onClose }) => {
 
             <div style={{ paddingTop: 'var(--spacing-2)' }}>
               <Text size="sm" color="muted">Status</Text>
-              <span style={{ marginTop: 'var(--spacing-1)', padding: 'var(--spacing-1) var(--spacing-3)', display: 'inline-flex', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)', color: entry.status === "Checked In" ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}>{entry.status}</span>
+              <Surface as="span" bg={entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)'} padding="var(--spacing-1) var(--spacing-3)" radius="full" color={entry.status === "Checked In" ? 'var(--color-success-text)' : 'var(--color-danger-text)'} size="sm" weight="semibold" style={{ marginTop: 'var(--spacing-1)', display: 'inline-flex' }}>{entry.status}</Surface>
             </div>
           </VStack>
         </Surface>

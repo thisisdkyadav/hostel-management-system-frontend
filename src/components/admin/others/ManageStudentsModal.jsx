@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import { Alert, HStack, IconCircle, SearchInput, Spinner, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, IconCircle, SearchInput, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -119,9 +119,9 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber || "N/A"}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                        <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)', color: student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)' }}>
+                        <Surface as="span" bg={student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)'} size="xs" weight="semibold" leading="1.25rem" style={{ display: 'inline-flex' }}>
                           {student.status === "accepted" ? "Accepted" : student.status === "pending" ? "Pending" : "Not Viewed"}
-                        </span>
+                        </Surface>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                         <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="sm" title="Remove student"><FaUserMinus /></Button>

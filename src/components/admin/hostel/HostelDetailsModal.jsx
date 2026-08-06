@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
-import { Badge, HStack, Label, Pagination, Select, Spinner, Text, VStack } from "@/components/ui"
+import { Badge, HStack, Label, Pagination, Select, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { securityApi } from "../../../service"
@@ -91,9 +91,9 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
     if (attendanceRecords.length === 0) {
       return (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+        <Surface padding="var(--spacing-8) 0" align="center">
           <Text color="muted">No attendance records found.</Text>
-        </div>
+        </Surface>
       )
     }
 
@@ -152,9 +152,9 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
     if (presentStaff.length === 0) {
       return (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+        <Surface padding="var(--spacing-8) 0" align="center">
           <Text color="muted">No staff present during the selected time period.</Text>
-        </div>
+        </Surface>
       )
     }
 

@@ -6,7 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import { Card, Heading, HStack, Text } from "@/components/ui"
+import { Card, Heading, HStack, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const EventCard = ({ event, refresh }) => {
@@ -79,7 +79,7 @@ const EventCard = ({ event, refresh }) => {
                 <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
               </div>
             </HStack>
-            <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--spacing-1) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
+            <Surface as="span" bg={isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)'} padding="var(--spacing-1) var(--spacing-2-5)" radius="full" color={isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)'} size="xs">{isEventUpcoming ? "Upcoming" : "Past"}</Surface>
           </HStack>
         </Card.Header>
 

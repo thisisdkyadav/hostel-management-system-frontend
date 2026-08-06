@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"
 
@@ -177,20 +177,11 @@ const LiveScanMonitorModal = ({ isOpen, onClose }) => {
         {/* Feed */}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", maxHeight: "56vh", overflowY: "auto" }}>
           {events.length === 0 ? (
-            <div
-              style={{
-                border: "1px dashed var(--color-border-input)",
-                borderRadius: "var(--radius-lg)",
-                padding: "var(--spacing-6)",
-                textAlign: "center",
-                color: "var(--color-text-muted)",
-                fontSize: "var(--font-size-sm)",
-              }}
-            >
+            <Surface padding={6} radius="lg" border="1px dashed var(--color-border-input)" color="muted" size="sm" align="center">
               Waiting for incoming scans… Trigger a punch on the device, or POST to
               <br />
               <code style={{ fontFamily: "var(--font-family-mono, monospace)" }}>/api/v1/face-scanner/scan</code>
-            </div>
+            </Surface>
           ) : (
             events.map((event) => <ScanEventRow key={event.id} event={event} showHeaders={showHeaders} />)
           )}

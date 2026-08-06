@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Heading, HStack, IconCircle, Modal, Spinner, Text, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -94,9 +94,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
     <Modal title="Manage Your Sessions" onClose={onClose} width={600}>
       <VStack gap="var(--gap-lg)">
         {error && (
-          <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', }} >
+          <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">
             {error}
-          </div>
+          </Surface>
         )}
 
         <Text as="div" color="muted" size="sm">
@@ -111,7 +111,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
             </Text>
           </div>
         ) : devices.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', }} >
+          <Surface padding="var(--spacing-8) 0" align="center">
             <IconCircle size="var(--avatar-xl)" bg="muted" color="var(--color-text-placeholder)" style={{ margin: '0 auto', marginBottom: 'var(--spacing-4)' }}>
               <HiDesktopComputer size={30} />
             </IconCircle>
@@ -121,7 +121,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
             <Text color="placeholder" style={{ marginTop: 'var(--spacing-2)' }}>
               You don't have any other active sessions at the moment.
             </Text>
-          </div>
+          </Surface>
         ) : (
           <VStack gap="var(--gap-md)">
             {devices.map((device) => (
@@ -140,9 +140,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
                       <p>Last active: {device.lastActive ? new Date(device.lastActive).toLocaleString() : "Unknown"}</p>
                       <p>Browser: {getBrowserInfo(device.userAgent)}</p>
                       {device.isCurrent && (
-                        <span style={{ display: 'inline-block', marginTop: 'var(--spacing-1)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', }} >
+                        <Surface as="span" bg="success" padding="var(--badge-padding-xs)" radius="full" color="success-text" size="xs" style={{ display: 'inline-block', marginTop: 'var(--spacing-1)' }}>
                           Current Session
-                        </span>
+                        </Surface>
                       )}
                     </Text>
                   </div>

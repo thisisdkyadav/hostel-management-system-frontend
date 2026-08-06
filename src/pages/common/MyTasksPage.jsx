@@ -190,18 +190,9 @@ const MyTasksPage = () => {
                 >
                   {tab.label}
                   {stats.statusCounts && tab.key !== "all" && (
-                    <span
-                      style={{
-                        backgroundColor: activeTab === tab.key ? 'var(--color-primary-bg)' : 'var(--color-bg-muted)',
-                        color: activeTab === tab.key ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                        fontSize: 'var(--font-size-xs)',
-                        padding: 'var(--spacing-0-5) var(--spacing-2)',
-                        borderRadius: 'var(--radius-full)',
-                        marginLeft: 'var(--spacing-2)'
-                      }}
-                    >
+                    <Surface as="span" bg={activeTab === tab.key ? 'var(--color-primary-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-0-5) var(--spacing-2)" radius="full" color={activeTab === tab.key ? 'var(--color-primary)' : 'var(--color-text-muted)'} size="xs" style={{ marginLeft: 'var(--spacing-2)' }}>
                       {stats.statusCounts[tab.key] || 0}
-                    </span>
+                    </Surface>
                   )}
                 </button>
               ))}

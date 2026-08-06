@@ -155,7 +155,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
                 ))}
               </Table.Body>
             </Table>
-            {parsedCsvData.length > 5 && <div style={{ padding: 'var(--spacing-3) var(--spacing-6)', backgroundColor: 'var(--table-header-bg)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Showing 5 of {parsedCsvData.length} rooms</div>}
+            {parsedCsvData.length > 5 && <Surface bg="var(--table-header-bg)" padding="var(--spacing-3) var(--spacing-6)" color="muted" size="xs">Showing 5 of {parsedCsvData.length} rooms</Surface>}
 
             <VStack gap="medium">
               <Checkbox

@@ -1,4 +1,4 @@
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Mail, Paperclip, Calendar, Users } from "lucide-react"
 
 /**
@@ -80,19 +80,9 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
           </div>
           <HStack gap={4} wrap>
             {recipients.map((email, index) => (
-              <span
-                key={`${email}-${index}`}
-                style={{
-                  padding: "2px 8px",
-                  backgroundColor: "var(--color-primary-bg)",
-                  borderRadius: "var(--radius-badge)",
-                  fontSize: "var(--font-size-xs)",
-                  color: "var(--color-primary)",
-                  fontWeight: "var(--font-weight-medium)",
-                }}
-              >
+              <Surface as="span" bg="brand" padding="2px 8px" radius="var(--radius-badge)" color="brand" size="xs" weight="medium" key={`${email}-${index}`}>
                 {email}
-              </span>
+              </Surface>
             ))}
           </HStack>
         </div>
@@ -138,23 +128,10 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
             </div>
             <HStack gap={6} wrap>
               {attachments.map((attachment, index) => (
-                <span
-                  key={`attachment-${index}`}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    padding: "4px 8px",
-                    backgroundColor: "var(--color-bg-tertiary)",
-                    borderRadius: "var(--radius-badge)",
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-body)",
-                    border: "1px solid var(--color-border-primary)",
-                  }}
-                >
+                <Surface as="span" bg="tertiary" padding="4px 8px" radius="var(--radius-badge)" border="1px solid var(--color-border-primary)" color="body" size="xs" style={{ display: "inline-flex", alignItems: "center", gap: 4 }} key={`attachment-${index}`}>
                   <Paperclip size={10} />
                   {attachment.name}
-                </span>
+                </Surface>
               ))}
             </HStack>
           </div>

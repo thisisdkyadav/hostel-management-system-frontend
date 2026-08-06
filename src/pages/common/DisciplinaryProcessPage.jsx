@@ -1463,13 +1463,13 @@ const DisciplinaryProcessPage = () => {
         }
       >
         {adminModalLoading ? (
-          <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
+          <Surface padding={8} color="muted" align="center">
             Loading case details...
-          </div>
+          </Surface>
         ) : !selectedAdminCase ? (
-          <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
+          <Surface padding={8} color="muted" align="center">
             Case details unavailable
-          </div>
+          </Surface>
         ) : adminCurrentStage === "closed_final" ? (
           <CaseSummaryView
             caseData={selectedAdminCase}
@@ -1566,19 +1566,7 @@ const DisciplinaryProcessPage = () => {
                 {studentSearchResults.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
                     {studentSearchResults.map((student) => (
-                      <div
-                        key={student.userId}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                          padding: "4px 8px",
-                          backgroundColor: "var(--color-bg-primary)",
-                          borderRadius: "var(--radius-badge)",
-                          border: "1px solid var(--color-border-primary)",
-                          fontSize: "var(--font-size-xs)",
-                        }}
-                      >
+                      <Surface bg="primary" padding="4px 8px" radius="var(--radius-badge)" border="1px solid var(--color-border-primary)" size="xs" style={{ display: "flex", alignItems: "center", gap: 6 }} key={student.userId}>
                         <User size={12} style={{ color: "var(--color-text-muted)" }} />
                         <Text as="span" weight="medium">{student.rollNumber}</Text>
                         <Text as="span" color="muted">{student.name}</Text>
@@ -1598,7 +1586,7 @@ const DisciplinaryProcessPage = () => {
                         >
                           +Accused
                         </Button>
-                      </div>
+                      </Surface>
                     ))}
                   </div>
                 )}

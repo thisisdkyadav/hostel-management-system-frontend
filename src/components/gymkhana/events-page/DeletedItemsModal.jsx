@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react"
 import { Button, Tabs } from "czero/react"
-import { Modal, Text, VStack } from "@/components/ui"
+import { Modal, Surface, Text, VStack } from "@/components/ui"
 import { Spinner } from "@/components/ui/feedback"
 import { useToast } from "@/components/ui"
 import { Clock, RotateCcw } from "lucide-react"
@@ -72,10 +72,10 @@ const DeletedRow = ({ item, onRestore, restoring, lastRow }) => (
 )
 
 const EmptyState = ({ label }) => (
-  <div style={{ textAlign: "center", padding: "var(--spacing-6)", color: "var(--color-text-muted)" }}>
+  <Surface padding={6} color="muted" align="center">
     <Clock size={32} style={{ margin: "0 auto var(--spacing-2)" }} />
     <p>No deleted {label}</p>
-  </div>
+  </Surface>
 )
 
 const DeletedItemsModal = ({ isOpen = true, onClose, onRestored }) => {

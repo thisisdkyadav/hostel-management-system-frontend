@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, Heading, HStack, Label, Modal, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -596,18 +596,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           ) : (
             <>
               {allocationLookup?.currentAllocation && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "var(--spacing-2)",
-                    padding: "var(--spacing-2) var(--spacing-3)",
-                    borderRadius: "var(--radius-lg)",
-                    backgroundColor: "var(--color-info-bg)",
-                    color: "var(--color-info-text)",
-                    fontSize: "var(--font-size-sm)",
-                  }}
-                >
+                <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="info-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
                   <FaInfoCircle style={{ marginTop: "2px" }} />
                   <span>
                     Current allocation:{" "}
@@ -618,7 +607,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                       {allocationLookup.currentAllocation.bedNumber ? ` / Bed ${allocationLookup.currentAllocation.bedNumber}` : ""}
                     </strong>
                   </span>
-                </div>
+                </Surface>
               )}
 
               <Grid cols={2} gap={4}>
@@ -689,36 +678,25 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
               <VStack gap={2}>
                 {occupiedBedStudent && occupiedBedStudent.id !== allocationLookup?.id && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "var(--spacing-2)",
-                      padding: "var(--spacing-2) var(--spacing-3)",
-                      borderRadius: "var(--radius-lg)",
-                      backgroundColor: "var(--color-warning-bg)",
-                      color: "var(--color-warning-text)",
-                      fontSize: "var(--font-size-sm)",
-                    }}
-                  >
+                  <Surface bg="warning" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="warning-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
                     <FaExclamationTriangle style={{ marginTop: "2px" }} />
                     <span>
                       Bed {allocationForm.bedNumber} is currently occupied by <strong>{occupiedBedStudent.name}</strong>.
                       Updating this allocation will unallocate that student.
                     </span>
-                  </div>
+                  </Surface>
                 )}
 
                 {allocationForm.unitError && (
-                  <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+                  <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
                     {allocationForm.unitError}
-                  </div>
+                  </Surface>
                 )}
 
                 {allocationForm.validationError && (
-                  <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+                  <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
                     {allocationForm.validationError}
-                  </div>
+                  </Surface>
                 )}
 
                 {allocationForm.roomsLoading && (
@@ -784,9 +762,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
         </HStack>
 
         {error && (
-          <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
+          <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="danger" size="sm">
             {error}
-          </div>
+          </Surface>
         )}
 
         {renderContent()}

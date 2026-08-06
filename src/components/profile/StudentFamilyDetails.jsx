@@ -334,14 +334,14 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           {showAddForm && renderAddForm()}
 
           {familyMembers.length === 0 && !showAddForm ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-6) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+            <Surface bg="tertiary" padding="var(--spacing-6) 0" radius="lg" align="center">
               <Text color="muted">No family members added yet.</Text>
               {editable && (
                 <Button onClick={() => setShowAddForm(true)} variant="outline" size="sm">
                   <FiPlus /> Add Family Member
                 </Button>
               )}
-            </div>
+            </Surface>
           ) : (
             <VStack gap={2}>{familyMembers.map((member) => renderMemberCard(member))}</VStack>
           )}

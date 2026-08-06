@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, Heading, HStack, IconCircle, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -197,10 +197,10 @@ const InventoryReports = () => {
       {activeTab === "student" && !loading && (
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {studentSummary.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-12) 0" }}>
+            <Surface padding="var(--spacing-12) 0" align="center">
               <FaUserGraduate style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
               <Text color="muted">No student inventory data available</Text>
-            </div>
+            </Surface>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -219,7 +219,7 @@ const InventoryReports = () => {
                       <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{student.studentName}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>{student.rollNumber}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>{student.totalItems}</span>
+                        <Surface as="span" bg="info" padding="var(--badge-padding-sm)" radius="full" color="info-text" size="xs" weight="medium">{student.totalItems}</Surface>
                       </Table.Cell>
                       <Table.Cell>
                         <div className="space-y-1">
@@ -232,17 +232,9 @@ const InventoryReports = () => {
                               <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
                               <Text as="span" color="tertiary">{item.count}</Text>
                               <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
-                              <span
-                                style={{
-                                  fontSize: "var(--font-size-xs)",
-                                  padding: "var(--spacing-1) var(--spacing-2)",
-                                  borderRadius: "var(--radius-full)",
-                                  backgroundColor: item.status === "Issued" ? "var(--color-success-bg)" : item.status === "Damaged" ? "var(--color-danger-bg)" : "var(--color-bg-muted)",
-                                  color: item.status === "Issued" ? "var(--color-success-text)" : item.status === "Damaged" ? "var(--color-danger-text)" : "var(--color-text-secondary)",
-                                }}
-                              >
+                              <Surface as="span" bg={item.status === "Issued" ? "var(--color-success-bg)" : item.status === "Damaged" ? "var(--color-danger-bg)" : "var(--color-bg-muted)"} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={item.status === "Issued" ? "var(--color-success-text)" : item.status === "Damaged" ? "var(--color-danger-text)" : "var(--color-text-secondary)"} size="xs">
                                 {item.status}
-                              </span>
+                              </Surface>
                             </div>
                           ))}
                         </div>
@@ -260,10 +252,10 @@ const InventoryReports = () => {
       {activeTab === "itemType" && !loading && (
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {itemTypeSummary.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-12) 0" }}>
+            <Surface padding="var(--spacing-12) 0" align="center">
               <FaBox style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
               <Text color="muted">No item type summary data available</Text>
-            </div>
+            </Surface>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -290,7 +282,7 @@ const InventoryReports = () => {
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.totalAssigned}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>{item.studentCount}</span>
+                        <Surface as="span" bg="info" padding="var(--badge-padding-sm)" radius="full" color="info-text" size="xs" weight="medium">{item.studentCount}</Surface>
                       </Table.Cell>
                     </Table.Row>
                   ))}

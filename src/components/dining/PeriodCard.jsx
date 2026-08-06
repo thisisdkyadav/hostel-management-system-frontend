@@ -1,6 +1,6 @@
 import { Button, StatusBadge } from "czero/react"
 import { CalendarClock, Eye, Pencil, Users, UtensilsCrossed } from "lucide-react"
-import { Card, HStack, Text } from "@/components/ui"
+import { Card, HStack, Surface, Text } from "@/components/ui"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -10,26 +10,13 @@ import {
 } from "./diningPeriodHelpers"
 
 const MealSlotChip = ({ slot }) => (
-  <span
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "var(--spacing-1)",
-      padding: "var(--spacing-1) var(--spacing-2)",
-      borderRadius: "var(--radius-md)",
-      backgroundColor: "var(--color-bg-tertiary)",
-      border: "1px solid var(--color-border-primary)",
-      fontSize: "var(--font-size-xs)",
-      color: "var(--color-text-secondary)",
-      whiteSpace: "nowrap",
-    }}
-  >
+  <Surface as="span" bg="tertiary" padding="var(--spacing-1) var(--spacing-2)" radius="md" border="1px solid var(--color-border-primary)" color="secondary" size="xs" style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", whiteSpace: "nowrap" }}>
     <UtensilsCrossed size={12} style={{ color: "var(--color-text-muted)" }} />
     <Text as="strong" weight="medium">{slot.name}</Text>
     <Text as="span" color="muted">
       {slot.startTime}–{slot.endTime}
     </Text>
-  </span>
+  </Surface>
 )
 
 /**

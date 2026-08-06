@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import { Grid, Heading, HStack, SearchInput, Spinner } from "@/components/ui"
+import { Grid, Heading, HStack, SearchInput, Spinner, Surface } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import UndertakingCard from "./UndertakingCard"
@@ -67,7 +67,7 @@ const Undertakings = () => {
           <Spinner size="var(--icon-3xl)" thickness="thin" />
         </div>
       ) : error ? (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8)', color: 'var(--color-danger)' }}>{error}</div>
+        <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredUndertakings.length === 0 ? (
         <NoResults icon={<FaFileSignature style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (

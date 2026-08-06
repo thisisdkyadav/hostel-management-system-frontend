@@ -14,7 +14,7 @@ import {
   getStudentPwaHiddenItems
 } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
-import { Heading, Text } from "@/components/ui"
+import { Heading, Surface, Text } from "@/components/ui"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
@@ -182,42 +182,17 @@ const StudentLayout = () => {
             "radial-gradient(circle at top, var(--color-primary-bg) 0%, var(--color-bg-page) 42%, var(--color-bg-page) 100%)",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "640px",
-            padding: "var(--spacing-8)",
-            borderRadius: "var(--radius-card)",
-            border: "1px solid var(--color-border-primary)",
-            backgroundColor: "var(--color-bg-primary)",
-            boxShadow: "var(--shadow-lg)",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "72px",
-              height: "72px",
-              margin: "0 auto var(--spacing-5)",
-              borderRadius: "999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "var(--color-warning-bg-light)",
-              color: "var(--color-warning-text)",
-              fontSize: "32px",
-              fontWeight: "var(--font-weight-semibold)",
-            }}
-          >
+        <Surface bg="primary" padding={8} radius="card" border="1px solid var(--color-border-primary)" shadow="lg" align="center" style={{ width: "100%", maxWidth: "640px" }}>
+          <Surface bg="var(--color-warning-bg-light)" radius="999px" color="warning-text" size="32px" weight="semibold" style={{ width: "72px", height: "72px", margin: "0 auto var(--spacing-5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             !
-          </div>
+          </Surface>
           <Heading as="h1" size="3xl" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
             Your account is inactive
           </Heading>
           <Text size="base" leading="var(--line-height-relaxed)" color="body" style={{ margin: 0 }}>
             Please contact the Student Affairs Office if you want to restore access to your account.
           </Text>
-        </div>
+        </Surface>
       </div>
     )
   }

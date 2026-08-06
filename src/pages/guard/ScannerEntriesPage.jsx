@@ -94,9 +94,9 @@ const ScannerEntriesPage = () => {
             </Button>
           </HStack>
           {loading && scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} /><Text color="muted">Loading scanner entries...</Text></div>
+            <Surface padding={8} align="center"><Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} /><Text color="muted">Loading scanner entries...</Text></Surface>
           ) : scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</Text></div>
+            <Surface padding={8} align="center"><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</Text></Surface>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <Table>

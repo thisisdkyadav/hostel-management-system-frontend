@@ -1,7 +1,7 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { Button } from "czero/react"
-import { Heading, HStack, IconCircle, Modal, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null
@@ -10,7 +10,7 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
 
   return (
     <Modal title={title} onClose={onClose} width={width}>
-      <div style={{ textAlign: 'center', padding: 'var(--spacing-4) 0' }}>
+      <Surface padding="var(--spacing-4) 0" align="center">
         <IconCircle size="var(--spacing-16)" bg="var(--color-success-bg-light)" color="success" style={{ margin: '0 auto', marginBottom: 'var(--spacing-6)' }}>
           <HiCheckCircle size={40} />
         </IconCircle>
@@ -31,7 +31,7 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
             {buttonText}
           </Button>
         </HStack>
-      </div>
+      </Surface>
     </Modal>
   )
 }

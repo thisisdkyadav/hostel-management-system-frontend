@@ -568,7 +568,7 @@ const DashboardPage = () => {
             <Text size="clamp(var(--font-size-sm), 2vw, var(--font-size-base))" className="max-w-md">Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</Text>
 
             <div className="w-full flex items-center justify-center" style={{ marginTop: 'var(--spacing-2)' }}>
-              <div className="rounded-full backdrop-blur-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)' }}>Enjoy your special day 🎉</div>
+              <Surface bg="rgba(255, 255, 255, 0.2)" padding="var(--spacing-2) var(--spacing-4)" size="sm" className="rounded-full backdrop-blur-sm">Enjoy your special day 🎉</Surface>
             </div>
 
             <div className="w-full grid grid-cols-2" style={{ marginTop: 'var(--spacing-4)', gap: 'var(--gap-sm)' }}>

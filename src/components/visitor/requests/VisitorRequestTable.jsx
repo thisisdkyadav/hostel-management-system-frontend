@@ -4,7 +4,7 @@ import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, IconCircle, Text } from "@/components/ui"
+import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -13,15 +13,15 @@ const StatusBadge = ({ status }) => {
     Completed: { bgColor: "var(--color-info-bg)", textColor: "var(--color-info-text)", label: "Completed" },
   }
   const { bgColor, textColor, label } = statusMap[status] || statusMap.Pending
-  return <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: bgColor, color: textColor }}>{label}</span>
+  return <Surface as="span" bg={bgColor} padding="var(--badge-padding-sm)" radius="full" color={textColor} size="xs" weight="medium">{label}</Surface>
 }
 
 const AllocationBadge = ({ request }) => {
   const isAllocated = request.isAllocated
   return isAllocated ? (
-    <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>Allocated</span>
+    <Surface as="span" bg="info" padding="var(--badge-padding-sm)" radius="full" color="info-text" size="xs" weight="medium">Allocated</Surface>
   ) : (
-    <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-secondary)" }}>Unallocated</span>
+    <Surface as="span" bg="muted" padding="var(--badge-padding-sm)" radius="full" color="secondary" size="xs" weight="medium">Unallocated</Surface>
   )
 }
 
@@ -29,9 +29,9 @@ const CheckInOutBadge = ({ request }) => {
   const hasCheckedIn = request.checkInTime
   const hasCheckedOut = request.checkOutTime
 
-  if (hasCheckedOut) return <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-purple-light-bg)", color: "var(--color-purple-text)" }}>Checked Out</span>
-  if (hasCheckedIn) return <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)" }}>Checked In</span>
-  return <span style={{ padding: "var(--badge-padding-sm)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-secondary)" }}>Not Checked</span>
+  if (hasCheckedOut) return <Surface as="span" bg="var(--color-purple-light-bg)" padding="var(--badge-padding-sm)" radius="full" color="var(--color-purple-text)" size="xs" weight="medium">Checked Out</Surface>
+  if (hasCheckedIn) return <Surface as="span" bg="info" padding="var(--badge-padding-sm)" radius="full" color="info-text" size="xs" weight="medium">Checked In</Surface>
+  return <Surface as="span" bg="muted" padding="var(--badge-padding-sm)" radius="full" color="secondary" size="xs" weight="medium">Not Checked</Surface>
 }
 
 const VisitorRequestTable = ({ requests, onRefresh }) => {
@@ -156,9 +156,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
   if (!requests || requests.length === 0) {
     return (
-      <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
+      <Surface bg="primary" padding={8} radius="xl" shadow="sm" align="center">
         <Text color="muted" size="base">No requests found matching your filters.</Text>
-      </div>
+      </Surface>
     )
   }
 

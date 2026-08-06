@@ -271,19 +271,9 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
                 </Heading>
                 <HStack gap={2} wrap>
                   {reconciliation.absentRollNumbers.map((roll) => (
-                    <span
-                      key={roll}
-                      style={{
-                        padding: "var(--spacing-1) var(--spacing-2-5)",
-                        borderRadius: "var(--radius-badge)",
-                        fontSize: "var(--font-size-xs)",
-                        backgroundColor: "var(--color-danger-bg-light, var(--color-bg-tertiary))",
-                        color: "var(--color-danger)",
-                        border: "1px solid var(--color-border-primary)",
-                      }}
-                    >
+                    <Surface as="span" bg="var(--color-danger-bg-light, var(--color-bg-tertiary))" padding="var(--spacing-1) var(--spacing-2-5)" radius="var(--radius-badge)" border="1px solid var(--color-border-primary)" color="danger" size="xs" key={roll}>
                       {roll}
-                    </span>
+                    </Surface>
                   ))}
                 </HStack>
               </div>

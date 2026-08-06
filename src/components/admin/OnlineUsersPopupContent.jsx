@@ -1,6 +1,6 @@
 import React from "react"
 import { useOnlineUsersList } from "../../hooks/useOnlineUsers"
-import { Spinner, Avatar, Text } from "@/components/ui"
+import { Avatar, Spinner, Surface, Text } from "@/components/ui"
 
 /**
  * Popup content showing latest online users filtered by role
@@ -82,27 +82,13 @@ const OnlineUsersPopupContent = ({ role, roleLabel }) => {
                     <Spinner size="small" />
                 </div>
             ) : error ? (
-                <div
-                    style={{
-                        padding: "var(--spacing-3)",
-                        textAlign: "center",
-                        color: "var(--color-danger)",
-                        fontSize: "var(--font-size-xs)",
-                    }}
-                >
+                <Surface padding={3} color="danger" size="xs" align="center">
                     Failed to load
-                </div>
+                </Surface>
             ) : users.length === 0 ? (
-                <div
-                    style={{
-                        padding: "var(--spacing-4)",
-                        textAlign: "center",
-                        color: "var(--color-text-muted)",
-                        fontSize: "var(--font-size-sm)",
-                    }}
-                >
+                <Surface padding={4} color="muted" size="sm" align="center">
                     No {roleLabel.toLowerCase()} online
-                </div>
+                </Surface>
             ) : (
                 <ul
                     style={{

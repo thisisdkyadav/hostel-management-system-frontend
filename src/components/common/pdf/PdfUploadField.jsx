@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/feedback"
 import { Label } from "@/components/ui/form"
 import { resolveUploadedFileRef } from "@/service"
 import PdfViewerModal from "./PdfViewerModal"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const resolveUploadedUrl = (uploadResult) => {
   return resolveUploadedFileRef(uploadResult)
@@ -146,9 +146,9 @@ const PdfUploadField = ({
                       onChange={handleFileChange}
                       style={{ display: "none" }}
                     />
-                    <span style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-md)", backgroundColor: "var(--button-primary-bg)", color: "var(--color-white)", fontSize: "var(--font-size-sm)", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                    <Surface as="span" bg="var(--button-primary-bg)" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="var(--color-white)" size="sm" style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
                       <Upload size={14} /> Select File
-                    </span>
+                    </Surface>
                   </label>
                 )}
               </HStack>

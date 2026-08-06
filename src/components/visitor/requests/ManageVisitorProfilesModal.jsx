@@ -3,7 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input, Table } from "czero/react"
-import { Heading, HStack, IconCircle, Modal, Text, useConfirm, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()
@@ -93,23 +93,12 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                         <Text as="div" size="sm" color="muted">{profile.phone}</Text>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <span
-                          style={{
-                            padding: "var(--badge-padding-sm)",
-                            display: "inline-flex",
-                            fontSize: "var(--badge-font-sm)",
-                            lineHeight: "var(--line-height-tight)",
-                            fontWeight: "var(--font-weight-medium)",
-                            borderRadius: "var(--radius-full)",
-                            backgroundColor: "var(--color-primary-bg)",
-                            color: "var(--color-primary)",
-                          }}
-                        >
+                        <Surface as="span" bg="brand" padding="var(--badge-padding-sm)" radius="full" color="brand" size="var(--badge-font-sm)" weight="medium" leading="var(--line-height-tight)" style={{ display: "inline-flex" }}>
                           {profile.relation}
-                        </span>
+                        </Surface>
                       </Table.Cell>
                       {profile.requests && profile.requests.length ? (
-                        <div style={{ padding: "var(--spacing-4) var(--spacing-6)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Can't edit a used Visitor.</div>
+                        <Surface padding="var(--spacing-4) var(--spacing-6)" color="muted" size="sm">Can't edit a used Visitor.</Surface>
                       ) : (
                         <Table.Cell style={{ whiteSpace: "nowrap", textAlign: "right", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
                           <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="sm" aria-label="Edit profile">

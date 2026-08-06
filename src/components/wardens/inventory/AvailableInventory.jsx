@@ -134,7 +134,7 @@ const AvailableInventory = () => {
                     <Table.Cell>{item.itemTypeId.description}</Table.Cell>
                     <Table.Cell className="whitespace-nowrap" style={{ fontWeight: 'var(--font-weight-medium)' }}>{item.allocatedCount}</Table.Cell>
                     <Table.Cell className="whitespace-nowrap">
-                      <span style={{ padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-md)', fontWeight: 'var(--font-weight-medium)', backgroundColor: item.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)', color: item.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}>{item.availableCount}</span>
+                      <Surface as="span" bg={item.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)'} padding="var(--badge-padding-md)" radius="full" color={item.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)'} size="var(--badge-font-md)" weight="medium">{item.availableCount}</Surface>
                     </Table.Cell>
                   </Table.Row>
                 ))}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { MapPin, User, ClipboardList, FileText, Pencil, Star, CheckCircle, CalendarDays, MessageSquare } from "lucide-react"
 import { getStatusColor } from "../../utils/adminUtils"
-import { Badge, Divider, Heading, HStack, IconCircle, Text, VStack } from "@/components/ui"
+import { Badge, Divider, Heading, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -255,16 +255,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               >
                 {complaintData.status}
               </span>
-              <span style={{
-                padding: "var(--spacing-0-5) var(--spacing-2)",
-                fontSize: "var(--font-size-xs)",
-                fontWeight: "var(--font-weight-medium)",
-                borderRadius: "var(--radius-full)",
-                backgroundColor: "var(--color-primary-bg)",
-                color: "var(--color-primary)"
-              }}>
+              <Surface as="span" bg="brand" padding="var(--spacing-0-5) var(--spacing-2)" radius="full" color="brand" size="xs" weight="medium">
                 {complaintData.category}
-              </span>
+              </Surface>
               <span style={{
                 display: "inline-flex",
                 alignItems: "center",

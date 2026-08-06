@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Input, Table } from "czero/react"
-import { Grid, HStack, IconCircle, Modal, Text } from "@/components/ui"
+import { Grid, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,
@@ -96,9 +96,9 @@ export const ElectionHistoryModal = ({
           {visibleElections.length === 0 ? (
             <Table.Row>
               <Table.Cell colSpan={5}>
-                <div style={{ padding: "var(--spacing-5)", textAlign: "center", color: "var(--color-text-muted)" }}>
+                <Surface padding={5} color="muted" align="center">
                   {showMockElections ? "No elections available yet." : "No non-mock elections available here."}
-                </div>
+                </Surface>
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -2033,9 +2033,9 @@ export const AdminResultsEditModal = ({
     >
       <div style={modalBodyStyle}>
         {(postResult.candidates || []).length === 0 ? (
-          <div style={{ padding: "var(--spacing-5)", color: "var(--color-text-muted)", textAlign: "center" }}>
+          <Surface padding={5} color="muted" align="center">
             No verified candidates. Results will appear here after verification and voting.
-          </div>
+          </Surface>
         ) : (
           <>
             <Grid cols={1} gap="10px" style={{ ...flatPanelStyle }}>

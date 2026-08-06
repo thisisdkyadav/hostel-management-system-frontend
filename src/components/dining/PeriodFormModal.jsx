@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, Modal, Surface, Text } from "@/components/ui"
 import {
   Archive,
   ArchiveRestore,
@@ -110,22 +110,12 @@ const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
 
   return (
     <VStack gap="small">
-      <div
-        role="button"
+      <Surface bg="var(--color-bg-hover)" padding={5} radius="xl" border="2px dashed var(--color-border-input)" align="center" style={{ cursor: "pointer" }} role="button"
         tabIndex={0}
         onClick={() => fileInputRef.current?.click()}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") fileInputRef.current?.click()
-        }}
-        style={{
-          border: "2px dashed var(--color-border-input)",
-          borderRadius: "var(--radius-xl)",
-          padding: "var(--spacing-5)",
-          textAlign: "center",
-          cursor: "pointer",
-          backgroundColor: "var(--color-bg-hover)",
-        }}
-      >
+        }}>
         <FileUp size={28} style={{ margin: "0 auto var(--spacing-2)", color: "var(--color-text-muted)" }} />
         <Text color="muted" size="sm">
           Upload CSV with a <strong>rollNumber</strong> column
@@ -136,7 +126,7 @@ const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
           </Text>
         )}
         <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileChange} hidden />
-      </div>
+      </Surface>
 
       <HStack justify="between" gap="small">
         <Button type="button" variant="secondary" size="sm" onClick={downloadTemplate}>

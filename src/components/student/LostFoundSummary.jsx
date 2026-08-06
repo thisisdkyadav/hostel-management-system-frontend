@@ -17,21 +17,21 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
       </HStack>
 
       <Grid cols={2} gap="var(--gap-sm)">
-        <div style={{ backgroundColor: 'var(--color-orange-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+        <Surface bg="var(--color-orange-bg)" padding="var(--spacing-2-5)" radius="lg" align="center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Surface bg="warning" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
             <CgSearchFound style={{ color: 'var(--color-orange-text)', fontSize: 'var(--icon-lg)' }} />
           </Surface>
           <Text as="span" size="2xl" weight="bold" color="var(--color-orange-text)">{lostAndFoundStats?.active || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Active Items</Text>
-        </div>
+        </Surface>
 
-        <div style={{ backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+        <Surface bg="success" padding="var(--spacing-2-5)" radius="lg" align="center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Surface bg="var(--color-success-light)" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
             <FiSearch style={{ color: 'var(--color-success)', fontSize: 'var(--icon-lg)' }} />
           </Surface>
           <Text as="span" size="2xl" weight="bold" color="success">{lostAndFoundStats?.claimed || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Claimed Items</Text>
-        </div>
+        </Surface>
       </Grid>
 
       <div style={{ marginTop: 'var(--spacing-3)', paddingTop: 'var(--spacing-2)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>

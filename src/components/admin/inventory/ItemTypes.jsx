@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Spinner, Text, Textarea, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Spinner, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
@@ -170,14 +170,14 @@ const ItemTypes = () => {
             <Spinner size="var(--spacing-12)" thickness="thick" />
           </div>
         ) : itemTypes.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+          <Surface padding="var(--spacing-12) 0" align="center">
             <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
             <Text color="muted">No inventory item types found</Text>
             <Button onClick={openNewItemModal} variant="primary" size="sm">
               <FaPlus />
               Add your first item
             </Button>
-          </div>
+          </Surface>
         ) : (
           <div className="overflow-x-auto">
             <Table>

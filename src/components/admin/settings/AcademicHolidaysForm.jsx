@@ -233,18 +233,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 <Text as="span" weight="semibold" color="heading">
                   Holidays for {selectedYear}
                 </Text>
-                <span
-                  style={{
-                    padding: "var(--spacing-0-5) var(--spacing-2)",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-primary-bg)",
-                    color: "var(--color-primary)",
-                    fontSize: "var(--font-size-xs)",
-                    fontWeight: "var(--font-weight-semibold)",
-                  }}
-                >
+                <Surface as="span" bg="brand" padding="var(--spacing-0-5) var(--spacing-2)" radius="full" color="brand" size="xs" weight="semibold">
                   {selectedYearHolidays.length}
-                </span>
+                </Surface>
               </HStack>
               <Button
                 type="button"
@@ -298,20 +289,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                     <Text as="span" color="body" size="sm" weight="medium">
                       {holiday.title}
                     </Text>
-                    <span
-                      style={{
-                        color: "var(--color-text-muted)",
-                        fontSize: "var(--font-size-xs)",
-                        fontWeight: "var(--font-weight-medium)",
-                        padding: "var(--spacing-0-5) var(--spacing-2)",
-                        borderRadius: "var(--radius-full)",
-                        backgroundColor: "var(--color-bg-primary)",
-                        border: "var(--border-1) solid var(--color-border-primary)",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <Surface as="span" bg="primary" padding="var(--spacing-0-5) var(--spacing-2)" radius="full" border="var(--border-1) solid var(--color-border-primary)" color="muted" size="xs" weight="medium" style={{ whiteSpace: "nowrap" }}>
                       {formatDateLabel(holiday.date)}
-                    </span>
+                    </Surface>
                     <Button
                       type="button"
                       size="sm"
@@ -330,18 +310,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
       )}
 
       {error && (
-        <div
-          style={{
-            color: "var(--color-danger)",
-            backgroundColor: "var(--color-danger-bg-light)",
-            border: "var(--border-1) solid var(--color-danger-light)",
-            borderRadius: "var(--radius-md)",
-            padding: "var(--spacing-2) var(--spacing-3)",
-            fontSize: "var(--font-size-sm)",
-          }}
-        >
+        <Surface bg="var(--color-danger-bg-light)" padding="var(--spacing-2) var(--spacing-3)" radius="md" border="var(--border-1) solid var(--color-danger-light)" color="danger" size="sm">
           {error}
-        </div>
+        </Surface>
       )}
 
       <div

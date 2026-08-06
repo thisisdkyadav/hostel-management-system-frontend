@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
-import { Grid, Heading, SearchInput, Spinner, VStack } from "@/components/ui"
+import { Grid, Heading, SearchInput, Spinner, Surface, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
@@ -77,7 +77,7 @@ const InsuranceProviders = () => {
           <Spinner size="var(--icon-3xl)" thickness="thin" />
         </div>
       ) : error ? (
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-8)', color: 'var(--color-danger)' }}>{error}</div>
+        <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredProviders.length === 0 ? (
         <NoResults icon={<FaBuilding style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
       ) : (

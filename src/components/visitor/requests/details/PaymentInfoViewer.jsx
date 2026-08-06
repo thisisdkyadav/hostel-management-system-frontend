@@ -90,7 +90,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             </svg>
             <Text as="span" size="sm" weight="medium" color="body">Transaction ID</Text>
           </HStack>
-          <p style={{ fontSize: 'var(--font-size-xl)', fontFamily: 'monospace', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)` }}>{paymentInfo.transactionId}</p>
+          <Surface as="p" bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="md" border={`var(--border-1) solid var(--color-border-primary)`} color="primary" size="xl" weight="semibold" style={{ fontFamily: 'monospace' }}>{paymentInfo.transactionId}</Surface>
         </Surface>
 
         {/* Payment Screenshot */}
@@ -107,14 +107,14 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               View Screenshot
             </Button>
           </HStack>
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-3)', textAlign: 'center' }}>
+          <Surface bg="tertiary" padding={3} radius="md" align="center">
             <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', margin: '0 auto var(--spacing-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-text-light)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
             </div>
             <Text size="sm" color="muted">Payment screenshot available</Text>
-          </div>
+          </Surface>
         </Surface>
 
         {/* Additional Information */}
@@ -126,7 +126,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               </svg>
               <Text as="span" size="sm" weight="medium" color="body">Additional Information</Text>
             </HStack>
-            <p style={{ color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)`, fontSize: 'var(--font-size-base)' }}>{paymentInfo.additionalInfo}</p>
+            <Surface as="p" bg="tertiary" padding={3} radius="md" border={`var(--border-1) solid var(--color-border-primary)`} color="primary" size="base">{paymentInfo.additionalInfo}</Surface>
           </Surface>
         )}
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text, VStack } from "@/components/ui"
+import { Modal, Surface, Text, VStack } from "@/components/ui"
 import { Label, useConfirm } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
@@ -72,7 +72,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
         <MetaBar request={request} actions={cancelAction} />
 
         {error && (
-          <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }}>{error}</div>
+          <Surface bg="danger" padding={3} radius="md" color="danger-text" size="sm">{error}</Surface>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
@@ -132,9 +132,9 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     <a href={request.payment.paymentLink} target="_blank" rel="noreferrer" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)", wordBreak: "break-all" }}>Open payment link / QR ↗</a>
                   )}
                   {request.payment?.remarks && (
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-2) var(--spacing-3)" }}>
+                    <Surface bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="muted" size="xs">
                       <strong>Note:</strong> {request.payment.remarks}
-                    </div>
+                    </Surface>
                   )}
                   <div>
                     <Label required>Transaction ID / UTR</Label>

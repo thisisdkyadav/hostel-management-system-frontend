@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { EmptyState, Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { EmptyState, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -144,7 +144,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
         <MetaBar request={request} />
 
         {error && (
-          <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }}>{error}</div>
+          <Surface bg="danger" padding={3} radius="md" color="danger-text" size="sm">{error}</Surface>
         )}
 
         {student && (
@@ -209,9 +209,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
           {/* Right: action console */}
           <VStack gap={4}>
             {!hasAction && !showAssignedSummary && (
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", padding: "var(--spacing-4)", border: "1px dashed var(--color-border-input)", borderRadius: "var(--radius-card-sm)" }}>
+              <Surface padding={4} radius="card-sm" border="1px dashed var(--color-border-input)" color="muted" size="sm">
                 No action needed from you at this stage.
-              </div>
+              </Surface>
             )}
 
             {showAssignedSummary && (

@@ -540,10 +540,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : accessRecords.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
                 <History size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <Text color="muted">No access records found for this student</Text>
-              </div>
+              </Surface>
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -560,20 +560,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <Table.Row key={record._id}>
                         <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>{formatDateTime(record.dateAndTime)}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                          <span
-                            style={{
-                              padding: "var(--spacing-1) var(--spacing-2)",
-                              display: "inline-flex",
-                              fontSize: "var(--font-size-xs)",
-                              lineHeight: 1.25,
-                              fontWeight: "var(--font-weight-semibold)",
-                              borderRadius: "var(--radius-full)",
-                              backgroundColor: record.status === "Checked In" ? "var(--color-success-bg-light)" : "var(--color-primary-bg)",
-                              color: record.status === "Checked In" ? "var(--color-success)" : "var(--color-primary)",
-                            }}
-                          >
+                          <Surface as="span" bg={record.status === "Checked In" ? "var(--color-success-bg-light)" : "var(--color-primary-bg)"} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={record.status === "Checked In" ? "var(--color-success)" : "var(--color-primary)"} size="xs" weight="semibold" leading={1.25} style={{ display: "inline-flex" }}>
                             {record.status === "Checked In" ? "Checked In" : "Checked Out"}
-                          </span>
+                          </Surface>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", fontSize: "var(--font-size-sm)" }}>{record.recordedBy || "System"}</Table.Cell>
                         <Table.Cell style={{ fontSize: "var(--font-size-sm)" }}>{record.notes || "-"}</Table.Cell>
@@ -594,10 +583,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : visitorRequests.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
                 <Users size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <Text color="muted">No visitor requests found for this student</Text>
-              </div>
+              </Surface>
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -618,20 +607,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           {formatDate(request.fromDate)} to {formatDate(request.toDate)}
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                          <span
-                            style={{
-                              padding: "var(--spacing-1) var(--spacing-2)",
-                              display: "inline-flex",
-                              fontSize: "var(--font-size-xs)",
-                              lineHeight: 1.25,
-                              fontWeight: "var(--font-weight-semibold)",
-                              borderRadius: "var(--radius-full)",
-                              backgroundColor: request.status === "Pending" ? "var(--color-warning-bg-light)" : request.status === "Approved" ? "var(--color-success-bg-light)" : request.status === "Completed" ? "var(--color-primary-bg)" : "var(--color-danger-bg-light)",
-                              color: request.status === "Pending" ? "var(--color-warning)" : request.status === "Approved" ? "var(--color-success)" : request.status === "Completed" ? "var(--color-primary)" : "var(--color-danger)",
-                            }}
-                          >
+                          <Surface as="span" bg={request.status === "Pending" ? "var(--color-warning-bg-light)" : request.status === "Approved" ? "var(--color-success-bg-light)" : request.status === "Completed" ? "var(--color-primary-bg)" : "var(--color-danger-bg-light)"} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={request.status === "Pending" ? "var(--color-warning)" : request.status === "Approved" ? "var(--color-success)" : request.status === "Completed" ? "var(--color-primary)" : "var(--color-danger)"} size="xs" weight="semibold" leading={1.25} style={{ display: "inline-flex" }}>
                             {request.status}
-                          </span>
+                          </Surface>
                         </Table.Cell>
                       </Table.Row>
                     ))}
@@ -650,30 +628,19 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : feedbacks.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
                 <MessageSquare size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <Text color="muted">No feedback found for this student</Text>
-              </div>
+              </Surface>
             ) : (
               <VStack gap={4}>
                 {feedbacks.map((feedback) => (
                   <Surface bg="tertiary" padding={4} radius="lg" key={feedback._id}>
                     <HStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                       <Heading as="h4" weight="medium" color="secondary">{feedback.title}</Heading>
-                      <span
-                        style={{
-                          padding: "var(--spacing-1) var(--spacing-2)",
-                          display: "inline-flex",
-                          fontSize: "var(--font-size-xs)",
-                          lineHeight: 1.25,
-                          fontWeight: "var(--font-weight-semibold)",
-                          borderRadius: "var(--radius-full)",
-                          backgroundColor: feedback.status === "Pending" ? "var(--color-warning-bg-light)" : feedback.status === "Resolved" ? "var(--color-success-bg-light)" : "var(--color-primary-bg)",
-                          color: feedback.status === "Pending" ? "var(--color-warning)" : feedback.status === "Resolved" ? "var(--color-success)" : "var(--color-primary)",
-                        }}
-                      >
+                      <Surface as="span" bg={feedback.status === "Pending" ? "var(--color-warning-bg-light)" : feedback.status === "Resolved" ? "var(--color-success-bg-light)" : "var(--color-primary-bg)"} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={feedback.status === "Pending" ? "var(--color-warning)" : feedback.status === "Resolved" ? "var(--color-success)" : "var(--color-primary)"} size="xs" weight="semibold" leading={1.25} style={{ display: "inline-flex" }}>
                         {feedback.status}
-                      </span>
+                      </Surface>
                     </HStack>
                     <Text size="sm" color="muted" style={{ marginBottom: "var(--spacing-2)" }}>{feedback.description}</Text>
                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", justifyContent: "space-between" }}>
@@ -704,10 +671,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : studentInventory.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
                 <Package size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <Text color="muted">No inventory items assigned to this student</Text>
-              </div>
+              </Surface>
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -737,18 +704,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.count}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>{formatDate(item.issueDate)}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                          <span
-                            style={{
-                              padding: "var(--spacing-1) var(--spacing-2-5)",
-                              borderRadius: "var(--radius-full)",
-                              fontSize: "var(--font-size-xs)",
-                              fontWeight: "var(--font-weight-medium)",
-                              backgroundColor: item.status === "Issued" ? "var(--color-success-bg-light)" : item.status === "Damaged" ? "var(--color-danger-bg-light)" : item.status === "Lost" ? "var(--color-info-bg)" : "var(--color-bg-muted)",
-                              color: item.status === "Issued" ? "var(--color-success)" : item.status === "Damaged" ? "var(--color-danger)" : item.status === "Lost" ? "var(--color-info)" : "var(--color-text-secondary)",
-                            }}
-                          >
+                          <Surface as="span" bg={item.status === "Issued" ? "var(--color-success-bg-light)" : item.status === "Damaged" ? "var(--color-danger-bg-light)" : item.status === "Lost" ? "var(--color-info-bg)" : "var(--color-bg-muted)"} padding="var(--spacing-1) var(--spacing-2-5)" radius="full" color={item.status === "Issued" ? "var(--color-success)" : item.status === "Damaged" ? "var(--color-danger)" : item.status === "Lost" ? "var(--color-info)" : "var(--color-text-secondary)"} size="xs" weight="medium">
                             {item.status}
-                          </span>
+                          </Surface>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>{item.condition}</Table.Cell>
                         {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
@@ -819,10 +777,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : !idCardData.front && !idCardData.back ? (
-              <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
+              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
                 <CreditCard size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <Text color="muted">No ID card images found for this student</Text>
-              </div>
+              </Surface>
             ) : (
               <Grid cols={2} gap={6}>
                 {/* Front ID Card */}

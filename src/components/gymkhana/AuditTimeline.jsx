@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Plus, Pencil, Trash2, RotateCcw, Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 // Edit actions (kind: "edit") and approval actions (kind: "approval") share one map.
 const ACTION_ICONS = {
@@ -150,9 +150,9 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
 
     if (error) {
         return (
-            <div style={{ color: "var(--color-danger)", textAlign: "center", padding: "var(--spacing-4)" }}>
+            <Surface padding={4} color="danger" align="center">
                 {error}
-            </div>
+            </Surface>
         )
     }
 
@@ -160,16 +160,10 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
 
     if (visible.length === 0) {
         return (
-            <div
-                style={{
-                    textAlign: "center",
-                    padding: "var(--spacing-6)",
-                    color: "var(--color-text-muted)",
-                }}
-            >
+            <Surface padding={6} color="muted" align="center">
                 <Clock size={32} style={{ margin: "0 auto var(--spacing-2)" }} />
                 <p>{editsOnly ? "No edits yet" : "No history yet"}</p>
-            </div>
+            </Surface>
         )
     }
 

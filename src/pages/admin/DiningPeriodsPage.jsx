@@ -3,7 +3,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, CalendarDays, Plus, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Heading, HStack, Page, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Heading, HStack, Page, SearchInput, StatCards, Surface } from "@/components/ui"
 import PeriodCard from "@/components/dining/PeriodCard"
 import PeriodDetailModal from "@/components/dining/PeriodDetailModal"
 import PeriodFormModal from "@/components/dining/PeriodFormModal"
@@ -24,20 +24,9 @@ const SectionHeader = ({ title, count }) => (
     <Heading as="h2" size="sm" weight="semibold" color="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
       {title}
     </Heading>
-    <span
-      style={{
-        fontSize: "var(--font-size-xs)",
-        fontWeight: "var(--font-weight-semibold)",
-        color: "var(--color-text-secondary)",
-        backgroundColor: "var(--color-bg-hover)",
-        borderRadius: "var(--radius-full)",
-        padding: "0 var(--spacing-2)",
-        minWidth: "20px",
-        textAlign: "center",
-      }}
-    >
+    <Surface as="span" bg="var(--color-bg-hover)" padding="0 var(--spacing-2)" radius="full" color="secondary" size="xs" weight="semibold" align="center" style={{ minWidth: "20px" }}>
       {count}
-    </span>
+    </Surface>
     <div style={{ flex: 1, height: "1px", backgroundColor: "var(--color-border-primary)" }} />
   </HStack>
 )

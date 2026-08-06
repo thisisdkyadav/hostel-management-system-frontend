@@ -195,7 +195,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               </svg>
               Reason for Leave
             </h4>
-            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-border-light)`, color: 'var(--color-text-body)', lineHeight: 'var(--line-height-relaxed)' }}>{leave.reason}</div>
+            <Surface bg="tertiary" padding={4} radius="xl" border={`var(--border-1) solid var(--color-border-light)`} color="body" leading="var(--line-height-relaxed)">{leave.reason}</Surface>
           </div>
 
           {/* Join Information - Only show if joined */}
@@ -210,7 +210,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
                 <HStack gap="none" align="start">
                   <div style={{ flexShrink: 0 }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', border: `var(--border-1) solid var(--color-info-bg)` }}>Joined</span>
+                    <Surface as="span" bg="info" padding="var(--badge-padding-xs)" radius="full" border={`var(--border-1) solid var(--color-info-bg)`} color="info-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Joined</Surface>
                   </div>
                   <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
                     <Text color="info-text" leading="var(--line-height-relaxed)" style={{ margin: 0 }}>{leave.joinInfo}</Text>
@@ -367,7 +367,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   </Text>
                 </div>
                 <Text as="div" align="right">
-                  <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', border: `var(--border-1) solid var(--color-success-bg)` }}>Approved</span>
+                  <Surface as="span" bg="success" padding="var(--badge-padding-xs)" radius="full" border={`var(--border-1) solid var(--color-success-bg)`} color="success-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Approved</Surface>
                 </Text>
               </HStack>
             </Surface>

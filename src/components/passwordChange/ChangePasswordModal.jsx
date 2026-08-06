@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button, Input } from "czero/react"
-import { Label, Modal, Text, VStack } from "@/components/ui"
+import { Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -78,7 +78,7 @@ const ChangePasswordModal = ({ onClose, email }) => {
   return (
     <Modal title="Change Your Password" onClose={onClose} width={500}>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-        {errors.form && <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", fontSize: "var(--font-size-sm)" }}>{errors.form}</div>}
+        {errors.form && <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">{errors.form}</Surface>}
 
         <div>
           <Label color="secondary" spacing={2}>Current Password</Label>

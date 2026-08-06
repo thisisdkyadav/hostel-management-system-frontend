@@ -5,7 +5,7 @@ import ManageSessionsButton from "../sessions/ManageSessionsButton"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
-import { Heading, HStack, Text } from "@/components/ui"
+import { Heading, HStack, Surface, Text } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
@@ -51,9 +51,9 @@ const ProfileHeader = ({ user, role, subtitle }) => {
           <Heading as="h2" size="xl" weight="bold" color="secondary">
             {user.name}
           </Heading>
-          <div style={{ marginTop: "var(--spacing-1)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", }} className="sm:mt-0 sm:ml-4" >
+          <Surface bg="brand" padding="var(--spacing-1) var(--spacing-3)" radius="full" color="brand" size="xs" weight="medium" style={{ marginTop: "var(--spacing-1)" }} className="sm:mt-0 sm:ml-4">
             {role}
-          </div>
+          </Surface>
         </div>
         <Text color="muted" size="base" style={{ marginTop: "var(--spacing-1)" }}>
           {subtitle}

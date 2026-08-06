@@ -2,7 +2,7 @@ import React from "react"
 import { MdHealthAndSafety } from "react-icons/md"
 import { FaRegCalendarAlt, FaHashtag } from "react-icons/fa"
 import { formatDateTime } from "../../utils/dateUtils"
-import { Heading, HStack, VStack } from "@/components/ui"
+import { Heading, HStack, Surface, VStack } from "@/components/ui"
 
 const getValidity = (endDate) => {
   if (!endDate) return null
@@ -31,7 +31,7 @@ const InsuranceInfoCard = ({ insurance }) => {
           <Heading as="h3" color="tertiary" weight="medium" size="lg">Insurance</Heading>
         </HStack>
         {validity && (
-          <span style={{ fontSize: 'var(--font-size-xs)', padding: `var(--spacing-0-5) var(--spacing-2)`, borderRadius: 'var(--radius-full)', backgroundColor: validity.bg, color: validity.color, whiteSpace: 'nowrap' }}>{validity.label}</span>
+          <Surface as="span" bg={validity.bg} padding={`var(--spacing-0-5) var(--spacing-2)`} radius="full" color={validity.color} size="xs" style={{ whiteSpace: 'nowrap' }}>{validity.label}</Surface>
         )}
       </HStack>
 

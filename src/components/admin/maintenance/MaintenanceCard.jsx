@@ -3,7 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Surface } from "@/components/ui"
 import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
@@ -64,7 +64,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
     <>
       <Card className="group relative">
         <div style={{ position: "absolute", top: "var(--spacing-3)", right: "var(--spacing-3)" }}>
-          <span style={{ padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: categoryColor.bg, color: categoryColor.text }}>{getCategoryDisplayLabel(staff.category)}</span>
+          <Surface as="span" bg={categoryColor.bg} padding="var(--spacing-1) var(--spacing-3)" radius="full" color={categoryColor.text} size="xs" weight="medium">{getCategoryDisplayLabel(staff.category)}</Surface>
         </div>
 
         <CardHeader className="mb-0">
@@ -73,9 +73,9 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
               {staff.profileImage ? (
                 <img src={getMediaUrl(staff.profileImage)} alt={staff.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (
-                <div style={{ width: "100%", height: "100%", backgroundColor: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-white)", fontSize: "var(--font-size-xl)" }}>
+                <Surface bg="var(--color-primary)" color="var(--color-white)" size="xl" style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <FaUserCog />
-                </div>
+                </Surface>
               )}
             </IconCircle>
             <div>

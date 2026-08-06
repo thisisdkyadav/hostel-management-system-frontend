@@ -112,13 +112,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Text as="span" color="muted" size="base">Status:</Text>
-                  <span style={{
-                    fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: !isActive ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
-                    color: !isActive ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
-                  }}
-                  >
+                  <Surface as="span" bg={!isActive ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color={!isActive ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'} size="sm" weight="medium">
                     {!isActive ? room.status : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partially Occupied" : "Empty"}
-                  </span>
+                  </Surface>
                 </li>
               </ul>
             </Surface>
@@ -145,10 +141,10 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             </HStack>
 
             {!isActive ? (
-              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
+              <Surface bg="tertiary" padding={8} radius="lg" align="center">
                 <FaToggleOff style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
                 <Text color="muted" size="base">{`This room is currently ${room.status.toLowerCase()} and not available for allocation`}</Text>
-              </div>
+              </Surface>
             ) : room.students && room.students.length > 0 ? (
               <div style={{ backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
                 <div style={{ overflowX: 'auto' }}>
@@ -203,7 +199,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 </div>
               </div>
             ) : (
-              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
+              <Surface bg="tertiary" padding={8} radius="lg" align="center">
                 <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
                 <Text color="muted" size="base">No students allocated to this room</Text>
                 {room.capacity > 0 && (
@@ -211,7 +207,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                     <FaUserPlus /> Allocate Student
                   </Button>
                 )}
-              </div>
+              </Surface>
             )}
           </div>
         </VStack>
