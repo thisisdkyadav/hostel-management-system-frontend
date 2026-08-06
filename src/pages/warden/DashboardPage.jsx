@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { Card, Page, Text } from "@/components/ui"
+import { Card, Grid, HStack, Page, Text, VStack } from "@/components/ui"
 import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
@@ -101,66 +101,66 @@ const DashboardPage = () => {
     const upcomingEvents = eventStats?.upcoming || 0
 
     return (
-      <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+      <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
         {/* Students Card */}
         <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
-          <div className="flex items-center gap-[var(--spacing-2)]">
+          <HStack align="center" gap={2}>
             <FaUsers className="text-[var(--color-primary)] text-sm" />
-            <div className="flex items-center gap-[var(--spacing-2)]">
+            <HStack align="center" gap={2}>
               <div>
                 <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Students</p>
                 <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalStudents}</p>
               </div>
-              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+              <HStack gap={1} className="ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
                 <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {totalBoys}</span>
                 <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {totalGirls}</span>
-              </div>
-            </div>
-          </div>
+              </HStack>
+            </HStack>
+          </HStack>
         </div>
 
         {/* Visitors Card */}
         <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-info)] transition-[var(--transition-all)]">
-          <div className="flex items-center gap-[var(--spacing-2)]">
+          <HStack align="center" gap={2}>
             <FaUser className="text-[var(--color-info)] text-sm" />
-            <div className="flex items-center gap-[var(--spacing-2)]">
+            <HStack align="center" gap={2}>
               <div>
                 <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Visitors</p>
                 <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalVisitors}</p>
               </div>
-              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+              <HStack gap={1} className="ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
                 <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-info-bg)] text-[var(--color-info)] rounded-[var(--radius-sm)] text-xs font-medium">Today {todayVisitors}</span>
-              </div>
-            </div>
-          </div>
+              </HStack>
+            </HStack>
+          </HStack>
         </div>
 
         {/* Events Card */}
         <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-warning)] transition-[var(--transition-all)]">
-          <div className="flex items-center gap-[var(--spacing-2)]">
+          <HStack align="center" gap={2}>
             <BiCalendarEvent className="text-[var(--color-warning)] text-sm" />
-            <div className="flex items-center gap-[var(--spacing-2)]">
+            <HStack align="center" gap={2}>
               <div>
                 <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Events</p>
                 <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalEvents}</p>
               </div>
-              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+              <HStack gap={1} className="ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
                 <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] rounded-[var(--radius-sm)] text-xs font-medium">Upcoming {upcomingEvents}</span>
-              </div>
-            </div>
-          </div>
+              </HStack>
+            </HStack>
+          </HStack>
         </div>
-      </div>
+      </HStack>
     )
   }
 
   // Shimmer loader for header stats
   const renderHeaderShimmer = () => (
-    <div className="flex gap-[var(--spacing-2-5)]">
+    <HStack gap="var(--spacing-2-5)">
       <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-36"></div>
       <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-32"></div>
       <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-32"></div>
-    </div>
+    </HStack>
   )
 
   return (
@@ -174,7 +174,7 @@ const DashboardPage = () => {
       {/* Main Content */}
       <Page.Body padded={false} className="px-[var(--spacing-6)] py-[var(--spacing-6)]">
         {/* Main grid - 80/20 split */}
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-[var(--spacing-6)]">
+        <Grid cols={{ base: 1, xl: 5 }} gap={6}>
           {/* Student Distribution - 80% width (4 cols) */}
           <Card className="xl:col-span-4 h-[32rem]" padding="p-2.5">
             {loading ? (
@@ -199,7 +199,7 @@ const DashboardPage = () => {
                     <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
                     Student Distribution by Department
                   </h2>
-                  <div className="flex items-center gap-[var(--spacing-1-5)]">
+                  <HStack align="center" gap="var(--spacing-1-5)">
                     {/* Absolute/Normalized Toggle */}
                     <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
                       <button onClick={() => setNormalizedView(false)}
@@ -213,7 +213,7 @@ const DashboardPage = () => {
                         %
                       </button>
                     </div>
-                  </div>
+                  </HStack>
                 </div>
 
                 <div className="flex-1 flex flex-col min-h-0">
@@ -262,7 +262,7 @@ const DashboardPage = () => {
               </div>
             )}
           </Card>
-        </div>
+        </Grid>
       </Page.Body>
     </Page>
   )
@@ -369,7 +369,7 @@ const RoomStatusPanel = ({ data }) => {
   const occupancyColor = occupancyRate >= 80 ? 'var(--color-success)' : occupancyRate >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'
 
   return (
-    <div className="flex-1 flex flex-col gap-[var(--spacing-2)]">
+    <VStack gap={2} className="flex-1">
       {/* Occupancy Rate - Compact Display */}
       <div className="bg-gradient-to-br from-[var(--color-success-bg-light)] to-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-lg)] p-[var(--spacing-2-5)] text-center">
         <p className="text-[0.6875rem] text-[var(--color-success-text)] font-medium uppercase tracking-wide mb-0.5">Occupancy Rate</p>
@@ -403,7 +403,7 @@ const RoomStatusPanel = ({ data }) => {
           </div>
         </>
       )}
-    </div>
+    </VStack>
   )
 }
 

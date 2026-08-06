@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
-import { Pagination, Select, Surface } from "@/components/ui"
+import { Grid, Pagination, Select, Surface } from "@/components/ui"
 import { Button, Input, Table, Tabs } from "czero/react"
 import NoResults from "./common/NoResults"
 import { securityApi } from "../service"
@@ -166,7 +166,7 @@ const AccessHistory = ({ cachedData }) => {
         {/* Additional Filters */}
         {showFilters && (
           <div className="bg-[var(--color-bg-tertiary)] p-4 rounded-xl mb-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Grid cols={{ base: 1, md: 3 }} gap={4}>
               <div>
                 <label className="block text-sm text-[var(--color-text-muted)] mb-1">Filter by Date</label>
                 <Input type="date" value={filterDate} onChange={handleDateFilterChange} />
@@ -193,7 +193,7 @@ const AccessHistory = ({ cachedData }) => {
                   Clear Date Filter
                 </Button>
               </div>
-            </div>
+            </Grid>
           </div>
         )}
 

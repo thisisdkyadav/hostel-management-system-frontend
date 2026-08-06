@@ -4,7 +4,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, HStack, Page, SearchInput, StatCards, Text } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Grid, HStack, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import CapacityBar from "@/components/dining/CapacityBar"
 import BillingPeriodFormModal from "@/components/dining/BillingPeriodFormModal"
 import { billingDateRange, formatCurrency, getErrorMessage } from "@/components/dining/diningBillingHelpers"
@@ -228,7 +228,7 @@ const DiningBillingPage = () => {
               message={fetchArchive ? "No archived billing periods match your search." : "Create a billing period and group dining periods to start billing students."}
             />
           ) : (
-            <div className="mt-[var(--spacing-6)] grid gap-[var(--spacing-4)] sm:grid-cols-2 xl:grid-cols-3">
+            <Grid cols={{ sm: 2, xl: 3 }} gap={4} className="mt-[var(--spacing-6)]">
               {filtered.map((period) => (
                 <BillingPeriodCard
                   key={period.id}
@@ -238,7 +238,7 @@ const DiningBillingPage = () => {
                   onArchive={setArchiveTarget}
                 />
               ))}
-            </div>
+            </Grid>
           )}
         </Page.Body>
       </Page>

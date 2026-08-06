@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
-import { FormField, Surface } from "@/components/ui"
+import { FormField, Grid, Surface } from "@/components/ui"
 import ImageUploadModal from "../../../ImageUploadModal"
 import { getMediaUrl } from "../../../../../utils/mediaUtils"
 const PersonalInfoSection = ({ data, onChange }) => {
@@ -41,7 +41,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
 
       {isImageModalOpen && <ImageUploadModal userId={data.userId} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Grid cols={{ base: 1, md: 2 }} gap={4}>
         <FormField label="Full Name" name="name" type="text" value={data.name || ""} onChange={handleChange} required />
 
         <FormField label="Roll Number" name="rollNumber" type="text" value={data.rollNumber || ""} onChange={handleChange} required />
@@ -55,7 +55,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
         <FormField label="Gender" name="gender" type="select" value={data.gender || ""} onChange={handleChange} options={[{ value: "", label: "Select Gender" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" },]} required />
 
         <FormField label="Date of Birth" name="dateOfBirth" type="date" value={data.dateOfBirth || ""} onChange={handleChange} />
-      </div>
+      </Grid>
 
       <FormField label="Address" name="address" type="textarea" value={data.address || ""} onChange={handleChange} rows={3} />
     </div>

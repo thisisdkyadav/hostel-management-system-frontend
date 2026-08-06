@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { Pin } from "lucide-react"
-import { SearchInput } from "@/components/ui"
+import { HStack, SearchInput } from "@/components/ui"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 
@@ -70,7 +70,7 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePi
           return (
           <div key={group.id}>
             <div className="sticky top-0 z-10 -mx-1 px-1 pt-3 pb-1.5 bg-[var(--color-bg-primary)]">
-              <div className="flex items-center gap-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <HStack align="center" gap="var(--spacing-1-5)" className="px-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
                 {group.icon ? (
                   <group.icon size={10} strokeWidth={2.5} style={{ color: accent }} />
                 ) : (
@@ -79,7 +79,7 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePi
                 <span style={isActiveGroup ? { color: accent } : undefined}>{group.name}</span>
                 <span className="flex-1" />
                 <span className="tabular-nums text-[var(--color-text-placeholder)] font-medium">{group.items.length}</span>
-              </div>
+              </HStack>
             </div>
             <ul className="space-y-1">
               {group.items.map((item) => (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, StatusBadge, DataTable } from "czero/react"
 import { CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users, Wallet, ClipboardCheck } from "lucide-react"
-import { Alert, Card, EmptyState, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, EmptyState, Grid, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { formatCurrency } from "@/components/dining/diningBillingHelpers"
@@ -163,7 +163,7 @@ const DashboardPage = () => {
               <ClipboardCheck size={18} style={{ color: "var(--color-text-muted)" }} />
               <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Rebates</Heading>
             </HStack>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
+            <Grid cols={{ base: 1, sm: 3 }} gap={3}>
               {[
                 { label: "Pending approval", value: rebates.pending, tone: "var(--color-warning)" },
                 { label: "Approved today", value: rebates.approvedToday, tone: "var(--color-success)" },
@@ -174,7 +174,7 @@ const DashboardPage = () => {
                   <Text color={item.tone} weight="bold" size="2xl">{item.value}</Text>
                 </div>
               ))}
-            </div>
+            </Grid>
           </Card>
 
           {/* Billing health */}

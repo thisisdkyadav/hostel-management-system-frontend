@@ -13,7 +13,7 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import { useToast } from "@/components/ui/feedback"
-import { Card, Page, SearchInput, Spinner, useConfirm } from "@/components/ui"
+import { Card, HStack, Page, SearchInput, Spinner, useConfirm, VStack } from "@/components/ui"
 
 const TabSpinner = () => (
   <div className="flex justify-center py-6">
@@ -760,7 +760,7 @@ const SettingsPage = () => {
                 {filteredNav.map((section) => (
                   <div key={section.group}>
                     <p className="px-2.5 mb-1 text-[0.65rem] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">{section.group}</p>
-                    <div className="flex flex-col gap-0.5">
+                    <VStack gap="var(--spacing-0-5)">
                       {section.items.map((item) => {
                         const ItemIcon = item.icon
                         const isActive = activeTab === item.key
@@ -778,7 +778,7 @@ const SettingsPage = () => {
                           </button>
                         )
                       })}
-                    </div>
+                    </VStack>
                   </div>
                 ))}
                 {filteredNav.length === 0 && (
@@ -794,7 +794,7 @@ const SettingsPage = () => {
 
               <Card.Body className="p-6">
               {/* Panel header */}
-              <div className="flex items-start gap-3 pb-4 mb-6 border-b border-[var(--color-border-primary)]">
+              <HStack align="start" gap={3} className="pb-4 mb-6 border-b border-[var(--color-border-primary)]">
                 <div className="w-10 h-10 shrink-0 rounded-[var(--radius-lg)] bg-[var(--color-primary-bg)] text-[var(--color-primary)] flex items-center justify-center">
                   <ActiveIcon className="h-5 w-5" />
                 </div>
@@ -802,7 +802,7 @@ const SettingsPage = () => {
                   <h2 className="text-base font-semibold text-[var(--color-text-heading)] leading-tight">{activeItem.label}</h2>
                   <p className="mt-1 text-sm text-[var(--color-text-muted)] leading-snug">{activeItem.description}</p>
                 </div>
-              </div>
+              </HStack>
               {/* Error messages */}
               {error[activeTab] && (
                 <div className="bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-lg p-4 mb-6">

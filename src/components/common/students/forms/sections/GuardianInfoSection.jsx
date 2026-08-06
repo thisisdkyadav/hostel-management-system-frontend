@@ -1,6 +1,6 @@
 import React from "react"
 import { FaMapMarkerAlt } from "react-icons/fa"
-import { FormField } from "@/components/ui"
+import { FormField, Grid } from "@/components/ui"
 
 const GuardianInfoSection = ({ data, onChange }) => {
   const handleChange = (e) => {
@@ -15,7 +15,7 @@ const GuardianInfoSection = ({ data, onChange }) => {
         <h3 className="font-semibold text-gray-800">Guardian Information</h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Grid cols={{ base: 1, md: 2 }} gap={4}>
         <FormField label="Guardian Name" name="guardian" type="text" value={data.guardian || ""} onChange={handleChange} />
 
         <FormField label="Guardian Phone" name="guardianPhone" type="tel" value={data.guardianPhone || ""} onChange={handleChange} />
@@ -23,7 +23,7 @@ const GuardianInfoSection = ({ data, onChange }) => {
         <FormField label="Guardian Email" name="guardianEmail" type="email" value={data.guardianEmail || ""} onChange={handleChange} />
 
         <FormField label="Faculty Advisor Email" name="facultyAdvisorEmail" type="email" value={data.facultyAdvisorEmail || ""} onChange={handleChange} />
-      </div>
+      </Grid>
     </div>
   )
 }

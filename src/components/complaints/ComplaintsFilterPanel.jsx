@@ -1,6 +1,6 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
-import { Card, Checkbox, Heading, HStack, Label, Select, VStack } from "@/components/ui"
+import { Card, Checkbox, Grid, Heading, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
@@ -15,7 +15,7 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
         </Button>
       </HStack>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <Grid cols={{ base: 1, sm: 2, lg: 3 }} gap={4}>
         <VStack gap="xsmall">
           <Label size="sm">Status</Label>
           <Select
@@ -124,7 +124,7 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
             />
           </div>
         </VStack>
-      </div>
+      </Grid>
     </Card>
   )
 }

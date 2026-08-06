@@ -1,6 +1,6 @@
 import React from "react"
 import { FaTools, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserTie } from "react-icons/fa"
-import { Text } from "@/components/ui"
+import { Grid, Text } from "@/components/ui"
 
 const MaintenanceStats = ({ maintenanceStaff }) => {
   // Count staff by category
@@ -63,7 +63,7 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
   ]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+    <Grid cols={{ base: 2, md: 4, lg: 8 }} gap={4}>
       {statCards.map((stat) => (
         <div key={stat.name} style={{ backgroundColor: stat.bgColor, borderRadius: "var(--radius-xl)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", boxShadow: "var(--shadow-sm)" }}>
           <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "var(--spacing-2)" }}>{stat.icon}</div>
@@ -71,7 +71,7 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
           <Text as="div" size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>{stat.name}</Text>
         </div>
       ))}
-    </div>
+    </Grid>
   )
 }
 

@@ -246,7 +246,7 @@ const HostelAllocation = () => {
               ]}
             />
           </VStack>
-          <div className="flex gap-2">
+          <HStack gap={2}>
             <Button onClick={resetFilters} variant="secondary" size="md">
               Reset
             </Button>
@@ -254,7 +254,7 @@ const HostelAllocation = () => {
               <FaFilter />
               Filter
             </Button>
-          </div>
+          </HStack>
         </div>
       </Surface>
 

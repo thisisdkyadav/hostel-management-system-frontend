@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Select } from "@/components/ui"
+import { Grid, Select } from "@/components/ui"
 import ConfigListManager from "./ConfigListManager"
 import {
   countConfiguredBatches,
@@ -70,7 +70,7 @@ const StudentBatchManager = ({
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Grid cols={{ base: 1, md: 2 }} gap={4}>
         <div>
           <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
           <Select
@@ -92,7 +92,7 @@ const StudentBatchManager = ({
             disabled={isLoading}
           />
         </div>
-      </div>
+      </Grid>
 
       <div className="rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] px-4 py-3 text-sm text-[var(--color-text-muted)]">
         Managing batches for <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(selectedDegree, "degree") || "No degree scope selected"}</span>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave } from "react-icons/hi"
-import { Checkbox, Alert } from "@/components/ui"
+import { Alert, Checkbox, HStack, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 // "maxLeaveDays" / "max_leave_days" -> "Max Leave Days" (display only)
@@ -76,7 +76,7 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const modifiedCount = Object.keys(config).filter((key) => formData[key] !== config[key]).length
 
   return (
-    <div className="flex flex-col gap-5">
+    <VStack gap={5}>
       <Alert type="warning" title="Configuration Editor">
         Only existing configuration keys can be modified — keys cannot be added or removed here. {Object.keys(config).length} keys loaded.
       </Alert>
@@ -110,15 +110,15 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
         })}
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-1">
+      <HStack align="center" justify="end" gap={3} className="pt-1">
         {modifiedCount > 0 && (
           <span className="text-xs text-[var(--color-warning-text)]">{modifiedCount} unsaved change{modifiedCount === 1 ? "" : "s"}</span>
         )}
         <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="md" loading={isLoading}>
           <HiSave /> Save Changes
         </Button>
-      </div>
-    </div>
+      </HStack>
+    </VStack>
   )
 }
 

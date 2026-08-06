@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Grid, Modal } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"
 
@@ -219,13 +219,13 @@ const AuthzFieldGuide = ({ catalog = null }) => {
             <div>
               <div className="text-sm font-semibold text-[var(--color-text-primary)] mb-2">Related Capabilities</div>
               {selectedRouteCapabilities.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <Grid cols={{ base: 1, md: 2 }} gap={2}>
                   {selectedRouteCapabilities.map((key) => (
                     <div key={key} className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-light)] px-3 py-2">
                       <div className="text-xs font-mono text-[var(--color-text-secondary)]">{key}</div>
                     </div>
                   ))}
-                </div>
+                </Grid>
               ) : (
                 <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-light)] px-3 py-2 text-xs text-[var(--color-text-muted)]">
                   No direct capability hint found. Use advanced capability search in the editor when needed.

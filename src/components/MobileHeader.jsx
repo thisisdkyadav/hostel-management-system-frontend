@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
+import { HStack } from "@/components/ui"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isDark, onToggleTheme }) => {
   const navigate = useNavigate()
@@ -72,7 +73,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
       </div>
 
       {/* Right cluster: theme toggle + profile dropdown */}
-      <div className="flex items-center gap-2">
+      <HStack align="center" gap={2}>
         {onToggleTheme && (
           <button
             type="button"
@@ -160,7 +161,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
           </div>
         )}
         </div>
-      </div>
+      </HStack>
     </div>
   )
 }

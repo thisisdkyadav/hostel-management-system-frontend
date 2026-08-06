@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table, Tabs } from "czero/react"
-import { Field, Heading, Modal, Page, Text } from "@/components/ui"
+import { Field, Grid, Heading, Modal, Page, Text } from "@/components/ui"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import { Alert, Card, EmptyState, HStack, Label, StatCards, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -317,7 +317,7 @@ const MealVerificationPage = () => {
                   Today and the next two days, after approved rebates are excluded.
                 </Text>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
+              <Grid cols={{ base: 1, sm: 3 }} gap={3}>
                 {rebateSummary.days.map((day) => (
                   <div key={day.date} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
                     <Text color="muted" size="sm">{formatDate(day.date)}</Text>
@@ -327,7 +327,7 @@ const MealVerificationPage = () => {
                     </Text>
                   </div>
                 ))}
-              </div>
+              </Grid>
             </Card>
           )}
 

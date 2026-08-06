@@ -1,6 +1,6 @@
 import React from "react"
 import { format } from "date-fns"
-import { Heading, Text } from "@/components/ui"
+import { Grid, Heading, Text } from "@/components/ui"
 
 const SecurityCheck = ({ checkInTime, checkOutTime }) => {
   const formatDateTime = (dateTimeString) => {
@@ -14,7 +14,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
     <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border-primary)' }}>
       <Heading as="h3" size="lg" weight="medium" color="primary" className="font-medium mb-3">Security Check Status</Heading>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Grid cols={{ base: 1, md: 2 }} gap={4}>
         <div>
           <Heading as="h4" size="sm" weight="medium" color="secondary" className="font-medium">Check-in Time</Heading>
           <div className="mt-1 flex items-center">
@@ -30,7 +30,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
             <Text size="sm" color="primary">{formatDateTime(checkOutTime)}</Text>
           </div>
         </div>
-      </div>
+      </Grid>
     </div>
   )
 }

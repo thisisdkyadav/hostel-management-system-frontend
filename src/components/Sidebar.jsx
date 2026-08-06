@@ -30,7 +30,7 @@ import {
   ADMIN_NAV_CATEGORY_DINING,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
-import { Surface, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin",
@@ -361,7 +361,7 @@ const Sidebar = ({ navItems }) => {
                 </Text>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
+              <HStack align="center" gap="var(--spacing-1-5)" className="shrink-0">
                 {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
                 <span className="relative inline-flex">
                   <NewBadge />
@@ -375,7 +375,7 @@ const Sidebar = ({ navItems }) => {
                     {isDark ? <Sun size={16} /> : <Moon size={16} />}
                   </button>
                 </span>
-              </div>
+              </HStack>
             </div>
           </Surface>
 

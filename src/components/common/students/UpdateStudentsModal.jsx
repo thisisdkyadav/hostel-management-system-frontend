@@ -8,7 +8,7 @@ import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import { studentApi } from "../../../service"
 import { useToast } from "@/components/ui/feedback"
-import { Checkbox, FileInput, Grid, Select, Spinner } from "@/components/ui"
+import { Checkbox, FileInput, Grid, HStack, Select, Spinner } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -1501,7 +1501,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Grid cols={{ base: 1, sm: 2 }} gap={4}>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
                       <Input type="text" value={member.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} required />
@@ -1526,7 +1526,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                       <Input type="text" value={member.address} onChange={(e) => handleChange(index, "address", e.target.value)} />
                     </div>
-                  </div>
+                  </Grid>
                 </div>
               ))}
 
@@ -1810,7 +1810,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Grid cols={{ base: 1, sm: 2 }} gap={4}>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
                       <Input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} required />
@@ -1836,7 +1836,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                         </div>
                       </>
                     )}
-                  </div>
+                  </Grid>
                 </div>
               ))}
 
@@ -1980,7 +1980,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           )}
 
           {rollNumberCheckScopeType === "batch" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Grid cols={{ base: 1, md: 3 }} gap={4}>
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
                 <Select
@@ -2036,7 +2036,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   disabled={configLoading || rollCheckBatchOptionsLoading || !selectedRollCheckDegree || !selectedRollCheckDepartment}
                 />
               </div>
-            </div>
+            </Grid>
           )}
 
           <div className="text-xs text-[var(--color-text-muted)]">
@@ -2091,7 +2091,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
         {rollNumberCheckSummary && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            <Grid cols={{ base: 1, sm: 2, xl: 4 }} gap={3}>
               <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
                 <div className="text-xs text-[var(--color-info-text)]">Submitted</div>
                 <div className="text-lg font-semibold text-[var(--color-info-text)]">{rollNumberCheckSummary.submittedCount || 0}</div>
@@ -2108,7 +2108,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <div className="text-xs text-[var(--color-danger-text)]">Missing</div>
                 <div className="text-lg font-semibold text-[var(--color-danger-text)]">{rollNumberCheckSummary.missingCount || 0}</div>
               </div>
-            </div>
+            </Grid>
 
             <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
               Scope: <span className="font-medium text-[var(--color-text-body)]">{rollNumberCheckSummary.scopeLabel || "System"}</span>
@@ -2126,7 +2126,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               <div className="text-sm font-medium text-[var(--color-text-body)]">
                 Found Student Status Summary
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <Grid cols={{ base: 2, sm: 4 }} gap={3}>
                 {rollCheckStatusItems.map((item) => (
                   <div
                     key={item.key}
@@ -2138,7 +2138,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     </div>
                   </div>
                 ))}
-              </div>
+              </Grid>
               <div className="text-xs text-[var(--color-text-muted)]">
                 Active students found: <span className="font-medium text-[var(--color-text-body)]">{statusCounts.Active || 0}</span> of {rollNumberCheckSummary.foundCount || 0}
               </div>
@@ -2234,7 +2234,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Grid cols={{ base: 1, md: 2 }} gap={4}>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Student Selection</label>
             <ToggleButtonGroup
@@ -2266,9 +2266,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               hideLabelsOnMobile={false}
             />
           </div>
-        </div>
+        </Grid>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Grid cols={{ base: 1, md: 3 }} gap={4}>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
             <Select
@@ -2313,7 +2313,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               disabled={configLoading || batchOptionsLoading || !selectedBatchDegree || !selectedBatchDepartment}
             />
           </div>
-        </div>
+        </Grid>
 
         <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
           The batch list includes exact and mixed-scope batches that apply to the selected lookup scope. If you choose an exact degree or department, that field is updated on the student profile. If you choose <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "degree")}</span> or <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "department")}</span>, that field stays unchanged and is used only to make mixed-scope batches available.
@@ -2330,7 +2330,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           />
         ) : (
           <div className="space-y-4 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Grid cols={{ base: 1, md: 2 }} gap={4}>
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range Start</label>
                 <Input
@@ -2349,7 +2349,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   placeholder="Numeric roll number end"
                 />
               </div>
-            </div>
+            </Grid>
             <div className="text-xs text-[var(--color-text-muted)]">
               Range mode is inclusive and works only for purely numeric roll numbers stored in the database. Alphanumeric roll numbers still need CSV upload.
             </div>
@@ -2407,7 +2407,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Grid cols={{ base: 1, md: 2 }} gap={4}>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Student Selection</label>
             <ToggleButtonGroup
@@ -2440,10 +2440,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               hideLabelsOnMobile={false}
             />
           </div>
-        </div>
+        </Grid>
 
         <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
-          <div className="flex items-center justify-between gap-3 mb-3">
+          <HStack align="center" justify="between" gap={3} className="mb-3">
             <div>
               <h3 className="text-sm font-medium text-[var(--color-text-body)]">Select Groups</h3>
               <p className="text-xs text-[var(--color-text-muted)]">Students can belong to multiple groups at the same time.</p>
@@ -2451,7 +2451,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             <div className="text-xs text-[var(--color-text-muted)]">
               {selectedGroups.length} selected
             </div>
-          </div>
+          </HStack>
 
           {configLoading ? (
             <div className="text-sm text-[var(--color-text-muted)]">Loading groups...</div>
@@ -2460,7 +2460,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               No student groups are configured yet. Create groups first from Settings.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Grid cols={{ base: 1, md: 2 }} gap={3}>
               {availableStudentGroups.map((group) => (
                 <Checkbox
                   key={group}
@@ -2471,7 +2471,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   label={group}
                 />
               ))}
-            </div>
+            </Grid>
           )}
         </div>
 
@@ -2492,7 +2492,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           />
         ) : (
           <div className="space-y-4 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Grid cols={{ base: 1, md: 2 }} gap={4}>
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range Start</label>
                 <Input
@@ -2511,7 +2511,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   placeholder="Numeric roll number end"
                 />
               </div>
-            </div>
+            </Grid>
             <div className="text-xs text-[var(--color-text-muted)]">
               Range mode is inclusive and works only for purely numeric roll numbers stored in the database. Alphanumeric roll numbers still need CSV upload.
             </div>
@@ -2715,7 +2715,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+              <Grid cols={{ base: 1, sm: 2, xl: 4 }} gap={3}>
                 <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
                   <div className="text-xs text-[var(--color-info-text)]">Processed</div>
                   <div className="text-lg font-semibold text-[var(--color-info-text)]">
@@ -2740,7 +2740,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     {updateDisplayedSheetRows.length}/{updateResultSheetRows.length}
                   </div>
                 </div>
-              </div>
+              </Grid>
 
               <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border rounded-lg px-3 py-2">
                 Status table columns: roll number, email, success status, reason.

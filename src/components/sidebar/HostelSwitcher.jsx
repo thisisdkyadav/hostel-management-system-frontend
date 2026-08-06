@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useWarden } from "../../contexts/WardenProvider"
 import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../../service"
-import { Select } from "@/components/ui"
+import { HStack, Select } from "@/components/ui"
 import { CgSpinner } from "react-icons/cg"
 import { FaBuilding } from "react-icons/fa"
 
@@ -81,10 +81,10 @@ const HostelSwitcher = () => {
 
   return (
     <div className="border-t border-[var(--color-border-primary)] px-4 py-3 shrink-0">
-      <div className="flex items-center gap-1.5 px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+      <HStack align="center" gap="var(--spacing-1-5)" className="px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
         <FaBuilding size={10} className="text-[var(--color-primary)]" />
         Active Hostel
-      </div>
+      </HStack>
       <div className="relative">
         <Select
           id="activeHostelSelect"

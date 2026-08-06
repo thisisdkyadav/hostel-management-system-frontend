@@ -10,7 +10,7 @@ import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
 import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import { Card, Checkbox, Page, Popover, Text } from "@/components/ui"
+import { Card, Checkbox, Grid, HStack, Page, Popover, Text, VStack } from "@/components/ui"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
@@ -53,18 +53,18 @@ const TableShimmer = ({ rows = 4, className = "" }) => (
 
 const HeaderStatCard = ({ icon, label, value, children }) => (
   <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
-    <div className="flex items-center gap-2.5">
+    <HStack align="center" gap="var(--spacing-2-5)">
       {icon}
-      <div className="flex items-center gap-2.5">
+      <HStack align="center" gap="var(--spacing-2-5)">
         <div>
           <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide leading-none mb-0.5">{label}</p>
           <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{value}</p>
         </div>
-        <div className="flex gap-1 ml-1.5 border-l border-[var(--color-border-primary)] pl-2">
+        <HStack gap={1} className="ml-1.5 border-l border-[var(--color-border-primary)] pl-2">
           {children}
-        </div>
-      </div>
-    </div>
+        </HStack>
+      </HStack>
+    </HStack>
   </div>
 )
 
@@ -76,12 +76,12 @@ const HeaderStatBadge = ({ label, value }) => (
 
 // Unified card section title with accent bar and optional "View all" link
 const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = "View all", children }) => (
-  <div className="flex justify-between items-center gap-[var(--spacing-2)] mb-[var(--spacing-2)]">
+  <HStack align="center" justify="between" gap={2} className="mb-[var(--spacing-2)]">
     <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
       <span className="w-1 h-4 rounded-[var(--radius-full)]" style={{ backgroundColor: accent }}></span>
       {title}
     </h2>
-    <div className="flex items-center gap-[var(--spacing-1-5)]">
+    <HStack align="center" gap="var(--spacing-1-5)">
       {children}
       {to && (
         <Link
@@ -91,8 +91,8 @@ const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = 
           {linkLabel} →
         </Link>
       )}
-    </div>
-  </div>
+    </HStack>
+  </HStack>
 )
 
 const APPROVAL_TODO_ITEMS = [
@@ -133,8 +133,8 @@ const SnapColumn = ({ title, icon, accent, count, to, isFirst = false, children 
   const Icon = icon
   return (
   <div className={`flex-1 min-w-0 flex flex-col p-[var(--spacing-3)] ${isFirst ? "" : "border-t xl:border-t-0 xl:border-l border-[var(--color-border-primary)]"}`}>
-    <div className="flex items-center justify-between gap-2 mb-[var(--spacing-2-5)]">
-      <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+    <HStack align="center" justify="between" gap={2} className="mb-[var(--spacing-2-5)]">
+      <HStack align="center" gap={2} className="min-w-0">
         <span className="w-7 h-7 shrink-0 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: "var(--color-bg-secondary)", color: accent }}>
           <Icon className="text-xs" />
         </span>
@@ -142,16 +142,16 @@ const SnapColumn = ({ title, icon, accent, count, to, isFirst = false, children 
         {count != null && (
           <span className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums" style={{ backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}>{count}</span>
         )}
-      </div>
+      </HStack>
       {to && (
         <Link to={to} aria-label={`Open ${title}`} className="shrink-0 text-[var(--color-text-light)] hover:text-[var(--color-primary)] transition-colors">
           <FaChevronRight className="text-[0.7rem]" />
         </Link>
       )}
-    </div>
-    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)] flex flex-col gap-[var(--spacing-1-5)]">
+    </HStack>
+    <VStack gap="var(--spacing-1-5)" className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
       {children}
-    </div>
+    </VStack>
   </div>
   )
 }
@@ -215,10 +215,10 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
               }
               return (
                 <div key={lv._id} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)]">
-                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                  <HStack align="center" gap={2} className="min-w-0">
                     <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: urgency }}></span>
                     <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate">{name}</span>
-                  </div>
+                  </HStack>
                   <span className="shrink-0 text-[0.7rem] font-semibold text-[var(--color-success-text)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-md)] px-[var(--spacing-2)] py-[var(--spacing-0-5)]">↩ {joinLabel}</span>
                 </div>
               )
@@ -235,10 +235,10 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
               const hasItems = count > 0
               return (
                 <Link key={item.key} to={item.to} className="group flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
-                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                  <HStack align="center" gap={2} className="min-w-0">
                     <Icon className="text-[0.72rem] shrink-0" style={{ color: item.accent }} />
                     <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate group-hover:text-[var(--color-primary)] transition-colors">{item.label}</span>
-                  </div>
+                  </HStack>
                   <span
                     className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums"
                     style={hasItems ? { backgroundColor: item.accent, color: "var(--color-white)" } : { backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}
@@ -257,10 +257,10 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
             <>
               {complaintRows.map((row) => (
                 <Link key={row.label} to={row.to} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
-                  <div className="flex items-center gap-[var(--spacing-2)] min-w-0">
+                  <HStack align="center" gap={2} className="min-w-0">
                     <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: row.color }}></span>
                     <span className="text-[0.78rem] font-medium text-[var(--color-text-body)] truncate">{row.label}</span>
-                  </div>
+                  </HStack>
                   <Text as="span" color={row.color} className="shrink-0 text-[0.85rem] font-bold tabular-nums">{row.value}</Text>
                 </Link>
               ))}
@@ -430,10 +430,10 @@ const DashboardPage = () => {
     <Page>
       <DashboardHeader>
         {loading ? (
-          <div className="flex gap-[var(--spacing-2-5)]">
+          <HStack gap="var(--spacing-2-5)">
             <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
             <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
-          </div>
+          </HStack>
         ) : error ? (
           <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
         ) : (
@@ -452,7 +452,7 @@ const DashboardPage = () => {
             }
 
             return (
-              <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+              <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
                 <HeaderStatCard icon={<FaUser className="text-[var(--color-primary)] text-sm" />} label="Hostlers" value={hostler.total}>
                   <HeaderStatBadge label="B" value={hostler.boys} />
                   <HeaderStatBadge label="G" value={hostler.girls} />
@@ -465,14 +465,14 @@ const DashboardPage = () => {
 
                 {/* Online Users Card */}
                 <div className="bg-[var(--color-success-bg-light)] border border-[var(--color-success-light)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-success)] transition-[var(--transition-all)]">
-                  <div className="flex items-center gap-2.5">
+                  <HStack align="center" gap="var(--spacing-2-5)">
                     <HiStatusOnline className="text-[var(--color-success)] text-sm animate-pulse" />
-                    <div className="flex items-center gap-2.5">
+                    <HStack align="center" gap="var(--spacing-2-5)">
                       <div>
                         <p className="text-xs text-[var(--color-success-text)] font-medium uppercase tracking-wide leading-none mb-0.5">Online Now</p>
                         <p className="text-lg font-bold text-[var(--color-success-text)] leading-none">{onlineStats?.totalOnline || 0}</p>
                       </div>
-                      <div className="flex gap-1 ml-1.5 border-l border-[var(--color-success-light)] pl-2">
+                      <HStack gap={1} className="ml-1.5 border-l border-[var(--color-success-light)] pl-2">
                         <Popover
                           trigger="hover"
                           placement="bottom"
@@ -503,11 +503,11 @@ const DashboardPage = () => {
                             A: {onlineStats?.byRole?.Admin || 0}
                           </span>
                         </Popover>
-                      </div>
-                    </div>
-                  </div>
+                      </HStack>
+                    </HStack>
+                  </HStack>
                 </div>
-              </div>
+              </HStack>
             )
           })()
         )}
@@ -515,9 +515,9 @@ const DashboardPage = () => {
 
       {/* Dashboard panels — lightweight bordered regions separated by gaps */}
       <Page.Body padded={false} className="p-[var(--spacing-4)]">
-        <div className="flex flex-col gap-[var(--spacing-4)]">
+        <VStack gap={4}>
           {/* Top band: Student Distribution | Hostel Occupancy */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-4)]">
+          <Grid cols={{ base: 1, lg: 2 }} gap={4}>
             {/* Student Distribution */}
             <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
               {loading ? (
@@ -583,7 +583,7 @@ const DashboardPage = () => {
                         <thead>
                           <tr>
                             <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
-                              <div className="flex items-center gap-[var(--spacing-2)]">
+                              <HStack align="center" gap={2}>
                                 <Checkbox checked={allHostelsSelected} onChange={() => {
                                   if (allHostelsSelected) {
                                     setSelectedHostels([])
@@ -592,7 +592,7 @@ const DashboardPage = () => {
                                   }
                                 }} />
                                 Hostel
-                              </div>
+                              </HStack>
                             </th>
                             <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
                             <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
@@ -612,11 +612,11 @@ const DashboardPage = () => {
                             return (
                               <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
                                 <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
-                                  <div className="flex items-center gap-[var(--spacing-2)]">
+                                  <HStack align="center" gap={2}>
                                     <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
                                     <div className="flex-1 min-w-0">
                                       <span className={`block text-[0.8125rem] font-semibold leading-tight transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
-                                      <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                      <HStack align="center" gap="var(--spacing-1-5)">
                                         <div className="w-20 h-1 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
                                           <div
                                             className={`h-full rounded-[var(--radius-full)] ${occupancyPercent >= 95 ? 'bg-[var(--color-danger)]' : occupancyPercent >= 80 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
@@ -624,9 +624,9 @@ const DashboardPage = () => {
                                           ></div>
                                         </div>
                                         <span className="text-[0.65rem] leading-none text-[var(--color-text-muted)] tabular-nums">{occupancyPercent}%</span>
-                                      </div>
+                                      </HStack>
                                     </div>
-                                  </div>
+                                  </HStack>
                                 </td>
                                 <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
                                 <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
@@ -645,15 +645,15 @@ const DashboardPage = () => {
                         <tfoot>
                           <tr>
                             <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
-                              <div className="flex items-center gap-[var(--spacing-2)]">
+                              <HStack align="center" gap={2}>
                                 <div className="w-3.5 h-3.5"></div>
-                                <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                <HStack align="center" gap="var(--spacing-1-5)">
                                   <span className="uppercase tracking-wider font-extrabold">Total</span>
                                   {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
                                     <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
                                   )}
-                                </div>
-                              </div>
+                                </HStack>
+                              </HStack>
                             </td>
                             <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
                             <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
@@ -667,7 +667,7 @@ const DashboardPage = () => {
                 </>
               )}
             </section>
-          </div>
+          </Grid>
 
           {/* Bottom band: Action Center */}
           <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
@@ -679,7 +679,7 @@ const DashboardPage = () => {
               approvalsLoading={approvalsLoading}
             />
           </div>
-        </div>
+        </VStack>
       </Page.Body>
     </Page>
   )
@@ -750,7 +750,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
           <thead>
             <tr>
               <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">
-                <div className="flex items-center gap-[var(--spacing-2)]">
+                <HStack align="center" gap={2}>
                   <Checkbox checked={allDegreesSelected} onChange={() => {
                     if (allDegreesSelected) {
                       setDeselectedDegrees(degreeData.map((_, index) => index))
@@ -759,7 +759,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                     }
                   }} />
                   Degree
-                </div>
+                </HStack>
               </th>
               <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Boys</th>
               <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Girls</th>
@@ -787,10 +787,10 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
               return (
                 <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-colors ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
                   <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[30%]">
-                    <div className="flex items-center gap-[var(--spacing-2)]">
+                    <HStack align="center" gap={2}>
                       <Checkbox checked={isSelected} onChange={() => toggleDegreeSelection(index)} />
                       <span className={`text-[0.8125rem] font-medium transition-colors ${isSelected ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{item.degree}</span>
-                    </div>
+                    </HStack>
                   </td>
                   <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium tabular-nums w-[17.5%]">{item.boys}</td>
                   <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[17.5%]">{item.girls}</td>
@@ -814,12 +814,12 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
           <tfoot>
             <tr>
               <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">
-                <div className="flex items-center gap-[var(--spacing-1-5)]">
+                <HStack align="center" gap="var(--spacing-1-5)">
                   <span>Total</span>
                   {selectedDegreeData.length > 0 && selectedDegreeData.length < degreeData.length && (
                     <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedDegreeData.length}</span>
                   )}
-                </div>
+                </HStack>
               </td>
               <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[17.5%]">{totalBoys}</td>
               <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold tabular-nums w-[17.5%]">{totalGirls}</td>

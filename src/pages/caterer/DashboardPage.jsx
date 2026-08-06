@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button, StatusBadge } from "czero/react"
 import { ArrowRight, CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
-import { Alert, Card, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, Grid, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -135,7 +135,7 @@ const DashboardPage = () => {
                   Expected diners today and the next two days, after approved rebates.
                 </Text>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
+              <Grid cols={{ base: 1, sm: 3 }} gap={3}>
                 {rebateSummary.days.map((day) => (
                   <div key={day.date} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
                     <Text color="muted" size="sm">{formatDate(day.date)}</Text>
@@ -145,7 +145,7 @@ const DashboardPage = () => {
                     </Text>
                   </div>
                 ))}
-              </div>
+              </Grid>
             </Card>
           )}
         </VStack>

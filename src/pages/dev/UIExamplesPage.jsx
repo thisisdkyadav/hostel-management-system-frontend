@@ -3,6 +3,7 @@ import { Button } from "czero/react"
 import OldButton from "@/components/old-ui/OldButton"
 import { FaPlus, FaDownload, FaEnvelope, FaUsers, FaBed, FaClipboardCheck, FaExclamationTriangle } from "react-icons/fa"
 import { StatCards } from "@/components/ui/data-display"
+import { HStack } from "@/components/ui"
 
 /**
  * UI Examples Page - Compare Old vs New Button implementations
@@ -206,14 +207,14 @@ const UIExamplesPage = () => {
                             {sizes.map((size) => (
                                 <div key={size}>
                                     <h3 className="text-sm font-medium text-[var(--color-text-muted)] mb-3">Size: {size}</h3>
-                                    <div className="flex flex-wrap gap-3">
+                                    <HStack gap={3} wrap>
                                         {variants.map((variant) => (
                                             <Button key={`${size}-${variant}`} variant={variant} size={size}>
                                                 {variant}
                                             </Button>
                                         ))}
                                         <Button variant="gradient" size={size}>gradient</Button>
-                                    </div>
+                                    </HStack>
                                 </div>
                             ))}
                         </div>

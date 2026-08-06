@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
-import { Switch } from "@/components/ui"
+import { Grid, HStack, Switch } from "@/components/ui"
 import { Button } from "czero/react"
 
 const getFieldDescription = (field) => {
@@ -58,20 +58,20 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {/* Summary strip */}
-      <div className="flex items-center justify-between gap-4 rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] px-4 py-2.5">
+      <HStack align="center" justify="between" gap={4} className="rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] px-4 py-2.5">
         <span className="text-sm text-[var(--color-text-body)]">
           <span className="font-semibold text-[var(--color-primary)]">{allowedCount}</span> of {localPermissions.length} fields editable by students
         </span>
-        <div className="flex items-center gap-2">
+        <HStack align="center" gap={2}>
           <div className="w-24 sm:w-32 h-1.5 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
             <div className="h-full rounded-[var(--radius-full)] bg-[var(--color-primary)] transition-all duration-300" style={{ width: `${allowedPercent}%` }}></div>
           </div>
           <span className="text-xs text-[var(--color-text-muted)] tabular-nums">{allowedPercent}%</span>
-        </div>
-      </div>
+        </HStack>
+      </HStack>
 
       {/* Permission cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+      <Grid cols={{ base: 1, md: 2 }} gap="var(--spacing-2-5)">
         {localPermissions.map((permission) => (
           <div
             key={permission.field}
@@ -79,20 +79,20 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
               ? "bg-[var(--color-primary-bg)] border-[var(--color-primary-pale)]"
               : "bg-[var(--color-bg-tertiary)] border-[var(--color-border-primary)]"}`}
           >
-            <div className="flex items-start gap-2.5 min-w-0">
+            <HStack align="start" gap="var(--spacing-2-5)" className="min-w-0">
               <span className="text-xl leading-none mt-0.5" aria-hidden="true">{getFieldIcon(permission.field)}</span>
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
+                <HStack align="center" gap="var(--spacing-1-5)">
                   <p className="text-sm font-medium text-[var(--color-text-secondary)]">{permission.label}</p>
                   {permission.allowed ? (
                     <HiPencil className="h-3 w-3 shrink-0 text-[var(--color-primary)]" title="Editable by students" />
                   ) : (
                     <HiLockClosed className="h-3 w-3 shrink-0 text-[var(--color-text-muted)]" title="Locked for students" />
                   )}
-                </div>
+                </HStack>
                 <p className="text-xs text-[var(--color-text-muted)] mt-0.5 leading-snug">{getFieldDescription(permission.field)}</p>
               </div>
-            </div>
+            </HStack>
             <Switch
               checked={permission.allowed}
               onChange={() => handleTogglePermission(permission.field)}
@@ -100,7 +100,7 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
             />
           </div>
         ))}
-      </div>
+      </Grid>
 
       <div className="pt-2">
         <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading}>

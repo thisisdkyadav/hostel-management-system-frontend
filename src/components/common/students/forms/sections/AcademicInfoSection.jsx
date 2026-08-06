@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaUserGraduate } from "react-icons/fa"
-import { FormField, Select } from "@/components/ui"
+import { FormField, Grid, Select } from "@/components/ui"
 import { adminApi, studentApi } from "../../../../../service"
 
 const AcademicInfoSection = ({ data, onChange }) => {
@@ -72,7 +72,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
         <h3 className="font-semibold text-gray-800">Academic Information</h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Grid cols={{ base: 1, md: 2 }} gap={4}>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
           <Select name="department" value={data.department || ""} onChange={handleChange} disabled={isLoading}
@@ -112,7 +112,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
         </div>
 
         <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate || ""} onChange={handleChange} />
-      </div>
+      </Grid>
     </div>
   )
 }

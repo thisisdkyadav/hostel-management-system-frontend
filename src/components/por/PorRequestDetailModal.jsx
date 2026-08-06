@@ -420,7 +420,7 @@ const PorRequestDetailModal = ({
                     </div>
                   ) : null}
 
-                  <div className="flex flex-wrap justify-end gap-3">
+                  <HStack justify="end" gap={3} wrap>
                     <Button
                       variant="secondary"
                       onClick={onRequestRevision}
@@ -454,7 +454,7 @@ const PorRequestDetailModal = ({
                     >
                       {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
                     </Button>
-                  </div>
+                  </HStack>
                 </Grid>
               </PorDetailCard>
             ) : null}

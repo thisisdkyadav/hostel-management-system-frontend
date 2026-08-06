@@ -5,7 +5,7 @@ import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK
 import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Page, Pagination, Select } from "@/components/ui"
+import { Grid, Page, Pagination, Select } from "@/components/ui"
 import TaskManagementHeader from "../../components/headers/TaskManagementHeader"
 import { Input } from "czero/react"
 
@@ -181,7 +181,7 @@ const TaskManagementPage = () => {
 
         {/* Filters */}
         <div className="bg-[var(--color-bg-primary)] p-4 rounded-lg shadow-sm mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Grid cols={{ base: 1, md: 3 }} gap={4}>
             <div>
               <label htmlFor="priorityFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
                 Priority
@@ -208,7 +208,7 @@ const TaskManagementPage = () => {
                 placeholder="Search tasks..."
               />
             </div>
-          </div>
+          </Grid>
         </div>
 
         {/* Task Cards */}
@@ -221,7 +221,7 @@ const TaskManagementPage = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Grid cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
               {filteredTasks.length > 0 ? (
                 filteredTasks.map((task) => (
                   <div key={task._id} className={`bg-[var(--color-bg-primary)] rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden`} onClick={() => viewTaskDetails(task)}>
@@ -268,7 +268,7 @@ const TaskManagementPage = () => {
               ) : (
                 <div className="col-span-3 flex justify-center items-center py-12 text-[var(--color-text-muted)]">No tasks found matching the current filters.</div>
               )}
-            </div>
+            </Grid>
 
             {/* Pagination */}
             {pagination.totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} paginate={handlePageChange} />}

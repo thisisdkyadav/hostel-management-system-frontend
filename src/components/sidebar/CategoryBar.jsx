@@ -1,6 +1,6 @@
 import { ADMIN_NAV_CATEGORIES } from "../../constants/navigationConfig"
 import { getCategoryTint } from "./categoryStyles"
-import { Surface } from "@/components/ui"
+import { Grid, Surface } from "@/components/ui"
 
 /**
  * V2 bottom category bar. Accents come from --color-cat-* tokens; active
@@ -9,7 +9,7 @@ import { Surface } from "@/components/ui"
 const CategoryBar = ({ activeCategory, onCategoryChange }) => {
   return (
     <Surface bg={getCategoryTint(activeCategory)} className="border-t border-[var(--color-border-primary)] transition-all duration-300 px-4 py-3">
-      <div className="grid grid-cols-5 gap-2">
+      <Grid cols={5} gap={2}>
         {ADMIN_NAV_CATEGORIES.map((category) => {
           const isActiveCategory = activeCategory === category.id
           const accent = `var(${category.colorVar})`
@@ -36,7 +36,7 @@ const CategoryBar = ({ activeCategory, onCategoryChange }) => {
             </button>
           )
         })}
-      </div>
+      </Grid>
     </Surface>
   )
 }

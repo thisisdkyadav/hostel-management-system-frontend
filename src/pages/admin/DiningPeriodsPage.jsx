@@ -3,7 +3,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, CalendarDays, Plus, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Heading, HStack, Page, SearchInput, StatCards, Surface } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Grid, Heading, HStack, Page, SearchInput, StatCards, Surface, VStack } from "@/components/ui"
 import PeriodCard from "@/components/dining/PeriodCard"
 import PeriodDetailModal from "@/components/dining/PeriodDetailModal"
 import PeriodFormModal from "@/components/dining/PeriodFormModal"
@@ -225,18 +225,18 @@ const DiningPeriodsPage = () => {
               }
             />
           ) : (
-            <div className="mt-[var(--spacing-6)] flex flex-col gap-[var(--spacing-8)]">
+            <VStack gap={8} className="mt-[var(--spacing-6)]">
               {sections.map((section) => (
                 <section key={section.key}>
                   <SectionHeader title={section.title} count={section.items.length} />
-                  <div className="grid gap-[var(--spacing-4)] sm:grid-cols-2 xl:grid-cols-3">
+                  <Grid cols={{ sm: 2, xl: 3 }} gap={4}>
                     {section.items.map((period) => (
                       <PeriodCard key={period.id} period={period} onView={setViewingPeriod} onEdit={openEdit} />
                     ))}
-                  </div>
+                  </Grid>
                 </section>
               ))}
-            </div>
+            </VStack>
           )}
         </Page.Body>
       </Page>

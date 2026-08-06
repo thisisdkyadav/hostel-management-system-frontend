@@ -209,7 +209,7 @@ const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCat
           Choose one caterer for {formatPeriodRange(period)}. Seat counts refresh every few seconds.
         </Alert>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[var(--spacing-4)]">
+        <Grid cols={{ base: 1, sm: 2, xl: 3 }} gap={4}>
           {capacityCards.map((capacity) => {
             const isSelected = selectedCatererId === String(capacity.catererId)
             const remaining = Number(capacity.remainingSeats || 0)
@@ -245,7 +245,7 @@ const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCat
               </Card>
             )
           })}
-        </div>
+        </Grid>
       </VStack>
     </Modal>
   )
@@ -500,7 +500,7 @@ const DiningPage = () => {
         <VStack gap="large">
           <DiningHero {...hero} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-4)]">
+          <Grid cols={{ base: 1, md: 2 }} gap={4}>
             <InfoCard
               title="Current Caterer"
               badge={currentAllocation ? <StatusBadge status="Active" tone="success" /> : <StatusBadge status="None" tone="primary" showDot={false} />}
@@ -533,7 +533,7 @@ const DiningPage = () => {
                 <Detail label="Selection opens" value={formatDateTime(upcomingAllocationPeriod.allocationStartAt)} />
               </InfoCard>
             ) : null}
-          </div>
+          </Grid>
 
           {/* Rebates */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -596,11 +596,11 @@ const DiningPage = () => {
                   Your allocated funds, daily charges and balance for each billing period. Approved-rebate days are not charged.
                 </Text>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-3)]">
+              <Grid cols={{ base: 1, md: 2 }} gap={3}>
                 {billing.map((billingPeriod) => (
                   <StudentBillingCard key={billingPeriod.id} billingPeriod={billingPeriod} />
                 ))}
-              </div>
+              </Grid>
             </Card>
           )}
         </VStack>

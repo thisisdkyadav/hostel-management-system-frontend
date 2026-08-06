@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
 import { Button } from "czero/react"
-import { Surface } from "@/components/ui"
+import { Grid, Surface } from "@/components/ui"
 
 const QRCodeGenerator = () => {
   const { user } = useAuth()
@@ -114,13 +114,13 @@ const QRCodeGenerator = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-3 w-full mt-4">
-            <div className="grid grid-cols-1 gap-3 w-full mt-4">
+          <Grid cols={1} gap={3} className="w-full mt-4">
+            <Grid cols={1} gap={3} className="w-full mt-4">
               <Button onClick={generateQR} variant="secondary">
                 <FaSyncAlt /> Refresh
               </Button>
-            </div>
-          </div>
+            </Grid>
+          </Grid>
         </div>
       )}
     </div>

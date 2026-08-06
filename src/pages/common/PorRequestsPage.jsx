@@ -458,10 +458,10 @@ const PorRequestFormModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title={
-        <div className="flex items-center gap-2">
+        <HStack align="center" gap={2}>
           <FilePenLine className="text-[var(--color-primary)] shrink-0" size={20} />
           <span>{isEdit ? "Edit & Resubmit POR Request" : "Create POR Request"}</span>
-        </div>
+        </HStack>
       }
       width={880}
       minHeight="50vh"
@@ -625,10 +625,10 @@ const PorRequestFormModal = ({
 
               {formData.hasDisciplinaryAction ? (
                 <div className="por-warning-box animate-fadeIn">
-                  <div className="flex items-center gap-2 text-[var(--color-danger)] font-semibold text-sm">
+                  <HStack align="center" gap={2} className="text-[var(--color-danger)] font-semibold text-sm">
                     <ShieldAlert className="shrink-0 animate-bounce" size={16} />
                     <span>Action Details Required</span>
-                  </div>
+                  </HStack>
                   <Field label="Disciplinary Action Details" htmlFor="por-disciplinary-details" required>
                     <Textarea
                       id="por-disciplinary-details"
@@ -730,7 +730,7 @@ const PorCategoryFormModal = ({
           </Field>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between gap-3">
+            <HStack align="center" justify="between" gap={3}>
               <div>
                 <Text as="div" size="sm" weight="semibold" color="heading">
                   Gymkhana Review Steps
@@ -744,7 +744,7 @@ const PorCategoryFormModal = ({
                 <Plus size={16} />
                 Add Step
               </Button>
-            </div>
+            </HStack>
 
             <div className="space-y-4">
               {(Array.isArray(formData.gymkhanaSteps) ? formData.gymkhanaSteps : []).map((step, stepIndex) => {
@@ -855,14 +855,14 @@ const PorCategoryFormModal = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
+        <HStack justify="end" gap={3}>
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
           <Button type="button" onClick={() => onSubmit?.()} loading={isSaving} disabled={isSaving}>
             {isEdit ? "Save Category" : "Create Category"}
           </Button>
-        </div>
+        </HStack>
       </form>
     </Modal>
   )
@@ -929,7 +929,7 @@ const PorCategoryManagementModal = ({
       width={1080}
       minHeight="50vh"
     >
-      <div className="flex min-h-[42vh] flex-col gap-5">
+      <VStack gap={5} className="min-h-[42vh]">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="text-sm text-[var(--color-text-muted)]">
@@ -958,7 +958,7 @@ const PorCategoryManagementModal = ({
             message="Create the first POR category to define how Gymkhana recommendations should flow before Student Affairs."
           />
         )}
-      </div>
+      </VStack>
     </Modal>
   )
 }
@@ -1278,7 +1278,7 @@ const PorRequestDetailModal = ({
                     </div>
                   ) : null}
 
-                  <div className="flex flex-wrap justify-end gap-3">
+                  <HStack justify="end" gap={3} wrap>
                     <Button
                       variant="secondary"
                       onClick={onRequestRevision}
@@ -1312,7 +1312,7 @@ const PorRequestDetailModal = ({
                     >
                       {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
                     </Button>
-                  </div>
+                  </HStack>
                 </Grid>
               </PorDetailCard>
             ) : null}
@@ -1524,7 +1524,7 @@ const PorRequestGroupModal = ({
                       </Button>
                     </HStack>
 
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <Grid cols={{ base: 1, lg: 2 }} gap={4}>
                       <div className="por-detail-info-grid">
                         <PorDetailInfoRow label="Position" value={request.positionTitle || "—"} />
                         <PorDetailInfoRow label="Tenure" value={request.tenure || "—"} />
@@ -1566,7 +1566,7 @@ const PorRequestGroupModal = ({
                           />
                         ) : null}
                       </Grid>
-                    </div>
+                    </Grid>
 
                     {!useCommonComment ? (
                       <div style={{ marginTop: "var(--spacing-3)" }}>
@@ -1644,7 +1644,7 @@ const PorRequestGroupModal = ({
                   </div>
                 ) : null}
 
-                <div className="flex flex-wrap justify-end gap-3">
+                <HStack justify="end" gap={3} wrap>
                   <Button
                     variant="secondary"
                     onClick={onRequestRevision}
@@ -1678,7 +1678,7 @@ const PorRequestGroupModal = ({
                   >
                     {isStudentAffairsApproval ? "Approve All" : `${primaryDecisionLabel} All`}
                   </Button>
-                </div>
+                </HStack>
               </Grid>
             </PorDetailCard>
           </VStack>

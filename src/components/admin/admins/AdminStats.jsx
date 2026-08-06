@@ -1,5 +1,6 @@
 import React from "react"
 import { FaUserShield, FaUsers, FaUserCheck } from "react-icons/fa"
+import { Grid } from "@/components/ui"
 
 const AdminStats = ({ admins }) => {
   const totalAdmins = admins.length
@@ -40,7 +41,7 @@ const AdminStats = ({ admins }) => {
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-4)] mb-[var(--spacing-6)]">
+    <Grid cols={{ base: 1, md: 3 }} gap={4} className="mb-[var(--spacing-6)]">
       {stats.map((stat, index) => (
         <div key={index} className="bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] p-[var(--spacing-6)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-[var(--transition-shadow)] duration-[var(--duration-normal)]">
           <div className="flex items-center">
@@ -54,7 +55,7 @@ const AdminStats = ({ admins }) => {
           </div>
         </div>
       ))}
-    </div>
+    </Grid>
   )
 }
 

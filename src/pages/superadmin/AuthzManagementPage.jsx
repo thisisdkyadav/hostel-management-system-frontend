@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Modal, useConfirm } from "@/components/ui"
+import { Grid, HStack, Modal, useConfirm } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { FaSlidersH, FaUserShield } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
@@ -308,10 +308,10 @@ const StudentAuthzEditorModal = ({
     <>
       <Modal title="User Access Configuration" onClose={onClose} width={1100}>
         <div className="space-y-4">
-          <div className="flex justify-end gap-2">
+          <HStack justify="end" gap={2}>
             <Button variant="ghost" size="sm" onClick={onHelpClick}>Help</Button>
             <Button variant="secondary" size="sm" onClick={onHelpPageClick}>Open Help Page</Button>
-          </div>
+          </HStack>
 
         {error ? (
           <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-danger)] bg-[var(--color-danger-bg-light)] px-3 py-2 text-sm text-[var(--color-danger)]">
@@ -330,7 +330,7 @@ const StudentAuthzEditorModal = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Grid cols={{ base: 1, md: 2 }} gap={3}>
               <div className="rounded-[var(--radius-card-sm)] bg-[var(--color-bg-tertiary)] p-3 text-xs text-[var(--color-text-muted)]">
                 <div className="font-medium text-[var(--color-text-secondary)] mb-2">Override Draft</div>
                 <div>allowRoutes: {overrideSummary.allowRoutes}</div>
@@ -345,10 +345,10 @@ const StudentAuthzEditorModal = ({
                 <div>capabilities enabled: {effectiveSummary.enabledCapabilities}/{effectiveSummary.totalCapabilities}</div>
                 <div>wildcard capability: {effectiveSummary.wildcard ? "true" : "false"}</div>
               </div>
-            </div>
+            </Grid>
 
             <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] p-3">
-              <div className="flex items-center justify-between gap-2 mb-2">
+              <HStack align="center" justify="between" gap={2} className="mb-2">
                 <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Route Access (Step 1)</h3>
                 <SearchInput
                   value={routeSearch}
@@ -356,7 +356,7 @@ const StudentAuthzEditorModal = ({
                   placeholder="Search routes"
                   className="w-56"
                 />
-              </div>
+              </HStack>
               <div className="mb-2 text-xs text-[var(--color-text-muted)]">
                 Select route access first. Capability configuration opens only when a route is currently enabled.
               </div>
@@ -417,7 +417,7 @@ const StudentAuthzEditorModal = ({
               </div>
               {(Object.entries(constraintDraft || {})).map(([key, item]) => (
                 <div key={key} className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-light)] p-3">
-                  <div className="flex flex-wrap items-center gap-2">
+                  <HStack align="center" gap={2} wrap>
                     <label className="flex items-center gap-2 text-sm text-[var(--color-text-primary)]">
                       <input
                         type="checkbox"
@@ -438,7 +438,7 @@ const StudentAuthzEditorModal = ({
                     </label>
                     <span className="text-xs font-medium text-[var(--color-text-secondary)]">{item.label}</span>
                     <span className="text-[11px] text-[var(--color-text-muted)] font-mono">{key} ({item.valueType})</span>
-                  </div>
+                  </HStack>
 
                   {item.enabled ? (
                     <div className="mt-3">
@@ -513,11 +513,11 @@ const StudentAuthzEditorModal = ({
               />
             </div>
 
-            <div className="flex flex-wrap justify-end gap-2 pt-2 border-t border-[var(--color-border-light)]">
+            <HStack justify="end" gap={2} wrap className="pt-2 border-t border-[var(--color-border-light)]">
               <Button variant="secondary" size="md" onClick={onClose} disabled={saving}>Close</Button>
               <Button variant="danger" size="md" onClick={onReset} disabled={!canUpdate || saving} loading={saving}>Reset Override</Button>
               <Button variant="primary" size="md" onClick={onSave} disabled={!canUpdate || saving} loading={saving}>Save Changes</Button>
-            </div>
+            </HStack>
           </>
         )}
         </div>
@@ -540,7 +540,7 @@ const StudentAuthzEditorModal = ({
               ) : null}
             </div>
 
-            <div className="flex items-center justify-between gap-2">
+            <HStack align="center" justify="between" gap={2}>
               <SearchInput
                 value={capabilitySearch}
                 onChange={(e) => setCapabilitySearch(e.target.value)}
@@ -554,7 +554,7 @@ const StudentAuthzEditorModal = ({
               >
                 {showAllCapabilitiesInRouteModal ? "Show Related Only" : "Show All (Advanced)"}
               </Button>
-            </div>
+            </HStack>
 
             {!showAllCapabilitiesInRouteModal && selectedRouteRelatedCapabilities.length === 0 ? (
               <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-warning)] bg-[var(--color-warning-bg-light)] px-3 py-2 text-xs text-[var(--color-warning-text)]">
@@ -927,10 +927,10 @@ const AuthzManagementPage = () => {
             Super Admin can configure Layer-3 route, capability, and constraint overrides for non-student users.
           </p>
         </div>
-        <div className="flex gap-2">
+        <HStack gap={2}>
           <Button variant="ghost" size="sm" onClick={openHelpModal}>Help</Button>
           <Button variant="secondary" size="sm" onClick={openHelpPage}>Open Help Page</Button>
-        </div>
+        </HStack>
       </header>
 
       {pageError ? (
@@ -942,7 +942,7 @@ const AuthzManagementPage = () => {
       <Card>
         <Card.Body className="p-4 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <HStack align="center" gap={2}>
               <label className="text-xs font-medium text-[var(--color-text-muted)]">Role</label>
               <select
                 className="h-10 rounded-[var(--radius-input)] border border-[var(--color-border-input)] bg-[var(--color-bg-primary)] px-3 text-sm"
@@ -958,7 +958,7 @@ const AuthzManagementPage = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </HStack>
             <div className="text-sm text-[var(--color-text-muted)]">
               {loadingStudents ? "Loading users..." : `${pagination.total} known non-student users`} • page {pagination.page}/{Math.max(pagination.pages || 1, 1)}
             </div>
@@ -986,7 +986,7 @@ const AuthzManagementPage = () => {
             />
           )}
 
-          <div className="flex gap-2">
+          <HStack gap={2}>
             <Button
               variant="secondary"
               size="sm"
@@ -1003,7 +1003,7 @@ const AuthzManagementPage = () => {
             >
               Next
             </Button>
-          </div>
+          </HStack>
         </Card.Body>
       </Card>
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ChevronRight, History, Pin, Search } from "lucide-react"
-import { SearchInput, Text } from "@/components/ui"
+import { HStack, SearchInput, Text } from "@/components/ui"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 
@@ -20,10 +20,10 @@ const readStoredExpandedCategories = () => {
 const getItemCategory = (item) => item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS
 
 const SectionLabel = ({ icon: Icon, children }) => (
-  <div className="flex items-center gap-1.5 px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+  <HStack align="center" gap="var(--spacing-1-5)" className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
     {Icon && <Icon size={10} strokeWidth={2.5} />}
     {children}
-  </div>
+  </HStack>
 )
 
 /**

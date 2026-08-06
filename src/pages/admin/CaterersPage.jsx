@@ -268,14 +268,14 @@ const CaterersPage = () => {
             </Alert>
           )}
 
-          <div className="flex items-center justify-between gap-[var(--spacing-3)] flex-wrap mb-[var(--spacing-4)]">
+          <HStack align="center" justify="between" gap={3} wrap className="mb-[var(--spacing-4)]">
             <Text as="span" color="muted" size="sm">
               {filteredCaterers.length} {fetchArchive ? "archived" : "active"} caterer{filteredCaterers.length === 1 ? "" : "s"}
             </Text>
             <div className="w-full sm:w-[18rem]">
               <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search caterer..." />
             </div>
-          </div>
+          </HStack>
 
           {filteredCaterers.length === 0 ? (
             <EmptyState

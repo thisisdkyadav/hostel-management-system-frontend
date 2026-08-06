@@ -114,7 +114,7 @@ const DiningOfficeStaffPage = () => {
 
         <StatCards columns={3} stats={stats} />
 
-        <div className="mt-[var(--spacing-6)] flex items-center justify-between gap-[var(--spacing-3)] flex-wrap">
+        <HStack align="center" justify="between" gap={3} wrap className="mt-[var(--spacing-6)]">
           <HStack gap={2} wrap>
             {CATEGORY_FILTERS.map((filter) => (
               <Button
@@ -130,7 +130,7 @@ const DiningOfficeStaffPage = () => {
           <div className="w-full sm:w-[18rem]">
             <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search name / email..." />
           </div>
-        </div>
+        </HStack>
 
         <div className="mt-[var(--spacing-4)]">
           {filtered.length === 0 ? (

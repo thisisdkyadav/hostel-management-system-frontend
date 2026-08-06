@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, Field, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Field, Grid, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -93,13 +93,13 @@ const InventoryReports = () => {
 
         {/* Hostel Filter (only for student and item type tabs) */}
         {activeTab !== "hostel" && (
-          <div className="flex items-center gap-2">
+          <HStack align="center" gap={2}>
             <VStack gap="medium">
               <Field label="Choose Hostel">
                 <Select value={selectedHostel} onChange={handleHostelChange} icon={<FaBuilding />} options={[{ value: "", label: "Select a hostel..." }, ...hostelList.map((h) => ({ value: h._id, label: h.name }))]} />
               </Field>
             </VStack>
-          </div>
+          </HStack>
         )}
       </div>
 
@@ -132,7 +132,7 @@ const InventoryReports = () => {
 
       {/* Hostel Summary */}
       {activeTab === "hostel" && !loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Grid cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
           {hostelSummary.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-12) 0" }}>
               <FaBoxes style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
@@ -189,7 +189,7 @@ const InventoryReports = () => {
               </div>
             ))
           )}
-        </div>
+        </Grid>
       )}
 
       {/* Student Summary */}

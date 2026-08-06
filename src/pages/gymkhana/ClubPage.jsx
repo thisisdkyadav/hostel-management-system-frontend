@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Building2, Mail, ShieldCheck, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Card, CardBody, CardHeader, Heading, StatCards, Surface, Text } from "@/components/ui"
+import { Card, CardBody, CardHeader, Grid, Heading, HStack, StatCards, Surface, Text } from "@/components/ui"
 import { clubApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -70,7 +70,7 @@ const ClubPage = () => {
 
         <Card>
           <CardHeader className="mb-0">
-            <div className="flex items-center gap-3">
+            <HStack align="center" gap={3}>
               <div
                 style={{
                   width: "2.75rem",
@@ -93,7 +93,7 @@ const ClubPage = () => {
                   This account is tied to the club record created by the admin. If you ever need to set or reset your password, use the Forgot Password option on the login page.
                 </Text>
               </div>
-            </div>
+            </HStack>
           </CardHeader>
 
           <CardBody style={{ display: "grid", gap: "var(--spacing-4)" }}>
@@ -111,7 +111,7 @@ const ClubPage = () => {
               </div>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Grid cols={{ base: 1, md: 2 }} gap={4}>
               <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Club Name</Text>
                 <Text as="div" color="secondary" weight="semibold" style={{ marginTop: "var(--spacing-1)" }}>
@@ -139,7 +139,7 @@ const ClubPage = () => {
                   Gymkhana / Club
                 </Text>
               </Surface>
-            </div>
+            </Grid>
           </CardBody>
         </Card>
       </div>
