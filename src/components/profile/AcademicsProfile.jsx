@@ -16,7 +16,7 @@ const AcademicsProfile = () => {
     <div>
       <ProfileHeader user={user} role="Academics" subtitle="Academic reviewer workspace" />
 
-      <Grid cols={1} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }} className="lg:grid-cols-2">
+      <Grid cols={{ base: 1, lg: 2 }} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }}>
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={user.email || "Not provided"} icon={FiMail} />

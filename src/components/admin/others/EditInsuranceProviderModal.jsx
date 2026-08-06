@@ -85,7 +85,7 @@ const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
               <Input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="+91 9876543210" required />
             </div>
 
-            <Grid cols={1} gap={4} className="md:grid-cols-2">
+            <Grid cols={{ base: 1, md: 2 }} gap={4}>
               <div>
                 <Label htmlFor="startDate" required>Start Date</Label>
                 <Input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} icon={<FaCalendarAlt />} required />

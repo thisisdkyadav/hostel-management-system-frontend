@@ -204,7 +204,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</Text>
         </div>
 
-        <Grid cols={1} gap={4} className="md:grid-cols-2">
+        <Grid cols={{ base: 1, md: 2 }} gap={4}>
           <div>
             <Label htmlFor="capacity" required>Capacity</Label>
             <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<Users size={16} />} placeholder="Room capacity" error={errors.capacity} />

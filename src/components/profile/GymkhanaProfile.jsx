@@ -60,7 +60,7 @@ const GymkhanaProfile = () => {
     <div>
       <ProfileHeader user={gymkhanaData} role="Gymkhana" subtitle="Student Affairs Events Team" />
 
-      <Grid cols={1} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }} className="lg:grid-cols-2">
+      <Grid cols={{ base: 1, lg: 2 }} gap="var(--gap-lg)" style={{ marginTop: "var(--spacing-8)" }}>
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={gymkhanaData.email} icon={FiMail} />

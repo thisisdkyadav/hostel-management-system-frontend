@@ -194,7 +194,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           </div>
 
           {/* Task Details */}
-          <Grid cols={1} gap={4} className="md:grid-cols-2">
+          <Grid cols={{ base: 1, md: 2 }} gap={4}>
             <div>
               <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Category</Heading>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)' }}>{selectedTask.category}</div>

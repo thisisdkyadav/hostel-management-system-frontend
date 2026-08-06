@@ -99,7 +99,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
             <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
           </h3>
-          <Grid cols={2} gap={4} className="sm:grid-cols-4">
+          <Grid cols={{ base: 2, sm: 4 }} gap={4}>
             <div>
               <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Room Number</Text>
               <Text weight="medium" size="base">{room.roomNumber}</Text>

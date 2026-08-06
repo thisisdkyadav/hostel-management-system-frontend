@@ -64,7 +64,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
 
   return (
     <div style={{ backgroundColor: "var(--color-bg-primary)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)", }} >
-      <Grid cols={2} gap={4} className="sm:grid-cols-4">
+      <Grid cols={{ base: 2, sm: 4 }} gap={4}>
         <Surface bg="brand" padding={3} radius="lg">
           <Text as="div" size="sm" color="muted">Total Rooms</Text>
           <Text as="div" size="2xl" weight="semibold" color="primary">{totalRooms}</Text>
@@ -105,7 +105,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
       {isUnitBased && exceptions.length > 0 && (
         <div>
           <Heading as="h5" weight="medium" color="body" size="base" style={{ marginBottom: "var(--spacing-2)" }}>Unit Exceptions</Heading>
-          <Grid cols={2} gap={2} className="sm:grid-cols-3">
+          <Grid cols={{ base: 2, sm: 3 }} gap={2}>
             {exceptions.map(({ unit, roomCount }) => (
               <Surface bg="warning" padding={2} radius="md" key={unit}>
                 <Text as="span" weight="medium" color="primary" size="base">Unit {unit}</Text>

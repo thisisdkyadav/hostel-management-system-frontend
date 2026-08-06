@@ -32,7 +32,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
         </Button>
       </HStack>
 
-      <Grid cols={1} gap="var(--gap-md)" className="md:grid-cols-3 lg:grid-cols-4">
+      <Grid cols={{ base: 1, md: 3, lg: 4 }} gap="var(--gap-md)">
         {/* Hostel Filter */}
         <VStack gap="xsmall">
           <Label htmlFor="hostelId">Hostel</Label>

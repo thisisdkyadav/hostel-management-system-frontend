@@ -159,7 +159,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         </div>
 
         {/* Priority and Category */}
-        <Grid cols={1} gap={4} className="md:grid-cols-2">
+        <Grid cols={{ base: 1, md: 2 }} gap={4}>
           <div>
             <Label color="secondary" spacing={2} htmlFor="priority">
               Priority

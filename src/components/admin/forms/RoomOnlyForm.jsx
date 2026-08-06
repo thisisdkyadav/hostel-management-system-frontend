@@ -137,7 +137,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
       {inputMethod === "form" ? (
         <>
-          <Grid cols={1} gap={4} className="md:grid-cols-2">
+          <Grid cols={{ base: 1, md: 2 }} gap={4}>
             <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
               <Label htmlFor="floors">Number of Floors</Label>
               <Input id="floors" type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" />

@@ -56,7 +56,7 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
               <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter hostel name" required />
             </div>
 
-            <Grid cols={1} gap={4} className="sm:grid-cols-2">
+            <Grid cols={{ base: 1, sm: 2 }} gap={4}>
               <div>
                 <Label htmlFor="gender" required>Gender</Label>
                 <Select name="gender" value={formData.gender} onChange={handleChange} options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} required />
