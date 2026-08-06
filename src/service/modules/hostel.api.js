@@ -56,41 +56,6 @@ export const hostelApi = {
   },
 
   /**
-   * Get room change requests for a hostel
-   * @param {string} hostelId - Hostel ID
-   * @param {Object} filters - Query filters
-   */
-  getRoomChangeRequests: (hostelId, filters = {}) => {
-    return apiClient.get(`/hostel/room-change-requests/${hostelId}`, { params: filters })
-  },
-
-  /**
-   * Get room change request by ID
-   * @param {string} requestId - Request ID
-   */
-  getRoomChangeRequestById: (requestId) => {
-    return apiClient.get(`/hostel/room-change-request/${requestId}`)
-  },
-
-  /**
-   * Approve room change request
-   * @param {string} requestId - Request ID
-   * @param {string} bedNumber - Assigned bed number
-   */
-  approveRoomChangeRequest: (requestId, bedNumber) => {
-    return apiClient.put(`/hostel/room-change-request/approve/${requestId}`, { bedNumber })
-  },
-
-  /**
-   * Reject room change request
-   * @param {string} requestId - Request ID
-   * @param {string} reason - Rejection reason
-   */
-  rejectRoomChangeRequest: (requestId, reason) => {
-    return apiClient.put(`/hostel/room-change-request/reject/${requestId}`, { reason })
-  },
-
-  /**
    * Get rooms with query
    * @param {Object} query - Query parameters
    */

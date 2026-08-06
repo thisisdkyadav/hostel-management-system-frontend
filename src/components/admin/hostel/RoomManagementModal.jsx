@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/feedback"
 
 const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
   const { toast } = useToast()
+  const confirm = useConfirm()
   const [activeTab, setActiveTab] = useState("view")
   const [inputMethod, setInputMethod] = useState("form")
   const [isLoading, setIsLoading] = useState(false)

@@ -60,7 +60,6 @@ const ProfileHeader = ({ user, role, subtitle }) => {
         <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexWrap: "wrap", gap: "var(--gap-sm)", }} className="justify-center sm:justify-start" >
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />
-          {/* {role === "Student" && <RoomChangeForm student={user} />} */}
 
           {showLayoutToggle && (
             <Button onClick={toggleLayout} variant="outline" size="sm">

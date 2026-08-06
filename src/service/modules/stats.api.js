@@ -51,14 +51,6 @@ export const statsApi = {
   },
 
   /**
-   * Get room change requests statistics
-   * @param {string} hostelId - Hostel ID
-   */
-  getRoomChangeRequestsStats: (hostelId) => {
-    return apiClient.get(`/stats/room-change-requests/${hostelId}`)
-  },
-
-  /**
    * Get warden statistics
    */
   getWardenStats: () => {
