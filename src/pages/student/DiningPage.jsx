@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Field, Grid, Heading, Modal, Page, Surface, Text } from "@/components/ui"
+import { Field, Grid, Heading, InfoRow, Modal, Page, Surface, Text } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -306,13 +306,8 @@ const StudentBillingCard = ({ billingPeriod }) => {
           {expanded && (
             <VStack gap={2} style={{ marginTop: "var(--spacing-2)" }}>
               {billingPeriod.perPeriod.map((row) => (
-                <div key={row.periodId} style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                  <span>
-                    {formatDate(row.startDate)} – {formatDate(row.endDate)} · {row.chargeableDays}d × {formatCurrency(row.dailyRate)}
-                    {row.rebateDays > 0 ? ` (−${row.rebateDays} rebate)` : ""}
-                  </span>
-                  <Text as="span" color="secondary" weight="medium">{formatCurrency(row.amount)}</Text>
-                </div>
+                <InfoRow label={<>{formatDate(row.startDate)} – {formatDate(row.endDate)} · {row.chargeableDays}d × {formatCurrency(row.dailyRate)}
+                    {row.rebateDays > 0 ? ` (−${row.rebateDays} rebate)` : ""}</>} value={formatCurrency(row.amount)} key={row.periodId} style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} />
               ))}
             </VStack>
           )}

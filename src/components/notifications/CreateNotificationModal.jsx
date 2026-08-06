@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Field, Grid, Heading, HStack, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Field, Grid, Heading, HStack, InfoRow, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -293,18 +293,9 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           <Surface bg="tertiary" padding={5} radius="xl">
             <Heading as="h3" weight="medium" color="secondary" style={{ marginBottom: "var(--spacing-3)" }}>Notification Summary</Heading>
             <VStack gap={3}>
-              <HStack gap="none" justify="between">
-                <Text as="span" color="muted">Title:</Text>
-                <Text as="span" weight="medium">{formData.title}</Text>
-              </HStack>
-              <HStack gap="none" justify="between">
-                <Text as="span" color="muted">Type:</Text>
-                <Text as="span" weight="medium" style={{ textTransform: "capitalize" }}>{formData.type}</Text>
-              </HStack>
-              <HStack gap="none" justify="between">
-                <Text as="span" color="muted">Expiry:</Text>
-                <Text as="span" weight="medium">{new Date(formData.expiryDate).toLocaleDateString()}</Text>
-              </HStack>
+              <InfoRow label="Title:" value={formData.title} />
+              <InfoRow label="Type:" value={formData.type} />
+              <InfoRow label="Expiry:" value={new Date(formData.expiryDate).toLocaleDateString()} />
             </VStack>
           </Surface>
 
@@ -316,28 +307,16 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               ) : (
                 <>
                   {formData.hostelIds.length > 0 && (
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted">Hostel(s):</Text>
-                      <Text as="span" weight="medium" align="right">{getHostelNamesByIds(formData.hostelIds)}</Text>
-                    </HStack>
+                    <InfoRow label="Hostel(s):" value={getHostelNamesByIds(formData.hostelIds)} />
                   )}
                   {formData.departments.length > 0 && (
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted">Department(s):</Text>
-                      <Text as="span" weight="medium" align="right">{formData.departments.join(", ")}</Text>
-                    </HStack>
+                    <InfoRow label="Department(s):" value={formData.departments.join(", ")} />
                   )}
                   {formData.degrees.length > 0 && (
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted">Degree(s):</Text>
-                      <Text as="span" weight="medium" align="right">{formData.degrees.join(", ")}</Text>
-                    </HStack>
+                    <InfoRow label="Degree(s):" value={formData.degrees.join(", ")} />
                   )}
                   {formData.gender && (
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted">Gender:</Text>
-                      <Text as="span" weight="medium">{formData.gender}</Text>
-                    </HStack>
+                    <InfoRow label="Gender:" value={formData.gender} />
                   )}
                 </>
               )}

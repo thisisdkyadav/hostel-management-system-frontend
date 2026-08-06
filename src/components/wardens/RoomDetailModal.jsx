@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, InfoRow, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -74,26 +74,11 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Room Information
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Room Number:</Text>
-                  <Text as="span" weight="medium" size="base">{room.roomNumber}</Text>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Type:</Text>
-                  <Text as="span" weight="medium" size="base">{room.type || "Standard"}</Text>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Capacity:</Text>
-                  <Text as="span" weight="medium" size="base">{room.capacity} students</Text>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Current Occupancy:</Text>
-                  <Text as="span" weight="medium" size="base">{isActive ? `${room.currentOccupancy}/${room.capacity}` : room.status}</Text>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Floor:</Text>
-                  <Text as="span" weight="medium" size="base">{room.floor || "Ground"}</Text>
-                </li>
+                <InfoRow label="Room Number:" value={room.roomNumber} />
+                <InfoRow label="Type:" value={room.type || "Standard"} />
+                <InfoRow label="Capacity:" value={<>{room.capacity} students</>} />
+                <InfoRow label="Current Occupancy:" value={isActive ? `${room.currentOccupancy}/${room.capacity}` : room.status} />
+                <InfoRow label="Floor:" value={room.floor || "Ground"} />
               </ul>
             </Surface>
 
@@ -102,14 +87,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaBuilding style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Additional Details
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Hostel:</Text>
-                  <Text as="span" weight="medium" size="base">{room.hostel?.name || "N/A"}</Text>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Text as="span" color="muted" size="base">Unit:</Text>
-                  <Text as="span" weight="medium" size="base">{room.unit?.name || "N/A"}</Text>
-                </li>
+                <InfoRow label="Hostel:" value={room.hostel?.name || "N/A"} />
+                <InfoRow label="Unit:" value={room.unit?.name || "N/A"} />
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Text as="span" color="muted" size="base">Status:</Text>
                   <Surface as="span" bg={!isActive ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-0-5) var(--spacing-2-5)" radius="full" color={!isActive ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'} size="sm" weight="medium">

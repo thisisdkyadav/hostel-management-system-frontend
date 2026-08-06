@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Heading, Surface, Text } from "@/components/ui"
+import { Grid, Heading, InfoRow, Surface, Text } from "@/components/ui"
 
 const RoomStatsSummary = ({ data, isUnitBased }) => {
   const totalRooms = data.length
@@ -92,12 +92,7 @@ const RoomStatsSummary = ({ data, isUnitBased }) => {
           {Object.entries(floorStats)
             .sort(([a], [b]) => parseInt(a) - parseInt(b))
             .map(([floor, stats]) => (
-              <div key={floor} style={{ backgroundColor: "var(--color-bg-hover)", padding: "var(--spacing-2)", borderRadius: "var(--radius-md)", display: "flex", justifyContent: "space-between", alignItems: "center", }} >
-                <Text as="span" weight="medium" color="primary" size="base">Floor {floor}</Text>
-                <Text as="div" size="sm" color="muted">
-                  {isUnitBased ? `${stats.units.size} units, ${stats.count} rooms` : `${stats.count} rooms`} (Capacity: {stats.capacity})
-                </Text>
-              </div>
+              <InfoRow label={<>Floor {floor}</>} value={<>{isUnitBased ? `${stats.units.size} units, ${stats.count} rooms` : `${stats.count} rooms`} (Capacity: {stats.capacity})</>} key={floor} style={{ backgroundColor: "var(--color-bg-hover)", padding: "var(--spacing-2)", borderRadius: "var(--radius-md)" }} />
             ))}
         </Grid>
       </div>

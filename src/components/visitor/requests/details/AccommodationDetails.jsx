@@ -1,7 +1,7 @@
 import React from "react"
 import { FaBuilding } from "react-icons/fa"
 import { useGlobal } from "../../../../contexts/GlobalProvider"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
+import { HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
 
 const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
   return (
@@ -11,14 +11,7 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
         Accommodation Details
       </h3>
       <VStack gap={2}>
-        <HStack gap="none" justify="between">
-          <Text as="span" color="muted" size="sm">
-            Hostel:
-          </Text>
-          <Text as="span" weight="medium" size="sm">
-            {hostelName}
-          </Text>
-        </HStack>
+        <InfoRow label="Hostel:" value={hostelName} />
         {allocatedRooms && allocatedRooms.length > 0 ? (
           <div>
             <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", display: "block", marginBottom: "var(--spacing-1)", }} >
@@ -33,14 +26,7 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
             </VStack>
           </div>
         ) : (
-          <HStack gap="none" justify="between">
-            <Text as="span" color="muted" size="sm">
-              Room:
-            </Text>
-            <Text as="span" weight="medium" size="sm">
-              Not allocated yet
-            </Text>
-          </HStack>
+          <InfoRow label="Room:" value="Not allocated yet" />
         )}
       </VStack>
     </Surface>

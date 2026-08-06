@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Alert, Grid, HStack, IconCircle, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, IconCircle, InfoRow, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -104,10 +104,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
 
         {/* Progress bar */}
         <div style={{ marginTop: 'var(--spacing-2)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-            <span>Overall Acceptance</span>
-            <span>{acceptancePercentage}%</span>
-          </div>
+          <InfoRow label="Overall Acceptance" value={<>{acceptancePercentage}%</>} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }} />
           <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: '0.625rem' }}>
             <div style={{ backgroundColor: 'var(--color-success)', height: '0.625rem', borderRadius: 'var(--radius-full)', width: `${acceptancePercentage}%` }}></div>
           </div>

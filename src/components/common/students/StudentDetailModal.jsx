@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Grid, Heading, HStack, IconCircle, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, IconCircle, InfoRow, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -384,32 +384,17 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Heading as="h4" size="sm" weight="semibold" color="brand">Academic Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Department:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.department || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Degree:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.degree || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Batch:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.batch || "N/A"}</Text>
-                  </HStack>
+                  <InfoRow label="Department:" value={studentDetails.department || "N/A"} />
+                  <InfoRow label="Degree:" value={studentDetails.degree || "N/A"} />
+                  <InfoRow label="Batch:" value={studentDetails.batch || "N/A"} />
                   <HStack gap={4} justify="between">
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Groups:</span>
                     <Text as="span" weight="medium" size="sm" color="body" align="right">
                       {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
                     </Text>
                   </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Year:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.year || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Admission Date:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.admissionDate)}</Text>
-                  </HStack>
+                  <InfoRow label="Year:" value={studentDetails.year || "N/A"} />
+                  <InfoRow label="Admission Date:" value={formatDate(studentDetails.admissionDate)} />
                 </VStack>
               </div>
 
@@ -419,24 +404,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Heading as="h4" size="sm" weight="semibold" color="brand">Hostel Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Hostel:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.hostel || "N/A"}</Text>
-                  </HStack>
+                  <InfoRow label="Hostel:" value={studentDetails.hostel || "N/A"} />
                   {studentDetails.hostelType === "unit-based" && (
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted" size="sm">Unit Number:</Text>
-                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.unit || "N/A"}</Text>
-                    </HStack>
+                    <InfoRow label="Unit Number:" value={studentDetails.unit || "N/A"} />
                   )}
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Room Number:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.room || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Bed Number:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.bedNumber || "N/A"}</Text>
-                  </HStack>
+                  <InfoRow label="Room Number:" value={studentDetails.room || "N/A"} />
+                  <InfoRow label="Bed Number:" value={studentDetails.bedNumber || "N/A"} />
                 </VStack>
               </div>
 
@@ -446,14 +419,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Heading as="h4" size="sm" weight="semibold" color="brand">Personal Information</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Gender:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.gender || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Date of Birth:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.dateOfBirth)}</Text>
-                  </HStack>
+                  <InfoRow label="Gender:" value={studentDetails.gender || "N/A"} />
+                  <InfoRow label="Date of Birth:" value={formatDate(studentDetails.dateOfBirth)} />
                   <VStack gap="none">
                     <Text as="span" color="muted" size="sm" style={{ marginBottom: "var(--spacing-1)" }}>Address:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
@@ -473,22 +440,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Heading as="h4" size="sm" weight="semibold" color="brand">Emergency Contact</Heading>
                 </div>
                 <VStack gap="var(--spacing-2-5)">
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Guardian Name:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardian || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Guardian Phone:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianPhone || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Guardian Email:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianEmail || "N/A"}</Text>
-                  </HStack>
-                  <HStack gap="none" justify="between">
-                    <Text as="span" color="muted" size="sm">Faculty Advisor Email:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.facultyAdvisorEmail || "N/A"}</Text>
-                  </HStack>
+                  <InfoRow label="Guardian Name:" value={studentDetails.guardian || "N/A"} />
+                  <InfoRow label="Guardian Phone:" value={studentDetails.guardianPhone || "N/A"} />
+                  <InfoRow label="Guardian Email:" value={studentDetails.guardianEmail || "N/A"} />
+                  <InfoRow label="Faculty Advisor Email:" value={studentDetails.facultyAdvisorEmail || "N/A"} />
                 </VStack>
               </div>
 
@@ -499,22 +454,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <Heading as="h4" size="sm" weight="semibold" color="brand">Day Scholar Details</Heading>
                   </div>
                   <VStack gap="var(--spacing-2-5)">
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted" size="sm">Address:</Text>
-                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.address || "N/A"}</Text>
-                    </HStack>
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted" size="sm">Owner Name:</Text>
-                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerName || "N/A"}</Text>
-                    </HStack>
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted" size="sm">Owner Phone:</Text>
-                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</Text>
-                    </HStack>
-                    <HStack gap="none" justify="between">
-                      <Text as="span" color="muted" size="sm">Owner Email:</Text>
-                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</Text>
-                    </HStack>
+                    <InfoRow label="Address:" value={studentDetails.dayScholarDetails.address || "N/A"} />
+                    <InfoRow label="Owner Name:" value={studentDetails.dayScholarDetails.ownerName || "N/A"} />
+                    <InfoRow label="Owner Phone:" value={studentDetails.dayScholarDetails.ownerPhone || "N/A"} />
+                    <InfoRow label="Owner Email:" value={studentDetails.dayScholarDetails.ownerEmail || "N/A"} />
                   </VStack>
                 </div>
               )}

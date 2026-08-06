@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Field, Grid, Heading, HStack, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Field, Grid, Heading, HStack, InfoRow, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -902,10 +902,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </Heading>
 
               <Surface bg="tertiary" padding={3} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
-                  <span>{importProgress.message || "Importing students..."}</span>
-                  <span>{progressPercent}%</span>
-                </div>
+                <InfoRow label={importProgress.message || "Importing students..."} value={<>{progressPercent}%</>} style={{ marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }} />
                 <div style={{ width: "100%", height: "8px", borderRadius: "999px", backgroundColor: "var(--color-bg-muted)", overflow: "hidden" }}>
                   <div
                     style={{

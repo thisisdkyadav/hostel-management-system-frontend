@@ -222,10 +222,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   {assignedRooms.map((r, i) => {
                     const roomLabel = `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`
                     return (
-                      <HStack gap={3} align="center" justify="between" key={i}>
-                        <Text as="span" size="sm" color="body">{r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}</Text>
-                        <Text as="span" size="sm" weight="semibold" color="heading">Room {roomLabel}</Text>
-                      </HStack>
+                      <InfoRow label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`} value={<>Room {roomLabel}</>} key={i} />
                     )
                   })}
                 </VStack>

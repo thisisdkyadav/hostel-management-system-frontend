@@ -4,7 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
-import { Grid, HStack, Surface, Text } from "@/components/ui"
+import { Grid, HStack, InfoRow, Surface, Text } from "@/components/ui"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
@@ -52,15 +52,10 @@ export const HeaderSelect = ({
   </div>
 )
 
-export const MetaList = ({ items = [], mutedTextStyle }) => (
+export const MetaList = ({ items = [] }) => (
   <Grid cols={1} gap="10px">
     {items.map((item) => (
-      <HStack gap={3} align="start" justify="between" key={item.label}>
-        <span style={mutedTextStyle}>{item.label}</span>
-        <Text as="span" color="body" weight="medium" align="right">
-          {item.value || "—"}
-        </Text>
-      </HStack>
+      <InfoRow label={item.label} value={item.value || "—"} key={item.label} />
     ))}
   </Grid>
 )

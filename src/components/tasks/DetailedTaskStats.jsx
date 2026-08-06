@@ -1,6 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
-import { Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category
@@ -75,22 +75,10 @@ const DetailedTaskStats = ({ stats }) => {
       <Surface bg="var(--card-bg)" padding={4} radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-primary)">
         <Heading as="h3" size="sm" weight="medium" color="muted" style={{ marginBottom: 'var(--spacing-3)' }}>Overview</Heading>
         <VStack gap={3}>
-          <HStack gap="none" align="center" justify="between">
-            <Text as="span" size="sm">Total Tasks</Text>
-            <Text as="span" size="sm" weight="medium">{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</Text>
-          </HStack>
-          <HStack gap="none" align="center" justify="between">
-            <Text as="span" size="sm">Completed</Text>
-            <Text as="span" size="sm" weight="medium" color="success-text">{statusCounts?.Completed || 0}</Text>
-          </HStack>
-          <HStack gap="none" align="center" justify="between">
-            <Text as="span" size="sm">In Progress</Text>
-            <Text as="span" size="sm" weight="medium" color="brand">{statusCounts?.["In Progress"] || 0}</Text>
-          </HStack>
-          <HStack gap="none" align="center" justify="between">
-            <Text as="span" size="sm">Overdue</Text>
-            <Text as="span" size="sm" weight="medium" color="danger-text">{overdueTasks || 0}</Text>
-          </HStack>
+          <InfoRow label="Total Tasks" value={Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)} />
+          <InfoRow label="Completed" value={statusCounts?.Completed || 0} />
+          <InfoRow label="In Progress" value={statusCounts?.["In Progress"] || 0} />
+          <InfoRow label="Overdue" value={overdueTasks || 0} />
         </VStack>
       </Surface>
     </Grid>

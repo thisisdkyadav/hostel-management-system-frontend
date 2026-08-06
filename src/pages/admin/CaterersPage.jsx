@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, StatusBadge } from "czero/react"
-import { Field, Heading, Modal, Page, Text } from "@/components/ui"
+import { Field, Heading, InfoRow, Modal, Page, Text } from "@/components/ui"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -90,10 +90,7 @@ const CatererFormModal = ({ isOpen, title, submitLabel, initialData = initialFor
 }
 
 const DetailRow = ({ label, value }) => (
-  <HStack justify="between" gap="medium">
-    <Text as="span" color="muted" size="sm">{label}</Text>
-    <Text as="span" color="secondary" weight="medium" size="sm">{value}</Text>
-  </HStack>
+  <InfoRow label={label} value={value} />
 )
 
 const CatererDetailsModal = ({ caterer, onClose, onEdit, onToggleArchive }) => {

@@ -1500,7 +1500,6 @@ export const AdminNominationReviewModal = ({
                       { label: "CGPA", value: nomination.cgpa ?? "—" },
                       { label: "No active backlog", value: nomination.hasNoActiveBacklogs ? "Yes" : "No" },
                     ]}
-                    mutedTextStyle={mutedTextStyle}
                   />
                 </div>
                 <div style={detailPanelStyle}>
@@ -1510,7 +1509,6 @@ export const AdminNominationReviewModal = ({
                       { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
                       { label: "Post", value: nomination.postTitle || "—" },
                     ]}
-                    mutedTextStyle={mutedTextStyle}
                   />
                 </div>
               </div>

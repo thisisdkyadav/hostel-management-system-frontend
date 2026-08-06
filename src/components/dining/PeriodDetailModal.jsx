@@ -1,5 +1,5 @@
 import { Button, StatusBadge } from "czero/react"
-import { Heading, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Heading, HStack, InfoRow, Modal, Text, VStack } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
@@ -94,14 +94,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
             )}
             {period.catererCapacities.map((entry) => (
               <div key={entry.catererId} style={tile}>
-                <HStack gap={2} justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
-                  <Text as="span" size="sm" weight="semibold" color="secondary">
-                    {entry.caterer?.name || "Caterer"}
-                  </Text>
-                  <Text as="span" size="xs" color="muted">
-                    {entry.remainingSeats} seats left
-                  </Text>
-                </HStack>
+                <InfoRow label={entry.caterer?.name || "Caterer"} value={<>{entry.remainingSeats} seats left</>} style={{ marginBottom: "var(--spacing-2)" }} />
                 <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
                 <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1-5)" }}>
                   {entry.allocatedCount}/{entry.maxStudentCount} allocated
@@ -114,14 +107,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
         <Section icon={<UtensilsCrossed size={16} style={{ color: "var(--color-text-muted)" }} />} title="Meal Slots">
           <VStack gap={2}>
             {period.mealSlots.map((slot, index) => (
-              <HStack gap="none" align="center" justify="between" key={`${slot.name}-${index}`}>
-                <Text as="span" size="sm" weight="medium" color="secondary">
-                  {slot.name}
-                </Text>
-                <Text as="span" size="sm" color="muted">
-                  {slot.startTime} – {slot.endTime}
-                </Text>
-              </HStack>
+              <InfoRow label={slot.name} value={<>{slot.startTime} – {slot.endTime}</>} key={`${slot.name}-${index}`} />
             ))}
           </VStack>
         </Section>

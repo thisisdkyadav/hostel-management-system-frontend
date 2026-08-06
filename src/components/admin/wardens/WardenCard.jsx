@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, InfoRow, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
@@ -79,26 +79,11 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </CardHeader>
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Email</Text>
-              <Text as="span" color="body" align="right" style={{ wordBreak: 'break-word' }}>{warden.email || 'Not available'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Role</Text>
-              <Text as="span" color="secondary" weight="semibold">{warden.role || 'Gymkhana'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Sub Role</Text>
-              <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Position</Text>
-              <Text as="span" color="body" align="right">{warden.position || 'Not set'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Categories</Text>
-              <Text as="span" color="body" align="right">{gymkhanaCategoryText}</Text>
-            </HStack>
+            <InfoRow label="Email" value={warden.email || 'Not available'} />
+            <InfoRow label="Role" value={warden.role || 'Gymkhana'} />
+            <InfoRow label="Sub Role" value={warden.subRole || 'Not assigned'} />
+            <InfoRow label="Position" value={warden.position || 'Not set'} />
+            <InfoRow label="Categories" value={gymkhanaCategoryText} />
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -133,18 +118,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </CardHeader>
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Email</Text>
-              <Text as="span" color="body" align="right" style={{ wordBreak: 'break-word' }}>{warden.email || 'Not available'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Role</Text>
-              <Text as="span" color="secondary" weight="semibold">{warden.role || 'Academics'}</Text>
-            </HStack>
-            <HStack gap={4} align="center" justify="between">
-              <Text as="span" color="muted" weight="medium">Sub Role</Text>
-              <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
-            </HStack>
+            <InfoRow label="Email" value={warden.email || 'Not available'} />
+            <InfoRow label="Role" value={warden.role || 'Academics'} />
+            <InfoRow label="Sub Role" value={warden.subRole || 'Not assigned'} />
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

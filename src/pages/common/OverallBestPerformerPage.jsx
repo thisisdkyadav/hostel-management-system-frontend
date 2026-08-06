@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, InfoRow, Modal, Surface, Text, VStack } from "@/components/ui"
 import {
   Download,
   FileText,
@@ -1708,12 +1708,7 @@ const ScoreBreakdownCard = ({ breakdown }) => {
             </div>
           )
         })}
-        <HStack gap="none" align="center" justify="between" style={{ marginTop: "var(--spacing-4)" }}>
-          <Text as="span" weight="semibold" color="primary">Total Score</Text>
-          <Text as="span" size="xl" weight="bold" color="brand">
-            {breakdown?.total || 0}
-          </Text>
-        </HStack>
+        <InfoRow label="Total Score" value={breakdown?.total || 0} style={{ marginTop: "var(--spacing-4)" }} />
       </Surface>
     </div>
   )
@@ -2627,25 +2622,7 @@ const EditCourseworkScoreModal = ({
           </Text>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "var(--spacing-3)",
-            padding: "var(--spacing-3)",
-            border: "1px solid var(--color-border-primary)",
-            borderRadius: "var(--radius-card-sm)",
-            backgroundColor: "var(--color-bg-secondary)",
-          }}
-        >
-          <Text as="span" size="sm" color="muted">
-            Coursework points preview
-          </Text>
-          <Text as="span" weight="bold" color="brand">
-            +{previewPoints}
-          </Text>
-        </div>
+        <InfoRow label="Coursework points preview" value={<>+{previewPoints}</>} style={{ padding: "var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} />
 
         <HStack gap={2} justify="end">
           <Button variant="ghost" onClick={onClose} disabled={saving}>
@@ -4372,18 +4349,8 @@ const OverallBestPerformerPage = () => {
                 </div>
                 
                 <Grid cols={1} gap={2}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
-                    <Text as="span" size="xs" color="muted" weight="medium">Submissions Open</Text>
-                    <Text as="span" size="xs" weight="semibold" color="primary">
-                      {currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
-                    </Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
-                    <Text as="span" size="xs" color="muted" weight="medium">Submissions Close</Text>
-                    <Text as="span" size="xs" weight="semibold" color="primary">
-                      {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
-                    </Text>
-                  </div>
+                  <InfoRow label="Submissions Open" value={currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"} style={{ padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }} />
+                  <InfoRow label="Submissions Close" value={currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"} style={{ padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }} />
                 </Grid>
 
                 <HStack gap="6px" wrap style={{ marginTop: "var(--spacing-1)" }}>

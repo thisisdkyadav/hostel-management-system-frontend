@@ -4,7 +4,7 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, InfoRow, Surface, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
@@ -79,10 +79,7 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
 
           {/* Acceptance progress bar */}
           <div style={{ marginTop: 'var(--spacing-2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-              <span>Acceptance Status</span>
-              <span>{acceptancePercentage}%</span>
-            </div>
+            <InfoRow label="Acceptance Status" value={<>{acceptancePercentage}%</>} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }} />
             <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: '0.625rem' }}>
               <div style={{ backgroundColor: 'var(--color-success)', height: '0.625rem', borderRadius: 'var(--radius-full)', width: `${acceptancePercentage}%` }}></div>
             </div>

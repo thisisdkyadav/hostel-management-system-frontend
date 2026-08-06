@@ -56,12 +56,10 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
   </div>
 )
 
-export const InfoRow = ({ label, value, strong }) => (
-  <HStack gap={3} align="center" justify="between">
-    <Text as="span" color="muted" size="sm">{label}</Text>
-    <Text as="span" weight={strong ? "var(--font-weight-semibold)" : "var(--font-weight-medium)"} color="body" size={strong ? "var(--font-size-base)" : "var(--font-size-sm)"} align="right">{value}</Text>
-  </HStack>
-)
+// This kit is where the detail row was last designed deliberately, so its
+// version is the one the rest of the app now uses. Re-exported rather than
+// deleted, because the accommodation screens import it from here.
+export { InfoRow } from "@/components/ui"
 
 export const PersonCard = ({ person, fallbackName }) => {
   const name = person?.name || fallbackName || "—"
