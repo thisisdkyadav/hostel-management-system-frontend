@@ -80,9 +80,8 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
 
   const handleArchiveToggle = async () => {
     const message = isArchived ? "Are you sure you want to unarchive this hostel?" : "Are you sure you want to archive this hostel?"
-    // confirm the action
-    const confirm = await confirm(message)
-    if (!confirm) return
+    const confirmed = await confirm({ message, confirmText: isArchived ? "Unarchive" : "Archive" })
+    if (!confirmed) return
 
     try {
       await hostelApi.changeArchiveStatus(hostel.id, !isArchived)
