@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -45,7 +45,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', height: '100%' }}>
         {/* Header with action buttons */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+          <HStack gap={3} align="center">
             <div style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <FaFileAlt style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
             </div>
@@ -53,8 +53,8 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h3>
               <Text size="sm" color="muted">Guest Room Booking Form</Text>
             </div>
-          </div>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+          </HStack>
+          <HStack gap={2}>
             <Button onClick={handleDownload} variant="success" size="sm">
               <FaDownload /> Download
             </Button>
@@ -64,7 +64,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
               <FaExternalLinkAlt style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               <span>Open in New Tab</span>
             </a>
-          </div>
+          </HStack>
         </div>
 
         {/* Document Viewer */}
@@ -83,10 +83,10 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             <div style={{ width: '100%', height: '100%', position: 'relative' }}>
               {isLoading && (
                 <div style={{ position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg-tertiary)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                  <HStack gap={3} align="center">
                     <FaSpinner style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
                     <Text as="span" color="muted">Loading document...</Text>
-                  </div>
+                  </HStack>
                 </div>
               )}
 
@@ -101,7 +101,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                   <FaFileAlt style={{ width: 'var(--icon-4xl)', height: 'var(--icon-4xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-4)' }} />
                   <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</h3>
                   <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
-                  <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
+                  <HStack gap={3}>
                     <Button onClick={handleDownload} variant="success" size="md">
                       <FaDownload /> Download PDF
                     </Button>
@@ -111,7 +111,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                       <FaExternalLinkAlt style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
                       <span>Open in New Tab</span>
                     </a>
-                  </div>
+                  </HStack>
                 </div>
               </object>
             </div>

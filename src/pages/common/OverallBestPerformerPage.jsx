@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input } from "czero/react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import {
   Download,
   FileText,
@@ -1153,8 +1153,8 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
       minHeight="50vh"
       closeButtonVariant="button"
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-        <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+      <VStack gap={4}>
+        <HStack gap={2} wrap>
           <span style={buildMetaChipStyle({ fontFamily: "monospace", backgroundColor: "var(--color-bg-muted)" })}>
             {porRequest.id}
           </span>
@@ -1168,7 +1168,7 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
                 ? `Updated ${new Date(porRequest.updatedAt || porRequest.createdAt).toLocaleString()}`
                 : "Timestamp unavailable"}
           </span>
-        </div>
+        </HStack>
 
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(0, 0.85fr)", gap: "var(--spacing-4)" }}>
           <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
@@ -1223,7 +1223,7 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
             </div>
           </div>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }
@@ -1267,7 +1267,7 @@ const SupportingProofField = ({
         {canUsePor ? (
           <div style={fieldClusterStyle}>
             <span style={sectionLabelStyle}>Proof Source</span>
-            <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <HStack gap={2} wrap>
               {PROOF_SOURCE_OPTIONS.map((option) => (
                 <Button
                   key={`${label}-${option.value}`}
@@ -1279,7 +1279,7 @@ const SupportingProofField = ({
                   {option.label}
                 </Button>
               ))}
-            </div>
+            </HStack>
           </div>
         ) : null}
 
@@ -1404,7 +1404,7 @@ const MinimalScoredItemsEditor = ({
 
   const content = (
     <>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+      <VStack gap={3}>
         {!rows.length ? (
           <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", fontStyle: "italic", padding: "var(--spacing-2) 0" }}>
             No entries added yet.
@@ -1423,21 +1423,21 @@ const MinimalScoredItemsEditor = ({
               gap: "var(--spacing-3)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <HStack gap={3} align="center" justify="between" wrap>
+              <HStack gap={2} align="center" wrap>
                 <span style={sectionLabelStyle}>Item {index + 1}</span>
                 {item.scoreType ? (
                   <span style={buildMetaChipStyle()}>
                     {options.find((option) => option.value === item.scoreType)?.label || item.scoreType}
                   </span>
                 ) : null}
-              </div>
+              </HStack>
               {!disabled ? (
                 <Button size="sm" variant="ghost" onClick={() => removeItem(index)}>
                   Remove
                 </Button>
               ) : null}
-            </div>
+            </HStack>
  
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               <div>
@@ -1487,19 +1487,19 @@ const MinimalScoredItemsEditor = ({
             </div>
           </div>
         ))}
-      </div>
+      </VStack>
     </>
   )
  
   if (embedded) {
     return (
       <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+        <HStack gap={3} align="start" justify="between" wrap>
           <div>
             <div style={sectionLabelStyle}>{title}</div>
           </div>
           {!disabled ? <Button size="sm" variant="secondary" onClick={addItem}><Plus size={14} /> Add item</Button> : null}
-        </div>
+        </HStack>
         {content}
       </div>
     )
@@ -1724,20 +1724,12 @@ const ScoreBreakdownCard = ({ breakdown }) => {
             </div>
           )
         })}
-        <div
-          style={{
-            ...infoBoxStyle,
-            marginTop: "var(--spacing-4)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <HStack gap="none" align="center" justify="between" style={{ marginTop: "var(--spacing-4)" }}>
           <Text as="span" weight="semibold" color="primary">Total Score</Text>
           <Text as="span" size="xl" weight="bold" color="brand">
             {breakdown?.total || 0}
           </Text>
-        </div>
+        </HStack>
       </div>
     </div>
   )
@@ -1755,17 +1747,8 @@ const MarkingSchemeModal = ({ open, onClose }) => {
       minHeight="68vh"
       closeButtonVariant="button"
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-        <div
-          style={{
-            ...infoBoxStyle,
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: "var(--spacing-3)",
-            flexWrap: "wrap",
-          }}
-        >
+      <VStack gap={3}>
+        <HStack gap={3} align="start" justify="between" wrap>
           <div style={{ maxWidth: "78ch" }}>
             <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Reference Guide</div>
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.65 }}>
@@ -1773,7 +1756,7 @@ const MarkingSchemeModal = ({ open, onClose }) => {
             </div>
           </div>
           <span style={buildMetaChipStyle()}>Total: 100 marks</span>
-        </div>
+        </HStack>
 
         <div
           style={{
@@ -1915,7 +1898,7 @@ const MarkingSchemeModal = ({ open, onClose }) => {
             </table>
           </div>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }
@@ -2292,7 +2275,7 @@ const ReviewItemDetailModal = ({
   const nextPointColor = isNextZeroPoints ? "var(--color-danger)" : "var(--color-primary)"
 
   const titleNode = (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+    <HStack gap={3} align="center">
       <span
         style={{
           backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
@@ -2316,7 +2299,7 @@ const ReviewItemDetailModal = ({
           {item.title || "Untitled Item"}
         </div>
       </div>
-    </div>
+    </HStack>
   )
 
   return (
@@ -2325,7 +2308,7 @@ const ReviewItemDetailModal = ({
         {/* Main 2-Column Responsive Layout using Pure CSS Grid */}
         <Grid min={360} gap={4} align="start">
           {/* Left Column: Achievement Details */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <PorDetailCard
               icon={SectionIcon}
               title="Achievement Details"
@@ -2359,10 +2342,10 @@ const ReviewItemDetailModal = ({
                 {item.notes || "No notes added by the student."}
               </div>
             </div>
-          </div>
+          </VStack>
 
           {/* Right Column: Score, Classification & Proofs */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             {/* Beautiful Dashboard Scorecard */}
             <div style={{
               background: "linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(91, 159, 232, 0.05) 100%)",
@@ -2448,7 +2431,7 @@ const ReviewItemDetailModal = ({
                 Category Re-classification
               </label>
               {canEditType ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <VStack gap={2}>
                   <Select
                     name="bestPerformerItemType"
                     value={selectedType}
@@ -2494,7 +2477,7 @@ const ReviewItemDetailModal = ({
                   <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.4 }}>
                     Admins can re-classify the category or exclude entries that should not count. Score changes are previewed above before saving.
                   </div>
-                </div>
+                </VStack>
               ) : (
                 <div>
                   <Text as="div" size="sm" weight="semibold" color="primary">
@@ -2515,12 +2498,12 @@ const ReviewItemDetailModal = ({
               padding: "var(--spacing-4)",
               boxShadow: "var(--shadow-sm)"
             }}>
-              <div style={{ ...sectionLabelStyle, display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-3)" }}>
+              <HStack gap={2} align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                 <FileText size={14} style={{ color: "var(--color-primary)" }} />
                 Supporting Proofs
-              </div>
+              </HStack>
               {proofs.length ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <VStack gap={2}>
                   {proofs.map((proof, index) => {
                     const isPor = proof?.sourceType === "por"
                     const ProofIcon = isPor ? BadgeCheck : FileText
@@ -2567,7 +2550,7 @@ const ReviewItemDetailModal = ({
                       </div>
                     )
                   })}
-                </div>
+                </VStack>
               ) : (
                 <div style={{
                   display: "flex",
@@ -2585,7 +2568,7 @@ const ReviewItemDetailModal = ({
                 </div>
               )}
             </div>
-          </div>
+          </VStack>
         </Grid>
 
         {/* Footer Actions */}
@@ -2641,7 +2624,7 @@ const HodVerificationsCard = ({ verifications = [] }) => {
                 backgroundColor: "var(--color-bg-secondary)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+              <HStack gap={3} align="center" justify="between" wrap>
                 <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
                   <Text as="div" size="sm" weight="semibold" color="primary">
                     {entry?.verifierName || "HOD"}
@@ -2653,7 +2636,7 @@ const HodVerificationsCard = ({ verifications = [] }) => {
                 <Badge variant={entry?.action === "verified" ? "success" : "info"}>
                   {formatHodVerificationActionLabel(entry?.action)}
                 </Badge>
-              </div>
+              </HStack>
               <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
                 {entry?.remarks || "No remarks provided."}
               </div>
@@ -2742,7 +2725,7 @@ const EditCourseworkScoreModal = ({
           </Text>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+        <HStack gap={2} justify="end">
           <Button variant="ghost" onClick={onClose} disabled={saving}>
             Cancel
           </Button>
@@ -2753,7 +2736,7 @@ const EditCourseworkScoreModal = ({
           >
             <Save size={14} /> Save CGPA / CPI
           </Button>
-        </div>
+        </HStack>
       </div>
     </Modal>
   )
@@ -2831,20 +2814,20 @@ const EditProjectThesisGradesModal = ({
             backgroundColor: "var(--color-bg-secondary)",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+          <HStack gap={3} justify="between">
             <Text as="span" size="sm" color="muted">BTP award points</Text>
             <Text as="span" weight="bold" color={btpPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               +{btpPoints}
             </Text>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+          </HStack>
+          <HStack gap={3} justify="between">
             <Text as="span" size="sm" color="muted">Project grade points</Text>
             <Text as="span" weight="bold" color={projectGradePoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               +{projectGradePoints}
             </Text>
-          </div>
+          </HStack>
           <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+          <HStack gap={3} justify="between">
             <Text as="span" size="sm" color="primary" weight="semibold">
               Total preview
             </Text>
@@ -2858,10 +2841,10 @@ const EditProjectThesisGradesModal = ({
                 <>+{previewPoints}</>
               )}
             </Text>
-          </div>
+          </HStack>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+        <HStack gap={2} justify="end">
           <Button variant="ghost" onClick={onClose} disabled={saving}>
             Cancel
           </Button>
@@ -2872,7 +2855,7 @@ const EditProjectThesisGradesModal = ({
           >
             <Save size={14} /> Save BTP Grades
           </Button>
-        </div>
+        </HStack>
       </div>
     </Modal>
   )
@@ -3065,10 +3048,10 @@ const ReviewModal = ({
 
   return (
     <Modal title={`${canTakeAction ? "Review" : "View"} ${application.studentName}`} onClose={onClose} width={1800} fullHeight={true}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         {/* Upper Meta Bar */}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", marginBottom: "var(--spacing-2)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+        <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-2)" }}>
+          <HStack gap={2} align="center" wrap>
             <span className="por-detail-meta-chip por-detail-meta-chip-id">
               {application.rollNumber}
             </span>
@@ -3081,8 +3064,8 @@ const ReviewModal = ({
               <CheckCircle2 size={12} />
               Final Score: {application.finalScore || 0}
             </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          </HStack>
+          <HStack gap={2} align="center" wrap>
             <Button
               size="sm"
               variant="secondary"
@@ -3099,14 +3082,14 @@ const ReviewModal = ({
             >
               <Download size={14} /> Download All PDFs
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </HStack>
 
         {/* Main 3-Column Grid Layout */}
         <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
           
           {/* Main content - col-span-2 */}
-          <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", marginTop: "calc(-1 * var(--spacing-4))" }}>
+          <VStack gap={4} style={{ marginTop: "calc(-1 * var(--spacing-4))" }} className="xl:col-span-2">
             
             {/* Academic profile card */}
             <PorDetailCard
@@ -3300,10 +3283,10 @@ const ReviewModal = ({
             <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
             <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
             <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} onViewPdf={setActivePdfDetail} onOpenMore={handleOpenItemDetail} />
-          </div>
+          </VStack>
 
           {/* Right sidebar column */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             
             {/* Scorecard */}
             <ScoreBreakdownCard breakdown={application.scoreBreakdown} />
@@ -3388,7 +3371,7 @@ const ReviewModal = ({
                 </div>
               )}
             </PorDetailCard>
-          </div>
+          </VStack>
         </div>
 
         {/* Support Modal portals */}
@@ -3439,7 +3422,7 @@ const ReviewModal = ({
             onUpdate={() => setShowStudentDetailModal(false)}
           />
         ) : null}
-      </div>
+      </VStack>
     </Modal>
   )
 }
@@ -4296,7 +4279,7 @@ const OverallBestPerformerPage = () => {
 
   if (!isReviewerView && !portalState?.data?.canAccessPortal) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         <PageHeader title="Overall Best Performer" subtitle="Student portal" showDate={false} />
         <div style={{ padding: "var(--spacing-6)" }}>
           <EmptyState
@@ -4320,7 +4303,7 @@ const OverallBestPerformerPage = () => {
             }
           />
         </div>
-      </div>
+      </VStack>
     )
   }
 
@@ -4521,7 +4504,7 @@ const OverallBestPerformerPage = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "var(--spacing-1)" }}>
+                <HStack gap="6px" wrap style={{ marginTop: "var(--spacing-1)" }}>
                   <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
                     Min CGPA / CPI: 6.50
                   </span>
@@ -4531,7 +4514,7 @@ const OverallBestPerformerPage = () => {
                   <span style={{ display: "inline-flex", padding: "4px 8px", borderRadius: "999px", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
                     Status: Active / Graduated
                   </span>
-                </div>
+                </HStack>
               </div>
 
               {/* Right Card: Reference Guide & Marking Scheme */}
@@ -4564,7 +4547,7 @@ const OverallBestPerformerPage = () => {
               </div>
             </Grid>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap={4}>
               {/* Personalized Student Profile & Status card */}
               <div style={{
                 ...panelStyle,
@@ -4575,7 +4558,7 @@ const OverallBestPerformerPage = () => {
                 gap: "var(--spacing-3)",
                 boxShadow: "var(--shadow-sm)"
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                <HStack gap={3} align="center" wrap>
                   <ProfileAvatar
                     user={{
                       name: portalState?.data?.student?.name || "Student",
@@ -4594,13 +4577,13 @@ const OverallBestPerformerPage = () => {
                     </div>
                   </div>
 
-                  <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                  <HStack gap={2} align="center" style={{ marginLeft: "auto" }}>
                     <Text as="span" size="xs" color="muted">Status:</Text>
                     <Badge variant={statusTone(currentApplication?.review?.status)}>
                       {currentApplication?.review?.status || "draft"}
                     </Badge>
-                  </div>
-                </div>
+                  </HStack>
+                </HStack>
 
                 {currentApplication?.review?.status === "rejected" && currentApplication.review?.remarks ? (
                   <div style={{
@@ -4658,7 +4641,7 @@ const OverallBestPerformerPage = () => {
                 <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
                   <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
                     <span style={sectionLabelStyle}>Programme Type</span>
-                    <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} wrap>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
                         <Button
                           key={option.value}
@@ -4669,7 +4652,7 @@ const OverallBestPerformerPage = () => {
                           {option.label}
                         </Button>
                       ))}
-                    </div>
+                    </HStack>
                   </div>
  
                   <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
@@ -4733,7 +4716,7 @@ const OverallBestPerformerPage = () => {
                 <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
                   <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
                     <span style={sectionLabelStyle}>Project Track</span>
-                    <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} wrap>
                       {APPLICANT_STAGE_OPTIONS.map((option) => (
                         <Button
                           key={`project-${option.value}`}
@@ -4744,7 +4727,7 @@ const OverallBestPerformerPage = () => {
                           {option.label}
                         </Button>
                       ))}
-                    </div>
+                    </HStack>
                   </div>
 
                   {applicantStage === "ug" ? (
@@ -5075,7 +5058,7 @@ const OverallBestPerformerPage = () => {
                   </div>
                 </div>
               </SectionPanel>
-            </div>
+            </VStack>
           </>
         )}
       </div>
@@ -5095,7 +5078,7 @@ const OverallBestPerformerPage = () => {
           width={980}
           fullHeight={true}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
               <div>
                 <label style={fieldLabelStyle}>Occurrence title</label>
@@ -5164,7 +5147,7 @@ const OverallBestPerformerPage = () => {
               </SectionPanel>
             )}
 
-            <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
+            <HStack gap={2} justify="end">
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -5177,8 +5160,8 @@ const OverallBestPerformerPage = () => {
               <Button onClick={handleSaveOccurrence} loading={savingOccurrence}>
                 <Upload size={16} /> {occurrenceModalMode === "edit" ? "Save changes" : "Activate occurrence"}
               </Button>
-            </div>
-          </div>
+            </HStack>
+          </VStack>
         </Modal>
       ) : null}
 
@@ -5285,11 +5268,11 @@ const OverallBestPerformerPage = () => {
               </div>
             </SectionPanel>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} justify="end">
               <Button variant="ghost" onClick={() => setShowEligibleStudentsModal(false)}>
                 Done
               </Button>
-            </div>
+            </HStack>
           </div>
         </Modal>
       ) : null}

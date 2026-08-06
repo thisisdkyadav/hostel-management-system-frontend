@@ -169,13 +169,13 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
                 {filteredStudents.map((student, index) => (
                   <Table.Row style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)' }} key={student.id}>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <HStack gap="none" align="center">
                         <div style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', marginRight: 'var(--spacing-3)' }}>{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
                         <div>
                           <Text as="div" size="sm" weight="medium" color="secondary">{student.name}</Text>
                           <Text as="div" size="sm" color="muted">{student.email}</Text>
                         </div>
-                      </div>
+                      </HStack>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber || "N/A"}</Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>

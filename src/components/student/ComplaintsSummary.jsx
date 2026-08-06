@@ -3,17 +3,17 @@ import { FaExclamationCircle, FaEye } from "react-icons/fa"
 import { MdPendingActions } from "react-icons/md"
 import { Link } from "react-router-dom"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
-import { Text } from "@/components/ui"
+import { Text, VStack } from "@/components/ui"
 
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {
     return (
       <div className="animate-pulse" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-3)' }}>
         <div style={{ height: 'var(--spacing-5)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-3)', width: '33.333333%' }}></div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+        <VStack gap={2}>
           <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
           <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
-        </div>
+        </VStack>
       </div>
     )
   }

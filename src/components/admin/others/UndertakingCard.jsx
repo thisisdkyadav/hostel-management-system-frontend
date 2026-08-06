@@ -4,7 +4,7 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
@@ -44,38 +44,38 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
     <>
       <Card>
         <CardHeader style={{ marginBottom: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="start" justify="between">
+            <HStack gap="none" align="center">
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
                 <FaFileSignature style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
-            </div>
+            </HStack>
             {!isReadOnly && (
-              <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+              <HStack gap={2}>
                 <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit undertaking"><FaEdit /></Button>
                 <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete undertaking"><FaTrash /></Button>
-              </div>
+              </HStack>
             )}
-          </div>
+          </HStack>
         </CardHeader>
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <Text as="div" color="muted">
             <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
           </Text>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <Text as="div" color="muted">
               <span>Deadline: {formatDate(undertaking.deadline)}</span>
             </Text>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <FaUsers style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <Text as="div" color="muted">
               <span>Students: {undertaking.totalStudents || 0}</span>
             </Text>
-          </div>
+          </HStack>
 
           {/* Acceptance progress bar */}
           <div style={{ marginTop: 'var(--spacing-2)' }}>

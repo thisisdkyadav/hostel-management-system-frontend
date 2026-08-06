@@ -1,5 +1,5 @@
 import React from "react"
-import { Text } from "@/components/ui"
+import { Text, VStack } from "@/components/ui"
 
 const PasswordStrengthBar = ({ password }) => {
   const getStrength = (pwd) => {
@@ -32,7 +32,7 @@ const PasswordStrengthBar = ({ password }) => {
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-1)' }}>
+    <VStack gap={1}>
       <div style={{ display: 'flex', gap: 'var(--spacing-1)', height: 'var(--spacing-1-5)' }}>
         {[1, 2, 3, 4].map((level) => (
           <div key={level} style={{ height: '100%', borderRadius: 'var(--radius-full)', flex: 1, backgroundColor: level <= strength ? colors[strength - 1] : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} ></div>
@@ -41,7 +41,7 @@ const PasswordStrengthBar = ({ password }) => {
       <Text size="xs" color="muted">
         Password strength: {strength > 0 ? labels[strength - 1] : "Too weak"}
       </Text>
-    </div>
+    </VStack>
   )
 }
 

@@ -4,7 +4,7 @@ import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },
@@ -225,7 +225,7 @@ const AdminElectionWorkspace = ({
   return (
     <>
       <div style={infoBannerStyle}>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+      <HStack gap={3} align="center" wrap>
         <Text as="span" weight="semibold" color="heading">
           {selectedAdminElection.title}
         </Text>
@@ -255,8 +255,8 @@ const AdminElectionWorkspace = ({
             </StatusPill>
           ) : null}
         </div>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+      </HStack>
+      <HStack gap={3} align="center" wrap>
         <Text as="span" size="sm" color="muted">
           {selectedAdminElection.academicYear} · {formatStageLabel(selectedAdminElection.phase)}
         </Text>
@@ -265,7 +265,7 @@ const AdminElectionWorkspace = ({
           nominations · <strong>{adminOverview.verifiedCount}</strong> verified ·{" "}
           <strong>{adminOverview.voteCount}</strong> votes
         </Text>
-      </div>
+      </HStack>
       </div>
 
       <div style={{ marginBottom: "var(--spacing-3)" }}>
@@ -356,23 +356,14 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "nominations" ? (
         <>
-          <div
-            style={{
-              marginBottom: "var(--spacing-3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-            }}
-          >
+          <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <Tabs
               variant="pills"
               tabs={nominationTabs}
               activeTab={nominationTab}
               setActiveTab={setNominationTab}
             />
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <HStack gap="8px" align="center" wrap>
               <Tabs
                 variant="pills"
                 tabs={nominationViewTabs}
@@ -384,8 +375,8 @@ const AdminElectionWorkspace = ({
                   Export CSV
                 </Button>
               ) : null}
-            </div>
-          </div>
+            </HStack>
+          </HStack>
           {nominationViewMode === "grouped" ? (
             groupedNominations.length ? (
               <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
@@ -401,20 +392,12 @@ const AdminElectionWorkspace = ({
                       padding: "var(--spacing-3)",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "var(--spacing-3)",
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    <HStack gap={3} align="center" justify="between" wrap>
                       <Text as="span" weight="semibold" color="heading">
                         {group.postTitle}
                       </Text>
                       <span style={mutedTextStyle}>{group.nominations.length} nomination(s)</span>
-                    </div>
+                    </HStack>
                     <DataTable
                       data={group.nominations}
                       emptyMessage="No nominations in this post."
@@ -440,20 +423,11 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "results" ? (
         <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-              marginBottom: "var(--spacing-3)",
-            }}
-          >
+          <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <div style={mutedTextStyle}>
               Review each post, adjust the selected winner if needed, then export or publish the final result.
             </div>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <HStack gap="8px" wrap>
               <Button
                 size="sm"
                 variant="secondary"
@@ -470,8 +444,8 @@ const AdminElectionWorkspace = ({
               >
                 Publish Results
               </Button>
-            </div>
-          </div>
+            </HStack>
+          </HStack>
 
           <div style={infoGridStyle}>
             <div style={compactStatStyle}>
@@ -560,17 +534,8 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "voting" && isVotingOperationsOpen ? (
         <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-              marginBottom: "var(--spacing-3)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+          <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
+            <HStack gap="8px" align="center" wrap>
               <Button
                 size="sm"
                 variant="secondary"
@@ -595,9 +560,9 @@ const AdminElectionWorkspace = ({
                   Emails {formatStageLabel(votingDispatch.status || "idle")}
                 </StatusPill>
               ) : null}
-            </div>
+            </HStack>
             {emailVotingEnabled ? (
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <HStack gap="8px" align="center" wrap>
                 <Button
                   size="sm"
                   variant="secondary"
@@ -617,9 +582,9 @@ const AdminElectionWorkspace = ({
                 >
                   Send Voting List
                 </Button>
-              </div>
+              </HStack>
             ) : null}
-          </div>
+          </HStack>
 
           <div style={infoGridStyle}>
             <div style={compactStatStyle}>
@@ -690,16 +655,7 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "info" ? (
         <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: "8px",
-              flexWrap: "wrap",
-              marginBottom: "var(--spacing-3)",
-            }}
-          >
+          <HStack gap="8px" align="center" justify="end" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <Button
               size="sm"
               variant="secondary"
@@ -715,7 +671,7 @@ const AdminElectionWorkspace = ({
             >
               Send Test Email
             </Button>
-          </div>
+          </HStack>
 
           <div style={infoGridStyle}>
             <div style={compactStatStyle}>

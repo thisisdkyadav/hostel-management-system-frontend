@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Alert, Avatar, ConfirmDialog, IconButton, Text } from "@/components/ui"
+import { Alert, Avatar, ConfirmDialog, HStack, IconButton, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Pencil, Trash2, Lock, LockOpen } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"
@@ -139,10 +139,10 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
       key: "name",
       header: "Student",
       render: (row) => (
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+        <HStack gap={2} align="center">
           <Avatar src={row.userId?.profileImage} name={row.userId?.name} size="small" />
           <Text as="span" weight="medium">{row.userId?.name || "—"}</Text>
-        </div>
+        </HStack>
       ),
     },
     { key: "rollNumber", header: "Roll Number" },
@@ -221,20 +221,20 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
           <Text as="div" color="muted">Loading…</Text>
         ) : occurrence ? (
           <>
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+            <HStack gap={3} align="center" wrap>
               <StatusBadge tone={isClosed ? "warning" : "success"}>{isClosed ? "Closed" : "Open"}</StatusBadge>
               {occurrence.description && (
                 <Text as="span" color="muted" size="sm">{occurrence.description}</Text>
               )}
-            </div>
+            </HStack>
 
             {/* Reconciliation */}
-            <div style={{ display: "flex", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
+            <HStack gap={4} wrap>
               <StatTile label="Present" value={reconciliation?.presentCount ?? records.length} tone="success" />
               <StatTile label="Roster" value={reconciliation?.hasRoster ? reconciliation.rosterCount : "—"} />
               <StatTile label="Absent" value={reconciliation?.hasRoster ? reconciliation.absentCount : "—"} tone="danger" />
               <StatTile label="Extra" value={reconciliation?.hasRoster ? reconciliation.extraCount : "—"} tone="warning" />
-            </div>
+            </HStack>
 
             {!reconciliation?.hasRoster && (
               <Alert type="info" icon>
@@ -276,7 +276,7 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
                 <h3 style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
                   Absent ({reconciliation.absentCount})
                 </h3>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                <HStack gap={2} wrap>
                   {reconciliation.absentRollNumbers.map((roll) => (
                     <span
                       key={roll}
@@ -292,7 +292,7 @@ const AttendanceOccurrencePage = ({ basePath = "/admin/attendance" }) => {
                       {roll}
                     </span>
                   ))}
-                </div>
+                </HStack>
               </div>
             )}
           </>

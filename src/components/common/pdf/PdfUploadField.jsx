@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/feedback"
 import { Label } from "@/components/ui/form"
 import { resolveUploadedFileRef } from "@/service"
 import PdfViewerModal from "./PdfViewerModal"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const resolveUploadedUrl = (uploadResult) => {
   return resolveUploadedFileRef(uploadResult)
@@ -93,7 +93,7 @@ const PdfUploadField = ({
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+      <VStack gap={2}>
         <Label size="sm" required={required} style={{ color: "var(--color-text-muted)" }}>
           {label}
         </Label>
@@ -104,7 +104,7 @@ const PdfUploadField = ({
               {uploadedText}
             </Text>
 
-            <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <HStack gap={2} wrap>
               <Button size="sm" variant="secondary" onClick={() => setShowViewer(true)}>
                 <Eye size={14} /> View
               </Button>
@@ -113,7 +113,7 @@ const PdfUploadField = ({
                   Change
                 </Button>
               )}
-            </div>
+            </HStack>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", padding: "var(--spacing-3)", border: "var(--border-1) dashed var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" }}>
@@ -123,18 +123,18 @@ const PdfUploadField = ({
                   {selectedFile.name}
                 </Text>
                 {!disabled && (
-                  <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                  <HStack gap={2} wrap>
                     <Button size="sm" variant="secondary" onClick={() => applySelectedFile(null)}>
                       Remove
                     </Button>
                     <Button size="sm" onClick={handleUpload} loading={uploading}>
                       <Upload size={14} /> Upload
                     </Button>
-                  </div>
+                  </HStack>
                 )}
               </>
             ) : (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+              <HStack gap={2} align="center" justify="between" wrap>
                 <Text as="span" size="sm" color="muted">
                   {acceptHint} (max {maxSizeMb}MB)
                 </Text>
@@ -151,11 +151,11 @@ const PdfUploadField = ({
                     </span>
                   </label>
                 )}
-              </div>
+              </HStack>
             )}
           </div>
         )}
-      </div>
+      </VStack>
 
       <PdfViewerModal
         isOpen={showViewer}

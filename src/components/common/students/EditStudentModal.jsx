@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -474,7 +474,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
     if (activeTab === "status") {
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <div>
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Student Status
@@ -499,13 +499,13 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               ]}
             />
           </div>
-        </div>
+        </VStack>
       )
     }
 
     if (activeTab === "dayScholar") {
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <div>
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Day Scholar Details
@@ -572,13 +572,13 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               </div>
             </div>
           )}
-        </div>
+        </VStack>
       )
     }
 
     if (activeTab === "allocation") {
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <div>
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Update Allocation
@@ -687,7 +687,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 </div>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {occupiedBedStudent && occupiedBedStudent.id !== allocationLookup?.id && (
                   <div
                     style={{
@@ -734,10 +734,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     {units.length > 6 ? "..." : ""}
                   </Text>
                 )}
-              </div>
+              </VStack>
             </>
           )}
-        </div>
+        </VStack>
       )
     }
 
@@ -755,18 +755,18 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       style={{ height: "90vh" }}
       closeButtonVariant="button"
       footer={(
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
+        <HStack gap={3} justify="end">
           <Button type="button" onClick={onClose} disabled={loading} variant="secondary" size="md">
             Cancel
           </Button>
           <Button type="button" onClick={handleSubmit} disabled={loading || allocationLookupLoading} variant="primary" size="md" loading={loading}>
             Save Changes
           </Button>
-        </div>
+        </HStack>
       )}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
-        <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+      <VStack gap={5}>
+        <HStack gap={2} wrap>
           {tabs.map((tab) => (
             <Button
               key={tab.id}
@@ -781,7 +781,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               {tab.label}
             </Button>
           ))}
-        </div>
+        </HStack>
 
         {error && (
           <div style={{ padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", fontSize: "var(--font-size-sm)" }}>
@@ -790,7 +790,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
         )}
 
         {renderContent()}
-      </div>
+      </VStack>
     </Modal>
   )
 }

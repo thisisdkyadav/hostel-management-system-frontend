@@ -8,11 +8,11 @@ const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }
   return (
     <Modal isOpen={true} onClose={onClose} title="Delete All Allocations" width={450}>
       <VStack gap="large" style={{ padding: 'var(--spacing-4) 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <HStack gap="none" justify="center">
           <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
             <TriangleAlert size={32} />
           </div>
-        </div>
+        </HStack>
 
         <VStack gap="medium" style={{ textAlign: 'center' }}>
           <Text color="danger" weight="bold" size="lg">CRITICAL WARNING</Text>

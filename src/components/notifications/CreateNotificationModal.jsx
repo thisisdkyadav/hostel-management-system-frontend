@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Grid, Select, Text, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, HStack, Select, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -270,7 +270,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
+            <HStack gap={4} justify="end">
               <Button
                 type="button"
                 onClick={() => {
@@ -285,11 +285,11 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               <Button type="button" onClick={moveToStep2} variant="primary" size="md">
                 <FaArrowRight /> Continue
               </Button>
-            </div>
+            </HStack>
           </div>
         </form>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+        <VStack gap={6}>
           {error && (
             <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
               <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
@@ -299,56 +299,56 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Notification Summary</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <VStack gap={3}>
+              <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Title:</Text>
                 <Text as="span" weight="medium">{formData.title}</Text>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              </HStack>
+              <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Type:</Text>
                 <span style={{ fontWeight: "var(--font-weight-medium)", textTransform: "capitalize" }}>{formData.type}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              </HStack>
+              <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Expiry:</Text>
                 <Text as="span" weight="medium">{new Date(formData.expiryDate).toLocaleDateString()}</Text>
-              </div>
-            </div>
+              </HStack>
+            </VStack>
           </div>
 
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Target Recipients</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <VStack gap={2}>
               {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
                 <Text color="body">All Students</Text>
               ) : (
                 <>
                   {formData.hostelIds.length > 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted">Hostel(s):</Text>
                       <Text as="span" weight="medium" align="right">{getHostelNamesByIds(formData.hostelIds)}</Text>
-                    </div>
+                    </HStack>
                   )}
                   {formData.departments.length > 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted">Department(s):</Text>
                       <Text as="span" weight="medium" align="right">{formData.departments.join(", ")}</Text>
-                    </div>
+                    </HStack>
                   )}
                   {formData.degrees.length > 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted">Degree(s):</Text>
                       <Text as="span" weight="medium" align="right">{formData.degrees.join(", ")}</Text>
-                    </div>
+                    </HStack>
                   )}
                   {formData.gender && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted">Gender:</Text>
                       <Text as="span" weight="medium">{formData.gender}</Text>
-                    </div>
+                    </HStack>
                   )}
                 </>
               )}
-            </div>
+            </VStack>
           </div>
 
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
@@ -357,16 +357,16 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
+            <HStack gap={4} justify="end">
               <Button type="button" onClick={() => setStep(1)} variant="secondary" size="md">
                 <FaArrowLeft /> Back
               </Button>
               <Button type="button" onClick={handleSubmit} variant="primary" size="md" loading={loading} disabled={loading}>
                 <FaBell /> {loading ? "Sending..." : "Send Notification"}
               </Button>
-            </div>
+            </HStack>
           </div>
-        </div>
+        </VStack>
       )}
     </Modal>
   )

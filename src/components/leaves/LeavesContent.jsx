@@ -1,5 +1,5 @@
 import NoResults from "../common/NoResults"
-import { Pagination, Text } from "@/components/ui"
+import { HStack, Pagination, Text } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
 import { Table } from "czero/react"
 
@@ -66,13 +66,13 @@ const LeavesCardView = ({ leaves, onViewDetails }) => {
           onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
           onClick={() => onViewDetails(leave)}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <HStack gap="none" align="center" justify="between">
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary)' }}>
               <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)' }} />
               <Text as="span" weight="semibold">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
             </div>
             <span style={{ ...getStatusStyle(leave.status), padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)' }}>{leave.status || "Pending"}</span>
-          </div>
+          </HStack>
           <div style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{leave.reason}</div>
           <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
             {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}

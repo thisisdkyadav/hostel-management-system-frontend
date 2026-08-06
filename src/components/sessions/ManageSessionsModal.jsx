@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -92,7 +92,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
 
   return (
     <Modal title="Manage Your Sessions" onClose={onClose} width={600}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-lg)' }}>
+      <VStack gap="var(--gap-lg)">
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', }} >
             {error}
@@ -123,10 +123,10 @@ const ManageSessionsModal = ({ onClose, email }) => {
             </p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+          <VStack gap="var(--gap-md)">
             {devices.map((device) => (
               <div key={device.sessionId} style={{ border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', }} >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <HStack gap="none" align="center">
                   <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-4)', }} >
                     {getDeviceIcon(device.userAgent)}
                   </div>
@@ -146,7 +146,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
                       )}
                     </div>
                   </div>
-                </div>
+                </HStack>
                 <div>
                   {!device.isCurrent && (
                     <Button onClick={() => handleLogout(device.sessionId, device.deviceName)}
@@ -161,7 +161,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
                 </div>
               </div>
             ))}
-          </div>
+          </VStack>
         )}
 
         <div style={{ paddingTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', }} >
@@ -169,7 +169,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
             Close
           </Button>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

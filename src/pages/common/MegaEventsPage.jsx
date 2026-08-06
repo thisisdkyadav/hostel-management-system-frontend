@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
@@ -261,9 +261,9 @@ const Panel = ({ title, icon: Icon, accent = false, children }) => (
         <span>{title}</span>
       </div>
     )}
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       {children}
-    </div>
+    </VStack>
   </div>
 )
 
@@ -285,7 +285,7 @@ const SectionHeader = ({ children }) => (
 
 const MiniStat = ({ icon: Icon, label, value, tone = "var(--color-primary)" }) => (
   <div style={layoutStyles.miniStat}>
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+    <HStack gap={2} align="center">
       <span
         style={{
           display: "inline-flex",
@@ -311,7 +311,7 @@ const MiniStat = ({ icon: Icon, label, value, tone = "var(--color-primary)" }) =
       >
         {label}
       </span>
-    </div>
+    </HStack>
     <div
       style={{
         fontSize: "var(--font-size-base)",
@@ -1395,13 +1395,13 @@ const MegaEventsPage = () => {
   }
 
   const headerActions = (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--spacing-2)" }}>
+    <HStack gap={2} align="center" wrap>
       {canCreateOccurrence && (
         <Button size="md" onClick={() => setIsCreateOccurrenceOpen(true)}>
           <Plus size={16} /> Add Occurrence
         </Button>
       )}
-    </div>
+    </HStack>
   )
 
   if (!canViewEventsCapability) {
@@ -1438,11 +1438,11 @@ const MegaEventsPage = () => {
                   : "No mega event series available yet."}
               />
               {canCreateSeries && (
-                <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--spacing-4)" }}>
+                <HStack gap="none" justify="center" style={{ marginTop: "var(--spacing-4)" }}>
                   <Button onClick={() => setIsCreateSeriesOpen(true)}>
                     <Plus size={16} /> New Series
                   </Button>
-                </div>
+                </HStack>
               )}
             </CardContent>
           </Card>
@@ -1484,14 +1484,14 @@ const MegaEventsPage = () => {
                 />
               ) : !selectedOccurrence ? (
                 <Alert type="info" title="No occurrence yet">
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", alignItems: "flex-start" }}>
+                  <VStack gap={3} align="start">
                     <span>Create a new occurrence for {selectedSeries.name}.</span>
                     {canCreateOccurrence && (
                       <Button size="sm" onClick={() => setIsCreateOccurrenceOpen(true)}>
                         <Plus size={14} /> Add Occurrence
                       </Button>
                     )}
-                  </div>
+                  </VStack>
                 </Alert>
               ) : (
                 <>
@@ -1502,18 +1502,18 @@ const MegaEventsPage = () => {
                         {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
                       </p>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                    <HStack gap={2} align="center">
                       <Badge variant={selectedOccurrence._id === latestOccurrence?._id ? "success" : "default"}>
                         {selectedOccurrence._id === latestOccurrence?._id ? "Present" : "Past"}
                       </Badge>
                       <Badge variant={statusBadgeVariant(selectedOccurrence.status)}>
                         {(selectedOccurrence.status || "unknown").replace(/_/g, " ")}
                       </Badge>
-                    </div>
+                    </HStack>
                   </div>
 
                   {occurrences.length > 0 && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                    <VStack gap={2}>
                       <span style={sectionLabelStyle}>Occurrences</span>
                       <div style={layoutStyles.occStrip}>
                         {occurrences.map((entry) => {
@@ -1537,7 +1537,7 @@ const MegaEventsPage = () => {
                           )
                         })}
                       </div>
-                    </div>
+                    </VStack>
                   )}
 
                   <div style={layoutStyles.summaryGrid}>
@@ -1584,7 +1584,7 @@ const MegaEventsPage = () => {
                       </p>
                     )}
 
-                    <div style={{ marginTop: "var(--spacing-4)", display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                    <HStack gap={2} wrap style={{ marginTop: "var(--spacing-4)" }}>
                       {canCreateOrEditProposal && (
                         <Button size="sm" onClick={() => setIsProposalOpen(true)}>
                           <FileText size={14} /> {proposalData ? "Edit Proposal" : "Submit Proposal"}
@@ -1600,7 +1600,7 @@ const MegaEventsPage = () => {
                           <Receipt size={14} /> Expense Flow
                         </Button>
                       )}
-                    </div>
+                    </HStack>
                     {!canCreateOrEditProposal && !canCreateOrEditExpense && !canReviewProposal && !canReviewExpense && (
                       <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                         You have read-only access for this occurrence.
@@ -1620,13 +1620,13 @@ const MegaEventsPage = () => {
         onClose={() => setIsCreateSeriesOpen(false)}
         width={480}
         footer={(
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end">
             <Button size="sm" variant="secondary" onClick={() => setIsCreateSeriesOpen(false)}>Cancel</Button>
             <Button size="sm" onClick={handleCreateSeries} loading={submitting}>Create</Button>
-          </div>
+          </HStack>
         )}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           <FormField label="Event Series Name" htmlFor="mega-series-name" required>
             <Input
               id="mega-series-name"
@@ -1644,7 +1644,7 @@ const MegaEventsPage = () => {
               rows={2}
             />
           </FormField>
-        </div>
+        </VStack>
       </Modal>
 
       <Modal
@@ -1653,13 +1653,13 @@ const MegaEventsPage = () => {
         onClose={() => setIsCreateOccurrenceOpen(false)}
         width={420}
         footer={(
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end">
             <Button size="sm" variant="secondary" onClick={() => setIsCreateOccurrenceOpen(false)}>Cancel</Button>
             <Button size="sm" onClick={handleCreateOccurrence} loading={submitting}>Create</Button>
-          </div>
+          </HStack>
         )}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           <Text size="sm" color="muted">
             Select the date range for this occurrence.
           </Text>
@@ -1681,7 +1681,7 @@ const MegaEventsPage = () => {
               />
             </FormField>
           </div>
-        </div>
+        </VStack>
       </Modal>
 
       <Modal
@@ -1690,7 +1690,7 @@ const MegaEventsPage = () => {
         onClose={() => setIsProposalOpen(false)}
         width={680}
         footer={(
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end" wrap>
             <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(false)}>Close</Button>
             {canCreateOrEditProposal && (
               <Button size="sm" onClick={handleSaveProposal} loading={submitting}>
@@ -1706,10 +1706,10 @@ const MegaEventsPage = () => {
                 <Button size="sm" variant="success" onClick={handleApproveProposal} loading={submitting}>Approve</Button>
               </>
             )}
-          </div>
+          </HStack>
         )}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           {proposalData && (
             <Alert type="info" title="Current proposal status">
               {(proposalData.status || "draft").replace(/_/g, " ")}
@@ -1717,7 +1717,7 @@ const MegaEventsPage = () => {
           )}
 
           {/* Details card with action */}
-          <div style={{ ...infoBoxStyle, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+          <HStack gap={3} align="center" justify="between" wrap>
             <div>
               <Text as="div" size="sm" weight="semibold" color="heading">
                 {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
@@ -1732,7 +1732,7 @@ const MegaEventsPage = () => {
             <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
               {canCreateOrEditProposal ? "Edit Details" : "View Details"}
             </Button>
-          </div>
+          </HStack>
 
           {!isDetailedProposalComplete && (
             <Alert type="warning" title="Details incomplete">
@@ -1862,7 +1862,7 @@ const MegaEventsPage = () => {
               </div>
             </div>
           )}
-        </div>
+        </VStack>
       </Modal>
 
       <Modal
@@ -1871,14 +1871,14 @@ const MegaEventsPage = () => {
         onClose={() => setIsProposalDetailsOpen(false)}
         width={1200}
         footer={(
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end">
             <Button size="sm" variant="secondary" onClick={() => setIsProposalDetailsOpen(false)}>
               Close
             </Button>
-          </div>
+          </HStack>
         )}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           {/* Programme Title - Full Width Header */}
           <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-1) solid var(--color-primary)", }}>
             <FormField label="Programme Title" htmlFor="mega-proposal-programme-title" required>
@@ -1895,7 +1895,7 @@ const MegaEventsPage = () => {
           {/* Two Column Layout */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
             {/* Left Column */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap={4}>
               {/* Programme Details Panel */}
               <Panel title="Programme Details" icon={CalendarDays}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
@@ -2017,10 +2017,10 @@ const MegaEventsPage = () => {
                   </FormField>
                 </div>
               </Panel>
-            </div>
+            </VStack>
 
             {/* Right Column */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap={4}>
               {/* Organising Unit Panel */}
               <Panel title="Organising Unit" icon={Building2} accent>
                 <FormField label="Unit Type" htmlFor="mega-proposal-organising-unit-type" required>
@@ -2135,7 +2135,7 @@ const MegaEventsPage = () => {
                   />
                 </FormField>
               </Panel>
-            </div>
+            </VStack>
           </div>
 
           {/* Programme Schedule - Full Width */}
@@ -2291,7 +2291,7 @@ const MegaEventsPage = () => {
               </FormField>
             )}
           </Panel>
-        </div>
+        </VStack>
       </Modal>
 
       <Modal
@@ -2300,7 +2300,7 @@ const MegaEventsPage = () => {
         onClose={() => setIsExpenseOpen(false)}
         width={680}
         footer={(
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end" wrap>
             <Button size="sm" variant="secondary" onClick={() => setIsExpenseOpen(false)}>Close</Button>
             {canCreateOrEditExpense && (
               <Button size="sm" onClick={handleSaveExpense} loading={submitting}>
@@ -2313,10 +2313,10 @@ const MegaEventsPage = () => {
                 <Button size="sm" variant="success" onClick={handleApproveExpense} loading={submitting}>Approve</Button>
               </>
             )}
-          </div>
+          </HStack>
         )}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           {expenseData && (
             <Alert type="info" title="Expense status">
               {(expenseData.approvalStatus || "pending").replace(/_/g, " ")}
@@ -2325,8 +2325,8 @@ const MegaEventsPage = () => {
 
           <SectionHeader>Bills</SectionHeader>
           {(expenseForm.bills || []).map((bill, index) => (
-            <div key={`bill-${index}`} style={{ ...compactCardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+            <VStack gap={2} key={`bill-${index}`}>
+              <HStack gap={2} align="center" justify="between">
                 <Text as="span" size="sm" weight="semibold" color="secondary">Bill {index + 1}</Text>
                 {canCreateOrEditExpense && expenseForm.bills.length > 1 && (
                   <Button
@@ -2342,7 +2342,7 @@ const MegaEventsPage = () => {
                     Remove
                   </Button>
                 )}
-              </div>
+              </HStack>
 
               <FormField label="Description" htmlFor={`mega-bill-description-${index}`} required>
                 <Input
@@ -2405,7 +2405,7 @@ const MegaEventsPage = () => {
                 disabled={!canCreateOrEditExpense}
                 viewerTitle="Bill Document"
               />
-            </div>
+            </VStack>
           ))}
 
           {canCreateOrEditExpense && (
@@ -2482,7 +2482,7 @@ const MegaEventsPage = () => {
               </div>
             </div>
           )}
-        </div>
+        </VStack>
       </Modal>
     </div>
   )

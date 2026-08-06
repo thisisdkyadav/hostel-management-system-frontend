@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Badge, Card, CardBody, CardFooter, CardHeader, Text } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
@@ -90,7 +90,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
         <Card className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             {/* Header with Icon and Title */}
             <CardHeader>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)" }}>
+                <HStack gap={4} align="center">
                     <div
                         className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? directionStyle.hover : directionStyle.base}`}
                     >
@@ -107,7 +107,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     <Badge variant={scanner.isActive ? "success" : "danger"}>
                         {scanner.isActive ? "Active" : "Inactive"}
                     </Badge>
-                </div>
+                </HStack>
             </CardHeader>
 
             {/* Info Section */}
@@ -154,14 +154,14 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     <p style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary-dark)", marginBottom: "var(--spacing-2)" }}>
                         New Credentials (save now!)
                     </p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <VStack gap={2}>
+                        <HStack gap="none" align="center" justify="between">
                             <Text as="span" size="sm" color="tertiary">Password:</Text>
                             <Button variant="secondary" size="sm" onClick={() => copyToClipboard(newCredentials.password)}>
                                 Copy Password
                             </Button>
-                        </div>
-                    </div>
+                        </HStack>
+                    </VStack>
                 </div>
             )}
 

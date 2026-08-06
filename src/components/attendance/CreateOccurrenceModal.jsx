@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Textarea, Label, Alert } from "@/components/ui"
+import { Alert, Label, Modal, Textarea, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import UserSelector from "../common/UserSelector"
 import { attendanceApi } from "../../service"
@@ -92,7 +92,7 @@ const CreateOccurrenceModal = ({ isOpen, onClose, onSaved, occurrence = null }) 
         </>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         {error && <Alert type="error" icon>{error}</Alert>}
 
         <div>
@@ -145,7 +145,7 @@ const CreateOccurrenceModal = ({ isOpen, onClose, onSaved, occurrence = null }) 
           searchPlaceholder="Search admins or gymkhana members..."
           availableRoles={ASSIGNABLE_ROLES}
         />
-      </div>
+      </VStack>
     </Modal>
   )
 }

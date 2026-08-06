@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, Spinner, Text } from "@/components/ui"
+import { Alert, Card, HStack, Spinner, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -221,7 +221,7 @@ const ComplaintFeedbackPage = () => {
                         borderRadius: 'var(--radius-lg)',
                         marginBottom: 'var(--spacing-5)'
                     }}>
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
+                        <HStack gap="none" align="start" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
                             <div style={{ flex: 1 }}>
                                 <h4 style={{
                                     fontSize: 'var(--font-size-sm)',
@@ -237,7 +237,7 @@ const ComplaintFeedbackPage = () => {
                                     {complaint.title}
                                 </Text>
                             </div>
-                            <div style={{ display: 'flex', gap: 'var(--spacing-1-5)' }}>
+                            <HStack gap="var(--spacing-1-5)">
                                 <span style={{
                                     padding: 'var(--spacing-0-5) var(--spacing-2-5)',
                                     fontSize: 'var(--font-size-xs)',
@@ -258,8 +258,8 @@ const ComplaintFeedbackPage = () => {
                                 }}>
                                     {complaint.status}
                                 </span>
-                            </div>
-                        </div>
+                            </HStack>
+                        </HStack>
 
                         {complaint.description && (
                             <div style={{ marginBottom: 'var(--spacing-2-5)' }}>
@@ -314,7 +314,7 @@ const ComplaintFeedbackPage = () => {
                             }}>
                                 Rate the resolution <Text as="span" color="danger">*</Text>
                             </label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-1-5)' }}>
+                            <HStack gap="var(--spacing-1-5)" align="center">
                                 {[1, 2, 3, 4, 5].map((rating) => (
                                     <button
                                         key={rating}
@@ -352,7 +352,7 @@ const ComplaintFeedbackPage = () => {
                                         {feedbackRating === 5 && "Excellent"}
                                     </span>
                                 )}
-                            </div>
+                            </HStack>
                         </div>
 
                         {/* Satisfaction Status */}

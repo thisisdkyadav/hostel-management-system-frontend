@@ -2,7 +2,7 @@ import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
   const { user } = useAuth()
@@ -14,10 +14,10 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       header: "ID/Title",
       key: "title",
       render: (complaint) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <VStack gap="none">
           <Text as="div" size="xs" color="placeholder">{complaint.id?.substring(0, 8)}</Text>
           <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.title}</div>
-        </div>
+        </VStack>
       ),
     },
     !isStudent && {
@@ -25,7 +25,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       key: "reportedBy",
       className: "hidden md:table-cell",
       render: (complaint) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <HStack gap="none" align="center">
           <div style={{ flexShrink: 0, height: 'var(--avatar-sm)', width: 'var(--avatar-sm)' }}>
             {complaint.reportedBy?.profileImage ? (
               <img style={{ height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
@@ -39,7 +39,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
             <Text as="div" size="xs" color="placeholder">{getTimeSince(complaint.createdDate)}</Text>
           </div>
-        </div>
+        </HStack>
       ),
     },
     !isStudent && {
@@ -47,10 +47,10 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       key: "location",
       className: "hidden sm:table-cell",
       render: (complaint) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <VStack gap="none">
           <div style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }} className="truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
           {complaint.roomNumber ? <Text as="div" size="xs" color="muted">Room {complaint.roomNumber}</Text> : complaint.hostel ? <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }} className="truncate max-w-[150px]">{complaint.location}</div> : null}
-        </div>
+        </VStack>
       ),
     },
     {

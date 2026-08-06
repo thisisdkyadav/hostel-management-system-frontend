@@ -5,6 +5,7 @@ import ManageSessionsButton from "../sessions/ManageSessionsButton"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
+import { HStack } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
@@ -57,7 +58,7 @@ const ProfileHeader = ({ user, role, subtitle }) => {
         <p style={{ color: "var(--color-text-muted)", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-base)", }} >
           {subtitle}
         </p>
-        <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexWrap: "wrap", gap: "var(--gap-sm)", }} className="justify-center sm:justify-start" >
+        <HStack gap="var(--gap-sm)" wrap style={{ marginTop: "var(--spacing-3)" }} className="justify-center sm:justify-start">
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />
 
@@ -66,7 +67,7 @@ const ProfileHeader = ({ user, role, subtitle }) => {
               {layoutPreference === "sidebar" ? <MdOutlineMenu /> : <MdOutlineViewSidebar />} {layoutPreference === "sidebar" ? "Switch to Bottom Bar" : "Switch to Sidebar"}
             </Button>
           )}
-        </div>
+        </HStack>
       </div>
     </div>
   )

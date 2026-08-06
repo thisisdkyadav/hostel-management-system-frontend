@@ -241,14 +241,14 @@ const CaterersPage = () => {
       header: "",
       align: "right",
       render: (row) => (
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }} onClick={(e) => e.stopPropagation()}>
+        <HStack gap={2} justify="end" onClick={(e) => e.stopPropagation()}>
           <Button variant="secondary" size="sm" onClick={() => openEdit(row)}>
             <Pencil size={15} /> Edit
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setArchiveTarget(row)}>
             {row.isArchived ? <ArchiveRestore size={15} /> : <Archive size={15} />}
           </Button>
-        </div>
+        </HStack>
       ),
     },
   ]

@@ -1,5 +1,5 @@
 import { Button, Table } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { Textarea } from "@/components/ui/form"
@@ -23,7 +23,7 @@ export const GymkhanaPendingProposalsModal = ({
       </Button>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       <Text as="span" size="xs" color="warning" weight="medium">
         {pendingProposalsForSelectedCalendar.length} pending in current calendar
       </Text>
@@ -42,14 +42,14 @@ export const GymkhanaPendingProposalsModal = ({
           {pendingProposalsForSelectedCalendar.map((proposal) => (
             <Table.Row key={proposal._id}>
               <Table.Cell>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                <VStack gap={1}>
                   <Text as="span" weight="medium">
                     {proposal.eventId?.title || "Unknown event"}
                   </Text>
                   <Text as="span" size="xs" color="muted">
                     By {proposal.submittedBy?.name || "Unknown"}
                   </Text>
-                </div>
+                </VStack>
               </Table.Cell>
               <Table.Cell>
                 {formatDateRange(
@@ -89,7 +89,7 @@ export const GymkhanaPendingProposalsModal = ({
           ))}
         </Table.Body>
       </Table>
-    </div>
+    </VStack>
   </Modal>
 )
 
@@ -111,7 +111,7 @@ export const GymkhanaPendingBillsModal = ({
       </Button>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       <Text as="span" size="xs" color="warning" weight="medium">
         {pendingExpenseApprovalsForSelectedCalendar.length} pending in current calendar
       </Text>
@@ -172,7 +172,7 @@ export const GymkhanaPendingBillsModal = ({
           ))}
         </Table.Body>
       </Table>
-    </div>
+    </VStack>
   </Modal>
 )
 
@@ -192,7 +192,7 @@ export const GymkhanaOverlapDetailsModal = ({
       </Button>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       <Text as="span" size="xs" color="warning" weight="medium">
         {dateConflicts.length} overlaps detected
       </Text>
@@ -217,7 +217,7 @@ export const GymkhanaOverlapDetailsModal = ({
           </Text>
         </div>
       ))}
-    </div>
+    </VStack>
   </Modal>
 )
 
@@ -248,7 +248,7 @@ export const GymkhanaApprovalModal = ({
     width={640}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+      <HStack gap={2}>
         <Button size="sm" variant="secondary" onClick={onClose}>
           Cancel
         </Button>
@@ -281,10 +281,10 @@ export const GymkhanaApprovalModal = ({
             <Check size={14} /> Approve
           </Button>
         )}
-      </div>
+      </HStack>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+    <VStack gap={3}>
       <Text as="span" size="xs" color="muted">
         Reviewing {calendar?.academicYear} calendar with {events.length} events
       </Text>
@@ -381,7 +381,7 @@ export const GymkhanaApprovalModal = ({
           rows={2}
         />
       </div>
-    </div>
+    </VStack>
   </Modal>
 )
 
@@ -398,17 +398,17 @@ export const GymkhanaOverlapConfirmModal = ({
     width={560}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+      <HStack gap={2}>
         <Button size="sm" variant="secondary" onClick={onClose}>
           Cancel
         </Button>
         <Button size="sm" variant="warning" onClick={onConfirm} loading={submitting}>
           Submit Anyway
         </Button>
-      </div>
+      </HStack>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       <Text as="span" size="xs" color="warning">
         {submitOverlapInfo?.message || "Events have overlapping date ranges."}
       </Text>
@@ -433,6 +433,6 @@ export const GymkhanaOverlapConfirmModal = ({
           </Text>
         </div>
       ))}
-    </div>
+    </VStack>
   </Modal>
 )

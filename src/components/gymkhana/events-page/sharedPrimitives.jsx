@@ -2,7 +2,7 @@ import { createElement } from "react"
 import { Input } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 export const footerTabStyles = {
   tabsBar: {
@@ -136,9 +136,9 @@ export const Panel = ({ title, icon: Icon, accent = false, children }) => (
         <span>{title}</span>
       </div>
     )}
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+    <VStack gap={2}>
       {children}
-    </div>
+    </VStack>
   </div>
 )
 
@@ -184,7 +184,7 @@ export const EventDetailSectionCard = ({
         backgroundColor: "var(--color-bg-secondary)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="center">
         <span
           style={{
             display: "inline-flex",
@@ -210,7 +210,7 @@ export const EventDetailSectionCard = ({
         >
           {title}
         </span>
-      </div>
+      </HStack>
       {headerAction}
     </div>
     <div style={{ padding: "var(--spacing-3)" }}>{children}</div>
@@ -326,7 +326,7 @@ export const EventFormFields = ({
   amendmentReason = "",
   setAmendmentReason = null,
 }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+  <VStack gap={3}>
     {showAmendmentReason && (
       <span
         style={{
@@ -472,5 +472,5 @@ export const EventFormFields = ({
         />
       </div>
     )}
-  </div>
+  </VStack>
 )

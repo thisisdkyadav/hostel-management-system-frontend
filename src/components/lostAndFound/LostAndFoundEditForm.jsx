@@ -4,7 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { FileInput, Select, Text, Textarea, useConfirm } from "@/components/ui"
+import { FileInput, HStack, Select, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
@@ -101,7 +101,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-sm)")}
     >
       <form onSubmit={handleSubmit}>
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+        <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
           <div style={{ ...getStatusStyle(formData.status), padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-lg)" }}>
             <MdInventory size={20} />
           </div>
@@ -109,13 +109,13 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} required style={{ fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xl)" }} />
             <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
           </div>
-        </div>
+        </HStack>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-md)" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+        <VStack gap="var(--gap-md)">
+          <HStack gap="none" align="center">
             <BsCalendarDate style={{ color: "var(--color-primary)", opacity: 0.7, marginRight: "var(--spacing-2)", flexShrink: 0 }} />
             <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} />
-          </div>
+          </HStack>
 
           <div>
             <label style={{ display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", marginBottom: "var(--spacing-1-5)" }}>Description</label>
@@ -138,10 +138,10 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
 
           <div>
             <label style={{ display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", marginBottom: "var(--spacing-1-5)" }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <HStack gap="none" align="center">
                 <FaImage style={{ marginRight: "var(--spacing-2)" }} />
                 Item Images
-              </div>
+              </HStack>
             </label>
             <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
             {uploading && <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)", marginTop: "var(--spacing-1)" }}>Uploading...</p>}
@@ -171,21 +171,21 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
               </div>
             )}
           </div>
-        </div>
+        </VStack>
 
         <div style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-3)", borderTop: `var(--border-1) solid var(--color-border-light)`, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "var(--gap-sm)", flexWrap: "wrap" }}>
           <Button type="button" onClick={handleDelete} variant="danger" size="md">
             <MdDelete /> Delete
           </Button>
 
-          <div style={{ display: "flex", gap: "var(--gap-sm)" }}>
+          <HStack gap="var(--gap-sm)">
             <Button type="button" onClick={onCancel} variant="secondary" size="md">
               <MdCancel /> Cancel
             </Button>
             <Button type="submit" variant="primary" size="md">
               <MdSave /> Save
             </Button>
-          </div>
+          </HStack>
         </div>
       </form>
     </div>

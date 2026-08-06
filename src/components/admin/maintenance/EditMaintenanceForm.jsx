@@ -101,7 +101,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
         <VStack gap="large">
           {error && <Alert type="error">{error}</Alert>}
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "var(--spacing-6)" }}>
+          <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>
             <div style={{ position: "relative", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
               {formData.profileImage ? (
                 <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
@@ -115,7 +115,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
               </div>
             </div>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
-          </div>
+          </VStack>
 
           {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -103,7 +103,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
   return (
     <>
       <Modal title="Leave Request Details" onClose={onClose} width={800}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <VStack gap={6}>
           {error && (
             <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
               <div style={{ flexShrink: 0 }}>
@@ -179,12 +179,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
           {/* Duration */}
           <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)` }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <HStack gap="none" align="center">
               <svg style={{ ...iconSizeLg, color: 'var(--color-info)', marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
               <Text as="span" size="sm" weight="medium" color="info-text">Duration: {Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
-            </div>
+            </HStack>
           </div>
 
           {/* Reason */}
@@ -208,14 +208,14 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 Join Information
               </h4>
               <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)` }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <HStack gap="none" align="start">
                   <div style={{ flexShrink: 0 }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', border: `var(--border-1) solid var(--color-info-bg)` }}>Joined</span>
                   </div>
                   <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
                     <p style={{ color: 'var(--color-info-text)', lineHeight: 'var(--line-height-relaxed)', margin: 0 }}>{leave.joinInfo}</p>
                   </div>
-                </div>
+                </HStack>
               </div>
             </div>
           )}
@@ -243,12 +243,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               </>
             )}
           </div>
-        </div>
+        </VStack>
       </Modal>
 
       {/* Decision Modal (Approve/Reject) */}
       {showDecisionModal && (
-        <Modal title={<div style={{ display: 'flex', alignItems: 'center' }}>
+        <Modal title={<HStack gap="none" align="center">
           {decisionType === "approve" ? (
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success-text)' }}>
               <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
@@ -264,12 +264,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               Reject Leave Request
             </div>
           )}
-        </div>
+        </HStack>
         }
           onClose={() => setShowDecisionModal(false)}
           width={650}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <VStack gap={6}>
             {decisionError && (
               <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
                 <div style={{ flexShrink: 0 }}>
@@ -285,7 +285,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
             {/* Leave Summary */}
             <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid ${decisionType === "approve" ? 'var(--color-success-bg)' : 'var(--color-danger-border)'}`, backgroundColor: decisionType === "approve" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <HStack gap="none" align="center" justify="between">
                 <div>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}</h4>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
@@ -295,7 +295,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 <Text as="div" align="right">
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', margin: 0 }}>{Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</p>
                 </Text>
-              </div>
+              </HStack>
             </div>
 
             <div>
@@ -327,7 +327,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 {decisionType === "approve" ? "Confirm Approval" : "Confirm Rejection"}
               </Button>
             </div>
-          </div>
+          </VStack>
         </Modal>
       )}
 
@@ -343,7 +343,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
           onClose={() => setShowJoinModal(false)}
           width={600}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <VStack gap={6}>
             {joinError && (
               <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
                 <div style={{ flexShrink: 0 }}>
@@ -359,7 +359,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
             {/* Leave Summary */}
             <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-info-bg)`, backgroundColor: 'var(--color-info-bg-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <HStack gap="none" align="center" justify="between">
                 <div>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>Join Your Leave</h4>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
@@ -369,7 +369,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 <Text as="div" align="right">
                   <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', border: `var(--border-1) solid var(--color-success-bg)` }}>Approved</span>
                 </Text>
-              </div>
+              </HStack>
             </div>
 
             <div>
@@ -401,7 +401,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 Confirm Join
               </Button>
             </div>
-          </div>
+          </VStack>
         </Modal>
       )}
     </>

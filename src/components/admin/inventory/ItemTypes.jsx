@@ -200,10 +200,10 @@ const ItemTypes = () => {
                       </Button>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                      <HStack gap={3} align="center">
                         <Button onClick={() => handleEdit(item)} variant="secondary" size="sm"><FaEdit /></Button>
                         <Button onClick={() => handleDelete(item._id)} variant="danger" size="sm"><FaTrash /></Button>
-                      </div>
+                      </HStack>
                     </Table.Cell>
                   </Table.Row>
                 ))}

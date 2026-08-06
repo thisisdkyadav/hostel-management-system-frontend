@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { Select, Text, Textarea } from "@/components/ui"
+import { HStack, Select, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -257,7 +257,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
 
   const renderFooter = () => {
     return (
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
+      <HStack gap={3} justify="end">
         <Button type="button" onClick={onClose} variant="secondary" size="md" disabled={saving}>
           Cancel
         </Button>
@@ -266,7 +266,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
             <FiSave /> {saving ? "Saving..." : "Save Changes"}
           </Button>
         )}
-      </div>
+      </HStack>
     )
   }
 
@@ -312,7 +312,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
                 <Text size="sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</Text>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {editableFields.includes("profileImage") && renderField("profileImage")}
                 {editableFields.includes("name") && renderField("name")}
                 {editableFields.includes("gender") && renderField("gender")}
@@ -333,7 +333,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
                     {renderField("guardianEmail", "email")}
                   </>
                 )}
-              </div>
+              </VStack>
             </>
           )}
         </form>

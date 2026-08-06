@@ -178,13 +178,13 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
         {/* Visitor Selection */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-3)' }}>
+          <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Select Visitors</h3>
             <Button type="button" onClick={handleAddProfile} variant="ghost" size="sm">
               <FaPlus size={12} />
               Add New Profile
             </Button>
-          </div>
+          </HStack>
 
           {visitorProfiles.length === 0 ? (
             <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
@@ -213,7 +213,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                     }
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                  <HStack gap="none" align="start">
                     <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)', backgroundColor: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary)' : 'var(--color-bg-muted)', color: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-white)' : 'var(--color-text-muted)' }}>
                       <FaUserAlt size={12} />
                     </div>
@@ -224,7 +224,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                         <p>{visitor.phone}</p>
                       </Text>
                     </div>
-                  </div>
+                  </HStack>
                 </div>
               ))}
             </div>
@@ -268,20 +268,20 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                 <div style={{ margin: '0 auto var(--spacing-3)', width: '48px', height: '48px', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+                <VStack gap={2}>
                   <Text color="secondary" size="sm">Upload filled H2 form</Text>
                   <Text color="muted" size="xs">PDF only (max 5MB)</Text>
-                </div>
+                </VStack>
 
                 {h2FormFile ? (
-                  <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+                  <VStack gap={3} style={{ marginTop: 'var(--spacing-4)' }}>
                     <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)' }}>
+                      <HStack gap={2} align="center" justify="center">
                         <FaFileAlt style={{ color: 'var(--color-text-tertiary)' }} />
                         <Text as="span" size="sm" color="secondary">{h2FormFile.name}</Text>
-                      </div>
+                      </HStack>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-3)' }}>
+                    <HStack gap={3} justify="center">
                       <Button type="button" onClick={removeH2Form} variant="secondary" size="sm">
                         Remove
                       </Button>
@@ -289,8 +289,8 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                         {h2FormUploading ? null : <FaUpload size={12} />}
                         {h2FormUploading ? "Uploading..." : "Upload"}
                       </Button>
-                    </div>
-                  </div>
+                    </HStack>
+                  </VStack>
                 ) : (
                   <div style={{ marginTop: 'var(--spacing-4)' }}>
                     <label style={{ display: 'inline-block' }}>
@@ -307,7 +307,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
             </div>
           ) : (
             <div style={{ backgroundColor: 'var(--color-success-bg-light)', border: 'var(--border-1) solid var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <HStack gap="none" align="center">
                 <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                   <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
                 </div>
@@ -318,7 +318,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                 <Button type="button" onClick={removeH2Form} variant="ghost" size="sm">
                   Change
                 </Button>
-              </div>
+              </HStack>
             </div>
           )}
         </div>

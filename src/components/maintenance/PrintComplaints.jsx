@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaPrint } from "react-icons/fa"
-import { Checkbox } from "@/components/ui"
+import { Checkbox, HStack, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -110,22 +110,22 @@ const PrintComplaints = ({ complaints }) => {
         <Modal title="Select Complaint Statuses" onClose={() => setShowPrintModal(false)}
           width={450}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+          <VStack gap={4}>
+            <VStack gap={2}>
               {printStatusOptions.map(status => (
                 <Checkbox key={status} checked={selectedPrintStatuses.includes(status)} onChange={() => togglePrintStatus(status)} label={status} />
               ))}
-            </div>
+            </VStack>
 
-            <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', gap: 'var(--gap-sm)', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <HStack gap="var(--gap-sm)" justify="end" wrap style={{ marginTop: 'var(--spacing-6)' }}>
               <Button variant="secondary" size="md" onClick={() => setShowPrintModal(false)}>
                 Cancel
               </Button>
               <Button variant="primary" size="md" onClick={confirmPrint}>
                 <FaPrint /> Print
               </Button>
-            </div>
-          </div>
+            </HStack>
+          </VStack>
         </Modal>
       )}
     </>

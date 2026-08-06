@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Textarea } from "@/components/ui"
+import { HStack, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -75,7 +75,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
   return (
     <Modal title={isEditing ? "Edit Feedback" : "Submit Feedback"} onClose={onClose} width={600}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+      <VStack gap={5}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           <div>
             <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Feedback Title</label>
@@ -98,17 +98,17 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-6)", borderTop: `var(--border-1) solid var(--color-border-light)`, gap: "var(--spacing-3)" }}>
-            <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-3)", justifyContent: "flex-end" }}>
+            <HStack gap={3} justify="end">
               <Button type="button" onClick={onClose} variant="secondary" size="md">
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
                 {isSubmitting ? (isEditing ? "Updating..." : "Submitting...") : isEditing ? "Update Feedback" : "Submit Feedback"}
               </Button>
-            </div>
+            </HStack>
           </div>
         </form>
-      </div>
+      </VStack>
     </Modal>
   )
 }

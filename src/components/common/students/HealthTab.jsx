@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { Select, Text } from "@/components/ui"
+import { HStack, Select, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -195,12 +195,12 @@ const HealthTab = ({ userId }) => {
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
       <div style={{ marginBottom: 'var(--spacing-6)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
             <Heart size={20} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Health Information
           </h3>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+          <HStack gap={2}>
             {user.role === "Admin" && (
               <Link to="/admin/others" style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                 <Settings size={14} style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
@@ -211,8 +211,8 @@ const HealthTab = ({ userId }) => {
                 <Edit size={16} /> Edit
               </Button>
             )}
-          </div>
-        </div>
+          </HStack>
+        </HStack>
 
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>
@@ -260,14 +260,14 @@ const HealthTab = ({ userId }) => {
               </div>
             </div>
 
-            <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
+            <HStack gap={2} justify="end" style={{ marginTop: 'var(--spacing-4)' }}>
               <Button type="button" onClick={() => setEditHealthData(false)} variant="secondary" size="sm">
                 Cancel
               </Button>
               <Button type="submit" variant="primary" size="sm">
                 Save Changes
               </Button>
-            </div>
+            </HStack>
           </form>
         ) : (
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-lg)' }}>
@@ -287,20 +287,20 @@ const HealthTab = ({ userId }) => {
 
               {selectedProvider && (
                 <>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <HStack gap="none" align="center">
                     <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
                       <Text size="sm" color="muted">Policy Start Date</Text>
                       <Text weight="medium" color="body">{formatDate(selectedProvider.startDate)}</Text>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  </HStack>
+                  <HStack gap="none" align="center">
                     <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
                       <Text size="sm" color="muted">Policy End Date</Text>
                       <Text weight="medium" color="body">{formatDate(selectedProvider.endDate)}</Text>
                     </div>
-                  </div>
+                  </HStack>
                 </>
               )}
             </div>
@@ -309,7 +309,7 @@ const HealthTab = ({ userId }) => {
       </div>
 
       <div style={{ marginTop: 'var(--spacing-8)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
             <Pill size={20} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Insurance Claims
@@ -319,7 +319,7 @@ const HealthTab = ({ userId }) => {
               <Plus size={16} /> Add Claim
             </Button>
           )}
-        </div>
+        </HStack>
 
         {loadingClaims ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>

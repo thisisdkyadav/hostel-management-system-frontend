@@ -272,7 +272,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                     >
                       {gymkhanaCategoryDefinitions.length > 0 ? (
                         gymkhanaCategoryDefinitions.map((category) => (
-                          <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
+                          <HStack gap="none" align="center" key={category.key}>
                             <Checkbox
                               id={`gymkhana-category-${category.key}`}
                               name="categories"
@@ -293,7 +293,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                             >
                               {category.label}
                             </label>
-                          </div>
+                          </HStack>
                         ))
                       ) : (
                         <EmptyState variant="inline" message="No Gymkhana categories configured yet." />
@@ -336,7 +336,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "var(--spacing-6)" }}>
+          <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>
             <div style={{ position: "relative", height: "var(--spacing-24)", width: "var(--spacing-24)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
               {formData.profileImage ? (
                 <img
@@ -392,7 +392,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
               </div>
             </div>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
-          </div>
+          </VStack>
 
           {isImageModalOpen && (
             <ImageUploadModal
@@ -431,7 +431,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
               >
                 {hostelList.length > 0 ? (
                   hostelList.map((hostel) => (
-                    <div key={hostel._id} style={{ display: "flex", alignItems: "center" }}>
+                    <HStack gap="none" align="center" key={hostel._id}>
                       <Checkbox
                         id={`hostel-${hostel._id}`}
                         name="hostelIds"
@@ -446,7 +446,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                       >
                         {hostel.name}
                       </label>
-                    </div>
+                    </HStack>
                   ))
                 ) : (
                   <EmptyState variant="inline" message="No hostels available." />

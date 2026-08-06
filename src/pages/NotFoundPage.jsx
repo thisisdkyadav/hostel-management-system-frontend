@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa'
 import { Button } from 'czero/react'
+import { HStack } from "@/components/ui"
 
 const NotFoundPage = () => {
   return (
@@ -27,13 +28,7 @@ const NotFoundPage = () => {
           width: '100%'
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--spacing-6)'
-          }}
-        >
+        <HStack gap="none" justify="center" style={{ marginBottom: 'var(--spacing-6)' }}>
           <div
             style={{
               backgroundColor: 'var(--color-warning-bg)',
@@ -48,7 +43,7 @@ const NotFoundPage = () => {
               }}
             />
           </div>
-        </div>
+        </HStack>
 
         <h1
           style={{

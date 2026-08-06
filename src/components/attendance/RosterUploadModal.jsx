@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "czero/react"
-import { Modal, Alert } from "@/components/ui"
+import { Alert, Modal, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import CsvUploader from "../common/CsvUploader"
 import { attendanceApi } from "../../service"
@@ -62,7 +62,7 @@ const RosterUploadModal = ({ isOpen, onClose, occurrenceId, currentCount = 0, on
         </>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         {currentCount > 0 && (
           <Alert type="info" icon>
             This occurrence already has a roster of {currentCount} roll numbers. Uploading a new file replaces it.
@@ -84,7 +84,7 @@ const RosterUploadModal = ({ isOpen, onClose, occurrenceId, currentCount = 0, on
             {rollNumbers.length} unique roll number{rollNumbers.length === 1 ? "" : "s"} ready to upload.
           </div>
         )}
-      </div>
+      </VStack>
     </Modal>
   )
 }

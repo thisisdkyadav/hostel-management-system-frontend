@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { Modal, Text, useConfirm } from "@/components/ui"
+import { HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
 import {
   Eye,
   Plus,
@@ -1139,14 +1139,14 @@ const DisciplinaryProcessPage = () => {
       key: "startedBy",
       header: "Started By",
       render: (item) => (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <VStack gap="none">
           <Text as="span" color="primary" weight="medium" size="sm">
             {item.startedBy?.name || "Unknown"}
           </Text>
           <Text as="span" color="muted" size="xs">
             {item.startedBy?.email || ""}
           </Text>
-        </div>
+        </VStack>
       ),
     },
     {
@@ -1376,7 +1376,7 @@ const DisciplinaryProcessPage = () => {
         width={480}
         isOpen={createModalOpen}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           <div style={sectionLabelStyle}>
             <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
             Complaint Document
@@ -1396,15 +1396,15 @@ const DisciplinaryProcessPage = () => {
             downloadFileName={createComplaintPdfName || "complaint.pdf"}
           />
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end" style={{ marginTop: "var(--spacing-2)" }}>
             <Button variant="outline" size="sm" onClick={() => setCreateModalOpen(false)}>
               Cancel
             </Button>
             <Button variant="primary" size="sm" loading={creatingCase} onClick={handleCreateCase}>
               <Plus size={14} /> Create Case
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       </Modal>
 
       {/* Case Detail Modal */}
@@ -1420,7 +1420,7 @@ const DisciplinaryProcessPage = () => {
         footer={
           adminCurrentStage !== "closed_final" && selectedAdminCase && !adminModalLoading ? (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <HStack gap={8} align="center">
                 {(canViewPreviousStep || viewingHistoryStep) && (
                   <>
                     <Button
@@ -1451,7 +1451,7 @@ const DisciplinaryProcessPage = () => {
                     )}
                   </>
                 )}
-              </div>
+              </HStack>
               <StepIndicator
                 steps={STEP_DEFINITIONS}
                 currentStep={adminCurrentStage}
@@ -1478,7 +1478,7 @@ const DisciplinaryProcessPage = () => {
             isDownloadingBundle={exportingCaseBundle}
           />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <VStack gap={3}>
             {/* Case Header - always visible */}
             <div
               style={{
@@ -1491,14 +1491,14 @@ const DisciplinaryProcessPage = () => {
                 border: "1px solid var(--color-border-primary)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <HStack gap={8} align="center">
                 <Text as="span" size="sm" color="body">
                   Started by <strong>{selectedAdminCase.startedBy?.name || "Unknown"}</strong>
                 </Text>
                 <Badge variant={getStatusVariant(selectedAdminCase.caseStatus)}>
                   {formatStatusLabel(selectedAdminCase.caseStatus)}
                 </Badge>
-              </div>
+              </HStack>
               <Button
                 size="sm"
                 variant="ghost"
@@ -1536,13 +1536,13 @@ const DisciplinaryProcessPage = () => {
 
             {/* Step 2: Collection */}
             {displayedStep === "step2_collection" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <VStack gap={3}>
+                <HStack gap="none" align="center" justify="between">
                   <div style={sectionLabelStyle}>
                     <ClipboardList size={12} style={{ display: "inline", marginRight: 4 }} />
                     Student & Document Collection
                   </div>
-                </div>
+                </HStack>
 
                 {/* Student Search */}
                 <div style={compactInputRowStyle}>
@@ -1628,7 +1628,7 @@ const DisciplinaryProcessPage = () => {
                       <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
                       Statements (One PDF per student)
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                    <VStack gap={2}>
                       {allStage2Students.map((student) => {
                         const isAccused = stage2AccusedStudents.some((item) => item.userId === student.userId)
                         const role = isAccused ? "accused" : "accusing"
@@ -1696,7 +1696,7 @@ const DisciplinaryProcessPage = () => {
                           </div>
                         )
                       })}
-                    </div>
+                    </VStack>
                   </div>
                 )}
 
@@ -1704,7 +1704,7 @@ const DisciplinaryProcessPage = () => {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
                   <div>
                     <div style={sectionLabelStyle}>Evidence Documents</div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <VStack gap={6}>
                       <PdfUploadField
                         label=""
                         compact
@@ -1719,7 +1719,7 @@ const DisciplinaryProcessPage = () => {
                       <Button variant="outline" size="sm" onClick={handleAddEvidenceDocument}>
                         <Plus size={12} /> Add
                       </Button>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                      <HStack gap={4} wrap>
                         {stage2EvidenceDocuments.map((doc, index) => (
                           <button
                             key={doc.id || index}
@@ -1741,13 +1741,13 @@ const DisciplinaryProcessPage = () => {
                             />
                           </button>
                         ))}
-                      </div>
-                    </div>
+                      </HStack>
+                    </VStack>
                   </div>
 
                   <div>
                     <div style={sectionLabelStyle}>Extra Documents</div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <VStack gap={6}>
                       <PdfUploadField
                         label=""
                         compact
@@ -1762,7 +1762,7 @@ const DisciplinaryProcessPage = () => {
                       <Button variant="outline" size="sm" onClick={handleAddExtraDocument}>
                         <Plus size={12} /> Add
                       </Button>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                      <HStack gap={4} wrap>
                         {stage2ExtraDocuments.map((doc, index) => (
                           <button
                             key={doc.id || index}
@@ -1784,31 +1784,31 @@ const DisciplinaryProcessPage = () => {
                             />
                           </button>
                         ))}
-                      </div>
-                    </div>
+                      </HStack>
+                    </VStack>
                   </div>
                 </div>
 
                 {!viewingHistoryStep && (
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <HStack gap="none" justify="end">
                     <Button variant="primary" size="sm" loading={stage2Saving} onClick={handleSaveStageTwo}>
                       Save & Continue <ChevronRight size={14} />
                     </Button>
-                  </div>
+                  </HStack>
                 )}
-              </div>
+              </VStack>
             )}
 
             {/* Step 3: Committee Email */}
             {displayedStep === "step3_email" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <VStack gap={3}>
                 <div style={sectionLabelStyle}>
                   <Mail size={12} style={{ display: "inline", marginRight: 4 }} />
                   Committee Email
                 </div>
 
                 {/* Quick Recipients */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                <HStack gap={6} wrap>
                   {allStage2Students.map((student) => (
                     <button
                       key={student.userId}
@@ -1831,7 +1831,7 @@ const DisciplinaryProcessPage = () => {
                       {student.name}
                     </button>
                   ))}
-                </div>
+                </HStack>
 
                 <Textarea
                   placeholder="Recipients (comma/newline separated)"
@@ -1923,7 +1923,7 @@ const DisciplinaryProcessPage = () => {
                 </div>
 
                 {/* Extra Attachment Upload */}
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                <HStack gap={2} align="center">
                   <PdfUploadField
                     label=""
                     compact
@@ -1943,26 +1943,26 @@ const DisciplinaryProcessPage = () => {
                       {item.fileName}
                     </Badge>
                   ))}
-                </div>
+                </HStack>
 
                 {!viewingHistoryStep && (
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+                  <HStack gap="none" justify="end">
+                    <HStack gap={2}>
                       <Button variant="outline" size="sm" loading={emailSubmitting} onClick={handleSkipEmail}>
                         Skip Email
                       </Button>
                       <Button variant="primary" size="sm" loading={emailSubmitting} onClick={handleSendEmail}>
                         <Mail size={14} /> Send & Continue
                       </Button>
-                    </div>
-                  </div>
+                    </HStack>
+                  </HStack>
                 )}
-              </div>
+              </VStack>
             )}
 
             {/* Step 4: Committee Minutes */}
             {displayedStep === "step4_minutes" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <VStack gap={3}>
                 <div style={sectionLabelStyle}>
                   <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
                   Committee Minutes
@@ -1984,19 +1984,19 @@ const DisciplinaryProcessPage = () => {
                 />
 
                 {!viewingHistoryStep && (
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <HStack gap="none" justify="end">
                     <Button variant="primary" size="sm" loading={minutesSubmitting} onClick={handleSaveMinutes}>
                       Save & Continue <ChevronRight size={14} />
                     </Button>
-                  </div>
+                  </HStack>
                 )}
-              </div>
+              </VStack>
             )}
 
             {/* Step 5: Final Decision */}
             {displayedStep === "step5_final" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <VStack gap={3}>
+                <HStack gap="none" align="center" justify="between">
                   <div style={sectionLabelStyle}>
                     <Gavel size={12} style={{ display: "inline", marginRight: 4 }} />
                     Final Decision
@@ -2016,10 +2016,10 @@ const DisciplinaryProcessPage = () => {
                       <Eye size={12} /> Minutes
                     </Button>
                   )}
-                </div>
+                </HStack>
 
                 {/* Decision Mode */}
-                <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+                <HStack gap={3}>
                   <Radio
                     checked={finalDecisionMode === "action"}
                     onChange={() => setFinalDecisionMode("action")}
@@ -2032,7 +2032,7 @@ const DisciplinaryProcessPage = () => {
                     label="Reject Case"
                     name="decisionMode"
                   />
-                </div>
+                </HStack>
 
                 <Textarea
                   placeholder="Final decision description"
@@ -2046,7 +2046,7 @@ const DisciplinaryProcessPage = () => {
                     {/* Select Disciplined Students */}
                     <div>
                       <div style={sectionLabelStyle}>Select Disciplined Students</div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                      <HStack gap={6} wrap>
                         {stage2AccusedStudents.map((student) => {
                           const selected = selectedDisciplinedStudents.some(
                             (item) => item.userId === student.userId
@@ -2074,11 +2074,11 @@ const DisciplinaryProcessPage = () => {
                             </button>
                           )
                         })}
-                      </div>
+                      </HStack>
                     </div>
 
                     {/* Action Entry Mode */}
-                    <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+                    <HStack gap={3}>
                       <Radio
                         checked={finalActionEntryMode === "common"}
                         onChange={() => setFinalActionEntryMode("common")}
@@ -2091,10 +2091,10 @@ const DisciplinaryProcessPage = () => {
                         label="Per-student action"
                         name="actionEntryMode"
                       />
-                    </div>
+                    </HStack>
 
                     {finalActionEntryMode === "common" ? (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                      <VStack gap={2}>
                         <Input
                           placeholder="Reason"
                           value={finalReason}
@@ -2162,9 +2162,9 @@ const DisciplinaryProcessPage = () => {
                         <Button size="sm" variant="outline" onClick={addFinalReminderItem}>
                           <Plus size={12} /> Add Reminder
                         </Button>
-                      </div>
+                      </VStack>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                      <VStack gap={3}>
                         {selectedDisciplinedStudents.length === 0 ? (
                           <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", fontStyle: "italic" }}>
                             Select students first
@@ -2258,13 +2258,13 @@ const DisciplinaryProcessPage = () => {
                             )
                           })
                         )}
-                      </div>
+                      </VStack>
                     )}
                   </>
                 )}
 
                 {!viewingHistoryStep && (
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <HStack gap="none" justify="end">
                     <Button
                       variant={finalDecisionMode === "reject" ? "danger" : "success"}
                       size="sm"
@@ -2281,11 +2281,11 @@ const DisciplinaryProcessPage = () => {
                         </>
                       )}
                     </Button>
-                  </div>
+                  </HStack>
                 )}
-              </div>
+              </VStack>
             )}
-          </div>
+          </VStack>
         )}
       </Modal>
 

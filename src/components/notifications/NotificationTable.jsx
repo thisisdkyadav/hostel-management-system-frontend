@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
 import { DataTable } from "czero/react"
-import { Text } from "@/components/ui"
+import { Text, VStack } from "@/components/ui"
 
 const NotificationTable = ({ notifications, onRefresh }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)
@@ -49,10 +49,10 @@ const NotificationTable = ({ notifications, onRefresh }) => {
       header: "Title",
       key: "title",
       render: (notification) => (
-        <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+        <VStack gap="none" align="start">
           <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-1)' }}>{notification.title}</div>
           <Text as="div" size="xs" color="muted">{getTargetAudience(notification)}</Text>
-        </div>
+        </VStack>
       ),
     },
     {

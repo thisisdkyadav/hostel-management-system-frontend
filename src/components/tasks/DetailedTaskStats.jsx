@@ -1,6 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
-import { Grid, Text } from "@/components/ui"
+import { Grid, HStack, Text, VStack } from "@/components/ui"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category
@@ -35,63 +35,63 @@ const DetailedTaskStats = ({ stats }) => {
       {/* Status Statistics */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Status</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+        <VStack gap={2}>
           {Object.entries(statusCounts || {}).map(([status, count]) => (
-            <div key={status} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <HStack gap="none" align="center" justify="between" key={status}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColorClass(status)}`}>{status}</span>
               <Text as="span" size="sm" weight="medium">{count}</Text>
-            </div>
+            </HStack>
           ))}
-        </div>
+        </VStack>
       </div>
 
       {/* Priority Statistics */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Priority</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+        <VStack gap={2}>
           {Object.entries(priorityCounts || {}).map(([priority, count]) => (
-            <div key={priority} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <HStack gap="none" align="center" justify="between" key={priority}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColorClass(priority)}`}>{priority}</span>
               <Text as="span" size="sm" weight="medium">{count}</Text>
-            </div>
+            </HStack>
           ))}
-        </div>
+        </VStack>
       </div>
 
       {/* Category Statistics */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Category</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+        <VStack gap={2}>
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
-            <div key={category} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <HStack gap="none" align="center" justify="between" key={category}>
               <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)', color: categoryColors[category]?.text || 'var(--color-text-muted)' }}>{category}</span>
               <Text as="span" size="sm" weight="medium">{count}</Text>
-            </div>
+            </HStack>
           ))}
-        </div>
+        </VStack>
       </div>
 
       {/* Overdue Tasks Alert */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Overview</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <VStack gap={3}>
+          <HStack gap="none" align="center" justify="between">
             <Text as="span" size="sm">Total Tasks</Text>
             <Text as="span" size="sm" weight="medium">{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</Text>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          </HStack>
+          <HStack gap="none" align="center" justify="between">
             <Text as="span" size="sm">Completed</Text>
             <Text as="span" size="sm" weight="medium" color="success-text">{statusCounts?.Completed || 0}</Text>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          </HStack>
+          <HStack gap="none" align="center" justify="between">
             <Text as="span" size="sm">In Progress</Text>
             <Text as="span" size="sm" weight="medium" color="brand">{statusCounts?.["In Progress"] || 0}</Text>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          </HStack>
+          <HStack gap="none" align="center" justify="between">
             <Text as="span" size="sm">Overdue</Text>
             <Text as="span" size="sm" weight="medium" color="danger-text">{overdueTasks || 0}</Text>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       </div>
     </Grid>
   )

@@ -218,7 +218,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
                 {/* Total Work Done */}
                 <div style={{ background: "linear-gradient(to right, var(--color-info-bg-light), var(--color-info-bg))", padding: "var(--spacing-6)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-info-light)" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <HStack gap="none" align="center" justify="between">
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)", marginBottom: "var(--spacing-2)" }}>Total Work Done</h3>
                       <Text size="4xl" weight="bold" color="info">{workStats.totalWorkDone}</Text>
@@ -227,12 +227,12 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)" }}>
                       <FaTasks style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-info)" }} />
                     </div>
-                  </div>
+                  </HStack>
                 </div>
 
                 {/* Today's Work Done */}
                 <div style={{ background: "linear-gradient(to right, var(--color-success-bg-light), var(--color-success-bg))", padding: "var(--spacing-6)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-success-light)" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <HStack gap="none" align="center" justify="between">
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)", marginBottom: "var(--spacing-2)" }}>Today's Work</h3>
                       <Text size="4xl" weight="bold" color="success">{workStats.todayWorkDone}</Text>
@@ -241,7 +241,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-success-bg)", borderRadius: "var(--radius-full)" }}>
                       <FaCalendarAlt style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-success)" }} />
                     </div>
-                  </div>
+                  </HStack>
                 </div>
               </div>
             )}

@@ -3,7 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, HStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
@@ -68,7 +68,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         </div>
 
         <CardHeader className="mb-0">
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center">
             <div style={{ width: "var(--avatar-lg)", height: "var(--avatar-lg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-4)", overflow: "hidden" }}>
               {staff.profileImage ? (
                 <img src={getMediaUrl(staff.profileImage)} alt={staff.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -85,23 +85,23 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
                 <span style={{ marginLeft: "var(--spacing-1-5)" }}>{getCategoryDisplayLabel(staff.category)}</span>
               </div>
             </div>
-          </div>
+          </HStack>
         </CardHeader>
 
         <CardBody style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center">
             <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
               <FaEnvelope style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
             </div>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</span>
-          </div>
+          </HStack>
 
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center">
             <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
               <FaPhone style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
             </div>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
-          </div>
+          </HStack>
         </CardBody>
 
 

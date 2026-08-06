@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, Modal, Text, useConfirm } from "@/components/ui"
+import { Grid, HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -332,7 +332,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   // Main render with request data
   return (
     <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+      <VStack gap={6}>
         {/* Status Badge */}
         {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
 
@@ -352,8 +352,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {/* H2 Form Section */}
         {request.h2FormUrl && (
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+            <HStack gap="none" align="center" justify="between">
+              <HStack gap={3} align="center">
                 <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
@@ -363,12 +363,12 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>H2 Form Document</h4>
                   <Text size="sm" color="muted">Guest Room Booking Form</Text>
                 </div>
-              </div>
+              </HStack>
               <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="sm">
                 <FaEye />
                 View H2 Form
               </Button>
-            </div>
+            </HStack>
           </div>
         )}
 
@@ -414,8 +414,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {/* Payment Information Submission (Student only) */}
         {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
           <div style={{ backgroundColor: "var(--color-info-bg-light)", border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+            <HStack gap="none" align="center" justify="between">
+              <HStack gap={3} align="center">
                 <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
@@ -425,12 +425,12 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" }}>Payment Information Required</h4>
                   <Text size="sm" color="brand">Submit your payment details for verification</Text>
                 </div>
-              </div>
+              </HStack>
               <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="sm">
                 <FaMoneyBillWave />
                 Submit Payment Info
               </Button>
-            </div>
+            </HStack>
           </div>
         )}
 
@@ -482,7 +482,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
           isCheckOutForm={request.checkInTime && !request.checkOutTime}
           isCheckTimes={request.checkInTime && request.checkOutTime}
         />
-      </div>
+      </VStack>
 
       <EditVisitorRequestModal
         isOpen={showEditModal}

@@ -2,19 +2,19 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FiSearch } from "react-icons/fi"
 import { CgSearchFound } from "react-icons/cg"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const LostFoundSummary = ({ lostAndFoundStats }) => {
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-light)` }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center' }}>
           <FiSearch style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', fontSize: 'var(--icon-sm)' }} /> Lost & Found
         </h3>
         <Link to="lost-and-found" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'} onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
           View All
         </Link>
-      </div>
+      </HStack>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--gap-sm)' }}>
         <div style={{ backgroundColor: 'var(--color-orange-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, Select, Text, Textarea } from "@/components/ui"
+import { ConfirmDialog, HStack, Select, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -181,14 +181,14 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
               <Textarea name="address" value={formData.address} onChange={handleChange} rows={2} />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} justify="end">
               <Button type="button" onClick={cancelEdit} variant="secondary" size="sm">
                 <FiX /> Cancel
               </Button>
               <Button type="submit" variant="primary" size="sm">
                 <FiSave /> Save
               </Button>
-            </div>
+            </HStack>
           </form>
         </div>
       )
@@ -196,19 +196,19 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
 
     return (
       <div key={member.id} style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)", border: `var(--border-1) solid var(--color-border-primary)`, boxShadow: "var(--shadow-sm)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--spacing-2)" }}>
+        <HStack gap="none" align="start" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{member.name}</h3>
           {editable && (
-            <div style={{ display: "flex", gap: "var(--spacing-1)" }}>
+            <HStack gap={1}>
               <Button onClick={() => startEdit(member)} variant="ghost" size="sm" aria-label="Edit">
                 <FiEdit />
               </Button>
               <Button onClick={() => confirmDelete(member)} variant="danger" size="sm" aria-label="Delete">
                 <FiTrash2 />
               </Button>
-            </div>
+            </HStack>
           )}
-        </div>
+        </HStack>
 
         <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
           Relationship: <Text as="span" color="secondary">{member.relationship || "Not specified"}</Text>
@@ -280,7 +280,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             <Textarea name="address" value={formData.address} onChange={handleChange} rows={2} />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} justify="end">
             <Button
               type="button"
               onClick={() => {
@@ -295,7 +295,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             <Button type="submit" variant="primary" size="sm">
               <FiSave /> Add Member
             </Button>
-          </div>
+          </HStack>
         </form>
       </div>
     )
@@ -315,7 +315,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
         </div>
       )}
 
-      <div style={{ marginBottom: "var(--spacing-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
         <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>Family Members</h2>
         {editable && !showAddForm && (
           <Button onClick={() => setShowAddForm(true)} variant="primary" size="sm">
@@ -323,7 +323,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             Add Family Member
           </Button>
         )}
-      </div>
+      </HStack>
 
       {loading && familyMembers.length === 0 && !showAddForm ? (
         <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-8) 0" }}>
@@ -343,7 +343,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
               )}
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>{familyMembers.map((member) => renderMemberCard(member))}</div>
+            <VStack gap={2}>{familyMembers.map((member) => renderMemberCard(member))}</VStack>
           )}
         </>
       )}

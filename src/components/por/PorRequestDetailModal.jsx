@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react"
 import { Button } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
 import {
@@ -229,7 +229,7 @@ const PorRequestDetailModal = ({
             </span>
           </div>
 
-          <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          <HStack gap={2} wrap>
             {onGenerateCertificate ? (
               <Button
                 variant="secondary"
@@ -245,17 +245,14 @@ const PorRequestDetailModal = ({
                 Edit & Resubmit
               </Button>
             ) : null}
-          </div>
+          </HStack>
         </div>
 
         <div
           className="grid grid-cols-1 xl:grid-cols-3"
           style={{ gap: "var(--spacing-4)", alignItems: "start" }}
         >
-          <div
-            className="xl:col-span-2"
-            style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}
-          >
+          <VStack gap={4} className="xl:col-span-2">
             <PorDetailCard
               icon={FileText}
               title="POR Submission"
@@ -464,9 +461,9 @@ const PorRequestDetailModal = ({
                 </div>
               </PorDetailCard>
             ) : null}
-          </div>
+          </VStack>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <PorDetailCard
               icon={Clock3}
               title="Approval History"
@@ -483,7 +480,7 @@ const PorRequestDetailModal = ({
             >
               <PorApprovalHistory porRequestId={request.id} compact />
             </PorDetailCard>
-          </div>
+          </VStack>
         </div>
       </div>
 

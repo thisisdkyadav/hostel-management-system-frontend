@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Grid, Spinner, Text } from "@/components/ui"
+import { Alert, Card, Grid, HStack, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -106,7 +106,7 @@ const ElectionSupportConfirmationPage = () => {
                 padding: "var(--spacing-5)",
               }}
             >
-              <div style={{ display: "flex", gap: "var(--spacing-4)", alignItems: "center" }}>
+              <HStack gap={4} align="center">
                 {nomination.candidateProfileImage ? (
                   <img
                     src={getMediaUrl(nomination.candidateProfileImage)}
@@ -128,7 +128,7 @@ const ElectionSupportConfirmationPage = () => {
                     {nomination.postTitle} · {data?.election?.title}
                   </Text>
                 </div>
-              </div>
+              </HStack>
 
               <Grid min={180} gap={3}>
                 <div>
@@ -149,7 +149,7 @@ const ElectionSupportConfirmationPage = () => {
             </div>
           ) : null}
 
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <HStack gap="12px" wrap>
             {canRespond ? (
               <>
                 <Button onClick={() => respond("accepted")} loading={submitting}>
@@ -163,7 +163,7 @@ const ElectionSupportConfirmationPage = () => {
             <Link to="/login" style={{ textDecoration: "none" }}>
               <Button variant="secondary">Go to Login</Button>
             </Link>
-          </div>
+          </HStack>
         </div>
       </Card>
     </div>

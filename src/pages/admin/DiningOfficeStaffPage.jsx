@@ -3,7 +3,7 @@ import { Button, DataTable, StatusBadge } from "czero/react"
 import { Plus, Pencil, Trash2, UserCog, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, LoadingState, Page, SearchInput, StatCards, Text } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, HStack, LoadingState, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import DiningOfficeFormModal, { DINING_OFFICE_CATEGORIES } from "@/components/dining/DiningOfficeFormModal"
 import { getErrorMessage } from "@/components/dining/diningBillingHelpers"
 
@@ -87,10 +87,10 @@ const DiningOfficeStaffPage = () => {
       header: "",
       align: "right",
       render: (row) => (
-        <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
+        <HStack gap={2} justify="end">
           <Button variant="secondary" size="sm" onClick={() => setFormState({ mode: "edit", data: row })}><Pencil size={16} /></Button>
           <Button variant="danger" size="sm" onClick={() => setPendingDelete(row)}><Trash2 size={16} /></Button>
-        </div>
+        </HStack>
       ),
     },
   ]
@@ -115,7 +115,7 @@ const DiningOfficeStaffPage = () => {
         <StatCards columns={3} stats={stats} />
 
         <div className="mt-[var(--spacing-6)] flex items-center justify-between gap-[var(--spacing-3)] flex-wrap">
-          <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          <HStack gap={2} wrap>
             {CATEGORY_FILTERS.map((filter) => (
               <Button
                 key={filter.id}
@@ -126,7 +126,7 @@ const DiningOfficeStaffPage = () => {
                 {filter.label}
               </Button>
             ))}
-          </div>
+          </HStack>
           <div className="w-full sm:w-[18rem]">
             <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search name / email..." />
           </div>

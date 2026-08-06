@@ -492,7 +492,7 @@ const LiveCheckInOutPage = () => {
                   <Text color="muted">
                     {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalRecords)} of {totalRecords}
                   </Text>
-                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                  <HStack gap={1} align="center">
                     <button
                       onClick={prevPage}
                       disabled={currentPage === 1}
@@ -560,7 +560,7 @@ const LiveCheckInOutPage = () => {
                     >
                       <ChevronRight size={16} />
                     </button>
-                  </div>
+                  </HStack>
                 </div>
               )}
             </>

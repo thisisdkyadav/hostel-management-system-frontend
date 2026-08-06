@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Button } from "czero/react"
-import { Grid, Text } from "@/components/ui"
+import { Grid, HStack, Text, VStack } from "@/components/ui"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -35,14 +35,14 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
       {/* Cross-Hostel Alert */}
       {student.isSameHostel === false && (
         <div style={{ backgroundColor: 'var(--color-warning-bg-light)', border: `var(--border-2) solid var(--color-warning)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <div style={{ flexShrink: 0 }}>
               <FaExclamationTriangle style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }} />
             </div>
             <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-warning-text)', marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</h3>
               <p style={{ color: 'var(--color-warning-text)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+              <VStack gap={2}>
                 <label htmlFor="crossHostelReason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>
                   Reason for Cross-Hostel Entry <Text as="span" color="danger">*</Text>
                 </label>
@@ -69,15 +69,15 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                   rows="3"
                   required
                 />
-              </div>
+              </VStack>
             </div>
-          </div>
+          </HStack>
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+      <VStack gap={6}>
         {/* Profile Image Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <VStack gap={6}>
           <div style={{ width: '100%', maxWidth: '250px', margin: '0 auto' }}>
             <div style={{ aspectRatio: '1', width: '100%', borderRadius: 'var(--radius-full)', overflow: 'hidden', backgroundColor: 'var(--color-bg-hover)' }}>
               {student.profileImage ? (
@@ -98,39 +98,39 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
             </h3>
 
             <Grid min={200} gap={4}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+              <HStack gap={3} align="start">
                 <FaIdCard style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Roll Number</Text>
                   <Text size="sm" weight="medium" color="primary">{student.rollNumber}</Text>
                 </div>
-              </div>
+              </HStack>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+              <HStack gap={3} align="start">
                 <FaEnvelope style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Email</Text>
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', wordBreak: 'break-all' }}>{student.email}</p>
                 </div>
-              </div>
+              </HStack>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+              <HStack gap={3} align="start">
                 <FaPhone style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Phone</Text>
                   <Text size="sm" weight="medium" color="primary">{student.phone || "N/A"}</Text>
                 </div>
-              </div>
+              </HStack>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+              <HStack gap={3} align="start">
                 <FaVenusMars style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Gender</Text>
                   <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', textTransform: 'capitalize' }}>{student.gender || "N/A"}</p>
                 </div>
-              </div>
+              </HStack>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+              <HStack gap={3} align="start">
                 <FaBuilding style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Hostel & Room</Text>
@@ -138,36 +138,36 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                     {student.hostel}, Room {student.displayRoom}
                   </Text>
                 </div>
-              </div>
+              </HStack>
             </Grid>
 
             {/* Last Check In/Out Section */}
             {lastCheckInOut && (
               <div style={{ marginTop: 'var(--spacing-6)', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-info-bg-light)', borderRadius: 'var(--radius-lg)' }}>
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Last {lastCheckInOut.status}</h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-4)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                <HStack gap={4} wrap>
+                  <HStack gap="none" align="center">
                     <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
                     <Text as="span" size="sm">{formatDate(lastCheckInOut.dateAndTime)}</Text>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  </HStack>
+                  <HStack gap="none" align="center">
                     <FaClock style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
                     <Text as="span" size="sm">{formatTime(lastCheckInOut.dateAndTime)}</Text>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  </HStack>
+                  <HStack gap="none" align="center">
                     {lastCheckInOut.status === "Checked In" ? (
                       <FaSignInAlt style={{ color: 'var(--color-success)', marginRight: 'var(--spacing-2)' }} />
                     ) : (
                       <FaSignOutAlt style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-2)' }} />
                     )}
                     <Text as="span" size="sm" weight="medium">{lastCheckInOut.status}</Text>
-                  </div>
-                </div>
+                  </HStack>
+                </HStack>
               </div>
             )}
 
             {/* Action Buttons */}
-            <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', gap: 'var(--spacing-4)' }}>
+            <HStack gap={4} style={{ marginTop: 'var(--spacing-6)' }}>
               <Button onClick={onReset} variant="secondary" size="md" fullWidth>
                 <FaTimes /> Reset
               </Button>
@@ -179,10 +179,10 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               >
                 {getNextStatus() === "Checked In" ? <FaSignInAlt /> : <FaSignOutAlt />} {getNextStatus() === "Checked In" ? "Check In" : "Check Out"}
               </Button>
-            </div>
+            </HStack>
           </div>
-        </div>
-      </div>
+        </VStack>
+      </VStack>
     </div>
   )
 }

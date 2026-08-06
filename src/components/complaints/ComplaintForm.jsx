@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Select, Text } from "@/components/ui"
+import { Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -70,7 +70,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           </div>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        <VStack gap={4}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Complaint Title</label>
             <Input type="text" name="title" placeholder="Brief summary of the issue" value={formData.title} onChange={handleChange} required />
@@ -100,7 +100,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
               { value: "Other", label: "Other" }
             ]} required />
           </div>
-        </div>
+        </VStack>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
           <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="md">

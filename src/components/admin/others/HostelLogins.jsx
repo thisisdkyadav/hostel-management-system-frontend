@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import HostelGateCard from "./HostelGateCard"
@@ -60,9 +60,9 @@ const HostelLogins = () => {
         </Button>
       </header>
 
-      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center sm:space-y-0">
+      <VStack gap={4} align="start" justify="between" style={{ marginTop: 'var(--spacing-6)' }} className="sm:flex-row sm:items-center sm:space-y-0">
         <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by hostel name" className="w-full sm:w-64 md:w-72" />
-      </div>
+      </VStack>
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>

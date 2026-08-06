@@ -1,5 +1,6 @@
 import React from "react"
 import { FaBed } from "react-icons/fa"
+import { HStack } from "@/components/ui"
 
 const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   if (!roomDetails) {
@@ -22,7 +23,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
       ) : (
         <>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-3)' }}>Select a bed number for the student in the new room:</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
+          <HStack gap={2} wrap>
             {availableBeds.map((bedNumber) => (
               <button key={bedNumber} onClick={() => onSelectBed(bedNumber)}
                 style={{ 
@@ -55,7 +56,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
                 {bedNumber}
               </button>
             ))}
-          </div>
+          </HStack>
         </>
       )}
     </div>

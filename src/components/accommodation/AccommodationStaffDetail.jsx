@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { EmptyState, Modal, Text } from "@/components/ui"
+import { EmptyState, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -140,7 +140,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
   return (
     <Modal isOpen={open} onClose={onClose} title="Guest accommodation" width={900} closeButtonVariant="button">
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         <MetaBar request={request} />
 
         {error && (
@@ -170,14 +170,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
           {/* Left: details */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <SectionCard icon={BedDouble} title="Stay details" accentColor="var(--color-primary)">
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
                 <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
                 <InfoRow label="Nights" value={request.nights || 0} />
                 <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
-              </div>
+              </VStack>
             </SectionCard>
 
             <SectionCard icon={Users} title={`Guests (${request.guests?.length || 0})`} accentColor="var(--color-info)">
@@ -204,10 +204,10 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             <SectionCard icon={Clock3} title="Timeline" accentColor="var(--color-text-secondary)">
               <JourneyTimeline status={status} timeline={request.timeline} />
             </SectionCard>
-          </div>
+          </VStack>
 
           {/* Right: action console */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             {!hasAction && !showAssignedSummary && (
               <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", padding: "var(--spacing-4)", border: "1px dashed var(--color-border-input)", borderRadius: "var(--radius-card-sm)" }}>
                 No action needed from you at this stage.
@@ -218,34 +218,34 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <SectionCard icon={DoorOpen} title="Rooms assigned" accentColor="var(--color-success)" headerAction={canReassign ? (
                 <button type="button" onClick={() => setReassigning(true)} style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Reassign</button>
               ) : null}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <VStack gap={2}>
                   {assignedRooms.map((r, i) => {
                     const roomLabel = `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`
                     return (
-                      <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+                      <HStack gap={3} align="center" justify="between" key={i}>
                         <Text as="span" size="sm" color="body">{r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}</Text>
                         <Text as="span" size="sm" weight="semibold" color="heading">Room {roomLabel}</Text>
-                      </div>
+                      </HStack>
                     )
                   })}
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
             {showBypassFa && (
               <SectionCard icon={UserRoundX} title="Faculty advisor" accentColor="var(--color-warning)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   <Text size="sm" color="muted">
                     This request is awaiting the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
                   </Text>
                   <Button variant="outline" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
             {showApprove && (
               <SectionCard icon={Gavel} title="Your decision" accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   <RadioGroup name="cwdecision" value={decision.action} onChange={(e) => setDecision((d) => ({ ...d, action: e.target.value }))}>
                     <RadioGroupItem value="approve" label="Approve" />
                     <RadioGroupItem value="request_modification" label="Request modification (returns to student)" />
@@ -255,13 +255,13 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     <Textarea value={decision.reason} onChange={(e) => setDecision((d) => ({ ...d, reason: e.target.value }))} rows={2} placeholder="Reason for the student" />
                   )}
                   <Button onClick={submitDecision} loading={busy} disabled={busy}>Submit decision</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
             {showIssuePayment && (
               <SectionCard icon={CreditCard} title="Request payment" accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   <div>
                     <Label>Amount</Label>
                     <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
@@ -273,30 +273,30 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   </div>
                   <Text size="10px" color="muted">The payment link and QR are taken automatically from settings.</Text>
                   <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (Number(payForm.amount) !== (request.quote?.total || 0) && !payForm.remarks.trim())}>Send payment request</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
             {showVerify && (
               <SectionCard icon={BadgeCheck} title="Verify payment" accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
                     <RadioGroupItem value="verify" label="Verify — amount matches" />
                     <RadioGroupItem value="reject" label="Reject — back to student" />
                   </RadioGroup>
                   <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
                   <Button onClick={submitVerify} loading={busy} disabled={busy}>Submit</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
             {showAllot && (
               <SectionCard icon={Building2} title={`Allot a hostel · ${request.persons} bed(s)`} accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   {hostels.length === 0 ? (
                     <EmptyState variant="inline" message="No hostels with guest rooms are set up yet." />
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                    <VStack gap={2}>
                       {hostels.map((h) => {
                         const ok = h.available >= request.persons
                         return (
@@ -309,10 +309,10 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                           </label>
                         )
                       })}
-                    </div>
+                    </VStack>
                   )}
                   <Button onClick={submitAllot} loading={busy} disabled={busy || !hostelChoice}>Allot hostel</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
@@ -320,7 +320,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <SectionCard icon={DoorOpen} title={reassigning ? "Reassign rooms" : "Assign rooms"} accentColor="var(--color-primary)" allowOverflow headerAction={reassigning ? (
                 <button type="button" onClick={() => setReassigning(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)" }}>Cancel</button>
               ) : null}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
                   {(request.guests || []).map((g, i) => (
                     <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)", alignItems: "center" }}>
@@ -329,12 +329,12 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     </div>
                   ))}
                   <Button onClick={submitAssign} loading={busy} disabled={busy || roomOptions.length === 0}>{reassigning ? "Update assignment" : "Assign rooms"}</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
-          </div>
+          </VStack>
         </div>
-      </div>
+      </VStack>
 
       {showStudentProfile && student && (
         <StudentDetailModal

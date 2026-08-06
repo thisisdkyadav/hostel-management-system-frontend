@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -94,7 +94,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
   return (
     <Modal title={`Allocate Student to Room ${room.roomNumber}`} onClose={onClose} width={650}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+      <VStack gap={6}>
         <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
             <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
@@ -143,7 +143,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
               <Text size="base">No beds available in this room</Text>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
+            <HStack gap={2} wrap>
               {availableBeds.map((bedNumber) => (
                 <button key={bedNumber} onClick={() => handleBedSelect(bedNumber)}
                   style={{
@@ -175,7 +175,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                   {bedNumber}
                 </button>
               ))}
-            </div>
+            </HStack>
           )}
         </div>
 
@@ -226,13 +226,13 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                           }}
                         >
                           <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <HStack gap="none" align="center">
                               <div style={{ height: 'var(--spacing-9)', width: 'var(--spacing-9)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</div>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
                                 <Text as="div" size="sm" weight="medium" color="primary">{student.fullName}</Text>
                                 <Text as="div" size="sm" color="muted">{student.email}</Text>
                               </div>
-                            </div>
+                            </HStack>
                           </Table.Cell>
                           <Table.Cell className="hidden sm:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.studentId || student.rollNumber}</Table.Cell>
                           <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
@@ -280,7 +280,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
             {!allocating && <FaUserPlus />} {allocating ? "Allocating..." : "Allocate Student"}
           </Button>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

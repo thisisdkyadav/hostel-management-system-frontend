@@ -12,7 +12,7 @@ import { LoadingState, ErrorState, EmptyState } from "@/components/ui/feedback"
 import { CalendarDays, FileText, Clock, AlertCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const DashboardPage = () => {
     const navigate = useNavigate()
@@ -122,7 +122,7 @@ const DashboardPage = () => {
                     <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div style={{ display: "flex", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                    <HStack gap={3} wrap>
                         <Button onClick={() => navigate("/gymkhana/events")}>
                             <CalendarDays size={16} style={{ marginRight: "8px" }} />
                             View Events Calendar
@@ -134,7 +134,7 @@ const DashboardPage = () => {
                                 Pending Proposals ({stats.pendingProposals})
                             </Button>
                         )}
-                    </div>
+                    </HStack>
                 </CardContent>
             </Card>
 
@@ -142,7 +142,7 @@ const DashboardPage = () => {
             {stats.currentCalendar && (
                 <Card style={{ marginTop: "var(--spacing-4)" }}>
                     <CardContent>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                        <HStack gap={3} align="center">
                             <Text as="span" color="body">
                                 Calendar {stats.currentCalendar.academicYear}:
                             </Text>
@@ -154,7 +154,7 @@ const DashboardPage = () => {
                                     Request amendments through the Events page
                                 </Text>
                             )}
-                        </div>
+                        </HStack>
                     </CardContent>
                 </Card>
             )}

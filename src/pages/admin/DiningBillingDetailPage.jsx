@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge } from "czero/react"
-import { Modal, Page, Text } from "@/components/ui"
+import { HStack, Modal, Page, Text } from "@/components/ui"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -29,37 +29,37 @@ const BreakdownModal = ({ account, onClose }) => {
   return (
     <Modal isOpen={Boolean(account)} onClose={onClose} title={`${account.rollNumber || "Student"} — charge breakdown`} width={620}>
       <VStack gap="large">
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+        <HStack gap={3} justify="between" wrap>
           <Text as="span" size="sm" color="muted">
             {account.name || "—"} · Allocated <Text as="strong" color="secondary">{formatCurrency(account.allocatedAmount)}</Text>
           </Text>
           <StatusBadge status={formatClearance(account.clearance)} tone={clearanceTone(account.clearance)} />
-        </div>
+        </HStack>
 
         {account.perPeriod.length === 0 ? (
           <Alert type="info" icon>No charges yet — the student isn&apos;t allocated to any dining period in this billing period, or none have started.</Alert>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             {account.perPeriod.map((row) => (
               <div
                 key={row.periodId}
                 style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-secondary)" }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", marginBottom: "var(--spacing-1)" }}>
+                <HStack gap={2} justify="between" style={{ marginBottom: "var(--spacing-1)" }}>
                   <Text as="span" size="sm" weight="medium" color="secondary">
                     {formatDateRange(row.startDate, row.endDate)}
                   </Text>
                   <Text as="span" size="sm" weight="semibold" color="heading">
                     {formatCurrency(row.amount)}
                   </Text>
-                </div>
+                </HStack>
                 <Text as="span" size="xs" color="muted">
                   {row.chargeableDays} chargeable day{row.chargeableDays === 1 ? "" : "s"} × {formatCurrency(row.dailyRate)}
                   {" · "}{row.totalDays} elapsed − {row.rebateDays} on rebate
                 </Text>
               </div>
             ))}
-          </div>
+          </VStack>
         )}
       </VStack>
     </Modal>
@@ -194,15 +194,15 @@ const DiningBillingDetailPage = () => {
           )}
 
           {rateChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)", marginBottom: "var(--spacing-4)" }}>
+            <HStack gap={2} wrap style={{ marginBottom: "var(--spacing-4)" }}>
               {rateChips}
-            </div>
+            </HStack>
           )}
 
           <StatCards columns={4} stats={stats} />
 
           <div className="mt-[var(--spacing-6)] flex items-center justify-between gap-[var(--spacing-3)] flex-wrap">
-            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <HStack gap={2}>
               {CLEARANCE_FILTERS.map((filter) => (
                 <Button
                   key={filter.id}
@@ -213,7 +213,7 @@ const DiningBillingDetailPage = () => {
                   {filter.label}
                 </Button>
               ))}
-            </div>
+            </HStack>
             <div className="w-full sm:w-[18rem]">
               <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search roll / name..." />
             </div>

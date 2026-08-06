@@ -1,7 +1,7 @@
 import React from "react"
 import { FaCalendarAlt, FaInfoCircle, FaBuilding, FaUserFriends, FaMapMarkerAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text } from "@/components/ui"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 
 const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
@@ -22,32 +22,32 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
         <div style={{ marginBottom: 'var(--spacing-6)', paddingTop: 'var(--spacing-2)' }}>
           <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-3)' }}>{selectedEvent.eventName}</h2>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--gap-sm) var(--spacing-0)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
+          <HStack gap="var(--gap-sm) var(--spacing-0)" wrap>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
               <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" color="body">{date}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
               <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" color="body">{time}</Text>
-            </div>
+            </HStack>
             {selectedEvent.venue && (
-              <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
+              <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
                 <FaMapMarkerAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                 <Text as="span" color="body">{selectedEvent.venue}</Text>
-              </div>
+              </HStack>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
               <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" color="body">{selectedEvent.hostel?.name || "All Hostels"}</Text>
-            </div>
+            </HStack>
             {selectedEvent.gender && (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <HStack gap="none" align="center">
                 <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                 <Text as="span" color="body">{selectedEvent.gender.charAt(0).toUpperCase() + selectedEvent.gender.slice(1) + " Only"}</Text>
-              </div>
+              </HStack>
             )}
-          </div>
+          </HStack>
         </div>
 
         {/* Description */}

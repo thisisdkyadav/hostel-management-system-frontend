@@ -212,7 +212,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                     >
                       {gymkhanaCategoryDefinitions.length > 0 ? (
                         gymkhanaCategoryDefinitions.map((category) => (
-                          <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
+                          <HStack gap="none" align="center" key={category.key}>
                             <Checkbox
                               id={`gymkhana-category-${category.key}`}
                               name="categories"
@@ -233,7 +233,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                             >
                               {category.label}
                             </label>
-                          </div>
+                          </HStack>
                         ))
                       ) : (
                         <EmptyState variant="inline" message="No Gymkhana categories configured yet." />

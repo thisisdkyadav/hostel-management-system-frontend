@@ -168,14 +168,14 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
           </Button>
         ) : (
           // Case 3: Checked in but not checked out, show both options
-          <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+          <HStack gap={3}>
             <Button type="button" onClick={handleUpdateTimes} variant="primary" size="md">
               Update Check-in
             </Button>
             <Button type="button" onClick={handleCheckOut} variant="success" size="md">
               Check-out Visitor
             </Button>
-          </div>
+          </HStack>
         )}
       </div>
     </div>

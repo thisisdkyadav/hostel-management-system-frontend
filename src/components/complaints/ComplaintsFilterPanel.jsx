@@ -1,19 +1,19 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
-import { Select, Card, VStack, Label, Checkbox } from "@/components/ui"
+import { Card, Checkbox, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
   return (
     <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)' }}>
           Filters
         </h3>
         <Button onClick={resetFilters} variant="ghost" size="sm">
           <RotateCcw size={14} /> Reset
         </Button>
-      </div>
+      </HStack>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <VStack gap="xsmall">

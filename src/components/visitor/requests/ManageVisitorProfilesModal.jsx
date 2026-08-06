@@ -3,7 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input, Table } from "czero/react"
-import { Modal, Text, useConfirm } from "@/components/ui"
+import { HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()
@@ -37,7 +37,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
   return (
     <>
       <Modal title="Manage Visitor Profiles" onClose={onClose} width={800}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+        <VStack gap={6}>
           {/* Search Bar */}
           <div style={{ position: "relative" }}>
             <Input type="text" placeholder="Search profiles by name, relation, email, or phone" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} icon={<FaSearch />} />
@@ -79,14 +79,14 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                       onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-primary)")}
                     >
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <HStack gap="none" align="center">
                           <div style={{ flexShrink: "0", height: "var(--avatar-md)", width: "var(--avatar-md)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-text-muted)" }} />
                           </div>
                           <div style={{ marginLeft: "var(--spacing-4)" }}>
                             <Text as="div" size="sm" weight="medium" color="primary">{profile.name}</Text>
                           </div>
-                        </div>
+                        </HStack>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <Text as="div" size="sm" color="primary">{profile.email}</Text>
@@ -132,7 +132,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
               Close
             </Button>
           </div>
-        </div>
+        </VStack>
       </Modal>
 
       {showEditModal && selectedProfile && (

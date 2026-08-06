@@ -4,7 +4,7 @@ import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -75,7 +75,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       header: "Student Details",
       key: "studentDetails",
       render: (request) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           {request.studentProfileImage ? (
             <img style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover" }} src={getMediaUrl(request.studentProfileImage)} alt={request.studentName} />
           ) : (
@@ -87,7 +87,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             <Text as="div" size="sm" weight="medium" color="primary">{request.studentName || "N/A"}</Text>
             <Text as="div" size="xs" color="muted">{request.studentEmail || "No email"}</Text>
           </div>
-        </div>
+        </HStack>
       ),
     },
     {
@@ -129,7 +129,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             key: "actions",
             align: "right",
             render: (request) => (
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+              <HStack gap={2} justify="end">
                 <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="View details">
                   <FaEye />
                 </Button>
@@ -147,7 +147,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                     {request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Edit check times"><FaClock /></Button>}
                   </>
                 )}
-              </div>
+              </HStack>
             ),
           },
         ]

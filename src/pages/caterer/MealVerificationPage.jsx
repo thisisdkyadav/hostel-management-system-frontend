@@ -265,21 +265,21 @@ const MealVerificationPage = () => {
           <Card>
             <div className="flex flex-col lg:flex-row lg:items-center gap-[var(--spacing-5)]">
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <HStack gap={3} align="center">
                   <div className="flex items-center justify-center" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", flexShrink: 0 }}>
                     <UtensilsCrossed size={24} />
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                    <HStack gap={2} align="center">
                       <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>{currentMealLabel}</h2>
                       <LiveIndicator connected={isConnected} />
-                    </div>
+                    </HStack>
                     <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{currentMealTime}</p>
                     <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
                       {context.caterer?.name || "Caterer"} · {formatPeriodRange(context.currentPeriod)}
                     </p>
                   </div>
-                </div>
+                </HStack>
               </div>
               <div className="w-full lg:w-[280px] lg:flex-shrink-0">
                 <CapacityBar allocated={studentState.verifiedCount} total={studentState.total} label="Verified this meal" />
@@ -334,11 +334,11 @@ const MealVerificationPage = () => {
 
           {/* Live feed */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <HStack gap={3} align="center" justify="between" wrap>
+              <HStack gap={2} align="center">
                 <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Live Verification Feed</h3>
                 <LiveIndicator connected={isConnected} />
-              </div>
+              </HStack>
               <Tabs
                 variant="pills"
                 size="sm"
@@ -349,7 +349,7 @@ const MealVerificationPage = () => {
                 activeTab={feedFilter}
                 setActiveTab={setFeedFilter}
               />
-            </div>
+            </HStack>
 
             {visibleEntries.length === 0 ? (
               <EmptyState

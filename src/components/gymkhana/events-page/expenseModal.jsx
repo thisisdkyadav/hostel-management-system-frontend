@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -85,7 +85,7 @@ export const GymkhanaExpenseModal = ({
     onClose={onClose}
     footer={
       canEditExpenseForm ? (
-        <div style={{ display: "flex", gap: "var(--spacing-2)", alignItems: "center" }}>
+        <HStack gap={2} align="center">
           {canAdminEditExpense && handleAdminDeleteExpense && !editMode ? (
             <AdminEntityActions
               onDelete={handleAdminDeleteExpense}
@@ -113,7 +113,7 @@ export const GymkhanaExpenseModal = ({
               <Pencil size={16} /> Edit
             </Button>
           )}
-        </div>
+        </HStack>
       ) : null
     }
   >
@@ -126,16 +126,13 @@ export const GymkhanaExpenseModal = ({
         className="grid grid-cols-1 xl:grid-cols-3"
         style={{ gap: "var(--spacing-4)", alignItems: "start" }}
       >
-        <div
-          className="xl:col-span-2"
-          style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}
-        >
+        <VStack gap={4} className="xl:col-span-2">
           <EventDetailSectionCard
             icon={Receipt}
             title="Bills & Documents"
             accentColor="var(--color-primary)"
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <VStack gap={2}>
               {expenseEvent && (
                 <div
                   style={{
@@ -194,7 +191,7 @@ export const GymkhanaExpenseModal = ({
                 <Alert type="error">Rejection: {expenseData.rejectionReason}</Alert>
               )}
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {(expenseForm.bills || []).map((bill, index) => (
                   <div
                     key={bill.localId}
@@ -208,14 +205,7 @@ export const GymkhanaExpenseModal = ({
                       gap: "var(--spacing-2)",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "var(--spacing-2)",
-                      }}
-                    >
+                    <HStack gap={2} align="center" justify="between">
                       <Text as="span" size="xs" weight="semibold" color="heading">
                         Bill #{index + 1}
                       </Text>
@@ -228,7 +218,7 @@ export const GymkhanaExpenseModal = ({
                           <Trash2 size={12} />
                         </Button>
                       )}
-                    </div>
+                    </HStack>
 
                     <div
                       style={{
@@ -353,7 +343,7 @@ export const GymkhanaExpenseModal = ({
                     </div>
                   </div>
                 ))}
-              </div>
+              </VStack>
 
               {formEditable && (
                 <Button size="sm" variant="ghost" onClick={handleAddBillRow}>
@@ -390,7 +380,7 @@ export const GymkhanaExpenseModal = ({
                   />
                 </div>
               </div>
-            </div>
+            </VStack>
           </EventDetailSectionCard>
 
           <EventDetailSectionCard
@@ -398,15 +388,7 @@ export const GymkhanaExpenseModal = ({
             title="Bill Summary"
             accentColor="var(--color-success)"
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                flexWrap: "wrap",
-              }}
-            >
+            <HStack gap={3} align="center" justify="between" wrap>
               <EventDetailInfoRow label="Bills" value={`₹${expenseTotal.toLocaleString()}`} />
               <EventDetailInfoRow
                 label="Budget"
@@ -419,7 +401,7 @@ export const GymkhanaExpenseModal = ({
                   expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)"
                 }
               />
-            </div>
+            </HStack>
           </EventDetailSectionCard>
 
           {canApproveExpense && (
@@ -428,7 +410,7 @@ export const GymkhanaExpenseModal = ({
               title="Approval"
               accentColor="var(--color-warning)"
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {requiresExpenseNextApprovalSelection && (
                   <div
                     style={{
@@ -487,9 +469,7 @@ export const GymkhanaExpenseModal = ({
                     rows={2}
                   />
                 </div>
-                <div
-                  style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}
-                >
+                <HStack gap={2} justify="end">
                   <Button
                     size="sm"
                     variant="danger"
@@ -510,15 +490,15 @@ export const GymkhanaExpenseModal = ({
                   >
                     Approve
                   </Button>
-                </div>
-              </div>
+                </HStack>
+              </VStack>
             </EventDetailSectionCard>
           )}
-        </div>
+        </VStack>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+        <VStack gap={2}>
           <EventDetailSectionCard icon={Clock3} title="Status" accentColor="var(--color-info)">
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+            <VStack gap={1}>
               <EventDetailInfoRow
                 label="Status"
                 value={
@@ -540,7 +520,7 @@ export const GymkhanaExpenseModal = ({
                 label="Submitted By"
                 value={expenseData?.submittedBy?.name || "Not submitted"}
               />
-            </div>
+            </VStack>
           </EventDetailSectionCard>
 
           <EventDetailSectionCard
@@ -549,7 +529,7 @@ export const GymkhanaExpenseModal = ({
             accentColor="var(--color-text-secondary)"
           >
             {expenseData?._id ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <VStack gap={3}>
                 <AuditTimeline
                   key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
                   entityType="EventExpense"
@@ -565,7 +545,7 @@ export const GymkhanaExpenseModal = ({
                 >
                   <History size={14} /> View detailed history
                 </Button>
-              </div>
+              </VStack>
             ) : (
               <p
                 style={{
@@ -578,7 +558,7 @@ export const GymkhanaExpenseModal = ({
               </p>
             )}
           </EventDetailSectionCard>
-        </div>
+        </VStack>
       </div>
     )}
   </Modal>

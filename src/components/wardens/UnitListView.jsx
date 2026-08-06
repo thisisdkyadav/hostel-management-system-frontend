@@ -1,7 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const UnitListView = ({ units, onUnitClick }) => {
   const columns = [
@@ -9,7 +9,7 @@ const UnitListView = ({ units, onUnitClick }) => {
       header: "Unit Number",
       key: "unitNumber",
       render: (unit) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
             <FaBuilding style={{ color: "var(--color-primary)" }} />
           </div>
@@ -21,7 +21,7 @@ const UnitListView = ({ units, onUnitClick }) => {
               {unit.hostel}
             </div>
           </div>
-        </div>
+        </HStack>
       ),
     },
     {
@@ -41,17 +41,17 @@ const UnitListView = ({ units, onUnitClick }) => {
       key: "roomCount",
       className: "hidden lg:table-cell",
       render: (unit) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           <FaDoorOpen style={{ marginRight: "var(--spacing-2)", color: "var(--color-text-disabled)" }} />
           {unit.roomCount || 0} rooms
-        </div>
+        </HStack>
       ),
     },
     {
       header: "Occupancy",
       key: "occupancy",
       render: (unit) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           <div className="hidden sm:block" style={{ width: "var(--spacing-20)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2-5)", marginRight: "var(--spacing-2)", }} >
             <div style={{
               height: "var(--spacing-2-5)", borderRadius: "var(--radius-full)", backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
@@ -62,7 +62,7 @@ const UnitListView = ({ units, onUnitClick }) => {
           <Text as="span" size="sm" color="body">
             {unit.occupancy || 0}/{unit.capacity || 0}
           </Text>
-        </div>
+        </HStack>
       ),
     },
     {

@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"
 import {
@@ -83,17 +83,17 @@ export const GymkhanaCreateCalendarModal = ({
     width={460}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+      <HStack gap={2}>
         <Button variant="secondary" onClick={onClose}>
           Cancel
         </Button>
         <Button onClick={onCreateCalendar} loading={submitting} disabled={!newAcademicYear}>
           Create Calendar
         </Button>
-      </div>
+      </HStack>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+    <VStack gap={3}>
       <p
         style={{
           margin: 0,
@@ -114,7 +114,7 @@ export const GymkhanaCreateCalendarModal = ({
         options={availableYearsForCreation}
         placeholder="Select academic year"
       />
-    </div>
+    </VStack>
   </Modal>
 )
 
@@ -184,7 +184,7 @@ export const GymkhanaEventDetailsModal = ({
         : "calendar event"
 
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <div
             style={{
               display: "flex",
@@ -196,14 +196,7 @@ export const GymkhanaEventDetailsModal = ({
               borderBottom: "var(--border-1) solid var(--color-border-primary)",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--spacing-2)",
-                flexWrap: "wrap",
-              }}
-            >
+            <HStack gap={2} align="center" wrap>
               <Badge style={getCategoryBadgeStyle(selectedEvent.category)}>
                 {categoryLabels[selectedEvent.category] || selectedEvent.category}
               </Badge>
@@ -218,9 +211,9 @@ export const GymkhanaEventDetailsModal = ({
                   <CircleDollarSign size={12} />₹
                   {Number(selectedEvent.estimatedBudget || 0).toLocaleString()}
                 </span>
-              </div>
+              </HStack>
             {(canEditEvent || canRequestEventAmendment) && (
-              <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+              <HStack gap={2} wrap>
                 {canEditEvent && (
                   <Button size="sm" variant="secondary" onClick={() => onEditEvent?.(selectedEvent)}>
                     Edit Event
@@ -231,7 +224,7 @@ export const GymkhanaEventDetailsModal = ({
                     Request Amendment
                   </Button>
                 )}
-              </div>
+              </HStack>
             )}
           </div>
 
@@ -241,7 +234,7 @@ export const GymkhanaEventDetailsModal = ({
               title="Schedule"
               accentColor="var(--color-info)"
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <EventDetailInfoRow
                   label="Start"
                   value={
@@ -263,7 +256,7 @@ export const GymkhanaEventDetailsModal = ({
                   label="Budget"
                   value={`₹${Number(selectedEvent.estimatedBudget || 0).toLocaleString()}`}
                 />
-              </div>
+              </VStack>
             </EventDetailSectionCard>
 
             {((isGymkhanaRole && canCreateEventsCapability) ||
@@ -273,7 +266,7 @@ export const GymkhanaEventDetailsModal = ({
                 title="Workflow"
                 accentColor="var(--color-primary)"
               >
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <VStack gap={2}>
                   <div
                     style={{
                       display: "flex",
@@ -353,7 +346,7 @@ export const GymkhanaEventDetailsModal = ({
                       </Button>
                     )}
                   </div>
-                </div>
+                </VStack>
               </EventDetailSectionCard>
             )}
           </div>
@@ -374,7 +367,7 @@ export const GymkhanaEventDetailsModal = ({
               {selectedEvent.description || "No description provided."}
             </div>
           </EventDetailSectionCard>
-        </div>
+        </VStack>
       )
     })()}
   </Modal>
@@ -404,14 +397,14 @@ export const GymkhanaEventEditorModal = ({
     width={640}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+      <HStack gap={2}>
         <Button size="sm" variant="secondary" onClick={onClose}>
           Cancel
         </Button>
         <Button size="sm" onClick={onSave} loading={submitting} disabled={!canSaveEventInModal}>
           Save
         </Button>
-      </div>
+      </HStack>
     }
   >
     {isOpen && (
@@ -456,7 +449,7 @@ export const GymkhanaAmendmentModal = ({
     width={640}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+      <HStack gap={2}>
         <Button size="sm" variant="secondary" onClick={onClose}>
           Cancel
         </Button>
@@ -468,7 +461,7 @@ export const GymkhanaAmendmentModal = ({
         >
           Submit
         </Button>
-      </div>
+      </HStack>
     }
   >
     {isOpen && (
@@ -526,17 +519,17 @@ export const GymkhanaSettingsModal = ({
     width={560}
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
+      <HStack gap={2} justify="end">
         <Button size="sm" variant="secondary" onClick={onClose}>
           Close
         </Button>
         <Button size="sm" onClick={onSaveSettings} loading={submitting}>
           Save Settings
         </Button>
-      </div>
+      </HStack>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+    <VStack gap={3}>
       <Text as="span" size="xs" color="muted">
         Configure lock state, proposal rules, and category budget caps for {calendar?.academicYear}
       </Text>
@@ -638,7 +631,7 @@ export const GymkhanaSettingsModal = ({
           {(settingsForm?.categoryDefinitions || []).map((category) => {
             const allocated = Number(budgetSummary?.byCategory?.[category.key] || 0)
             return (
-              <div key={category.key} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+              <VStack gap={1} key={category.key}>
                 <label style={formLabelStyles} htmlFor={`budget-cap-${category.key}`}>
                   {category.label} Cap
                 </label>
@@ -654,11 +647,11 @@ export const GymkhanaSettingsModal = ({
                 <Text as="span" size="xs" color="muted">
                   Current allocated budget: ₹{allocated.toLocaleString()}
                 </Text>
-              </div>
+              </VStack>
             )
           })}
         </div>
       </div>
-    </div>
+    </VStack>
   </Modal>
 )

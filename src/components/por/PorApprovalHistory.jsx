@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, Clock, FileText, Send, X } from "lucide-react"
 import { porApi } from "@/service"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const ACTION_ICONS = {
   submitted: Send,
@@ -115,13 +115,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: compact ? "var(--spacing-2)" : "var(--spacing-3)",
-      }}
-    >
+    <VStack gap={compact ? "var(--spacing-2)" : "var(--spacing-3)"}>
       {history.map((log, idx) => {
         const Icon = ACTION_ICONS[log.action] || Clock
         const baseColor = ACTION_COLORS[log.action] || "default"
@@ -172,20 +166,12 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   padding: "var(--spacing-3)",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "var(--spacing-2)",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <HStack gap={2} align="center" justify="between" wrap>
                   <Badge variant={color}>{actionLabel}</Badge>
                   <Text as="span" size="11px" color="placeholder">
                     {formatTimestamp(log.createdAt)}
                   </Text>
-                </div>
+                </HStack>
 
                 <div style={{ marginTop: "var(--spacing-2)", display: "grid", gap: "4px" }}>
                   <Text as="span" size="xs" weight="semibold" color="secondary">
@@ -269,21 +255,12 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                 padding: "var(--spacing-3)",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "var(--spacing-2)",
-                  flexWrap: "wrap",
-                  marginBottom: "var(--spacing-1)",
-                }}
-              >
+              <HStack gap={2} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-1)" }}>
                 <Badge variant={color}>{actionLabel}</Badge>
                 <Text as="span" size="xs" color="muted">
                   {safeActorName}
                 </Text>
-              </div>
+              </HStack>
 
               {safeComments ? (
                 <p
@@ -311,7 +288,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
           </div>
         )
       })}
-    </div>
+    </VStack>
   )
 }
 

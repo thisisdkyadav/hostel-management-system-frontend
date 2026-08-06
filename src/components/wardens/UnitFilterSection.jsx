@@ -1,5 +1,5 @@
 import React from "react"
-import { Select, VStack, Label } from "@/components/ui"
+import { HStack, Label, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
@@ -23,14 +23,14 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
 
   return (
     <div style={{ backgroundColor: "var(--card-bg)", padding: "var(--spacing-6)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", marginBottom: "var(--spacing-6)", }} >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
         <h2 style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xl)" }}>
           Filter {currentView === "units" ? "Units" : "Rooms"}
         </h2>
         <Button onClick={resetFilters} variant="ghost" size="sm">
           Reset Filters
         </Button>
-      </div>
+      </HStack>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="md:grid-cols-3 lg:grid-cols-4" >
         {/* Hostel Filter */}

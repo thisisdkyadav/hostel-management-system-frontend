@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, FileInput, Grid, Label, SearchInput, Select, Spinner, Switch, Text, Textarea } from "@/components/ui"
+import { Checkbox, EmptyState, FileInput, Grid, HStack, Label, SearchInput, Select, Spinner, Switch, Text, Textarea, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -174,13 +174,13 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+    <VStack gap={6}>
       {/* Branding */}
       <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
         <h3 style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
           Header & logo
         </h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
+        <HStack gap={4} align="center" wrap>
           <div
             style={{
               width: 120,
@@ -200,9 +200,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
               <Text as="span" size="xs" color="muted">No logo</Text>
             )}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             <FileInput ref={logoInputRef} accept="image/png,image/jpeg,image/webp" hidden onChange={handleLogoSelect} />
-            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <HStack gap={2}>
               <Button variant="outline" size="sm" loading={uploadingLogo} onClick={() => logoInputRef.current?.click()}>
                 <Upload size={15} /> {logoRef ? "Replace logo" : "Upload logo"}
               </Button>
@@ -218,9 +218,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                   <Trash2 size={15} /> Remove
                 </Button>
               ) : null}
-            </div>
-          </div>
-        </div>
+            </HStack>
+          </VStack>
+        </HStack>
 
         <Grid min={240} gap={4}>
           <div>
@@ -240,7 +240,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
           Body text
         </Label>
         <Textarea id="cert-body" value={body} onChange={(event) => setBody(event.target.value)} rows={5} placeholder="This is to certify that {{name}}..." />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-1-5)", alignItems: "center" }}>
+        <HStack gap="var(--spacing-1-5)" align="center" wrap>
           <Text as="span" size="xs" color="muted">Insert variable:</Text>
           {SUPPORTED_VARIABLES.map((variable) => (
             <button
@@ -260,7 +260,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
               {`{{${variable}}}`}
             </button>
           ))}
-        </div>
+        </HStack>
       </section>
 
       {/* Theme */}
@@ -321,7 +321,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
 
         {/* Selected, ordered */}
         {signatories.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             {signatories.map((id, index) => {
               const entry = directoryById.get(id)
               return (
@@ -361,7 +361,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                 </div>
               )
             })}
-          </div>
+          </VStack>
         ) : (
           <EmptyState variant="inline" message="No signatories selected yet." />
         )}
@@ -414,7 +414,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
           Save certificate template
         </Button>
       </div>
-    </div>
+    </VStack>
   )
 }
 

@@ -94,7 +94,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           </VStack>
 
           {/* Occupancy Ring */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-1-5)' }}>
+          <VStack gap="var(--spacing-1-5)" align="center">
             <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
               <svg
                 style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
@@ -111,7 +111,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               </div>
             </div>
             <Text as="span" size="xs" color="muted" weight="medium">Occupancy</Text>
-          </div>
+          </VStack>
         </CardBody>
 
         {/* Action Buttons */}

@@ -63,7 +63,7 @@ const FaceScannerEntriesPage = () => {
                     marginBottom: "var(--spacing-4)",
                 }}
             >
-                <div style={{ display: "flex", alignItems: "flex-start" }}>
+                <HStack gap="none" align="start">
                     <AlertTriangle
                         style={{
                             height: "var(--icon-xl)",
@@ -84,7 +84,7 @@ const FaceScannerEntriesPage = () => {
                         >
                             Cross-Hostel Entry Requires Reason
                         </h3>
-                        <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)" }}>
+                        <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                             <div
                                 style={{
                                     width: "var(--icon-4xl)",
@@ -140,7 +140,7 @@ const FaceScannerEntriesPage = () => {
                                     <StatusBadge status={entry.status} />
                                 </div>
                             </div>
-                        </div>
+                        </HStack>
                         <p
                             style={{
                                 color: "var(--color-warning-text)",
@@ -189,7 +189,7 @@ const FaceScannerEntriesPage = () => {
                             {isUpdating ? null : <Check size={16} />} {isUpdating ? "Updating..." : "Add Check-In Reason"}
                         </Button>
                     </div>
-                </div>
+                </HStack>
             </div>
         )
     }
@@ -288,15 +288,8 @@ const FaceScannerEntriesPage = () => {
 
                 {/* Main Entries Card */}
                 <Card style={{ padding: "var(--spacing-6)" }}>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginBottom: "var(--spacing-4)",
-                        }}
-                    >
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                    <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
+                        <HStack gap="none" align="center">
                             <div
                                 style={{
                                     padding: "var(--spacing-2-5)",
@@ -317,7 +310,7 @@ const FaceScannerEntriesPage = () => {
                             >
                                 Recent Face Scanner Entries
                             </h2>
-                        </div>
+                        </HStack>
                         <Button
                             onClick={refresh}
                             disabled={loading}
@@ -327,7 +320,7 @@ const FaceScannerEntriesPage = () => {
                         >
                             {loading ? null : <RefreshCw size={16} />} {loading ? "Loading..." : "Refresh"}
                         </Button>
-                    </div>
+                    </HStack>
 
                     {/* Loading State */}
                     {loading && entries.length === 0 ? (
@@ -389,7 +382,7 @@ const FaceScannerEntriesPage = () => {
                                         return (
                                             <Table.Row className="table-row-hover" style={{ backgroundColor: isNewEntry ? "var(--color-success-bg-light)" : undefined }} key={entry._id}>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <HStack gap="none" align="center">
                                                         <div
                                                             style={{
                                                                 width: "var(--avatar-md)",
@@ -435,7 +428,7 @@ const FaceScannerEntriesPage = () => {
                                                                 {entry.userId?.email}
                                                             </Text>
                                                         </div>
-                                                    </div>
+                                                    </HStack>
                                                 </Table.Cell>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     <Text as="div" size="sm" color="muted">
@@ -457,7 +450,7 @@ const FaceScannerEntriesPage = () => {
                                                 </Table.Cell>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     {entry.isSameHostel === false ? (
-                                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                                        <HStack gap="none" align="center">
                                                             <AlertTriangle
                                                                 style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }}
                                                                 size={16}
@@ -477,7 +470,7 @@ const FaceScannerEntriesPage = () => {
                                                                     (Reason provided)
                                                                 </div>
                                                             )}
-                                                        </div>
+                                                        </HStack>
                                                     ) : (
                                                         <Text as="span" size="sm" color="muted">
                                                             No

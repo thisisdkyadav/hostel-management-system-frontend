@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react"
 import { Button, Tabs } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { Modal, Text, VStack } from "@/components/ui"
 import { Spinner } from "@/components/ui/feedback"
 import { useToast } from "@/components/ui"
 import { Clock, RotateCcw } from "lucide-react"
@@ -143,7 +143,7 @@ const DeletedItemsModal = ({ isOpen = true, onClose, onRestored }) => {
   const renderList = (items, kind, label) => {
     if (!items.length) return <EmptyState label={label} />
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+      <VStack gap={3}>
         {items.map((item, idx) => (
           <DeletedRow
             key={item._id}
@@ -153,7 +153,7 @@ const DeletedItemsModal = ({ isOpen = true, onClose, onRestored }) => {
             lastRow={idx === items.length - 1}
           />
         ))}
-      </div>
+      </VStack>
     )
   }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaTasks, FaCheckCircle, FaHourglass, FaExclamationTriangle, FaChartBar } from "react-icons/fa"
-import { Grid, StatCard } from "@/components/ui"
+import { Grid, HStack, StatCard } from "@/components/ui"
 import { Button } from "czero/react"
 import DetailedTaskStats from "./DetailedTaskStats"
 
@@ -50,12 +50,12 @@ const TaskStats = ({ stats }) => {
 
   return (
     <div style={{ marginBottom: 'var(--spacing-6)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
         <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Task Overview</h2>
         <Button onClick={() => setShowDetailed(!showDetailed)} variant="outline" size="sm">
           <FaChartBar /> {showDetailed ? "Simple View" : "Detailed View"}
         </Button>
-      </div>
+      </HStack>
 
       {showDetailed ? (
         <DetailedTaskStats stats={stats} />

@@ -139,7 +139,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
   return (
     <Modal title={`Update Student Insurance - ${providerName}`} onClose={onClose} width={700}>
       {step === 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        <VStack gap={5}>
           <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-8)', textAlign: 'center', cursor: 'pointer', backgroundColor: 'var(--color-bg-hover)', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
             <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-muted)' }} />
             <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Drag and drop a CSV file here, or click to select a file</p>
@@ -148,7 +148,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
             </p>
             <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <VStack gap="none" align="center">
             <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
               <FaFileDownload /> Download CSV Template
             </Button>
@@ -164,7 +164,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
                 </li>
               </ul>
             </div>
-          </div>
+          </VStack>
           {csvFile && (
             <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text as="span" size="sm" color="var(--color-primary-dark)">
@@ -189,15 +189,15 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
               <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Processing file...</span>
             </div>
           )}
-        </div>
+        </VStack>
       )}
 
       {step === 2 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center">
+        <VStack gap={5}>
+          <VStack gap="none" align="start" justify="between" style={{ marginBottom: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center">
             <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Preview Updates</h3>
             <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)' }} className="sm:mt-0">{parsedData.length} students will be updated</div>
-          </div>
+          </VStack>
 
           <div style={{ border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', maxHeight: '24rem', overflowY: 'auto' }}>
             <Table>
@@ -223,7 +223,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
           </div>
 
           {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}
-        </div>
+        </VStack>
       )}
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

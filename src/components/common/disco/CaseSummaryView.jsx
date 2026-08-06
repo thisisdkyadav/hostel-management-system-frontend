@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
-import { Badge, Text } from "@/components/ui"
+import { Badge, HStack, Text, VStack } from "@/components/ui"
 import CompactStudentTag from "@/components/ui/data-display/CompactStudentTag"
 import EmailDetailModal from "./EmailDetailModal"
 
@@ -164,7 +164,7 @@ const CaseSummaryView = ({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+    <VStack gap={3}>
       {/* Case Header */}
       <div
         style={{
@@ -177,23 +177,23 @@ const CaseSummaryView = ({
           border: "1px solid var(--color-border-primary)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <HStack gap={12} align="center">
           {getStatusIcon(finalDecision.status || caseData.caseStatus)}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <HStack gap={8} align="center">
               <Text as="span" size="base" weight="semibold" color="primary">
                 Case #{caseData.id?.slice(-6)}
               </Text>
               <Badge variant={getStatusVariant(finalDecision.status || caseData.caseStatus)}>
                 {formatStatusLabel(finalDecision.status || caseData.caseStatus)}
               </Badge>
-            </div>
+            </HStack>
             <Text as="span" size="xs" color="muted">
               Started by {caseData.startedBy?.name || "Unknown"} • {new Date(caseData.createdAt).toLocaleDateString()}
             </Text>
           </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        </HStack>
+        <HStack gap={8} align="center">
           <Button
             size="sm"
             variant="outline"
@@ -219,7 +219,7 @@ const CaseSummaryView = ({
               Download Bundle
             </Button>
           )}
-        </div>
+        </HStack>
       </div>
 
       {/* Final Decision */}
@@ -280,7 +280,7 @@ const CaseSummaryView = ({
         </div>
         {expandedSections.students && (
           <div style={sectionContentStyle}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <VStack gap={12}>
               {accusedStudents.length > 0 && (
                 <div>
                   <div
@@ -294,7 +294,7 @@ const CaseSummaryView = ({
                   >
                     Accused ({accusedStudents.length})
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <HStack gap={6} wrap>
                     {accusedStudents.map((student) => (
                       <CompactStudentTag
                         key={student.id}
@@ -303,7 +303,7 @@ const CaseSummaryView = ({
                         role="accused"
                       />
                     ))}
-                  </div>
+                  </HStack>
                 </div>
               )}
               {accusingStudents.length > 0 && (
@@ -319,7 +319,7 @@ const CaseSummaryView = ({
                   >
                     Accusing ({accusingStudents.length})
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <HStack gap={6} wrap>
                     {accusingStudents.map((student) => (
                       <CompactStudentTag
                         key={student.id}
@@ -328,10 +328,10 @@ const CaseSummaryView = ({
                         role="accusing"
                       />
                     ))}
-                  </div>
+                  </HStack>
                 </div>
               )}
-            </div>
+            </VStack>
           </div>
         )}
       </div>
@@ -354,7 +354,7 @@ const CaseSummaryView = ({
         </div>
         {expandedSections.documents && (
           <div style={sectionContentStyle}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <VStack gap={12}>
               {/* Statements */}
               {statements.length > 0 && (
                 <div>
@@ -368,7 +368,7 @@ const CaseSummaryView = ({
                   >
                     Statements
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <HStack gap={6} wrap>
                     {statements.map((statement, index) => (
                       <button
                         key={statement.id || index}
@@ -386,7 +386,7 @@ const CaseSummaryView = ({
                         {statement.student?.name || "Student"}
                       </button>
                     ))}
-                  </div>
+                  </HStack>
                 </div>
               )}
 
@@ -403,7 +403,7 @@ const CaseSummaryView = ({
                   >
                     Evidence
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <HStack gap={6} wrap>
                     {evidenceDocuments.map((doc, index) => (
                       <button
                         key={doc.id || index}
@@ -417,7 +417,7 @@ const CaseSummaryView = ({
                         {doc.pdfName || `Evidence ${index + 1}`}
                       </button>
                     ))}
-                  </div>
+                  </HStack>
                 </div>
               )}
 
@@ -434,7 +434,7 @@ const CaseSummaryView = ({
                   >
                     Extra Documents
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  <HStack gap={6} wrap>
                     {extraDocuments.map((doc, index) => (
                       <button
                         key={doc.id || index}
@@ -448,7 +448,7 @@ const CaseSummaryView = ({
                         {doc.pdfName || `Document ${index + 1}`}
                       </button>
                     ))}
-                  </div>
+                  </HStack>
                 </div>
               )}
 
@@ -484,7 +484,7 @@ const CaseSummaryView = ({
                   </button>
                 </div>
               )}
-            </div>
+            </VStack>
           </div>
         )}
       </div>
@@ -508,7 +508,7 @@ const CaseSummaryView = ({
           </div>
           {expandedSections.emails && (
             <div style={sectionContentStyle}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <VStack gap={8}>
                 {emailLogs.map((log, index) => (
                   <div
                     key={log.id || index}
@@ -522,7 +522,7 @@ const CaseSummaryView = ({
                       border: "1px solid var(--color-border-light)",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <HStack gap={8} align="center">
                       <Mail size={14} style={{ color: "var(--color-text-muted)" }} />
                       <div>
                         <Text as="div" size="sm" weight="medium" color="primary">
@@ -532,7 +532,7 @@ const CaseSummaryView = ({
                           {new Date(log.sentAt).toLocaleString()}
                         </Text>
                       </div>
-                    </div>
+                    </HStack>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -545,7 +545,7 @@ const CaseSummaryView = ({
                     </Button>
                   </div>
                 ))}
-              </div>
+              </VStack>
             </div>
           )}
         </div>
@@ -570,7 +570,7 @@ const CaseSummaryView = ({
           </div>
           {expandedSections.actions && (
             <div style={sectionContentStyle}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <VStack gap={12}>
                 {disciplinaryActions.map((action, index) => (
                   <div
                     key={action.actionId || index}
@@ -581,14 +581,7 @@ const CaseSummaryView = ({
                       border: "1px solid var(--color-border-light)",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginBottom: 8,
-                      }}
-                    >
+                    <HStack gap="none" align="center" justify="between" style={{ marginBottom: 8 }}>
                       <Text as="span" size="sm" weight="semibold" color="primary">
                         {action.student?.name || "Student"}
                       </Text>
@@ -606,7 +599,7 @@ const CaseSummaryView = ({
                           {formatDate(action.createdDate || action.date)}
                         </span>
                       )}
-                    </div>
+                    </HStack>
                     <div style={infoRowStyle}>
                       <span style={infoLabelStyle}>Created:</span>
                       <span style={infoValueStyle}>{formatDate(action.createdDate || action.date)}</span>
@@ -637,7 +630,7 @@ const CaseSummaryView = ({
                     )}
                   </div>
                 ))}
-              </div>
+              </VStack>
             </div>
           )}
         </div>
@@ -649,7 +642,7 @@ const CaseSummaryView = ({
         onClose={() => setEmailDetailModal({ open: false, emailLog: null })}
         emailLog={emailDetailModal.emailLog}
       />
-    </div>
+    </VStack>
   )
 }
 

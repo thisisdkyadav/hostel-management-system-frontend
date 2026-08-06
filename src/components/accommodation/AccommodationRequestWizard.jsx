@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
@@ -221,7 +221,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       width={680}
       footer={footer}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+      <VStack gap={5}>
         <StepIndicator steps={STEPS} currentStep={STEPS[step].id} />
 
         {error && (
@@ -231,19 +231,19 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         )}
 
         {step === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <div>
               <Label htmlFor="applicantPhone">Your contact number</Label>
               <Input name="applicantPhone" value={form.applicantPhone} onChange={(e) => setForm((p) => ({ ...p, applicantPhone: e.target.value }))} placeholder="Phone number" />
             </div>
             {form.guests.map((g, i) => (
               <div key={i} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <HStack gap="none" align="center" justify="between">
                   <Text as="span" size="sm" weight="medium">Guest {i + 1}</Text>
                   {form.guests.length > 1 && (
                     <IconButton icon={<Trash2 size={16} />} variant="ghost" size="small" ariaLabel="Remove guest" onClick={() => removeGuest(i)} />
                   )}
-                </div>
+                </HStack>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
                   <Input placeholder="Full name *" value={g.name} onChange={(e) => setGuest(i, "name", e.target.value)} />
                   <Select placeholder="Gender *" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
@@ -254,11 +254,11 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
               </div>
             ))}
             <Button variant="outline" size="sm" onClick={addGuest}><Plus size={16} /> Add guest</Button>
-          </div>
+          </VStack>
         )}
 
         {step === 1 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
               <div>
                 <Label required>From</Label>
@@ -294,11 +294,11 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <Input value={form.facultyAdvisorEmail} onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))} placeholder="Your faculty advisor's email" />
               </div>
             )}
-          </div>
+          </VStack>
         )}
 
         {step === 2 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <div style={{ backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", fontSize: "var(--font-size-sm)", display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
               <div><strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} → {form.stay.toDate || "—"}</div>
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
@@ -315,9 +315,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             <Text size="xs" color="muted">
               Final amount is confirmed by the Chief Warden office at approval.
             </Text>
-          </div>
+          </VStack>
         )}
-      </div>
+      </VStack>
     </Modal>
   )
 }

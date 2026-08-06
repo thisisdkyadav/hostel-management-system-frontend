@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, Card, Spinner, Text } from "@/components/ui"
+import { Alert, Card, HStack, Spinner, Text } from "@/components/ui"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
@@ -301,13 +301,13 @@ const ElectionBallotPage = () => {
               </div>
             ) : null}
 
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <HStack gap="12px" wrap>
               {tokenState === "active" && !successMessage ? (
                 <Button onClick={submitBallot} loading={submitting} disabled={!hasCompletedSelections}>
                   Submit Vote
                 </Button>
               ) : null}
-            </div>
+            </HStack>
           </div>
         </Card>
       </div>

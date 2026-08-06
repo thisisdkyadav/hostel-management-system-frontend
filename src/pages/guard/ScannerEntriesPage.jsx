@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -29,11 +29,11 @@ const ScannerEntriesPage = () => {
     const isUpdating = updatingReasons[entry._id], currentReason = reasonInputs[entry._id] || ""
     return (
       <div style={{ backgroundColor: "var(--color-warning-bg-light)", border: "var(--border-2) solid var(--color-warning)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-4)" }}>
-        <div style={{ display: "flex", alignItems: "flex-start" }}>
+        <HStack gap="none" align="start">
           <FaExclamationTriangle style={{ height: "var(--icon-xl)", width: "var(--icon-xl)", color: "var(--color-warning)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
           <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-2)" }}>Cross-Hostel Entry Requires Reason</h3>
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)" }}>
+            <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
               <div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
                 {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} /></div>}
               </div>
@@ -42,7 +42,7 @@ const ScannerEntriesPage = () => {
                 <Text size="sm" color="muted">{entry.userId.rollNumber}</Text>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}><span>Room: {entry.room}{entry.bed}</span><StatusBadge status={entry.status} /></div>
               </div>
-            </div>
+            </HStack>
             <p style={{ color: "var(--color-warning-text)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</p>
             <div style={{ marginBottom: "var(--spacing-3)" }}>
               <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text></label>
@@ -52,7 +52,7 @@ const ScannerEntriesPage = () => {
               {isUpdating ? null : <FaCheck />} {isUpdating ? "Updating..." : "Add Check-In Reason"}
             </Button>
           </div>
-        </div>
+        </HStack>
       </div>
     )
   }
@@ -65,16 +65,16 @@ const ScannerEntriesPage = () => {
           <Text size="base" color="muted">Entries recorded from external QR scanners with keyboard input.</Text>
         </div>
         <div style={{ marginBottom: "var(--spacing-6)", backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
+          <HStack gap="none" align="start">
             <FaInfoCircle style={{ color: "var(--color-primary)", marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
             <div>
               <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>External QR Scanner Instructions:</p>
               <div className="info-grid" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                <div style={{ display: "flex", alignItems: "center" }}><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-in Scanner: Ends with</span><FaArrowDown style={{ margin: "0 var(--spacing-2)", color: "var(--color-success)" }} /><span>(Down Arrow)</span></div>
-                <div style={{ display: "flex", alignItems: "center" }}><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-out Scanner: Ends with</span><FaArrowRight style={{ margin: "0 var(--spacing-2)", color: "var(--color-warning)", transform: "rotate(90deg)" }} /><span>(Tab Key)</span></div>
+                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-in Scanner: Ends with</span><FaArrowDown style={{ margin: "0 var(--spacing-2)", color: "var(--color-success)" }} /><span>(Down Arrow)</span></HStack>
+                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-out Scanner: Ends with</span><FaArrowRight style={{ margin: "0 var(--spacing-2)", color: "var(--color-warning)", transform: "rotate(90deg)" }} /><span>(Tab Key)</span></HStack>
               </div>
             </div>
-          </div>
+          </HStack>
         </div>
         {error && <div style={{ marginBottom: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", display: "flex", alignItems: "flex-start" }}><FaTimes style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} /><Text size="sm">{error}</Text></div>}
         {pendingCrossHostelEntries.length > 0 && (
@@ -84,15 +84,15 @@ const ScannerEntriesPage = () => {
           </div>
         )}
         <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-6)", boxShadow: "var(--shadow-sm)", border: "var(--border-1) solid var(--color-border-light)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--spacing-4)" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
+            <HStack gap="none" align="center">
               <div style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)", color: "var(--color-primary)" }}><FaHistory size={20} /></div>
               <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>Recent Scanner Entries</h2>
-            </div>
+            </HStack>
             <Button onClick={fetchScannerEntries} disabled={loading} variant="primary" size="sm" loading={loading}>
               {loading ? null : <FaHistory />} {loading ? "Loading..." : "Refresh"}
             </Button>
-          </div>
+          </HStack>
           {loading && scannerEntries.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTop: "var(--border-4) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", margin: "0 auto var(--spacing-4)" }}></div><Text color="muted">Loading scanner entries...</Text></div>
           ) : scannerEntries.length === 0 ? (
@@ -109,12 +109,12 @@ const ScannerEntriesPage = () => {
                     return (
                       <Table.Row className="table-row-hover" key={entry._id}>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          <div style={{ display: "flex", alignItems: "center" }}>
+                          <HStack gap="none" align="center">
                             <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
                               {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-lg)", height: "var(--icon-lg)" }} /></div>}
                             </div>
                             <div><Text as="div" size="sm" weight="medium" color="primary">{entry.userId.name}</Text><Text as="div" size="sm" color="muted">{entry.userId.email}</Text></div>
-                          </div>
+                          </HStack>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><Text as="div" size="sm" color="muted">{entry.room}{entry.bed}-{entry.unit}</Text><Text as="div" size="xs" color="light">{entry.hostelName}</Text></Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{date}</Table.Cell>
@@ -126,7 +126,7 @@ const ScannerEntriesPage = () => {
                           </div>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          {entry.isSameHostel === false ? <div style={{ display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</div> : <Text as="span" size="sm" color="muted">No</Text>}
+                          {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}
                         </Table.Cell>
                       </Table.Row>
                     )

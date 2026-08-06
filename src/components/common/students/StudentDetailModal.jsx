@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Select, Text, useConfirm } from "@/components/ui"
+import { HStack, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -286,7 +286,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         return (
           <>
             <div style={{ background: "linear-gradient(to right, var(--color-primary-bg), var(--color-bg-primary))", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", marginBottom: "var(--spacing-6)", boxShadow: "var(--shadow-sm)" }}>
-              <div style={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
+              <HStack gap="none" align="start">
                 {/* Profile Image - Left */}
                 {studentDetails.profileImage ? (
                   <img
@@ -318,20 +318,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <h3 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>{studentDetails.name || "N/A"}</h3>
                   <p style={{ color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)", fontFamily: "var(--font-mono)" }}>{studentDetails.rollNumber || "N/A"}</p>
 
-                  <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-4)", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                  <HStack gap={4} align="center">
+                    <HStack gap="none" align="center">
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <Text as="span" color="body" size="sm">{studentDetails.email || "N/A"}</Text>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    </HStack>
+                    <HStack gap="none" align="center">
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <Text as="span" color="body" size="sm">{studentDetails.secondaryEmail || "N/A"}</Text>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    </HStack>
+                    <HStack gap="none" align="center">
                       <Phone size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <Text as="span" color="body" size="sm">{studentDetails.phone || "N/A"}</Text>
-                    </div>
-                  </div>
+                    </HStack>
+                  </HStack>
                 </div>
 
                 {/* Status Badge - Far Right */}
@@ -387,7 +387,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </span>
                   </div>
                 )}
-              </div>
+              </HStack>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-5)" }}>
@@ -396,34 +396,34 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <GraduationCap size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Academic Information</h4>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <VStack gap="var(--spacing-2-5)">
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Department:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.department || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Degree:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.degree || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Batch:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.batch || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
+                  </HStack>
+                  <HStack gap={4} justify="between">
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Groups:</span>
                     <Text as="span" weight="medium" size="sm" color="body" align="right">
                       {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
                     </Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Year:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.year || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Admission Date:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.admissionDate)}</Text>
-                  </div>
-                </div>
+                  </HStack>
+                </VStack>
               </div>
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
@@ -431,26 +431,26 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Building size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Hostel Information</h4>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <VStack gap="var(--spacing-2-5)">
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Hostel:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.hostel || "N/A"}</Text>
-                  </div>
+                  </HStack>
                   {studentDetails.hostelType === "unit-based" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted" size="sm">Unit Number:</Text>
                       <Text as="span" weight="medium" size="sm" color="body">{studentDetails.unit || "N/A"}</Text>
-                    </div>
+                    </HStack>
                   )}
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Room Number:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.room || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Bed Number:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.bedNumber || "N/A"}</Text>
-                  </div>
-                </div>
+                  </HStack>
+                </VStack>
               </div>
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
@@ -458,26 +458,26 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <Calendar size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Personal Information</h4>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <VStack gap="var(--spacing-2-5)">
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Gender:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.gender || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Date of Birth:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.dateOfBirth)}</Text>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
+                  </HStack>
+                  <VStack gap="none">
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Address:</span>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
+                  </VStack>
+                  <HStack gap={4} justify="between">
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Secondary Email:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right", wordBreak: "break-word" }}>
                       {studentDetails.secondaryEmail || "N/A"}
                     </span>
-                  </div>
-                </div>
+                  </HStack>
+                </VStack>
               </div>
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
@@ -485,24 +485,24 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <MapPin size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Emergency Contact</h4>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <VStack gap="var(--spacing-2-5)">
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Guardian Name:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardian || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Guardian Phone:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianPhone || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Guardian Email:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.guardianEmail || "N/A"}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  </HStack>
+                  <HStack gap="none" justify="between">
                     <Text as="span" color="muted" size="sm">Faculty Advisor Email:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.facultyAdvisorEmail || "N/A"}</Text>
-                  </div>
-                </div>
+                  </HStack>
+                </VStack>
               </div>
 
               {/* if day scholar is true then show the day scholar details */}
@@ -511,24 +511,24 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                     <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Day Scholar Details</h4>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <VStack gap="var(--spacing-2-5)">
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted" size="sm">Address:</Text>
                       <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.address || "N/A"}</Text>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </HStack>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted" size="sm">Owner Name:</Text>
                       <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerName || "N/A"}</Text>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </HStack>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted" size="sm">Owner Phone:</Text>
                       <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</Text>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </HStack>
+                    <HStack gap="none" justify="between">
                       <Text as="span" color="muted" size="sm">Owner Email:</Text>
                       <Text as="span" weight="medium" size="sm" color="body">{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</Text>
-                    </div>
-                  </div>
+                    </HStack>
+                  </VStack>
                 </div>
               )}
             </div>
@@ -668,10 +668,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 <Text color="muted">No feedback found for this student</Text>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <VStack gap={4}>
                 {feedbacks.map((feedback) => (
                   <div key={feedback._id} style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--spacing-2)" }}>
+                    <HStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                       <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{feedback.title}</h4>
                       <span
                         style={{
@@ -687,7 +687,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       >
                         {feedback.status}
                       </span>
-                    </div>
+                    </HStack>
                     <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>{feedback.description}</p>
                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", justifyContent: "space-between" }}>
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
@@ -695,14 +695,14 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                   </div>
                 ))}
-              </div>
+              </VStack>
             )}
           </div>
         )
       case "inventory":
         return (
           <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+            <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
               {user && canAssignInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                 <Button onClick={handleOpenAssignInventory} variant="primary" size="sm">
@@ -710,7 +710,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   Assign Item
                 </Button>
               )}
-            </div>
+            </HStack>
 
             {loadingInventory ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
@@ -740,12 +740,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     {studentInventory.map((item) => (
                       <Table.Row key={item._id}>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                          <div style={{ display: "flex", alignItems: "center" }}>
+                          <HStack gap="none" align="center">
                             <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                               <Package size={16} style={{ color: "var(--color-primary)" }} />
                             </div>
                             <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
-                          </div>
+                          </HStack>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.count}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>{formatDate(item.issueDate)}</Table.Cell>
@@ -766,7 +766,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>{item.condition}</Table.Cell>
                         {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                           <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                            <HStack gap={3} align="center">
                               <Button
                                 onClick={() => {
                                   setSelectedInventoryItem(item)
@@ -811,7 +811,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                   <Undo size={16} />
                                 </Button>
                               )}
-                            </div>
+                            </HStack>
                           </Table.Cell>
                         )}
                       </Table.Row>
@@ -1020,7 +1020,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     if (loading) return null
 
     return (
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
+      <HStack gap={4} justify="end">
         {!isImport && (
           <>
             <a
@@ -1053,7 +1053,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         <Button onClick={() => setShowStudentDetail(false)} variant="secondary" size="md">
           Close
         </Button>
-      </div>
+      </HStack>
     )
   }
 
@@ -1093,7 +1093,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"}
           onClose={closeInventoryModal}
           footer={
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
+            <HStack gap={3} justify="end">
               <Button type="button" onClick={closeInventoryModal} variant="secondary" size="md">
                 Cancel
               </Button>
@@ -1111,14 +1111,14 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   {inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
                 </Button>
               )}
-            </div>
+            </HStack>
           }
         >
           <form id="inventory-form" onSubmit={handleInventorySubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             {/* Item details for edit/return modals */}
             {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-4)" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)" }}>
+                <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                   <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                     <FaBoxes style={{ color: "var(--color-primary)" }} />
                   </div>
@@ -1130,7 +1130,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <Text as="span" color="muted">Issued: {formatDate(selectedInventoryItem.issueDate)}</Text>
                     </div>
                   </div>
-                </div>
+                </HStack>
               </div>
             )}
 

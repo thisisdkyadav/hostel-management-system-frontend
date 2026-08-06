@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardBody, CardFooter, CardHeader, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
@@ -79,26 +79,26 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </CardHeader>
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Email</Text>
               <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Role</Text>
               <Text as="span" color="secondary" weight="semibold">{warden.role || 'Gymkhana'}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Sub Role</Text>
               <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Position</Text>
               <Text as="span" color="body" align="right">{warden.position || 'Not set'}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Categories</Text>
               <Text as="span" color="body" align="right">{gymkhanaCategoryText}</Text>
-            </div>
+            </HStack>
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -133,18 +133,18 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </CardHeader>
 
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Email</Text>
               <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Role</Text>
               <Text as="span" color="secondary" weight="semibold">{warden.role || 'Academics'}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+            </HStack>
+            <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Sub Role</Text>
               <Text as="span" color="body" align="right">{warden.subRole || 'Not assigned'}</Text>
-            </div>
+            </HStack>
           </CardBody>
 
           <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -184,28 +184,28 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
         </CardHeader>
 
         <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="center">
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaEnvelope style={{ color: 'var(--color-text-muted)' }} />
             </div>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-text-body)' }}>{warden.email}</span>
-          </div>
+          </HStack>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="center">
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaPhone style={{ color: 'var(--color-text-muted)' }} />
             </div>
             {warden.phone ? <Text as="span" color="body">{warden.phone}</Text> : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Not provided</span>}
-          </div>
+          </HStack>
 
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             {" "}
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center', paddingTop: 'var(--spacing-0-5)' }}>
               {" "}
               <FaBuilding style={{ color: 'var(--color-text-muted)' }} />
             </div>
             <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', wordBreak: 'break-word' }}> {getAssignedHostelNames()}</span>
-          </div>
+          </HStack>
         </CardBody>
 
         <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
 import { Button } from "czero/react"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const SecurityQRGenerator = () => {
   const { user } = useAuth()
@@ -85,12 +85,12 @@ const SecurityQRGenerator = () => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Security Attendance QR Code</h2>
-      </div>
+      </HStack>
 
       <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-5)', display: 'flex', alignItems: 'flex-start' }}>
         <FaInfoCircle style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
@@ -102,7 +102,7 @@ const SecurityQRGenerator = () => {
           <FaQrcode /> Generate QR Code
         </Button>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <VStack gap="none" align="center">
           <div style={{ backgroundColor: 'var(--color-white)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: `var(--border-1) solid var(--color-border-primary)`, display: 'inline-block' }}>
             <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || "#1360AB"} level={"H"} includeMargin={true} />
           </div>
@@ -122,7 +122,7 @@ const SecurityQRGenerator = () => {
               <FaSyncAlt /> Refresh
             </Button>
           </div>
-        </div>
+        </VStack>
       )}
     </div>
   )

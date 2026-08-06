@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal } from "@/components/ui"
+import { HStack, Modal } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaCheck } from "react-icons/fa"
 
@@ -48,11 +48,11 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
           Your password has been successfully updated. You will use this new password the next time you log in.
         </p>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <HStack gap="none" justify="center">
           <Button onClick={onClose} variant="primary" size="md">
             <FaCheck /> Done
           </Button>
-        </div>
+        </HStack>
       </div>
     </Modal>
   )

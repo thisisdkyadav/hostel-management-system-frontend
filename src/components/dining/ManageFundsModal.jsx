@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text } from "@/components/ui"
 import { Alert, VStack } from "@/components/ui"
 import CsvUploader from "@/components/common/CsvUploader"
 import { FUND_MODES, getErrorMessage } from "./diningBillingHelpers"
@@ -73,7 +73,7 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
           <p style={{ margin: "0 0 var(--spacing-2)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
             How should uploaded amounts apply?
           </p>
-          <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          <HStack gap={2} wrap>
             {FUND_MODES.map((item) => (
               <Button
                 key={item.id}
@@ -85,7 +85,7 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
                 {item.label}
               </Button>
             ))}
-          </div>
+          </HStack>
           <p style={{ margin: "var(--spacing-2) 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
             {activeMode.hint}
           </p>
@@ -107,7 +107,7 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
 
         {report && (
           <Alert type={report.skipped?.length ? "warning" : "success"} icon>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+            <VStack gap={1}>
               <span><strong>{report.updated}</strong> account(s) updated{report.skipped?.length ? `, ${report.skipped.length} skipped` : ""}.</span>
               {report.skipped?.length > 0 && (
                 <Text as="span" size="xs">
@@ -115,7 +115,7 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
                   {report.skipped.length > 10 ? ` and ${report.skipped.length - 10} more` : ""}
                 </Text>
               )}
-            </div>
+            </VStack>
           </Alert>
         )}
       </VStack>

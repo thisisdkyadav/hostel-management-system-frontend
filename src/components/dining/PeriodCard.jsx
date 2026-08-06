@@ -1,6 +1,6 @@
 import { Button, StatusBadge } from "czero/react"
 import { CalendarClock, Eye, Pencil, Users, UtensilsCrossed } from "lucide-react"
-import { Card, Text } from "@/components/ui"
+import { Card, HStack, Text } from "@/components/ui"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -44,7 +44,7 @@ const PeriodCard = ({ period, onView, onEdit }) => (
     style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}
   >
     {/* Title row */}
-    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+    <HStack gap={3} align="start" justify="between">
       <div style={{ minWidth: 0 }}>
         <div
           style={{
@@ -80,17 +80,17 @@ const PeriodCard = ({ period, onView, onEdit }) => (
         <StatusBadge status={period.status} tone={periodStatusTone(period.status)} />
         <StatusBadge status={`Alloc: ${period.allocationStatus}`} tone={allocationStatusTone(period.allocationStatus)} showDot={false} />
       </div>
-    </div>
+    </HStack>
 
     {/* Capacity */}
     <CapacityBar allocated={period.totalAllocated} total={period.totalCapacity} />
 
     {/* Meal slots */}
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+    <HStack gap={2} wrap>
       {period.mealSlots.map((slot, index) => (
         <MealSlotChip key={`${slot.name}-${index}`} slot={slot} />
       ))}
-    </div>
+    </HStack>
 
     {/* Actions */}
     <div

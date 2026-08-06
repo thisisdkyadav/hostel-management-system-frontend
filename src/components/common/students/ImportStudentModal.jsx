@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -792,7 +792,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       {activeTab === "csv" && (
         <>
           {step === 1 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+            <VStack gap={5}>
               <div
                 style={{
                   border: "var(--border-2) dashed var(--color-border-input)",
@@ -816,7 +816,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <VStack gap={2} align="center">
                 <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
                   <FaFileDownload />
                   Download CSV Template
@@ -834,7 +834,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     Day scholar details (owner/home details) are not imported here and should be updated separately in bulk update.
                   </p>
                 </div>
-              </div>
+              </VStack>
 
               {csvFile && (
                 <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -867,14 +867,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Processing file...</span>
                 </div>
               )}
-            </div>
+            </VStack>
           )}
 
           {step === 2 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <VStack gap={4}>
+              <HStack gap="none" align="center" justify="between">
                 <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Preview Import Data</h3>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                <HStack gap={2} align="center">
                   {rowWarnings.length > 0 && (
                     <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-warning-text)", backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
                       {rowWarnings.length} skipped
@@ -883,8 +883,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
                     {parsedData.length} valid students
                   </div>
-                </div>
-              </div>
+                </HStack>
+              </HStack>
 
               {rowWarnings.length > 0 && (
                 <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-warning)", whiteSpace: "pre-line" }}>
@@ -902,11 +902,11 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   {error}
                 </div>
               )}
-            </div>
+            </VStack>
           )}
 
           {step === 3 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap={4}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
                 Import Progress
               </h3>
@@ -956,12 +956,12 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 {!isConnected && " Socket offline: showing limited progress"}
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <HStack gap="none" justify="end">
                 <Button onClick={handleExportCsvResults} variant="secondary" size="sm" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
                   <FaFileDownload />
                   Export Results
                 </Button>
-              </div>
+              </HStack>
 
               {isCsvImportCompleted ? (
                 <SheetPreviewTable rows={csvDisplayedSheetRows} />
@@ -976,13 +976,13 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   {error}
                 </div>
               )}
-            </div>
+            </VStack>
           )}
         </>
       )}
 
       {activeTab === "manual" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Add Single Student</h3>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
             <div>
@@ -1037,7 +1037,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               {error}
             </div>
           )}
-        </div>
+        </VStack>
       )}
 
       <div style={{ marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>

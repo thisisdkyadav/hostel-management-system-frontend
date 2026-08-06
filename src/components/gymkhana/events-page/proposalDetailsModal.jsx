@@ -1,5 +1,5 @@
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Checkbox, Select, Textarea } from "@/components/ui/form"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
@@ -37,14 +37,14 @@ export const GymkhanaProposalDetailsModal = ({
     closeButtonVariant="button"
     onClose={onClose}
     footer={
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} justify="end">
         <Button size="sm" variant="secondary" onClick={onClose}>
           Close
         </Button>
-      </div>
+      </HStack>
     }
   >
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+    <VStack gap={4}>
       <div
         style={{
           padding: "var(--spacing-4)",
@@ -67,7 +67,7 @@ export const GymkhanaProposalDetailsModal = ({
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <Panel title="Programme Details" icon={CalendarDays}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
               <FormField label="Programme Type" htmlFor="gymkhana-proposal-programme-type" required>
@@ -243,9 +243,9 @@ export const GymkhanaProposalDetailsModal = ({
               </FormField>
             </div>
           </Panel>
-        </div>
+        </VStack>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           <Panel title="Organising Unit" icon={Building2} accent>
             <FormField label="Unit Type" htmlFor="gymkhana-proposal-organising-unit-type" required>
               <Select
@@ -410,7 +410,7 @@ export const GymkhanaProposalDetailsModal = ({
               />
             </FormField>
           </Panel>
-        </div>
+        </VStack>
       </div>
 
       <Panel title="Programme Schedule" icon={Clock}>
@@ -694,6 +694,6 @@ export const GymkhanaProposalDetailsModal = ({
           </FormField>
         )}
       </Panel>
-    </div>
+    </VStack>
   </Modal>
 )

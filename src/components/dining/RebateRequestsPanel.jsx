@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, StatusBadge, Table } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
 import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"
 import { formatDate, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
@@ -92,14 +92,14 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
                 </Table.Cell>
                 <Table.Cell>
                   {rebate.status === "pending" ? (
-                    <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+                    <HStack gap={2}>
                       <Button variant="primary" size="sm" onClick={() => setApproveTarget(rebate)}>
                         <CheckCircle2 size={16} /> Approve
                       </Button>
                       <Button variant="secondary" size="sm" onClick={() => setRejectTarget(rebate)}>
                         <XCircle size={16} /> Reject
                       </Button>
-                    </div>
+                    </HStack>
                   ) : (
                     <Text as="span" color="muted" size="sm">—</Text>
                   )}
@@ -140,7 +140,7 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
             </>
           }
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <VStack gap={3}>
             <Text color="body" size="sm">
               Rejecting the request for <strong>{rejectTarget.rollNumber}</strong> (
               {formatDate(rejectTarget.startDate)} – {formatDate(rejectTarget.endDate)}).
@@ -155,7 +155,7 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
                 placeholder="Shared with the student so they understand the decision."
               />
             </div>
-          </div>
+          </VStack>
         </Modal>
       )}
     </>

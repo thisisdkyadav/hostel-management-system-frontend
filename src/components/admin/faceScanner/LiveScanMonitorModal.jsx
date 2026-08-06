@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"
 
@@ -61,7 +61,7 @@ const ScanEventRow = ({ event, showHeaders }) => {
         gap: "var(--spacing-2)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+      <HStack gap={2} align="center" wrap>
         {authOk ? (
           <Pill color="var(--color-success)" bg="var(--color-success-bg, rgba(34,197,94,0.12))">
             <ShieldCheck size={13} /> AUTH OK
@@ -92,7 +92,7 @@ const ScanEventRow = ({ event, showHeaders }) => {
         <span style={{ marginLeft: "auto", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-family-mono, monospace)" }}>
           {formatTime(event.timestamp)}
         </span>
-      </div>
+      </HStack>
 
       <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
         <Text as="span" weight="semibold" color="secondary">{event.method}</Text>
@@ -148,18 +148,18 @@ const LiveScanMonitorModal = ({ isOpen, onClose }) => {
           <Text as="span" size="xs" color="muted">
             {events.length} event{events.length === 1 ? "" : "s"} · newest first · keeps last {MAX_EVENTS}
           </Text>
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+          <HStack gap={2}>
             <Button variant="secondary" onClick={() => setEvents([])} disabled={events.length === 0}>
               <Trash2 size={16} /> Clear
             </Button>
             <Button variant="primary" onClick={onClose}>Close</Button>
-          </div>
+          </HStack>
         </div>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+      <VStack gap={3}>
         {/* Status + advanced toggle */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+        <HStack gap={3} align="center" justify="between" wrap>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-secondary)" }}>
             <Radio size={16} style={{ color: isConnected ? "var(--color-success)" : "var(--color-danger)" }} />
             {isConnected ? "Listening for live scans…" : "Socket disconnected"}
@@ -172,7 +172,7 @@ const LiveScanMonitorModal = ({ isOpen, onClose }) => {
           >
             Show Headers: {showHeaders ? "On" : "Off"}
           </Button>
-        </div>
+        </HStack>
 
         {/* Feed */}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", maxHeight: "56vh", overflowY: "auto" }}>
@@ -195,7 +195,7 @@ const LiveScanMonitorModal = ({ isOpen, onClose }) => {
             events.map((event) => <ScanEventRow key={event.id} event={event} showHeaders={showHeaders} />)
           )}
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

@@ -1,4 +1,4 @@
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Mail, Paperclip, Calendar, Users } from "lucide-react"
 
 /**
@@ -62,7 +62,7 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
       title="Email Details"
       width={600}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+      <VStack gap={3}>
         {/* Sent Date */}
         <div style={sectionStyle}>
           <div style={labelStyle}>
@@ -78,7 +78,7 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
             <Users size={12} />
             Recipients ({recipients.length})
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+          <HStack gap={4} wrap>
             {recipients.map((email, index) => (
               <span
                 key={`${email}-${index}`}
@@ -94,7 +94,7 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
                 {email}
               </span>
             ))}
-          </div>
+          </HStack>
         </div>
 
         {/* Subject */}
@@ -136,7 +136,7 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
               <Paperclip size={12} />
               Attachments ({attachments.length})
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <HStack gap={6} wrap>
               {attachments.map((attachment, index) => (
                 <span
                   key={`attachment-${index}`}
@@ -156,10 +156,10 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
                   {attachment.name}
                 </span>
               ))}
-            </div>
+            </HStack>
           </div>
         )}
-      </div>
+      </VStack>
     </Modal>
   )
 }

@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
@@ -51,41 +51,41 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
     <>
       <Card>
         <CardHeader style={{ marginBottom: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="start" justify="between">
+            <HStack gap="none" align="center">
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+            </HStack>
+            <HStack gap={2}>
               <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit provider"><FaEdit /></Button>
               <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete provider"><FaTrash /></Button>
-            </div>
-          </div>
+            </HStack>
+          </HStack>
         </CardHeader>
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{provider.email}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <FaPhone style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <Text as="span" color="muted">{provider.phone}</Text>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <FaMapMarkerAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <Text as="span" color="muted">{provider.address}</Text>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <Text as="div" color="muted">
               <span>
                 Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}
               </span>
             </Text>
-          </div>
+          </HStack>
         </CardBody>
 
         <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { Button, StatusBadge, Input } from "czero/react"
-import { Alert, Avatar, Text } from "@/components/ui"
+import { Alert, Avatar, HStack, Text, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import { Camera, CameraOff, Keyboard, UserCheck } from "lucide-react"
 import { attendanceApi } from "../../service"
@@ -159,15 +159,15 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-      <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+    <VStack gap={4}>
+      <HStack gap={2} wrap>
         <Button variant={cameraOn ? "danger" : "primary"} onClick={() => setCameraOn((v) => !v)}>
           {cameraOn ? <><CameraOff size={16} /> Stop Camera</> : <><Camera size={16} /> Scan with Camera</>}
         </Button>
         <Button variant={hardwareOn ? "success" : "outline"} onClick={() => setHardwareOn((v) => !v)}>
           <Keyboard size={16} /> {hardwareOn ? "Hardware Scanner: On" : "Use Hardware Scanner"}
         </Button>
-      </div>
+      </HStack>
 
       {hardwareOn && (
         <Alert type="info" icon>
@@ -189,7 +189,7 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
         />
       )}
 
-      <div style={{ display: "flex", gap: "var(--spacing-2)", alignItems: "flex-end" }}>
+      <HStack gap={2} align="end">
         <div style={{ flex: 1 }}>
           <Input
             value={manualRoll}
@@ -203,7 +203,7 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
         <Button variant="secondary" onClick={submitManual} loading={busy} disabled={busy || !manualRoll.trim()}>
           <UserCheck size={16} /> Mark
         </Button>
-      </div>
+      </HStack>
 
       {lastResult && lastResult.type === "error" && (
         <Alert type="error" icon dismissible onDismiss={() => setLastResult(null)}>
@@ -233,7 +233,7 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
               {lastResult.student.department ? ` · ${lastResult.student.department}` : ""}
             </Text>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)", alignItems: "flex-end" }}>
+          <VStack gap={1} align="end">
             <StatusBadge
               tone={lastResult.type === "duplicate" ? "warning" : "success"}
               showDot
@@ -243,10 +243,10 @@ const AttendanceScanner = ({ occurrenceId, disabled = false, onMarked }) => {
             {lastResult.inRoster === false && (
               <StatusBadge tone="warning" showDot={false}>Not in roster</StatusBadge>
             )}
-          </div>
+          </VStack>
         </div>
       )}
-    </div>
+    </VStack>
   )
 }
 

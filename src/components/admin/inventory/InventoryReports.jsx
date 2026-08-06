@@ -147,12 +147,12 @@ const InventoryReports = () => {
                 onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-card-hover)")}
                 onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-card)")}
               >
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+                <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
                   <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                     <FaBuilding style={{ color: "var(--color-primary)" }} />
                   </div>
                   <Text as="div" size="lg" weight="medium" color="secondary">{hostel.hostelName}</Text>
-                </div>
+                </HStack>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
                   <div>
                     <Text as="div" size="sm" color="muted">Total Allocated</Text>
@@ -173,12 +173,12 @@ const InventoryReports = () => {
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-tertiary)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                       >
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <HStack gap="none" align="center">
                           <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-2)" }}>
                             <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
                           </div>
                           <Text as="span" size="sm">{item.itemName}</Text>
-                        </div>
+                        </HStack>
                         <Text as="div" size="sm">
                           <Text as="span" weight="medium" color={item.available < 10 ? "var(--color-danger)" : "var(--color-success)"}>{item.available}</Text>
                           <Text as="span" color="muted"> / {item.allocated}</Text>
@@ -281,12 +281,12 @@ const InventoryReports = () => {
                     <Table.Row key={item._id}
                     >
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <HStack gap="none" align="center">
                           <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
                             <FaBox style={{ color: "var(--color-primary)" }} />
                           </div>
                           <Text as="span" weight="medium" color="secondary">{item.itemName}</Text>
-                        </div>
+                        </HStack>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap", fontWeight: "var(--font-weight-medium)" }}>{item.totalAssigned}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>

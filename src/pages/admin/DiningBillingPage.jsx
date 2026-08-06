@@ -4,7 +4,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards, Text } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, HStack, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import CapacityBar from "@/components/dining/CapacityBar"
 import BillingPeriodFormModal from "@/components/dining/BillingPeriodFormModal"
 import { billingDateRange, formatCurrency, getErrorMessage } from "@/components/dining/diningBillingHelpers"
@@ -44,7 +44,7 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
         cursor: "pointer",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} justify="between">
         <div style={{ minWidth: 0 }}>
           <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {billingPeriod.name}
@@ -61,7 +61,7 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
             {billingPeriod.isArchived ? <ArchiveRestore size={15} /> : <Archive size={15} />}
           </Button>
         </div>
-      </div>
+      </HStack>
 
       <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", fontSize: "var(--font-size-sm)" }}>
         <Text as="span" color="muted">Allocated <Text as="strong" color="secondary">{formatCurrency(summary.totalAllocated)}</Text></Text>
@@ -70,7 +70,7 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
 
       <CapacityBar allocated={summary.totalCharged} total={summary.totalAllocated} showLabel={false} size="sm" />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="center" justify="between">
         <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
           <Users size={13} /> {summary.studentCount} student{summary.studentCount === 1 ? "" : "s"}
           {summary.duesCount > 0 && (
@@ -80,7 +80,7 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
         <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>
           Open <ArrowRight size={13} />
         </span>
-      </div>
+      </HStack>
     </div>
   )
 }

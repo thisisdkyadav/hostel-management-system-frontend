@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, FileInput, Grid, Label, Spinner, Text, ToggleButtonGroup } from "@/components/ui"
+import { Card, CardContent, CardHeader, FileInput, Grid, HStack, Label, Spinner, Text, ToggleButtonGroup, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -170,7 +170,7 @@ const SignatureSettingsCard = ({ user }) => {
             <Spinner />
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <Grid min={220} gap={4}>
               <div>
                 <Label htmlFor="signature-name" required>
@@ -209,9 +209,9 @@ const SignatureSettingsCard = ({ user }) => {
             </div>
 
             {type === "image" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <Label>Signature image</Label>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
+                <HStack gap={4} align="center" wrap>
                   <div
                     style={{
                       width: 220,
@@ -237,7 +237,7 @@ const SignatureSettingsCard = ({ user }) => {
                       </Text>
                     )}
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <VStack gap={2}>
                     <FileInput
                       ref={fileInputRef}
                       accept="image/png,image/jpeg,image/webp"
@@ -256,9 +256,9 @@ const SignatureSettingsCard = ({ user }) => {
                     <Text as="span" size="xs" color="muted">
                       PNG with transparent background works best. Auto-compressed to a small size.
                     </Text>
-                  </div>
-                </div>
-              </div>
+                  </VStack>
+                </HStack>
+              </VStack>
             ) : (
               <div>
                 <Label htmlFor="signature-text">Signature text</Label>
@@ -288,7 +288,7 @@ const SignatureSettingsCard = ({ user }) => {
               </div>
             )}
 
-            <div style={{ display: "flex", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+            <HStack gap={3} wrap>
               <Button onClick={handleSave} loading={saving} disabled={uploading}>
                 Save signature
               </Button>
@@ -297,8 +297,8 @@ const SignatureSettingsCard = ({ user }) => {
                   <Trash2 size={15} /> Remove
                 </Button>
               ) : null}
-            </div>
-          </div>
+            </HStack>
+          </VStack>
         )}
       </CardContent>
     </Card>

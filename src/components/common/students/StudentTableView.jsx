@@ -2,7 +2,7 @@ import React from "react"
 import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
   const columns = [
@@ -20,7 +20,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
         </div>
       ),
       render: (student) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           <div style={{ flexShrink: 0, height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", }} >
             {student.profileImage ? (
               <img src={getMediaUrl(student.profileImage)} alt={student.name} style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover", }} />
@@ -36,7 +36,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
               {student.email}
             </div>
           </div>
-        </div>
+        </HStack>
       ),
     },
     {

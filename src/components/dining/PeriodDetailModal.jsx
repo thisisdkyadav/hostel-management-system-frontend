@@ -1,5 +1,5 @@
 import { Button, StatusBadge } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
@@ -13,7 +13,7 @@ import {
 
 const Section = ({ icon, title, children }) => (
   <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+    <HStack gap={2} align="center">
       {icon}
       <h3
         style={{
@@ -27,7 +27,7 @@ const Section = ({ icon, title, children }) => (
       >
         {title}
       </h3>
-    </div>
+    </HStack>
     {children}
   </section>
 )
@@ -72,18 +72,18 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Dining Period" width={760} footer={footer}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+      <VStack gap={6}>
         {/* Header summary */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-3)" }}>
+        <HStack gap={3} align="start" justify="between">
           <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-text-heading)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
             <CalendarClock size={18} style={{ color: "var(--color-primary)" }} />
             {formatDateRange(period.startDate, period.endDate)}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--spacing-1-5)" }}>
+          <VStack gap="var(--spacing-1-5)" align="end">
             <StatusBadge status={period.status} tone={periodStatusTone(period.status)} />
             <StatusBadge status={`Alloc: ${period.allocationStatus}`} tone={allocationStatusTone(period.allocationStatus)} showDot={false} />
-          </div>
-        </div>
+          </VStack>
+        </HStack>
 
         <Section icon={<CalendarClock size={16} style={{ color: "var(--color-text-muted)" }} />} title="Schedule">
           <div style={fieldGrid}>
@@ -97,45 +97,42 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
 
         <Section icon={<Users size={16} style={{ color: "var(--color-text-muted)" }} />} title="Caterers & Capacity">
           <CapacityBar allocated={period.totalAllocated} total={period.totalCapacity} label="Overall capacity" />
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             {period.catererCapacities.length === 0 && (
               <Text as="span" size="sm" color="muted">No caterers configured.</Text>
             )}
             {period.catererCapacities.map((entry) => (
               <div key={entry.catererId} style={tile}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", marginBottom: "var(--spacing-2)" }}>
+                <HStack gap={2} justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                   <Text as="span" size="sm" weight="semibold" color="secondary">
                     {entry.caterer?.name || "Caterer"}
                   </Text>
                   <Text as="span" size="xs" color="muted">
                     {entry.remainingSeats} seats left
                   </Text>
-                </div>
+                </HStack>
                 <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
                 <div style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   {entry.allocatedCount}/{entry.maxStudentCount} allocated
                 </div>
               </div>
             ))}
-          </div>
+          </VStack>
         </Section>
 
         <Section icon={<UtensilsCrossed size={16} style={{ color: "var(--color-text-muted)" }} />} title="Meal Slots">
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             {period.mealSlots.map((slot, index) => (
-              <div
-                key={`${slot.name}-${index}`}
-                style={{ ...tile, display: "flex", justifyContent: "space-between", alignItems: "center" }}
-              >
+              <HStack gap="none" align="center" justify="between" key={`${slot.name}-${index}`}>
                 <Text as="span" size="sm" weight="medium" color="secondary">
                   {slot.name}
                 </Text>
                 <Text as="span" size="sm" color="muted">
                   {slot.startTime} – {slot.endTime}
                 </Text>
-              </div>
+              </HStack>
             ))}
-          </div>
+          </VStack>
         </Section>
 
         <Section icon={<Archive size={16} style={{ color: "var(--color-text-muted)" }} />} title="Short-Term Rebate Rules">
@@ -153,7 +150,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
             <Field label="Eligible students" value={period.eligibleStudentCount} />
           </div>
         </Section>
-      </div>
+      </VStack>
     </Modal>
   )
 }

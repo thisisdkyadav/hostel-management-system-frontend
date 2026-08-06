@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, Modal, useConfirm } from "@/components/ui"
+import { Grid, HStack, Modal, useConfirm } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -104,19 +104,19 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
           </div>
         </Grid>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--spacing-2)' }}>
+        <HStack gap={2} justify="between">
           <Button type="button" variant="danger" onClick={handleDelete}>
             Delete Entry
           </Button>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+          <HStack gap={2}>
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" variant="primary">
               Save Changes
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </HStack>
       </form>
     </Modal>
   )

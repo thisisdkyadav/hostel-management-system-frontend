@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"
@@ -238,7 +238,7 @@ const AppointmentsGatePage = () => {
       </PageHeader>
 
       <div style={{ padding: "var(--spacing-4) var(--spacing-6)" }}>
-        <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           <h3 style={sectionTitleStyle}>Approved Requests</h3>
           <DataTable
             columns={columns}
@@ -248,7 +248,7 @@ const AppointmentsGatePage = () => {
             onRowClick={openDetails}
           />
 
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "var(--spacing-2)" }}>
+          <HStack gap={2} align="center" justify="end">
             <Button
               variant="outline"
               size="sm"
@@ -268,8 +268,8 @@ const AppointmentsGatePage = () => {
             >
               Next
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       </div>
 
       <Modal
@@ -279,12 +279,12 @@ const AppointmentsGatePage = () => {
         isOpen={detailsOpen}
         footer={
           !selectedAppointment?.gateEntry?.entered ? (
-            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <HStack gap={2}>
               <Button size="sm" variant="secondary" onClick={closeDetails}>Cancel</Button>
               <Button size="sm" variant="success" loading={entrySubmitting} onClick={handleMarkEntered}>
                 Mark as Entered
               </Button>
-            </div>
+            </HStack>
           ) : (
             <Button size="sm" variant="secondary" onClick={closeDetails}>Close</Button>
           )
@@ -293,10 +293,10 @@ const AppointmentsGatePage = () => {
         {!selectedAppointment ? (
           <Text as="div" color="muted" size="sm">Appointment details unavailable</Text>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <VStack gap={3}>
 
             {/* Visitor header */}
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} align="start" justify="between">
               <div>
                 <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
@@ -308,7 +308,7 @@ const AppointmentsGatePage = () => {
               <Badge variant={entryBadge(selectedAppointment.gateEntry?.entered)}>
                 {selectedAppointment.gateEntry?.entered ? "Entered" : "Not Entered"}
               </Badge>
-            </div>
+            </HStack>
 
             {/* Info grid */}
             <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
@@ -358,7 +358,7 @@ const AppointmentsGatePage = () => {
             </div>
 
             {!selectedAppointment.gateEntry?.entered ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
                 <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Gate Note</span>
                 <Textarea
@@ -367,7 +367,7 @@ const AppointmentsGatePage = () => {
                   value={entryNote}
                   onChange={(event) => setEntryNote(event.target.value)}
                 />
-              </div>
+              </VStack>
             ) : (
               selectedAppointment.gateEntry?.note ? (
                 <div style={sectionStyle}>
@@ -378,7 +378,7 @@ const AppointmentsGatePage = () => {
                 </div>
               ) : null
             )}
-          </div>
+          </VStack>
         )}
       </Modal>
     </div>

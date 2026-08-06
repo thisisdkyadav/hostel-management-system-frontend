@@ -2,13 +2,13 @@ import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
-import { Grid, Text } from "@/components/ui"
+import { Grid, HStack, Text, VStack } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
     return (
       <div style={{ backgroundColor: 'var(--color-warning-bg-light)', border: `var(--border-1) solid var(--color-warning-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+        <HStack gap={3} align="center">
           <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-warning-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-warning)' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -18,7 +18,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)', fontSize: 'var(--font-size-base)' }}>Payment Information Not Submitted</h4>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }}>Student has not yet submitted payment information</p>
           </div>
-        </div>
+        </HStack>
       </div>
     )
   }
@@ -41,7 +41,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-success-bg-light)', border: `var(--border-1) solid var(--color-success-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap={3} align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
@@ -51,13 +51,13 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success-text)', fontSize: 'var(--font-size-base)' }}>Payment Information</h4>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-success)', marginTop: 'var(--spacing-0-5)' }}>Student payment details and verification</p>
         </div>
-      </div>
+      </HStack>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+      <VStack gap={4}>
         {/* Payment Details Grid */}
         <Grid min={250} gap={4}>
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-2)' }}>
+            <HStack gap={2} align="center" style={{ marginBottom: 'var(--spacing-2)' }}>
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
                 <path
@@ -67,46 +67,46 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
                 />
               </svg>
               <Text as="span" size="sm" weight="medium" color="body">Payment Amount</Text>
-            </div>
+            </HStack>
             <Text size="xl" weight="semibold" color="primary">{formatAmount(paymentInfo.amount)}</Text>
           </div>
 
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-2)' }}>
+            <HStack gap={2} align="center" style={{ marginBottom: 'var(--spacing-2)' }}>
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
               </svg>
               <Text as="span" size="sm" weight="medium" color="body">Payment Date</Text>
-            </div>
+            </HStack>
             <Text size="xl" weight="semibold" color="primary">{formatDate(paymentInfo.dateOfPayment)}</Text>
           </div>
         </Grid>
 
         {/* Transaction ID */}
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-2)' }}>
+          <HStack gap={2} align="center" style={{ marginBottom: 'var(--spacing-2)' }}>
             <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
             </svg>
             <Text as="span" size="sm" weight="medium" color="body">Transaction ID</Text>
-          </div>
+          </HStack>
           <p style={{ fontSize: 'var(--font-size-xl)', fontFamily: 'monospace', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)` }}>{paymentInfo.transactionId}</p>
         </div>
 
         {/* Payment Screenshot */}
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+          <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
+            <HStack gap={2} align="center">
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
               <Text as="span" size="sm" weight="medium" color="body">Payment Screenshot</Text>
-            </div>
+            </HStack>
             <Button onClick={onViewScreenshot} variant="primary" size="sm">
               <FaEye />
               View Screenshot
             </Button>
-          </div>
+          </HStack>
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-3)', textAlign: 'center' }}>
             <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', margin: '0 auto var(--spacing-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-text-light)' }} fill="currentColor" viewBox="0 0 20 20">
@@ -120,12 +120,12 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
         {/* Additional Information */}
         {paymentInfo.additionalInfo && (
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-success-bg)` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-2)' }}>
+            <HStack gap={2} align="center" style={{ marginBottom: 'var(--spacing-2)' }}>
               <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
               <Text as="span" size="sm" weight="medium" color="body">Additional Information</Text>
-            </div>
+            </HStack>
             <p style={{ color: 'var(--color-text-primary)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: `var(--border-1) solid var(--color-border-primary)`, fontSize: 'var(--font-size-base)' }}>{paymentInfo.additionalInfo}</p>
           </div>
         )}
@@ -142,7 +142,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
             </Text>
           </div>
         )}
-      </div>
+      </VStack>
     </div>
   )
 }

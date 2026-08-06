@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Eye, Search, CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -470,7 +470,7 @@ const AppointmentsPage = () => {
         isOpen={detailsOpen}
         footer={
           selectedAppointment?.status === "Pending" ? (
-            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <HStack gap={2}>
               <Button size="sm" variant="secondary" onClick={handleCloseDetails}>Cancel</Button>
               <Button
                 size="sm"
@@ -480,7 +480,7 @@ const AppointmentsPage = () => {
               >
                 {reviewAction === "approve" ? "Approve & Notify" : "Reject & Notify"}
               </Button>
-            </div>
+            </HStack>
           ) : (
             <Button size="sm" variant="secondary" onClick={handleCloseDetails}>Close</Button>
           )
@@ -491,10 +491,10 @@ const AppointmentsPage = () => {
         ) : !selectedAppointment ? (
           <Text as="div" color="muted" size="sm">Details unavailable</Text>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <VStack gap={3}>
 
             {/* Visitor header */}
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} align="start" justify="between">
               <div>
                 <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
@@ -504,7 +504,7 @@ const AppointmentsPage = () => {
                 </div>
               </div>
               <Badge variant={statusVariant(selectedAppointment.status)}>{selectedAppointment.status}</Badge>
-            </div>
+            </HStack>
 
             {/* Info grid */}
             <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
@@ -543,7 +543,7 @@ const AppointmentsPage = () => {
             </div>
 
             {selectedAppointment.status === "Pending" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
                 <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Review</span>
                 <div style={{ display: "grid", gridTemplateColumns: reviewAction === "approve" ? "160px 1fr 1fr" : "160px 1fr", gap: "var(--spacing-2)", alignItems: "end" }}>
@@ -577,7 +577,7 @@ const AppointmentsPage = () => {
                   value={reviewDescription}
                   onChange={(event) => setReviewDescription(event.target.value)}
                 />
-              </div>
+              </VStack>
             ) : (
               <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
                 <div>
@@ -613,7 +613,7 @@ const AppointmentsPage = () => {
                 )}
               </div>
             )}
-          </div>
+          </VStack>
         )}
       </Modal>
     </div>

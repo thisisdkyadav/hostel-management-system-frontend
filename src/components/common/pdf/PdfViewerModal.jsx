@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Button } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text } from "@/components/ui"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const PdfViewerModal = ({
@@ -48,7 +48,7 @@ const PdfViewerModal = ({
     <Modal title={title} onClose={onClose} width={900} fullHeight={true}>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)", height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--spacing-4)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+          <HStack gap={3} align="center">
             <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <FaFileAlt style={{ width: "var(--icon-lg)", height: "var(--icon-lg)", color: "var(--color-primary)" }} />
             </div>
@@ -56,8 +56,8 @@ const PdfViewerModal = ({
               <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{title}</h3>
               <Text size="sm" color="muted">{subtitle}</Text>
             </div>
-          </div>
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+          </HStack>
+          <HStack gap={2}>
             <Button onClick={handleDownload} variant="success" size="sm">
               <FaDownload /> Download
             </Button>
@@ -76,7 +76,7 @@ const PdfViewerModal = ({
               <FaExternalLinkAlt style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               <span>Open in New Tab</span>
             </a>
-          </div>
+          </HStack>
         </div>
 
         <div style={{ flex: "1", backgroundColor: "var(--color-bg-primary)", border: "var(--border-2) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden", height: "calc(100% - 100px)" }}>
@@ -97,10 +97,10 @@ const PdfViewerModal = ({
             <div style={{ width: "100%", height: "100%", position: "relative" }}>
               {isLoading && (
                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-bg-tertiary)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                  <HStack gap={3} align="center">
                     <FaSpinner style={{ width: "var(--icon-lg)", height: "var(--icon-lg)", color: "var(--color-primary)", animation: "spin 1s linear infinite" }} />
                     <Text as="span" color="muted">Loading document...</Text>
-                  </div>
+                  </HStack>
                 </div>
               )}
 
@@ -122,7 +122,7 @@ const PdfViewerModal = ({
                   <p style={{ color: "var(--color-text-muted)", marginBottom: "var(--spacing-6)" }}>
                     Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.
                   </p>
-                  <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+                  <HStack gap={3}>
                     <Button onClick={handleDownload} variant="success" size="md">
                       <FaDownload /> Download PDF
                     </Button>
@@ -141,7 +141,7 @@ const PdfViewerModal = ({
                       <FaExternalLinkAlt style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
                       <span>Open in New Tab</span>
                     </a>
-                  </div>
+                  </HStack>
                 </div>
               </object>
             </div>

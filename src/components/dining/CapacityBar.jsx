@@ -1,5 +1,5 @@
 import { capacityToneColor } from "./diningPeriodHelpers"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 /**
  * Token-driven capacity utilisation bar.
@@ -16,14 +16,7 @@ const CapacityBar = ({ allocated = 0, total = 0, size = "md", showLabel = true, 
   return (
     <div style={{ width: "100%" }}>
       {showLabel && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "baseline",
-            marginBottom: "var(--spacing-1-5)",
-          }}
-        >
+        <HStack gap="none" align="baseline" justify="between" style={{ marginBottom: "var(--spacing-1-5)" }}>
           <Text as="span" size="xs" color="muted" weight="medium">
             {label || "Capacity"}
           </Text>
@@ -31,7 +24,7 @@ const CapacityBar = ({ allocated = 0, total = 0, size = "md", showLabel = true, 
             {safeAllocated}/{safeTotal}
             {safeTotal > 0 ? ` · ${percent}%` : ""}
           </Text>
-        </div>
+        </HStack>
       )}
       <div
         style={{

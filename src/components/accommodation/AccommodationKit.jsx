@@ -14,7 +14,7 @@ import {
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 export const money = (n) =>
   `₹${(Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -42,14 +42,14 @@ export const shortId = (id) => `#${String(id || "").slice(-6).toUpperCase()}`
 export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)", headerAction, children, allowOverflow = false }) => (
   <div style={{ background: "var(--color-bg-primary)", borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border-primary)", overflow: allowOverflow ? "visible" : "hidden" }}>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-3)", borderBottom: "1px solid var(--color-border-primary)", backgroundColor: "var(--color-bg-secondary)", borderTopLeftRadius: "var(--radius-card-sm)", borderTopRightRadius: "var(--radius-card-sm)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="center">
         {icon && (
           <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "var(--radius-sm)", backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`, color: accentColor }}>
             {createElement(icon, { size: 13 })}
           </span>
         )}
         <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", textTransform: "uppercase", letterSpacing: "0.4px" }}>{title}</span>
-      </div>
+      </HStack>
       {headerAction}
     </div>
     <div style={{ padding: "var(--spacing-3)" }}>{children}</div>
@@ -57,17 +57,17 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
 )
 
 export const InfoRow = ({ label, value, strong }) => (
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-3)" }}>
+  <HStack gap={3} align="center" justify="between">
     <Text as="span" color="muted" size="sm">{label}</Text>
     <Text as="span" weight={strong ? "var(--font-weight-semibold)" : "var(--font-weight-medium)"} color="body" size={strong ? "var(--font-size-base)" : "var(--font-size-sm)"} align="right">{value}</Text>
-  </div>
+  </HStack>
 )
 
 export const PersonCard = ({ person, fallbackName }) => {
   const name = person?.name || fallbackName || "—"
   const meta = [person?.rollNumber, person?.department, person?.degree].filter(Boolean).join(" · ")
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+    <HStack gap={3} align="center">
       {person?.profileImage ? (
         <img src={getMediaUrl(person.profileImage)} alt={name} style={{ height: 44, width: 44, borderRadius: "var(--radius-full)", objectFit: "cover", border: "2px solid var(--color-primary-bg)" }} />
       ) : (
@@ -85,7 +85,7 @@ export const PersonCard = ({ person, fallbackName }) => {
         )}
         {person?.hostel && <Text as="div" size="xs" color="muted">{person.hostel}{person.displayRoom ? ` · Room ${person.displayRoom}` : ""}</Text>}
       </div>
-    </div>
+    </HStack>
   )
 }
 
@@ -128,40 +128,40 @@ const Chip = ({ children, bg = "var(--color-bg-muted)", color = "var(--color-tex
 
 export const MetaBar = ({ request, actions }) => (
   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap", paddingBottom: "var(--spacing-3)", borderBottom: "1px solid var(--color-border-light)" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+    <HStack gap={2} align="center" wrap>
       <Chip mono>{shortId(request._id || request.id)}</Chip>
       <StatusBadge status={request.status} tone={getStatusTone(request.status)}>{request.status}</StatusBadge>
       <Chip bg="var(--color-primary-bg)" color="var(--color-primary)"><CalendarDays size={11} />{fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}</Chip>
       <Chip><Users size={11} />{request.persons ?? (request.guests?.length || 0)} guest(s)</Chip>
-    </div>
-    {actions && <div style={{ display: "flex", gap: "var(--spacing-2)" }}>{actions}</div>}
+    </HStack>
+    {actions && <HStack gap={2}>{actions}</HStack>}
   </div>
 )
 
 // ---- Charges + guest list (compose inside SectionCard) -------------------
 
 export const ChargesRows = ({ quote = {} }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+  <VStack gap={2}>
     <InfoRow label={`${quote.persons || 0} guest(s) × ${quote.nights || 0} night(s)`} value={money(quote.subtotal)} />
     <InfoRow label={`GST (${quote.gstPercentage || 0}%)`} value={money(quote.gstAmount)} />
     <div style={{ height: 1, backgroundColor: "var(--color-border-light)", margin: "2px 0" }} />
     <InfoRow label="Total" value={money(quote.total)} strong />
-  </div>
+  </VStack>
 )
 
 export const GuestList = ({ guests = [] }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+  <VStack gap={2}>
     {guests.map((g, i) => (
-      <div key={i} style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="center" key={i}>
         <span style={{ width: 26, height: 26, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", flexShrink: 0 }}>
           {(g.name || "?").charAt(0).toUpperCase()}
         </span>
         <Text as="span" size="sm" color="body">
           {g.name} <Text as="span" color="muted">· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</Text>
         </Text>
-      </div>
+      </HStack>
     ))}
-  </div>
+  </VStack>
 )
 
 // ---- Journey timeline ----------------------------------------------------
@@ -184,31 +184,31 @@ export const JourneyTimeline = ({ status, timeline = [] }) => {
   const colorFor = (s) => (s === "done" ? "var(--color-success)" : s === "current" ? "var(--color-primary)" : "var(--color-border-input)")
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <VStack gap="none">
       {STUDENT_STEPS.map((step, i) => {
         const s = stateOf(i)
         const c = colorFor(s)
         const ts = stampFor(step)
         const last = i === STUDENT_STEPS.length - 1 && !terminalNegative
         return (
-          <div key={step.key} style={{ display: "flex", gap: "var(--spacing-3)" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <HStack gap={3} key={step.key}>
+            <VStack gap="none" align="center">
               <span style={{ width: 12, height: 12, borderRadius: "50%", marginTop: 2, backgroundColor: s === "upcoming" ? "transparent" : c, border: `2px solid ${c}`, boxShadow: s === "current" ? "0 0 0 4px color-mix(in srgb, var(--color-primary) 16%, transparent)" : "none", flexShrink: 0 }} />
               {!last && <span style={{ width: 2, flex: 1, minHeight: 20, backgroundColor: doneSet.has(i) ? "var(--color-success)" : "var(--color-border-light)" }} />}
-            </div>
+            </VStack>
             <div style={{ paddingBottom: "var(--spacing-3)" }}>
               <Text as="div" size="sm" weight={s === "upcoming" ? 400 : 600} color={s === "upcoming" ? "var(--color-text-muted)" : "var(--color-text-primary)"}>{step.label}</Text>
               {ts && <Text as="div" size="10px" color="muted">{fmtDateTime(ts)}</Text>}
             </div>
-          </div>
+          </HStack>
         )
       })}
       {terminalNegative && (
-        <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+        <HStack gap={3}>
           <span style={{ width: 12, height: 12, borderRadius: "50%", marginTop: 2, backgroundColor: "var(--color-danger)", border: "2px solid var(--color-danger)", flexShrink: 0 }} />
           <Text as="div" size="sm" weight={600} color="danger">{status}</Text>
-        </div>
+        </HStack>
       )}
-    </div>
+    </VStack>
   )
 }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Tabs } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
@@ -1132,23 +1132,20 @@ const PorRequestDetailModal = ({
             </span>
           </div>
 
-          <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          <HStack gap={2} wrap>
             {request?.permissions?.canEdit ? (
               <Button variant="secondary" size="sm" onClick={onEdit}>
                 Edit & Resubmit
               </Button>
             ) : null}
-          </div>
+          </HStack>
         </div>
 
         <div
           className="grid grid-cols-1 xl:grid-cols-3"
           style={{ gap: "var(--spacing-4)", alignItems: "start" }}
         >
-          <div
-            className="xl:col-span-2"
-            style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}
-          >
+          <VStack gap={4} className="xl:col-span-2">
             <PorDetailCard
               icon={FileText}
               title="POR Submission"
@@ -1356,9 +1353,9 @@ const PorRequestDetailModal = ({
                 </div>
               </PorDetailCard>
             ) : null}
-          </div>
+          </VStack>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <PorDetailCard
               icon={Clock3}
               title="Approval History"
@@ -1375,7 +1372,7 @@ const PorRequestDetailModal = ({
             >
               <PorApprovalHistory porRequestId={request.id} compact />
             </PorDetailCard>
-          </div>
+          </VStack>
         </div>
       </div>
 
@@ -1505,7 +1502,7 @@ const PorRequestGroupModal = ({
           className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)]"
           style={{ gap: "var(--spacing-4)", alignItems: "start" }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <PorDetailCard
               icon={Users}
               title="Student Overview"
@@ -1543,7 +1540,7 @@ const PorRequestGroupModal = ({
               title="POR Requests"
               accentColor="var(--color-primary)"
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <VStack gap={4}>
                 {requests.map((request, index) => (
                   <div
                     key={request.id}
@@ -1554,23 +1551,14 @@ const PorRequestGroupModal = ({
                       padding: "var(--spacing-4)",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "var(--spacing-2)",
-                        flexWrap: "wrap",
-                        marginBottom: "var(--spacing-3)",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
+                      <HStack gap={2} align="center" wrap>
                         <span className="por-detail-meta-chip por-detail-meta-chip-id">
                           {request.id}
                         </span>
                         <span className="por-detail-meta-chip">{request.porCategoryName || "—"}</span>
                         {request.club?.name ? <span className="por-detail-meta-chip">{request.club.name}</span> : null}
-                      </div>
+                      </HStack>
 
                       <Button
                         variant="secondary"
@@ -1579,7 +1567,7 @@ const PorRequestGroupModal = ({
                       >
                         Open Individually
                       </Button>
-                    </div>
+                    </HStack>
 
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                       <div className="por-detail-info-grid">
@@ -1641,11 +1629,11 @@ const PorRequestGroupModal = ({
                     ) : null}
                   </div>
                 ))}
-              </div>
+              </VStack>
             </PorDetailCard>
-          </div>
+          </VStack>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <PorDetailCard
               icon={BadgeCheck}
               title="Grouped Review Decision"
@@ -1747,7 +1735,7 @@ const PorRequestGroupModal = ({
                 </div>
               </div>
             </PorDetailCard>
-          </div>
+          </VStack>
         </div>
       </div>
 
@@ -2093,11 +2081,11 @@ const PorRequestsPage = () => {
           const isActionRequired = row.rowType === "group" ? row.isActionRequired : row.request?.isActionRequired
 
           return (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          <HStack gap="8px" wrap>
               <Badge variant={getStatusVariant(status)}>{formatStatusLabel(status)}</Badge>
               {isActionRequired ? <Badge variant="warning">Action Required</Badge> : null}
               {row.rowType === "group" ? <Badge variant="info">Grouped</Badge> : null}
-          </div>
+          </HStack>
           )
         },
       },

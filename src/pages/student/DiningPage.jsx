@@ -92,18 +92,18 @@ const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) =
 
 const InfoCard = ({ title, badge, children }) => (
   <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+    <HStack gap={2} align="center" justify="between">
       <h3 style={{ margin: 0, fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--color-text-muted)" }}>
         {title}
       </h3>
       {badge}
-    </div>
+    </HStack>
     {children}
   </Card>
 )
 
 const CatererIdentity = ({ caterer, selectedAt }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+  <VStack gap={3}>
     <HStack gap="medium" align="center">
       <Avatar name={caterer?.name || "?"} size="medium" />
       <div style={{ minWidth: 0 }}>
@@ -120,7 +120,7 @@ const CatererIdentity = ({ caterer, selectedAt }) => (
     {selectedAt && (
       <Text as="div" size="xs" color="muted">Selected on {formatDateTime(selectedAt)}</Text>
     )}
-  </div>
+  </VStack>
 )
 
 const Detail = ({ label, value }) => (
@@ -273,7 +273,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
 
   return (
     <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-4)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="start" justify="between">
         <div style={{ minWidth: 0 }}>
           <Text as="div" size="md" weight="bold" color="heading">
             {billingPeriod.name}
@@ -283,7 +283,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
           </Text>
         </div>
         <StatusBadge status={formatClearance(billingPeriod.clearance)} tone={clearanceTone(billingPeriod.clearance)} />
-      </div>
+      </HStack>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)" }}>
         <BillingFigure label="Allocated" value={formatCurrency(billingPeriod.allocatedAmount)} />
@@ -307,7 +307,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
           </button>
 
           {expanded && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+            <VStack gap={2} style={{ marginTop: "var(--spacing-2)" }}>
               {billingPeriod.perPeriod.map((row) => (
                 <div key={row.periodId} style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   <span>
@@ -317,7 +317,7 @@ const StudentBillingCard = ({ billingPeriod }) => {
                   <Text as="span" color="secondary" weight="medium">{formatCurrency(row.amount)}</Text>
                 </div>
               ))}
-            </div>
+            </VStack>
           )}
         </>
       )}
@@ -545,7 +545,7 @@ const DiningPage = () => {
 
           {/* Rebates */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+            <HStack gap={3} align="center" justify="between" wrap>
               <div>
                 <h3 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
                   Rebate Requests
@@ -557,7 +557,7 @@ const DiningPage = () => {
               <Button variant="secondary" onClick={() => setShowRebateModal(true)} disabled={!canRequestRebate}>
                 <FileText size={16} /> Request Rebate
               </Button>
-            </div>
+            </HStack>
 
             {rebates.length === 0 ? (
               <EmptyState icon={FileText} title="No Rebate Requests" message="Requests you submit will be tracked here." />

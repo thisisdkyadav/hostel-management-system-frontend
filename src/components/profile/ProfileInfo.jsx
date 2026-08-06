@@ -1,6 +1,6 @@
 import React from "react"
 import { FiEdit } from "react-icons/fi"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
   return (
@@ -9,7 +9,7 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
         {Icon && <Icon style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-primary)" }} />}
       </div>
       <div style={{ marginLeft: "var(--spacing-4)", flexGrow: 1 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <HStack gap="none" align="center" justify="between">
           <Text size="sm" color="muted">{label}</Text>
           {isEditable && (
             <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-xs)", color: "var(--color-info)", }} >
@@ -17,7 +17,7 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
               <span>Editable</span>
             </div>
           )}
-        </div>
+        </HStack>
         <p style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginTop: "var(--spacing-0-5)", fontSize: "var(--font-size-base)", }} >
           {value || "N/A"}
         </p>

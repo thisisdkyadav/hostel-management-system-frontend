@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
@@ -149,7 +149,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
         )}
 
         {/* Admin Actions */}
-        <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
+        <HStack gap={3}>
           {canEditTask && !isUserView && (
             <>
               <Button onClick={handleEditTask} variant="primary" size="md">
@@ -164,7 +164,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="md">
             Close
           </Button>
-        </div>
+        </HStack>
       </div>
     );
   }
@@ -175,13 +175,13 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-5)' }}>
           {/* Task Header */}
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <HStack gap="none" align="start" justify="between">
               <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{selectedTask.title}</h2>
-              <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+              <HStack gap={2}>
                 {getPriorityBadge(selectedTask.priority)}
                 {getStatusBadge(currentStatus)}
-              </div>
-            </div>
+              </HStack>
+            </HStack>
             {isPastDue && <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)' }}>This task is past due!</div>}
           </div>
 
@@ -209,7 +209,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
           <div>
             <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Assigned To</h4>
             {selectedTask.assignedUsers && selectedTask.assignedUsers.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+              <VStack gap={2}>
                 {selectedTask.assignedUsers.map((user, idx) => (
                   <div key={user._id || idx} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ marginRight: 'var(--spacing-3)', height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{user.name ? user.name.charAt(0) : "U"}</div>
@@ -221,7 +221,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
                     </div>
                   </div>
                 ))}
-              </div>
+              </VStack>
             ) : (
               <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)' }}>No users assigned</div>
             )}

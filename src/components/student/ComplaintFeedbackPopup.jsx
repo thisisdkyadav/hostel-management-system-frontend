@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Modal, Text } from "@/components/ui"
+import { Modal, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
@@ -53,7 +53,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
   return (
     <Modal title="Rate Your Resolution" onClose={onClose} width={650} footer={footerContent}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+      <VStack gap={4}>
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)' }}>
             <Text color="danger-text" size="sm">{error}</Text>
@@ -161,7 +161,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             placeholder="Share your thoughts..."
           />
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

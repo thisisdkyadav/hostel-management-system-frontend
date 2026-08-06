@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { FileInput, Grid, Select } from "@/components/ui"
+import { FileInput, Grid, HStack, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -92,7 +92,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
   return (
     <Modal title="Add Lost Item" onClose={onClose} width={600}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+        <VStack gap="var(--gap-md)">
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Item Name</label>
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter item name" required />
@@ -105,10 +105,10 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <HStack gap="none" align="center">
                 <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
                 Item Images (Optional)
-              </div>
+              </HStack>
             </label>
             <div style={{ position: 'relative' }}>
               <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
@@ -155,7 +155,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
               ]} required />
             </div>
           </Grid>
-        </div>
+        </VStack>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-sm)' }}>
           <Button type="button" onClick={onClose} variant="secondary" size="md">

@@ -3,7 +3,7 @@ import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { isRoomActive } from "@/constants/roomStatus"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -13,7 +13,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       header: "Room Number",
       key: "roomNumber",
       render: (room) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <HStack gap="none" align="center">
           <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
             <FaDoorOpen style={{ color: "var(--color-info)" }} />
           </div>
@@ -23,7 +23,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
               {room.type || "Standard"}
             </div>
           </div>
-        </div>
+        </HStack>
       ),
     },
     {
@@ -49,7 +49,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
         !isRoomActive(room.status) ? (
           <Text as="span" size="sm" color="muted">{room.status}</Text>
         ) : (
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center">
             <div style={{ width: "var(--spacing-16)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2)", marginRight: "var(--spacing-2)", }} >
               <div style={{
                 height: "var(--spacing-2)", borderRadius: "var(--radius-full)", backgroundColor: room.currentOccupancy >= room.capacity
@@ -64,7 +64,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
             <Text as="span" size="sm" color="body">
               {room.currentOccupancy || 0}/{room.capacity || 0}
             </Text>
-          </div>
+          </HStack>
         ),
     },
     {
@@ -97,12 +97,12 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "actions",
       align: "right",
       render: (room) => (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--gap-sm)" }}>
+        <HStack gap="var(--gap-sm)" align="center" justify="end">
           <Button onClick={(e) => { e.stopPropagation(); onRoomClick(room); }} variant="ghost" size="sm" aria-label="View details"><FaEye /></Button>
           {["Admin"].includes(user.role) && isRoomActive(room.status) && room.currentOccupancy < room.capacity && (
             <Button onClick={(e) => { e.stopPropagation(); onAllocateClick(room); }} variant="ghost" size="sm" aria-label="Allocate student"><FaUserPlus /></Button>
           )}
-        </div>
+        </HStack>
       ),
     },
   ]

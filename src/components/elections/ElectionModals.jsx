@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Input, Table } from "czero/react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, HStack, Modal, Text } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,
@@ -219,7 +219,7 @@ export const LiveVotingFullscreenModal = ({
       width={1480}
       closeButtonVariant="button"
       title={
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-6)", marginTop: "-4px", marginBottom: "-4px" }}>
+        <HStack gap={6} align="center" style={{ marginTop: "-4px", marginBottom: "-4px" }}>
           <div
             style={{
               display: "flex",
@@ -247,35 +247,35 @@ export const LiveVotingFullscreenModal = ({
           </div>
 
           <div style={{ display: "flex", gap: "var(--spacing-5)", fontSize: "var(--font-size-base)", alignItems: "center" }}>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <HStack gap="8px" align="center">
               <Text as="span" color="muted">Eligible Voters</Text>
               <Text as="span" weight="semibold" color="heading" size="md">
                 {overview.ballotsSubmitted + overview.ballotsPending || 0}
               </Text>
-            </div>
+            </HStack>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <HStack gap="8px" align="center">
               <Text as="span" color="muted">Votes Submitted</Text>
               <Text as="span" weight="semibold" color="success" size="md">
                 {overview.ballotsSubmitted || 0}
               </Text>
-            </div>
+            </HStack>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <HStack gap="8px" align="center">
               <Text as="span" color="muted">Pending</Text>
               <Text as="span" weight="semibold" color="warning" size="md">
                 {overview.ballotsPending || 0}
               </Text>
-            </div>
+            </HStack>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <HStack gap="8px" align="center">
               <Text as="span" color="muted">Turnout</Text>
               <Text as="span" weight="bold" color="brand" size="lg">
                 {overview.turnoutPercentage || 0}%
               </Text>
-            </div>
+            </HStack>
           </div>
-        </div>
+        </HStack>
       }
     >
       <div
@@ -321,7 +321,7 @@ export const LiveVotingFullscreenModal = ({
                       </div>
                     </Table.Cell>
                     <Table.Cell style={{ padding: "4px 10px" }}>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                      <HStack gap="4px" wrap>
                         {sortedCandidates.map((candidate) => (
                           <div
                             key={candidate.nominationId}
@@ -338,17 +338,17 @@ export const LiveVotingFullscreenModal = ({
                             <span style={{ fontSize: "12px", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                               {candidate.isNota ? "NOTA" : candidate.candidateName || candidate.candidateRollNumber}
                             </span>
-                            <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+                            <HStack gap="2px" align="center">
                               <Text as="span" size="12px" weight="bold" color="heading">
                                 {candidate.voteCount || 0}
                               </Text>
                               <Text as="span" size="10px" color="muted">
                                 ({formatCompactPercentage(candidate.votePercentage)})
                               </Text>
-                            </div>
+                            </HStack>
                           </div>
                         ))}
-                      </div>
+                      </HStack>
                     </Table.Cell>
                     <Table.Cell align="center" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-text-muted)", fontSize: "13px" }}>
                       {post.eligibleVoterCount || 0}
@@ -656,15 +656,7 @@ export const ElectionWizardModal = ({
 
         {["email", "both"].includes(form.votingAccess?.mode || "both") ? (
           <div style={flatPanelStyle}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                flexWrap: "wrap",
-              }}
-            >
+            <HStack gap={3} align="center" justify="between" wrap>
               <div>
                 <div style={{ ...labelStyle, marginBottom: "4px" }}>Auto send voting links</div>
                 <div style={mutedTextStyle}>
@@ -686,7 +678,7 @@ export const ElectionWizardModal = ({
                 />
                 Enable auto send
               </label>
-            </div>
+            </HStack>
             {basicsErrors.autoSendEnabled ? <div style={errorTextStyle}>{basicsErrors.autoSendEnabled}</div> : null}
           </div>
         ) : null}
@@ -703,16 +695,7 @@ export const ElectionWizardModal = ({
         </div>
 
         <div style={flatPanelStyle}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-              marginBottom: form.mockSettings?.enabled ? "var(--spacing-3)" : 0,
-            }}
-          >
+          <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: form.mockSettings?.enabled ? "var(--spacing-3)" : 0 }}>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Mock election</div>
               <div style={mutedTextStyle}>
@@ -733,7 +716,7 @@ export const ElectionWizardModal = ({
               />
               Mark as mock
             </label>
-          </div>
+          </HStack>
 
           {form.mockSettings?.enabled ? (
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
@@ -780,15 +763,7 @@ export const ElectionWizardModal = ({
     body = (
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
         <div style={flatPanelStyle}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-            }}
-          >
+          <HStack gap={3} align="center" justify="between" wrap>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Election schedule</div>
               <div style={mutedTextStyle}>
@@ -798,7 +773,7 @@ export const ElectionWizardModal = ({
             <Button size="sm" variant="secondary" onClick={applyD15Timeline}>
               <History size={14} /> Apply D-15 Guide
             </Button>
-          </div>
+          </HStack>
         </div>
 
         <Grid min={220} gap={3}>
@@ -896,16 +871,7 @@ export const ElectionWizardModal = ({
     body = (
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
         <div style={flatPanelStyle}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-              marginBottom: "var(--spacing-3)",
-            }}
-          >
+          <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Election posts</div>
               <div style={mutedTextStyle}>Define each post, its electorate, and its contesting requirements.</div>
@@ -913,7 +879,7 @@ export const ElectionWizardModal = ({
             <Button size="sm" variant="secondary" onClick={addPost}>
               <Plus size={14} /> Add Post
             </Button>
-          </div>
+          </HStack>
 
           <div style={postTabListStyle}>
             {form.posts.map((post, index) => {
@@ -947,15 +913,7 @@ export const ElectionWizardModal = ({
         </div>
 
         <div style={{ ...panelStyle, display: "grid", gap: "var(--spacing-4)" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
-            }}
-          >
+          <HStack gap={3} align="start" justify="between" wrap>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
               <Text as="div" size="lg" weight="semibold" color="heading">
@@ -967,7 +925,7 @@ export const ElectionWizardModal = ({
                 Remove Post
               </Button>
             ) : null}
-          </div>
+          </HStack>
 
           <Grid min={220} gap={3}>
             <div>
@@ -1128,7 +1086,7 @@ export const ElectionWizardModal = ({
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <HStack gap="8px" align="center" wrap>
               <Button size="sm" variant="secondary" onClick={onClose}>
                 Cancel
               </Button>
@@ -1149,7 +1107,7 @@ export const ElectionWizardModal = ({
                   Next <ChevronRight size={14} />
                 </Button>
               )}
-            </div>
+            </HStack>
             <StepIndicator
               steps={wizardSteps}
               currentStep={currentStep}
@@ -1266,7 +1224,7 @@ export const AdminNominationReviewModal = ({
         gap: "var(--spacing-3)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap={2} align="center">
         <div
           style={{
             width: "24px",
@@ -1292,7 +1250,7 @@ export const AdminNominationReviewModal = ({
         >
           {title}
         </div>
-      </div>
+      </HStack>
       {children}
     </div>
   )
@@ -1527,7 +1485,7 @@ export const AdminNominationReviewModal = ({
                 {nomination.candidateRollNumber}
               </StatusPill>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <HStack gap="8px">
               <Button size="sm" variant="secondary" onClick={onClose}>
                 Close
               </Button>
@@ -1558,7 +1516,7 @@ export const AdminNominationReviewModal = ({
                   </Button>
                 </>
               ) : null}
-            </div>
+            </HStack>
           </div>
         }
       >
@@ -1640,7 +1598,7 @@ export const AdminNominationReviewModal = ({
               <div key={item.label} style={detailPanelStyle}>
                 <div style={labelStyle}>{item.label}</div>
                 {item.value ? (
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <HStack gap="8px" wrap>
                     <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
                       View
                     </Button>
@@ -1657,7 +1615,7 @@ export const AdminNominationReviewModal = ({
                     >
                       Open
                     </a>
-                  </div>
+                  </HStack>
                 ) : (
                   <span style={mutedTextStyle}>Not submitted</span>
                 )}
@@ -1812,7 +1770,7 @@ export const StudentNominationModal = ({
                 S {seconderRequired}
               </StatusPill>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <HStack gap="8px">
               <Button size="sm" variant="secondary" onClick={onClose}>
                 Close
               </Button>
@@ -1824,7 +1782,7 @@ export const StudentNominationModal = ({
               >
                 <FileText size={14} /> Save
               </Button>
-            </div>
+            </HStack>
           </div>
         }
       >
@@ -1889,7 +1847,7 @@ export const StudentNominationModal = ({
                             style={{ width: "100%", maxHeight: "140px", objectFit: "contain" }}
                           />
                         </div>
-                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        <HStack gap="8px" wrap>
                           <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
                             View
                           </Button>
@@ -1901,7 +1859,7 @@ export const StudentNominationModal = ({
                           >
                             Open
                           </a>
-                        </div>
+                        </HStack>
                       </div>
                     ) : (
                       <span style={mutedTextStyle}>Not uploaded</span>
@@ -1958,15 +1916,7 @@ export const StudentNominationModal = ({
               },
             ].map((section) => (
               <div key={section.supportType} style={flatPanelStyle}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "8px",
-                    alignItems: "center",
-                    marginBottom: "var(--spacing-2)",
-                  }}
-                >
+                <HStack gap="8px" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                   <div>
                     <div style={labelStyle}>{section.label}</div>
                     <div style={mutedTextStyle}>
@@ -1980,7 +1930,7 @@ export const StudentNominationModal = ({
                   >
                     <Plus size={14} /> Add
                   </Button>
-                </div>
+                </HStack>
 
                 <div style={{ display: "grid", gap: "10px" }}>
                   {section.entries.map((entry, index) => {
@@ -1997,7 +1947,7 @@ export const StudentNominationModal = ({
                           gap: "8px",
                         }}
                       >
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <HStack gap="8px" align="center">
                           <Input
                             value={entry.rollNumber || ""}
                             placeholder={`Roll number ${index + 1}`}
@@ -2025,7 +1975,7 @@ export const StudentNominationModal = ({
                               Remove
                             </Button>
                           ) : null}
-                        </div>
+                        </HStack>
 
                         {isLookingUp ? (
                           <div style={mutedTextStyle}>Checking roll number...</div>
@@ -2238,7 +2188,7 @@ export const AdminResultsEditModal = ({
                       cursor: "pointer",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                    <HStack gap={3} align="center">
                       <input
                         type={draft?.winnerIsTie ? "checkbox" : "radio"}
                         name={`winner-${postResult.postId}`}
@@ -2269,7 +2219,7 @@ export const AdminResultsEditModal = ({
                           <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
                         ) : null}
                       </div>
-                    </div>
+                    </HStack>
                     <Text as="strong" color="heading">{candidate.voteCount}</Text>
                   </label>
                 )

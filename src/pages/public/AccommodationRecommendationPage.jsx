@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
-import { Alert, RadioGroup, Spinner, Text, Textarea } from "@/components/ui"
+import { Alert, RadioGroup, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { FileText, UserCheck, GraduationCap } from "lucide-react"
 import { accommodationApi } from "@/service"
@@ -84,7 +84,7 @@ const AccommodationRecommendationPage = () => {
 
       {student && (
         <SectionCard icon={GraduationCap} title="Student" accentColor="var(--color-primary)">
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <VStack gap={2}>
             <InfoRow label="Name" value={student.name || "—"} />
             <InfoRow label="Roll number" value={student.rollNumber || "—"} />
             {programme && <InfoRow label="Programme" value={programme} />}
@@ -92,18 +92,18 @@ const AccommodationRecommendationPage = () => {
             {student.email && <InfoRow label="Email" value={student.email} />}
             {student.phone && <InfoRow label="Phone" value={student.phone} />}
             {room && <InfoRow label="Current room" value={room} />}
-          </div>
+          </VStack>
         </SectionCard>
       )}
 
       <SectionCard icon={FileText} title="Request" accentColor="var(--color-primary)">
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+        <VStack gap={2}>
           <InfoRow label="Requested by" value={request.applicantName || "—"} />
           <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
           <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
           <InfoRow label="Nights" value={request.nights || 0} />
           <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
-        </div>
+        </VStack>
         {Array.isArray(request.guests) && request.guests.length > 0 && (
           <div style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)" }}>
             <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.4px", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>Guests</div>
@@ -113,7 +113,7 @@ const AccommodationRecommendationPage = () => {
       </SectionCard>
 
       <SectionCard icon={UserCheck} title="Your recommendation" accentColor="var(--color-primary)">
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
           {error && <Alert type="error">{error}</Alert>}
           <RadioGroup name="decision" value={decision} onChange={(e) => setDecision(e.target.value)}>
             <RadioGroupItem value="recommend" label="Recommend" />
@@ -122,7 +122,7 @@ const AccommodationRecommendationPage = () => {
           <Textarea name="reason" value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Optional remarks for the student / chief warden" />
           <Button onClick={handleSubmit} loading={submitting} disabled={submitting} fullWidth>Submit recommendation</Button>
           <Text size="10px" color="muted" align="center">Secure single-use link · no login required</Text>
-        </div>
+        </VStack>
       </SectionCard>
     </Shell>
   )

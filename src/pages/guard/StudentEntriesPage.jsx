@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserGraduate, FaFilter } from "react-icons/fa"
-import { SearchInput, Pagination, Select } from "@/components/ui"
+import { HStack, Pagination, SearchInput, Select } from "@/components/ui"
 import { Tabs, Button, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
@@ -247,11 +247,11 @@ const StudentEntriesPage = () => {
                   { value: 50, label: "50" }
                 ]} />
               </div>
-              <div style={{ display: "flex", alignItems: "flex-end" }}>
+              <HStack gap="none" align="end">
                 <Button onClick={handleClearDateFilter} variant="secondary" size="md">
                   Clear Date Filter
                 </Button>
-              </div>
+              </HStack>
             </div>
           </div>
         )}

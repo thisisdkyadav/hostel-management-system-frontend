@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, StatusBadge, DataTable } from "czero/react"
 import { CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users, Wallet, ClipboardCheck } from "lucide-react"
-import { Alert, Card, EmptyState, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, EmptyState, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { formatCurrency } from "@/components/dining/diningBillingHelpers"
@@ -108,17 +108,17 @@ const DashboardPage = () => {
           <Card>
             <div className="flex flex-col lg:flex-row lg:items-center gap-[var(--spacing-5)]">
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <HStack gap={3} align="center">
                   <div className="flex items-center justify-center" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", flexShrink: 0 }}>
                     <UtensilsCrossed size={24} />
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} align="center" wrap>
                       <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
                         {hasActiveMeal ? today.mealSlot : "No active meal"}
                       </h2>
                       <StatusBadge status={activePeriod ? "Active period" : "No active period"} tone={activePeriod ? "success" : "primary"} showDot={Boolean(activePeriod)} />
-                    </div>
+                    </HStack>
                     <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
                       {formatPeriodRange(activePeriod)}
                     </p>
@@ -128,7 +128,7 @@ const DashboardPage = () => {
                       </p>
                     )}
                   </div>
-                </div>
+                </HStack>
               </div>
               <div className="w-full lg:w-[300px] lg:flex-shrink-0">
                 <CapacityBar allocated={today.verified} total={today.allocated} label="Verified today" />
@@ -159,10 +159,10 @@ const DashboardPage = () => {
 
           {/* Rebates */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} align="center">
               <ClipboardCheck size={18} style={{ color: "var(--color-text-muted)" }} />
               <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Rebates</h3>
-            </div>
+            </HStack>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
               {[
                 { label: "Pending approval", value: rebates.pending, tone: "var(--color-warning)" },

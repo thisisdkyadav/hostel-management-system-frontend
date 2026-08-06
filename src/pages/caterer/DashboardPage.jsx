@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button, StatusBadge } from "czero/react"
 import { ArrowRight, CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users } from "lucide-react"
-import { Alert, Card, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
+import { Alert, Card, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -93,17 +93,17 @@ const DashboardPage = () => {
           <Card>
             <div className="flex flex-col lg:flex-row lg:items-center gap-[var(--spacing-5)]">
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <HStack gap={3} align="center">
                   <div className="flex items-center justify-center" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", flexShrink: 0 }}>
                     <UtensilsCrossed size={24} />
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} align="center" wrap>
                       <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
                         {hasActiveMeal ? mealSlot.name : "No active meal"}
                       </h2>
                       <StatusBadge status={hasActiveMeal ? "Serving now" : "Idle"} tone={hasActiveMeal ? "success" : "primary"} showDot={hasActiveMeal} />
-                    </div>
+                    </HStack>
                     <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
                       {hasActiveMeal ? `${mealSlot.startTime} – ${mealSlot.endTime}` : "Verification opens during meal hours"}
                     </p>
@@ -111,7 +111,7 @@ const DashboardPage = () => {
                       {formatPeriodRange(context.currentPeriod)}
                     </p>
                   </div>
-                </div>
+                </HStack>
               </div>
               <div className="w-full lg:w-[300px] lg:flex-shrink-0">
                 <CapacityBar allocated={mealState.verifiedCount} total={mealState.total} label="Verified this meal" />

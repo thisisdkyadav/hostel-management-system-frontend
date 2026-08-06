@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
@@ -92,7 +92,7 @@ export const GymkhanaProposalModal = ({
     onClose={onClose}
     footer={
       canEditProposalForm ? (
-        <div style={{ display: "flex", gap: "var(--spacing-2)", alignItems: "center" }}>
+        <HStack gap={2} align="center">
           {canAdminEditProposal && handleAdminDeleteProposal && !editMode ? (
             <AdminEntityActions
               onDelete={handleAdminDeleteProposal}
@@ -120,7 +120,7 @@ export const GymkhanaProposalModal = ({
               <Pencil size={16} /> Edit
             </Button>
           )}
-        </div>
+        </HStack>
       ) : null
     }
   >
@@ -133,16 +133,13 @@ export const GymkhanaProposalModal = ({
         className="grid grid-cols-1 xl:grid-cols-3"
         style={{ gap: "var(--spacing-4)", alignItems: "start" }}
       >
-        <div
-          className="xl:col-span-2"
-          style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}
-        >
+        <VStack gap={4} className="xl:col-span-2">
           <EventDetailSectionCard
             icon={FileText}
             title="Proposal Details"
             accentColor="var(--color-primary)"
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <VStack gap={2}>
               {proposalEvent && (
                 <div
                   style={{
@@ -197,16 +194,7 @@ export const GymkhanaProposalModal = ({
                 <Alert type="warning">Proposal submission opens 21 days before event.</Alert>
               )}
 
-              <div
-                style={{
-                  ...infoBoxStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "var(--spacing-3)",
-                  flexWrap: "wrap",
-                }}
-              >
+              <HStack gap={3} align="center" justify="between" wrap>
                 <div>
                   <Text as="div" size="sm" weight="semibold" color="heading">
                     {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
@@ -230,7 +218,7 @@ export const GymkhanaProposalModal = ({
                 <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
                   {formEditable ? "Edit Details" : "View Details"}
                 </Button>
-              </div>
+              </HStack>
 
               {!isDetailedProposalComplete && (
                 <Alert type="warning" title="Details incomplete">
@@ -350,7 +338,7 @@ export const GymkhanaProposalModal = ({
                 viewerSubtitle="External guest attachment"
                 downloadFileName="chief-guest-document.pdf"
               />
-            </div>
+            </VStack>
           </EventDetailSectionCard>
 
           <EventDetailSectionCard
@@ -358,15 +346,7 @@ export const GymkhanaProposalModal = ({
             title="Budget Summary"
             accentColor="var(--color-success)"
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                flexWrap: "wrap",
-              }}
-            >
+            <HStack gap={3} align="center" justify="between" wrap>
               <EventDetailInfoRow
                 label="Income"
                 value={`₹${Number(computedTotalExpectedIncome || 0).toLocaleString()}`}
@@ -384,7 +364,7 @@ export const GymkhanaProposalModal = ({
                     : "var(--color-success)"
                 }
               />
-            </div>
+            </HStack>
           </EventDetailSectionCard>
 
           {canCurrentUserReviewProposal && proposalData && (
@@ -393,7 +373,7 @@ export const GymkhanaProposalModal = ({
               title="Review Actions"
               accentColor="var(--color-warning)"
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {requiresProposalNextApprovalSelection && (
                   <div
                     style={{
@@ -452,14 +432,7 @@ export const GymkhanaProposalModal = ({
                     rows={2}
                   />
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "var(--spacing-2)",
-                    flexWrap: "wrap",
-                    justifyContent: "flex-end",
-                  }}
-                >
+                <HStack gap={2} justify="end" wrap>
                   <Button
                     size="sm"
                     variant="warning"
@@ -496,19 +469,19 @@ export const GymkhanaProposalModal = ({
                       Recommend & Forward
                     </Button>
                   )}
-                </div>
-              </div>
+                </HStack>
+              </VStack>
             </EventDetailSectionCard>
           )}
-        </div>
+        </VStack>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
           <EventDetailSectionCard
             icon={Clock3}
             title="Proposal Snapshot"
             accentColor="var(--color-info)"
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <VStack gap={2}>
               <EventDetailInfoRow
                 label="Status"
                 value={proposalData?.status ? proposalData.status.replace(/_/g, " ") : "Draft"}
@@ -530,7 +503,7 @@ export const GymkhanaProposalModal = ({
                 label="Event Budget"
                 value={`₹${Number(proposalEvent?.estimatedBudget || 0).toLocaleString()}`}
               />
-            </div>
+            </VStack>
           </EventDetailSectionCard>
 
           <EventDetailSectionCard
@@ -539,7 +512,7 @@ export const GymkhanaProposalModal = ({
             accentColor="var(--color-text-secondary)"
           >
             {proposalData?._id ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <VStack gap={3}>
                 <AuditTimeline
                   key={proposalHistoryRefreshKey}
                   entityType="EventProposal"
@@ -555,7 +528,7 @@ export const GymkhanaProposalModal = ({
                 >
                   <History size={14} /> View detailed history
                 </Button>
-              </div>
+              </VStack>
             ) : (
               <p
                 style={{
@@ -568,7 +541,7 @@ export const GymkhanaProposalModal = ({
               </p>
             )}
           </EventDetailSectionCard>
-        </div>
+        </VStack>
       </div>
     )}
   </Modal>

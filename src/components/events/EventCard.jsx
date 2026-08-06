@@ -6,7 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import { Card, Text } from "@/components/ui"
+import { Card, HStack, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const EventCard = ({ event, refresh }) => {
@@ -69,8 +69,8 @@ const EventCard = ({ event, refresh }) => {
     <>
       <Card className="cursor-pointer" onClick={handleCardClick} >
         <Card.Header style={{ marginBottom: 'var(--spacing-0)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="start" justify="between">
+            <HStack gap="none" align="center">
               <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>
                 <FaCalendarAlt size={20} />
               </div>
@@ -78,32 +78,32 @@ const EventCard = ({ event, refresh }) => {
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }} className="md:text-lg line-clamp-1">{event.eventName}</h3>
                 <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
               </div>
-            </div>
+            </HStack>
             <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--spacing-1) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
-          </div>
+          </HStack>
         </Card.Header>
 
         <Card.Body className="mt-4 space-y-3">
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+          <HStack gap="none" align="center" wrap>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" size="sm" color="body">{date}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+            </HStack>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" size="sm" color="body">{time}</Text>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+            </HStack>
+            <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
               <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" size="sm" color="body" weight="medium">{event.hostel?.name || "All Hostels"}</Text>
-            </div>
+            </HStack>
             {event.gender && (
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-1)' }}>
+              <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-1)' }}>
                 <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                 <Text as="span" size="sm" color="body" weight="medium">{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</Text>
-              </div>
+              </HStack>
             )}
-          </div>
+          </HStack>
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', minHeight: '80px' }}>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="line-clamp-3">{event.description}</p>
           </div>

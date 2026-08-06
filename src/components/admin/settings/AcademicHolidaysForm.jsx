@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
 import { Button, Input } from "czero/react"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const YEAR_REGEX = /^\d{4}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -167,7 +167,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+    <VStack gap={6}>
       <div
         style={{
           display: "grid",
@@ -204,13 +204,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
         </div>
       ) : (
         <>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "var(--spacing-2)",
-            }}
-          >
+          <HStack gap={2} wrap>
             {sortedYears.map((year) => {
               const isActive = year === selectedYear
               return (
@@ -237,7 +231,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 </button>
               )
             })}
-          </div>
+          </HStack>
 
           <div
             style={{
@@ -247,17 +241,8 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
               backgroundColor: "var(--color-bg-primary)",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "var(--spacing-3)",
-                marginBottom: "var(--spacing-3)",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
+              <HStack inline gap={2} align="center">
                 <HiCalendar size={16} style={{ color: "var(--color-primary)" }} />
                 <Text as="span" weight="semibold" color="heading">
                   Holidays for {selectedYear}
@@ -274,7 +259,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 >
                   {selectedYearHolidays.length}
                 </span>
-              </div>
+              </HStack>
               <Button
                 type="button"
                 variant="danger"
@@ -284,7 +269,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
               >
                 <HiTrash size={14} /> Delete Year
               </Button>
-            </div>
+            </HStack>
 
             <div
               style={{
@@ -328,7 +313,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 No holidays added for this year.
               </Text>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 {selectedYearHolidays.map((holiday) => (
                   <div
                     key={`${holiday.date}-${holiday.title}`}
@@ -371,7 +356,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                     </Button>
                   </div>
                 ))}
-              </div>
+              </VStack>
             )}
           </div>
         </>
@@ -410,7 +395,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
           <HiSave size={16} /> Save Academic Holidays
         </Button>
       </div>
-    </div>
+    </VStack>
   )
 }
 

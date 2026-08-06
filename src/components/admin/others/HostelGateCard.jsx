@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Text, useConfirm } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, Text, useConfirm } from "@/components/ui"
 import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
@@ -37,37 +37,37 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
     <>
       <Card>
         <CardHeader style={{ marginBottom: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="start" justify="between">
+            <HStack gap="none" align="center">
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{gate.userId?.name || "Unknown Hostel"}</h3>
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+            </HStack>
+            <HStack gap={2}>
               <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit hostel gate login"><FaEdit /></Button>
               <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete hostel gate login"><FaTrash /></Button>
-            </div>
-          </div>
+            </HStack>
+          </HStack>
         </CardHeader>
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{gate.userId?.email}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
               <Text as="span" size="xs" weight="medium">Created</Text>
             </div>
             <Text as="span" color="muted">{formatDate(gate.createdAt)}</Text>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          </HStack>
+          <HStack gap="none" align="start">
             <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
               <Text as="span" size="xs" weight="medium">Updated</Text>
             </div>
             <Text as="span" color="muted">{formatDate(gate.updatedAt)}</Text>
-          </div>
+          </HStack>
         </CardBody>
       </Card>
 

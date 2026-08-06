@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, Select, Text } from "@/components/ui"
+import { FileInput, Grid, HStack, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -748,7 +748,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       {activeTab === "csv" && (
         <>
           {step === 1 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+            <VStack gap={5}>
               <div>
                 <label
                   htmlFor="hostel-select"
@@ -800,7 +800,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleCsvFileUpload} />
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <VStack gap="none" align="center">
                     <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
                       <FaFileDownload />
                       Download CSV Template
@@ -827,7 +827,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         )}
                       </ul>
                     </div>
-                  </div>
+                  </VStack>
                 </>
               ) : (
                 <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
@@ -871,12 +871,12 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   </span>
                 </div>
               )}
-            </div>
+            </VStack>
           )}
 
           {step === 2 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
-              <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", marginBottom: "var(--spacing-4)" }} className="sm:flex-row sm:items-center">
+            <VStack gap={5}>
+              <VStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-4)" }} className="sm:flex-row sm:items-center">
                 <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
                   Preview Room Allocations - {selectedHostel?.name}
                 </h3>
@@ -893,19 +893,19 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                 >
                   {parsedData.length} room allocations found in CSV
                 </div>
-              </div>
+              </VStack>
 
               <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
                 <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
               </div>
-            </div>
+            </VStack>
           )}
         </>
       )}
 
       {activeTab === "manual" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
+        <VStack gap={4}>
+          <HStack gap={4} align="center" justify="between" wrap>
             <div>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
                 Manual Allocation Rows
@@ -918,7 +918,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
               {manualReadyRows.length} ready to submit
             </div>
-          </div>
+          </HStack>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", maxHeight: "32rem", overflowY: "auto", paddingRight: "var(--spacing-1)" }}>
             {manualRows.map((row, index) => {
@@ -962,7 +962,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     backgroundColor: isManualRowBlank(row) ? "var(--color-bg-secondary)" : "var(--color-bg-primary)",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-3)" }}>
+                  <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-3)" }}>
                     <Text as="div" size="sm" weight="semibold" color="secondary">
                       Row {index + 1}
                     </Text>
@@ -971,7 +971,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         <FaTrash />
                       </Button>
                     )}
-                  </div>
+                  </HStack>
 
                   <Grid min={180} gap={3}>
                     <div>
@@ -1078,7 +1078,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     </div>
                   </Grid>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-3)" }}>
+                  <VStack gap={2} style={{ marginTop: "var(--spacing-3)" }}>
                     {row.student?.currentAllocation && (
                       <div
                         style={{
@@ -1158,12 +1158,12 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         {units.length > 6 ? "..." : ""}
                       </Text>
                     )}
-                  </div>
+                  </VStack>
                 </div>
               )
             })}
           </div>
-        </div>
+        </VStack>
       )}
 
       {error && (

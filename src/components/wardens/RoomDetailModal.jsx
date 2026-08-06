@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -67,7 +67,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   return (
     <>
       <Modal title={`Room ${room.roomNumber} Details`} onClose={onClose} width={800}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <VStack gap={6}>
           <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--spacing-6)' }}>
             <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
@@ -133,7 +133,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
           )}
 
           <div style={{ marginTop: 'var(--spacing-6)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+            <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center' }}>
                 <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
               </h3>
@@ -142,7 +142,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                   <FaUserPlus /> Allocate Student
                 </Button>
               )}
-            </div>
+            </HStack>
 
             {!isActive ? (
               <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
@@ -173,7 +173,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                         >
                           <Table.Cell style={{ whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={() => handleStudentClick(student)}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <HStack gap="none" align="center">
                               <div style={{ height: 'var(--spacing-8)', width: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                 {student.profileImage ? (
                                   <img src={getMediaUrl(student.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
@@ -186,7 +186,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                                 <div className="sm:hidden" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</div>
                                 <Text as="div" size="xs" color="muted">{student.email}</Text>
                               </div>
-                            </div>
+                            </HStack>
                           </Table.Cell>
                           <Table.Cell className="hidden sm:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber}</Table.Cell>
                           <Table.Cell className="hidden lg:table-cell" style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.bedNumber}</Table.Cell>
@@ -214,7 +214,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
               </div>
             )}
           </div>
-        </div>
+        </VStack>
       </Modal>
       {showStudentDetailModal && selectedStudentId && <StudentDetailModal selectedStudent={{ _id: selectedStudentId, userId: selectedUserId }} setShowStudentDetail={setShowStudentDetailModal} onUpdate={() => setShowStudentDetailModal(false)} />}
     </>

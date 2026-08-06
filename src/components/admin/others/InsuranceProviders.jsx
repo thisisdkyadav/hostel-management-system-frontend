@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
@@ -65,12 +65,12 @@ const InsuranceProviders = () => {
         </Button>
       </header>
 
-      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center sm:space-y-0">
+      <VStack gap={4} align="start" justify="between" style={{ marginTop: 'var(--spacing-6)' }} className="sm:flex-row sm:items-center sm:space-y-0">
         {/* <div className="w-full sm:w-auto pb-2">
           <FilterTabs tabs={INSURANCE_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
         </div> */}
         <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, phone or dates" className="w-full sm:w-64 md:w-72" />
-      </div>
+      </VStack>
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>

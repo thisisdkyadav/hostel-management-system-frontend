@@ -3,7 +3,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, CalendarDays, Plus, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Page, SearchInput, StatCards } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, HStack, Page, SearchInput, StatCards } from "@/components/ui"
 import PeriodCard from "@/components/dining/PeriodCard"
 import PeriodDetailModal from "@/components/dining/PeriodDetailModal"
 import PeriodFormModal from "@/components/dining/PeriodFormModal"
@@ -20,7 +20,7 @@ const LIFECYCLE_SECTIONS = [
 ]
 
 const SectionHeader = ({ title, count }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-3)" }}>
+  <HStack gap={2} align="center" style={{ marginBottom: "var(--spacing-3)" }}>
     <h2
       style={{
         margin: 0,
@@ -48,7 +48,7 @@ const SectionHeader = ({ title, count }) => (
       {count}
     </span>
     <div style={{ flex: 1, height: "1px", backgroundColor: "var(--color-border-primary)" }} />
-  </div>
+  </HStack>
 )
 
 const DiningPeriodsPage = () => {

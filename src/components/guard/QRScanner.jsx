@@ -5,7 +5,7 @@ import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 import { Button } from "czero/react"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -172,12 +172,12 @@ const QRScanner = ({ onRefresh }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Student QR Code</h2>
-      </div>
+      </HStack>
 
       {error && (
         <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>

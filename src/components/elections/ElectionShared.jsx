@@ -4,7 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
@@ -55,20 +55,12 @@ export const HeaderSelect = ({
 export const MetaList = ({ items = [], mutedTextStyle }) => (
   <div style={{ display: "grid", gap: "10px" }}>
     {items.map((item) => (
-      <div
-        key={item.label}
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: "var(--spacing-3)",
-        }}
-      >
+      <HStack gap={3} align="start" justify="between" key={item.label}>
         <span style={mutedTextStyle}>{item.label}</span>
         <Text as="span" color="body" weight="medium" align="right">
           {item.value || "—"}
         </Text>
-      </div>
+      </HStack>
     ))}
   </div>
 )
@@ -195,26 +187,18 @@ export const ScopeEditor = ({
 
   return (
     <div style={flatPanelStyle}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "var(--spacing-3)",
-          marginBottom: "var(--spacing-3)",
-        }}
-      >
+      <HStack gap={3} align="center" justify="between" style={{ marginBottom: "var(--spacing-3)" }}>
         <div>
           <div style={{ ...labelStyle, marginBottom: "4px" }}>{title}</div>
           <div style={mutedTextStyle}>
             {countLoading ? "Counting students..." : `${studentCount} student(s) selected`}
           </div>
         </div>
-      </div>
+      </HStack>
 
       <div style={{ marginBottom: "var(--spacing-3)" }}>
         <div style={labelStyle}>Batches</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        <HStack gap="8px" wrap>
           {batchOptions.map((batch) => {
             const isSelected = (scope.batches || []).includes(batch)
             return (
@@ -236,12 +220,12 @@ export const ScopeEditor = ({
             )
           })}
           {batchOptions.length === 0 ? <span style={mutedTextStyle}>No configured batches available.</span> : null}
-        </div>
+        </HStack>
       </div>
 
       <div style={{ marginBottom: "var(--spacing-3)" }}>
         <div style={labelStyle}>Groups</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        <HStack gap="8px" wrap>
           {groupOptions.map((groupName) => {
             const isSelected = (scope.groups || []).includes(groupName)
             return (
@@ -263,13 +247,13 @@ export const ScopeEditor = ({
             )
           })}
           {groupOptions.length === 0 ? <span style={mutedTextStyle}>No configured groups available.</span> : null}
-        </div>
+        </HStack>
       </div>
 
       <div>
         <div style={{ marginBottom: "var(--spacing-3)" }}>
           <div style={labelStyle}>Manual roll number entry</div>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+          <HStack gap="8px" align="center" wrap>
             <input
               type="text"
               value={manualRollNumber}
@@ -300,7 +284,7 @@ export const ScopeEditor = ({
             >
               Add
             </Button>
-          </div>
+          </HStack>
           <div style={{ marginTop: "8px", ...mutedTextStyle }}>
             Add students one by one. This uses the same saved list as CSV upload.
           </div>
@@ -330,7 +314,7 @@ export const ScopeEditor = ({
             <div style={mutedTextStyle}>
               {(scope.extraRollNumbers || []).length} manually/CSV added student(s)
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            <HStack gap="8px" wrap>
               {(scope.extraRollNumbers || []).map((rollNumber) => (
                 <button
                   key={rollNumber}
@@ -348,7 +332,7 @@ export const ScopeEditor = ({
                   {rollNumber} ×
                 </button>
               ))}
-            </div>
+            </HStack>
           </div>
         ) : null}
         {error ? <div style={errorTextStyle}>{error}</div> : null}
@@ -370,7 +354,7 @@ export const HostelPicker = ({
   }
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+    <HStack gap="8px" wrap>
       {hostels.map((hostel) => {
         const hostelName = hostel.name
         const isSelected = selectedHostels.includes(hostelName)
@@ -393,7 +377,7 @@ export const HostelPicker = ({
         )
       })}
       {hostels.length === 0 ? <span style={mutedTextStyle}>No hostels available.</span> : null}
-    </div>
+    </HStack>
   )
 }
 
@@ -462,7 +446,7 @@ export const DocumentUploadField = ({
             <Text as="div" size="sm" color="body">
               {isPdfDocument(value) ? "PDF uploaded" : "Document uploaded"}
             </Text>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <HStack gap="8px" wrap>
               <Button size="sm" variant="secondary" onClick={() => setViewerOpen(true)}>
                 View
               </Button>
@@ -493,7 +477,7 @@ export const DocumentUploadField = ({
                   </span>
                 </label>
               ) : null}
-            </div>
+            </HStack>
           </div>
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>

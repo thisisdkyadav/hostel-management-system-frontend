@@ -296,15 +296,15 @@ const HostelAllocation = () => {
                 {hostelInventory.map((allocation) => (
                   <Table.Row key={allocation._id}>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <HStack gap="none" align="center">
                         <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                           <FaBuilding style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <Text as="span" weight="medium" color="secondary">{allocation.hostelId.name}</Text>
-                      </div>
+                      </HStack>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <HStack gap="none" align="center">
                         <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
                           <FaBox style={{ color: 'var(--color-primary)' }} />
                         </div>
@@ -312,17 +312,17 @@ const HostelAllocation = () => {
                           <Text as="div" weight="medium" color="secondary">{allocation.itemTypeId.name}</Text>
                           <Text as="div" size="sm" color="muted">{allocation.itemTypeId.description}</Text>
                         </div>
-                      </div>
+                      </HStack>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)' }}>{allocation.allocatedCount}</Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: allocation.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)', color: allocation.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}>{allocation.availableCount}</span>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                      <HStack gap={3} align="center">
                         <Button onClick={() => handleEdit(allocation)} variant="secondary" size="sm"><FaEdit /></Button>
                         <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="sm"><FaTrash /></Button>
-                      </div>
+                      </HStack>
                     </Table.Cell>
                   </Table.Row>
                 ))}

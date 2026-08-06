@@ -105,8 +105,8 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
         }
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--spacing-2)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
+        <HStack gap={2} align="center">
           <div style={{
             width: "24px",
             height: "24px",
@@ -128,29 +128,24 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           }}>
             {title}
           </h4>
-        </div>
+        </HStack>
         {headerAction}
-      </div>
+      </HStack>
       {children}
     </div>
   )
 
   // Info Row Component
   const InfoRow = ({ label, value, fullWidth = false }) => (
-    <div style={{
-      display: "flex",
-      justifyContent: fullWidth ? "flex-start" : "space-between",
-      alignItems: "center",
-      gap: "var(--spacing-3)"
-    }}>
+    <HStack gap={3} align="center" justify={fullWidth ? "flex-start" : "space-between"}>
       <Text as="span" color="muted" size="sm">{label}</Text>
       {!fullWidth && <Text as="span" weight="medium" color="body">{value}</Text>}
-    </div>
+    </HStack>
   )
 
   // Person Card Component
   const PersonCard = ({ person, label, accentBg = "var(--color-primary-bg)", accentText = "var(--color-primary)" }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+    <HStack gap={3} align="center">
       {person?.profileImage ? (
         <img
           src={getMediaUrl(person.profileImage)}
@@ -202,12 +197,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           </Text>
         )}
       </div>
-    </div>
+    </HStack>
   )
 
   // Star Rating Component
   const StarRating = ({ rating }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+    <HStack gap="2px" align="center">
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
@@ -225,7 +220,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
       }}>
         {rating}/5
       </span>
-    </div>
+    </HStack>
   )
 
   // Custom title with truncation and hover tooltip
@@ -252,7 +247,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
         width={800}
         closeButtonVariant="button"
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <VStack gap={4}>
 
           {/* Compact Info Bar - ID, Status, Category, Filed Date, Actions */}
           <div style={{
@@ -265,7 +260,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             borderBottom: "1px solid var(--color-border-light)"
           }}>
             {/* Left - Metadata */}
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <HStack gap={2} align="center" wrap>
               <span style={{
                 fontSize: "var(--font-size-xs)",
                 color: "var(--color-text-muted)",
@@ -307,10 +302,10 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                 <CalendarDays size={11} />
                 {formatDate(complaintData.createdDate)}
               </span>
-            </div>
+            </HStack>
 
             {/* Right - Action Buttons */}
-            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <HStack gap={2}>
               {canUpdateComplaint && (
                 <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="sm">
                   <Pencil size={14} />
@@ -323,7 +318,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                   Feedback
                 </Button>
               )}
-            </div>
+            </HStack>
           </div>
 
           {/* Resolution Section - Shown first when resolved */}
@@ -334,12 +329,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                 {complaintData.feedbackRating && (
                   <SectionCard icon={MessageSquare} title="User Feedback" accentColor="var(--color-warning)">
                     <VStack gap="small">
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                      <HStack gap={2} align="center" justify="between" wrap>
                         <StarRating rating={complaintData.feedbackRating} />
                         <Badge variant={getSatisfactionVariant(complaintData.satisfactionStatus)} size="small">
                           {complaintData.satisfactionStatus}
                         </Badge>
-                      </div>
+                      </HStack>
                       {complaintData.feedback && (
                         <div style={{
                           marginTop: "var(--spacing-2)",
@@ -466,12 +461,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           {!isResolved && complaintData.feedbackRating && (
             <SectionCard icon={MessageSquare} title="User Feedback" accentColor="var(--color-warning)">
               <VStack gap="small">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                <HStack gap={2} align="center" justify="between" wrap>
                   <StarRating rating={complaintData.feedbackRating} />
                   <Badge variant={getSatisfactionVariant(complaintData.satisfactionStatus)} size="small">
                     {complaintData.satisfactionStatus}
                   </Badge>
-                </div>
+                </HStack>
                 {complaintData.feedback && (
                   <div style={{
                     marginTop: "var(--spacing-2)",
@@ -489,7 +484,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               </VStack>
             </SectionCard>
           )}
-        </div>
+        </VStack>
       </Modal>
 
       {showUpdateModal && <UpdateComplaintModal complaint={complaintData} onClose={() => setShowUpdateModal(false)} onUpdate={handleComplaintUpdate} />}

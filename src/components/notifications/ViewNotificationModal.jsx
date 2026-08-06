@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Modal, Text } from "@/components/ui"
+import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
@@ -19,7 +19,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
   return (
     <Modal title="Notification Details" onClose={onClose} width={700} isOpen={isOpen}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+      <VStack gap={5}>
         <header style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>{notification.title}</h2>
           <div>{isExpired ? <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }}>Expired</span> : <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Active</span>}</div>
@@ -30,7 +30,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
         </div>
 
         <Grid min={250} gap={4}>
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-success)' }}>
               <FaRegClock />
             </div>
@@ -38,9 +38,9 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Created</h4>
               <Text color="muted">{formatDate(notification.createdAt)}</Text>
             </div>
-          </div>
+          </HStack>
 
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <HStack gap="none" align="start">
             <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-warning)' }}>
               <FaRegClock />
             </div>
@@ -48,12 +48,12 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Expires</h4>
               <Text color="muted">{formatDate(notification.expiryDate)}</Text>
             </div>
-          </div>
+          </HStack>
         </Grid>
 
         <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Target Audience</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+          <VStack gap={3}>
             {notification.hostelId && notification.hostelId.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                 <FaBuilding style={{ color: 'var(--color-info)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
@@ -100,7 +100,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
                 <Text as="span" size="sm">All Students</Text>
               </div>
             )}
-          </div>
+          </VStack>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
@@ -108,7 +108,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
             Close
           </Button>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

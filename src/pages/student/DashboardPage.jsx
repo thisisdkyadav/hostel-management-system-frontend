@@ -13,7 +13,7 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { Modal } from "@/components/ui"
+import { HStack, Modal, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
@@ -56,7 +56,7 @@ const ProfileShimmer = () => (
   <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
     <div className="flex flex-col md:flex-row" style={{ gap: 'var(--gap-md)' }}>
       <ShimmerLoader height="120px" width="120px" className="rounded-full" />
-      <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+      <VStack gap="var(--gap-md)" className="flex-1">
         <ShimmerLoader height="2rem" width="60%" />
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--gap-md)' }}>
           <ShimmerLoader height="1.5rem" width="80%" />
@@ -64,7 +64,7 @@ const ProfileShimmer = () => (
           <ShimmerLoader height="1.5rem" width="60%" />
           <ShimmerLoader height="1.5rem" width="75%" />
         </div>
-      </div>
+      </VStack>
     </div>
   </div>
 )
@@ -448,14 +448,14 @@ const DashboardPage = () => {
         >
           Voting for <strong>{electionTitle || "the current election"}</strong> is currently active. Go to the elections page to cast your vote now.
         </p>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+        <HStack gap={3} justify="end" wrap>
           <Button variant="secondary" onClick={onClose}>
             Later
           </Button>
           <Button variant="primary" onClick={onGoToVoting}>
             Go to Voting
           </Button>
-        </div>
+        </HStack>
       </div>
     </Modal>
   )
@@ -611,18 +611,18 @@ const DashboardPage = () => {
         <StatsShimmer />
 
         <div className="grid grid-cols-1 lg:grid-cols-6" style={{ gap: 'var(--gap-md)' }}>
-          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+          <VStack gap="var(--gap-md)" className="lg:col-span-2">
             <CardShimmer height="12rem" style={{ marginBottom: 'var(--spacing-4)' }} />
             <CardShimmer height="12rem" />
-          </div>
+          </VStack>
 
-          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+          <VStack gap="var(--gap-md)" className="lg:col-span-2">
             <CardShimmer height="24rem" />
-          </div>
+          </VStack>
 
-          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+          <VStack gap="var(--gap-md)" className="lg:col-span-2">
             <CardShimmer height="24rem" />
-          </div>
+          </VStack>
         </div>
       </div>
     )
@@ -678,21 +678,21 @@ const DashboardPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-6" style={{ gap: 'var(--gap-md)' }}>
         {/* Left sidebar - takes 2 columns */}
-        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+        <VStack gap="var(--gap-md)" className="lg:col-span-2">
           <RoomInfoCard roomData={dashboardData.roomInfo} />
           <InsuranceInfoCard insurance={dashboardData.insurance} />
           <LostFoundSummary lostAndFoundStats={dashboardData.stats.lostAndFound} />
-        </div>
+        </VStack>
 
         {/* Middle section - Complaints takes 2 columns */}
-        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+        <VStack gap="var(--gap-md)" className="lg:col-span-2">
           <ComplaintsSummary complaints={dashboardData.activeComplaints} />
-        </div>
+        </VStack>
 
         {/* Right section - Events takes 2 columns */}
-        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+        <VStack gap="var(--gap-md)" className="lg:col-span-2">
           <EventsCalendar events={dashboardData.upcomingEvents} />
-        </div>
+        </VStack>
       </div>
 
       {/* Only keep the mobile QR button and modal */}
@@ -713,12 +713,12 @@ const DashboardPage = () => {
       {/* QR Code Modal */}
       {showQRModal && (
         <Modal title="Campus Access QR" onClose={() => setShowQRModal(false)} width={480}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <VStack gap={6}>
             <QRCodeGenerator />
             <Button onClick={() => setShowQRModal(false)} fullWidth variant="secondary" size="md">
               Close
             </Button>
-          </div>
+          </VStack>
         </Modal>
       )}
 

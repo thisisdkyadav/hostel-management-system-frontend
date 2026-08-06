@@ -2,7 +2,7 @@ import { Button, DataTable, Tabs } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { EmptyState, LoadingState } from "@/components/ui/feedback"
 import { StatCards } from "@/components/ui/data-display"
-import { Text, ToggleButtonGroup } from "@/components/ui"
+import { HStack, Text, ToggleButtonGroup } from "@/components/ui"
 import {
   AlertTriangle,
   Bell,
@@ -127,7 +127,7 @@ function MonthCalendarView({
           borderBottom: "var(--border-1) solid var(--color-border-primary)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: "var(--spacing-2-5)" }}>
+        <HStack gap="var(--spacing-2-5)" align="baseline">
           <h3
             style={{
               margin: 0,
@@ -157,8 +157,8 @@ function MonthCalendarView({
               {monthEventCount} event{monthEventCount === 1 ? "" : "s"}
             </span>
           )}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
+        </HStack>
+        <HStack gap="var(--spacing-1-5)" align="center">
           <button
             onClick={() => goMonth(-1)}
             style={navBtnStyle}
@@ -190,7 +190,7 @@ function MonthCalendarView({
           >
             <ChevronRight size={16} />
           </button>
-        </div>
+        </HStack>
       </div>
 
       <div
@@ -311,7 +311,7 @@ function MonthCalendarView({
                       : "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
+                <HStack gap={4} align="center" justify="between">
                   <span
                     style={{
                       minWidth: 22,
@@ -353,7 +353,7 @@ function MonthCalendarView({
                       {dayHolidays[0].title}
                     </span>
                   )}
-                </div>
+                </HStack>
 
                 {shown.map((event, eventIndex) => (
                   <button
@@ -489,14 +489,7 @@ function YearCalendarView({
                 : "var(--shadow-xs)"
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "var(--spacing-2)",
-              }}
-            >
+            <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
               <Text as="span" size="sm" weight="bold" color="heading">
                 {monthDate.toLocaleString("default", { month: "short" })}{" "}
                 <Text as="span" color="muted" weight="normal">
@@ -535,7 +528,7 @@ function YearCalendarView({
                   </span>
                 )}
               </span>
-            </div>
+            </HStack>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 3 }}>
               {CALENDAR_WEEKDAY_LABELS.map((day, index) => (
@@ -789,24 +782,15 @@ export default function GymkhanaEventsPageContent({
                 borderRadius: "var(--radius-card-sm)",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "var(--spacing-2)",
-                  flexWrap: "wrap",
-                  marginBottom: "var(--spacing-2)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <HStack gap={2} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-2)" }}>
+                <HStack gap={2} align="center">
                   <Bell size={14} style={{ color: "var(--color-warning)" }} />
                   <Text as="span" size="sm" weight="medium" color="heading">
                     {pendingProposalReminders.length} event(s) in proposal window
                   </Text>
-                </div>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                </HStack>
+              </HStack>
+              <HStack gap={2} wrap>
                 {pendingProposalReminders.slice(0, 5).map((event) => (
                   <div
                     key={`proposal-reminder-${event._id || event.title}`}
@@ -838,7 +822,7 @@ export default function GymkhanaEventsPageContent({
                     <FileText size={12} style={{ color: "var(--color-warning)" }} />
                   </div>
                 ))}
-              </div>
+              </HStack>
             </div>
           )}
 
@@ -857,12 +841,12 @@ export default function GymkhanaEventsPageContent({
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} align="center">
               <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
               <Text as="span" size="sm" color="body">
                 <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s)
               </Text>
-            </div>
+            </HStack>
             <Button size="sm" variant="ghost" onClick={() => setShowPendingProposalModal(true)}>
               View Proposals
             </Button>
@@ -888,12 +872,12 @@ export default function GymkhanaEventsPageContent({
                 flexWrap: "wrap",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <HStack gap={2} align="center">
                 <Receipt size={14} style={{ color: "var(--color-info)" }} />
                 <Text as="span" size="sm" color="body">
                   <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong> pending bill approval(s)
                 </Text>
-              </div>
+              </HStack>
               <Button size="sm" variant="ghost" onClick={() => setShowPendingBillsModal(true)}>
                 View Bills
               </Button>
@@ -915,12 +899,12 @@ export default function GymkhanaEventsPageContent({
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <HStack gap={2} align="center">
               <AlertTriangle size={14} style={{ color: "var(--color-warning)" }} />
               <Text as="span" size="sm" color="body">
                 <strong>{dateConflicts.length}</strong> date overlap(s) detected
               </Text>
-            </div>
+            </HStack>
             <Button size="sm" variant="ghost" onClick={() => setShowOverlapDetailsModal(true)}>
               View Details
             </Button>

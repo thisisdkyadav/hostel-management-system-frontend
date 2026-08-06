@@ -8,7 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Card, Text } from "@/components/ui"
+import { Card, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
@@ -90,8 +90,8 @@ const LostAndFoundCard = ({ item, refresh }) => {
     <>
       <Card className="cursor-pointer" onClick={handleCardClick} >
         <Card.Header style={{ marginBottom: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HStack gap="none" align="start" justify="between">
+            <HStack gap="none" align="center">
               <div style={{ ...getStatusStyle(item.status), padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
                 <MdInventory size={20} />
               </div>
@@ -99,9 +99,9 @@ const LostAndFoundCard = ({ item, refresh }) => {
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{item.itemName}</h3>
                 <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
               </div>
-            </div>
+            </HStack>
             <span style={{ ...getStatusStyle(item.status), fontSize: 'var(--font-size-xs)', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)' }}>{item.status}</span>
-          </div>
+          </HStack>
         </Card.Header>
 
         <Card.Body>
@@ -118,15 +118,15 @@ const LostAndFoundCard = ({ item, refresh }) => {
             </div>
           )}
 
-          <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--gap-sm)' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <VStack gap="var(--gap-sm)" style={{ marginTop: 'var(--spacing-4)' }}>
+            <HStack gap="none" align="center">
               <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text as="span" size="sm" color="secondary">{formatDate(item.dateFound)}</Text>
-            </div>
+            </HStack>
             <div style={{ backgroundColor: 'var(--table-header-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.description}</p>
             </div>
-          </div>
+          </VStack>
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>

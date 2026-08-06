@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { HStack, Modal, Text, VStack } from "@/components/ui"
 import { CheckCircle2, Download, FileText, Filter, Upload, Users } from "lucide-react"
 import { FileInput } from "@/components/ui"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -170,7 +170,7 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
 
   return (
     <Modal title="Export Students" onClose={onClose} width={720}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         <OptionCard
           active={mode === EXPORT_MODES.VISIBLE}
           disabled={visibleCount === 0}
@@ -209,7 +209,7 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
               background: "var(--color-bg-tertiary)",
             }}
           >
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-3)", alignItems: "center", justifyContent: "space-between" }}>
+            <HStack gap={3} align="center" justify="between" wrap>
               <div>
                 <Text as="div" weight="semibold" color="primary">
                   {fileName || "No file selected"}
@@ -218,15 +218,15 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
                   {rollNumbers.length > 0 ? `${rollNumbers.length} unique roll numbers ready` : "Upload a CSV file to continue"}
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+              <HStack gap={2}>
                 <Button type="button" variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
                   <Upload size={16} /> Upload CSV
                 </Button>
                 <Button type="button" variant="ghost" size="sm" onClick={downloadRollNumberTemplate}>
                   <Download size={16} /> Template
                 </Button>
-              </div>
-            </div>
+              </HStack>
+            </HStack>
             <FileInput ref={fileInputRef} accept=".csv,text/csv" onChange={handleFileUpload} hidden />
           </div>
         )}
@@ -245,7 +245,7 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
             <Download size={16} /> {isExporting ? "Exporting..." : "Export"}
           </Button>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

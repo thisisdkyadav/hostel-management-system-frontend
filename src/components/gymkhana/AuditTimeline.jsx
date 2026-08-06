@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Plus, Pencil, Trash2, RotateCcw, Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 // Edit actions (kind: "edit") and approval actions (kind: "approval") share one map.
 const ACTION_ICONS = {
@@ -177,7 +177,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
     // field-level detail lives in the detailed history popup.
     if (compact) {
         return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <VStack gap={2}>
                 {visible.map((item, idx) => {
                     const Icon = ACTION_ICONS[item.action] || Clock
                     const color = ACTION_COLORS[item.action] || "default"
@@ -210,12 +210,12 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                         </div>
                     )
                 })}
-            </div>
+            </VStack>
         )
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
             {visible.map((item, idx) => {
                 const Icon = ACTION_ICONS[item.action] || Clock
                 const color = ACTION_COLORS[item.action] || "default"
@@ -256,15 +256,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
 
                         {/* Content */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "var(--spacing-2)",
-                                    marginBottom: "var(--spacing-1)",
-                                    flexWrap: "wrap",
-                                }}
-                            >
+                            <HStack gap={2} align="center" wrap style={{ marginBottom: "var(--spacing-1)" }}>
                                 <Badge variant={color}>{formatActionLabel(item.action)}</Badge>
                                 {!isEdit && item.stage && (
                                     <Text as="span" size="xs" color="muted">
@@ -276,7 +268,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                                         {actor.subRole || actor.role}
                                     </Text>
                                 )}
-                            </div>
+                            </HStack>
 
                             <p
                                 style={{
@@ -346,7 +338,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                     </div>
                 )
             })}
-        </div>
+        </VStack>
     )
 }
 

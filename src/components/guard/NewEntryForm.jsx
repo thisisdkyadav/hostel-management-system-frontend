@@ -3,7 +3,7 @@ import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -63,7 +63,7 @@ const NewEntryForm = ({ onAddEntry }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
         <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>New Check In/Out Entry</h2>
 
         <ToggleButtonGroup
@@ -78,7 +78,7 @@ const NewEntryForm = ({ onAddEntry }) => {
           variant="primary"
           hideLabelsOnMobile={false}
         />
-      </div>
+      </HStack>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--spacing-2)' }}>
         {hostelType === "unit-based" ? (

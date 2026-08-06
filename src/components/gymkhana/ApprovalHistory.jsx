@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const ACTION_ICONS = {
     submitted: Send,
@@ -107,7 +107,7 @@ const ApprovalHistory = ({
         )
     }
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <VStack gap={3}>
             {history.map((log, idx) => {
                 const Icon = ACTION_ICONS[log.action] || Clock
                 const color = ACTION_COLORS[log.action] || "default"
@@ -140,14 +140,14 @@ const ApprovalHistory = ({
 
                         {/* Content */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-1)" }}>
+                            <HStack gap={2} align="center" style={{ marginBottom: "var(--spacing-1)" }}>
                                 <Badge variant={color}>
                                     {actionLabel}
                                 </Badge>
                                 <Text as="span" size="xs" color="muted">
                                     by {formatStageLabel(log.stage)}
                                 </Text>
-                            </div>
+                            </HStack>
 
                             <p style={{
                                 fontSize: "var(--font-size-sm)",
@@ -178,7 +178,7 @@ const ApprovalHistory = ({
                     </div>
                 )
             })}
-        </div>
+        </VStack>
     )
 }
 

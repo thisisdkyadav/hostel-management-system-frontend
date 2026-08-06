@@ -141,7 +141,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-info-bg-light)', border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-4)' }}>
+      <HStack gap={3} align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-info-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
@@ -151,7 +151,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)' }}>Submit Payment Information</h4>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>Upload your payment details and screenshot for verification</p>
         </div>
-      </div>
+      </HStack>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         <Grid min={250} gap={4}>
@@ -200,8 +200,8 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
             </div>
           ) : (
             <div style={{ marginTop: 'var(--spacing-1)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+              <HStack gap="none" align="center" justify="between">
+                <HStack gap={3} align="center">
                   <div style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <svg style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
@@ -211,19 +211,19 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
                     <Text size="sm" weight="medium" color="primary">Payment screenshot uploaded</Text>
                     <Text size="xs" color="light">Click to view or change</Text>
                   </div>
-                </div>
+                </HStack>
                 <Button type="button" onClick={removeScreenshot} variant="ghost" size="sm">
                   Remove
                 </Button>
-              </div>
+              </HStack>
             </div>
           )}
 
           {uploading && (
-            <div style={{ marginTop: 'var(--spacing-2)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+            <HStack gap={2} align="center" style={{ marginTop: 'var(--spacing-2)' }}>
               <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: `var(--border-2) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
               <Text as="span" size="sm" color="muted">Uploading...</Text>
-            </div>
+            </HStack>
           )}
 
           {errors.screenshot && <Text color="danger" size="xs">{errors.screenshot}</Text>}

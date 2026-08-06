@@ -1,5 +1,6 @@
 import React from "react"
 import { Button } from "czero/react"
+import { HStack } from "@/components/ui"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {
   return (
@@ -32,14 +33,14 @@ const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) 
           }}
         ></textarea>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
+      <HStack gap={2} justify="end">
         <Button onClick={onCancel} variant="secondary" size="md">
           Cancel
         </Button>
         <Button onClick={onSubmit} variant="danger" size="md">
           Confirm Rejection
         </Button>
-      </div>
+      </HStack>
     </div>
   )
 }

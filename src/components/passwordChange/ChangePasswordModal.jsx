@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -95,9 +95,9 @@ const ChangePasswordModal = ({ onClose, email }) => {
             <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Password must be at least 6 characters long</p>
           )}
 
-          <div style={{ marginTop: "var(--spacing-2)", display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+          <VStack gap={1} style={{ marginTop: "var(--spacing-2)" }}>
             <PasswordStrengthBar password={formData.newPassword} />
-          </div>
+          </VStack>
         </div>
 
         <div>

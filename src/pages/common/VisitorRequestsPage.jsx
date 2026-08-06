@@ -6,7 +6,7 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { EmptyState, ErrorState, LoadingState, Pagination, Text } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState, Pagination, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -173,7 +173,7 @@ const VisitorRequestsPage = () => {
       <div style={{ flex: "1", overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
         {showFilters && (
           <div style={{ backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", marginBottom: "var(--spacing-6)" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap={4}>
               <div>
                 <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Status:</h3>
                 <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
@@ -212,7 +212,7 @@ const VisitorRequestsPage = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </VStack>
           </div>
         )}
 

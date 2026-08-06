@@ -163,7 +163,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--spacing-6)" }}>
+      <HStack gap="none" justify="center" style={{ marginBottom: "var(--spacing-6)" }}>
         <div style={{ display: "inline-flex", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }} role="group">
           <Button
             type="button"
@@ -186,7 +186,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             CSV Import
           </Button>
         </div>
-      </div>
+      </HStack>
 
       {inputMethod === "form" ? (
         <>
@@ -276,7 +276,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
           </div>
         </>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+        <VStack gap={6}>
           <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity"]} instructionText={templateInstructions} maxRecords={MAX_BULK_RECORDS} />
 
           {parsedCsvData.length > 0 && (
@@ -287,7 +287,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               <RoomStatsSummary data={parsedCsvData} isUnitBased={true} />
             </div>
           )}
-        </div>
+        </VStack>
       )}
     </div>
   )

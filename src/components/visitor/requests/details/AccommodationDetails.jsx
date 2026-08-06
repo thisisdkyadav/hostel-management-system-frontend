@@ -1,7 +1,7 @@
 import React from "react"
 import { FaBuilding } from "react-icons/fa"
 import { useGlobal } from "../../../../contexts/GlobalProvider"
-import { Text } from "@/components/ui"
+import { HStack, Text, VStack } from "@/components/ui"
 
 const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
   return (
@@ -10,39 +10,39 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
         <FaBuilding style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)", fontSize: "var(--icon-md)", }} />{" "}
         Accommodation Details
       </h3>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <VStack gap={2}>
+        <HStack gap="none" justify="between">
           <Text as="span" color="muted" size="sm">
             Hostel:
           </Text>
           <Text as="span" weight="medium" size="sm">
             {hostelName}
           </Text>
-        </div>
+        </HStack>
         {allocatedRooms && allocatedRooms.length > 0 ? (
           <div>
             <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", display: "block", marginBottom: "var(--spacing-1)", }} >
               Allocated Rooms:
             </span>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+            <VStack gap={1}>
               {allocatedRooms.map((room, index) => (
                 <div key={index} style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", }} >
                   {room.length > 1 ? `${room[1]}-${room[0]}` : `Room ${room[0]}`}
                 </div>
               ))}
-            </div>
+            </VStack>
           </div>
         ) : (
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <HStack gap="none" justify="between">
             <Text as="span" color="muted" size="sm">
               Room:
             </Text>
             <Text as="span" weight="medium" size="sm">
               Not allocated yet
             </Text>
-          </div>
+          </HStack>
         )}
-      </div>
+      </VStack>
     </div>
   )
 }

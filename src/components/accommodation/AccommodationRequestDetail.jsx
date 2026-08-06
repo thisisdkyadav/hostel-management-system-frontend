@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { Modal, Text, VStack } from "@/components/ui"
 import { Label, useConfirm } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
@@ -68,7 +68,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
   return (
     <Modal isOpen={open} onClose={onClose} title="Guest accommodation" width={860} closeButtonVariant="button">
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+      <VStack gap={4}>
         <MetaBar request={request} actions={cancelAction} />
 
         {error && (
@@ -77,14 +77,14 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
           {/* Left column */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <SectionCard icon={BedDouble} title="Stay details" accentColor="var(--color-primary)">
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <VStack gap={2}>
                 <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
                 <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
                 <InfoRow label="Nights" value={request.nights || 0} />
                 <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
-              </div>
+              </VStack>
             </SectionCard>
 
             <SectionCard icon={Users} title={`Guests (${request.guests?.length || 0})`} accentColor="var(--color-info)">
@@ -97,7 +97,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
             {showAccommodation && (
               <SectionCard icon={Building2} title="Your accommodation" accentColor="var(--color-success)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <VStack gap={2}>
                   <InfoRow label="Hostel" value={request.allottedHostelName || "—"} strong />
                   {assignedRooms.length > 0 ? (
                     assignedRooms.map((r, i) => {
@@ -107,13 +107,13 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                   ) : (
                     <Text size="xs" color="muted">Room numbers will appear once the hostel supervisor assigns them.</Text>
                   )}
-                </div>
+                </VStack>
               </SectionCard>
             )}
-          </div>
+          </VStack>
 
           {/* Right column */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <VStack gap={4}>
             <SectionCard icon={Clock3} title="Timeline" accentColor="var(--color-primary)">
               <JourneyTimeline status={status} timeline={request.timeline} />
             </SectionCard>
@@ -127,7 +127,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
             {status === ACCOMMODATION_STATUS.PAYMENT_REQUESTED && (
               <SectionCard icon={CreditCard} title={`Pay ${money(request.payment?.amount)}`} accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <VStack gap={3}>
                   {request.payment?.paymentLink && (
                     <a href={request.payment.paymentLink} target="_blank" rel="noreferrer" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)", wordBreak: "break-all" }}>Open payment link / QR ↗</a>
                   )}
@@ -155,7 +155,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     downloadFileName="payment-screenshot.png"
                   />
                   <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !pay.screenshotFileRef.trim() || !pay.transactionId.trim()}>Submit payment</Button>
-                </div>
+                </VStack>
               </SectionCard>
             )}
 
@@ -170,9 +170,9 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                 <InfoRow label="Total" value={`${money(request.quote?.total)}${request.invoice.gstApplicable ? " (incl. GST)" : ""}`} strong />
               </SectionCard>
             )}
-          </div>
+          </VStack>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

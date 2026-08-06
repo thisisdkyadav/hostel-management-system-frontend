@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { HStack, SearchInput } from "@/components/ui"
 import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import UndertakingCard from "./UndertakingCard"
@@ -58,9 +58,9 @@ const Undertakings = () => {
         </Button>
       </header>
 
-      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+      <HStack gap={4} align="center" justify="between" style={{ marginTop: 'var(--spacing-6)' }}>
         <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="w-full sm:w-64 md:w-72" />
-      </div>
+      </HStack>
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>

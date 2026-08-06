@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
-import { Checkbox, Text } from "@/components/ui"
+import { Checkbox, HStack, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
@@ -47,22 +47,22 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
 
   return (
     <Modal title={undertaking.title} onClose={handleClose} size="lg">
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+      <VStack gap={6}>
         {/* Undertaking metadata */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <HStack gap="none" align="center">
             <div style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-info-bg)" }}>
               <FaFileSignature style={{ color: "var(--color-info)" }} />
             </div>
             <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>{undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          </HStack>
+          <HStack gap="none" align="center">
             <FaCalendarAlt style={{ color: "var(--color-text-placeholder)", marginRight: "var(--spacing-2)" }} />
             <Text as="span" size="sm" color="tertiary">
               Deadline: {formatDate(undertaking.deadline)}
               {deadlinePassed && <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-danger-text)" }}>(Overdue)</span>}
             </Text>
-          </div>
+          </HStack>
         </div>
 
         {/* Description */}
@@ -91,7 +91,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
             {!isAccepting && <FaCheck />} I Accept
           </Button>
         </div>
-      </div>
+      </VStack>
     </Modal>
   )
 }

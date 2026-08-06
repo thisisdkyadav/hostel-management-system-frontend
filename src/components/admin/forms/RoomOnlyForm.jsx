@@ -110,7 +110,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--spacing-6)" }}>
+      <HStack gap="none" justify="center" style={{ marginBottom: "var(--spacing-6)" }}>
         <div style={{ display: "inline-flex", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }} role="group">
           <Button
             type="button"
@@ -133,7 +133,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             CSV Import
           </Button>
         </div>
-      </div>
+      </HStack>
 
       {inputMethod === "form" ? (
         <>
@@ -193,7 +193,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           </div>
         </>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+        <VStack gap={6}>
           <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="room_only_template.csv" templateHeaders={["roomNumber", "capacity"]} instructionText={templateInstructions} />
 
           {parsedCsvData.length > 0 && (
@@ -204,7 +204,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
               <RoomStatsSummary data={parsedCsvData} isUnitBased={false} />
             </div>
           )}
-        </div>
+        </VStack>
       )}
     </div>
   )

@@ -1,7 +1,7 @@
 import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
-import { Text } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -40,11 +40,11 @@ const StudentElectionWorkspace = ({
   return (
     <>
     <div style={infoBannerStyle}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+      <HStack gap="12px" align="center" wrap>
         <h2 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)" }}>
           {selectedStudentElection.title}
         </h2>
-      </div>
+      </HStack>
       <div
         style={{
           display: "flex",
@@ -113,7 +113,7 @@ const StudentElectionWorkspace = ({
             key: "status",
             render: (post) => (
               <div style={{ display: "grid", gap: "6px" }}>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+                <HStack gap="8px" align="center" wrap>
                   <StatusPill
                     tone={
                       post.myNomination
@@ -157,7 +157,7 @@ const StudentElectionWorkspace = ({
                       Withdraw
                     </Button>
                   ) : null}
-                </div>
+                </HStack>
                 <div style={{ ...mutedTextStyle, maxWidth: "460px" }}>
                   {post.myNomination?.review?.notes
                     ? post.myNomination.review.notes
@@ -200,7 +200,7 @@ const StudentElectionWorkspace = ({
                       {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                    <HStack gap="8px" align="center" wrap>
                       <StatusPill
                         tone={post.hasVoted ? "success" : "warning"}
                         pillBaseStyle={pillBaseStyle}
@@ -208,7 +208,7 @@ const StudentElectionWorkspace = ({
                       >
                         {post.hasVoted ? "Submitted" : "Not recorded"}
                       </StatusPill>
-                    </div>
+                    </HStack>
                   </div>
                 )
               })}
@@ -285,7 +285,7 @@ const StudentElectionWorkspace = ({
               </div>
             ))}
 
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <HStack gap="none" justify="end">
               <Button
                 onClick={() => submitStudentVotes(selectedStudentElection.id, votingPosts)}
                 loading={busyKey === `vote:${selectedStudentElection.id}`}
@@ -293,7 +293,7 @@ const StudentElectionWorkspace = ({
               >
                 Submit Vote
               </Button>
-            </div>
+            </HStack>
           </div>
         )
       ) : null}
@@ -322,14 +322,7 @@ const StudentElectionWorkspace = ({
                   padding: "var(--spacing-3)",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "var(--spacing-3)",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <HStack gap={3} justify="between" wrap>
                   <div>
                     <Text as="div" size="base" weight="semibold" color="heading">
                       {postResult.postTitle}
@@ -352,7 +345,7 @@ const StudentElectionWorkspace = ({
                         : winners[0]?.candidateName
                       : "Published"}
                   </StatusPill>
-                </div>
+                </HStack>
 
                 <div style={{ display: "grid", gap: "8px" }}>
                   {rankedCandidates.map((candidate, index) => {
@@ -374,15 +367,7 @@ const StudentElectionWorkspace = ({
                           backgroundColor: isWinner ? "var(--color-success-bg)" : "var(--color-bg-primary)",
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: "var(--spacing-3)",
-                            flexWrap: "wrap",
-                          }}
-                        >
+                        <HStack gap={3} align="center" justify="between" wrap>
                           <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
                             <div
                               style={{
@@ -412,15 +397,7 @@ const StudentElectionWorkspace = ({
                             </div>
                           </div>
 
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                              flexWrap: "wrap",
-                              justifyContent: "flex-end",
-                            }}
-                          >
+                          <HStack gap="8px" align="center" justify="end" wrap>
                             {isWinner ? (
                               <StatusPill
                                 tone="success"
@@ -438,8 +415,8 @@ const StudentElectionWorkspace = ({
                                 <span style={mutedTextStyle}>{percentage}</span>
                               </>
                             ) : null}
-                          </div>
-                        </div>
+                          </HStack>
+                        </HStack>
 
                         {showVoteCountToStudents ? (
                           <div

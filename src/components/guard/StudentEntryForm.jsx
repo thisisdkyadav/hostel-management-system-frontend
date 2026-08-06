@@ -4,7 +4,7 @@ import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Grid } from "@/components/ui"
+import { Grid, HStack } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -69,9 +69,9 @@ const StudentEntryForm = ({ onAddEntry }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-card)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
+      <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>Add New Student Entry</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+        <HStack gap={4} align="center">
           <ToggleButtonGroup
             options={[
               { value: "Checked In", label: "Checked In", icon: <FaSignInAlt /> },
@@ -87,8 +87,8 @@ const StudentEntryForm = ({ onAddEntry }) => {
           <Button type="button" variant="primary" onClick={handleReset} className="flex items-center">
             Reset
           </Button>
-        </div>
-      </div>
+        </HStack>
+      </HStack>
 
       <form id="studentEntryForm" onSubmit={handleSubmit}>
         <Grid min={250} gap={6}>
@@ -135,11 +135,11 @@ const StudentEntryForm = ({ onAddEntry }) => {
           </div>
         </Grid>
 
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end' }}>
+        <HStack gap="none" justify="end" style={{ marginTop: 'var(--spacing-6)' }}>
           <Button type="submit" variant="primary">
             Register Entry
           </Button>
-        </div>
+        </HStack>
       </form>
     </div>
   )

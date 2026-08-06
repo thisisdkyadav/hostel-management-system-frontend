@@ -4,7 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { Select, Text, useConfirm } from "@/components/ui"
+import { HStack, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
@@ -56,7 +56,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
           <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>
             <FaCalendarAlt size={20} />
           </div>
@@ -64,9 +64,9 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
             <Input type="text" name="eventName" value={formData.eventName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', borderBottom: 'var(--border-1) solid var(--color-border-input)', borderRadius: 0, paddingBottom: 'var(--spacing-1)' }} required />
             <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>
           </div>
-        </div>
+        </HStack>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        <VStack gap={4}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Date and Time</label>
             <Input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} />
@@ -94,21 +94,21 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none', transition: 'var(--transition-all)' }} placeholder="Event description"></textarea>
           </div>
-        </div>
+        </VStack>
 
         <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>
           <Button type="button" onClick={handleDelete} variant="danger" size="md">
             <MdDelete /> Delete
           </Button>
 
-          <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)' }}>
+          <HStack gap={3}>
             <Button type="button" onClick={onCancel} variant="secondary" size="md">
               <MdCancel /> Cancel
             </Button>
             <Button type="submit" variant="primary" size="md">
               <FaSave /> Save
             </Button>
-          </div>
+          </HStack>
         </div>
       </form>
     </div>
