@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../service"
-import { Label, Select } from "@/components/ui"
+import { Field, Label, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
@@ -62,38 +62,33 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
     <Modal title="Add New Event" onClose={onClose} width={600}>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-4">
-          <div>
-            <Label color="secondary" spacing={2}>Event Name</Label>
+          <Field label="Event Name" color="secondary" spacing={2}>
             <Input type="text" name="eventName" value={formData.eventName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter event name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Hostel</Label>
+          <Field label="Hostel" color="secondary" spacing={2}>
             <Select name="hostelId" value={formData.hostelId} onChange={handleChange} icon={<FaBuilding />} options={[
               { value: "all", label: "All Hostels" },
               ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
             ]} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Gender</Label>
+          <Field label="Gender" color="secondary" spacing={2}>
             <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUserFriends />} options={[
               { value: "all", label: "All Genders" },
               { value: "Male", label: "Male" },
               { value: "Female", label: "Female" },
               { value: "Other", label: "Other" }
             ]} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Description</Label>
+          <Field label="Description" color="secondary" spacing={2}>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} placeholder="Describe the event, location, activities, etc." required></textarea>
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Date and Time</Label>
+          <Field label="Date and Time" color="secondary" spacing={2}>
             <Input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} icon={<BsClock />} required />
-          </div>
+          </Field>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>

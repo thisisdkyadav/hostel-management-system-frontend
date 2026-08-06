@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Surface, Text, VStack } from "@/components/ui"
+import { Field, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Label, useConfirm } from "@/components/ui"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
@@ -136,10 +136,9 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                       <strong>Note:</strong> {request.payment.remarks}
                     </Surface>
                   )}
-                  <div>
-                    <Label required>Transaction ID / UTR</Label>
+                  <Field label="Transaction ID / UTR" required>
                     <Input value={pay.transactionId} onChange={(e) => setPay((p) => ({ ...p, transactionId: e.target.value }))} placeholder="Reference number" />
-                  </div>
+                  </Field>
                   <PdfUploadField
                     label="Payment screenshot"
                     required

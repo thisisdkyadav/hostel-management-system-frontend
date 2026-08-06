@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, StatusBadge, Table } from "czero/react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { Field, HStack, Modal, Text, VStack } from "@/components/ui"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
 import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"
 import { formatDate, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
@@ -145,8 +145,7 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
               Rejecting the request for <strong>{rejectTarget.rollNumber}</strong> (
               {formatDate(rejectTarget.startDate)} – {formatDate(rejectTarget.endDate)}).
             </Text>
-            <div>
-              <Label htmlFor="reject-comment">Reason / comment (optional)</Label>
+            <Field label="Reason / comment (optional)" htmlFor="reject-comment">
               <Textarea
                 id="reject-comment"
                 rows={3}
@@ -154,7 +153,7 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
                 onChange={(e) => setRejectComment(e.target.value)}
                 placeholder="Shared with the student so they understand the decision."
               />
-            </div>
+            </Field>
           </VStack>
         </Modal>
       )}

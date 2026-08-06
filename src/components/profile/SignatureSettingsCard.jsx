@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, FileInput, Grid, HStack, Label, Spinner, Text, ToggleButtonGroup, VStack } from "@/components/ui"
+import { Card, CardContent, CardHeader, Field, FileInput, Grid, HStack, Label, Spinner, Text, ToggleButtonGroup, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -172,19 +172,15 @@ const SignatureSettingsCard = ({ user }) => {
         ) : (
           <VStack gap={4}>
             <Grid min={220} gap={4}>
-              <div>
-                <Label htmlFor="signature-name" required>
-                  Name
-                </Label>
+              <Field label="Name" htmlFor="signature-name" required>
                 <Input
                   id="signature-name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder="Name shown on the certificate"
                 />
-              </div>
-              <div>
-                <Label htmlFor="signature-position">Position</Label>
+              </Field>
+              <Field label="Position" htmlFor="signature-position">
                 <Input
                   id="signature-position"
                   value={position}
@@ -198,15 +194,14 @@ const SignatureSettingsCard = ({ user }) => {
                     Students always sign as “Student”.
                   </Text>
                 ) : null}
-              </div>
+              </Field>
             </Grid>
 
-            <div>
-              <Label>Signature type</Label>
+            <Field label="Signature type">
               <div style={{ marginTop: "var(--spacing-1)" }}>
                 <ToggleButtonGroup options={SIGNATURE_TYPES} value={type} onChange={setType} size="small" />
               </div>
-            </div>
+            </Field>
 
             {type === "image" ? (
               <VStack gap={2}>
@@ -260,8 +255,7 @@ const SignatureSettingsCard = ({ user }) => {
                 </HStack>
               </VStack>
             ) : (
-              <div>
-                <Label htmlFor="signature-text">Signature text</Label>
+              <Field label="Signature text" htmlFor="signature-text">
                 <Input
                   id="signature-text"
                   value={text}
@@ -285,7 +279,7 @@ const SignatureSettingsCard = ({ user }) => {
                     {text}
                   </div>
                 ) : null}
-              </div>
+              </Field>
             )}
 
             <HStack gap={3} wrap>

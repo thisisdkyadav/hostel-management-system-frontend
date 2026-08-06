@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button, Input } from "czero/react"
-import { Label, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Field, Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -80,14 +80,12 @@ const ChangePasswordModal = ({ onClose, email }) => {
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
         {errors.form && <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">{errors.form}</Surface>}
 
-        <div>
-          <Label color="secondary" spacing={2}>Current Password</Label>
+        <Field label="Current Password" color="secondary" spacing={2}>
           <Input type="password" name="currentPassword" id="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Enter your current password" error={errors.currentPassword} />
           {errors.currentPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.currentPassword}</Text>}
-        </div>
+        </Field>
 
-        <div>
-          <Label color="secondary" spacing={2}>New Password</Label>
+        <Field label="New Password" color="secondary" spacing={2}>
           <Input type="password" name="newPassword" id="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Enter your new password" error={errors.newPassword} />
           {errors.newPassword ? (
             <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.newPassword}</Text>
@@ -98,13 +96,12 @@ const ChangePasswordModal = ({ onClose, email }) => {
           <VStack gap={1} style={{ marginTop: "var(--spacing-2)" }}>
             <PasswordStrengthBar password={formData.newPassword} />
           </VStack>
-        </div>
+        </Field>
 
-        <div>
-          <Label color="secondary" spacing={2}>Confirm New Password</Label>
+        <Field label="Confirm New Password" color="secondary" spacing={2}>
           <Input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your new password" error={errors.confirmPassword} />
           {errors.confirmPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.confirmPassword}</Text>}
-        </div>
+        </Field>
 
         <div style={{ paddingTop: "var(--spacing-4)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
           <Button type="button" onClick={onClose} variant="secondary" size="md">

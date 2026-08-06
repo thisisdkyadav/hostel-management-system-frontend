@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { EmptyState, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { EmptyState, Field, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
@@ -262,15 +262,13 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             {showIssuePayment && (
               <SectionCard icon={CreditCard} title="Request payment" accentColor="var(--color-primary)">
                 <VStack gap={3}>
-                  <div>
-                    <Label>Amount</Label>
+                  <Field label="Amount">
                     <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
                     <Text size="10px" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Calculated total is {money(request.quote?.total)}. Override for a custom amount.</Text>
-                  </div>
-                  <div>
-                    <Label>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</Label>
+                  </Field>
+                  <Field label={<>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</>}>
                     <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
-                  </div>
+                  </Field>
                   <Text size="10px" color="muted">The payment link and QR are taken automatically from settings.</Text>
                   <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (Number(payForm.amount) !== (request.quote?.total || 0) && !payForm.remarks.trim())}>Send payment request</Button>
                 </VStack>

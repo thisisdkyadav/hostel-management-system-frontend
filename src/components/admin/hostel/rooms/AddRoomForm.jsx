@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Grid, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Field, Grid, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -185,35 +185,30 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         {isUnitBased && (
-          <div>
-            <Label htmlFor="unitNumber" required>Unit Number</Label>
+          <Field label="Unit Number" htmlFor="unitNumber" required>
             <Input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} icon={<DoorOpen size={16} />} placeholder="e.g., 101" error={errors.unitNumber} />
-          </div>
+          </Field>
         )}
 
         {isUnitBased && (
-          <div>
-            <Label htmlFor="commonAreaDetails">Common Area Details (Optional)</Label>
+          <Field label="Common Area Details (Optional)" htmlFor="commonAreaDetails">
             <Textarea name="commonAreaDetails" value={formData.commonAreaDetails} onChange={handleChange} rows={2} placeholder="e.g., Common kitchen, TV area" />
-          </div>
+          </Field>
         )}
 
-        <div>
-          <Label htmlFor="roomNumbers" required>Room {isUnitBased ? "Letter(s)" : "Number(s)"}</Label>
+        <Field label={<>Room {isUnitBased ? "Letter(s)" : "Number(s)"}</>} htmlFor="roomNumbers" required>
           <Input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} icon={<DoorOpen size={16} />} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} error={errors.roomNumbers} />
           <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</Text>
-        </div>
+        </Field>
 
         <Grid cols={{ base: 1, md: 2 }} gap={4}>
-          <div>
-            <Label htmlFor="capacity" required>Capacity</Label>
+          <Field label="Capacity" htmlFor="capacity" required>
             <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<Users size={16} />} placeholder="Room capacity" error={errors.capacity} />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="status" required>Status</Label>
+          <Field label="Status" htmlFor="status" required>
             <Select name="status" value={formData.status} onChange={handleChange} options={MANUAL_ROOM_STATUS_OPTIONS} error={errors.status} />
-          </div>
+          </Field>
         </Grid>
 
         <div style={{ paddingTop: 'var(--spacing-4)' }}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaEnvelope, FaKey } from "react-icons/fa"
-import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
@@ -104,8 +104,7 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
 
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
-            <div>
-              <Label htmlFor="hostelId" required>Select Hostel</Label>
+            <Field label="Select Hostel" htmlFor="hostelId" required>
               <Select
                 id="hostelId"
                 name="hostelId"
@@ -116,25 +115,22 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
                 required
               />
               {availableHostels.length === 0 && <Text size="sm" color="warning" style={{ marginTop: 'var(--spacing-2)' }}>All hostels already have gate logins created.</Text>}
-            </div>
+            </Field>
 
             {generatedEmail && (
-              <div>
-                <Label>Generated Email</Label>
+              <Field label="Generated Email">
                 <Input type="text" value={generatedEmail} icon={<FaEnvelope />} disabled />
                 <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>This email will be automatically created for the hostel gate login.</Text>
-              </div>
+              </Field>
             )}
 
-            <div>
-              <Label htmlFor="password" required>Password</Label>
+            <Field label="Password" htmlFor="password" required>
               <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter password" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="confirmPassword" required>Confirm Password</Label>
+            <Field label="Confirm Password" htmlFor="confirmPassword" required>
               <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm password" required />
-            </div>
+            </Field>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button type="button" onClick={onClose} variant="secondary" size="md">

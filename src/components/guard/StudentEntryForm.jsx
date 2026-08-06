@@ -4,7 +4,7 @@ import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Grid, Heading, HStack, Label, Surface } from "@/components/ui"
+import { Field, Grid, Heading, HStack, Label, Surface } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -92,42 +92,35 @@ const StudentEntryForm = ({ onAddEntry }) => {
 
       <form id="studentEntryForm" onSubmit={handleSubmit}>
         <Grid min={250} gap={6}>
-          <div>
-            <Label color="body" spacing={1}>Student ID</Label>
+          <Field label="Student ID" color="body" spacing={1}>
             <Input type="text" name="studentId" value={entryData.studentId} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Student Name</Label>
+          <Field label="Student Name" color="body" spacing={1}>
             <Input type="text" name="studentName" value={entryData.studentName} onChange={handleChange} required />
-          </div>
+          </Field>
 
           {hostelType === "unit-based" && (
-            <div>
-              <Label color="body" spacing={1}>Unit</Label>
+            <Field label="Unit" color="body" spacing={1}>
               <Input type="text" name="unit" value={entryData.unit} onChange={handleChange} required />
-            </div>
+            </Field>
           )}
 
-          <div>
-            <Label color="body" spacing={1}>Room</Label>
+          <Field label="Room" color="body" spacing={1}>
             <Input type="text" name="room" value={entryData.room} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Bed</Label>
+          <Field label="Bed" color="body" spacing={1}>
             <Input type="text" name="bed" value={entryData.bed} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Date</Label>
+          <Field label="Date" color="body" spacing={1}>
             <Input type="date" name="date" value={entryData.date} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Time</Label>
+          <Field label="Time" color="body" spacing={1}>
             <Input type="time" name="time" value={entryData.time} onChange={handleChange} required />
-          </div>
+          </Field>
 
           <div style={{ gridColumn: '1 / -1' }}>
             <Label color="body" spacing={1}>Notes (Optional)</Label>

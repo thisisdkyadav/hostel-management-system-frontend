@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, Input, Tabs } from "czero/react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Field, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { renderCertificate, downloadBytes } from "pdf-certificate-kit"
 import { BadgeCheck, Building2, CalendarDays, Clock3, Download, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
@@ -482,8 +482,7 @@ const PorRequestFormModal = ({
             </div>
 
             <div className="space-y-4">
-              <div>
-                <Label htmlFor="por-category" required>POR Category</Label>
+              <Field label="POR Category" htmlFor="por-category" required>
                 <Select
                   id="por-category"
                   name="porCategoryId"
@@ -494,10 +493,9 @@ const PorRequestFormModal = ({
                   required
                   disabled={isSaving}
                 />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="por-position-title" required>Position of Responsibility</Label>
+              <Field label="Position of Responsibility" htmlFor="por-position-title" required>
                 <Input
                   id="por-position-title"
                   name="positionTitle"
@@ -507,10 +505,9 @@ const PorRequestFormModal = ({
                   disabled={isSaving}
                   required
                 />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="por-tenure" required>Tenure</Label>
+              <Field label="Tenure" htmlFor="por-tenure" required>
                 <Input
                   id="por-tenure"
                   name="tenure"
@@ -520,10 +517,9 @@ const PorRequestFormModal = ({
                   disabled={isSaving}
                   required
                 />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="por-position-details" required>POR Details</Label>
+              <Field label="POR Details" htmlFor="por-position-details" required>
                 <Textarea
                   id="por-position-details"
                   name="positionDetails"
@@ -534,7 +530,7 @@ const PorRequestFormModal = ({
                   required
                   disabled={isSaving}
                 />
-              </div>
+              </Field>
             </div>
           </div>
 
@@ -633,10 +629,7 @@ const PorRequestFormModal = ({
                     <ShieldAlert className="shrink-0 animate-bounce" size={16} />
                     <span>Action Details Required</span>
                   </div>
-                  <div>
-                    <Label htmlFor="por-disciplinary-details" required>
-                      Disciplinary Action Details
-                    </Label>
+                  <Field label="Disciplinary Action Details" htmlFor="por-disciplinary-details" required>
                     <Textarea
                       id="por-disciplinary-details"
                       name="disciplinaryActionDetails"
@@ -647,7 +640,7 @@ const PorRequestFormModal = ({
                       required
                       disabled={isSaving}
                     />
-                  </div>
+                  </Field>
                 </div>
               ) : null}
             </div>
@@ -725,8 +718,7 @@ const PorCategoryFormModal = ({
         className="flex min-h-[42vh] flex-col justify-between gap-6"
       >
         <div className="space-y-5">
-          <div>
-            <Label htmlFor="por-category-name" required>Category Name</Label>
+          <Field label="Category Name" htmlFor="por-category-name" required>
             <Input
               id="por-category-name"
               value={formData.name}
@@ -735,7 +727,7 @@ const PorCategoryFormModal = ({
               disabled={isSaving}
               required
             />
-          </div>
+          </Field>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
@@ -771,10 +763,7 @@ const PorCategoryFormModal = ({
                   <Surface bg="secondary" padding={4} radius="card-sm" border="1px solid var(--color-border-primary)" key={`por-category-step-${stepIndex}`}>
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
                       <div className="space-y-4">
-                        <div>
-                          <Label htmlFor={`por-category-step-label-${stepIndex}`} required>
-                            Step {stepIndex + 1} Label
-                          </Label>
+                        <Field label={<>Step {stepIndex + 1} Label</>} htmlFor={`por-category-step-label-${stepIndex}`} required>
                           <Input
                             id={`por-category-step-label-${stepIndex}`}
                             value={step.label}
@@ -783,13 +772,10 @@ const PorCategoryFormModal = ({
                             disabled={isSaving}
                             required
                           />
-                        </div>
+                        </Field>
 
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-                          <div>
-                            <Label htmlFor={`por-category-step-reviewer-${stepIndex}`}>
-                              Add Gymkhana Reviewer
-                            </Label>
+                          <Field label="Add Gymkhana Reviewer" htmlFor={`por-category-step-reviewer-${stepIndex}`}>
                             <Select
                               id={`por-category-step-reviewer-${stepIndex}`}
                               value={step.reviewerPickerId || ""}
@@ -798,7 +784,7 @@ const PorCategoryFormModal = ({
                               placeholder="Select reviewer"
                               disabled={isSaving}
                             />
-                          </div>
+                          </Field>
                           <Button
                             type="button"
                             variant="secondary"
@@ -1256,10 +1242,7 @@ const PorRequestDetailModal = ({
                 accentColor="var(--color-primary)"
               >
                 <Grid cols={1} gap={3}>
-                  <div>
-                    <Label htmlFor="por-review-comment">
-                      {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
-                    </Label>
+                  <Field label={isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"} htmlFor="por-review-comment">
                     <Textarea
                       id="por-review-comment"
                       value={reviewComment}
@@ -1267,7 +1250,7 @@ const PorRequestDetailModal = ({
                       rows={5}
                       placeholder="Add comments for approval, modification, or rejection"
                     />
-                  </div>
+                  </Field>
 
                   {isStudentAffairsApproval ? (
                     <div style={infoBoxStyle}>
@@ -1620,10 +1603,7 @@ const PorRequestGroupModal = ({
                 />
 
                 {useCommonComment ? (
-                  <div>
-                    <Label htmlFor="por-group-review-comment">
-                      {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
-                    </Label>
+                  <Field label={isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"} htmlFor="por-group-review-comment">
                     <Textarea
                       id="por-group-review-comment"
                       value={commonReviewComment}
@@ -1631,7 +1611,7 @@ const PorRequestGroupModal = ({
                       rows={5}
                       placeholder="Add one comment to apply across all selected POR requests"
                     />
-                  </div>
+                  </Field>
                 ) : (
                   <div style={infoBoxStyle}>
                     <span style={sectionLabelStyle}>Per-POR Comments</span>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { Grid, HStack, Label, Select, Surface, Text, useConfirm } from "@/components/ui"
+import { Field, Grid, HStack, Label, Select, Surface, Text, useConfirm } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -184,8 +184,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
     <form onSubmit={handleSubmit}>
       <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-6)' }}>
         <Grid cols={2} gap={4}>
-          <div>
-            <Label color="body" spacing={1}>Insurance Provider</Label>
+          <Field label="Insurance Provider" color="body" spacing={1}>
             <Select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} required
               options={[
                 { value: "", label: "Select Insurance Provider" },
@@ -198,17 +197,15 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
                 Policy period: {formatDate(selectedProvider.startDate)} - {formatDate(selectedProvider.endDate)}
               </Text>
             )}
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Amount</Label>
+          <Field label="Amount" color="body" spacing={1}>
             <Input type="number" name="amount" value={formData.amount} onChange={handleInputChange} placeholder="Enter claim amount" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Hospital Name</Label>
+          <Field label="Hospital Name" color="body" spacing={1}>
             <Input type="text" name="hospitalName" value={formData.hospitalName} onChange={handleInputChange} placeholder="Enter hospital name" required />
-          </div>
+          </Field>
 
           <div style={{ gridColumn: 'span 2' }}>
             <Label color="body" spacing={1}>Description</Label>

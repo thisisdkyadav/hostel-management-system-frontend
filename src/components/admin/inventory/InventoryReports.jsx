@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Field, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -95,10 +95,9 @@ const InventoryReports = () => {
         {activeTab !== "hostel" && (
           <div className="flex items-center gap-2">
             <VStack gap="medium">
-              <div>
-                <Label>Choose Hostel</Label>
+              <Field label="Choose Hostel">
                 <Select value={selectedHostel} onChange={handleHostelChange} icon={<FaBuilding />} options={[{ value: "", label: "Select a hostel..." }, ...hostelList.map((h) => ({ value: h._id, label: h.name }))]} />
-              </div>
+              </Field>
             </VStack>
           </div>
         )}

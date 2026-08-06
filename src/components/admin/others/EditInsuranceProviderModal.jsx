@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCalendarAlt } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Textarea, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, Grid, HStack, Label, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { insuranceProviderApi } from "../../../service"
@@ -70,36 +70,30 @@ const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
 
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
-            <div>
-              <Label htmlFor="name" required>Provider Name</Label>
+            <Field label="Provider Name" htmlFor="name" required>
               <Input type="text" id="name" name="name" value={formData.name} onChange={handleChange} icon={<FaBuilding />} placeholder="Provider Name" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="email" required>Email Address</Label>
+            <Field label="Email Address" htmlFor="email" required>
               <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} icon={<FaEnvelope />} placeholder="example@provider.com" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="phone" required>Phone Number</Label>
+            <Field label="Phone Number" htmlFor="phone" required>
               <Input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="+91 9876543210" required />
-            </div>
+            </Field>
 
             <Grid cols={{ base: 1, md: 2 }} gap={4}>
-              <div>
-                <Label htmlFor="startDate" required>Start Date</Label>
+              <Field label="Start Date" htmlFor="startDate" required>
                 <Input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} icon={<FaCalendarAlt />} required />
-              </div>
-              <div>
-                <Label htmlFor="endDate" required>End Date</Label>
+              </Field>
+              <Field label="End Date" htmlFor="endDate" required>
                 <Input type="date" id="endDate" name="endDate" value={formData.endDate} onChange={handleChange} icon={<FaCalendarAlt />} required />
-              </div>
+              </Field>
             </Grid>
 
-            <div>
-              <Label htmlFor="address" required>Address</Label>
+            <Field label="Address" htmlFor="address" required>
               <Textarea id="address" name="address" value={formData.address} onChange={handleChange} icon={<FaMapMarkerAlt />} rows={3} placeholder="Provider address" required />
-            </div>
+            </Field>
 
             <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>

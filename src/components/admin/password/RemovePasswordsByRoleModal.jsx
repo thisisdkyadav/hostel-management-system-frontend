@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate", "Gymkhana", "Academics", "Caterer"]
@@ -273,8 +273,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="role" required>Select Role</Label>
+          <Field label="Select Role" htmlFor="role" required>
             <Select
               id="role"
               name="role"
@@ -282,7 +281,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
               onChange={handleRoleChange}
               options={[{ value: "", label: "Select a role" }, ...ROLES.map((role) => ({ value: role, label: role }))]}
             />
-          </div>
+          </Field>
 
           {error && (
             <div style={styles.errorBanner}>

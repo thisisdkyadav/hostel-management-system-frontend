@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { superAdminApi } from "../../../service"
-import { HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Field, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -149,20 +149,17 @@ const EditAdminForm = ({
 
         {isImageModalOpen && <ImageUploadModal userId={admin.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-          <div>
-            <Label>Name</Label>
+          <Field label="Name">
             <Input type="text" value={admin.name} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Name cannot be changed</p>
-          </div>
+          </Field>
 
-          <div>
-            <Label>Email</Label>
+          <Field label="Email">
             <Input type="email" value={admin.email} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Email cannot be changed</p>
-          </div>
+          </Field>
 
-	          <div>
-	            <Label htmlFor="phone">Phone Number</Label>
+	          <Field label="Phone Number" htmlFor="phone">
             <Input
               type="text"
               name="phone"
@@ -174,10 +171,9 @@ const EditAdminForm = ({
               error={errors.phone}
             />
 	            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
-	          </div>
+	          </Field>
 
-	          <div>
-	            <Label htmlFor="subRole">Sub Role</Label>
+	          <Field label="Sub Role" htmlFor="subRole">
               <Select
                 name="subRole"
                 id="subRole"
@@ -188,10 +184,9 @@ const EditAdminForm = ({
                 error={errors.subRole}
               />
 	            {errors.subRole && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.subRole}</p>}
-	          </div>
+	          </Field>
 
-            <div>
-              <Label htmlFor="category">Category</Label>
+            <Field label="Category" htmlFor="category">
               <Input
                 type="text"
                 name="category"
@@ -202,7 +197,7 @@ const EditAdminForm = ({
                 error={errors.category}
               />
               {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
-            </div>
+            </Field>
 
           <HStack gap="small" justify="between" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
             <Button

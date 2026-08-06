@@ -3,7 +3,7 @@ import { Button, Input } from "czero/react"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, FileInput, Grid, Heading, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Field, FileInput, Grid, Heading, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -223,14 +223,12 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
         </HStack>
 
         <Grid min={240} gap={4}>
-          <div>
-            <Label htmlFor="cert-eyebrow">Eyebrow (small top line)</Label>
+          <Field label="Eyebrow (small top line)" htmlFor="cert-eyebrow">
             <Input id="cert-eyebrow" value={eyebrow} onChange={(event) => setEyebrow(event.target.value)} placeholder="e.g. Indian Institute of Technology Indore" />
-          </div>
-          <div>
-            <Label htmlFor="cert-title">Title</Label>
+          </Field>
+          <Field label="Title" htmlFor="cert-title">
             <Input id="cert-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="e.g. Certificate of Appointment" />
-          </div>
+          </Field>
         </Grid>
       </section>
 
@@ -269,26 +267,23 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
           Appearance
         </Heading>
         <Grid min={180} gap={4} align="end">
-          <div>
-            <Label htmlFor="cert-orientation">Orientation</Label>
+          <Field label="Orientation" htmlFor="cert-orientation">
             <Select
               id="cert-orientation"
               value={theme.orientation}
               onChange={(event) => setTheme((prev) => ({ ...prev, orientation: event.target.value }))}
               options={ORIENTATION_OPTIONS}
             />
-          </div>
-          <div>
-            <Label htmlFor="cert-font">Font</Label>
+          </Field>
+          <Field label="Font" htmlFor="cert-font">
             <Select
               id="cert-font"
               value={theme.fontFamily}
               onChange={(event) => setTheme((prev) => ({ ...prev, fontFamily: event.target.value }))}
               options={FONT_OPTIONS}
             />
-          </div>
-          <div>
-            <Label htmlFor="cert-accent">Accent color</Label>
+          </Field>
+          <Field label="Accent color" htmlFor="cert-accent">
             <input
               id="cert-accent"
               type="color"
@@ -296,7 +291,7 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
               onChange={(event) => setTheme((prev) => ({ ...prev, accentColor: event.target.value }))}
               style={{ width: "100%", height: 40, border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-input)", background: "var(--color-bg-primary)", cursor: "pointer" }}
             />
-          </div>
+          </Field>
           <div>
             <Switch
               checked={theme.border !== false}

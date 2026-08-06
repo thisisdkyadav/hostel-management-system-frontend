@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Spinner, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Pagination, Spinner, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
@@ -221,18 +221,15 @@ const ItemTypes = () => {
         <Modal isOpen={showModal} title={isEditMode ? "Edit Item Type" : "Add New Item Type"} onClose={closeModal}>
           <form onSubmit={handleSubmit}>
             <VStack gap="large">
-              <div>
-                <Label htmlFor="name" required>Name</Label>
+              <Field label="Name" htmlFor="name" required>
                 <Input type="text" id="name" name="name" value={currentItemType.name} onChange={handleInputChange} required />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
+              </Field>
+              <Field label="Description" htmlFor="description">
                 <Textarea id="description" name="description" value={currentItemType.description} onChange={handleInputChange} rows={3} />
-              </div>
-              <div>
-                <Label htmlFor="totalCount" required>Total Count</Label>
+              </Field>
+              <Field label="Total Count" htmlFor="totalCount" required>
                 <Input type="number" id="totalCount" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required />
-              </div>
+              </Field>
               <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
                 <Button type="button" onClick={closeModal} variant="secondary" size="md">
                   Cancel

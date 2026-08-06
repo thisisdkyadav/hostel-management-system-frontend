@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input, StatusBadge } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Field, Modal } from "@/components/ui"
 import { CalendarClock } from "lucide-react"
 import { Alert, Label, Textarea, VStack } from "@/components/ui"
 import { formatCurrency, formatDateRange, getErrorMessage, getIdValue } from "./diningBillingHelpers"
@@ -72,8 +72,7 @@ const BillingPeriodFormModal = ({
         <VStack gap="large">
           {error && <Alert type="error" icon>{error}</Alert>}
 
-          <div>
-            <Label htmlFor="billing-name" required>Billing Period Name</Label>
+          <Field label="Billing Period Name" htmlFor="billing-name" required>
             <Input
               id="billing-name"
               value={name}
@@ -81,10 +80,9 @@ const BillingPeriodFormModal = ({
               placeholder="e.g. Semester 1 — Mess Billing"
               required
             />
-          </div>
+          </Field>
 
-          <div>
-            <Label>Dining Periods to Bill</Label>
+          <Field label="Dining Periods to Bill">
             {periods.length === 0 ? (
               <Alert type="warning" icon>No dining periods found. Create a dining period (with a daily rate) first.</Alert>
             ) : (
@@ -121,10 +119,9 @@ const BillingPeriodFormModal = ({
                 })}
               </div>
             )}
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="billing-note">Note (optional)</Label>
+          <Field label="Note (optional)" htmlFor="billing-note">
             <Textarea
               id="billing-note"
               value={note}
@@ -132,7 +129,7 @@ const BillingPeriodFormModal = ({
               placeholder="Any internal note about this billing period"
               rows={2}
             />
-          </div>
+          </Field>
 
           <Alert type="info" icon>
             Each student is billed each dining period&apos;s daily rate for every eligible day (approved-rebate days are skipped).

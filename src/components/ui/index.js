@@ -22,6 +22,7 @@ export { default as SearchInput } from './form/SearchInput'
 export { default as DatePicker } from './form/DatePicker'
 export { default as Label } from './form/Label'
 export { default as FormField } from './form/FormField'
+export { default as Field } from './form/Field'
 
 // ==============================================
 // BUTTON COMPONENTS

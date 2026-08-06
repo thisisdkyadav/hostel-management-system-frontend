@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Grid, Label, Select, Surface, Text, Textarea } from "@/components/ui"
+import { Field, Grid, Label, Select, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -160,19 +160,13 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
         {/* Priority and Category */}
         <Grid cols={{ base: 1, md: 2 }} gap={4}>
-          <div>
-            <Label color="secondary" spacing={2} htmlFor="priority">
-              Priority
-            </Label>
+          <Field label="Priority" color="secondary" spacing={2} htmlFor="priority">
             <Select id="priority" name="priority" value={taskData.priority} onChange={handleChange} options={TASK_PRIORITIES.map((priority) => ({ value: priority, label: priority }))} />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2} htmlFor="category">
-              Category
-            </Label>
+          <Field label="Category" color="secondary" spacing={2} htmlFor="category">
             <Select id="category" name="category" value={taskData.category} onChange={handleChange} options={TASK_CATEGORIES.map((category) => ({ value: category, label: category }))} />
-          </div>
+          </Field>
         </Grid>
 
         {/* Due Date Field */}

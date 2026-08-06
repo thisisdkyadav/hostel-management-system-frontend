@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Grid, Heading, HStack, Label, Select, Surface } from "@/components/ui"
+import { Field, Grid, Heading, HStack, Label, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
@@ -19,49 +19,44 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
       </HStack>
 
       <Grid min={250} gap={4}>
-        <div>
-          <Label color="body" spacing={2}>Search</Label>
+        <Field label="Search" color="body" spacing={2}>
           <Input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleChange} placeholder="Search by title or content..." icon={<FaSearch />} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="body" spacing={2}>Hostel</Label>
+        <Field label="Hostel" color="body" spacing={2}>
           <Select name="hostelId" value={filters.hostelId} onChange={handleChange} options={[
             { value: "all", label: "All Hostels" },
             { value: "hostel1", label: "Hostel 1" },
             { value: "hostel2", label: "Hostel 2" }
           ]} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="body" spacing={2}>Department</Label>
+        <Field label="Department" color="body" spacing={2}>
           <Select name="department" value={filters.department} onChange={handleChange} options={[
             { value: "all", label: "All Departments" },
             { value: "CSE", label: "Computer Science" },
             { value: "ECE", label: "Electronics" },
             { value: "ME", label: "Mechanical" }
           ]} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="body" spacing={2}>Degree</Label>
+        <Field label="Degree" color="body" spacing={2}>
           <Select name="degree" value={filters.degree} onChange={handleChange} options={[
             { value: "all", label: "All Degrees" },
             { value: "BTech", label: "BTech" },
             { value: "MTech", label: "MTech" },
             { value: "PhD", label: "PhD" }
           ]} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="body" spacing={2}>Gender</Label>
+        <Field label="Gender" color="body" spacing={2}>
           <Select name="gender" value={filters.gender} onChange={handleChange} options={[
             { value: "all", label: "All Genders" },
             { value: "Male", label: "Male" },
             { value: "Female", label: "Female" },
             { value: "Other", label: "Other" }
           ]} />
-        </div>
+        </Field>
       </Grid>
     </Surface>
   )

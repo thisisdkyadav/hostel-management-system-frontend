@@ -10,7 +10,7 @@ import {
   Users,
 } from "lucide-react"
 import { Button } from "czero/react"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Field, Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
 import {
@@ -382,10 +382,7 @@ const PorRequestDetailModal = ({
                 accentColor="var(--color-primary)"
               >
                 <Grid cols={1} gap={3}>
-                  <div>
-                    <Label htmlFor="por-review-comment">
-                      {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
-                    </Label>
+                  <Field label={isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"} htmlFor="por-review-comment">
                     <Textarea
                       id="por-review-comment"
                       value={reviewComment}
@@ -393,7 +390,7 @@ const PorRequestDetailModal = ({
                       rows={5}
                       placeholder="Add comments for approval, modification, or rejection"
                     />
-                  </div>
+                  </Field>
 
                   {isStudentAffairsApproval ? (
                     <div style={infoBoxStyle}>

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal, Text } from "@/components/ui"
+import { Field, Modal, Text } from "@/components/ui"
 import { Alert, Label, VStack } from "@/components/ui"
 import { getErrorMessage } from "./diningBillingHelpers"
 
@@ -65,13 +65,11 @@ const DiningOfficeFormModal = ({ isOpen, mode = "create", initialData = {}, onCl
         <VStack gap="large">
           {error && <Alert type="error" icon>{error}</Alert>}
 
-          <div>
-            <Label htmlFor="office-name" required>Name</Label>
+          <Field label="Name" htmlFor="office-name" required>
             <Input id="office-name" value={name} onChange={(e) => { setName(e.target.value); if (error) setError("") }} placeholder="e.g. R. Mehta" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="office-email" required>Email</Label>
+          <Field label="Email" htmlFor="office-email" required>
             <Input
               id="office-email"
               type="email"
@@ -82,17 +80,15 @@ const DiningOfficeFormModal = ({ isOpen, mode = "create", initialData = {}, onCl
               required={!isEdit}
             />
             {isEdit && <Text size="xs" color="muted" style={{ margin: "var(--spacing-1) 0 0" }}>Email cannot be changed after creation.</Text>}
-          </div>
+          </Field>
 
           {!isEdit && (
-            <div>
-              <Label htmlFor="office-password" required>Password</Label>
+            <Field label="Password" htmlFor="office-password" required>
               <Input id="office-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Set an initial password" required />
-            </div>
+            </Field>
           )}
 
-          <div>
-            <Label htmlFor="office-category" required>Category</Label>
+          <Field label="Category" htmlFor="office-category" required>
             <select
               id="office-category"
               value={category}
@@ -111,12 +107,11 @@ const DiningOfficeFormModal = ({ isOpen, mode = "create", initialData = {}, onCl
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="office-phone">Phone (optional)</Label>
+          <Field label="Phone (optional)" htmlFor="office-phone">
             <Input id="office-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Contact number" />
-          </div>
+          </Field>
         </VStack>
       </form>
     </Modal>

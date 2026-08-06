@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Field, Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -484,10 +484,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
             </Text>
           </div>
 
-          <div>
-            <Label spacing={1}>
-              Status
-            </Label>
+          <Field label="Status" spacing={1}>
             <Select
               value={statusValue}
               onChange={(event) => setStatusValue(event.target.value)}
@@ -498,7 +495,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 { value: "Dropped", label: "Dropped" },
               ]}
             />
-          </div>
+          </Field>
         </VStack>
       )
     }
@@ -535,29 +532,23 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 />
               </div>
 
-              <div>
-                <Label spacing={1}>
-                  Owner Name
-                </Label>
+              <Field label="Owner Name" spacing={1}>
                 <Input
                   type="text"
                   value={dayScholarForm.ownerName}
                   onChange={(event) => setDayScholarForm((prev) => ({ ...prev, ownerName: event.target.value }))}
                   placeholder="Optional owner name"
                 />
-              </div>
+              </Field>
 
-              <div>
-                <Label spacing={1}>
-                  Owner Phone
-                </Label>
+              <Field label="Owner Phone" spacing={1}>
                 <Input
                   type="text"
                   value={dayScholarForm.ownerPhone}
                   onChange={(event) => setDayScholarForm((prev) => ({ ...prev, ownerPhone: event.target.value }))}
                   placeholder="Optional owner phone"
                 />
-              </div>
+              </Field>
 
               <div style={{ gridColumn: "1 / -1" }}>
                 <Label spacing={1}>
@@ -611,10 +602,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               )}
 
               <Grid cols={2} gap={4}>
-                <div>
-                  <Label spacing={1}>
-                    Hostel
-                  </Label>
+                <Field label="Hostel" spacing={1}>
                   <Select
                     value={allocationForm.hostelId}
                     onChange={handleAllocationHostelChange}
@@ -625,13 +613,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     placeholder="Select hostel"
                     error={Boolean(allocationForm.validationError && !allocationForm.hostelId)}
                   />
-                </div>
+                </Field>
 
                 {allocationForm.hostelType === "unit-based" && (
-                  <div>
-                    <Label spacing={1}>
-                      Unit Number
-                    </Label>
+                  <Field label="Unit Number" spacing={1}>
                     <Input
                       type="text"
                       value={allocationForm.unit}
@@ -640,13 +625,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                       placeholder={units.length > 0 ? `Example: ${units[0].unitNumber}` : "Enter unit number"}
                       error={Boolean(allocationForm.unitError || (allocationForm.validationError && !allocationForm.unitId))}
                     />
-                  </div>
+                  </Field>
                 )}
 
-                <div>
-                  <Label spacing={1}>
-                    Room
-                  </Label>
+                <Field label="Room" spacing={1}>
                   <Select
                     value={allocationForm.roomId}
                     onChange={handleAllocationRoomChange}
@@ -659,12 +641,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     disabled={!allocationForm.hostelId || (allocationForm.hostelType === "unit-based" && !allocationForm.unitId) || allocationForm.roomsLoading}
                     error={Boolean(allocationForm.validationError && !allocationForm.roomId)}
                   />
-                </div>
+                </Field>
 
-                <div>
-                  <Label spacing={1}>
-                    Bed Number
-                  </Label>
+                <Field label="Bed Number" spacing={1}>
                   <Select
                     value={allocationForm.bedNumber}
                     onChange={handleAllocationBedChange}
@@ -673,7 +652,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     disabled={!allocationForm.roomId}
                     error={Boolean(allocationForm.validationError && !allocationForm.bedNumber)}
                   />
-                </div>
+                </Field>
               </Grid>
 
               <VStack gap={2}>

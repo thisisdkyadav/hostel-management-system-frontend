@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, Heading, HStack, IconCircle, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Field, Heading, HStack, IconCircle, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -221,13 +221,11 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             </Surface>
 
             <VStack gap="medium">
-              <div>
-                <Label htmlFor="name" required>Name</Label>
+              <Field label="Name" htmlFor="name" required>
                 <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Enter full name" required />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="subRole" required>Sub Role</Label>
+              <Field label="Sub Role" htmlFor="subRole" required>
                 <Select
                   name="subRole"
                   id="subRole"
@@ -238,12 +236,11 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   icon={<FiTag />}
                   required
                 />
-              </div>
+              </Field>
 
               {isGymkhana ? (
                 <>
-                  <div>
-                    <Label htmlFor="position">Position</Label>
+                  <Field label="Position" htmlFor="position">
                     <Input
                       type="text"
                       name="position"
@@ -253,10 +250,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                       icon={<FiBriefcase />}
                       placeholder="e.g., Cultural Coordinator"
                     />
-                  </div>
+                  </Field>
 
-                  <div>
-                    <Label>Categories</Label>
+                  <Field label="Categories">
                     <div
                       style={{
                         marginTop: "var(--spacing-2)",
@@ -299,7 +295,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                         <EmptyState variant="inline" message="No Gymkhana categories configured yet." />
                       )}
                     </div>
-                  </div>
+                  </Field>
                 </>
               ) : null}
             </VStack>
@@ -392,18 +388,15 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           )}
 
           <VStack gap="medium">
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
+            <Field label="Phone Number" htmlFor="phone">
               <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="Enter phone number" />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="category">Category</Label>
+            <Field label="Category" htmlFor="category">
               <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
-            </div>
+            </Field>
 
-            <div>
-              <Label>Hostel Assignments</Label>
+            <Field label="Hostel Assignments">
               <div
                 style={{
                   marginTop: "var(--spacing-2)",
@@ -440,12 +433,11 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   <EmptyState variant="inline" message="No hostels available." />
                 )}
               </div>
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="joinDate">Join Date</Label>
+            <Field label="Join Date" htmlFor="joinDate">
               <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FaCalendarAlt />} />
-            </div>
+            </Field>
           </VStack>
 
           <HStack

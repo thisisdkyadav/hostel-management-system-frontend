@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import { superAdminApi } from "../../../service"
-import { VStack, HStack, Label, Alert, Select } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { ADMIN_SUBROLE_OPTIONS } from "../../../constants/adminSubRoles"
@@ -115,8 +115,7 @@ const AddAdminModal = ({
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="name" required>Name</Label>
+          <Field label="Name" htmlFor="name" required>
             <Input
               type="text"
               name="name"
@@ -129,10 +128,9 @@ const AddAdminModal = ({
               error={errors.name}
             />
             {errors.name && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.name}</p>}
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="email" required>Email</Label>
+          <Field label="Email" htmlFor="email" required>
             <Input
               type="email"
               name="email"
@@ -145,10 +143,9 @@ const AddAdminModal = ({
               error={errors.email}
             />
             {errors.email && <Alert type="error">{errors.email}</Alert>}
-          </div>
+          </Field>
 
-	          <div>
-	            <Label htmlFor="password">Password (Optional)</Label>
+	          <Field label="Password (Optional)" htmlFor="password">
             <Input
               type="password"
               name="password"
@@ -160,10 +157,9 @@ const AddAdminModal = ({
               error={errors.password}
             />
 	            {errors.password && <Alert type="error">{errors.password}</Alert>}
-	          </div>
+	          </Field>
 
-            <div>
-              <Label htmlFor="subRole" required>Sub Role</Label>
+            <Field label="Sub Role" htmlFor="subRole" required>
               <Select
                 name="subRole"
                 id="subRole"
@@ -175,10 +171,9 @@ const AddAdminModal = ({
                 error={errors.subRole}
               />
               {errors.subRole && <Alert type="error">{errors.subRole}</Alert>}
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="category" required>Category</Label>
+            <Field label="Category" htmlFor="category" required>
               <Input
                 type="text"
                 name="category"
@@ -190,10 +185,9 @@ const AddAdminModal = ({
                 required
               />
               {errors.category && <Alert type="error">{errors.category}</Alert>}
-            </div>
+            </Field>
 
-          <div>
-            <Label htmlFor="phone">Phone (Optional)</Label>
+          <Field label="Phone (Optional)" htmlFor="phone">
             <Input
               type="tel"
               name="phone"
@@ -205,7 +199,7 @@ const AddAdminModal = ({
               error={errors.phone}
             />
             {errors.phone && <Alert type="error">{errors.phone}</Alert>}
-          </div>
+          </Field>
 
           <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
             <Button

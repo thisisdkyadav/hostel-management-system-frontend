@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Modal, Surface, Text } from "@/components/ui"
+import { Field, Grid, Modal, Surface, Text } from "@/components/ui"
 import {
   Archive,
   ArchiveRestore,
@@ -431,36 +431,31 @@ const PeriodFormModal = ({
           {activeTab === "schedule" && (
             <VStack gap="large">
               <Grid min={220} gap={4}>
-                <div>
-                  <Label htmlFor="startDate" required>Start Date</Label>
+                <Field label="Start Date" htmlFor="startDate" required>
                   <Input id="startDate" type="date" value={formData.startDate}
                     onChange={(e) => setFormData((p) => ({ ...p, startDate: e.target.value }))} required />
-                </div>
-                <div>
-                  <Label htmlFor="endDate" required>End Date</Label>
+                </Field>
+                <Field label="End Date" htmlFor="endDate" required>
                   <Input id="endDate" type="date" value={formData.endDate}
                     onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
-                </div>
+                </Field>
               </Grid>
               <Grid min={220} gap={4}>
-                <div>
-                  <Label htmlFor="allocationStartAt" required>Allocation Opens</Label>
+                <Field label="Allocation Opens" htmlFor="allocationStartAt" required>
                   <Input id="allocationStartAt" type="datetime-local" value={formData.allocationStartAt}
                     onChange={(e) => setFormData((p) => ({ ...p, allocationStartAt: e.target.value }))} required />
-                </div>
-                <div>
-                  <Label htmlFor="allocationEndAt" required>Allocation Closes</Label>
+                </Field>
+                <Field label="Allocation Closes" htmlFor="allocationEndAt" required>
                   <Input id="allocationEndAt" type="datetime-local" value={formData.allocationEndAt}
                     onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
-                </div>
+                </Field>
               </Grid>
               <Grid min={220} gap={4}>
-                <div>
-                  <Label htmlFor="dailyRate">Daily Rate (₹ / day)</Label>
+                <Field label="Daily Rate (₹ / day)" htmlFor="dailyRate">
                   <Input id="dailyRate" type="number" min="0" step="0.01" placeholder="0"
                     value={formData.dailyRate}
                     onChange={(e) => setFormData((p) => ({ ...p, dailyRate: e.target.value }))} />
-                </div>
+                </Field>
               </Grid>
               <Alert type="info" icon>
                 Students can pick a caterer only while the allocation window is open. The period dates control when meals are verified.
@@ -539,21 +534,18 @@ const PeriodFormModal = ({
               <Grid cols={1} gap={3}>
                 {formData.mealSlots.map((slot, index) => (
                   <div key={`${slot.name}-${index}`} style={sectionTile}>
-                    <div>
-                      <Label htmlFor={`meal-slot-name-${index}`} required>Name</Label>
+                    <Field label="Name" htmlFor={`meal-slot-name-${index}`} required>
                       <Input id={`meal-slot-name-${index}`} value={slot.name} placeholder="Breakfast"
                         onChange={(e) => handleMealSlotChange(index, "name", e.target.value)} required />
-                    </div>
-                    <div>
-                      <Label htmlFor={`meal-slot-start-${index}`} required>Start</Label>
+                    </Field>
+                    <Field label="Start" htmlFor={`meal-slot-start-${index}`} required>
                       <Input id={`meal-slot-start-${index}`} type="time" value={slot.startTime}
                         onChange={(e) => handleMealSlotChange(index, "startTime", e.target.value)} required />
-                    </div>
-                    <div>
-                      <Label htmlFor={`meal-slot-end-${index}`} required>End</Label>
+                    </Field>
+                    <Field label="End" htmlFor={`meal-slot-end-${index}`} required>
                       <Input id={`meal-slot-end-${index}`} type="time" value={slot.endTime}
                         onChange={(e) => handleMealSlotChange(index, "endTime", e.target.value)} required />
-                    </div>
+                    </Field>
                     <Button type="button" variant="secondary" size="md" title="Remove slot"
                       onClick={() => handleRemoveMealSlot(index)} disabled={formData.mealSlots.length <= 1}>
                       <Trash2 size={16} />
@@ -569,26 +561,22 @@ const PeriodFormModal = ({
             <VStack gap="small">
               <Label required>Short-Term Rebate Rules</Label>
               <Grid min={180} gap={4}>
-                <div>
-                  <Label htmlFor="rebate-total-days" required>Max Total Days</Label>
+                <Field label="Max Total Days" htmlFor="rebate-total-days" required>
                   <Input id="rebate-total-days" type="number" min="0" value={formData.rebateSettings.shortTermMaxTotalDays}
                     onChange={(e) => handleRebateSettingChange("shortTermMaxTotalDays", e.target.value)} required />
-                </div>
-                <div>
-                  <Label htmlFor="rebate-continuous-days" required>Max Continuous Days</Label>
+                </Field>
+                <Field label="Max Continuous Days" htmlFor="rebate-continuous-days" required>
                   <Input id="rebate-continuous-days" type="number" min="1" value={formData.rebateSettings.shortTermMaxContinuousDays}
                     onChange={(e) => handleRebateSettingChange("shortTermMaxContinuousDays", e.target.value)} required />
-                </div>
-                <div>
-                  <Label htmlFor="rebate-min-days" required>Min Days / Request</Label>
+                </Field>
+                <Field label="Min Days / Request" htmlFor="rebate-min-days" required>
                   <Input id="rebate-min-days" type="number" min="1" value={formData.rebateSettings.shortTermMinApplicationDays}
                     onChange={(e) => handleRebateSettingChange("shortTermMinApplicationDays", e.target.value)} required />
-                </div>
-                <div>
-                  <Label htmlFor="rebate-advance-days" required>Advance Notice Days</Label>
+                </Field>
+                <Field label="Advance Notice Days" htmlFor="rebate-advance-days" required>
                   <Input id="rebate-advance-days" type="number" min="0" value={formData.rebateSettings.shortTermMinAdvanceDays}
                     onChange={(e) => handleRebateSettingChange("shortTermMinAdvanceDays", e.target.value)} required />
-                </div>
+                </Field>
               </Grid>
               <Alert type="info" icon>
                 Requests within the continuous-day limit are auto-approved only when these rules pass. Longer requests go to admin approval.

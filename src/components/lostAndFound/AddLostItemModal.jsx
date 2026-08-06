@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { FileInput, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Field, FileInput, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -93,15 +93,13 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
     <Modal title="Add Lost Item" onClose={onClose} width={600}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         <VStack gap="var(--gap-md)">
-          <div>
-            <Label color="secondary" spacing={2}>Item Name</Label>
+          <Field label="Item Name" color="secondary" spacing={2}>
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter item name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Description</Label>
+          <Field label="Description" color="secondary" spacing={2}>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} placeholder="Describe the item, condition, where it was found, etc." required></textarea>
-          </div>
+          </Field>
 
           <div>
             <Label color="secondary" spacing={2}>
@@ -142,18 +140,16 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
           </div>
 
           <Grid min={200} gap="var(--gap-md)">
-            <div>
-              <Label color="secondary" spacing={2}>Date Found</Label>
+            <Field label="Date Found" color="secondary" spacing={2}>
               <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} icon={<FaCalendarAlt />} required />
-            </div>
+            </Field>
 
-            <div>
-              <Label color="secondary" spacing={2}>Status</Label>
+            <Field label="Status" color="secondary" spacing={2}>
               <Select name="status" value={formData.status} onChange={handleChange} options={[
                 { value: "Active", label: "Active" },
                 { value: "Claimed", label: "Claimed" }
               ]} required />
-            </div>
+            </Field>
           </Grid>
         </VStack>
 

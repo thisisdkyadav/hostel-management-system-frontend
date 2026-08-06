@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
-import { VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, Field, HStack, Label, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const styles = {
@@ -210,23 +210,20 @@ const UpdatePasswordForm = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
       <VStack gap="large">
-        <div>
-          <Label htmlFor="email" required>Email Address</Label>
+        <Field label="Email Address" htmlFor="email" required>
           <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} icon={<HiMail size={20} />} placeholder="Enter user's email address" error={errors.email} />
-        </div>
+        </Field>
 
-        <div>
-          <Label htmlFor="newPassword" required>New Password</Label>
+        <Field label="New Password" htmlFor="newPassword" required>
           <Input type="password" id="newPassword" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Enter new password" error={errors.newPassword} />
           {!errors.newPassword && (
             <p style={styles.hintText}>Password must be at least 6 characters long</p>
           )}
-        </div>
+        </Field>
 
-        <div>
-          <Label htmlFor="confirmPassword" required>Confirm New Password</Label>
+        <Field label="Confirm New Password" htmlFor="confirmPassword" required>
           <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
-        </div>
+        </Field>
 
         <VStack gap="medium" align="center" style={{ paddingTop: 'var(--spacing-4)' }}>
           <div style={styles.warningText}>

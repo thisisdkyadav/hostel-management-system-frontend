@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { Grid, HStack, Label, Select, Spinner, Surface, Text } from "@/components/ui"
+import { Field, Grid, HStack, Label, Select, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -221,8 +221,7 @@ const HealthTab = ({ userId }) => {
         ) : editHealthData ? (
           <form onSubmit={handleUpdateHealth} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
             <Grid cols={2} gap={4}>
-              <div>
-                <Label color="body" spacing={1}>Blood Group</Label>
+              <Field label="Blood Group" color="body" spacing={1}>
                 <Select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange}
                   options={[
                     { value: "", label: "Select Blood Group" },
@@ -236,10 +235,9 @@ const HealthTab = ({ userId }) => {
                     { value: "O-", label: "O-" },
                   ]}
                 />
-              </div>
+              </Field>
 
-              <div>
-                <Label color="body" spacing={1}>Insurance Provider</Label>
+              <Field label="Insurance Provider" color="body" spacing={1}>
                 <Select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange}
                   options={[
                     { value: "", label: "Select Insurance Provider" },
@@ -252,12 +250,11 @@ const HealthTab = ({ userId }) => {
                     Policy period: {formatDate(selectedProvider.startDate)} - {formatDate(selectedProvider.endDate)}
                   </Text>
                 )}
-              </div>
+              </Field>
 
-              <div>
-                <Label color="body" spacing={1}>Insurance Number</Label>
+              <Field label="Insurance Number" color="body" spacing={1}>
                 <Input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} placeholder="Enter insurance number" />
-              </div>
+              </Field>
             </Grid>
 
             <HStack gap={2} justify="end" style={{ marginTop: 'var(--spacing-4)' }}>

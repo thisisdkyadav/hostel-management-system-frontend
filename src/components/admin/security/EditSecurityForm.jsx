@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
@@ -78,13 +78,11 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
         <VStack gap="large">
           {error && <Alert type="error">{error}</Alert>}
 
-          <div>
-            <Label htmlFor="name">Security Name</Label>
+          <Field label="Security Name" htmlFor="name">
             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FaUser />} placeholder="Enter security staff name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="hostelId">Hostel Assignment</Label>
+          <Field label="Hostel Assignment" htmlFor="hostelId">
             <Select
               name="hostelId"
               id="hostelId"
@@ -93,7 +91,7 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
               icon={<FaBuilding />}
               options={[{ value: "", label: "Not assigned to any hostel" }, ...hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
             />
-          </div>
+          </Field>
 
           <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>

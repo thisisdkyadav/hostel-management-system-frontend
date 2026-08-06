@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Field, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -149,25 +149,21 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
             </div>
           </Surface>
 
-          <div>
-            <Label htmlFor="name" required>Name</Label>
+          <Field label="Name" htmlFor="name" required>
             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Dr. Full Name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="email" required>Email</Label>
+          <Field label="Email" htmlFor="email" required>
             <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} icon={<FiMail />} placeholder="email@iiti.ac.in" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="password">Password</Label>
+          <Field label="Password" htmlFor="password">
             <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Leave empty to create without password" />
-          </div>
+          </Field>
 
           {isGymkhana || isAcademics ? (
             <>
-              <div>
-                <Label htmlFor="subRole" required>Sub Role</Label>
+              <Field label="Sub Role" htmlFor="subRole" required>
                 <Select
                   name="subRole"
                   id="subRole"
@@ -178,12 +174,11 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                   icon={<FiTag />}
                   required
                 />
-              </div>
+              </Field>
 
               {isGymkhana ? (
                 <>
-                  <div>
-                    <Label htmlFor="position">Position</Label>
+                  <Field label="Position" htmlFor="position">
                     <Input
                       type="text"
                       name="position"
@@ -193,10 +188,9 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                       icon={<FiBriefcase />}
                       placeholder="e.g., Cultural Coordinator"
                     />
-                  </div>
+                  </Field>
 
-                  <div>
-                    <Label>Categories</Label>
+                  <Field label="Categories">
                     <div
                       style={{
                         marginTop: "var(--spacing-2)",
@@ -236,26 +230,23 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                         <EmptyState variant="inline" message="No Gymkhana categories configured yet." />
                       )}
                     </div>
-                  </div>
+                  </Field>
                 </>
               ) : null}
             </>
           ) : (
             <>
-              <div>
-                <Label htmlFor="phone">Phone</Label>
+              <Field label="Phone" htmlFor="phone">
                 <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="category">Category</Label>
+              <Field label="Category" htmlFor="category">
                 <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
-              </div>
+              </Field>
 
-              <div>
-                <Label htmlFor="joinDate">Join Date</Label>
+              <Field label="Join Date" htmlFor="joinDate">
                 <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FiCalendar />} />
-              </div>
+              </Field>
             </>
           )}
 

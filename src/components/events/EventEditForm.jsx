@@ -4,7 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { Field, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
@@ -67,33 +67,29 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
         </HStack>
 
         <VStack gap={4}>
-          <div>
-            <Label color="tertiary">Date and Time</Label>
+          <Field label="Date and Time" color="tertiary">
             <Input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="tertiary">Hostel</Label>
+          <Field label="Hostel" color="tertiary">
             <Select name="hostelId" value={formData.hostelId} onChange={handleChange} icon={<FaBuilding />} options={[
               { value: "all", label: "All Hostels" },
               ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
             ]} />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="tertiary">Gender</Label>
+          <Field label="Gender" color="tertiary">
             <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUserFriends />} options={[
               { value: "all", label: "All Genders" },
               { value: "Male", label: "Male" },
               { value: "Female", label: "Female" },
               { value: "Other", label: "Other" }
             ]} />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="tertiary">Description</Label>
+          <Field label="Description" color="tertiary">
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none', transition: 'var(--transition-all)' }} placeholder="Event description"></textarea>
-          </div>
+          </Field>
         </VStack>
 
         <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>

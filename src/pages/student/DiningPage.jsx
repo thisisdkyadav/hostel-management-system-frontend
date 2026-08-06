@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table } from "czero/react"
-import { Grid, Heading, Modal, Page, Surface, Text } from "@/components/ui"
+import { Field, Grid, Heading, Modal, Page, Surface, Text } from "@/components/ui"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -177,24 +177,21 @@ const RebateRequestModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
           {error && <Alert type="error" icon>{error}</Alert>}
 
           <Grid min={200} gap={4}>
-            <div>
-              <Label htmlFor="rebate-start" required>Start Date</Label>
+            <Field label="Start Date" htmlFor="rebate-start" required>
               <Input id="rebate-start" type="date" value={formData.startDate}
                 onChange={(e) => setFormData((p) => ({ ...p, startDate: e.target.value }))} required />
-            </div>
-            <div>
-              <Label htmlFor="rebate-end" required>End Date</Label>
+            </Field>
+            <Field label="End Date" htmlFor="rebate-end" required>
               <Input id="rebate-end" type="date" value={formData.endDate}
                 onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
-            </div>
+            </Field>
           </Grid>
 
-          <div>
-            <Label htmlFor="rebate-reason">Reason</Label>
+          <Field label="Reason" htmlFor="rebate-reason">
             <Textarea id="rebate-reason" rows={3} value={formData.reason}
               onChange={(e) => setFormData((p) => ({ ...p, reason: e.target.value }))}
               placeholder="Add a short reason for the rebate request" />
-          </div>
+          </Field>
         </VStack>
       </form>
     </Modal>

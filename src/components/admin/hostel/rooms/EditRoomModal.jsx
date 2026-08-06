@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Heading, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Field, Heading, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { DoorOpen, Users, Trash2 } from "lucide-react"
@@ -96,26 +96,22 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
             )}
 
             {isUnitBased && (
-              <div>
-                <Label>Unit Number</Label>
+              <Field label="Unit Number">
                 <Input type="text" value={formData.unitNumber} icon={<DoorOpen size={16} />} disabled />
-              </div>
+              </Field>
             )}
 
-            <div>
-              <Label>Room {isUnitBased ? "Letter" : "Number"}</Label>
+            <Field label={<>Room {isUnitBased ? "Letter" : "Number"}</>}>
               <Input type="text" value={formData.roomNumber} icon={<DoorOpen size={16} />} disabled />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="capacity" required>Capacity</Label>
+            <Field label="Capacity" htmlFor="capacity" required>
               <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<Users size={16} />} placeholder="Room capacity" error={errors.capacity} />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="status" required>Status</Label>
+            <Field label="Status" htmlFor="status" required>
               <Select name="status" value={formData.status} onChange={handleChange} options={MANUAL_ROOM_STATUS_OPTIONS} error={errors.status} />
-            </div>
+            </Field>
 
             <HStack gap="small" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button onClick={onClose} type="button" variant="outline" size="md">

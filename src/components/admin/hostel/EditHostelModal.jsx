@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Alert, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { Building, User, DoorOpen, Archive } from "lucide-react"
@@ -103,15 +103,13 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               </Alert>
             )}
 
-            <div>
-              <Label htmlFor="name" required>Hostel Name</Label>
+            <Field label="Hostel Name" htmlFor="name" required>
               <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<Building size={16} />} placeholder="Enter hostel name" error={errors.name} />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="gender" required>Gender</Label>
+            <Field label="Gender" htmlFor="gender" required>
               <Select name="gender" value={formData.gender} onChange={handleChange} icon={<User size={16} />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
-            </div>
+            </Field>
 
             <Button type="button" onClick={handleArchiveToggle} variant="secondary" fullWidth>
               <Archive size={16} /> {isArchived ? "Unarchive Hostel" : "Archive Hostel"}

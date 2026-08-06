@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Label, Modal, useConfirm } from "@/components/ui"
+import { Field, Grid, HStack, Label, Modal, useConfirm } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -66,42 +66,35 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
         </div>
 
         <Grid min={250} gap={4} style={{ marginBottom: 'var(--spacing-4)' }}>
-          <div>
-            <Label color="body" spacing={1}>Student Email</Label>
+          <Field label="Student Email" color="body" spacing={1}>
             <Input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Student Name</Label>
+          <Field label="Student Name" color="body" spacing={1}>
             <Input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly />
-          </div>
+          </Field>
 
           {hostelType === "unit-based" && (
-            <div>
-              <Label color="body" spacing={1}>Unit</Label>
+            <Field label="Unit" color="body" spacing={1}>
               <Input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly />
-            </div>
+            </Field>
           )}
 
-          <div>
-            <Label color="body" spacing={1}>Room</Label>
+          <Field label="Room" color="body" spacing={1}>
             <Input type="text" name="room" value={formData.room} onChange={handleChange} readOnly required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Bed</Label>
+          <Field label="Bed" color="body" spacing={1}>
             <Input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Date</Label>
+          <Field label="Date" color="body" spacing={1}>
             <Input type="date" name="date" value={formData.date} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={1}>Time</Label>
+          <Field label="Time" color="body" spacing={1}>
             <Input type="time" name="time" value={formData.time} onChange={handleChange} required />
-          </div>
+          </Field>
         </Grid>
 
         <HStack gap={2} justify="between">

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaTools, FaPhone } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
-import { Alert, HStack, IconCircle, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, HStack, IconCircle, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -119,18 +119,15 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
 
           {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-          <div>
-            <Label htmlFor="name" required>Staff Name</Label>
+          <Field label="Staff Name" htmlFor="name" required>
             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Enter staff name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
+          <Field label="Phone Number" htmlFor="phone">
             <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} placeholder="+91 9876543210" icon={<FaPhone />} />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="category" required>Specialty Category</Label>
+          <Field label="Specialty Category" htmlFor="category" required>
             <Select
               name="category"
               id="category"
@@ -144,7 +141,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
               }))}
               required
             />
-          </div>
+          </Field>
 
 
 

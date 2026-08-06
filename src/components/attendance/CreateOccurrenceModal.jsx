@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Input } from "czero/react"
-import { Alert, Label, Modal, Textarea, VStack } from "@/components/ui"
+import { Alert, Field, Label, Modal, Textarea, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import UserSelector from "../common/UserSelector"
 import { attendanceApi } from "../../service"
@@ -95,38 +95,34 @@ const CreateOccurrenceModal = ({ isOpen, onClose, onSaved, occurrence = null }) 
       <VStack gap={4}>
         {error && <Alert type="error" icon>{error}</Alert>}
 
-        <div>
-          <Label htmlFor="occ-title" required>Title</Label>
+        <Field label="Title" htmlFor="occ-title" required>
           <Input
             id="occ-title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. General Body Meeting"
           />
-        </div>
+        </Field>
 
-        <div>
-          <Label htmlFor="occ-location">Location</Label>
+        <Field label="Location" htmlFor="occ-location">
           <Input
             id="occ-location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. Main Auditorium"
           />
-        </div>
+        </Field>
 
-        <div>
-          <Label htmlFor="occ-start">Date & Time</Label>
+        <Field label="Date & Time" htmlFor="occ-start">
           <Input
             id="occ-start"
             type="datetime-local"
             value={startAt}
             onChange={(e) => setStartAt(e.target.value)}
           />
-        </div>
+        </Field>
 
-        <div>
-          <Label htmlFor="occ-desc">Description</Label>
+        <Field label="Description" htmlFor="occ-desc">
           <Textarea
             id="occ-desc"
             value={description}
@@ -134,7 +130,7 @@ const CreateOccurrenceModal = ({ isOpen, onClose, onSaved, occurrence = null }) 
             placeholder="Optional notes about this occurrence"
             rows={3}
           />
-        </div>
+        </Field>
 
         <UserSelector
           selectedUsers={assignedUsers}

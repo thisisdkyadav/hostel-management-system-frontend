@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, StatusBadge } from "czero/react"
-import { Heading, Modal, Page, Text } from "@/components/ui"
+import { Field, Heading, Modal, Page, Text } from "@/components/ui"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
@@ -74,14 +74,12 @@ const CatererFormModal = ({ isOpen, title, submitLabel, initialData = initialFor
       <form id="caterer-form" onSubmit={handleSubmit}>
         <VStack gap="large">
           {error && <Alert type="error" icon>{error}</Alert>}
-          <div>
-            <Label htmlFor="name" required>Caterer Name</Label>
+          <Field label="Caterer Name" htmlFor="name" required>
             <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter caterer name" required />
-          </div>
-          <div>
-            <Label htmlFor="email" required>Email</Label>
+          </Field>
+          <Field label="Email" htmlFor="email" required>
             <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="caterer@iiti.ac.in" required />
-          </div>
+          </Field>
           <Alert type="info" icon>
             A caterer login is created automatically from this email so they can run meal verification.
           </Alert>

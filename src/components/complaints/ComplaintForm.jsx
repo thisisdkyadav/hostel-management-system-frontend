@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Label, Select, Text, VStack } from "@/components/ui"
+import { Field, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -71,26 +71,22 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         )}
 
         <VStack gap={4}>
-          <div>
-            <Label color="secondary" spacing={2}>Complaint Title</Label>
+          <Field label="Complaint Title" color="secondary" spacing={2}>
             <Input type="text" name="title" placeholder="Brief summary of the issue" value={formData.title} onChange={handleChange} required />
-          </div>
+          </Field>
 
-          <div>
-            <Label color="secondary" spacing={2}>Description</Label>
+          <Field label="Description" color="secondary" spacing={2}>
             <textarea name="description" placeholder="Please provide details about the issue..." value={formData.description} onChange={handleChange} required style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '112px', backgroundColor: 'var(--input-bg)' }} />
-          </div>
+          </Field>
 
           {/* location only for warden, associate warden, hostel supervisor, admin */}
           {["Warden", "Associate Warden", "Hostel Supervisor", "Admin"].includes(user?.role) && (
-            <div>
-              <Label color="secondary" spacing={2}>Location</Label>
+            <Field label="Location" color="secondary" spacing={2}>
               <Input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} required />
-            </div>
+            </Field>
           )}
 
-          <div>
-            <Label color="secondary" spacing={2}>Category</Label>
+          <Field label="Category" color="secondary" spacing={2}>
             <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<FaClipboardList />} options={[
               { value: "Plumbing", label: "Plumbing" },
               { value: "Electrical", label: "Electrical" },
@@ -99,7 +95,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
               { value: "Civil", label: "Civil" },
               { value: "Other", label: "Other" }
             ]} required />
-          </div>
+          </Field>
         </VStack>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>

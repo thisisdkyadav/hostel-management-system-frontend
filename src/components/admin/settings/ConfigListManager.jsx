@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import { ConfirmDialog, HStack, Label, Text, VStack } from "@/components/ui"
+import { ConfirmDialog, Field, HStack, Label, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const styles = {
@@ -352,14 +352,13 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
             <p style={styles.modalText}>
               Current {itemLabel}: <Text as="span" weight="medium">{selectedItem}</Text>
             </p>
-            <div>
-              <Label>Rename {itemLabel}</Label>
+            <Field label={<>Rename {itemLabel}</>}>
               <Input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
                   placeholder={`Enter new ${itemLabel.toLowerCase()} name`}
                   disabled={renameLoading}
                 />
               {error && <p style={styles.errorText}>{error}</p>}
-            </div>
+            </Field>
             <HStack gap="small" justify="end">
               <Button type="button" onClick={() => setShowItemModal(false)} variant="secondary" size="md" disabled={renameLoading}>
                 Cancel

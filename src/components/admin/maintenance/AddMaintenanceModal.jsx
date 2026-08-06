@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
@@ -77,26 +77,22 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
         <VStack gap="large">
           {error && <Alert type="error">{error}</Alert>}
 
-          <div>
-            <Label htmlFor="name" required>Staff Name</Label>
+          <Field label="Staff Name" htmlFor="name" required>
             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Enter staff name" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="email" required>Email Address</Label>
+          <Field label="Email Address" htmlFor="email" required>
             <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} icon={<FiMail />} placeholder="maintenance@example.com" required />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
+          <Field label="Phone Number" htmlFor="phone">
             <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
-          </div>
+          </Field>
 
-          <div>
-            <Label htmlFor="password" required>Password</Label>
+          <Field label="Password" htmlFor="password" required>
             <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter a strong password" required />
             <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1)", marginLeft: "var(--spacing-1)" }}>Password should be at least 8 characters</Text>
-          </div>
+          </Field>
 
           <div>
             <Label htmlFor="category" required>Specialty Category</Label>

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
-import { Alert, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -76,31 +76,27 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
-            <div>
-              <Label htmlFor="title" required>Title</Label>
+            <Field label="Title" htmlFor="title" required>
               <Input type="text" id="title" name="title" value={formData.title} onChange={handleChange} icon={<FaFileSignature />} placeholder="Undertaking Title" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="description" required>Description</Label>
+            <Field label="Description" htmlFor="description" required>
               <Textarea id="description" name="description" value={formData.description} onChange={handleChange} icon={<FaInfoCircle />} rows={2} placeholder="Brief description of this undertaking" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label required>Deadline</Label>
+            <Field label="Deadline" required>
               <div style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)', zIndex: 1 }}>
                   <FaCalendarAlt />
                 </div>
                 <DatePicker selected={formData.deadline} onChange={handleDateChange} dateFormat="MM-dd-yyyy" style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)' }} placeholderText="mm-dd-yyyy" required popperPlacement="bottom" showMonthDropdown showYearDropdown dropdownMode="select" autoComplete="off" wrapperClassName="w-full" className="w-full p-3 pl-10 border rounded-lg" />
               </div>
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="content" required>Undertaking Content</Label>
+            <Field label="Undertaking Content" htmlFor="content" required>
               <Textarea id="content" name="content" value={formData.content} onChange={handleChange} rows={6} placeholder="Full text of the undertaking that students will need to read and accept" required />
               <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>This is the full text that students will be required to read and accept.</Text>
-            </div>
+            </Field>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button type="button" onClick={onClose} variant="secondary" size="md">

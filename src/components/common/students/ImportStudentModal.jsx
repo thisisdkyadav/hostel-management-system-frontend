@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Heading, HStack, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Field, Grid, Heading, HStack, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -975,20 +975,16 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         <VStack gap={4}>
           <Heading as="h3" size="lg" weight="medium" color="secondary">Add Single Student</Heading>
           <Grid cols={2} gap={4}>
-            <div>
-              <Label spacing={1}>Name *</Label>
+            <Field label="Name *" spacing={1}>
               <Input type="text" value={manualStudent.name} onChange={(event) => handleManualInputChange("name", event.target.value)} placeholder="Enter student's full name" />
-            </div>
-            <div>
-              <Label spacing={1}>Email *</Label>
+            </Field>
+            <Field label="Email *" spacing={1}>
               <Input type="email" value={manualStudent.email} onChange={(event) => handleManualInputChange("email", event.target.value)} placeholder="Enter email address" />
-            </div>
-            <div>
-              <Label spacing={1}>Roll Number *</Label>
+            </Field>
+            <Field label="Roll Number *" spacing={1}>
               <Input type="text" value={manualStudent.rollNumber} onChange={(event) => handleManualInputChange("rollNumber", event.target.value)} placeholder="Enter roll number" />
-            </div>
-            <div>
-              <Label spacing={1}>Gender *</Label>
+            </Field>
+            <Field label="Gender *" spacing={1}>
               <select
                 value={manualStudent.gender}
                 onChange={(event) => handleManualInputChange("gender", event.target.value)}
@@ -999,9 +995,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
-            </div>
-            <div>
-              <Label spacing={1}>Is Day Scholar? *</Label>
+            </Field>
+            <Field label="Is Day Scholar? *" spacing={1}>
               <select
                 value={manualStudent.isDayScholar}
                 onChange={(event) => handleManualInputChange("isDayScholar", event.target.value)}
@@ -1011,7 +1006,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <option value="true">true (Day Scholar)</option>
                 <option value="false">false (Hosteller)</option>
               </select>
-            </div>
+            </Field>
           </Grid>
 
           {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (

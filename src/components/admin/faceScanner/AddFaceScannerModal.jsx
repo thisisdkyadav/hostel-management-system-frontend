@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { faceScannerApi, adminApi } from "../../../service"
@@ -128,25 +128,23 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         </Text>
                     </Alert>
 
-                    <div>
-                        <Label>Username</Label>
+                    <Field label="Username">
                         <HStack gap="small">
                             <Input type="text" value={credentials.username} readOnly />
                             <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.username)}>
                                 Copy
                             </Button>
                         </HStack>
-                    </div>
+                    </Field>
 
-                    <div>
-                        <Label>Password</Label>
+                    <Field label="Password">
                         <HStack gap="small">
                             <Input type="text" value={credentials.password} readOnly />
                             <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.password)}>
                                 Copy
                             </Button>
                         </HStack>
-                    </div>
+                    </Field>
 
                     <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
                         <Button variant="primary" size="md" onClick={handleClose}>
@@ -157,10 +155,9 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
             ) : (
                 <form onSubmit={handleSubmit}>
                     <VStack gap="large">
-                        <div>
-                            <Label htmlFor="name" required>Scanner Name</Label>
+                        <Field label="Scanner Name" htmlFor="name" required>
                             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Dining Hall Breakfast Scanner" required />
-                        </div>
+                        </Field>
 
                         <HStack gap="medium">
                             <div style={{ flex: 1 }}>
@@ -175,15 +172,13 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         </HStack>
 
                         {formData.type === "hostel-gate" ? (
-                            <div>
-                                <Label htmlFor="hostelId">Hostel (Optional)</Label>
+                            <Field label="Hostel (Optional)" htmlFor="hostelId">
                                 <Select name="hostelId" id="hostelId" value={formData.hostelId} onChange={handleChange} options={hostelOptions} />
-                            </div>
+                            </Field>
                         ) : (
-                            <div>
-                                <Label htmlFor="catererId" required>Caterer</Label>
+                            <Field label="Caterer" htmlFor="catererId" required>
                                 <Select name="catererId" id="catererId" value={formData.catererId} onChange={handleChange} options={catererOptions} required />
-                            </div>
+                            </Field>
                         )}
 
                         <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>

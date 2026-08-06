@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Field, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select, Textarea, DatePicker, Label, IconButton } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import { Plus, Trash2 } from "lucide-react"
@@ -232,10 +232,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
 
         {step === 0 && (
           <VStack gap={4}>
-            <div>
-              <Label htmlFor="applicantPhone">Your contact number</Label>
+            <Field label="Your contact number" htmlFor="applicantPhone">
               <Input name="applicantPhone" value={form.applicantPhone} onChange={(e) => setForm((p) => ({ ...p, applicantPhone: e.target.value }))} placeholder="Phone number" />
-            </div>
+            </Field>
             {form.guests.map((g, i) => (
               <div key={i} style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                 <HStack gap="none" align="center" justify="between">
@@ -260,39 +259,33 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         {step === 1 && (
           <VStack gap={4}>
             <Grid cols={2} gap={3}>
-              <div>
-                <Label required>From</Label>
+              <Field label="From" required>
                 <DatePicker name="fromDate" value={form.stay.fromDate} min={earliestStart} onChange={(e) => setStay("fromDate", e.target.value)} />
-              </div>
-              <div>
-                <Label required>To</Label>
+              </Field>
+              <Field label="To" required>
                 <DatePicker name="toDate" value={form.stay.toDate} min={form.stay.fromDate || earliestStart} onChange={(e) => setStay("toDate", e.target.value)} />
-              </div>
+              </Field>
             </Grid>
             <Text size="xs" color="muted" style={{ marginTop: "calc(-1 * var(--spacing-2))" }}>
               Requests must be raised at least {MIN_LEAD_WORKING_DAYS} working days in advance — earliest start date is {earliestStart}.
             </Text>
-            <div>
-              <Label required>Purpose of visit</Label>
+            <Field label="Purpose of visit" required>
               <Input value={form.stay.purpose} onChange={(e) => setStay("purpose", e.target.value)} placeholder="e.g., Convocation, personal visit" />
-            </div>
-            <div>
-              <Label>Permanent address</Label>
+            </Field>
+            <Field label="Permanent address">
               <Textarea value={form.permanentAddress} onChange={(e) => setForm((p) => ({ ...p, permanentAddress: e.target.value }))} rows={2} placeholder="Address of the guests" />
-            </div>
+            </Field>
             {profileFA ? (
-              <div>
-                <Label>Faculty advisor email</Label>
+              <Field label="Faculty advisor email">
                 <Surface bg="secondary" padding="var(--spacing-2) var(--spacing-3)" radius="md" border="1px solid var(--color-border-primary)" color="body" size="sm">
                   {profileFA}
                 </Surface>
                 <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</Text>
-              </div>
+              </Field>
             ) : (
-              <div>
-                <Label>Faculty advisor email (optional)</Label>
+              <Field label="Faculty advisor email (optional)">
                 <Input value={form.facultyAdvisorEmail} onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))} placeholder="Your faculty advisor's email" />
-              </div>
+              </Field>
             )}
           </VStack>
         )}

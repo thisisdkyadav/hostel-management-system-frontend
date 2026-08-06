@@ -1,6 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Grid, Label, Select, Surface } from "@/components/ui"
+import { Field, Grid, Label, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
@@ -16,35 +16,31 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
       </div>
 
       <Grid min={200} gap="var(--gap-md)">
-        <div>
-          <Label color="tertiary">Status</Label>
+        <Field label="Status" color="tertiary">
           <Select value={filters.status} onChange={(e) => updateFilter("status", e.target.value)} options={[
             { value: "all", label: "All" },
             { value: "Pending", label: "Pending" },
             { value: "Approved", label: "Approved" },
             { value: "Rejected", label: "Rejected" }
           ]} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="tertiary">Start Date</Label>
+        <Field label="Start Date" color="tertiary">
           <Input type="date" value={filters.startDate} onChange={(e) => updateFilter("startDate", e.target.value)} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="tertiary">End Date</Label>
+        <Field label="End Date" color="tertiary">
           <Input type="date" value={filters.endDate} onChange={(e) => updateFilter("endDate", e.target.value)} />
-        </div>
+        </Field>
 
-        <div>
-          <Label color="tertiary">Items Per Page</Label>
+        <Field label="Items Per Page" color="tertiary">
           <Select value={filters.limit} onChange={(e) => updateFilter("limit", Number(e.target.value))} options={[
             { value: 5, label: "5" },
             { value: 10, label: "10" },
             { value: 20, label: "20" },
             { value: 50, label: "50" }
           ]} />
-        </div>
+        </Field>
       </Grid>
     </Surface>
   )

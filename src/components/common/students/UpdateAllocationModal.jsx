@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
+import { Field, FileInput, Grid, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -749,10 +749,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
         <>
           {step === 1 && (
             <VStack gap={5}>
-              <div>
-                <Label color="body" spacing={1} htmlFor="hostel-select">
-                  Select Hostel
-                </Label>
+              <Field label="Select Hostel" color="body" spacing={1} htmlFor="hostel-select">
                 <Select
                   id="hostel-select"
                   value={selectedHostel?._id || ""}
@@ -763,7 +760,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     label: `${hostel.name} (${hostel.type})`,
                   }))}
                 />
-              </div>
+              </Field>
 
               {selectedHostel ? (
                 <>
@@ -926,10 +923,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   </HStack>
 
                   <Grid min={180} gap={3}>
-                    <div>
-                      <Label spacing={1}>
-                        Roll Number
-                      </Label>
+                    <Field label="Roll Number" spacing={1}>
                       <Input
                         type="text"
                         value={row.rollNumber}
@@ -938,12 +932,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         placeholder="Enter roll number"
                         error={Boolean(row.studentError || row.validationError)}
                       />
-                    </div>
+                    </Field>
 
-                    <div>
-                      <Label spacing={1}>
-                        Student
-                      </Label>
+                    <Field label="Student" spacing={1}>
                       <Surface bg="secondary" padding="0 var(--spacing-3)" radius="var(--radius-input)" border="1px solid var(--color-border-input)" color={row.student ? "var(--color-text-primary)" : "var(--color-text-muted)"} size="sm" style={{ minHeight: "40px", display: "flex", alignItems: "center" }}>
                         {row.studentLookupState === "loading" ? (
                           <>
@@ -954,12 +945,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                           getStudentDisplayName(row.student)
                         )}
                       </Surface>
-                    </div>
+                    </Field>
 
-                    <div>
-                      <Label spacing={1}>
-                        Hostel
-                      </Label>
+                    <Field label="Hostel" spacing={1}>
                       <Select
                         value={row.hostelId}
                         onChange={(event) => handleManualFieldChange(row.id, "hostelId", event.target.value)}
@@ -967,13 +955,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         placeholder="Select hostel"
                         error={Boolean(row.validationError && !row.hostelId)}
                       />
-                    </div>
+                    </Field>
 
                     {row.hostelType === "unit-based" && (
-                      <div>
-                        <Label spacing={1}>
-                          Unit Number
-                        </Label>
+                      <Field label="Unit Number" spacing={1}>
                         <Input
                           type="text"
                           value={row.unit}
@@ -982,13 +967,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                           placeholder={units.length > 0 ? `Example: ${units[0].unitNumber}` : "Enter unit number"}
                           error={Boolean(row.unitError || (row.validationError && !row.unitId))}
                         />
-                      </div>
+                      </Field>
                     )}
 
-                    <div>
-                      <Label spacing={1}>
-                        Room
-                      </Label>
+                    <Field label="Room" spacing={1}>
                       <Select
                         value={row.roomId}
                         onChange={(event) => handleManualFieldChange(row.id, "roomId", event.target.value)}
@@ -1001,12 +983,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         disabled={!row.hostelId || (row.hostelType === "unit-based" && !row.unitId) || row.roomsLoading}
                         error={Boolean(row.validationError && !row.roomId)}
                       />
-                    </div>
+                    </Field>
 
-                    <div>
-                      <Label spacing={1}>
-                        Bed Number
-                      </Label>
+                    <Field label="Bed Number" spacing={1}>
                       <Select
                         value={row.bedNumber}
                         onChange={(event) => handleManualFieldChange(row.id, "bedNumber", event.target.value)}
@@ -1015,7 +994,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         disabled={!row.roomId}
                         error={Boolean(row.validationError && !row.bedNumber)}
                       />
-                    </div>
+                    </Field>
                   </Grid>
 
                   <VStack gap={2} style={{ marginTop: "var(--spacing-3)" }}>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, StatusBadge, Table, Tabs } from "czero/react"
-import { Heading, Modal, Page, Text } from "@/components/ui"
+import { Field, Heading, Modal, Page, Text } from "@/components/ui"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import { Alert, Card, EmptyState, HStack, Label, StatCards, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
@@ -294,11 +294,10 @@ const MealVerificationPage = () => {
           <Card>
             <form onSubmit={handleManualVerify}>
               <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-[var(--spacing-3)] items-end">
-                <div>
-                  <Label htmlFor="manual-roll" required>Manual Verification</Label>
+                <Field label="Manual Verification" htmlFor="manual-roll" required>
                   <Input id="manual-roll" value={rollNumber} onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
                     placeholder="Enter roll number, e.g. 22BCS001" required />
-                </div>
+                </Field>
                 <Button type="submit" variant="primary" loading={manualLoading} disabled={manualLoading}>
                   <Search size={18} /> Verify Meal
                 </Button>

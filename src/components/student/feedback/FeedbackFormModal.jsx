@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { HStack, Label, Textarea, VStack } from "@/components/ui"
+import { Field, HStack, Label, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -77,25 +77,23 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
     <Modal title={isEditing ? "Edit Feedback" : "Submit Feedback"} onClose={onClose} width={600}>
       <VStack gap={5}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-          <div>
-            <Label color="body" spacing={2}>Feedback Title</Label>
+          <Field label="Feedback Title" color="body" spacing={2}>
             <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<HiPencil size={20} />} />
             {errors.title && (
               <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
                 <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
               </p>
             )}
-          </div>
+          </Field>
 
-          <div>
-            <Label color="body" spacing={2}>Description</Label>
+          <Field label="Description" color="body" spacing={2}>
             <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<HiDocumentText size={20} />} />
             {errors.description && (
               <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
                 <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
               </p>
             )}
-          </div>
+          </Field>
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-6)", borderTop: `var(--border-1) solid var(--color-border-light)`, gap: "var(--spacing-3)" }}>
             <HStack gap={3} justify="end">

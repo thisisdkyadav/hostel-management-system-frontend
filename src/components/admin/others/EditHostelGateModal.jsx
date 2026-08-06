@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
-import { Alert, HStack, Label, useConfirm, VStack } from "@/components/ui"
+import { Alert, Field, HStack, Label, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
@@ -81,25 +81,21 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
 
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
-            <div>
-              <Label>Hostel</Label>
+            <Field label="Hostel">
               <Input type="text" value={gate.userId?.name || "Unknown Hostel"} icon={<FaBuilding />} disabled />
-            </div>
+            </Field>
 
-            <div>
-              <Label>Email</Label>
+            <Field label="Email">
               <Input type="email" value={gate.userId?.email} icon={<FaEnvelope />} disabled />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="password" required>New Password</Label>
+            <Field label="New Password" htmlFor="password" required>
               <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter new password" required />
-            </div>
+            </Field>
 
-            <div>
-              <Label htmlFor="confirmPassword" required>Confirm Password</Label>
+            <Field label="Confirm Password" htmlFor="confirmPassword" required>
               <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm new password" required />
-            </div>
+            </Field>
 
             <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>
