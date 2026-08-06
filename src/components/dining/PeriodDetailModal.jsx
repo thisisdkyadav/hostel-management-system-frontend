@@ -112,9 +112,9 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
                   </Text>
                 </HStack>
                 <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
-                <div style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1-5)" }}>
                   {entry.allocatedCount}/{entry.maxStudentCount} allocated
-                </div>
+                </Text>
               </div>
             ))}
           </VStack>

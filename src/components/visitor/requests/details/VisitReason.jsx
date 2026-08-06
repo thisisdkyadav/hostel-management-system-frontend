@@ -10,7 +10,7 @@ const VisitReason = ({ reason, approvalInformation, isApproved }) => {
       {isApproved && approvalInformation && (
         <div className="mt-4" style={{ marginTop: 'var(--spacing-4)' }}>
           <h4 className="font-medium mb-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-success-text)', marginBottom: 'var(--spacing-1)' }}>Approval Information</h4>
-          <p className="whitespace-pre-line" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{approvalInformation}</p>
+          <Text size="sm" color="secondary" className="whitespace-pre-line">{approvalInformation}</Text>
         </div>
       )}
     </Surface>

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { FileInput, Grid, HStack, Select, VStack } from "@/components/ui"
+import { FileInput, Grid, HStack, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -113,7 +113,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
             <div style={{ position: 'relative' }}>
               <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
               {uploading && (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-info-text)', marginTop: 'var(--spacing-2)' }}>Uploading images...</p>
+                <Text size="sm" color="info-text" style={{ marginTop: 'var(--spacing-2)' }}>Uploading images...</Text>
               )}
             </div>
 

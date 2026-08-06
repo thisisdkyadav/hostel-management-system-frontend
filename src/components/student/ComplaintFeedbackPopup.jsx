@@ -67,7 +67,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               <h4 className="flex items-center" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-1)' }}>
                 <FaClipboardList className="flex-shrink-0" style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Complaint
               </h4>
-              <p style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }}>{complaint.title}</p>
+              <Text weight="semibold" color="primary" size="base" leading="var(--line-height-tight)">{complaint.title}</Text>
             </div>
             <div className="flex flex-shrink-0" style={{ gap: 'var(--spacing-1-5)' }}>
               <span className="whitespace-nowrap" style={{ padding: 'var(--spacing-0-5) var(--spacing-2-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)' }}>{complaint.category}</span>
@@ -80,7 +80,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               {complaint.description && (
                 <div>
                   <h5 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-0-5)' }}>Description</h5>
-                  <p className="line-clamp-2" style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-snug)' }}>{complaint.description}</p>
+                  <Text color="body" size="sm" leading="var(--line-height-snug)" className="line-clamp-2">{complaint.description}</Text>
                 </div>
               )}
 
@@ -89,7 +89,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
                   <h5 className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-0-5)' }}>
                     <FaInfoCircle style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-xs)' }} /> Resolution
                   </h5>
-                  <p className="line-clamp-2" style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-snug)' }}>{complaint.resolutionNotes}</p>
+                  <Text color="body" size="sm" leading="var(--line-height-snug)" className="line-clamp-2">{complaint.resolutionNotes}</Text>
                 </div>
               )}
             </div>
@@ -98,9 +98,9 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
         {/* Rating Section - Compact */}
         <div>
-          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
+          <Text as="label" size="sm" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-2)' }} className="block">
             Rate the resolution <Text as="span" color="danger">*</Text>
-          </label>
+          </Text>
           <div className="flex items-center" style={{ gap: 'var(--spacing-1-5)' }}>
             {[1, 2, 3, 4, 5].map((rating) => (
               <Button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)}
@@ -109,22 +109,22 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               ><FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} /></Button>
             ))}
             {feedbackRating > 0 && (
-              <span style={{ marginLeft: 'var(--spacing-2)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>
+              <Text as="span" color="body" weight="medium" size="sm" style={{ marginLeft: 'var(--spacing-2)' }}>
                 {feedbackRating === 1 && "Poor"}
                 {feedbackRating === 2 && "Fair"}
                 {feedbackRating === 3 && "Good"}
                 {feedbackRating === 4 && "Very Good"}
                 {feedbackRating === 5 && "Excellent"}
-              </span>
+              </Text>
             )}
           </div>
         </div>
 
         {/* Satisfaction Status - Compact */}
         <div>
-          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
+          <Text as="label" size="sm" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-2)' }} className="block">
             Satisfaction status <Text as="span" color="danger">*</Text>
-          </label>
+          </Text>
           <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
             <Button type="button" onClick={() => setSatisfactionStatus("Satisfied")}
               variant={satisfactionStatus === "Satisfied" ? "success" : "secondary"}
@@ -149,9 +149,9 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
         {/* Feedback Text - Compact */}
         <div>
-          <label htmlFor="feedback" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
+          <Text as="label" size="sm" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-2)' }} htmlFor="feedback" className="block">
             Comments (Optional)
-          </label>
+          </Text>
           <textarea id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)}
             rows={3}
             className="w-full resize-none"

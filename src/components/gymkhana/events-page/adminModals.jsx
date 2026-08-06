@@ -209,9 +209,9 @@ export const GymkhanaOverlapDetailsModal = ({
           <Text as="span" weight="medium">
             {conflict.eventA.title}
           </Text>
-          <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>
+          <Text as="span" color="muted" style={{ margin: "0 var(--spacing-1)" }}>
             ↔
-          </span>
+          </Text>
           <Text as="span" weight="medium">
             {conflict.eventB.title}
           </Text>
@@ -425,9 +425,9 @@ export const GymkhanaOverlapConfirmModal = ({
           <Text as="span" weight="medium">
             {overlap.eventA?.title}
           </Text>
-          <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>
+          <Text as="span" color="muted" style={{ margin: "0 var(--spacing-1)" }}>
             ↔
-          </span>
+          </Text>
           <Text as="span" weight="medium">
             {overlap.eventB?.title}
           </Text>

@@ -136,7 +136,7 @@ const UndertakingsPage = () => {
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)', color: undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)' }}>{undertaking.status === "not_viewed" ? "New" : "Pending"}</span>
                   </div>
-                  <p className="line-clamp-2" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>{undertaking.description}</p>
+                  <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
@@ -144,15 +144,15 @@ const UndertakingsPage = () => {
                       <Text as="span" size="xs" color="muted">Due: {formatDate(undertaking.deadline)}</Text>
 
                       {isDeadlineApproaching(undertaking.deadline) && (
-                        <span className="flex items-center" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-warning-text)' }}>
+                        <Text as="span" size="xs" color="warning-text" style={{ marginLeft: 'var(--spacing-2)' }} className="flex items-center">
                           <FaExclamationTriangle style={{ marginRight: 'var(--spacing-1)' }} /> Approaching
-                        </span>
+                        </Text>
                       )}
 
                       {isDeadlinePassed(undertaking.deadline) && (
-                        <span className="flex items-center" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-danger-text)' }}>
+                        <Text as="span" size="xs" color="danger-text" style={{ marginLeft: 'var(--spacing-2)' }} className="flex items-center">
                           <FaExclamationTriangle style={{ marginRight: 'var(--spacing-1)' }} /> Overdue
-                        </span>
+                        </Text>
                       )}
                     </div>
 
@@ -184,7 +184,7 @@ const UndertakingsPage = () => {
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Accepted</span>
                   </div>
-                  <p className="line-clamp-2" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>{undertaking.description}</p>
+                  <Text color="muted" size="sm" style={{ marginBottom: 'var(--spacing-4)' }} className="line-clamp-2">{undertaking.description}</Text>
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">

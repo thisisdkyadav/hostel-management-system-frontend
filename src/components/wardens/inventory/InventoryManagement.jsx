@@ -177,7 +177,7 @@ const InventoryManagement = () => {
         <Modal title={`Assign Inventory to ${selectedStudent.userId.name}`} onClose={closeModal}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Item</Text>
               <Select name="hostelInventoryId" value={assignFormData.hostelInventoryId} onChange={handleAssignFormChange} options={[
                 { value: "", label: "Select Item" },
                 ...hostelInventory.map((item) => ({
@@ -188,13 +188,13 @@ const InventoryManagement = () => {
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Count</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Count</Text>
               <Input type="number" name="count" value={assignFormData.count} onChange={handleAssignFormChange} min="1" max={getMaxCount()} required />
-              {assignFormData.hostelInventoryId && <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</p>}
+              {assignFormData.hostelInventoryId && <Text size="var(--text-caption)" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</Text>}
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Condition</Text>
               <Select name="condition" value={assignFormData.condition} onChange={handleAssignFormChange} options={[
                 { value: "Good", label: "Good" },
                 { value: "Fair", label: "Fair" },
@@ -203,7 +203,7 @@ const InventoryManagement = () => {
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Notes</Text>
               <Textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows={3} placeholder="Any additional notes..." />
             </div>
 

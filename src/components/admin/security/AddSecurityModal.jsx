@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiHome } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const AddSecurityModal = ({ show, onClose, onSuccess }) => {
@@ -76,7 +76,7 @@ const AddSecurityModal = ({ show, onClose, onSuccess }) => {
           <div>
             <Label htmlFor="password" required>Password</Label>
             <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter a strong password" required />
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginLeft: 'var(--spacing-1)' }}>Password should be at least 8 characters</div>
+            <Text as="div" size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)', marginLeft: 'var(--spacing-1)' }}>Password should be at least 8 characters</Text>
           </div>
 
           <div>

@@ -157,10 +157,10 @@ const FeedbacksPage = () => {
 
         <PageFooter
           leftContent={[
-            <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            <Text as="span" size="sm" color="muted" key="count">
               Showing <Text as="span" weight="semibold">{feedbacks.length}</Text> of{" "}
               <Text as="span" weight="semibold">{totalFeedbacks}</Text> feedbacks
-            </span>,
+            </Text>,
           ]}
           rightContent={[
             <Pagination

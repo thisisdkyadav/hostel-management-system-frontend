@@ -8,7 +8,7 @@ const StatCard = ({ icon, title, value, linkTo, color }) => {
     <Link to={linkTo} className="flex items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', transition: 'var(--transition-shadow)', transitionDuration: 'var(--duration-slow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <Surface padding={3} radius="xl" style={{ marginRight: 'var(--spacing-3)' }} className={color}>{icon}</Surface>
       <div>
-        <span className="block" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>{title}</span>
+        <Text as="span" size="sm" color="tertiary" className="block">{title}</Text>
         <Text as="span" size="2xl" weight="bold">{value}</Text>
       </div>
     </Link>

@@ -41,7 +41,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
             </div>
             <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-warning-text)', marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</h3>
-              <p style={{ color: 'var(--color-warning-text)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
+              <Text color="warning-text" size="sm" style={{ marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</Text>
               <VStack gap={2}>
                 <label htmlFor="crossHostelReason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>
                   Reason for Cross-Hostel Entry <Text as="span" color="danger">*</Text>
@@ -110,7 +110,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 <FaEnvelope style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Email</Text>
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', wordBreak: 'break-all' }}>{student.email}</p>
+                  <Text size="sm" weight="medium" color="primary" style={{ wordBreak: 'break-all' }}>{student.email}</Text>
                 </div>
               </HStack>
 
@@ -126,7 +126,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 <FaVenusMars style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
                 <div>
                   <Text size="xs" color="muted">Gender</Text>
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', textTransform: 'capitalize' }}>{student.gender || "N/A"}</p>
+                  <Text size="sm" weight="medium" color="primary" style={{ textTransform: 'capitalize' }}>{student.gender || "N/A"}</Text>
                 </div>
               </HStack>
 

@@ -29,7 +29,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
         <div style={{ position: 'absolute', top: 'var(--spacing-3)', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
           <IconCircle size="var(--spacing-3)" bg={statusColor.bg}></IconCircle>
 
-          <span style={{ marginLeft: 'var(--spacing-1-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: statusColor.text }}>{security.hostelId ? "Assigned" : "Unassigned"}</span>
+          <Text as="span" size="xs" weight="medium" color={statusColor.text} style={{ marginLeft: 'var(--spacing-1-5)' }}>{security.hostelId ? "Assigned" : "Unassigned"}</Text>
         </div>
 
         <CardHeader style={{ marginBottom: 0 }}>

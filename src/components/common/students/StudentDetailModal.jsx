@@ -303,7 +303,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 {/* Details - Middle */}
                 <div style={{ marginLeft: "var(--spacing-6)", flex: 1, textAlign: "left" }}>
                   <h3 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>{studentDetails.name || "N/A"}</h3>
-                  <p style={{ color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)", fontFamily: "var(--font-mono)" }}>{studentDetails.rollNumber || "N/A"}</p>
+                  <Text color="muted" style={{ marginBottom: "var(--spacing-2)", fontFamily: "var(--font-mono)" }}>{studentDetails.rollNumber || "N/A"}</Text>
 
                   <HStack gap={4} align="center">
                     <HStack gap="none" align="center">
@@ -455,14 +455,14 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <Text as="span" weight="medium" size="sm" color="body">{formatDate(studentDetails.dateOfBirth)}</Text>
                   </HStack>
                   <VStack gap="none">
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Address:</span>
+                    <Text as="span" color="muted" size="sm" style={{ marginBottom: "var(--spacing-1)" }}>Address:</Text>
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
                   </VStack>
                   <HStack gap={4} justify="between">
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Secondary Email:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right", wordBreak: "break-word" }}>
+                    <Text as="span" weight="medium" size="sm" color="body" align="right" style={{ wordBreak: "break-word" }}>
                       {studentDetails.secondaryEmail || "N/A"}
-                    </span>
+                    </Text>
                   </HStack>
                 </VStack>
               </div>
@@ -675,7 +675,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         {feedback.status}
                       </span>
                     </HStack>
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>{feedback.description}</p>
+                    <Text size="sm" color="muted" style={{ marginBottom: "var(--spacing-2)" }}>{feedback.description}</Text>
                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", justifyContent: "space-between" }}>
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
                       {feedback.reply && <Text as="span" color="success">Replied: Yes</Text>}
@@ -1144,7 +1144,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div style={{ marginBottom: "var(--spacing-4)" }}>
                 <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Count</label>
                 <Input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min={1} max={getMaxCount()} required />
-                {inventoryFormData.hostelInventoryId && <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Maximum available: {getMaxCount()}</p>}
+                {inventoryFormData.hostelInventoryId && <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Maximum available: {getMaxCount()}</Text>}
               </div>
             )}
 

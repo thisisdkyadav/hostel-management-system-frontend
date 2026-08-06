@@ -274,18 +274,18 @@ const MealVerificationPage = () => {
                       <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>{currentMealLabel}</h2>
                       <LiveIndicator connected={isConnected} />
                     </HStack>
-                    <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{currentMealTime}</p>
-                    <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                    <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{currentMealTime}</Text>
+                    <Text color="muted" size="xs" style={{ margin: "var(--spacing-1) 0 0" }}>
                       {context.caterer?.name || "Caterer"} · {formatPeriodRange(context.currentPeriod)}
-                    </p>
+                    </Text>
                   </div>
                 </HStack>
               </div>
               <div className="w-full lg:w-[280px] lg:flex-shrink-0">
                 <CapacityBar allocated={studentState.verifiedCount} total={studentState.total} label="Verified this meal" />
-                <p style={{ margin: "var(--spacing-2) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                <Text color="muted" size="xs" style={{ margin: "var(--spacing-2) 0 0" }}>
                   {studentState.verifiedCount} verified · {studentState.pendingCount} pending
-                </p>
+                </Text>
               </div>
             </div>
           </Card>
@@ -314,9 +314,9 @@ const MealVerificationPage = () => {
             <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Availability Forecast</h3>
-                <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Today and the next two days, after approved rebates are excluded.
-                </p>
+                </Text>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
                 {rebateSummary.days.map((day) => (

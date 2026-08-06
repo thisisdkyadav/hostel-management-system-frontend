@@ -77,18 +77,9 @@ const StatCard = ({ icon: Icon, label, value, color, dotColor }) => (
       )}
     </div>
     <div>
-      <p
-        style={{
-          fontSize: "var(--font-size-2xs)",
-          fontWeight: "var(--font-weight-medium)",
-          textTransform: "uppercase",
-          letterSpacing: "var(--letter-spacing-wide)",
-          color: "var(--color-text-muted)",
-          marginBottom: "var(--spacing-0-5)",
-        }}
-      >
+      <Text size="2xs" weight="medium" color="muted" style={{ textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wide)", marginBottom: "var(--spacing-0-5)" }}>
         {label}
-      </p>
+      </Text>
       <Text size="xl" weight="semibold" color="primary">
         {value}
       </Text>
@@ -235,9 +226,9 @@ const LiveCheckInOutPage = () => {
                 </HStack>
               </Badge>
             </HStack>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>
+            <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
               {new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-            </p>
+            </Text>
           </div>
 
           <HStack gap="small">

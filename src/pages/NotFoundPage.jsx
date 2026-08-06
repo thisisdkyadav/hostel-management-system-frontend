@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa'
 import { Button } from 'czero/react'
-import { HStack, Surface } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const NotFoundPage = () => {
   return (
@@ -61,16 +61,9 @@ const NotFoundPage = () => {
           Page Not Found
         </h2>
 
-        <p
-          style={{
-            color: 'var(--color-text-muted)',
-            fontSize: 'var(--font-size-base)',
-            marginBottom: 'var(--spacing-8)',
-            lineHeight: 'var(--line-height-relaxed)'
-          }}
-        >
+        <Text color="muted" size="base" leading="var(--line-height-relaxed)" style={{ marginBottom: 'var(--spacing-8)' }}>
           The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
-        </p>
+        </Text>
 
         <Link to="/">
           <Button variant="primary" size="lg">

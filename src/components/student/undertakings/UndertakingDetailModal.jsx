@@ -54,13 +54,13 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
             <Surface bg="info" padding={2} radius="full">
               <FaFileSignature style={{ color: "var(--color-info)" }} />
             </Surface>
-            <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>{undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}</span>
+            <Text as="span" size="sm" color="tertiary" style={{ marginLeft: "var(--spacing-2)" }}>{undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}</Text>
           </HStack>
           <HStack gap="none" align="center">
             <FaCalendarAlt style={{ color: "var(--color-text-placeholder)", marginRight: "var(--spacing-2)" }} />
             <Text as="span" size="sm" color="tertiary">
               Deadline: {formatDate(undertaking.deadline)}
-              {deadlinePassed && <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-danger-text)" }}>(Overdue)</span>}
+              {deadlinePassed && <Text as="span" size="xs" color="danger-text" style={{ marginLeft: "var(--spacing-2)" }}>(Overdue)</Text>}
             </Text>
           </HStack>
         </div>
@@ -75,7 +75,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
         <div>
           <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Undertaking Content</h3>
           <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)", border: `var(--border-1) solid var(--color-border-primary)`, maxHeight: "15rem", overflowY: "auto" }}>
-            <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", whiteSpace: "pre-wrap" }}>{undertaking.content}</div>
+            <Text as="div" color="body" size="sm" style={{ whiteSpace: "pre-wrap" }}>{undertaking.content}</Text>
           </div>
         </div>
 

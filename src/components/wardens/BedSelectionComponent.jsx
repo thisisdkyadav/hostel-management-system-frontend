@@ -1,6 +1,6 @@
 import React from "react"
 import { FaBed } from "react-icons/fa"
-import { HStack } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   if (!roomDetails) {
@@ -22,7 +22,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
         <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-base)' }}>No beds available in this room</div>
       ) : (
         <>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-3)' }}>Select a bed number for the student in the new room:</p>
+          <Text size="sm" color="tertiary" style={{ marginBottom: 'var(--spacing-3)' }}>Select a bed number for the student in the new room:</Text>
           <HStack gap={2} wrap>
             {availableBeds.map((bedNumber) => (
               <button key={bedNumber} onClick={() => onSelectBed(bedNumber)}

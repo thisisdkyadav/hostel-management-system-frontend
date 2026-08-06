@@ -248,9 +248,9 @@ const HealthTab = ({ userId }) => {
                 />
 
                 {selectedProvider && (
-                  <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+                  <Text as="div" size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>
                     Policy period: {formatDate(selectedProvider.startDate)} - {formatDate(selectedProvider.endDate)}
-                  </div>
+                  </Text>
                 )}
               </div>
 

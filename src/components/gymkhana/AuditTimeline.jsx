@@ -204,9 +204,9 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                                     · {changeCount} change{changeCount === 1 ? "" : "s"}
                                 </Text>
                             ) : null}
-                            <span style={{ color: "var(--color-text-placeholder)", marginLeft: "auto" }}>
+                            <Text as="span" color="placeholder" style={{ marginLeft: "auto" }}>
                                 {formatTimestamp(item.at)}
-                            </span>
+                            </Text>
                         </div>
                     )
                 })}
@@ -270,15 +270,9 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                                 )}
                             </HStack>
 
-                            <p
-                                style={{
-                                    fontSize: "var(--font-size-sm)",
-                                    color: "var(--color-text-body)",
-                                    marginBottom: changes.length || safeComments || safeReason ? "var(--spacing-2)" : "var(--spacing-1)",
-                                }}
-                            >
+                            <Text size="sm" color="body" style={{ marginBottom: changes.length || safeComments || safeReason ? "var(--spacing-2)" : "var(--spacing-1)" }}>
                                 {actorName(actor)}
-                            </p>
+                            </Text>
 
                             {/* Field-level diff for edits */}
                             {isEdit && changes.length > 0 && (
@@ -325,15 +319,9 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                                 </p>
                             )}
 
-                            <p
-                                style={{
-                                    fontSize: "var(--font-size-xs)",
-                                    color: "var(--color-text-placeholder)",
-                                    marginTop: "var(--spacing-1)",
-                                }}
-                            >
+                            <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>
                                 {formatTimestamp(item.at)}
-                            </p>
+                            </Text>
                         </div>
                     </div>
                 )

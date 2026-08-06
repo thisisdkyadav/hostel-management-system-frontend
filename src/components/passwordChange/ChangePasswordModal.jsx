@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button, Input } from "czero/react"
-import { Modal, VStack } from "@/components/ui"
+import { Modal, Text, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -83,16 +83,16 @@ const ChangePasswordModal = ({ onClose, email }) => {
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Current Password</label>
           <Input type="password" name="currentPassword" id="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Enter your current password" error={errors.currentPassword} />
-          {errors.currentPassword && <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.currentPassword}</p>}
+          {errors.currentPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.currentPassword}</Text>}
         </div>
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>New Password</label>
           <Input type="password" name="newPassword" id="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Enter your new password" error={errors.newPassword} />
           {errors.newPassword ? (
-            <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.newPassword}</p>
+            <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.newPassword}</Text>
           ) : (
-            <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Password must be at least 6 characters long</p>
+            <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1-5)" }}>Password must be at least 6 characters long</Text>
           )}
 
           <VStack gap={1} style={{ marginTop: "var(--spacing-2)" }}>
@@ -103,7 +103,7 @@ const ChangePasswordModal = ({ onClose, email }) => {
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Confirm New Password</label>
           <Input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your new password" error={errors.confirmPassword} />
-          {errors.confirmPassword && <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.confirmPassword}</Text>}
         </div>
 
         <div style={{ paddingTop: "var(--spacing-4)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>

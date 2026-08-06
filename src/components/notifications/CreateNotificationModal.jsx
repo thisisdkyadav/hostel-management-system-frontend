@@ -204,12 +204,12 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Expiry Date</label>
             <Input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} min={new Date().toISOString().split("T")[0]} required />
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Notifications will be shown to students until this date</p>
+            <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Notifications will be shown to students until this date</Text>
           </div>
 
           <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-4)" }}>
             <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>Target Recipients (Optional)</h3>
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-4)" }}>Leave all fields empty to target all students</p>
+            <Text size="xs" color="muted" style={{ marginBottom: "var(--spacing-4)" }}>Leave all fields empty to target all students</Text>
 
             <Grid min={250} gap={4}>
               <div>
@@ -221,7 +221,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                     <EmptyState variant="inline" message="No hostels available." />
                   )}
                 </div>
-                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more hostels</p>
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Select one or more hostels</Text>
               </div>
 
               <div>
@@ -235,7 +235,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                     <EmptyState variant="inline" message="No departments available." />
                   )}
                 </div>
-                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more departments</p>
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Select one or more departments</Text>
               </div>
 
               <div>
@@ -249,7 +249,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                     <EmptyState variant="inline" message="No degrees available." />
                   )}
                 </div>
-                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more degrees</p>
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Select one or more degrees</Text>
               </div>
 
               <div>
@@ -306,7 +306,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               </HStack>
               <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Type:</Text>
-                <span style={{ fontWeight: "var(--font-weight-medium)", textTransform: "capitalize" }}>{formData.type}</span>
+                <Text as="span" weight="medium" style={{ textTransform: "capitalize" }}>{formData.type}</Text>
               </HStack>
               <HStack gap="none" justify="between">
                 <Text as="span" color="muted">Expiry:</Text>
@@ -353,7 +353,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <Surface bg="tertiary" padding={5} radius="xl">
             <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Message</h3>
-            <p style={{ color: "var(--color-text-body)", whiteSpace: "pre-line" }}>{formData.message}</p>
+            <Text color="body" style={{ whiteSpace: "pre-line" }}>{formData.message}</Text>
           </Surface>
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>

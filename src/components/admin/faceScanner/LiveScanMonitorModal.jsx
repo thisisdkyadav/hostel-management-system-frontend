@@ -89,9 +89,9 @@ const ScanEventRow = ({ event, showHeaders }) => {
           </Pill>
         )}
 
-        <span style={{ marginLeft: "auto", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-family-mono, monospace)" }}>
+        <Text as="span" size="xs" color="muted" style={{ marginLeft: "auto", fontFamily: "var(--font-family-mono, monospace)" }}>
           {formatTime(event.timestamp)}
-        </span>
+        </Text>
       </HStack>
 
       <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>

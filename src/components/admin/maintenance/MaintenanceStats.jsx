@@ -68,7 +68,7 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
         <div key={stat.name} style={{ backgroundColor: stat.bgColor, borderRadius: "var(--radius-xl)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", boxShadow: "var(--shadow-sm)" }}>
           <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "var(--spacing-2)" }}>{stat.icon}</div>
           <Text as="div" size="3xl" weight="bold">{stat.value}</Text>
-          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>{stat.name}</div>
+          <Text as="div" size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>{stat.name}</Text>
         </div>
       ))}
     </div>

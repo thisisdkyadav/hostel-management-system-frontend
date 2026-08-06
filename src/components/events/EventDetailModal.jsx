@@ -56,7 +56,7 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
             <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
             <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
           </div>
-          <p style={{ color: 'var(--color-text-body)', lineHeight: 'var(--line-height-relaxed)' }}>{selectedEvent.description}</p>
+          <Text color="body" leading="var(--line-height-relaxed)">{selectedEvent.description}</Text>
         </Surface>
 
         {/* Organizer */}

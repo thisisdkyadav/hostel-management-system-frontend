@@ -182,14 +182,14 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
                 {getStatusBadge(currentStatus)}
               </HStack>
             </HStack>
-            {isPastDue && <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)' }}>This task is past due!</div>}
+            {isPastDue && <Text as="div" size="sm" color="danger-text" weight="medium" style={{ marginTop: 'var(--spacing-2)' }}>This task is past due!</Text>}
           </div>
 
           {/* Task Description */}
           <div>
             <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Description</h4>
             <Surface bg="tertiary" padding={4} radius="lg">
-              <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{selectedTask.description}</p>
+              <Text color="body" style={{ whiteSpace: 'pre-line' }}>{selectedTask.description}</Text>
             </Surface>
           </div>
 

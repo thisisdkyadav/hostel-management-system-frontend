@@ -5,7 +5,7 @@ import ManageSessionsButton from "../sessions/ManageSessionsButton"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
-import { HStack } from "@/components/ui"
+import { HStack, Text } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
@@ -55,9 +55,9 @@ const ProfileHeader = ({ user, role, subtitle }) => {
             {role}
           </div>
         </div>
-        <p style={{ color: "var(--color-text-muted)", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-base)", }} >
+        <Text color="muted" size="base" style={{ marginTop: "var(--spacing-1)" }}>
           {subtitle}
-        </p>
+        </Text>
         <HStack gap="var(--gap-sm)" wrap style={{ marginTop: "var(--spacing-3)" }} className="justify-center sm:justify-start">
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />

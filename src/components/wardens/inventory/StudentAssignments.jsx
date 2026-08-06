@@ -174,7 +174,7 @@ const StudentAssignments = () => {
         </h3>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
-            <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
+            <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Status</Text>
             <Select name="status" value={filters.status} onChange={handleFilterChange} options={[
               { value: "", label: "All Statuses" },
               { value: "Issued", label: "Issued" },
@@ -184,7 +184,7 @@ const StudentAssignments = () => {
             ]} />
           </div>
           <div className="flex-1">
-            <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Roll Number</label>
+            <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Roll Number</Text>
             <Input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." />
           </div>
           <div className="flex self-end" style={{ gap: 'var(--gap-sm)' }}>
@@ -326,7 +326,7 @@ const StudentAssignments = () => {
             </Surface>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Status</Text>
               <Select name="status" value={formData.status} onChange={handleFormChange} options={[
                 { value: "Issued", label: "Issued" },
                 { value: "Damaged", label: "Damaged" },
@@ -335,7 +335,7 @@ const StudentAssignments = () => {
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Condition</Text>
               <Select name="condition" value={formData.condition} onChange={handleFormChange} options={[
                 { value: "Excellent", label: "Excellent" },
                 { value: "Good", label: "Good" },
@@ -345,7 +345,7 @@ const StudentAssignments = () => {
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Notes</Text>
               <Textarea name="notes" value={formData.notes} onChange={handleFormChange} rows={3} placeholder="Update notes..." />
             </div>
 
@@ -382,7 +382,7 @@ const StudentAssignments = () => {
             </Surface>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Condition</Text>
               <Select name="condition" value={formData.condition} onChange={handleFormChange} options={[
                 { value: "Excellent", label: "Excellent" },
                 { value: "Good", label: "Good" },
@@ -392,7 +392,7 @@ const StudentAssignments = () => {
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
-              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <Text as="label" size="var(--text-label)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-1)' }} className="block">Notes</Text>
               <Textarea name="notes" value={formData.notes} onChange={handleFormChange} rows={3} placeholder="Notes about returned item..." />
             </div>
 

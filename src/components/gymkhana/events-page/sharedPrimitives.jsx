@@ -199,17 +199,9 @@ export const EventDetailSectionCard = ({
         >
           {createElement(Icon, { size: 12 })}
         </span>
-        <span
-          style={{
-            fontSize: "var(--font-size-xs)",
-            fontWeight: "var(--font-weight-semibold)",
-            color: "var(--color-text-heading)",
-            textTransform: "uppercase",
-            letterSpacing: "0.3px",
-          }}
-        >
+        <Text as="span" size="xs" weight="semibold" color="heading" style={{ textTransform: "uppercase", letterSpacing: "0.3px" }}>
           {title}
-        </span>
+        </Text>
       </HStack>
       {headerAction}
     </div>

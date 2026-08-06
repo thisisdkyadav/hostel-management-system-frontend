@@ -791,12 +791,12 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem", color: "var(--color-text-placeholder)" }} />
-                    <p style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                    <Text size="sm" color="tertiary" style={{ marginTop: "var(--spacing-2)" }}>
                       Drag and drop a CSV file here, or click to select a file
-                    </p>
-                    <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    </Text>
+                    <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-3)" }}>
                       <strong>Required fields:</strong> {requiredFields.join(", ")}
-                    </p>
+                    </Text>
                     <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleCsvFileUpload} />
                   </div>
 
@@ -817,7 +817,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         maxWidth: "28rem",
                       }}
                     >
-                      <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+                      <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
                       <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
                         <li><Text as="span" weight="medium">rollNumber:</Text> String (Required)</li>
                         <li><Text as="span" weight="medium">room:</Text> String/Number (Required)</li>
@@ -866,9 +866,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               {isLoading && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
                   <FaSpinner className="animate-spin" style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", color: "var(--color-primary)" }} />
-                  <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                  <Text as="span" size="sm" color="tertiary" style={{ marginLeft: "var(--spacing-2)" }}>
                     Processing file...
-                  </span>
+                  </Text>
                 </div>
               )}
             </VStack>
@@ -910,9 +910,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
                 Manual Allocation Rows
               </h3>
-              <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                 Fill a row and the next empty row appears automatically. Roll number lookup runs on blur.
-              </p>
+              </Text>
             </div>
 
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>

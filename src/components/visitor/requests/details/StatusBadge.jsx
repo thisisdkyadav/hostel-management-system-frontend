@@ -60,14 +60,14 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
           <Text as="div" size="sm">Request ID: #{requestId?.substring(0, 8)}</Text>
         </div>
         {status === "Rejected" && rejectionReason && (
-          <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
+          <Text as="div" size="sm" style={{ marginTop: 'var(--spacing-2)' }} className="mt-2">
             <Text as="span" weight="medium">Reason for rejection:</Text> {rejectionReason}
-          </div>
+          </Text>
         )}
         {/* {status === "Approved" && (
-          <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
+          <Text as="div" size="sm" style={{ marginTop: 'var(--spacing-2)' }} className="mt-2">
             <Text as="span" weight="medium">Approved on:</Text> {formatDate(approvedAt || new Date())}
-          </div>
+          </Text>
         )} */}
       </div>
     </>

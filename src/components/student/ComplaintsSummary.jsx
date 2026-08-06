@@ -55,13 +55,13 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
             <div className="flex justify-between items-start">
               <div>
                 <h4 className="line-clamp-1" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>{complaint.title}</h4>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {complaint.hostel} · Room {complaint.roomNumber} · {complaint.category}
-                </div>
+                </Text>
               </div>
               <div className="flex flex-col items-end">
                 <span className={getStatusColor(complaint.status)} style={{ padding: 'var(--spacing-0-5) var(--spacing-1-5)', fontSize: 'var(--font-size-2xs)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
-                <span style={{ fontSize: 'var(--font-size-2xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>{getTimeSince(complaint.createdDate)}</span>
+                <Text as="span" size="2xs" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>{getTimeSince(complaint.createdDate)}</Text>
               </div>
             </div>
 

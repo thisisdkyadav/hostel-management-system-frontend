@@ -95,15 +95,9 @@ const ClubPage = () => {
                 >
                   Club Login
                 </h2>
-                <p
-                  style={{
-                    marginTop: "var(--spacing-1)",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
+                <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                   This account is tied to the club record created by the admin. If you ever need to set or reset your password, use the Forgot Password option on the login page.
-                </p>
+                </Text>
               </div>
             </div>
           </CardHeader>
@@ -126,30 +120,30 @@ const ClubPage = () => {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Club Name</Text>
-                <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
+                <Text as="div" color="secondary" weight="semibold" style={{ marginTop: "var(--spacing-1)" }}>
                   {club?.name || user?.name || "—"}
-                </div>
+                </Text>
               </Surface>
 
               <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">GS Category</Text>
-                <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
+                <Text as="div" color="secondary" weight="semibold" style={{ marginTop: "var(--spacing-1)" }}>
                   {club?.gymkhanaCategoryLabel || "—"}
-                </div>
+                </Text>
               </Surface>
 
               <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Login Email</Text>
-                <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)", wordBreak: "break-word" }}>
+                <Text as="div" color="secondary" weight="semibold" style={{ marginTop: "var(--spacing-1)", wordBreak: "break-word" }}>
                   {club?.email || user?.email || "—"}
-                </div>
+                </Text>
               </Surface>
 
               <Surface bg="secondary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-primary)">
                 <Text as="div" size="sm" color="muted">Account Type</Text>
-                <div style={{ marginTop: "var(--spacing-1)", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
+                <Text as="div" color="secondary" weight="semibold" style={{ marginTop: "var(--spacing-1)" }}>
                   Gymkhana / Club
-                </div>
+                </Text>
               </Surface>
             </div>
           </CardBody>

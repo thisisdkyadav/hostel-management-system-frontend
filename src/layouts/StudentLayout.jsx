@@ -14,6 +14,7 @@ import {
   getStudentPwaHiddenItems
 } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
+import { Text } from "@/components/ui"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
@@ -220,16 +221,9 @@ const StudentLayout = () => {
           >
             Your account is inactive
           </h1>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "var(--font-size-base)",
-              lineHeight: "var(--line-height-relaxed)",
-              color: "var(--color-text-body)",
-            }}
-          >
+          <Text size="base" leading="var(--line-height-relaxed)" color="body" style={{ margin: 0 }}>
             Please contact the Student Affairs Office if you want to restore access to your account.
-          </p>
+          </Text>
         </div>
       </div>
     )

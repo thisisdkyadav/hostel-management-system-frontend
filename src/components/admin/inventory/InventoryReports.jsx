@@ -164,7 +164,7 @@ const InventoryReports = () => {
                   </div>
                 </div>
                 <div style={{ borderTop: "1px solid var(--color-border-light)", paddingTop: "var(--spacing-3)" }}>
-                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Item Distribution</div>
+                  <Text as="div" size="sm" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>Item Distribution</Text>
                   <div className="space-y-2">
                     {hostel.items.map((item) => (
                       <div
@@ -229,9 +229,9 @@ const InventoryReports = () => {
                                 <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
                               </IconCircle>
                               <Text as="span" weight="medium" color="body">{item.itemName}</Text>
-                              <span style={{ margin: "0 var(--spacing-1)", color: "var(--color-text-placeholder)" }}>•</span>
+                              <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
                               <Text as="span" color="tertiary">{item.count}</Text>
-                              <span style={{ margin: "0 var(--spacing-1)", color: "var(--color-text-placeholder)" }}>•</span>
+                              <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
                               <span
                                 style={{
                                   fontSize: "var(--font-size-xs)",

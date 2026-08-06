@@ -119,13 +119,13 @@ const DashboardPage = () => {
                       </h2>
                       <StatusBadge status={activePeriod ? "Active period" : "No active period"} tone={activePeriod ? "success" : "primary"} showDot={Boolean(activePeriod)} />
                     </HStack>
-                    <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                       {formatPeriodRange(activePeriod)}
-                    </p>
+                    </Text>
                     {activePeriod && (
-                      <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                      <Text color="muted" size="xs" style={{ margin: "var(--spacing-1) 0 0" }}>
                         {activePeriod.dailyRate > 0 ? `${formatCurrency(activePeriod.dailyRate)}/day` : "No daily rate set"} · {caterers.total} caterer{caterers.total === 1 ? "" : "s"}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </HStack>
@@ -146,9 +146,9 @@ const DashboardPage = () => {
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             <div>
               <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Caterer Utilization</h3>
-              <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+              <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                 Allocation against capacity for the active dining period.
-              </p>
+              </Text>
             </div>
             {caterers.breakdown.length === 0 ? (
               <EmptyState icon={UtensilsCrossed} title="No Caterers" message="No caterers are configured for the active period yet." />

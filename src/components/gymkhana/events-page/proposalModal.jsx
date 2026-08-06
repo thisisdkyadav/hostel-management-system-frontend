@@ -199,17 +199,11 @@ export const GymkhanaProposalModal = ({
                   <Text as="div" size="sm" weight="semibold" color="heading">
                     {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
                   </Text>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                      marginTop: 2,
-                    }}
-                  >
+                  <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
                     {proposalForm.proposalDetails.organisingUnit.unitType} ·{" "}
                     {proposalForm.proposalDetails.programmeDetails.programmeType} ·{" "}
                     {proposalForm.proposalDetails.programmeDetails.mode}
-                  </div>
+                  </Text>
                   <Text as="div" size="xs" color="muted">
                     {proposalForm.proposalDetails.programmeDetails.datesAndDuration ||
                       "Dates not added"}
@@ -229,34 +223,19 @@ export const GymkhanaProposalModal = ({
               {detailedProposalPreviewText && (
                 <div style={infoBoxStyle}>
                   <span style={sectionLabelStyle}>Proposal Preview</span>
-                  <div
-                    style={{
-                      marginTop: "var(--spacing-2)",
-                      fontSize: "var(--font-size-sm)",
-                      color: "var(--color-text-body)",
-                      whiteSpace: "pre-wrap",
-                      lineHeight: 1.5,
-                    }}
-                  >
+                  <Text as="div" size="sm" color="body" leading={1.5} style={{ marginTop: "var(--spacing-2)", whiteSpace: "pre-wrap" }}>
                     {detailedProposalPreviewText.slice(0, 400)}
                     {detailedProposalPreviewText.length > 400 ? "..." : ""}
-                  </div>
+                  </Text>
                 </div>
               )}
 
               {detailedExternalGuestsText && (
                 <div style={infoBoxStyle}>
                   <span style={sectionLabelStyle}>External Guests</span>
-                  <div
-                    style={{
-                      marginTop: "var(--spacing-1)",
-                      fontSize: "var(--font-size-sm)",
-                      color: "var(--color-text-body)",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
+                  <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-1)", whiteSpace: "pre-wrap" }}>
                     {detailedExternalGuestsText}
-                  </div>
+                  </Text>
                 </div>
               )}
 
@@ -530,15 +509,9 @@ export const GymkhanaProposalModal = ({
                 </Button>
               </VStack>
             ) : (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: "var(--font-size-sm)",
-                  color: "var(--color-text-muted)",
-                }}
-              >
+              <Text size="sm" color="muted" style={{ margin: 0 }}>
                 Activity log appears after proposal submission.
-              </p>
+              </Text>
             )}
           </EventDetailSectionCard>
         </VStack>

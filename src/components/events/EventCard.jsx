@@ -105,7 +105,7 @@ const EventCard = ({ event, refresh }) => {
             )}
           </HStack>
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', minHeight: '80px' }}>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="line-clamp-3">{event.description}</p>
+            <Text size="sm" color="body" className="line-clamp-3">{event.description}</Text>
           </div>
         </Card.Body>
 

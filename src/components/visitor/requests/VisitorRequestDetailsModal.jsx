@@ -377,8 +377,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Status */}
         {request.paymentStatus && (
-          <div style={{ fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-2)" }}>
-            <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginRight: "var(--spacing-2)" }}>Payment Status:</span>
+          <Text as="div" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
+            <Text as="span" weight="semibold" color="body" style={{ marginRight: "var(--spacing-2)" }}>Payment Status:</Text>
             <span
               style={{
                 padding: "var(--spacing-2) var(--badge-padding-sm)",
@@ -391,13 +391,13 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
             >
               {request.paymentStatus === "paid" ? "Paid" : "Pending"}
             </span>
-          </div>
+          </Text>
         )}
 
         {/* Payment Link (Student only) */}
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
           <Text as="div" size="sm">
-            <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)", marginRight: "var(--spacing-2)" }}>Payment Link:</span>
+            <Text as="span" weight="semibold" color="brand" style={{ marginRight: "var(--spacing-2)" }}>Payment Link:</Text>
             <a
               href={request.visitorPaymentLink}
               target="_blank"

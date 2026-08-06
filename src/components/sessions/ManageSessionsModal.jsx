@@ -106,9 +106,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8) 0', }} >
             <Spinner size="var(--spacing-8)" thickness="thick" />
-            <span style={{ marginLeft: 'var(--spacing-3)', color: 'var(--color-text-muted)', }} >
+            <Text as="span" color="muted" style={{ marginLeft: 'var(--spacing-3)' }}>
               Loading your sessions...
-            </span>
+            </Text>
           </div>
         ) : devices.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', }} >
@@ -118,9 +118,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
             <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', }} >
               No Active Sessions
             </h3>
-            <p style={{ color: 'var(--color-text-placeholder)', marginTop: 'var(--spacing-2)', }} >
+            <Text color="placeholder" style={{ marginTop: 'var(--spacing-2)' }}>
               You don't have any other active sessions at the moment.
-            </p>
+            </Text>
           </div>
         ) : (
           <VStack gap="var(--gap-md)">
@@ -134,7 +134,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
                     <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', }} >
                       {device.deviceName || "Unknown Device"}
                     </h4>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-placeholder)', marginTop: 'var(--spacing-1)', }} >
+                    <Text as="div" size="xs" color="placeholder" style={{ marginTop: 'var(--spacing-1)' }}>
                       <p>IP: {device.ip || "Unknown"}</p>
                       <p>Login time: {device.loginTime ? new Date(device.loginTime).toLocaleString() : "Unknown"}</p>
                       <p>Last active: {device.lastActive ? new Date(device.lastActive).toLocaleString() : "Unknown"}</p>
@@ -144,7 +144,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
                           Current Session
                         </span>
                       )}
-                    </div>
+                    </Text>
                   </div>
                 </HStack>
                 <div>

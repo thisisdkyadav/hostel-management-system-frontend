@@ -16,7 +16,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       render: (complaint) => (
         <VStack gap="none">
           <Text as="div" size="xs" color="placeholder">{complaint.id?.substring(0, 8)}</Text>
-          <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.title}</div>
+          <Text as="div" weight="medium" color="primary" className="line-clamp-1">{complaint.title}</Text>
         </VStack>
       ),
     },
@@ -36,7 +36,7 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
             )}
           </div>
           <div style={{ marginLeft: 'var(--spacing-3)' }}>
-            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
+            <Text as="div" size="sm" weight="medium" color="primary" className="line-clamp-1">{complaint.reportedBy?.name}</Text>
             <Text as="div" size="xs" color="placeholder">{getTimeSince(complaint.createdDate)}</Text>
           </div>
         </HStack>
@@ -48,8 +48,8 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
       className: "hidden sm:table-cell",
       render: (complaint) => (
         <VStack gap="none">
-          <div style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }} className="truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
-          {complaint.roomNumber ? <Text as="div" size="xs" color="muted">Room {complaint.roomNumber}</Text> : complaint.hostel ? <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }} className="truncate max-w-[150px]">{complaint.location}</div> : null}
+          <Text as="div" weight="medium" size="sm" className="truncate max-w-[150px]">{complaint.hostel || complaint.location}</Text>
+          {complaint.roomNumber ? <Text as="div" size="xs" color="muted">Room {complaint.roomNumber}</Text> : complaint.hostel ? <Text as="div" size="xs" color="muted" className="truncate max-w-[150px]">{complaint.location}</Text> : null}
         </VStack>
       ),
     },

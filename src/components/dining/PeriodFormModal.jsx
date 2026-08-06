@@ -131,9 +131,9 @@ const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
           Upload CSV with a <strong>rollNumber</strong> column
         </Text>
         {fileName && (
-          <p style={{ color: "var(--color-primary)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
+          <Text color="brand" size="sm" style={{ marginTop: "var(--spacing-2)" }}>
             Selected: {fileName}
-          </p>
+          </Text>
         )}
         <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileChange} hidden />
       </div>

@@ -120,9 +120,9 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
             {credentials ? (
                 <VStack gap="large">
                     <Alert type="success">
-                        <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
+                        <Text weight="medium" style={{ marginBottom: "var(--spacing-2)" }}>
                             Scanner created successfully!
-                        </p>
+                        </Text>
                         <Text size="sm">
                             Save these credentials now. The password will not be shown again.
                         </Text>

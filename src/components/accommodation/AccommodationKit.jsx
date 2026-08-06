@@ -48,7 +48,7 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
             {createElement(icon, { size: 13 })}
           </span>
         )}
-        <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", textTransform: "uppercase", letterSpacing: "0.4px" }}>{title}</span>
+        <Text as="span" size="xs" weight="semibold" color="heading" style={{ textTransform: "uppercase", letterSpacing: "0.4px" }}>{title}</Text>
       </HStack>
       {headerAction}
     </div>
@@ -114,7 +114,7 @@ export const ApplicantCell = ({ request }) => {
 // Two-line stay cell: date range over a nights sub-label.
 export const StayCell = ({ request }) => (
   <div style={{ minWidth: 0 }}>
-    <div style={{ color: "var(--color-text-body)", whiteSpace: "nowrap" }}>{fmtDate(request?.stay?.fromDate)} → {fmtDate(request?.stay?.toDate)}</div>
+    <Text as="div" color="body" style={{ whiteSpace: "nowrap" }}>{fmtDate(request?.stay?.fromDate)} → {fmtDate(request?.stay?.toDate)}</Text>
     <Text as="div" size="xs" color="muted">{request?.nights || 0} night(s)</Text>
   </div>
 )

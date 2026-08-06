@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Label, Select, Surface, Textarea, VStack } from "@/components/ui"
+import { Alert, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -168,7 +168,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
     <VStack gap="large">
       <Surface bg="brand" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
         <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>Add New {isUnitBased ? "Unit Rooms" : "Rooms"}</h4>
-        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>{isUnitBased ? "Enter a unit number and specify room letters to add multiple rooms to a unit" : "Add one or multiple rooms at once"}</p>
+        <Text size="xs" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>{isUnitBased ? "Enter a unit number and specify room letters to add multiple rooms to a unit" : "Add one or multiple rooms at once"}</Text>
       </Surface>
 
       {successMessage && (
@@ -201,7 +201,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         <div>
           <Label htmlFor="roomNumbers" required>Room {isUnitBased ? "Letter(s)" : "Number(s)"}</Label>
           <Input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} icon={<DoorOpen size={16} />} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} error={errors.roomNumbers} />
-          <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</p>
+          <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</Text>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">

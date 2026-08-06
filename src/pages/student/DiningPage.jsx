@@ -78,7 +78,7 @@ const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) =
           {title}
         </h2>
         {subtitle && (
-          <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{subtitle}</p>
+          <Text color="body" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{subtitle}</Text>
         )}
       </div>
       {action && <div style={{ flexShrink: 0 }}>{action}</div>}
@@ -550,9 +550,9 @@ const DiningPage = () => {
                 <h3 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
                   Rebate Requests
                 </h3>
-                <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Your approved, pending and rejected dining rebate requests.
-                </p>
+                </Text>
               </div>
               <Button variant="secondary" onClick={() => setShowRebateModal(true)} disabled={!canRequestRebate}>
                 <FileText size={16} /> Request Rebate
@@ -600,9 +600,9 @@ const DiningPage = () => {
                 <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
                   <Wallet size={18} style={{ color: "var(--color-primary)" }} /> Mess Billing
                 </h3>
-                <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Your allocated funds, daily charges and balance for each billing period. Approved-rebate days are not charged.
-                </p>
+                </Text>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-3)]">
                 {billing.map((billingPeriod) => (

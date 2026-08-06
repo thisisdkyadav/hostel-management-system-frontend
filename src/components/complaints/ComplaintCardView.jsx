@@ -23,9 +23,9 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
           <Card.Body>
             <HStack gap="none" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
               <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="truncate max-w-[150px]">
+              <Text as="span" size="sm" color="body" className="truncate max-w-[150px]">
                 {complaint.hostel}, Room {complaint.roomNumber}
-              </span>
+              </Text>
             </HStack>
 
             <div style={{ marginTop: 'var(--spacing-4)' }}>
@@ -49,7 +49,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
                 <IconCircle size="var(--avatar-sm)" bg="brand" color="brand" style={{ fontWeight: 'var(--font-weight-medium)', marginRight: 'var(--spacing-2)' }}>{complaint.reportedBy?.name?.charAt(0) || "U"}</IconCircle>
               )}
               <div>
-                <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
+                <Text as="div" size="xs" weight="medium" className="line-clamp-1">{complaint.reportedBy?.name}</Text>
                 <Text as="div" size="xs" color="muted">Reporter</Text>
               </div>
             </HStack>

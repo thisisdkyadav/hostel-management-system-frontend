@@ -263,16 +263,9 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
               </HStack>
 
               {safeComments ? (
-                <p
-                  style={{
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-body)",
-                    lineHeight: 1.6,
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
+                <Text size="sm" color="body" leading={1.6} style={{ whiteSpace: "pre-wrap" }}>
                   {safeComments}
-                </p>
+                </Text>
               ) : (
                 <p
                   style={{

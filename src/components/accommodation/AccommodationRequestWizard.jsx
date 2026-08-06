@@ -269,9 +269,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <DatePicker name="toDate" value={form.stay.toDate} min={form.stay.fromDate || earliestStart} onChange={(e) => setStay("toDate", e.target.value)} />
               </div>
             </div>
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "calc(-1 * var(--spacing-2))" }}>
+            <Text size="xs" color="muted" style={{ marginTop: "calc(-1 * var(--spacing-2))" }}>
               Requests must be raised at least {MIN_LEAD_WORKING_DAYS} working days in advance — earliest start date is {earliestStart}.
-            </p>
+            </Text>
             <div>
               <Label required>Purpose of visit</Label>
               <Input value={form.stay.purpose} onChange={(e) => setStay("purpose", e.target.value)} placeholder="e.g., Convocation, personal visit" />
@@ -286,7 +286,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <div style={{ padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-bg-secondary)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
                   {profileFA}
                 </div>
-                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</p>
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</Text>
               </div>
             ) : (
               <div>

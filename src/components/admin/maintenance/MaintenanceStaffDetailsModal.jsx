@@ -222,7 +222,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)", marginBottom: "var(--spacing-2)" }}>Total Work Done</h3>
                       <Text size="4xl" weight="bold" color="info">{workStats.totalWorkDone}</Text>
-                      <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info)", marginTop: "var(--spacing-1)" }}>Complaints Resolved</p>
+                      <Text size="sm" color="info" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved</Text>
                     </div>
                     <Surface bg="info" padding={3} radius="full">
                       <FaTasks style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-info)" }} />
@@ -236,7 +236,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     <div>
                       <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)", marginBottom: "var(--spacing-2)" }}>Today's Work</h3>
                       <Text size="4xl" weight="bold" color="success">{workStats.todayWorkDone}</Text>
-                      <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-success)", marginTop: "var(--spacing-1)" }}>Complaints Resolved Today</p>
+                      <Text size="sm" color="success" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved Today</Text>
                     </div>
                     <Surface bg="success" padding={3} radius="full">
                       <FaCalendarAlt style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-success)" }} />

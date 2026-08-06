@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Modal, Surface } from "@/components/ui"
+import { Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -98,7 +98,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
               <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)' }}>Description</h3>
             </div>
-            <p style={{ color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-relaxed)' }}>{selectedItem.description}</p>
+            <Text color="secondary" leading="var(--line-height-relaxed)">{selectedItem.description}</Text>
           </Surface>
         </div>
       </Modal>
@@ -129,9 +129,9 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
 
           <div style={{ maxWidth: '64rem', maxHeight: '100vh', padding: 'var(--spacing-4)' }} onClick={(e) => e.stopPropagation()}>
             <img src={getMediaUrl(selectedItem.images[selectedImageIndex])} alt={`${selectedItem.itemName} ${selectedImageIndex + 1}`} style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 'var(--radius-lg)' }} />
-            <p style={{ color: 'var(--color-white)', textAlign: 'center', marginTop: 'var(--spacing-4)' }}>
+            <Text color="var(--color-white)" align="center" style={{ marginTop: 'var(--spacing-4)' }}>
               Image {selectedImageIndex + 1} of {selectedItem.images.length}
-            </p>
+            </Text>
           </div>
 
           <Button onClick={(e) => {

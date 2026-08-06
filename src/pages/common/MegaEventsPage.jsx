@@ -300,29 +300,13 @@ const MiniStat = ({ icon: Icon, label, value, tone = "var(--color-primary)" }) =
       >
         {Icon && <Icon size={14} />}
       </span>
-      <span
-        style={{
-          fontSize: "var(--font-size-xs)",
-          fontWeight: "var(--font-weight-semibold)",
-          color: "var(--color-text-muted)",
-          textTransform: "uppercase",
-          letterSpacing: "0.04em",
-        }}
-      >
+      <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}>
         {label}
-      </span>
+      </Text>
     </HStack>
-    <div
-      style={{
-        fontSize: "var(--font-size-base)",
-        fontWeight: "var(--font-weight-semibold)",
-        color: "var(--color-text-heading)",
-        textTransform: "capitalize",
-        wordBreak: "break-word",
-      }}
-    >
+    <Text as="div" size="base" weight="semibold" color="heading" style={{ textTransform: "capitalize", wordBreak: "break-word" }}>
       {value}
-    </div>
+    </Text>
   </div>
 )
 
@@ -1498,9 +1482,9 @@ const MegaEventsPage = () => {
                   <div style={layoutStyles.detailHeader}>
                     <div>
                       <h2 style={{ margin: 0, fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedSeries.name}</h2>
-                      <p style={{ margin: 0, marginTop: 2, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      <Text size="sm" color="muted" style={{ margin: 0, marginTop: 2 }}>
                         {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
-                      </p>
+                      </Text>
                     </div>
                     <HStack gap={2} align="center">
                       <Badge variant={selectedOccurrence._id === latestOccurrence?._id ? "success" : "default"}>
@@ -1570,11 +1554,11 @@ const MegaEventsPage = () => {
                   <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
                     <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
                     {selectedOccurrence.description ? (
-                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>{selectedOccurrence.description}</p>
+                      <Text size="sm" color="body" leading={1.55} style={{ marginTop: "var(--spacing-3)" }}>{selectedOccurrence.description}</Text>
                     ) : (
-                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-3)" }}>
                         Description will be available after proposal details are added.
-                      </p>
+                      </Text>
                     )}
 
                     <HStack gap={2} wrap style={{ marginTop: "var(--spacing-4)" }}>
@@ -1595,9 +1579,9 @@ const MegaEventsPage = () => {
                       )}
                     </HStack>
                     {!canCreateOrEditProposal && !canCreateOrEditExpense && !canReviewProposal && !canReviewExpense && (
-                      <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-3)" }}>
                         You have read-only access for this occurrence.
-                      </p>
+                      </Text>
                     )}
                   </Surface>
                 </>
@@ -1715,9 +1699,9 @@ const MegaEventsPage = () => {
               <Text as="div" size="sm" weight="semibold" color="heading">
                 {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
               </Text>
-              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+              <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
                 {proposalForm.proposalDetails.organisingUnit.unitType} · {proposalForm.proposalDetails.programmeDetails.programmeType} · {proposalForm.proposalDetails.programmeDetails.mode}
-              </div>
+              </Text>
               <Text as="div" size="xs" color="muted">
                 {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates not added"}
               </Text>
@@ -1736,9 +1720,9 @@ const MegaEventsPage = () => {
           {detailedProposalPreviewText && (
             <div style={infoBoxStyle}>
               <span style={sectionLabelStyle}>Proposal Preview</span>
-              <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
+              <Text as="div" size="sm" color="body" leading={1.5} style={{ marginTop: "var(--spacing-2)", whiteSpace: "pre-wrap" }}>
                 {detailedProposalPreviewText.slice(0, 400)}{detailedProposalPreviewText.length > 400 ? "..." : ""}
-              </div>
+              </Text>
             </div>
           )}
 
@@ -1787,9 +1771,9 @@ const MegaEventsPage = () => {
           {detailedExternalGuestsText && (
             <div style={infoBoxStyle}>
               <span style={sectionLabelStyle}>External Guests</span>
-              <div style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-1)" }}>
                 {detailedExternalGuestsText}
-              </div>
+              </Text>
             </div>
           )}
 
@@ -2206,10 +2190,10 @@ const MegaEventsPage = () => {
           {/* Registration Details - Full Width Table-style */}
           <Panel title="Registration Details by Category" icon={ClipboardCheck}>
             <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
-              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Category</span>
-              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Registration Fee</span>
-              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Accommodation</span>
-              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Remarks</span>
+              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Category</Text>
+              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Registration Fee</Text>
+              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Accommodation</Text>
+              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Remarks</Text>
             </div>
             {REGISTRATION_CATEGORIES.map((category) => (
               <div key={category.key} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>

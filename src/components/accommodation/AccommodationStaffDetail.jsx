@@ -188,7 +188,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <ChargesRows quote={request.quote} />
               {request.payment?.screenshotFileRef && (
                 <div style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)", fontSize: "var(--font-size-sm)" }}>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</div>
+                  <Text as="div" color="muted" size="xs" style={{ textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</Text>
                   <InfoRow label="Amount" value={money(request.payment.amount)} />
                   <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
                   {request.payment.remarks && <InfoRow label="Remarks" value={request.payment.remarks} />}
@@ -265,7 +265,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <div>
                     <Label>Amount</Label>
                     <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
-                    <p style={{ fontSize: "10px", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Calculated total is {money(request.quote?.total)}. Override for a custom amount.</p>
+                    <Text size="10px" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Calculated total is {money(request.quote?.total)}. Override for a custom amount.</Text>
                   </div>
                   <div>
                     <Label>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</Label>

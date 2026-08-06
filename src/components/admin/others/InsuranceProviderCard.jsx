@@ -68,7 +68,7 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <HStack gap="none" align="start">
             <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{provider.email}</span>
+            <Text as="span" color="muted" style={{ wordBreak: 'break-all' }}>{provider.email}</Text>
           </HStack>
           <HStack gap="none" align="start">
             <FaPhone style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />

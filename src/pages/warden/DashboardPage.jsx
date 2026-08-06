@@ -77,9 +77,9 @@ const DashboardPage = () => {
 
   if (error) {
     return (
-      <div className="px-10 py-6 flex-1 flex items-center justify-center" style={{ color: 'var(--color-danger)' }}>
+      <Text as="div" color="danger" className="px-10 py-6 flex-1 flex items-center justify-center">
         <BiError style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--font-size-2xl)' }} /> {error}
-      </div>
+      </Text>
     )
   }
 
@@ -373,7 +373,7 @@ const RoomStatusPanel = ({ data }) => {
       {/* Occupancy Rate - Compact Display */}
       <div className="bg-gradient-to-br from-[var(--color-success-bg-light)] to-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-lg)] p-[var(--spacing-2-5)] text-center">
         <p className="text-[0.6875rem] text-[var(--color-success-text)] font-medium uppercase tracking-wide mb-0.5">Occupancy Rate</p>
-        <p className="text-2xl font-bold leading-none" style={{ color: occupancyColor }}>{occupancyRate.toFixed(1)}%</p>
+        <Text color={occupancyColor} className="text-2xl font-bold leading-none">{occupancyRate.toFixed(1)}%</Text>
       </div>
 
       {/* Room Stats Grid */}
@@ -398,8 +398,8 @@ const RoomStatusPanel = ({ data }) => {
         <>
           <div className="border-t border-[var(--color-border-light)] my-1"></div>
           <div className={`rounded-[var(--radius-md)] p-[var(--spacing-2)] text-center ${data.maintenanceIssues > 0 ? 'bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)]' : 'bg-[var(--color-success-bg)] border border-[var(--color-success-border)]'}`}>
-            <p className="text-[0.6875rem] font-medium uppercase tracking-wide mb-0.5" style={{ color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>Maintenance</p>
-            <p className="text-lg font-bold" style={{ color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>{data.maintenanceIssues}</p>
+            <Text color={data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)'} className="text-[0.6875rem] font-medium uppercase tracking-wide mb-0.5">Maintenance</Text>
+            <Text color={data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)'} className="text-lg font-bold">{data.maintenanceIssues}</Text>
           </div>
         </>
       )}

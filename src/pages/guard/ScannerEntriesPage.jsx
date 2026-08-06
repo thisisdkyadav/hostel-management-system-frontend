@@ -43,7 +43,7 @@ const ScannerEntriesPage = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}><span>Room: {entry.room}{entry.bed}</span><StatusBadge status={entry.status} /></div>
               </div>
             </HStack>
-            <p style={{ color: "var(--color-warning-text)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</p>
+            <Text color="warning-text" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</Text>
             <div style={{ marginBottom: "var(--spacing-3)" }}>
               <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text></label>
               <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)} placeholder="Enter reason..." style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }} rows="3" disabled={isUpdating} data-no-scanner="true" />
@@ -68,11 +68,11 @@ const ScannerEntriesPage = () => {
           <HStack gap="none" align="start">
             <FaInfoCircle style={{ color: "var(--color-primary)", marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
             <div>
-              <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>External QR Scanner Instructions:</p>
-              <div className="info-grid" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              <Text size="sm" color="body" weight="medium" style={{ marginBottom: "var(--spacing-2)" }}>External QR Scanner Instructions:</Text>
+              <Text as="div" size="sm" color="muted" className="info-grid">
                 <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-in Scanner: Ends with</span><FaArrowDown style={{ margin: "0 var(--spacing-2)", color: "var(--color-success)" }} /><span>(Down Arrow)</span></HStack>
                 <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-out Scanner: Ends with</span><FaArrowRight style={{ margin: "0 var(--spacing-2)", color: "var(--color-warning)", transform: "rotate(90deg)" }} /><span>(Tab Key)</span></HStack>
-              </div>
+              </Text>
             </div>
           </HStack>
         </Surface>
@@ -96,7 +96,7 @@ const ScannerEntriesPage = () => {
           {loading && scannerEntries.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} /><Text color="muted">Loading scanner entries...</Text></div>
           ) : scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><p style={{ color: "var(--color-text-light)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</p></div>
+            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</Text></div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <Table>
@@ -126,7 +126,7 @@ const ScannerEntriesPage = () => {
                           </div>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <div style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} title={entry.reason}>(Reason provided)</div>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}
+                          {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <Text as="div" size="xs" color="muted" style={{ marginLeft: "var(--spacing-2)" }} title={entry.reason}>(Reason provided)</Text>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}
                         </Table.Cell>
                       </Table.Row>
                     )

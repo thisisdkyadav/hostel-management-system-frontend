@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import { Button } from "czero/react"
-import { HStack, Surface } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const UndertakingsBanner = () => {
   const [pendingCount, setPendingCount] = useState(0)
@@ -41,9 +41,9 @@ const UndertakingsBanner = () => {
             <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)', fontSize: 'var(--font-size-lg)' }}>
               {pendingCount === 1 ? "You have 1 pending undertaking" : `You have ${pendingCount} pending undertakings`}
             </h3>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning-text)', opacity: 'var(--opacity-90)' }}>
+            <Text size="sm" color="warning-text" style={{ opacity: 'var(--opacity-90)' }}>
               Please review and accept your pending undertakings.
-            </p>
+            </Text>
           </div>
         </HStack>
         <HStack gap="none" align="center">

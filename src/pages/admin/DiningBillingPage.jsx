@@ -49,9 +49,9 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
           <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {billingPeriod.name}
           </h3>
-          <p style={{ margin: "var(--spacing-1) 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text size="xs" color="muted" style={{ margin: "var(--spacing-1) 0 0" }}>
             {billingDateRange(billingPeriod)} · {periodCount} period{periodCount === 1 ? "" : "s"}
-          </p>
+          </Text>
         </div>
         <div style={{ display: "flex", gap: "var(--spacing-1)", flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
           <Button variant="ghost" size="sm" onClick={() => onEdit(billingPeriod)} title="Edit">

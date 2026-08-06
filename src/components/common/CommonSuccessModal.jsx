@@ -1,7 +1,7 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { Button } from "czero/react"
-import { HStack, IconCircle, Modal } from "@/components/ui"
+import { HStack, IconCircle, Modal, Text } from "@/components/ui"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null
@@ -20,7 +20,7 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
         {infoText && (
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--spacing-6)', maxWidth: '28rem' }}>
             {InfoIcon && <InfoIcon style={{ color: 'var(--color-text-disabled)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} size={20} />}
-            <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', wordBreak: 'break-all' }}>{infoText}</span>
+            <Text as="span" color="secondary" weight="medium" style={{ wordBreak: 'break-all' }}>{infoText}</Text>
           </div>
         )}
 

@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "czero/react"
-import { HStack, IconCircle, Surface } from "@/components/ui"
+import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 
 const AccessDenied = ({ title = "Access Denied", message = "You do not have permission to access this page.", icon, suggestion, buttonText = "Return to Home", to = "/" }) => {
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ const AccessDenied = ({ title = "Access Denied", message = "You do not have perm
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', padding: 'var(--spacing-6)', maxWidth: '28rem', width: '100%', border: 'var(--border-1) solid var(--color-danger-light)' }}>
         <IconCircle size="var(--spacing-14)" bg="var(--color-danger-bg-light)" color="danger" style={{ marginBottom: 'var(--spacing-6)', margin: '0 auto var(--spacing-6)' }}>{icon || defaultIcon}</IconCircle>
         <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', textAlign: 'center', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>{title}</h2>
-        <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: 'var(--spacing-3)' }}>{message}</p>
+        <Text color="muted" align="center" style={{ marginBottom: 'var(--spacing-3)' }}>{message}</Text>
 
         {/* Render suggestion if available */}
         {suggestion && (

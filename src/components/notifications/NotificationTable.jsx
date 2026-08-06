@@ -50,7 +50,7 @@ const NotificationTable = ({ notifications, onRefresh }) => {
       key: "title",
       render: (notification) => (
         <VStack gap="none" align="start">
-          <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-1)' }}>{notification.title}</div>
+          <Text as="div" size="sm" weight="medium" color="primary" style={{ marginBottom: 'var(--spacing-1)' }}>{notification.title}</Text>
           <Text as="div" size="xs" color="muted">{getTargetAudience(notification)}</Text>
         </VStack>
       ),

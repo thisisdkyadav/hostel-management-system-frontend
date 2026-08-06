@@ -57,16 +57,16 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
         )}
 
         <div>
-          <label htmlFor="status" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
+          <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="status" className="block">
             Status
-          </label>
+          </Text>
           <Select id="status" value={status} onChange={(e) => setStatus(e.target.value)} options={statusOptions.map((option) => ({ value: option, label: option }))} required />
         </div>
 
         <div>
-          <label htmlFor="resolutionNotes" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
+          <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="resolutionNotes" className="block">
             Resolution Notes
-          </label>
+          </Text>
           <textarea id="resolutionNotes" value={resolutionNotes} onChange={(e) => setResolutionNotes(e.target.value)} 
             rows={TEXTAREA_ROWS} 
             className="w-full focus:outline-none" 

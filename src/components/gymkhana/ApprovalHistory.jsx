@@ -149,13 +149,9 @@ const ApprovalHistory = ({
                                 </Text>
                             </HStack>
 
-                            <p style={{
-                                fontSize: "var(--font-size-sm)",
-                                color: "var(--color-text-body)",
-                                marginBottom: "var(--spacing-1)"
-                            }}>
+                            <Text size="sm" color="body" style={{ marginBottom: "var(--spacing-1)" }}>
                                 {log.performedBy?.name || "Unknown"}
-                            </p>
+                            </Text>
 
                             {safeComments && (
                                 <p style={{
@@ -167,13 +163,9 @@ const ApprovalHistory = ({
                                 </p>
                             )}
 
-                            <p style={{
-                                fontSize: "var(--font-size-xs)",
-                                color: "var(--color-text-placeholder)",
-                                marginTop: "var(--spacing-1)"
-                            }}>
+                            <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>
                                 {formatTimestamp(log.createdAt)}
-                            </p>
+                            </Text>
                         </div>
                     </div>
                 )

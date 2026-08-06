@@ -349,7 +349,7 @@ const HostelAllocation = () => {
             <VStack gap="xsmall">
               <Label htmlFor="allocatedCount" required>
                 Allocated Count
-                {currentAllocation.itemTypeId && <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-2)', color: 'var(--color-text-muted)' }}>(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</span>}
+                {currentAllocation.itemTypeId && <Text as="span" size="sm" color="muted" style={{ marginLeft: 'var(--spacing-2)' }}>(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</Text>}
               </Label>
               <Input id="allocatedCount" type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min={1} max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required />
             </VStack>

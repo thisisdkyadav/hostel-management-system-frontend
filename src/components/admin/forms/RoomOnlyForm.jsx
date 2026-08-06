@@ -96,7 +96,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
   const requiredFields = ["roomNumber", "capacity"]
   const templateInstructions = (
     <div>
-      <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+      <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
       <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
           <Text as="span" weight="medium">roomNumber:</Text> String (e.g., 101)
@@ -146,7 +146,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
               <Label htmlFor="defaultRoomsPerFloor">Default Rooms per Floor</Label>
               <Input id="defaultRoomsPerFloor" type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" />
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-placeholder)", marginTop: "var(--spacing-1)" }}>Room numbers will be generated as 101, 102... (Ground floor), 201, 202... (First floor)</p>
+              <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>Room numbers will be generated as 101, 102... (Ground floor), 201, 202... (First floor)</Text>
             </VStack>
           </div>
 
@@ -189,7 +189,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             <Text size="sm" color="body">
               This will create {roomConfig.floors} floors with {roomConfig.defaultRoomsPerFloor} rooms per floor by default.
             </Text>
-            <p style={{ fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)", color: "var(--color-text-body)" }}>Total capacity: {roomConfig.floors * roomConfig.defaultRoomsPerFloor * roomConfig.standardCapacity} students (exceptions may override room counts)</p>
+            <Text size="sm" color="body" style={{ marginTop: "var(--spacing-2)" }}>Total capacity: {roomConfig.floors * roomConfig.defaultRoomsPerFloor * roomConfig.standardCapacity} students (exceptions may override room counts)</Text>
           </Surface>
         </>
       ) : (

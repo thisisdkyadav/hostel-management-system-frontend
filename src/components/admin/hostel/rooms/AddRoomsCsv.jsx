@@ -65,7 +65,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
   const templateInstructions = (
     <div>
-      <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
+      <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
       <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
@@ -105,7 +105,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         <VStack gap="medium">
           <Surface bg="brand" padding="var(--spacing-3) var(--spacing-3)" radius="lg">
             <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Review the rooms that will be added to {hostel.name}</p>
+            <Text size="xs" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>Review the rooms that will be added to {hostel.name}</Text>
           </Surface>
 
           <RoomStatsSummary data={parsedCsvData} isUnitBased={isUnitBased} />

@@ -8,6 +8,7 @@ import { getStatusTone } from "@/constants/accommodationStatus"
 import { money, shortId, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationRequestWizard from "../../components/accommodation/AccommodationRequestWizard"
 import AccommodationRequestDetail from "../../components/accommodation/AccommodationRequestDetail"
+import { Text } from "@/components/ui"
 
 const AccommodationPage = () => {
   const [requests, setRequests] = useState([])
@@ -80,7 +81,7 @@ const AccommodationPage = () => {
   }
 
   const columns = [
-    { key: "id", header: "Request", render: (r) => <span style={{ fontFamily: "monospace", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{shortId(r._id || r.id)}</span> },
+    { key: "id", header: "Request", render: (r) => <Text as="span" size="xs" color="muted" style={{ fontFamily: "monospace" }}>{shortId(r._id || r.id)}</Text> },
     { key: "stay", header: "Stay", render: (r) => <StayCell request={r} /> },
     { key: "persons", header: "Guests", align: "center", render: (r) => r.persons ?? (r.guests?.length || 0) },
     { key: "total", header: "Amount", align: "right", render: (r) => money(r.quote?.total) },

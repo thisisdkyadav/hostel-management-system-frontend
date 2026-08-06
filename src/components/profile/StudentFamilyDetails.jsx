@@ -210,20 +210,20 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           )}
         </HStack>
 
-        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
+        <Text as="div" size="xs" color="muted" style={{ marginBottom: "var(--spacing-1)" }}>
           Relationship: <Text as="span" color="secondary">{member.relationship || "Not specified"}</Text>
-        </div>
+        </Text>
 
         {member.phone && (
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
+          <Text as="div" size="xs" color="muted" style={{ marginBottom: "var(--spacing-1)" }}>
             Phone: <Text as="span" color="secondary">{member.phone}</Text>
-          </div>
+          </Text>
         )}
 
         {member.email && (
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>
+          <Text as="div" size="xs" color="muted" style={{ marginBottom: "var(--spacing-1)" }}>
             Email: <Text as="span" color="secondary">{member.email}</Text>
-          </div>
+          </Text>
         )}
 
         {member.address && (

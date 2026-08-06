@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   UserCheck
 } from "lucide-react"
+import { Text } from "@/components/ui"
 
 
 const StatisticsGraphic = () => {
@@ -131,12 +132,9 @@ const StatisticsGraphic = () => {
             </div>
 
             {/* Label */}
-            <div
-              className={`stats-feature-label ${activeCard === index ? "active" : ""}`}
-              style={{ color: activeCard === index ? feature.color : "#4B5563" }}
-            >
+            <Text as="div" color={activeCard === index ? feature.color : "#4B5563"} className={`stats-feature-label ${activeCard === index ? "active" : ""}`}>
               {feature.label}
-            </div>
+            </Text>
 
             {/* Description Overlay */}
             <div

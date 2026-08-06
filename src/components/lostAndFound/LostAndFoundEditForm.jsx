@@ -144,7 +144,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
               </HStack>
             </label>
             <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
-            {uploading && <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)", marginTop: "var(--spacing-1)" }}>Uploading...</p>}
+            {uploading && <Text size="xs" color="info-text" style={{ marginTop: "var(--spacing-1)" }}>Uploading...</Text>}
 
             {formData.images && formData.images.length > 0 && (
               <div style={{ marginTop: "var(--spacing-2)", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--gap-sm)" }}>

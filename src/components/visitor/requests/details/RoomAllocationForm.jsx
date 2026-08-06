@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
 import { Button, Input } from "czero/react"
+import { Text } from "@/components/ui"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
@@ -8,7 +9,7 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
       <h3 className="font-medium mb-3 flex items-center" style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)' }}>
         <FaBuilding className="mr-2" /> Allocate Rooms for Visitors
       </h3>
-      <p className="mb-4" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Assign rooms for the visitors.</p>
+      <Text size="sm" color="muted" className="mb-4">Assign rooms for the visitors.</Text>
 
       <div className="space-y-3">
         {allocatedRooms.map((room, index) => (
@@ -16,23 +17,23 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
             {isUnitBased ? (
               <>
                 <div className="flex-1">
-                  <label htmlFor={`unit-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
+                  <Text as="label" size="xs" weight="medium" color="secondary" htmlFor={`unit-${index}`} className="block mb-1">
                     Unit
-                  </label>
+                  </Text>
                   <Input id={`unit-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} placeholder="A" />
                 </div>
                 <div className="flex-1">
-                  <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
+                  <Text as="label" size="xs" weight="medium" color="secondary" htmlFor={`room-${index}`} className="block mb-1">
                     Room Number
-                  </label>
+                  </Text>
                   <Input id={`room-${index}`} type="text" value={room[1] || ""} onChange={(e) => onRoomChange(index, 1, e.target.value)} placeholder="101" />
                 </div>
               </>
             ) : (
               <div className="flex-1">
-                <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
+                <Text as="label" size="xs" weight="medium" color="secondary" htmlFor={`room-${index}`} className="block mb-1">
                   Room Number
-                </label>
+                </Text>
                 <Input id={`room-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} placeholder="101" />
               </div>
             )}

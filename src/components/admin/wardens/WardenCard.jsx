@@ -71,9 +71,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)' }}>
+                <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {warden.position || warden.subRole || 'No sub role assigned'}
-                </div>
+                </Text>
               </div>
             </div>
           </CardHeader>
@@ -81,7 +81,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
             <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Email</Text>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
+              <Text as="span" color="body" align="right" style={{ wordBreak: 'break-word' }}>{warden.email || 'Not available'}</Text>
             </HStack>
             <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Role</Text>
@@ -125,9 +125,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)' }}>
+                <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-0-5)' }}>
                   {warden.subRole || 'No sub role assigned'}
-                </div>
+                </Text>
               </div>
             </div>
           </CardHeader>
@@ -135,7 +135,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
             <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Email</Text>
-              <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
+              <Text as="span" color="body" align="right" style={{ wordBreak: 'break-word' }}>{warden.email || 'Not available'}</Text>
             </HStack>
             <HStack gap={4} align="center" justify="between">
               <Text as="span" color="muted" weight="medium">Role</Text>
@@ -204,7 +204,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               {" "}
               <FaBuilding style={{ color: 'var(--color-text-muted)' }} />
             </div>
-            <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', wordBreak: 'break-word' }}> {getAssignedHostelNames()}</span>
+            <Text as="span" weight="medium" color="secondary" style={{ wordBreak: 'break-word' }}> {getAssignedHostelNames()}</Text>
           </HStack>
         </CardBody>
 

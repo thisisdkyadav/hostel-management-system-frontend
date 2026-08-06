@@ -10,7 +10,7 @@ import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
 import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import { Card, Checkbox, Page, Popover } from "@/components/ui"
+import { Card, Checkbox, Page, Popover, Text } from "@/components/ui"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
@@ -261,7 +261,7 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
                     <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: row.color }}></span>
                     <span className="text-[0.78rem] font-medium text-[var(--color-text-body)] truncate">{row.label}</span>
                   </div>
-                  <span className="shrink-0 text-[0.85rem] font-bold tabular-nums" style={{ color: row.color }}>{row.value}</span>
+                  <Text as="span" color={row.color} className="shrink-0 text-[0.85rem] font-bold tabular-nums">{row.value}</Text>
                 </Link>
               ))}
               <Link to={buildComplaintDashboardLink({ overdue: true })} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-light)] hover:border-[var(--color-danger)] transition-colors mt-[var(--spacing-0-5)]">

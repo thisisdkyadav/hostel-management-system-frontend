@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Text } from "@/components/ui"
 
 /**
  * ToggleButtonGroup - A group of toggle buttons for switching between options
@@ -225,12 +226,9 @@ const ToggleButtonGroup = ({
                         aria-label={option.ariaLabel || option.label}
                     >
                         {option.icon && (
-                            <span
-                                className="flex-shrink-0"
-                                style={{ fontSize: currentSize.iconSize }}
-                            >
+                            <Text as="span" size={currentSize.iconSize} className="flex-shrink-0">
                                 {option.icon}
-                            </span>
+                            </Text>
                         )}
                         {option.label && (
                             <span className={hideLabelsOnMobile ? "hidden sm:inline" : ""}>

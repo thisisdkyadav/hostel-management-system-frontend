@@ -17,9 +17,9 @@ const UnitListView = ({ units, onUnitClick }) => {
             <Text as="div" size="sm" weight="medium" color="primary">
               {unit.unitNumber || unit.name}
             </Text>
-            <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <Text as="div" size="xs" color="muted" className="sm:hidden">
               {unit.hostel}
-            </div>
+            </Text>
           </div>
         </HStack>
       ),

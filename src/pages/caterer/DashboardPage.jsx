@@ -104,12 +104,12 @@ const DashboardPage = () => {
                       </h2>
                       <StatusBadge status={hasActiveMeal ? "Serving now" : "Idle"} tone={hasActiveMeal ? "success" : "primary"} showDot={hasActiveMeal} />
                     </HStack>
-                    <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                       {hasActiveMeal ? `${mealSlot.startTime} – ${mealSlot.endTime}` : "Verification opens during meal hours"}
-                    </p>
-                    <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
+                    </Text>
+                    <Text color="muted" size="xs" style={{ margin: "var(--spacing-1) 0 0" }}>
                       {formatPeriodRange(context.currentPeriod)}
-                    </p>
+                    </Text>
                   </div>
                 </HStack>
               </div>
@@ -131,9 +131,9 @@ const DashboardPage = () => {
             <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>Availability Forecast</h3>
-                <p style={{ margin: "var(--spacing-1) 0 0", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
                   Expected diners today and the next two days, after approved rebates.
-                </p>
+                </Text>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--spacing-3)]">
                 {rebateSummary.days.map((day) => (

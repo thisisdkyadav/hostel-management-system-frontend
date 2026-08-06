@@ -124,15 +124,9 @@ const FaceScannerEntriesPage = () => {
                                 </div>
                             </div>
                         </HStack>
-                        <p
-                            style={{
-                                color: "var(--color-warning-text)",
-                                fontSize: "var(--font-size-sm)",
-                                marginBottom: "var(--spacing-3)",
-                            }}
-                        >
+                        <Text color="warning-text" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>
                             This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.
-                        </p>
+                        </Text>
                         <div style={{ marginBottom: "var(--spacing-3)" }}>
                             <label
                                 htmlFor={`reason-${entry._id}`}
@@ -325,15 +319,9 @@ const FaceScannerEntriesPage = () => {
                             <Text color="muted" size="lg">
                                 No face scanner entries found
                             </Text>
-                            <p
-                                style={{
-                                    color: "var(--color-text-light)",
-                                    fontSize: "var(--font-size-sm)",
-                                    marginTop: "var(--spacing-2)",
-                                }}
-                            >
+                            <Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>
                                 Entries will appear here in real-time when students scan their face
-                            </p>
+                            </Text>
                         </div>
                     ) : (
                         /* Entries Table */
@@ -423,16 +411,9 @@ const FaceScannerEntriesPage = () => {
                                                                 Yes
                                                             </Text>
                                                             {entry.reason && (
-                                                                <div
-                                                                    style={{
-                                                                        marginLeft: "var(--spacing-2)",
-                                                                        fontSize: "var(--font-size-xs)",
-                                                                        color: "var(--color-text-muted)",
-                                                                    }}
-                                                                    title={entry.reason}
-                                                                >
+                                                                <Text as="div" size="xs" color="muted" style={{ marginLeft: "var(--spacing-2)" }} title={entry.reason}>
                                                                     (Reason provided)
-                                                                </div>
+                                                                </Text>
                                                             )}
                                                         </HStack>
                                                     ) : (

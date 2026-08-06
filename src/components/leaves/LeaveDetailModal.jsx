@@ -121,7 +121,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 'var(--spacing-4)', borderBottom: `var(--border-1) solid var(--color-border-primary)`, gap: 'var(--gap-md)', flexWrap: 'wrap' }}>
             <div>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', margin: 0 }}>Leave Request</h3>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginBottom: 0 }}>Submitted on {new Date(leave.createdAt || Date.now()).toLocaleDateString()}</p>
+              <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>Submitted on {new Date(leave.createdAt || Date.now()).toLocaleDateString()}</Text>
             </div>
             <div>
               <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', ...getStatusStyle(leave.status || "Pending") }}>{leave.status || "Pending"}</span>
@@ -137,7 +137,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               Requested By
             </h4>
             <Text as="div" color="primary" weight="medium">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
-            {leave.userId?.email && <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>{leave.userId.email}</div>}
+            {leave.userId?.email && <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>{leave.userId.email}</Text>}
           </div>
 
           {/* Leave Details */}
@@ -213,7 +213,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                     <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', border: `var(--border-1) solid var(--color-info-bg)` }}>Joined</span>
                   </div>
                   <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
-                    <p style={{ color: 'var(--color-info-text)', lineHeight: 'var(--line-height-relaxed)', margin: 0 }}>{leave.joinInfo}</p>
+                    <Text color="info-text" leading="var(--line-height-relaxed)" style={{ margin: 0 }}>{leave.joinInfo}</Text>
                   </div>
                 </HStack>
               </Surface>
@@ -278,7 +278,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   </svg>
                 </div>
                 <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', margin: 0 }}>{decisionError}</p>
+                  <Text size="sm" color="danger-text" style={{ margin: 0 }}>{decisionError}</Text>
                 </div>
               </div>
             )}
@@ -288,12 +288,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               <HStack gap="none" align="center" justify="between">
                 <div>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}</h4>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
+                  <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                  </p>
+                  </Text>
                 </div>
                 <Text as="div" align="right">
-                  <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', margin: 0 }}>{Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</p>
+                  <Text size="sm" weight="medium" color="secondary" style={{ margin: 0 }}>{Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
                 </Text>
               </HStack>
             </div>
@@ -316,7 +316,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 }}
                 required
               />
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', marginBottom: 0 }}>{decisionType === "approve" ? "This note will be shared with the employee along with the approval." : "This reason will help the employee understand why their request was declined."}</p>
+              <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)', marginBottom: 0 }}>{decisionType === "approve" ? "This note will be shared with the employee along with the approval." : "This reason will help the employee understand why their request was declined."}</Text>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
@@ -352,7 +352,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                   </svg>
                 </div>
                 <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', margin: 0 }}>{joinError}</p>
+                  <Text size="sm" color="danger-text" style={{ margin: 0 }}>{joinError}</Text>
                 </div>
               </div>
             )}
@@ -362,9 +362,9 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
               <HStack gap="none" align="center" justify="between">
                 <div>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', margin: 0 }}>Join Your Leave</h4>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
+                  <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
                     {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                  </p>
+                  </Text>
                 </div>
                 <Text as="div" align="right">
                   <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-xs)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', border: `var(--border-1) solid var(--color-success-bg)` }}>Approved</span>
@@ -390,7 +390,7 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
                 }}
                 required
               />
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', marginBottom: 0 }}>This information will be recorded with your leave request and may be used for administrative purposes.</p>
+              <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)', marginBottom: 0 }}>This information will be recorded with your leave request and may be used for administrative purposes.</Text>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>

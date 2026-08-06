@@ -439,7 +439,7 @@ const AppointmentsPage = () => {
 
       <PageFooter
         leftContent={[
-          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="sm" color="muted" key="count">
             Showing{" "}
             <Text as="span" weight="semibold">
               {loading ? 0 : appointments.length}
@@ -449,7 +449,7 @@ const AppointmentsPage = () => {
               {loading ? 0 : totalCount}
             </Text>{" "}
             appointments
-          </span>,
+          </Text>,
         ]}
         rightContent={[
           <Pagination
@@ -499,9 +499,9 @@ const AppointmentsPage = () => {
                 <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
                 </Text>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
                   {selectedAppointment.email} · {selectedAppointment.mobileNumber}
-                </div>
+                </Text>
               </div>
               <Badge variant={statusVariant(selectedAppointment.status)}>{selectedAppointment.status}</Badge>
             </HStack>
@@ -537,15 +537,15 @@ const AppointmentsPage = () => {
             {/* Reason */}
             <div style={sectionStyle}>
               <span style={labelStyle}>Reason for Meeting</span>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+              <Text as="div" size="sm" color="body" leading={1.6} style={{ whiteSpace: "pre-wrap" }}>
                 {selectedAppointment.reason}
-              </div>
+              </Text>
             </div>
 
             {selectedAppointment.status === "Pending" ? (
               <VStack gap={2}>
                 <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
-                <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Review</span>
+                <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>Review</Text>
                 <div style={{ display: "grid", gridTemplateColumns: reviewAction === "approve" ? "160px 1fr 1fr" : "160px 1fr", gap: "var(--spacing-2)", alignItems: "end" }}>
                   <div>
                     <span style={labelStyle}>Action</span>
@@ -606,9 +606,9 @@ const AppointmentsPage = () => {
                 {selectedAppointment.review?.description && (
                   <div style={{ gridColumn: "1 / -1" }}>
                     <span style={labelStyle}>Remarks</span>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+                    <Text as="div" size="sm" color="body" style={{ whiteSpace: "pre-wrap" }}>
                       {selectedAppointment.review.description}
-                    </div>
+                    </Text>
                   </div>
                 )}
               </div>

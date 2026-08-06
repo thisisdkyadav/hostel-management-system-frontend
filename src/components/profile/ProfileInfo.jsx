@@ -18,9 +18,9 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
             </div>
           )}
         </HStack>
-        <p style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginTop: "var(--spacing-0-5)", fontSize: "var(--font-size-base)", }} >
+        <Text weight="medium" color="secondary" size="base" style={{ marginTop: "var(--spacing-0-5)" }}>
           {value || "N/A"}
-        </p>
+        </Text>
       </div>
     </div>
   )

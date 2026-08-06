@@ -149,7 +149,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
         </IconCircle>
         <div>
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)' }}>Submit Payment Information</h4>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>Upload your payment details and screenshot for verification</p>
+          <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>Upload your payment details and screenshot for verification</Text>
         </div>
       </HStack>
 

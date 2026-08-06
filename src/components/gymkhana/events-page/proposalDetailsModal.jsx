@@ -508,46 +508,18 @@ export const GymkhanaProposalDetailsModal = ({
             marginBottom: "var(--spacing-2)",
           }}
         >
-          <span
-            style={{
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-semibold)",
-              color: "var(--color-text-muted)",
-              textTransform: "uppercase",
-            }}
-          >
+          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Category
-          </span>
-          <span
-            style={{
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-semibold)",
-              color: "var(--color-text-muted)",
-              textTransform: "uppercase",
-            }}
-          >
+          </Text>
+          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Registration Fee
-          </span>
-          <span
-            style={{
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-semibold)",
-              color: "var(--color-text-muted)",
-              textTransform: "uppercase",
-            }}
-          >
+          </Text>
+          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Accommodation
-          </span>
-          <span
-            style={{
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-semibold)",
-              color: "var(--color-text-muted)",
-              textTransform: "uppercase",
-            }}
-          >
+          </Text>
+          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
             Remarks
-          </span>
+          </Text>
         </div>
         {registrationCategories.map((category) => (
           <div

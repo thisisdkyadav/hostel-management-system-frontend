@@ -46,9 +46,9 @@ const StatTile = ({ label, value, tone = "default" }) => {
         backgroundColor: "var(--color-bg-primary)",
       }}
     >
-      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+      <Text as="div" size="xs" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.03em" }}>
         {label}
-      </div>
+      </Text>
       <Text as="div" size="3xl" weight="bold">{value}</Text>
     </div>
   )

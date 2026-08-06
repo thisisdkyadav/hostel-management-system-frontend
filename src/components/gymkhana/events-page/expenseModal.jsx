@@ -547,15 +547,9 @@ export const GymkhanaExpenseModal = ({
                 </Button>
               </VStack>
             ) : (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: "var(--font-size-sm)",
-                  color: "var(--color-text-muted)",
-                }}
-              >
+              <Text size="sm" color="muted" style={{ margin: 0 }}>
                 Activity log appears after bill submission.
-              </p>
+              </Text>
             )}
           </EventDetailSectionCard>
         </VStack>

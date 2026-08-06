@@ -40,7 +40,7 @@ const DashboardPage = () => {
     <div style={{ padding: 'var(--spacing-6) var(--spacing-4)', flex: 1 }}>
       <header className="mb-8">
         <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>Super Admin Dashboard</h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Welcome to the system admin control panel</p>
+        <Text color="muted" style={{ marginTop: 'var(--spacing-1)' }}>Welcome to the system admin control panel</Text>
       </header>
 
       {error && (

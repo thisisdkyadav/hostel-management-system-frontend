@@ -13,9 +13,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
         <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("name")}>
           <span>Student</span>
           {sortField === "name" && (
-            <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-primary)" }}>
+            <Text as="span" color="brand" style={{ marginLeft: "var(--spacing-2)" }}>
               {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
-            </span>
+            </Text>
           )}
         </div>
       ),
@@ -56,9 +56,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
         <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("hostel")}>
           <span>Hostel</span>
           {sortField === "hostel" && (
-            <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-primary)" }}>
+            <Text as="span" color="brand" style={{ marginLeft: "var(--spacing-2)" }}>
               {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
-            </span>
+            </Text>
           )}
         </div>
       ),

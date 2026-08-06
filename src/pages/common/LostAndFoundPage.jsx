@@ -126,10 +126,10 @@ const LostAndFoundPage = () => {
 
         <PageFooter
           leftContent={[
-            <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            <Text as="span" size="sm" color="muted" key="count">
               Showing <Text as="span" weight="semibold">{lostItems.length}</Text> of{" "}
               <Text as="span" weight="semibold">{pagination.total || 0}</Text> items
-            </span>,
+            </Text>,
           ]}
           rightContent={[
             <Pagination

@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, IconCircle, Modal } from "@/components/ui"
+import { HStack, IconCircle, Modal, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaCheck } from "react-icons/fa"
 
@@ -39,9 +39,9 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <span style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--font-weight-medium)', wordBreak: 'break-all' }}>
+          <Text as="span" color="primary" weight="medium" style={{ wordBreak: 'break-all' }}>
             {email}
-          </span>
+          </Text>
         </div>
 
         <p style={{ color: 'var(--color-text-body)', marginBottom: 'var(--spacing-8)', maxWidth: 'var(--container-md)', margin: '0 auto var(--spacing-8) auto' }}>

@@ -119,9 +119,9 @@ const PdfViewerModal = ({
                   <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>
                     Cannot display PDF in browser
                   </h3>
-                  <p style={{ color: "var(--color-text-muted)", marginBottom: "var(--spacing-6)" }}>
+                  <Text color="muted" style={{ marginBottom: "var(--spacing-6)" }}>
                     Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.
-                  </p>
+                  </Text>
                   <HStack gap={3}>
                     <Button onClick={handleDownload} variant="success" size="md">
                       <FaDownload /> Download PDF
@@ -151,12 +151,12 @@ const PdfViewerModal = ({
         {error && (
           <div style={{ textAlign: "center", paddingTop: "var(--spacing-4)", paddingBottom: "var(--spacing-4)" }}>
             <Surface bg="var(--color-danger-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-danger-border)">
-              <p style={{ color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
+              <Text color="danger-text" weight="medium" style={{ marginBottom: "var(--spacing-2)" }}>
                 Unable to load document
-              </p>
-              <p style={{ color: "var(--color-danger)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-4)" }}>
+              </Text>
+              <Text color="danger" size="sm" style={{ marginBottom: "var(--spacing-4)" }}>
                 There was an error loading the document. Please try downloading it instead.
-              </p>
+              </Text>
               <Button onClick={handleDownload} variant="danger" size="md">
                 <FaDownload /> Download Document
               </Button>

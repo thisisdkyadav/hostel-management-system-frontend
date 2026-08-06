@@ -177,9 +177,9 @@ export const CloneElectionModal = ({
         This creates a fresh draft copy of the current election configuration and nominations. Votes, results, and voting email state are not copied.
       </div>
       <div>
-        <div style={{ marginBottom: "6px", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)" }}>
+        <Text as="div" size="sm" weight="semibold" style={{ marginBottom: "6px" }}>
           New election name
-        </div>
+        </Text>
         <Input
           value={titleValue}
           onChange={(event) => onTitleChange(event.target.value)}
@@ -316,9 +316,9 @@ export const LiveVotingFullscreenModal = ({
                 return (
                   <Table.Row key={post.postId} style={{ backgroundColor: index % 2 === 0 ? "var(--color-bg-primary)" : "var(--color-bg-tertiary)" }}>
                     <Table.Cell style={{ padding: "6px 10px", verticalAlign: "middle" }}>
-                      <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", fontSize: "13px", lineHeight: 1.2 }}>
+                      <Text as="div" weight="semibold" color="heading" size="13px" leading={1.2}>
                         {post.postTitle}
-                      </div>
+                      </Text>
                     </Table.Cell>
                     <Table.Cell style={{ padding: "4px 10px" }}>
                       <HStack gap="4px" wrap>
@@ -1239,17 +1239,9 @@ export const AdminNominationReviewModal = ({
         >
           <Icon size={13} />
         </div>
-        <div
-          style={{
-            fontSize: "var(--font-size-xs)",
-            fontWeight: "var(--font-weight-semibold)",
-            color: "var(--color-primary)",
-            textTransform: "uppercase",
-            letterSpacing: "0.5px",
-          }}
-        >
+        <Text as="div" size="xs" weight="semibold" color="brand" style={{ textTransform: "uppercase", letterSpacing: "0.5px" }}>
           {title}
-        </div>
+        </Text>
       </HStack>
       {children}
     </div>

@@ -1180,9 +1180,9 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
               <Text as="div" color="muted" size="sm">
                 Tenure: {porRequest.tenure || "—"}
               </Text>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+              <Text as="div" size="sm" color="body" leading={1.7}>
                 {porRequest.positionDetails || "—"}
-              </div>
+              </Text>
             </div>
 
             <div style={fieldClusterStyle}>
@@ -1191,9 +1191,9 @@ const PorProofDetailModal = ({ open, onClose, porRequest }) => {
                 {porRequest.hasDisciplinaryAction ? "Disciplinary action disclosed" : "No disciplinary action declared"}
               </Text>
               {porRequest.hasDisciplinaryAction ? (
-                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+                <Text as="div" size="sm" color="body" leading={1.7}>
                   {porRequest.disciplinaryActionDetails || "No details provided."}
-                </div>
+                </Text>
               ) : null}
             </div>
           </div>
@@ -1586,9 +1586,9 @@ const SingleSelectionAchievementEditor = ({
           </div>
         </>
       ) : (
-        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
+        <Text as="div" size="sm" color="muted" leading={1.6}>
           Leave this as `No entry` if it does not apply to you.
-        </div>
+        </Text>
       )}
     </div>
   </div>
@@ -1602,9 +1602,9 @@ const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
           {title}
         </Text>
         {subtitle && (
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+          <Text as="div" size="xs" color="muted" style={{ marginTop: "4px" }}>
             {subtitle}
-          </div>
+          </Text>
         )}
       </div>
       {actions}
@@ -1665,12 +1665,12 @@ const SummaryMetric = ({ icon: Icon, label, value }) => {
         {Icon && <Icon size={20} />}
       </div>
       <div>
-        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "var(--font-weight-semibold)" }}>
+        <Text as="div" size="xs" color="muted" weight="semibold" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
           {label}
-        </div>
-        <div style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-primary)", marginTop: "2px" }}>
+        </Text>
+        <Text as="div" size="xl" weight="bold" color="primary" style={{ marginTop: "2px" }}>
           {value}
-        </div>
+        </Text>
       </div>
     </div>
   )
@@ -1745,9 +1745,9 @@ const MarkingSchemeModal = ({ open, onClose }) => {
         <HStack gap={3} align="start" justify="between" wrap>
           <div style={{ maxWidth: "78ch" }}>
             <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Reference Guide</div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.65 }}>
+            <Text as="div" size="sm" color="body" leading={1.65}>
               Check this marking scheme before filling the form and match every entry to the correct scoring category. Only one project track applies for a student: B.Tech. project work or PhD / PG thesis work.
-            </div>
+            </Text>
           </div>
           <span style={buildMetaChipStyle()}>Total: 100 marks</span>
         </HStack>
@@ -1824,12 +1824,12 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                       }}
                     >
                       <div style={{ display: "grid", gap: "6px" }}>
-                        <div style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)", lineHeight: 1.45 }}>
+                        <Text as="div" size="base" weight="semibold" color="primary" leading={1.45}>
                           {row.categoryTitle}
-                        </div>
-                        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+                        </Text>
+                        <Text as="div" size="sm" color="body" leading={1.55}>
                           {row.categorySubtitle}
-                        </div>
+                        </Text>
                         <Text as="div" size="sm" weight="semibold" color="brand">
                           Max {row.maxMarks} marks
                         </Text>
@@ -1852,9 +1852,9 @@ const MarkingSchemeModal = ({ open, onClose }) => {
                             ) : null}
                             <div style={{ display: "grid", gap: "3px" }}>
                               {block.lines.map((line) => (
-                                <div key={line} style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+                                <Text as="div" size="sm" color="body" leading={1.55} key={line}>
                                   {line}
-                                </div>
+                                </Text>
                               ))}
                             </div>
                           </div>
@@ -2286,9 +2286,9 @@ const ReviewItemDetailModal = ({
         {SectionIcon && <SectionIcon size={18} />}
       </span>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        <Text as="div" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
           {detail.sectionTitle}
-        </div>
+        </Text>
         <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
           {item.title || "Untitled Item"}
         </div>
@@ -2354,9 +2354,9 @@ const ReviewItemDetailModal = ({
               minHeight: 102,
             }}>
               <div>
-                <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <Text as="div" size="xs" weight="bold" color="brand" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   {hasPointChange ? "Score Preview" : "Awarded Score"}
-                </div>
+                </Text>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px", minHeight: 16 }}>
                   {hasPointChange
                     ? selectedExcludedFromScoring
@@ -2452,11 +2452,11 @@ const ReviewItemDetailModal = ({
                       <Text as="div" size="sm" weight="semibold" color={selectedExcludedFromScoring ? "var(--color-danger)" : "var(--color-text-primary)"}>
                         {selectedExcludedFromScoring ? "Excluded from scoring" : "Included in scoring"}
                       </Text>
-                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                      <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
                         {selectedExcludedFromScoring
                           ? "This entry will count as 0 points after saving."
                           : "This entry contributes points according to its classification."}
-                      </div>
+                      </Text>
                     </div>
                     <Button
                       size="sm"
@@ -2468,18 +2468,18 @@ const ReviewItemDetailModal = ({
                       {selectedExcludedFromScoring ? "Restore Scoring" : "Exclude from Scoring"}
                     </Button>
                   </div>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.4 }}>
+                  <Text as="div" size="xs" color="muted" leading={1.4}>
                     Admins can re-classify the category or exclude entries that should not count. Score changes are previewed above before saving.
-                  </div>
+                  </Text>
                 </VStack>
               ) : (
                 <div>
                   <Text as="div" size="sm" weight="semibold" color="primary">
                     {formatScoreTypeLabel(item.scoreType)}
                   </Text>
-                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+                  <Text as="div" size="xs" color="muted" style={{ marginTop: "4px" }}>
                     Verified category (Read-only view)
-                  </div>
+                  </Text>
                 </div>
               )}
             </div>
@@ -2631,9 +2631,9 @@ const HodVerificationsCard = ({ verifications = [] }) => {
                   {formatHodVerificationActionLabel(entry?.action)}
                 </Badge>
               </HStack>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+              <Text as="div" size="sm" color="body" leading={1.7}>
                 {entry?.remarks || "No remarks provided."}
-              </div>
+              </Text>
               <Text as="div" size="xs" color="muted">
                 {entry?.verifiedAt ? new Date(entry.verifiedAt).toLocaleString() : "Timestamp unavailable"}
               </Text>
@@ -2641,9 +2641,9 @@ const HodVerificationsCard = ({ verifications = [] }) => {
           ))}
         </div>
       ) : (
-        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.7 }}>
+        <Text as="div" size="sm" color="muted" leading={1.7}>
           No HOD verification or comments have been recorded yet.
-        </div>
+        </Text>
       )}
     </PorDetailCard>
   )
@@ -2677,9 +2677,9 @@ const EditCourseworkScoreModal = ({
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
         <div style={infoBoxStyle}>
           <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>Coursework Score</div>
-          <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+          <Text as="div" color="body" size="sm" leading={1.6}>
             Update the verified CGPA / CPI. The coursework points and total score will be recalculated after saving.
-          </div>
+          </Text>
         </div>
 
         <div style={fieldClusterStyle}>
@@ -2770,9 +2770,9 @@ const EditProjectThesisGradesModal = ({
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
         <div style={infoBoxStyle}>
           <div style={{ ...sectionLabelStyle, marginBottom: "6px" }}>BTP / Project Grade Score</div>
-          <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+          <Text as="div" color="body" size="sm" leading={1.6}>
             Update the verified BTP award and project grade. Project/thesis points and total score will be recalculated after saving.
-          </div>
+          </Text>
         </div>
 
         <Grid min={240} gap={3}>
@@ -3147,9 +3147,9 @@ const ReviewModal = ({
 
               {/* Declarations (Yes/No fields) styled beautifully! */}
               <div style={{ marginTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-primary)", paddingTop: "var(--spacing-4)" }}>
-                <div style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-3)" }}>
+                <Text as="div" size="xs" weight="semibold" color="secondary" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-3)" }}>
                   Disclosures & Declarations
-                </div>
+                </Text>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
                   <Surface padding="10px 12px" className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Passing Out Student</Text>
@@ -3215,15 +3215,15 @@ const ReviewModal = ({
                 <Grid min={240} gap={4}>
                   {application.projectThesis?.btpAwardLevel !== "none" ? (
                     <div className="por-detail-hero-box" style={{ background: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)", borderLeft: "4px solid var(--color-warning)" }}>
-                      <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
+                      <Text as="div" size="xs" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-2)" }}>
                         BTP Award
-                      </div>
+                      </Text>
                       <Text as="div" weight="bold" color="primary" size="md">
                         {BTP_AWARD_OPTIONS.find((option) => option.value === application.projectThesis?.btpAwardLevel)?.label || application.projectThesis?.btpAwardLevel}
                       </Text>
-                      <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                      <Text as="div" color="body" size="sm" style={{ marginTop: "6px" }}>
                         {application.projectThesis?.btpAwardTitle || "—"}
-                      </div>
+                      </Text>
                       {application.projectThesis?.btpAwardNotes ? (
                         <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
                           Notes: {application.projectThesis.btpAwardNotes}
@@ -3241,15 +3241,15 @@ const ReviewModal = ({
 
                   {application.projectThesis?.projectGrade !== "none" ? (
                     <div className="por-detail-hero-box" style={{ background: "var(--color-bg-secondary)", border: "1px solid var(--color-border-primary)", borderLeft: "4px solid var(--color-primary)" }}>
-                      <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
+                      <Text as="div" size="xs" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--spacing-2)" }}>
                         Project Grade
-                      </div>
+                      </Text>
                       <Text as="div" weight="bold" color="primary" size="md">
                         {PROJECT_GRADE_OPTIONS.find((option) => option.value === application.projectThesis?.projectGrade)?.label || application.projectThesis?.projectGrade}
                       </Text>
-                      <div style={{ marginTop: "6px", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                      <Text as="div" color="body" size="sm" style={{ marginTop: "6px" }}>
                         {application.projectThesis?.projectGradeTitle || "—"}
-                      </div>
+                      </Text>
                       {application.projectThesis?.projectGradeNotes ? (
                         <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
                           Notes: {application.projectThesis.projectGradeNotes}
@@ -3358,9 +3358,9 @@ const ReviewModal = ({
                   </div>
                   <div style={fieldClusterStyle}>
                     <span style={sectionLabelStyle}>Review Remarks / Notes</span>
-                    <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                    <Text as="div" color="body" size="sm" leading={1.7}>
                       {application.review?.remarks || "No review remarks have been added yet."}
-                    </div>
+                    </Text>
                   </div>
                 </div>
               )}
@@ -4178,24 +4178,12 @@ const OverallBestPerformerPage = () => {
         key: "calculatedTotal",
         render: (application) => (
           <div style={{ display: "grid", gap: "4px" }}>
-            <div
-              style={{
-                color: "var(--color-text-primary)",
-                fontWeight: "var(--font-weight-semibold)",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Text as="div" color="primary" weight="semibold" style={{ whiteSpace: "nowrap" }}>
               {application.calculatedTotal ?? "—"}
-            </div>
-            <div
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-muted)",
-                whiteSpace: "nowrap",
-              }}
-            >
+            </Text>
+            <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
               Auto score
-            </div>
+            </Text>
           </div>
         ),
       },
@@ -4207,15 +4195,9 @@ const OverallBestPerformerPage = () => {
             <div>
               <Badge variant="info">{application.finalScore ?? "—"}</Badge>
             </div>
-            <div
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-muted)",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
               Reviewed score
-            </div>
+            </Text>
           </div>
         ),
       },
@@ -4236,25 +4218,12 @@ const OverallBestPerformerPage = () => {
           const updatedAt = new Date(application.updatedAt)
           return (
             <div style={{ display: "grid", gap: "4px" }}>
-              <div
-                style={{
-                  fontSize: "var(--font-size-sm)",
-                  color: "var(--color-text-primary)",
-                  fontWeight: "var(--font-weight-medium)",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <Text as="div" size="sm" color="primary" weight="medium" style={{ whiteSpace: "nowrap" }}>
                 {updatedAt.toLocaleDateString()}
-              </div>
-              <div
-                style={{
-                  fontSize: "var(--font-size-xs)",
-                  color: "var(--color-text-muted)",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              </Text>
+              <Text as="div" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
                 {updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-              </div>
+              </Text>
             </div>
           )
         },
@@ -4429,9 +4398,9 @@ const OverallBestPerformerPage = () => {
 
             {!isReviewerView && currentOccurrence.description ? (
               <Surface bg="brand">
-                <div style={{ ...panelBodyStyle, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+                <Text as="div" size="sm" color="body" style={{ whiteSpace: "pre-wrap" }}>
                   {currentOccurrence.description}
-                </div>
+                </Text>
               </Surface>
             ) : null}
           </>
@@ -4530,9 +4499,9 @@ const OverallBestPerformerPage = () => {
                       Reference & Evaluation
                     </Text>
                   </div>
-                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6 }}>
+                  <Text as="div" size="sm" color="body" leading={1.6} style={{ marginTop: "var(--spacing-2)" }}>
                     Achievements are mapped to specific point scales. Review the official marking scheme to ensure correct categories and supporting proof documents are uploaded.
-                  </div>
+                  </Text>
                 </div>
 
                 <Button variant="secondary" onClick={() => setShowMarkingSchemeModal(true)} style={{ width: "100%", justifyContent: "center" }}>
@@ -4998,9 +4967,9 @@ const OverallBestPerformerPage = () => {
                       onChange={(event) => updatePersonalAcademicField("isPassingOutStudent", event.target.checked)}
                       style={{ marginTop: 4 }}
                     />
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                    <Text as="span" size="sm" leading={1.7}>
                       I confirm that I am a passing out student and eligible to apply for this award.
-                    </span>
+                    </Text>
                   </label>
                   <label style={checklistItemStyle}>
                     <input
@@ -5010,9 +4979,9 @@ const OverallBestPerformerPage = () => {
                       onChange={(event) => updatePersonalAcademicField("hasNoDisciplinaryAction", event.target.checked)}
                       style={{ marginTop: 4 }}
                     />
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                    <Text as="span" size="sm" leading={1.7}>
                       I confirm that I have not been subjected to any disciplinary action.
-                    </span>
+                    </Text>
                   </label>
                   <label style={checklistItemStyle}>
                     <input
@@ -5022,9 +4991,9 @@ const OverallBestPerformerPage = () => {
                       onChange={(event) => updatePersonalAcademicField("hasNoFrGrade", event.target.checked)}
                       style={{ marginTop: 4 }}
                     />
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                    <Text as="span" size="sm" leading={1.7}>
                       I confirm that no FR grade is accounted in my academics for this application.
-                    </span>
+                    </Text>
                   </label>
                   <label style={checklistItemStyle}>
                     <input
@@ -5034,9 +5003,9 @@ const OverallBestPerformerPage = () => {
                       onChange={(event) => updatePersonalAcademicField("declarationAccepted", event.target.checked)}
                       style={{ marginTop: 4 }}
                     />
-                    <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.7 }}>
+                    <Text as="span" size="sm" leading={1.7}>
                       I hereby declare that the information provided by me is true and correct to the best of my knowledge and belief. If any of the information is found to be false or misleading, I authorize the Institute to take appropriate action against me as deemed fit.
-                    </span>
+                    </Text>
                   </label>
 
                   <div style={{ ...infoBoxStyle, display: "grid", gap: "var(--spacing-3)" }}>
@@ -5045,9 +5014,9 @@ const OverallBestPerformerPage = () => {
                       <Save size={16} /> Save application
                     </Button>
                     {!canEditStudentForm ? (
-                      <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+                      <Text as="div" color="muted" size="sm" leading={1.6}>
                         This application is read-only because the deadline has passed or the submission has already been reviewed.
-                      </div>
+                      </Text>
                     ) : null}
                   </div>
                 </div>
@@ -5169,9 +5138,9 @@ const OverallBestPerformerPage = () => {
           <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
             <div style={fieldClusterStyle}>
               <span style={sectionLabelStyle}>Important</span>
-              <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", lineHeight: 1.6 }}>
+              <Text as="div" color="body" size="sm" leading={1.6}>
                 Changing this list affects future eligibility for this occurrence, but it does not remove or delete already submitted applications.
-              </div>
+              </Text>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) auto", gap: "var(--spacing-3)", alignItems: "end" }}>
@@ -5236,9 +5205,9 @@ const OverallBestPerformerPage = () => {
                         <Text as="div" size="sm" weight="semibold" color="primary">
                           {student.name || "Student record will be validated on save"}
                         </Text>
-                        <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px" }}>
+                        <Text as="div" size="xs" color="muted" style={{ marginTop: "4px" }}>
                           {student.rollNumber}
-                        </div>
+                        </Text>
                       </div>
                       <div style={{ minWidth: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
                         <div>{student.email || "Name/email not loaded yet"}</div>

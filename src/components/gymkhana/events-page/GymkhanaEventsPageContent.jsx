@@ -532,22 +532,13 @@ function YearCalendarView({
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 3 }}>
               {CALENDAR_WEEKDAY_LABELS.map((day, index) => (
-                <span
-                  key={day}
-                  style={{
-                    textAlign: "center",
-                    fontSize: 8.5,
-                    fontWeight: "var(--font-weight-semibold)",
-                    color:
-                      index === 6
+                <Text as="span" align="center" size={8.5} weight="semibold" color={index === 6
                         ? "var(--color-danger)"
                         : index === 5
                           ? "var(--color-info)"
-                          : "var(--color-text-light)",
-                  }}
-                >
+                          : "var(--color-text-light)"} key={day}>
                   {day[0]}
-                </span>
+                </Text>
               ))}
             </div>
 

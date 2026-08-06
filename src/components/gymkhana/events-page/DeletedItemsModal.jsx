@@ -32,21 +32,14 @@ const DeletedRow = ({ item, onRestore, restoring, lastRow }) => (
     }}
   >
     <div style={{ flex: 1, minWidth: 0 }}>
-      <p
-        style={{
-          fontSize: "var(--font-size-sm)",
-          fontWeight: "var(--font-weight-medium)",
-          color: "var(--color-text-heading)",
-          marginBottom: "var(--spacing-1)",
-        }}
-      >
+      <Text size="sm" weight="medium" color="heading" style={{ marginBottom: "var(--spacing-1)" }}>
         {item.eventId?.title || "Untitled event"}
         {item.eventId?.category ? (
           <Text as="span" color="muted" weight="normal">
             {" "}· {item.eventId.category}
           </Text>
         ) : null}
-      </p>
+      </Text>
       <Text size="xs" color="muted">
         Submitted by {item.submittedBy?.name || "Unknown"}
       </Text>

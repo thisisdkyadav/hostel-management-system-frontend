@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, createElement } from "react"
 import { Tabs, DataTable, StatusBadge } from "czero/react"
-import { StatCards } from "@/components/ui"
+import { StatCards, Text } from "@/components/ui"
 import { FaClipboardList, FaInbox, FaRegCheckCircle, FaDoorOpen } from "react-icons/fa"
 import { MdOutlineWatchLater } from "react-icons/md"
 import PageHeader from "../../components/common/PageHeader"
@@ -111,7 +111,7 @@ const AccommodationStaffPage = () => {
     { key: "persons", header: "Guests", align: "center", render: (r) => r.persons ?? (r.guests?.length || 0) },
     { key: "total", header: "Amount", align: "right", render: (r) => money(r.quote?.total) },
     { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} tone={getStatusTone(r.status)}>{r.status}</StatusBadge> },
-    { key: "id", header: "ID", align: "right", render: (r) => <span style={{ fontFamily: "monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>{shortId(r._id || r.id)}</span> },
+    { key: "id", header: "ID", align: "right", render: (r) => <Text as="span" size="10px" color="muted" style={{ fontFamily: "monospace" }}>{shortId(r._id || r.id)}</Text> },
   ]
 
   return (

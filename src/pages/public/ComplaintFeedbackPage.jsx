@@ -77,13 +77,9 @@ const ComplaintFeedbackPage = () => {
             }}>
                 <Card style={{ padding: 'var(--spacing-8)', textAlign: 'center' }}>
                     <Spinner size="large" />
-                    <p style={{
-                        marginTop: 'var(--spacing-4)',
-                        color: 'var(--color-text-body)',
-                        fontSize: 'var(--font-size-base)'
-                    }}>
+                    <Text color="body" size="base" style={{ marginTop: 'var(--spacing-4)' }}>
                         Loading complaint details...
-                    </p>
+                    </Text>
                 </Card>
             </div>
         )
@@ -112,13 +108,9 @@ const ComplaintFeedbackPage = () => {
                     }}>
                         Unable to Load Feedback Form
                     </h2>
-                    <p style={{
-                        color: 'var(--color-text-body)',
-                        marginBottom: 'var(--spacing-4)',
-                        fontSize: 'var(--font-size-base)'
-                    }}>
+                    <Text color="body" size="base" style={{ marginBottom: 'var(--spacing-4)' }}>
                         {error}
-                    </p>
+                    </Text>
                     <Link to="/login">
                         <Button variant="primary">
                             <FaArrowRight /> Go to Login
@@ -152,13 +144,9 @@ const ComplaintFeedbackPage = () => {
                     }}>
                         Thank You for Your Feedback!
                     </h2>
-                    <p style={{
-                        color: 'var(--color-text-body)',
-                        marginBottom: 'var(--spacing-4)',
-                        fontSize: 'var(--font-size-base)'
-                    }}>
+                    <Text color="body" size="base" style={{ marginBottom: 'var(--spacing-4)' }}>
                         Your feedback helps us improve our services and resolve issues more effectively.
-                    </p>
+                    </Text>
                     <Link to="/login">
                         <Button variant="primary">
                             <FaArrowRight /> Go to Login
@@ -181,7 +169,7 @@ const ComplaintFeedbackPage = () => {
         }}>
             <div style={{ maxWidth: '600px', width: '100%' }}>
                 {/* Header */}
-                <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-6)' }}>
+                <Text as="div" align="center" style={{ marginBottom: 'var(--spacing-6)' }}>
                     <h1 style={{
                         fontSize: 'var(--font-size-2xl)',
                         fontWeight: 'var(--font-weight-bold)',
@@ -193,7 +181,7 @@ const ComplaintFeedbackPage = () => {
                     <Text color="body" size="base">
                         Hello {complaint.studentName}, please rate the resolution of your complaint.
                     </Text>
-                </div>
+                </Text>
 
                 <Card>
                     {/* Complaint Details */}
@@ -316,18 +304,13 @@ const ComplaintFeedbackPage = () => {
                                     </button>
                                 ))}
                                 {feedbackRating > 0 && (
-                                    <span style={{
-                                        marginLeft: 'var(--spacing-2)',
-                                        color: 'var(--color-text-body)',
-                                        fontWeight: 'var(--font-weight-medium)',
-                                        fontSize: 'var(--font-size-sm)'
-                                    }}>
+                                    <Text as="span" color="body" weight="medium" size="sm" style={{ marginLeft: 'var(--spacing-2)' }}>
                                         {feedbackRating === 1 && "Poor"}
                                         {feedbackRating === 2 && "Fair"}
                                         {feedbackRating === 3 && "Good"}
                                         {feedbackRating === 4 && "Very Good"}
                                         {feedbackRating === 5 && "Excellent"}
-                                    </span>
+                                    </Text>
                                 )}
                             </HStack>
                         </div>

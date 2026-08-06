@@ -73,10 +73,10 @@ const LeavesCardView = ({ leaves, onViewDetails }) => {
             </div>
             <span style={{ ...getStatusStyle(leave.status), padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)' }}>{leave.status || "Pending"}</span>
           </HStack>
-          <div style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{leave.reason}</div>
-          <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+          <Text as="div" size="sm" color="secondary" style={{ marginTop: 'var(--spacing-3)' }}>{leave.reason}</Text>
+          <Text as="div" size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>
             {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-          </div>
+          </Text>
         </div>
       ))}
     </div>

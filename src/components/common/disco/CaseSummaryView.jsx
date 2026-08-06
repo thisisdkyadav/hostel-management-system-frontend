@@ -239,26 +239,12 @@ const CaseSummaryView = ({
             }`,
           }}
         >
-          <div
-            style={{
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-semibold)",
-              color: "var(--color-text-muted)",
-              marginBottom: 4,
-              textTransform: "uppercase",
-            }}
-          >
+          <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 4, textTransform: "uppercase" }}>
             Final Decision
-          </div>
-          <div
-            style={{
-              fontSize: "var(--font-size-sm)",
-              color: "var(--color-text-body)",
-              lineHeight: 1.5,
-            }}
-          >
+          </Text>
+          <Text as="div" size="sm" color="body" leading={1.5}>
             {finalDecision.decisionDescription}
-          </div>
+          </Text>
         </div>
       )}
 
@@ -283,17 +269,9 @@ const CaseSummaryView = ({
             <VStack gap={12}>
               {accusedStudents.length > 0 && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-danger)",
-                      marginBottom: 6,
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="danger" style={{ marginBottom: 6, textTransform: "uppercase" }}>
                     Accused ({accusedStudents.length})
-                  </div>
+                  </Text>
                   <HStack gap={6} wrap>
                     {accusedStudents.map((student) => (
                       <CompactStudentTag
@@ -308,17 +286,9 @@ const CaseSummaryView = ({
               )}
               {accusingStudents.length > 0 && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-warning)",
-                      marginBottom: 6,
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="warning" style={{ marginBottom: 6, textTransform: "uppercase" }}>
                     Accusing ({accusingStudents.length})
-                  </div>
+                  </Text>
                   <HStack gap={6} wrap>
                     {accusingStudents.map((student) => (
                       <CompactStudentTag
@@ -358,16 +328,9 @@ const CaseSummaryView = ({
               {/* Statements */}
               {statements.length > 0 && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-muted)",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
                     Statements
-                  </div>
+                  </Text>
                   <HStack gap={6} wrap>
                     {statements.map((statement, index) => (
                       <button
@@ -393,16 +356,9 @@ const CaseSummaryView = ({
               {/* Evidence */}
               {evidenceDocuments.length > 0 && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-muted)",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
                     Evidence
-                  </div>
+                  </Text>
                   <HStack gap={6} wrap>
                     {evidenceDocuments.map((doc, index) => (
                       <button
@@ -424,16 +380,9 @@ const CaseSummaryView = ({
               {/* Extra Documents */}
               {extraDocuments.length > 0 && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-muted)",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
                     Extra Documents
-                  </div>
+                  </Text>
                   <HStack gap={6} wrap>
                     {extraDocuments.map((doc, index) => (
                       <button
@@ -455,16 +404,9 @@ const CaseSummaryView = ({
               {/* Committee Minutes */}
               {caseData.committeeMeetingMinutes?.pdfUrl && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: "var(--font-size-xs)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      color: "var(--color-text-muted)",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
                     Committee Minutes
-                  </div>
+                  </Text>
                   <button
                     type="button"
                     style={{

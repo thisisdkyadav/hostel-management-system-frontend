@@ -2779,9 +2779,9 @@ const ElectionsPage = () => {
 
               <Grid min={320} gap={4}>
                 <div style={flatPanelStyle}>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                  <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students With Active Or Used Link
-                  </div>
+                  </Text>
                   <Table>
                     <Table.Header>
                       <Table.Row>
@@ -2811,9 +2811,9 @@ const ElectionsPage = () => {
                 </div>
 
                 <div style={flatPanelStyle}>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                  <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Without Active Link
-                  </div>
+                  </Text>
                   <Table>
                     <Table.Header>
                       <Table.Row>
@@ -2987,9 +2987,9 @@ const ElectionsPage = () => {
 
               <Grid min={320} gap={4}>
                 <div style={flatPanelStyle}>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                  <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Who Received Test Email
-                  </div>
+                  </Text>
                   <Table>
                     <Table.Header>
                       <Table.Row>
@@ -3019,9 +3019,9 @@ const ElectionsPage = () => {
                 </div>
 
                 <div style={flatPanelStyle}>
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                  <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Who Have Not Received Test Email
-                  </div>
+                  </Text>
                   <Table>
                     <Table.Header>
                       <Table.Row>

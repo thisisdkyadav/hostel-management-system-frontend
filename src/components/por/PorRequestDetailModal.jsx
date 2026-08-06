@@ -356,9 +356,9 @@ const PorRequestDetailModal = ({
             >
               {request.hasDisciplinaryAction ? (
                 <div className="por-detail-alert-card">
-                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
+                  <Text as="div" weight="bold" color="danger" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
                     Disciplinary Action Disclosed
-                  </div>
+                  </Text>
                   <div style={detailTextStyle}>
                     {request.disciplinaryActionDetails || "No details provided."}
                   </div>
@@ -368,9 +368,9 @@ const PorRequestDetailModal = ({
                   <Text as="div" weight="bold" color="success" size="sm">
                     ✓ No Disciplinary Action Declared
                   </Text>
-                  <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                  <Text as="div" size="xs" style={{ marginTop: "var(--spacing-1)" }}>
                     The student has declared that they have no past or active disciplinary actions.
-                  </div>
+                  </Text>
                 </div>
               )}
             </PorDetailCard>
@@ -397,9 +397,9 @@ const PorRequestDetailModal = ({
 
                   {isStudentAffairsApproval ? (
                     <div style={infoBoxStyle}>
-                      <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
                         Next Recommenders
-                      </span>
+                      </Text>
                       <div
                         className="grid grid-cols-1 gap-3"
                         style={{ marginTop: "var(--spacing-2)" }}

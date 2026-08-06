@@ -63,9 +63,9 @@ const ElectionSupportConfirmationPage = () => {
       <div style={pageShellStyle}>
         <Card style={{ width: "100%", maxWidth: "560px", textAlign: "center", padding: "var(--spacing-8)" }}>
           <Spinner size="large" />
-          <div style={{ marginTop: "var(--spacing-4)", color: "var(--color-text-muted)" }}>
+          <Text as="div" color="muted" style={{ marginTop: "var(--spacing-4)" }}>
             Loading support request...
-          </div>
+          </Text>
         </Card>
       </div>
     )

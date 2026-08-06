@@ -64,7 +64,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
 
   const templateInstructions = (
     <div>
-      <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
+      <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
       <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
@@ -81,9 +81,9 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
           <Text as="span" weight="medium">status:</Text> One of: {MANUAL_ROOM_STATUSES.join(", ")} (optional)
         </li>
       </ul>
-      <p style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-2)' }}>
+      <Text size="xs" style={{ marginTop: 'var(--spacing-2)' }}>
         <Text as="span" color="danger">*</Text> Required fields
-      </p>
+      </Text>
     </div>
   )
 
@@ -126,9 +126,9 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
           <VStack gap="medium">
             <Surface bg="brand" padding="var(--spacing-4) var(--spacing-4)" radius="lg">
               <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>
+              <Text size="xs" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>
                 Ready to update {parsedCsvData.length} room(s) in {hostel.name}
-              </p>
+              </Text>
             </Surface>
 
             <Table>

@@ -113,7 +113,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
                 ))}
               </div>
               {item.images.length > 3 && (
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)' }}>+{item.images.length - 3} more images</p>
+                <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>+{item.images.length - 3} more images</Text>
               )}
             </div>
           )}

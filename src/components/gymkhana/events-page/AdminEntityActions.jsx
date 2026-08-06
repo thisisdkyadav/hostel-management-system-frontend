@@ -9,7 +9,7 @@
 
 import { useState } from "react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Textarea } from "@/components/ui/form"
 import { Trash2 } from "lucide-react"
 
@@ -51,16 +51,10 @@ const AdminEntityActions = ({ onDelete, deleting = false, label = "item" }) => {
           </>
         }
       >
-        <p
-          style={{
-            marginBottom: "var(--spacing-3)",
-            color: "var(--color-text-body)",
-            fontSize: "var(--font-size-sm)",
-          }}
-        >
+        <Text color="body" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>
           This {label} will be soft-deleted (reversible) and unlinked from its event.
           The action and your reason are recorded in the audit log.
-        </p>
+        </Text>
         <Textarea
           name="adminDeleteReason"
           value={reason}

@@ -214,9 +214,9 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
                 <Text as="div" weight="semibold" color="primary">
                   {fileName || "No file selected"}
                 </Text>
-                <div style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text as="div" size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                   {rollNumbers.length > 0 ? `${rollNumbers.length} unique roll numbers ready` : "Upload a CSV file to continue"}
-                </div>
+                </Text>
               </div>
               <HStack gap={2}>
                 <Button type="button" variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>

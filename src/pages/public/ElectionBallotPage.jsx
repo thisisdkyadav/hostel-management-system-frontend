@@ -133,9 +133,9 @@ const ElectionBallotPage = () => {
       <div style={{ ...pageShellStyle, display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-5)" }}>
         <Card style={{ width: "100%", maxWidth: "560px", textAlign: "center", padding: "var(--spacing-8)" }}>
           <Spinner size="large" />
-          <div style={{ marginTop: "var(--spacing-4)", color: "var(--color-text-muted)" }}>
+          <Text as="div" color="muted" style={{ marginTop: "var(--spacing-4)" }}>
             Loading voting page...
-          </div>
+          </Text>
         </Card>
       </div>
     )

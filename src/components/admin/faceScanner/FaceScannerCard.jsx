@@ -143,9 +143,9 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             {/* Credentials Display */}
             {showCredentials && newCredentials && (
                 <Surface bg="brand" padding={4} radius="lg" border="var(--border-1) solid var(--color-primary-light)" style={{ marginBottom: "var(--spacing-4)" }}>
-                    <p style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary-dark)", marginBottom: "var(--spacing-2)" }}>
+                    <Text size="sm" weight="medium" color="var(--color-primary-dark)" style={{ marginBottom: "var(--spacing-2)" }}>
                         New Credentials (save now!)
-                    </p>
+                    </Text>
                     <VStack gap={2}>
                         <HStack gap="none" align="center" justify="between">
                             <Text as="span" size="sm" color="tertiary">Password:</Text>

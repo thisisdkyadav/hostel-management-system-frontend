@@ -142,10 +142,10 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
         <VStack gap={5}>
           <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-8)', textAlign: 'center', cursor: 'pointer', backgroundColor: 'var(--color-bg-hover)', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
             <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-muted)' }} />
-            <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Drag and drop a CSV file here, or click to select a file</p>
-            <p style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+            <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>Drag and drop a CSV file here, or click to select a file</Text>
+            <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-3)' }}>
               <strong>Required fields:</strong> rollNumber, insuranceNumber
-            </p>
+            </Text>
             <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
           <VStack gap="none" align="center">
@@ -154,7 +154,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
             </Button>
 
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
-              <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
+              <Text weight="medium" style={{ marginBottom: 'var(--spacing-1)' }}>Field Input Types:</Text>
               <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-1) var(--spacing-4)' }}>
                 <li>
                   <Text as="span" weight="medium">rollNumber:</Text> String (Required)
@@ -186,7 +186,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
           {isLoading && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' }}>
               <Spinner size="var(--icon-xl)" thickness="thin" />
-              <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Processing file...</span>
+              <Text as="span" size="sm" color="muted" style={{ marginLeft: 'var(--spacing-2)' }}>Processing file...</Text>
             </div>
           )}
         </VStack>

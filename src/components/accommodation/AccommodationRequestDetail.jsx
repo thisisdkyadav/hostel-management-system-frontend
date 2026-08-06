@@ -120,7 +120,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
 
             {status === ACCOMMODATION_STATUS.RETURNED_TO_STUDENT && (
               <SectionCard icon={RotateCcw} title="Sent back for changes" accentColor="var(--color-warning)">
-                {lastReturn?.reason && <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>{lastReturn.reason}</p>}
+                {lastReturn?.reason && <Text size="sm" color="body" style={{ marginBottom: "var(--spacing-3)" }}>{lastReturn.reason}</Text>}
                 <Button size="sm" onClick={() => onResubmit?.(request)}>Edit &amp; resubmit</Button>
               </SectionCard>
             )}

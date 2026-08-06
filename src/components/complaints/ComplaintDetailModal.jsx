@@ -164,13 +164,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
         </IconCircle>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontWeight: "var(--font-weight-medium)",
-          color: "var(--color-text-primary)",
-          marginBottom: "2px"
-        }}>
+        <Text as="div" weight="medium" color="primary" style={{ marginBottom: "2px" }}>
           {person?.name}
-        </div>
+        </Text>
         <div style={{
           fontSize: "var(--font-size-xs)",
           color: "var(--color-text-muted)",
@@ -201,14 +197,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           strokeWidth={1.5}
         />
       ))}
-      <span style={{
-        marginLeft: "var(--spacing-2)",
-        color: "var(--color-text-body)",
-        fontSize: "var(--font-size-sm)",
-        fontWeight: "var(--font-weight-medium)"
-      }}>
+      <Text as="span" color="body" size="sm" weight="medium" style={{ marginLeft: "var(--spacing-2)" }}>
         {rating}/5
-      </span>
+      </Text>
     </HStack>
   )
 
@@ -403,9 +394,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               accentColor="var(--color-primary)"
               onClick={complaintData.reportedBy.role === "Student" && canViewReporterProfile ? handleReporterClick : undefined}
               headerAction={complaintData.reportedBy.role === "Student" && canViewReporterProfile ? (
-                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-primary)", opacity: 0.8 }}>
+                <Text as="span" size="xs" color="brand" style={{ opacity: 0.8 }}>
                   View profile →
-                </span>
+                </Text>
               ) : null}
             >
               <PersonCard person={complaintData.reportedBy} />
@@ -414,27 +405,17 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
 
           {/* Description Section */}
           <SectionCard icon={ClipboardList} title="Description" accentColor="var(--color-text-tertiary)">
-            <div style={{
-              color: "var(--color-text-body)",
-              fontSize: "var(--font-size-base)",
-              lineHeight: "1.6",
-              whiteSpace: "pre-wrap"
-            }}>
+            <Text as="div" color="body" size="base" leading="1.6" style={{ whiteSpace: "pre-wrap" }}>
               {complaintData.description}
-            </div>
+            </Text>
           </SectionCard>
 
           {/* Resolution Notes Section */}
           <SectionCard icon={FileText} title="Resolution Notes" accentColor="var(--color-success)">
             {complaintData.resolutionNotes ? (
-              <div style={{
-                color: "var(--color-text-body)",
-                fontSize: "var(--font-size-base)",
-                lineHeight: "1.6",
-                whiteSpace: "pre-wrap"
-              }}>
+              <Text as="div" color="body" size="base" leading="1.6" style={{ whiteSpace: "pre-wrap" }}>
                 {complaintData.resolutionNotes}
-              </div>
+              </Text>
             ) : (
               <div style={{
                 color: "var(--color-text-muted)",

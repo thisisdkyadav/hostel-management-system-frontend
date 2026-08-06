@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ChevronRight, History, Pin, Search } from "lucide-react"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, Text } from "@/components/ui"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 
@@ -208,12 +208,9 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
                         style={{ color: isExpanded ? accent : "var(--color-text-muted)" }}
                       />
                       <category.icon size={16} strokeWidth={2} className="shrink-0" style={{ color: accent }} />
-                      <span
-                        className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium"}`}
-                        style={{ color: accent }}
-                      >
+                      <Text as="span" color={accent} className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium"}`}>
                         {category.name}
-                      </span>
+                      </Text>
                       <span
                         className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0"
                         style={{ backgroundColor: tint(14), color: accent }}

@@ -183,7 +183,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                               </IconCircle>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
                                 <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
-                                <div className="sm:hidden" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</div>
+                                <Text as="div" size="xs" color="muted" className="sm:hidden">{student.rollNumber}</Text>
                                 <Text as="div" size="xs" color="muted">{student.email}</Text>
                               </div>
                             </HStack>

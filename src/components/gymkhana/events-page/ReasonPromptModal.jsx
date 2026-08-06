@@ -7,7 +7,7 @@
 
 import { useState } from "react"
 import { Button } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Textarea } from "@/components/ui/form"
 
 const MIN_REASON = 3
@@ -55,15 +55,9 @@ const ReasonPromptModal = ({
                 </>
             }
         >
-            <p
-                style={{
-                    marginBottom: "var(--spacing-3)",
-                    color: "var(--color-text-body)",
-                    fontSize: "var(--font-size-sm)",
-                }}
-            >
+            <Text color="body" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>
                 {description}
-            </p>
+            </Text>
             <Textarea
                 name="overrideReason"
                 value={reason}

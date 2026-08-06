@@ -269,15 +269,9 @@ const MyTasksPage = () => {
                           {getTaskStatusBadge(task.status)}
                         </div>
                       </div>
-                      <p
-                        className="line-clamp-2 mb-3"
-                        style={{
-                          color: 'var(--color-text-muted)',
-                          fontSize: 'var(--font-size-base)'
-                        }}
-                      >
+                      <Text color="muted" size="base" className="line-clamp-2 mb-3">
                         {task.description}
-                      </p>
+                      </Text>
 
                       <div
                         style={{
@@ -286,17 +280,14 @@ const MyTasksPage = () => {
                           marginTop: 'var(--spacing-3)'
                         }}
                       >
-                        <div
-                          className="flex justify-between"
-                          style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}
-                        >
+                        <Text as="div" size="xs" color="muted" className="flex justify-between">
                           <span>Category: {task.category}</span>
                           <Text as="span" color={isPastDue(task.dueDate) && task.status !== "Completed"
                                 ? 'var(--color-danger)'
                                 : 'var(--color-text-muted)'} weight={isPastDue(task.dueDate) && task.status !== "Completed" ? 500 : 400}>
                             Due: {new Date(task.dueDate).toLocaleDateString()}
                           </Text>
-                        </div>
+                        </Text>
                       </div>
 
                       {/* Quick Action Buttons */}
@@ -344,12 +335,9 @@ const MyTasksPage = () => {
                   </div>
                 ))
               ) : (
-                <div
-                  className="col-span-3 flex justify-center items-center py-12"
-                  style={{ color: 'var(--color-text-muted)' }}
-                >
+                <Text as="div" color="muted" className="col-span-3 flex justify-center items-center py-12">
                   No tasks found matching the current filters.
-                </div>
+                </Text>
               )}
             </div>
 

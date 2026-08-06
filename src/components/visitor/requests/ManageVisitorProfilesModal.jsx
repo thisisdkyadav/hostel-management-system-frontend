@@ -50,7 +50,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
             <div style={{ paddingTop: "var(--spacing-8)", paddingBottom: "var(--spacing-8)", textAlign: "center" }}>
               <FaUserAlt style={{ margin: "0 auto", height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-border-primary)" }} />
               <h3 style={{ marginTop: "var(--spacing-4)", fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>No visitor profiles found</h3>
-              <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</p>
+              <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</Text>
             </div>
           ) : (
             <div style={{ overflow: "hidden", borderRadius: "var(--radius-lg)", border: `var(--border-1) solid var(--color-border-primary)` }}>

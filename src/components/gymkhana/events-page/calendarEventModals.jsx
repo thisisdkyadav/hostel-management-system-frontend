@@ -94,15 +94,9 @@ export const GymkhanaCreateCalendarModal = ({
     }
   >
     <VStack gap={3}>
-      <p
-        style={{
-          margin: 0,
-          color: "var(--color-text-muted)",
-          fontSize: "var(--font-size-sm)",
-        }}
-      >
+      <Text color="muted" size="sm" style={{ margin: 0 }}>
         Select the academic year for the new activity calendar.
-      </p>
+      </Text>
       <label style={formLabelStyles} htmlFor="newAcademicYear">
         Academic Year
       </label>
@@ -280,25 +274,12 @@ export const GymkhanaEventDetailsModal = ({
                     }}
                   >
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-heading)",
-                        }}
-                      >
+                      <Text size="xs" weight="semibold" color="heading" style={{ margin: 0 }}>
                         Proposal
-                      </p>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
-                      >
+                      </Text>
+                      <Text size="xs" color="muted" style={{ margin: 0 }}>
                         {proposalSummary}
-                      </p>
+                      </Text>
                     </div>
                     {canOpenProposal && (
                       <Button size="sm" variant="primary" onClick={() => openProposalModal(selectedEvent)}>
@@ -320,25 +301,12 @@ export const GymkhanaEventDetailsModal = ({
                     }}
                   >
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-heading)",
-                        }}
-                      >
+                      <Text size="xs" weight="semibold" color="heading" style={{ margin: 0 }}>
                         Bills
-                      </p>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
-                      >
+                      </Text>
+                      <Text size="xs" color="muted" style={{ margin: 0 }}>
                         {billsSummary}
-                      </p>
+                      </Text>
                     </div>
                     {canManageBills && (
                       <Button size="sm" variant="primary" onClick={() => openExpenseModal(selectedEvent)}>
@@ -356,16 +324,9 @@ export const GymkhanaEventDetailsModal = ({
             title="Description"
             accentColor="var(--color-text-secondary)"
           >
-            <div
-              style={{
-                color: "var(--color-text-body)",
-                fontSize: "var(--font-size-sm)",
-                lineHeight: "1.6",
-                whiteSpace: "pre-wrap",
-              }}
-            >
+            <Text as="div" color="body" size="sm" leading="1.6" style={{ whiteSpace: "pre-wrap" }}>
               {selectedEvent.description || "No description provided."}
-            </div>
+            </Text>
           </EventDetailSectionCard>
         </VStack>
       )
@@ -548,9 +509,9 @@ export const GymkhanaSettingsModal = ({
           <Text as="span" weight="medium" size="sm" color="heading">
             Calendar Lock
           </Text>
-          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text size="xs" color="muted" style={{ margin: 0 }}>
             {calendar?.isLocked ? "Locked. GS cannot edit." : "Unlocked. GS can edit."}
-          </p>
+          </Text>
         </div>
         {calendar?.isLocked ? (
           <Button size="sm" variant="success" onClick={onUnlock} loading={submitting}>
@@ -593,9 +554,9 @@ export const GymkhanaSettingsModal = ({
           disabled={submitting}
           onChange={(event) => onSettingsChange?.("overallBudget", event.target.value)}
         />
-        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+        <Text size="xs" color="muted" style={{ margin: 0 }}>
           Leave blank to keep no overall cap. The total configured category caps cannot exceed this value.
-        </p>
+        </Text>
       </div>
       <div
         style={{
@@ -611,7 +572,7 @@ export const GymkhanaSettingsModal = ({
           <Text as="span" weight="medium" size="sm" color="heading">
             Category Budget Caps
           </Text>
-          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text size="xs" color="muted" style={{ margin: 0 }}>
             Leave a field blank to keep that category unlimited. Event saves will be blocked once a category total exceeds its cap.
             <br />
             Configured category caps total: ₹{Object.values(settingsForm?.budgetCaps || {}).reduce((sum, value) => {
@@ -619,7 +580,7 @@ export const GymkhanaSettingsModal = ({
               const parsedValue = Number(value)
               return Number.isFinite(parsedValue) && parsedValue >= 0 ? sum + parsedValue : sum
             }, 0).toLocaleString()}
-          </p>
+          </Text>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
           {(settingsForm?.categoryDefinitions || []).map((category) => {

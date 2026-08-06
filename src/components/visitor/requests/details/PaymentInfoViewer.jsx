@@ -16,7 +16,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
           </IconCircle>
           <div>
             <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)', fontSize: 'var(--font-size-base)' }}>Payment Information Not Submitted</h4>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }}>Student has not yet submitted payment information</p>
+            <Text size="sm" color="warning" style={{ marginTop: 'var(--spacing-0-5)' }}>Student has not yet submitted payment information</Text>
           </div>
         </HStack>
       </Surface>
@@ -49,7 +49,7 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
         </IconCircle>
         <div>
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success-text)', fontSize: 'var(--font-size-base)' }}>Payment Information</h4>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-success)', marginTop: 'var(--spacing-0-5)' }}>Student payment details and verification</p>
+          <Text size="sm" color="success" style={{ marginTop: 'var(--spacing-0-5)' }}>Student payment details and verification</Text>
         </div>
       </HStack>
 

@@ -724,7 +724,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
           <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Done</div>
+            <Text as="div" size="sm" weight="medium" color="primary" style={{ marginBottom: "var(--spacing-2)" }}>Done</Text>
             {shownSuccessItems.length === 0 ? (
               <Text as="div" size="xs" color="muted">No successful records.</Text>
             ) : (
@@ -735,14 +735,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   ))}
                 </ul>
                 {remainingSuccessItems > 0 && (
-                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>...and {remainingSuccessItems} more</div>
+                  <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-2)" }}>...and {remainingSuccessItems} more</Text>
                 )}
               </>
             )}
           </div>
 
           <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
-            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Not Done</div>
+            <Text as="div" size="sm" weight="medium" color="primary" style={{ marginBottom: "var(--spacing-2)" }}>Not Done</Text>
             {shownFailedItems.length === 0 ? (
               <Text as="div" size="xs" color="muted">No failed records.</Text>
             ) : (
@@ -755,7 +755,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   ))}
                 </ul>
                 {remainingFailedItems > 0 && (
-                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>...and {remainingFailedItems} more</div>
+                  <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-2)" }}>...and {remainingFailedItems} more</Text>
                 )}
               </>
             )}
@@ -807,12 +807,12 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-text-disabled)" }} />
-                <p style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-2)" }}>
                   Drag and drop a CSV file here, or click to select a file
-                </p>
-                <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                </Text>
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-3)" }}>
                   <strong>Required fields:</strong> {REQUIRED_FIELDS.join(", ")}
-                </p>
+                </Text>
                 <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
               </div>
 
@@ -822,7 +822,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   Download CSV Template
                 </Button>
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "30rem" }}>
-                  <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+                  <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
                   <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
                     <li><Text as="span" weight="medium">name:</Text> String (Required)</li>
                     <li><Text as="span" weight="medium">email:</Text> Email (Required)</li>
@@ -864,7 +864,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               {isLoading && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4) 0" }}>
                   <Spinner size="var(--spacing-6)" thickness="thin" />
-                  <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Processing file...</span>
+                  <Text as="span" size="sm" color="muted" style={{ marginLeft: "var(--spacing-2)" }}>Processing file...</Text>
                 </div>
               )}
             </VStack>
@@ -888,9 +888,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               {rowWarnings.length > 0 && (
                 <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-warning)", whiteSpace: "pre-line" }}>
-                  <div style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                  <Text as="div" weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>
                     {rowWarnings.length} row{rowWarnings.length === 1 ? "" : "s"} skipped (not imported):
-                  </div>
+                  </Text>
                   {formatRowIssues(rowWarnings)}
                 </div>
               )}

@@ -241,10 +241,10 @@ const VisitorRequestsPage = () => {
 
       <PageFooter
         leftContent={[
-          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="sm" color="muted" key="count">
             Showing <Text as="span" weight="semibold">{visitorRequests.length}</Text> of{" "}
             <Text as="span" weight="semibold">{totalRequests}</Text> requests
-          </span>,
+          </Text>,
         ]}
         rightContent={[
           <Pagination

@@ -19,9 +19,9 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
           </IconCircle>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">{room.roomNumber}</Text>
-            <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            <Text as="div" size="xs" color="muted" className="sm:hidden">
               {room.type || "Standard"}
-            </div>
+            </Text>
           </div>
         </HStack>
       ),

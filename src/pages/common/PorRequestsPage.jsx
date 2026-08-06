@@ -743,15 +743,9 @@ const PorCategoryFormModal = ({
                 <Text as="div" size="sm" weight="semibold" color="heading">
                   Gymkhana Review Steps
                 </Text>
-                <div
-                  style={{
-                    marginTop: "4px",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
+                <Text as="div" size="sm" color="muted" style={{ marginTop: "4px" }}>
                   Add one or more Gymkhana stages that should recommend the POR before Office - Student Affairs.
-                </div>
+                </Text>
               </div>
 
               <Button type="button" variant="secondary" onClick={onAddStep} disabled={isSaving}>
@@ -920,15 +914,9 @@ const PorCategoryManagementModal = ({
       render: (category) => (
         <div style={{ display: "grid", gap: "4px" }}>
           {(Array.isArray(category.gymkhanaSteps) ? category.gymkhanaSteps : []).map((step, index) => (
-            <div
-              key={`${category.id}-table-step-${index}`}
-              style={{
-                fontSize: "var(--font-size-sm)",
-                color: "var(--color-text-muted)",
-              }}
-            >
+            <Text as="div" size="sm" color="muted" key={`${category.id}-table-step-${index}`}>
               {index + 1}. {step.label || "Step"}
-            </div>
+            </Text>
           ))}
         </div>
       ),
@@ -1242,9 +1230,9 @@ const PorRequestDetailModal = ({
             >
               {request.hasDisciplinaryAction ? (
                 <div className="por-detail-alert-card">
-                  <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
+                  <Text as="div" weight="bold" color="danger" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
                     Disciplinary Action Disclosed
-                  </div>
+                  </Text>
                   <div style={detailTextStyle}>
                     {request.disciplinaryActionDetails || "No details provided."}
                   </div>
@@ -1254,9 +1242,9 @@ const PorRequestDetailModal = ({
                   <Text as="div" weight="bold" color="success" size="sm">
                     ✓ No Disciplinary Action Declared
                   </Text>
-                  <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                  <Text as="div" size="xs" style={{ marginTop: "var(--spacing-1)" }}>
                     The student has declared that they have no past or active disciplinary actions.
-                  </div>
+                  </Text>
                 </div>
               )}
             </PorDetailCard>
@@ -1573,9 +1561,9 @@ const PorRequestGroupModal = ({
 
                         {request.hasDisciplinaryAction ? (
                           <Surface padding="var(--spacing-3) var(--spacing-4)" className="por-detail-alert-card">
-                            <div style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)", marginBottom: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                            <Text as="div" weight="bold" color="danger" size="xs" style={{ marginBottom: "var(--spacing-1)" }}>
                               Disciplinary Action Details
-                            </div>
+                            </Text>
                             <div style={detailTextStyle}>
                               {request.disciplinaryActionDetails || "No details provided."}
                             </div>
@@ -1647,15 +1635,9 @@ const PorRequestGroupModal = ({
                 ) : (
                   <div style={infoBoxStyle}>
                     <span style={sectionLabelStyle}>Per-POR Comments</span>
-                    <div
-                      style={{
-                        marginTop: "var(--spacing-2)",
-                        fontSize: "var(--font-size-sm)",
-                        color: "var(--color-text-muted)",
-                      }}
-                    >
+                    <Text as="div" size="sm" color="muted" style={{ marginTop: "var(--spacing-2)" }}>
                       Enter comments inside each POR card on the left when you want different rejection or modification notes.
-                    </div>
+                    </Text>
                   </div>
                 )}
 

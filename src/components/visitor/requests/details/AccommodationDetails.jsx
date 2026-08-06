@@ -26,9 +26,9 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
             </span>
             <VStack gap={1}>
               {allocatedRooms.map((room, index) => (
-                <div key={index} style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", }} >
+                <Text as="div" size="sm" weight="medium" key={index}>
                   {room.length > 1 ? `${room[1]}-${room[0]}` : `Room ${room[0]}`}
-                </div>
+                </Text>
               ))}
             </VStack>
           </div>

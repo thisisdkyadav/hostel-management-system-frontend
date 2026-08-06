@@ -166,7 +166,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
               <Button type="button" onClick={() => setIsImageModalOpen(true)} variant="outline" size="sm">
                 <FiCamera /> Change Photo
               </Button>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Maximum file size: 500KB</p>
+              <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Maximum file size: 500KB</Text>
             </div>
           </div>
         </div>

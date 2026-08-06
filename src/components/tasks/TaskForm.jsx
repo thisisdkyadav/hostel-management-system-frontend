@@ -146,7 +146,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Title <Text as="span" color="danger-text">*</Text>
           </label>
           <Input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} error={errors.title} />
-          {errors.title && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.title}</p>}
+          {errors.title && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.title}</Text>}
         </div>
 
         {/* Description Field */}
@@ -155,7 +155,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Description <Text as="span" color="danger-text">*</Text>
           </label>
           <Textarea id="description" name="description" rows={3} value={taskData.description} onChange={handleChange} error={errors.description} />
-          {errors.description && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.description}</p>}
+          {errors.description && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.description}</Text>}
         </div>
 
         {/* Priority and Category */}
@@ -181,7 +181,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Due Date <Text as="span" color="danger-text">*</Text>
           </label>
           <Input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} error={errors.dueDate} />
-          {errors.dueDate && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.dueDate}</p>}
+          {errors.dueDate && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.dueDate}</Text>}
         </div>
 
         {/* User Selector */}

@@ -30,7 +30,7 @@ import {
   ADMIN_NAV_CATEGORY_DINING,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
-import { Surface } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin",
@@ -356,12 +356,9 @@ const Sidebar = ({ navItems }) => {
           <Surface bg={headerTint} className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
             <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
               <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
-                <span
-                  className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70"
-                  style={{ color: headerTitleColor }}
-                >
+                <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70">
                   {headerTitle}
-                </span>
+                </Text>
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">

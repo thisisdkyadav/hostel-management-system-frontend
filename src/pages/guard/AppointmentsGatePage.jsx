@@ -301,9 +301,9 @@ const AppointmentsGatePage = () => {
                 <Text as="div" weight="semibold" size="base" color="heading">
                   {selectedAppointment.visitorName}
                 </Text>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
                   {selectedAppointment.mobileNumber} · {selectedAppointment.email}
-                </div>
+                </Text>
               </div>
               <Badge variant={entryBadge(selectedAppointment.gateEntry?.entered)}>
                 {selectedAppointment.gateEntry?.entered ? "Entered" : "Not Entered"}
@@ -352,15 +352,15 @@ const AppointmentsGatePage = () => {
             {/* Reason */}
             <div style={sectionStyle}>
               <span style={labelStyle}>Reason for Meeting</span>
-              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+              <Text as="div" size="sm" color="body" leading={1.6} style={{ whiteSpace: "pre-wrap" }}>
                 {selectedAppointment.reason}
-              </div>
+              </Text>
             </div>
 
             {!selectedAppointment.gateEntry?.entered ? (
               <VStack gap={2}>
                 <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
-                <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Gate Note</span>
+                <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>Gate Note</Text>
                 <Textarea
                   rows={2}
                   placeholder="Optional note (visible in logs)"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
-import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -80,9 +80,9 @@ const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
             <div>
               <Label htmlFor="content" required>Undertaking Content</Label>
               <Textarea id="content" name="content" value={formData.content} onChange={handleChange} rows={6} placeholder="Full text of the undertaking that students will need to read and accept" required />
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>
+              <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>
                 <strong>Note:</strong> Editing the content will not affect students who have already accepted this undertaking.
-              </p>
+              </Text>
             </div>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

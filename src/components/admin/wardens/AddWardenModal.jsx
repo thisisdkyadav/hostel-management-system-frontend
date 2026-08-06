@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag, FiBriefcase } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, Label, Select, Surface, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -227,12 +227,9 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                                 })
                               }
                             />
-                            <label
-                              htmlFor={`gymkhana-category-${category.key}`}
-                              style={{ marginLeft: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
-                            >
+                            <Text as="label" size="sm" color="body" style={{ marginLeft: "var(--spacing-3)" }} htmlFor={`gymkhana-category-${category.key}`}>
                               {category.label}
-                            </label>
+                            </Text>
                           </HStack>
                         ))
                       ) : (

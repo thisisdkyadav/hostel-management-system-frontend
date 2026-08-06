@@ -146,7 +146,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
   const requiredFields = ["unitNumber", "roomNumber", "capacity"]
   const templateInstructions = (
     <div>
-      <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+      <Text weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>Field Input Types:</Text>
       <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
           <Text as="span" weight="medium">unitNumber:</Text> String (e.g., 101)
@@ -254,7 +254,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             <Text size="sm" color="body">
               This will create {unitConfig.floors} floors with custom units per floor and {unitConfig.defaultRoomsPerUnit} rooms per unit by default.
             </Text>
-            <p style={{ fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)", color: "var(--color-text-body)" }}>
+            <Text size="sm" color="body" style={{ marginTop: "var(--spacing-2)" }}>
               Total capacity:{" "}
               {(() => {
                 let total = 0
@@ -272,7 +272,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
                 return total
               })()}{" "}
               students
-            </p>
+            </Text>
           </Surface>
         </>
       ) : (

@@ -47,23 +47,23 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
         )}
 
         <div>
-          <label htmlFor="feedback" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
+          <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="feedback" className="block">
             Feedback
-          </label>
+          </Text>
           <textarea id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={TEXTAREA_ROWS} className="w-full" style={{ paddingLeft: 'var(--spacing-4)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} placeholder="Share your feedback about the resolution..." />
         </div>
 
         <div>
-          <label htmlFor="feedbackRating" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
+          <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="feedbackRating" className="block">
             Rating
-          </label>
+          </Text>
           <Select id="feedbackRating" value={feedbackRating} onChange={(e) => setFeedbackRating(Number(e.target.value))} options={RATING_OPTIONS.map((rating) => ({ value: rating, label: `${rating} ${rating === 1 ? "Star" : "Stars"}` }))} />
         </div>
 
         <div>
-          <label htmlFor="satisfactionStatus" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
+          <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="satisfactionStatus" className="block">
             Satisfaction Status
-          </label>
+          </Text>
           <Select id="satisfactionStatus" value={satisfactionStatus} onChange={(e) => setSatisfactionStatus(e.target.value)} options={[
             { value: "Satisfied", label: "Satisfied" },
             { value: "Unsatisfied", label: "Unsatisfied" },

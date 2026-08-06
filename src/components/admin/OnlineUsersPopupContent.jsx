@@ -158,15 +158,9 @@ const OnlineUsersPopupContent = ({ role, roleLabel }) => {
                                     {user.userName || "Unknown"}
                                 </div>
                             </div>
-                            <span
-                                style={{
-                                    fontSize: "var(--font-size-xs)",
-                                    color: "var(--color-text-muted)",
-                                    whiteSpace: "nowrap",
-                                }}
-                            >
+                            <Text as="span" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
                                 {getRelativeTime(user.connectedAt)}
-                            </span>
+                            </Text>
                         </li>
                     ))}
                 </ul>

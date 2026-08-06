@@ -13,7 +13,7 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { HStack, Modal, Surface, VStack } from "@/components/ui"
+import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
@@ -438,16 +438,9 @@ const DashboardPage = () => {
   const VotingActivePopup = ({ electionTitle, onClose, onGoToVoting }) => (
     <Modal title="Voting In Progress" onClose={onClose} width={520}>
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-        <p
-          style={{
-            margin: 0,
-            color: "var(--color-text-body)",
-            fontSize: "var(--font-size-base)",
-            lineHeight: 1.6,
-          }}
-        >
+        <Text color="body" size="base" leading={1.6} style={{ margin: 0 }}>
           Voting for <strong>{electionTitle || "the current election"}</strong> is currently active. Go to the elections page to cast your vote now.
-        </p>
+        </Text>
         <HStack gap={3} justify="end" wrap>
           <Button variant="secondary" onClick={onClose}>
             Later
@@ -572,7 +565,7 @@ const DashboardPage = () => {
           </button>
           <div className="flex flex-col items-center text-center" style={{ gap: 'var(--gap-md)' }}>
             <h2 className="font-extrabold" style={{ fontSize: 'clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl))' }}>Happy Birthday{name ? `, ${name.split(" ")[0]}` : "!"}</h2>
-            <p className="max-w-md" style={{ fontSize: 'clamp(var(--font-size-sm), 2vw, var(--font-size-base))' }}>Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</p>
+            <Text size="clamp(var(--font-size-sm), 2vw, var(--font-size-base))" className="max-w-md">Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</Text>
 
             <div className="w-full flex items-center justify-center" style={{ marginTop: 'var(--spacing-2)' }}>
               <div className="rounded-full backdrop-blur-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)' }}>Enjoy your special day 🎉</div>
@@ -634,7 +627,7 @@ const DashboardPage = () => {
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
+          <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>{error}</Text>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>
@@ -649,9 +642,9 @@ const DashboardPage = () => {
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Dashboard Data Error</h2>
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>
+          <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>
             Student dashboard data is unavailable or malformed.
-          </p>
+          </Text>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>

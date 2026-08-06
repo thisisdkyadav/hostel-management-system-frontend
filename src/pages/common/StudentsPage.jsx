@@ -359,9 +359,9 @@ const StudentsPage = () => {
 
       <PageFooter
         leftContent={[
-          <span key="count" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+          <Text as="span" size="sm" color="muted" key="count">
             Showing <Text as="span" weight="semibold">{loading ? 0 : students.length}</Text> of <Text as="span" weight="semibold">{loading ? 0 : totalCount}</Text> students
-          </span>
+          </Text>
         ]}
         rightContent={[
           <Pagination key="pagination" currentPage={pagination.currentPage || 1} totalPages={totalPages || 0} paginate={paginate} compact showPageInfo={false} />

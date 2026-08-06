@@ -70,9 +70,9 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
         {error && <Alert type="error" icon>{error}</Alert>}
 
         <div>
-          <p style={{ margin: "0 0 var(--spacing-2)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+          <Text size="sm" weight="medium" color="secondary" style={{ margin: "0 0 var(--spacing-2)" }}>
             How should uploaded amounts apply?
-          </p>
+          </Text>
           <HStack gap={2} wrap>
             {FUND_MODES.map((item) => (
               <Button
@@ -86,9 +86,9 @@ const ManageFundsModal = ({ isOpen, onClose, onSubmit }) => {
               </Button>
             ))}
           </HStack>
-          <p style={{ margin: "var(--spacing-2) 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          <Text size="xs" color="muted" style={{ margin: "var(--spacing-2) 0 0" }}>
             {activeMode.hint}
-          </p>
+          </Text>
         </div>
 
         <CsvUploader

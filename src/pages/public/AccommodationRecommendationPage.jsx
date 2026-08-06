@@ -77,9 +77,9 @@ const AccommodationRecommendationPage = () => {
     <Shell>
       <Text as="div" align="center">
         <h1 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>Faculty advisor recommendation</h1>
-        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>
+        <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
           {student?.name || request.applicantName || "A student"} has requested hostel accommodation for visitors.
-        </p>
+        </Text>
       </Text>
 
       {student && (
@@ -106,7 +106,7 @@ const AccommodationRecommendationPage = () => {
         </VStack>
         {Array.isArray(request.guests) && request.guests.length > 0 && (
           <div style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)" }}>
-            <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.4px", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>Guests</div>
+            <Text as="div" size="xs" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "var(--spacing-2)" }}>Guests</Text>
             <GuestList guests={request.guests} />
           </div>
         )}

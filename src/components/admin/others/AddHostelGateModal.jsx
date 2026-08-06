@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaEnvelope, FaKey } from "react-icons/fa"
-import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
@@ -115,14 +115,14 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
                 options={[{ value: "", label: "Select a hostel" }, ...availableHostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
                 required
               />
-              {availableHostels.length === 0 && <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)' }}>All hostels already have gate logins created.</p>}
+              {availableHostels.length === 0 && <Text size="sm" color="warning" style={{ marginTop: 'var(--spacing-2)' }}>All hostels already have gate logins created.</Text>}
             </div>
 
             {generatedEmail && (
               <div>
                 <Label>Generated Email</Label>
                 <Input type="text" value={generatedEmail} icon={<FaEnvelope />} disabled />
-                <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>This email will be automatically created for the hostel gate login.</p>
+                <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>This email will be automatically created for the hostel gate login.</Text>
               </div>
             )}
 

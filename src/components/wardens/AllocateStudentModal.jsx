@@ -101,19 +101,19 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-4">
             <div>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Room Number</p>
+              <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Room Number</Text>
               <Text weight="medium" size="base">{room.roomNumber}</Text>
             </div>
             <div>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Floor</p>
+              <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Floor</Text>
               <Text weight="medium" size="base">{room.floorNumber || room.floor || "Ground"}</Text>
             </div>
             <div>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Capacity</p>
+              <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Capacity</Text>
               <Text weight="medium" size="base">{room.capacity}</Text>
             </div>
             <div>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Currently Occupied</p>
+              <Text size="xs" color="muted" style={{ marginBottom: 'var(--spacing-1)' }}>Currently Occupied</Text>
               <Text weight="medium" size="base">
                 {room.occupiedCount || room.currentOccupancy} / {room.capacity}
               </Text>

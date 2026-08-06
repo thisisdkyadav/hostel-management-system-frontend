@@ -26,14 +26,14 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
         </header>
 
         <Surface bg="tertiary" padding={4} radius="xl">
-          <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{notification.message}</p>
+          <Text color="body" style={{ whiteSpace: 'pre-line' }}>{notification.message}</Text>
         </Surface>
 
         <Grid min={250} gap={4}>
           <HStack gap="none" align="start">
-            <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-success)' }}>
+            <Text as="div" color="success" style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)' }}>
               <FaRegClock />
-            </div>
+            </Text>
             <div>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Created</h4>
               <Text color="muted">{formatDate(notification.createdAt)}</Text>
@@ -41,9 +41,9 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
           </HStack>
 
           <HStack gap="none" align="start">
-            <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-warning)' }}>
+            <Text as="div" color="warning" style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)' }}>
               <FaRegClock />
-            </div>
+            </Text>
             <div>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Expires</h4>
               <Text color="muted">{formatDate(notification.expiryDate)}</Text>
@@ -59,7 +59,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
                 <FaBuilding style={{ color: 'var(--color-info)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
                   <Text as="span" size="sm" weight="medium">Hostels:</Text>
-                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.hostelId.map((h) => h.name).join(", ")}</span>
+                  <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.hostelId.map((h) => h.name).join(", ")}</Text>
                 </div>
               </div>
             ) : null}
@@ -69,7 +69,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
                 <FaGraduationCap style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
                   <Text as="span" size="sm" weight="medium">Departments:</Text>
-                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.department.join(", ")}</span>
+                  <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.department.join(", ")}</Text>
                 </div>
               </div>
             ) : null}
@@ -79,7 +79,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
                 <FaUserAlt style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
                   <Text as="span" size="sm" weight="medium">Degrees:</Text>
-                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.degree.join(", ")}</span>
+                  <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.degree.join(", ")}</Text>
                 </div>
               </div>
             ) : null}
@@ -89,7 +89,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
                 <FaVenusMars style={{ color: 'var(--color-girls-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
                   <Text as="span" size="sm" weight="medium">Gender:</Text>
-                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.gender}</span>
+                  <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.gender}</Text>
                 </div>
               </div>
             ) : null}

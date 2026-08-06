@@ -194,9 +194,9 @@ const SignatureSettingsCard = ({ user }) => {
                   readOnly={isStudent}
                 />
                 {isStudent ? (
-                  <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                     Students always sign as “Student”.
-                  </p>
+                  </Text>
                 ) : null}
               </div>
             </Grid>

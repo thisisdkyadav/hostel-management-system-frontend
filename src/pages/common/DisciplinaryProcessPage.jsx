@@ -1130,9 +1130,9 @@ const DisciplinaryProcessPage = () => {
       key: "id",
       header: "Case ID",
       render: (item) => (
-        <span style={{ fontFamily: "monospace", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)" }}>
+        <Text as="span" color="secondary" size="sm" style={{ fontFamily: "monospace" }}>
           #{item.id?.slice(-6)}
-        </span>
+        </Text>
       ),
     },
     {
@@ -1346,7 +1346,7 @@ const DisciplinaryProcessPage = () => {
 
       <PageFooter
         leftContent={[
-          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+          <Text as="span" size="sm" color="muted" key="count">
             <Text as="span" weight="semibold">
               {adminCasesLoading ? 0 : filteredAdminCases.length}
             </Text>
@@ -1355,7 +1355,7 @@ const DisciplinaryProcessPage = () => {
               {adminCasesLoading ? 0 : adminTotalCount}
             </Text>
             {" cases"}
-          </span>,
+          </Text>,
         ]}
         rightContent={[
           <Pagination

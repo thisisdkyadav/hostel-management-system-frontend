@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Modal } from "@/components/ui"
+import { Modal, Text } from "@/components/ui"
 import { Alert, Label, VStack } from "@/components/ui"
 import { getErrorMessage } from "./diningBillingHelpers"
 
@@ -81,7 +81,7 @@ const DiningOfficeFormModal = ({ isOpen, mode = "create", initialData = {}, onCl
               disabled={isEdit}
               required={!isEdit}
             />
-            {isEdit && <p style={{ margin: "var(--spacing-1) 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Email cannot be changed after creation.</p>}
+            {isEdit && <Text size="xs" color="muted" style={{ margin: "var(--spacing-1) 0 0" }}>Email cannot be changed after creation.</Text>}
           </div>
 
           {!isEdit && (
