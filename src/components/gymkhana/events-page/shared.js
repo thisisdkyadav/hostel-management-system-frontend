@@ -936,7 +936,7 @@ export const getProposalDueDate = (event) => {
   }
 
   const fallbackDueDate = new Date(startDate)
-  fallbackDueDate.setDate(fallbackDueDate.getDate() - 21)
+  fallbackDueDate.setDate(fallbackDueDate.getDate() - 60)
   return fallbackDueDate
 }
 

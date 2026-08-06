@@ -191,7 +191,7 @@ export const GymkhanaProposalModal = ({
               )}
 
               {!proposalData && !canCreateProposalForSelectedEvent && (
-                <Alert type="warning">Proposal submission opens 21 days before event.</Alert>
+                <Alert type="warning">Proposal submission opens 60 days before event.</Alert>
               )}
 
               <HStack gap={3} align="center" justify="between" wrap>
