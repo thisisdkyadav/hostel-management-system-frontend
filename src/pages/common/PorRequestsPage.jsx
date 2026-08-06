@@ -1242,9 +1242,9 @@ const PorRequestDetailModal = ({
                   <Text as="div" weight="bold" color="success" size="sm">
                     ✓ No Disciplinary Action Declared
                   </Text>
-                  <Text as="div" size="xs" style={{ marginTop: "var(--spacing-1)" }}>
+                  <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
                     The student has declared that they have no past or active disciplinary actions.
-                  </Text>
+                  </div>
                 </div>
               )}
             </PorDetailCard>

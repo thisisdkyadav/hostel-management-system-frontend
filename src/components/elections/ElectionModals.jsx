@@ -912,7 +912,7 @@ export const ElectionWizardModal = ({
           </div>
         </div>
 
-        <Grid cols={1} gap={4}>
+        <Grid cols={1} gap={4} style={{ ...panelStyle }}>
           <HStack gap={3} align="start" justify="between" wrap>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
@@ -2038,7 +2038,7 @@ export const AdminResultsEditModal = ({
           </div>
         ) : (
           <>
-            <Grid cols={1} gap="10px">
+            <Grid cols={1} gap="10px" style={{ ...flatPanelStyle }}>
               <label
                 style={{
                   display: "flex",
@@ -2061,7 +2061,7 @@ export const AdminResultsEditModal = ({
               </div>
             </Grid>
 
-            <Grid cols={1} gap="10px">
+            <Grid cols={1} gap="10px" style={{ ...flatPanelStyle }}>
               <label
                 style={{
                   display: "flex",

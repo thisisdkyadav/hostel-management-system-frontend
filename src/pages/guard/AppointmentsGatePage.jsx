@@ -311,7 +311,7 @@ const AppointmentsGatePage = () => {
             </HStack>
 
             {/* Info grid */}
-            <Grid cols={2} gap={3}>
+            <Grid cols={2} gap={3} style={{ ...sectionStyle }}>
               <div>
                 <span style={labelStyle}>Appointment With</span>
                 <Text as="div" size="sm" color="body">

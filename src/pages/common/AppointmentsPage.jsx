@@ -507,7 +507,7 @@ const AppointmentsPage = () => {
             </HStack>
 
             {/* Info grid */}
-            <Grid cols={3} gap={3}>
+            <Grid cols={3} gap={3} style={{ ...sectionStyle }}>
               <div>
                 <span style={labelStyle}>With</span>
                 <Text as="div" size="sm" color="body">
@@ -579,7 +579,7 @@ const AppointmentsPage = () => {
                 />
               </VStack>
             ) : (
-              <Grid cols={2} gap={3}>
+              <Grid cols={2} gap={3} style={{ ...sectionStyle }}>
                 <div>
                   <span style={labelStyle}>Action</span>
                   <Badge variant={statusVariant(selectedAppointment.review?.action === "approve" ? "Approved" : "Rejected")}>

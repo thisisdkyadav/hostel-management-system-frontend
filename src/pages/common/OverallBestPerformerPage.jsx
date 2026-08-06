@@ -4369,9 +4369,9 @@ const OverallBestPerformerPage = () => {
 
             {!isReviewerView && currentOccurrence.description ? (
               <Surface bg="brand">
-                <Text as="div" size="sm" color="body" style={{ whiteSpace: "pre-wrap" }}>
+                <div style={{ ...panelBodyStyle, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
                   {currentOccurrence.description}
-                </Text>
+                </div>
               </Surface>
             ) : null}
           </>
@@ -4979,7 +4979,7 @@ const OverallBestPerformerPage = () => {
                     </Text>
                   </label>
 
-                  <Grid cols={1} gap={3}>
+                  <Grid cols={1} gap={3} style={{ ...infoBoxStyle }}>
                     <span style={sectionLabelStyle}>Submission Action</span>
                     <Button onClick={handleSaveStudentApplication} loading={savingApplication} disabled={!canEditStudentForm}>
                       <Save size={16} /> Save application
