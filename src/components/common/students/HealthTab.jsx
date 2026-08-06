@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { HStack, Select, Surface, Text } from "@/components/ui"
+import { HStack, Select, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -216,7 +216,7 @@ const HealthTab = ({ userId }) => {
 
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>
-            <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', borderBottom: 'var(--border-2) solid var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
+            <Spinner size="var(--avatar-sm)" thickness="thin" />
           </div>
         ) : editHealthData ? (
           <form onSubmit={handleUpdateHealth} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
@@ -323,7 +323,7 @@ const HealthTab = ({ userId }) => {
 
         {loadingClaims ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>
-            <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', borderBottom: 'var(--border-2) solid var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
+            <Spinner size="var(--avatar-sm)" thickness="thin" />
           </div>
         ) : insuranceClaims.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>

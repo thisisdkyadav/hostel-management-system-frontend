@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const formatDateTime = (value) => {
@@ -398,16 +398,7 @@ const LiveCheckInOutPage = () => {
         <Card style={{ padding: 0, overflow: "hidden" }}>
           {loading && entries.length === 0 ? (
             <div style={{ display: "flex", height: "256px", alignItems: "center", justifyContent: "center" }}>
-              <div
-                style={{
-                  height: "32px",
-                  width: "32px",
-                  borderRadius: "var(--radius-full)",
-                  border: "var(--border-3) solid var(--color-border-primary)",
-                  borderTopColor: "var(--color-primary)",
-                  animation: "spin 1s linear infinite",
-                }}
-              />
+              <Spinner size="32px" />
             </div>
           ) : entries.length === 0 ? (
             <div style={{ display: "flex", height: "256px", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--spacing-2)", color: "var(--color-text-muted)" }}>

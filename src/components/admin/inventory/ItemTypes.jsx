@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Text, Textarea, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, Label, Pagination, Spinner, Text, Textarea, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
@@ -167,7 +167,7 @@ const ItemTypes = () => {
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
         {loading && !itemTypes.length ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
-            <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: '4px solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+            <Spinner size="var(--spacing-12)" thickness="thick" />
           </div>
         ) : itemTypes.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>

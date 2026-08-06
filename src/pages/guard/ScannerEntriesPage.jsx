@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, Surface, Text } from "@/components/ui"
+import { HStack, Spinner, Surface, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -94,7 +94,7 @@ const ScannerEntriesPage = () => {
             </Button>
           </HStack>
           {loading && scannerEntries.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTop: "var(--border-4) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", margin: "0 auto var(--spacing-4)" }}></div><Text color="muted">Loading scanner entries...</Text></div>
+            <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} /><Text color="muted">Loading scanner entries...</Text></div>
           ) : scannerEntries.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><p style={{ color: "var(--color-text-light)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</p></div>
           ) : (

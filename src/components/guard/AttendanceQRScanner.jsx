@@ -3,7 +3,7 @@ import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { Button } from "czero/react"
-import { HStack, Surface, Text } from "@/components/ui"
+import { HStack, Spinner, Surface, Text } from "@/components/ui"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -190,7 +190,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
 
       {loading && (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
-          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', margin: '0 auto var(--spacing-4)' }}></div>
+          <Spinner size="var(--spacing-12)" thickness="thick" style={{ margin: '0 auto var(--spacing-4)' }} />
           <Text color="muted">Processing QR code...</Text>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Alert, HStack, SearchInput, Surface, Text, VStack } from "@/components/ui"
+import { Alert, HStack, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
@@ -142,7 +142,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         {/* Students list */}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
-            <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: 'var(--border-2) solid transparent', borderTopColor: 'var(--color-primary)', borderBottomColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+            <Spinner size="var(--icon-3xl)" thickness="thin" />
           </div>
         ) : filteredStudents.length === 0 ? (
           <NoResults icon={<FaClipboardCheck style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />

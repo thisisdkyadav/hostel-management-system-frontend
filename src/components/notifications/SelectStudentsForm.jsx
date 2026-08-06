@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox, Grid, Text, VStack } from "@/components/ui"
+import { Checkbox, Grid, Spinner, Text, VStack } from "@/components/ui"
 import { Input } from "czero/react"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
@@ -140,18 +140,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
           <div style={{ marginTop: "var(--spacing-3)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", maxHeight: "240px", overflowY: "auto" }}>
             {loading ? (
               <div style={{ padding: "var(--spacing-4)", textAlign: "center", color: "var(--color-text-muted)" }}>
-                <div
-                  style={{
-                    display: "inline-block",
-                    width: "var(--spacing-6)",
-                    height: "var(--spacing-6)",
-                    marginRight: "var(--spacing-2)",
-                    border: "var(--border-2) solid var(--color-border-primary)",
-                    borderTop: "var(--border-2) solid var(--color-primary)",
-                    borderRadius: "var(--radius-full)",
-                    animation: "spin 1s linear infinite",
-                  }}
-                ></div>
+                <Spinner size="var(--spacing-6)" thickness="thin" style={{ display: "inline-block", marginRight: "var(--spacing-2)" }} />
                 Loading students...
               </div>
             ) : students.length === 0 ? (

@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -311,7 +311,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" }}>
           <div style={{ position: "relative", width: "var(--avatar-4xl)", height: "var(--avatar-4xl)" }}>
             <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", border: "var(--border-4) solid var(--color-border-primary)", borderRadius: "var(--radius-full)" }}></div>
-            <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", border: "var(--border-4) solid var(--color-primary)", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", borderTopColor: "transparent" }}></div>
+            <Spinner size="100%" thickness="thick" style={{ position: "absolute", top: "0", left: "0" }} />
           </div>
         </div>
       </Modal>

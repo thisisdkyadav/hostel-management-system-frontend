@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -863,7 +863,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               {isLoading && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4) 0" }}>
-                  <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", border: "var(--border-2) solid var(--color-bg-muted)", borderTopColor: "var(--color-primary)", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite" }} />
+                  <Spinner size="var(--spacing-6)" thickness="thin" />
                   <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Processing file...</span>
                 </div>
               )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { HStack, Modal, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Spinner, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -105,7 +105,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
 
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8) 0', }} >
-            <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', border: 'var(--border-4) solid var(--color-primary-pale)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', }} ></div>
+            <Spinner size="var(--spacing-8)" thickness="thick" />
             <span style={{ marginLeft: 'var(--spacing-3)', color: 'var(--color-text-muted)', }} >
               Loading your sessions...
             </span>

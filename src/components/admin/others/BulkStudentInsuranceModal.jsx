@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, HStack, Text, VStack } from "@/components/ui"
+import { Alert, FileInput, HStack, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -185,7 +185,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
           {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}
           {isLoading && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' }}>
-              <div style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', border: 'var(--border-2) solid var(--color-border-input)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+              <Spinner size="var(--icon-xl)" thickness="thin" />
               <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Processing file...</span>
             </div>
           )}

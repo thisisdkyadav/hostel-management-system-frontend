@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaUserCog, FaKey } from "react-icons/fa"
 import { superAdminApi } from "../../service"
 import { Link } from "react-router-dom"
-import { Surface, Text } from "@/components/ui"
+import { Spinner, Surface, Text } from "@/components/ui"
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({
@@ -55,7 +55,7 @@ const DashboardPage = () => {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0' }}>
-          <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', borderRadius: 'var(--radius-full)', height: '2rem', width: '2rem', borderTop: '2px solid var(--color-primary)', borderBottom: '2px solid var(--color-primary)', marginBottom: 'var(--spacing-4)' }}></div>
+          <Spinner size="2rem" thickness="thin" style={{ display: 'inline-block', marginBottom: 'var(--spacing-4)' }} />
           <Text color="muted">Loading dashboard statistics...</Text>
         </div>
       ) : (

@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { HStack, Select, Text, Textarea, VStack } from "@/components/ui"
+import { HStack, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -284,7 +284,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (loading) {
       return (
         <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-12) 0" }}>
-          <div style={{ animation: "spin 1s linear infinite", borderRadius: "var(--radius-full)", height: "var(--spacing-12)", width: "var(--spacing-12)", border: `var(--border-4) solid var(--color-primary-pale)`, borderTopColor: "var(--color-primary)" }}></div>
+          <Spinner size="var(--spacing-12)" thickness="thick" />
         </div>
       )
     }

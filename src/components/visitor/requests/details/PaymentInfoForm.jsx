@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Grid, HStack, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
@@ -221,7 +221,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
 
           {uploading && (
             <HStack gap={2} align="center" style={{ marginTop: 'var(--spacing-2)' }}>
-              <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: `var(--border-2) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+              <Spinner size="var(--icon-md)" thickness="thin" />
               <Text as="span" size="sm" color="muted">Uploading...</Text>
             </HStack>
           )}

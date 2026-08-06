@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Badge, Card, HStack, Surface, Switch, Text, VStack } from "@/components/ui"
+import { Badge, Card, HStack, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -317,17 +317,7 @@ const FaceScannerEntriesPage = () => {
                     {/* Loading State */}
                     {loading && entries.length === 0 ? (
                         <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}>
-                            <div
-                                style={{
-                                    width: "var(--icon-4xl)",
-                                    height: "var(--icon-4xl)",
-                                    border: "var(--border-4) solid var(--color-primary)",
-                                    borderTop: "var(--border-4) solid transparent",
-                                    borderRadius: "var(--radius-full)",
-                                    animation: "spin 1s linear infinite",
-                                    margin: "0 auto var(--spacing-4)",
-                                }}
-                            />
+                            <Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} />
                             <Text color="muted">Loading face scanner entries...</Text>
                         </div>
                     ) : entries.length === 0 ? (

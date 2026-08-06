@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { ConfirmDialog, HStack, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -327,7 +327,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
 
       {loading && familyMembers.length === 0 && !showAddForm ? (
         <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-8) 0" }}>
-          <div style={{ animation: "spin 1s linear infinite", borderRadius: "var(--radius-full)", height: "var(--spacing-8)", width: "var(--spacing-8)", border: `var(--border-4) solid var(--color-primary-pale)`, borderTopColor: "var(--color-primary)" }}></div>
+          <Spinner size="var(--spacing-8)" thickness="thick" />
         </div>
       ) : (
         <>

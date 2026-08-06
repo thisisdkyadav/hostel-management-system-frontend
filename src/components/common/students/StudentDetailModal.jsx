@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -550,7 +550,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Access History</h3>
             {loadingAccessRecords ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", border: "var(--border-2) solid transparent", borderBottomColor: "var(--color-primary)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : accessRecords.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -604,7 +604,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Visitor Requests</h3>
             {loadingVisitorRequests ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", border: "var(--border-2) solid transparent", borderBottomColor: "var(--color-primary)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : visitorRequests.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -660,7 +660,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginBottom: "var(--spacing-4)" }}>Feedback History</h3>
             {loadingFeedbacks ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", border: "var(--border-2) solid transparent", borderBottomColor: "var(--color-primary)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : feedbacks.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -714,7 +714,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {loadingInventory ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", border: "var(--border-2) solid transparent", borderBottomColor: "var(--color-primary)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : studentInventory.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -829,7 +829,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {loadingIdCard ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", border: "var(--border-2) solid transparent", borderBottomColor: "var(--color-primary)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="var(--spacing-8)" thickness="thin" />
               </div>
             ) : !idCardData.front && !idCardData.back ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -1064,7 +1064,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "256px" }}>
             <div style={{ position: "relative", width: "var(--spacing-16)", height: "var(--spacing-16)" }}>
               <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "var(--border-4) solid var(--color-border-primary)", borderRadius: "var(--radius-full)" }}></div>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "var(--border-4) solid var(--color-primary)", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", borderTopColor: "transparent" }}></div>
+              <Spinner size="100%" thickness="thick" style={{ position: "absolute", top: 0, left: 0 }} />
             </div>
           </div>
         ) : (

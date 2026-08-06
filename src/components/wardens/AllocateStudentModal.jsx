@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -195,7 +195,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
             <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-8) 0' }}>
               <div style={{ position: 'relative', width: 'var(--spacing-12)', height: 'var(--spacing-12)' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: `var(--border-4) solid var(--color-border-primary)`, borderRadius: 'var(--radius-full)' }}></div>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: `var(--border-4) solid var(--color-primary)`, borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
+                <Spinner size="100%" thickness="thick" style={{ position: 'absolute', top: 0, left: 0 }} />
               </div>
             </div>
           ) : (

@@ -1,5 +1,5 @@
 import NoResults from "../common/NoResults"
-import { HStack, Pagination, Text } from "@/components/ui"
+import { HStack, Pagination, Spinner, Text } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
 import { Table } from "czero/react"
 
@@ -89,7 +89,7 @@ const LeavesContent = ({ loading, leaves, viewMode, filters, totalPages, updateF
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
         <div style={{ position: 'relative', width: '4rem', height: '4rem' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: '4px solid var(--color-border-gray)', borderRadius: 'var(--radius-full)' }}></div>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: '4px solid var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
+          <Spinner size="100%" thickness="thick" style={{ position: 'absolute', top: 0, left: 0 }} />
         </div>
       </div>
     )
