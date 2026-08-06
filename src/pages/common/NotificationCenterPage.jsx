@@ -156,19 +156,10 @@ const NotificationCenterPage = () => {
   return (
     <Page>
       {error && (
-        <div
-          style={{
-            backgroundColor: 'var(--color-danger-bg)',
-            borderLeft: '4px solid var(--color-danger)',
-            color: 'var(--color-danger-text)',
-            padding: 'var(--spacing-4)',
-            marginBottom: 'var(--spacing-6)',
-            borderRadius: 'var(--radius-lg)'
-          }}
-        >
+        <Surface bg="danger" color="danger-text" padding={4} radius="lg" accent="danger" style={{ marginBottom: 'var(--spacing-6)' }}>
           <Text weight={500}>Error:</Text>
           <p>{error}</p>
-        </div>
+        </Surface>
       )}
 
       <NotificationCenterHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}

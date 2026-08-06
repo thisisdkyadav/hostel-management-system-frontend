@@ -160,17 +160,17 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       </HStack>
 
       {error && (
-        <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>
+        <Surface bg="var(--color-danger-bg-light)" color="danger-text" padding={3} radius="lg" accent="danger" style={{ marginBottom: 'var(--spacing-4)', display: 'flex', alignItems: 'flex-start' }}>
           <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
           <Text size="sm">{error}</Text>
-        </div>
+        </Surface>
       )}
 
       {success && (
-        <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-success)`, display: 'flex', alignItems: 'flex-start' }}>
+        <Surface bg="var(--color-success-bg-light)" color="success-text" padding={3} radius="lg" accent="success" style={{ marginBottom: 'var(--spacing-4)', display: 'flex', alignItems: 'flex-start' }}>
           <FaUser style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
           <Text size="sm">{success}</Text>
-        </div>
+        </Surface>
       )}
 
       {!scanning && !scannedPerson && !loading && (

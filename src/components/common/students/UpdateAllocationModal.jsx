@@ -1159,19 +1159,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       )}
 
       {error && (
-        <div
-          style={{
-            marginTop: "var(--spacing-5)",
-            padding: "var(--spacing-2) var(--spacing-4)",
-            backgroundColor: "var(--color-danger-bg-light)",
-            color: "var(--color-danger)",
-            borderRadius: "var(--radius-lg)",
-            borderLeft: "4px solid var(--color-danger)",
-            whiteSpace: "pre-line",
-          }}
-        >
+        <Surface bg="var(--color-danger-bg-light)" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger" style={{ marginTop: "var(--spacing-5)", whiteSpace: "pre-line" }}>
           {error}
-        </div>
+        </Surface>
       )}
 
       <div

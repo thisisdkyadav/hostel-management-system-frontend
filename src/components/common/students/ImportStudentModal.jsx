@@ -856,9 +856,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               )}
 
               {error && (
-                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                <Surface bg="var(--color-danger-bg-light)" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger" style={{ whiteSpace: "pre-line" }}>
                   {error}
-                </div>
+                </Surface>
               )}
 
               {isLoading && (
@@ -887,20 +887,20 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </HStack>
 
               {rowWarnings.length > 0 && (
-                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-warning)", whiteSpace: "pre-line" }}>
+                <Surface bg="warning" color="warning-text" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="warning" style={{ whiteSpace: "pre-line" }}>
                   <Text as="div" weight="medium" style={{ marginBottom: "var(--spacing-1)" }}>
                     {rowWarnings.length} row{rowWarnings.length === 1 ? "" : "s"} skipped (not imported):
                   </Text>
                   {formatRowIssues(rowWarnings)}
-                </div>
+                </Surface>
               )}
 
               <SheetPreviewTable rows={previewRows} />
 
               {error && (
-                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                <Surface bg="var(--color-danger-bg-light)" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger" style={{ whiteSpace: "pre-line" }}>
                   {error}
-                </div>
+                </Surface>
               )}
             </VStack>
           )}
@@ -972,9 +972,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               )}
 
               {error && (
-                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                <Surface bg="var(--color-danger-bg-light)" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger" style={{ whiteSpace: "pre-line" }}>
                   {error}
-                </div>
+                </Surface>
               )}
             </VStack>
           )}
@@ -1033,9 +1033,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           {importSummary && renderImportSummary()}
 
           {error && (
-            <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+            <Surface bg="var(--color-danger-bg-light)" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger" style={{ whiteSpace: "pre-line" }}>
               {error}
-            </div>
+            </Surface>
           )}
         </VStack>
       )}

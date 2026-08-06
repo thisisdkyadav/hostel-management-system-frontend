@@ -5,7 +5,7 @@ import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 import { Button } from "czero/react"
-import { Heading, HStack, Spinner, Text } from "@/components/ui"
+import { Heading, HStack, Spinner, Surface, Text } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -180,10 +180,10 @@ const QRScanner = ({ onRefresh }) => {
       </HStack>
 
       {error && (
-        <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>
+        <Surface bg="var(--color-danger-bg-light)" color="danger-text" padding={3} radius="lg" accent="danger" style={{ marginBottom: 'var(--spacing-4)', display: 'flex', alignItems: 'flex-start' }}>
           <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
           <Text size="sm">{error}</Text>
-        </div>
+        </Surface>
       )}
 
       {!scanning && !scannedStudent && !loading && (

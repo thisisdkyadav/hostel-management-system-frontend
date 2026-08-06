@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, Heading, HStack, Spinner, Text, VStack } from "@/components/ui"
+import { Alert, FileInput, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -202,7 +202,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
               </Button>
             </div>
           )}
-          {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}
+          {error && <Surface bg="danger" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger">{error}</Surface>}
           {isLoading && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' }}>
               <Spinner size="var(--icon-xl)" thickness="thin" />
@@ -238,7 +238,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
             </Table>
           </div>
 
-          {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}
+          {error && <Surface bg="danger" color="danger" padding="var(--spacing-2) var(--spacing-4)" radius="lg" accent="danger">{error}</Surface>}
         </VStack>
       )}
 

@@ -7,7 +7,7 @@ import ImportStudentModal from "../../components/common/students/ImportStudentMo
 import UpdateStudentsModal from "../../components/common/students/UpdateStudentsModal"
 import StudentExportModal from "../../components/common/students/StudentExportModal"
 import StudentTableView from "../../components/common/students/StudentTableView"
-import { Pagination, Text } from "@/components/ui"
+import { Pagination, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
@@ -295,10 +295,10 @@ const StudentsPage = () => {
   if (!canViewStudentsList) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
+        <Surface bg="danger" color="danger-text" padding={4} radius="lg" accent="danger" style={{ marginBottom: 'var(--spacing-6)' }}>
           <Text weight="medium">Access Denied</Text>
           <p>You do not have permission to view students.</p>
-        </div>
+        </Surface>
       </div>
     )
   }
@@ -306,10 +306,10 @@ const StudentsPage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {error && (
-        <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
+        <Surface bg="danger" color="danger-text" padding={4} radius="lg" accent="danger" style={{ marginBottom: 'var(--spacing-6)' }}>
           <Text weight="medium">Error:</Text>
           <p>{error}</p>
-        </div>
+        </Surface>
       )}
 
       <StudentsHeader

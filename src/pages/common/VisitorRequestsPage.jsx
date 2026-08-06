@@ -158,10 +158,10 @@ const VisitorRequestsPage = () => {
   if (!canViewVisitors) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div style={{ backgroundColor: "var(--color-danger-bg)", borderLeft: "var(--border-4) solid var(--color-danger)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-6)", borderRadius: "var(--radius-lg)" }}>
+        <Surface bg="danger" color="danger-text" padding={4} radius="lg" accent="danger" style={{ marginBottom: "var(--spacing-6)" }}>
           <Text weight="medium">Access Denied</Text>
           <p>You do not have permission to view visitor requests.</p>
-        </div>
+        </Surface>
       </div>
     )
   }
