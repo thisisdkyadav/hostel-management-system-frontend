@@ -67,10 +67,10 @@ const LeavesCardView = ({ leaves, onViewDetails }) => {
           onClick={() => onViewDetails(leave)}
         >
           <HStack gap="none" align="center" justify="between">
-            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary)' }}>
+            <HStack align="center" gap="none" color="brand">
               <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)' }} />
               <Text as="span" weight="semibold">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
-            </div>
+            </HStack>
             <span style={{ ...getStatusStyle(leave.status), padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)' }}>{leave.status || "Pending"}</span>
           </HStack>
           <Text as="div" size="sm" color="secondary" style={{ marginTop: 'var(--spacing-3)' }}>{leave.reason}</Text>

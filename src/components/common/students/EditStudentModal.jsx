@@ -580,10 +580,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           </div>
 
           {allocationLookupLoading ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-text-muted)" }}>
+            <HStack align="center" gap={2} color="muted">
               <FaSpinner className="animate-spin" />
               Loading current allocation details...
-            </div>
+            </HStack>
           ) : (
             <>
               {allocationLookup?.currentAllocation && (
@@ -679,10 +679,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 )}
 
                 {allocationForm.roomsLoading && (
-                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  <HStack align="center" gap={2} size="sm" color="muted">
                     <FaSpinner className="animate-spin" />
                     Loading rooms...
-                  </div>
+                  </HStack>
                 )}
 
                 {currentHostel && currentHostel.type === "unit-based" && allocationForm.hostelId && !allocationForm.unit && !allocationForm.unitError && units.length > 0 && (

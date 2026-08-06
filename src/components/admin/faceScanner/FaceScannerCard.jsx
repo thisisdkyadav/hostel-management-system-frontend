@@ -112,26 +112,26 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
             {/* Info Section */}
             <CardBody style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", marginBottom: "var(--spacing-4)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                <HStack align="center" gap={2} size="sm" color="tertiary">
                     {directionStyle.icon}
                     <span>Direction: {directionStyle.label}</span>
-                </div>
+                </HStack>
 
                 {scanner.type === "hostel-gate" ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                    <HStack align="center" gap={2} size="sm" color="tertiary">
                         <FaBuilding style={{ color: "var(--color-text-muted)" }} />
                         <span>Hostel: {scanner.hostelId?.name || "Not Assigned"}</span>
-                    </div>
+                    </HStack>
                 ) : (
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
+                    <HStack align="center" gap={2} size="sm" color="tertiary">
                         <FaBuilding style={{ color: "var(--color-text-muted)" }} />
                         <span>Caterer: {scanner.catererId?.name || "Not Assigned"}</span>
-                    </div>
+                    </HStack>
                 )}
 
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                <HStack align="center" gap={2} size="sm" color="muted">
                     <span>Username: {scanner.username}</span>
-                </div>
+                </HStack>
 
                 {scanner.lastActiveAt && (
                     <Text as="div" size="xs" color="muted">

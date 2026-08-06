@@ -185,10 +185,10 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       {step === 1 ? (
         <form style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           {error && (
-            <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+            <HStack align="start" gap="none" color="danger-text" style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", borderRadius: "var(--radius-lg)" }}>
               <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
               <p>{error}</p>
-            </div>
+            </HStack>
           )}
 
           <Field label="Notification Title" color="body" spacing={2}>
@@ -284,10 +284,10 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       ) : (
         <VStack gap={6}>
           {error && (
-            <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+            <HStack align="start" gap="none" color="danger-text" style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", borderRadius: "var(--radius-lg)" }}>
               <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
               <p>{error}</p>
-            </div>
+            </HStack>
           )}
 
           <Surface bg="tertiary" padding={5} radius="xl">

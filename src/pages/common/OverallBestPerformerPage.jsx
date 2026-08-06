@@ -2271,10 +2271,10 @@ const ReviewItemDetailModal = ({
               padding: "var(--spacing-4)",
               boxShadow: "var(--shadow-sm)",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              <HStack align="center" gap={2} size="xs" weight="semibold" color="secondary" style={{ marginBottom: "var(--spacing-2)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 <MessageSquare size={12} style={{ color: accentColor }} />
                 Student Notes
-              </div>
+              </HStack>
               <div style={{ color: item.notes ? "var(--color-text-body)" : "var(--color-text-muted)", fontSize: "var(--font-size-sm)", lineHeight: 1.6, fontStyle: item.notes ? "normal" : "italic" }}>
                 {item.notes || "No notes added by the student."}
               </div>
@@ -2311,15 +2311,7 @@ const ReviewItemDetailModal = ({
                 </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "4px", minHeight: 58 }}>
-                <div style={{
-                  fontSize: "var(--font-size-xl)",
-                  fontWeight: "var(--font-weight-bold)",
-                  color: "var(--color-primary)",
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: "6px",
-                  minHeight: 26,
-                }}>
+                <HStack align="baseline" gap="6px" size="xl" weight="bold" color="brand" style={{ minHeight: 26 }}>
                   {hasPointChange ? (
                     <>
                       <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
@@ -2332,7 +2324,7 @@ const ReviewItemDetailModal = ({
                       +{currentPoints}
                     </Text>
                   )}
-                </div>
+                </HStack>
                 <span
                   style={{
                     display: "inline-flex",
@@ -3049,43 +3041,43 @@ const ReviewModal = ({
                 <Grid cols={4} gap={3}>
                   <Surface padding="10px 12px" className={application.personalAcademic?.isPassingOutStudent ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Passing Out Student</Text>
-                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                    <HStack align="center" gap="4px" size="sm" weight="bold" style={{ marginTop: "4px" }}>
                       {application.personalAcademic?.isPassingOutStudent ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Yes</>
                       ) : (
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> No</>
                       )}
-                    </div>
+                    </HStack>
                   </Surface>
                   <Surface padding="10px 12px" className={application.personalAcademic?.hasNoDisciplinaryAction ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">No Disciplinary Action</Text>
-                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                    <HStack align="center" gap="4px" size="sm" weight="bold" style={{ marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoDisciplinaryAction ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Declared Clean</>
                       ) : (
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Action Disclosed</>
                       )}
-                    </div>
+                    </HStack>
                   </Surface>
                   <Surface padding="10px 12px" className={application.personalAcademic?.hasNoFrGrade ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">No FR Grade</Text>
-                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                    <HStack align="center" gap="4px" size="sm" weight="bold" style={{ marginTop: "4px" }}>
                       {application.personalAcademic?.hasNoFrGrade ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> None</>
                       ) : (
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Has FR Grade</>
                       )}
-                    </div>
+                    </HStack>
                   </Surface>
                   <Surface padding="10px 12px" className={application.personalAcademic?.declarationAccepted ? "por-detail-success-card" : "por-detail-alert-card"}>
                     <Text as="div" size="xs" color="muted">Undertaking Accepted</Text>
-                    <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-bold)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
+                    <HStack align="center" gap="4px" size="sm" weight="bold" style={{ marginTop: "4px" }}>
                       {application.personalAcademic?.declarationAccepted ? (
                         <><CheckCircle2 size={14} className="text-[var(--color-success)]" /> Confirmed</>
                       ) : (
                         <><XCircle size={14} className="text-[var(--color-danger)]" /> Pending</>
                       )}
-                    </div>
+                    </HStack>
                   </Surface>
                 </Grid>
               </div>
@@ -4341,12 +4333,12 @@ const OverallBestPerformerPage = () => {
                 gap: "var(--spacing-3)",
                 boxShadow: "var(--shadow-sm)"
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-primary)" }}>
+                <HStack align="center" gap={2} color="brand">
                   <CalendarDays size={18} />
                   <Text as="span" size="md" weight="bold" color="heading">
                     Active Application Round
                   </Text>
-                </div>
+                </HStack>
                 
                 <Grid cols={1} gap={2}>
                   <InfoRow label="Submissions Open" value={currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"} style={{ padding: "8px 12px", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }} />
@@ -4379,12 +4371,12 @@ const OverallBestPerformerPage = () => {
                 boxShadow: "var(--shadow-sm)"
               }}>
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-info)" }}>
+                  <HStack align="center" gap={2} color="info">
                     <BookOpen size={18} />
                     <Text as="span" size="md" weight="bold" color="heading">
                       Reference & Evaluation
                     </Text>
-                  </div>
+                  </HStack>
                   <Text as="div" size="sm" color="body" leading={1.6} style={{ marginTop: "var(--spacing-2)" }}>
                     Achievements are mapped to specific point scales. Review the official marking scheme to ensure correct categories and supporting proof documents are uploaded.
                   </Text>
@@ -4419,11 +4411,11 @@ const OverallBestPerformerPage = () => {
                     <Text as="div" size="lg" weight="bold" color="heading">
                       {portalState?.data?.student?.name || "Student"}
                     </Text>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "2px", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                    <HStack gap={2} wrap size="xs" color="muted" style={{ marginTop: "2px" }}>
                       <span>Roll Number: <strong>{portalState?.data?.student?.rollNumber || "—"}</strong></span>
                       <span>•</span>
                       <span>Department: <strong>{portalState?.data?.student?.department || "—"}</strong></span>
-                    </div>
+                    </HStack>
                   </div>
 
                   <HStack gap={2} align="center" style={{ marginLeft: "auto" }}>
@@ -4446,10 +4438,10 @@ const OverallBestPerformerPage = () => {
                     flexDirection: "column",
                     gap: "var(--spacing-1)"
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--color-danger)" }}>
+                    <HStack align="center" gap={2} size="xs" weight="bold" color="danger">
                       <XCircle size={14} />
                       Needs Attention / Revise Application
-                    </div>
+                    </HStack>
                     <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6, paddingLeft: "20px" }}>
                       {currentApplication.review.remarks}
                     </div>
@@ -4844,7 +4836,7 @@ const OverallBestPerformerPage = () => {
               />
 
               <SectionPanel title="Final Declaration">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", color: "var(--color-text-body)" }}>
+                <VStack gap={3} color="body">
                   <label style={checklistItemStyle}>
                     <input
                       type="checkbox"
@@ -4905,7 +4897,7 @@ const OverallBestPerformerPage = () => {
                       </Text>
                     ) : null}
                   </Grid>
-                </div>
+                </VStack>
               </SectionPanel>
             </VStack>
           </>
@@ -4945,13 +4937,13 @@ const OverallBestPerformerPage = () => {
                 <label style={fieldLabelStyle}>Application end date</label>
                 <input type="datetime-local" value={occurrenceForm.applyEndAt} onChange={(event) => setOccurrenceForm((current) => ({ ...current, applyEndAt: event.target.value }))} style={inputStyle} />
               </div>
-              <div style={{ display: "flex", alignItems: "end", color: "var(--color-text-muted)" }}>
+              <HStack align="end" gap="none" color="muted">
                 {occurrenceModalMode === "edit"
                   ? `${occurrenceForm.eligibleRollNumbers.length || 0} eligible students currently configured`
                   : (occurrenceForm.eligibleRows || []).length
                     ? `${occurrenceForm.eligibleRows.length} CSV rows loaded`
                     : "CSV upload required when activating a new occurrence"}
-              </div>
+              </HStack>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={fieldLabelStyle}>Description / instructions</label>
                 <textarea value={occurrenceForm.description} onChange={(event) => setOccurrenceForm((current) => ({ ...current, description: event.target.value }))} style={textareaStyle} />

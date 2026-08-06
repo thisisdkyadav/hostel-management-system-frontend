@@ -121,10 +121,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           </Grid>
 
           {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)' }}>
+            <HStack align="center" gap="none" color="warning-text" style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', borderRadius: 'var(--radius-md)' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text size="sm">This room is already at full capacity.</Text>
-            </div>
+            </HStack>
           )}
         </Surface>
 
@@ -138,10 +138,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
             <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Select Bed Number
           </h3>
           {availableBeds.length === 0 ? (
-            <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-bg-light)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center' }}>
+            <HStack align="center" gap="none" color="warning-text" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-bg-light)', borderRadius: 'var(--radius-lg)' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <Text size="base">No beds available in this room</Text>
-            </div>
+            </HStack>
           ) : (
             <HStack gap={2} wrap>
               {availableBeds.map((bedNumber) => (
@@ -180,10 +180,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         {error && (
-          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
+          <HStack align="start" gap="none" color="danger-text" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', borderRadius: 'var(--radius-lg)' }}>
             <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
             <Text size="base">{error}</Text>
-          </div>
+          </HStack>
         )}
 
         <div>

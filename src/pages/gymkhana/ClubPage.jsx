@@ -71,20 +71,9 @@ const ClubPage = () => {
         <Card>
           <CardHeader className="mb-0">
             <HStack align="center" gap={3}>
-              <div
-                style={{
-                  width: "2.75rem",
-                  height: "2.75rem",
-                  borderRadius: "var(--radius-xl)",
-                  backgroundColor: "var(--color-primary-bg)",
-                  color: "var(--color-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <HStack align="center" justify="center" gap="none" color="brand" style={{ width: "2.75rem", height: "2.75rem", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)" }}>
                 <ShieldCheck size={18} />
-              </div>
+              </HStack>
               <div>
                 <Heading as="h2" size="xl" weight="semibold" color="secondary">
                   Club Login

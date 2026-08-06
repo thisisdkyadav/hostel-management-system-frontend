@@ -99,22 +99,13 @@ const FaceScannerEntriesPage = () => {
                                 <Text size="sm" color="muted">
                                     {entry.userId?.email}
                                 </Text>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "var(--spacing-4)",
-                                        fontSize: "var(--font-size-sm)",
-                                        color: "var(--color-text-muted)",
-                                        marginTop: "var(--spacing-1)",
-                                    }}
-                                >
+                                <HStack align="center" gap={4} size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                                     <span>
                                         Room: {entry.room}
                                         {entry.bed}
                                     </span>
                                     <StatusBadge status={entry.status} />
-                                </div>
+                                </HStack>
                             </div>
                         </HStack>
                         <Text color="warning-text" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>

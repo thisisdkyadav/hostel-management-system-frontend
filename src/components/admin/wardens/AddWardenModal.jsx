@@ -143,10 +143,10 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
       <form onSubmit={handleSubmit}>
         <VStack gap="large">
           <Surface bg="brand" padding={4} radius="lg">
-            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
+            <HStack align="center" gap="none" color="var(--color-primary-dark)">
               <FiUser style={{ marginRight: 'var(--spacing-2)' }} />
               <Heading as="h4" weight="medium">Basic Information</Heading>
-            </div>
+            </HStack>
           </Surface>
 
           <Field label="Name" htmlFor="name" required>

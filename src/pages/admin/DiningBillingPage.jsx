@@ -63,10 +63,10 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
         </div>
       </HStack>
 
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", fontSize: "var(--font-size-sm)" }}>
+      <HStack justify="between" gap={3} size="sm">
         <Text as="span" color="muted">Allocated <Text as="strong" color="secondary">{formatCurrency(summary.totalAllocated)}</Text></Text>
         <Text as="span" color="muted">Charged <Text as="strong" color="secondary">{formatCurrency(summary.totalCharged)}</Text></Text>
-      </div>
+      </HStack>
 
       <CapacityBar allocated={summary.totalCharged} total={summary.totalAllocated} showLabel={false} size="sm" />
 

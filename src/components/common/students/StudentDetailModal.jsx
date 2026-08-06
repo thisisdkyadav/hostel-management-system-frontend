@@ -586,10 +586,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       </Surface>
                     </HStack>
                     <Text size="sm" color="muted" style={{ marginBottom: "var(--spacing-2)" }}>{feedback.description}</Text>
-                    <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", justifyContent: "space-between" }}>
+                    <HStack justify="between" gap="none" size="xs" color="muted">
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
                       {feedback.reply && <Text as="span" color="success">Replied: Yes</Text>}
-                    </div>
+                    </HStack>
                   </Surface>
                 ))}
               </VStack>
@@ -1012,11 +1012,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   </IconCircle>
                   <div>
                     <Heading as="h3" weight="medium" color="primary">{selectedInventoryItem.itemTypeId.name}</Heading>
-                    <div style={{ display: "flex", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>
+                    <HStack gap={2} size="sm">
                       <Text as="span" color="muted">Qty: {selectedInventoryItem.count}</Text>
                       <Text as="span" color="muted">•</Text>
                       <Text as="span" color="muted">Issued: {formatDate(selectedInventoryItem.issueDate)}</Text>
-                    </div>
+                    </HStack>
                   </div>
                 </HStack>
               </Surface>

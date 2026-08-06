@@ -246,7 +246,7 @@ export const LiveVotingFullscreenModal = ({
             {socketConnected ? "Live Status" : "Reconnecting"}
           </div>
 
-          <div style={{ display: "flex", gap: "var(--spacing-5)", fontSize: "var(--font-size-base)", alignItems: "center" }}>
+          <HStack align="center" gap={5} size="base">
             <HStack gap="8px" align="center">
               <Text as="span" color="muted">Eligible Voters</Text>
               <Text as="span" weight="semibold" color="heading" size="md">
@@ -274,7 +274,7 @@ export const LiveVotingFullscreenModal = ({
                 {overview.turnoutPercentage || 0}%
               </Text>
             </HStack>
-          </div>
+          </HStack>
         </HStack>
       }
     >
@@ -1216,20 +1216,9 @@ export const AdminNominationReviewModal = ({
   const SectionCard = ({ icon: Icon, title, children }) => (
     <Grid cols={1} gap={3} style={{ background: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3) var(--spacing-4)", border: "1px solid var(--color-border-light)" }}>
       <HStack gap={2} align="center">
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            borderRadius: "var(--radius-sm)",
-            background: "linear-gradient(135deg, var(--color-primary-bg), color-mix(in srgb, var(--color-primary-bg) 76%, white 24%))",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--color-primary)",
-          }}
-        >
+        <HStack align="center" justify="center" gap="none" color="brand" style={{ width: "24px", height: "24px", borderRadius: "var(--radius-sm)", background: "linear-gradient(135deg, var(--color-primary-bg), color-mix(in srgb, var(--color-primary-bg) 76%, white 24%))" }}>
           <Icon size={13} />
-        </div>
+        </HStack>
         <Text as="div" size="xs" weight="semibold" color="brand" style={{ textTransform: "uppercase", letterSpacing: "0.5px" }}>
           {title}
         </Text>

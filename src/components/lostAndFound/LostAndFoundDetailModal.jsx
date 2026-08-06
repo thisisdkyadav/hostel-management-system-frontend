@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Grid, Heading, Modal, Surface, Text } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -59,19 +59,19 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
           {/* Header */}
           <div style={{ marginBottom: 'var(--spacing-6)', paddingTop: 'var(--spacing-2)' }}>
             <Heading as="h2" size="3xl" weight="bold" color="primary" style={{ marginBottom: 'var(--spacing-1)' }}>{selectedItem.itemName}</Heading>
-            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-muted)' }}>
+            <HStack align="center" gap="none" color="muted">
               <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)' }} />
               <span>{formatDate(selectedItem.dateFound)}</span>
-            </div>
+            </HStack>
           </div>
 
           {/* Images Section */}
           {selectedItem.images && selectedItem.images.length > 0 && (
             <div style={{ marginBottom: 'var(--spacing-6)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
+              <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
                 <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
                 <Heading as="h3" weight="semibold">Item Images</Heading>
-              </div>
+              </HStack>
               <Grid cols={3} gap="var(--gap-sm)">
                 {selectedItem.images.map((imageUrl, index) => (
                   <img key={index} src={getMediaUrl(imageUrl)} alt={`${selectedItem.itemName} ${index + 1}`} onClick={() => openImageViewer(index)}
@@ -94,10 +94,10 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
 
           {/* Description */}
           <Surface bg="var(--table-header-bg)" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
+            <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
               <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
               <Heading as="h3" weight="semibold">Description</Heading>
-            </div>
+            </HStack>
             <Text color="secondary" leading="var(--line-height-relaxed)">{selectedItem.description}</Text>
           </Surface>
         </div>

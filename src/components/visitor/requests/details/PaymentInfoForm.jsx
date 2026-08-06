@@ -188,13 +188,13 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
                 <svg style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-placeholder)' }} stroke="currentColor" fill="none" viewBox="0 0 48 48">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <div style={{ display: 'flex', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', justifyContent: 'center' }}>
+                <HStack justify="center" gap="none" size="sm" color="muted">
                   <label htmlFor="screenshot-upload" style={{ position: 'relative', cursor: 'pointer', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>
                     <span>Upload a file</span>
                     <input id="screenshot-upload" name="screenshot-upload" type="file" style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: '0' }} accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleFileChange} disabled={uploading} />
                   </label>
                   <p style={{ paddingLeft: 'var(--spacing-1)' }}>or drag and drop</p>
-                </div>
+                </HStack>
                 <Text size="xs" color="light">JPEG, PNG, GIF, WebP up to 5MB</Text>
               </div>
             </div>

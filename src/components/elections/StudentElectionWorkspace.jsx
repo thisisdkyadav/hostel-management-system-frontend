@@ -45,16 +45,7 @@ const StudentElectionWorkspace = ({
           {selectedStudentElection.title}
         </Heading>
       </HStack>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-          flexWrap: "wrap",
-          color: "var(--color-text-muted)",
-          fontSize: "var(--font-size-sm)",
-        }}
-      >
+      <HStack align="center" gap="16px" wrap size="sm" color="muted">
         {selectedStudentElection.mode === "upcoming" ? (
           <span>
             <strong>Voting starts:</strong> {formatDateTime(selectedStudentElection.timeline?.votingStartAt)}
@@ -72,7 +63,7 @@ const StudentElectionWorkspace = ({
             {selectedStudentElection.results?.isPublished ? "Published" : "Publishing soon"}
           </span>
         ) : null}
-      </div>
+      </HStack>
     </div>
 
     {selectedStudentElection.mode === "upcoming" ? (

@@ -223,7 +223,7 @@ const InventoryReports = () => {
                       <Table.Cell>
                         <div className="space-y-1">
                           {student.items.map((item) => (
-                            <div key={item.id} style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
+                            <HStack align="center" gap="none" size="sm" key={item.id}>
                               <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
                                 <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
                               </IconCircle>
@@ -234,7 +234,7 @@ const InventoryReports = () => {
                               <Surface as="span" bg={item.status === "Issued" ? "var(--color-success-bg)" : item.status === "Damaged" ? "var(--color-danger-bg)" : "var(--color-bg-muted)"} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={item.status === "Issued" ? "var(--color-success-text)" : item.status === "Damaged" ? "var(--color-danger-text)" : "var(--color-text-secondary)"} size="xs">
                                 {item.status}
                               </Surface>
-                            </div>
+                            </HStack>
                           ))}
                         </div>
                       </Table.Cell>

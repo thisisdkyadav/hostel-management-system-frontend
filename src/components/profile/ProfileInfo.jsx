@@ -12,10 +12,10 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
         <HStack gap="none" align="center" justify="between">
           <Text size="sm" color="muted">{label}</Text>
           {isEditable && (
-            <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-xs)", color: "var(--color-info)", }} >
+            <HStack align="center" gap="none" size="xs" color="info">
               <FiEdit size={12} style={{ marginRight: "var(--spacing-1)" }} />
               <span>Editable</span>
-            </div>
+            </HStack>
           )}
         </HStack>
         <Text weight="medium" color="secondary" size="base" style={{ marginTop: "var(--spacing-0-5)" }}>

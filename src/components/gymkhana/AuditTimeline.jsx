@@ -93,15 +93,7 @@ const actorName = (actor) => {
 }
 
 const ChangeRow = ({ change }) => (
-    <div
-        style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "baseline",
-            gap: "var(--spacing-1)",
-            fontSize: "var(--font-size-xs)",
-        }}
-    >
+    <HStack align="baseline" gap={1} wrap size="xs">
         <Text as="span" weight="medium" color="secondary">
             {humanizeField(change.field)}:
         </Text>
@@ -110,7 +102,7 @@ const ChangeRow = ({ change }) => (
         </span>
         <Text as="span" color="placeholder">→</Text>
         <Text as="span" color="body">{formatValue(change.to)}</Text>
-    </div>
+    </HStack>
 )
 
 const AuditTimeline = ({ entityType = null, entityId = null, compact = false, editsOnly = false }) => {
@@ -179,15 +171,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                     const changeCount = Array.isArray(item.changes) ? item.changes.length : 0
 
                     return (
-                        <div
-                            key={item.id || idx}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "var(--spacing-2)",
-                                fontSize: "var(--font-size-xs)",
-                            }}
-                        >
+                        <HStack align="center" gap={2} size="xs" key={item.id || idx}>
                             <Icon size={14} style={{ color: `var(--color-${color})`, flexShrink: 0 }} />
                             <Text as="span" color="body" weight="medium">
                                 {formatActionLabel(item.action)}
@@ -201,7 +185,7 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
                             <Text as="span" color="placeholder" style={{ marginLeft: "auto" }}>
                                 {formatTimestamp(item.at)}
                             </Text>
-                        </div>
+                        </HStack>
                     )
                 })}
             </VStack>

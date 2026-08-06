@@ -328,20 +328,10 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                       accentText="var(--color-success-text)"
                     />
                     {complaintData.resolutionDate && (
-                      <div style={{
-                        marginTop: "var(--spacing-2)",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "var(--spacing-1-5)",
-                        padding: "var(--spacing-1) var(--spacing-2)",
-                        background: "var(--color-success-bg)",
-                        borderRadius: "var(--radius-sm)",
-                        fontSize: "var(--font-size-xs)",
-                        color: "var(--color-success-text)"
-                      }}>
+                      <HStack align="center" gap="var(--spacing-1-5)" size="xs" color="success-text" style={{ marginTop: "var(--spacing-2)", padding: "var(--spacing-1) var(--spacing-2)", background: "var(--color-success-bg)", borderRadius: "var(--radius-sm)" }}>
                         <CheckCircle size={11} />
                         <span>Resolved on {formatDate(complaintData.resolutionDate)}</span>
-                      </div>
+                      </HStack>
                     )}
                   </SectionCard>
                 )}

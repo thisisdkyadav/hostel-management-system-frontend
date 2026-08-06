@@ -80,10 +80,10 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
             </IconCircle>
             <div>
               <Heading as="h3" weight="bold" color="secondary" size="lg">{staff.name}</Heading>
-              <div style={{ display: "flex", alignItems: "center", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              <HStack align="center" gap="none" size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                 {getCategoryIcon(staff.category)}
                 <span style={{ marginLeft: "var(--spacing-1-5)" }}>{getCategoryDisplayLabel(staff.category)}</span>
-              </div>
+              </HStack>
             </div>
           </HStack>
         </CardHeader>

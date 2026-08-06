@@ -39,10 +39,10 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
             </IconCircle>
             <div>
               <Heading as="h3" weight="bold" color="primary" size="lg">{security.name}</Heading>
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+              <HStack align="center" gap="none" size="sm" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>
                 <FaIdCard style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', opacity: 'var(--opacity-70)' }} />
                 <span>Security Staff</span>
-              </div>
+              </HStack>
             </div>
           </HStack>
         </CardHeader>

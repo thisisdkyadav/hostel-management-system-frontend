@@ -214,10 +214,10 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
             <Surface bg="brand" padding={4} radius="lg">
-              <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
+              <HStack align="center" gap="none" color="var(--color-primary-dark)">
                 <FiUser style={{ marginRight: "var(--spacing-2)" }} />
                 <Heading as="h4" weight="medium">{staffTitle} User Information</Heading>
-              </div>
+              </HStack>
             </Surface>
 
             <VStack gap="medium">
@@ -326,10 +326,10 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
       <form onSubmit={handleSubmit}>
         <VStack gap="large">
           <Surface bg="brand" padding={4} radius="lg">
-            <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
+            <HStack align="center" gap="none" color="var(--color-primary-dark)">
               <FaBuilding style={{ marginRight: "var(--spacing-2)" }} />
               <Heading as="h4" weight="medium">{staffTitle} Information</Heading>
-            </div>
+            </HStack>
           </Surface>
 
           <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>

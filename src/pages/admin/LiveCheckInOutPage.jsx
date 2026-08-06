@@ -376,10 +376,10 @@ const LiveCheckInOutPage = () => {
               <Spinner size="32px" />
             </div>
           ) : entries.length === 0 ? (
-            <div style={{ display: "flex", height: "256px", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--spacing-2)", color: "var(--color-text-muted)" }}>
+            <VStack align="center" justify="center" gap={2} color="muted" style={{ height: "256px" }}>
               <Activity size={48} />
               <Text size="sm">No entries match filters</Text>
-            </div>
+            </VStack>
           ) : (
             <>
               <div style={{ overflowX: "auto" }}>

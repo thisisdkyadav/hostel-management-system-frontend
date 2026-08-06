@@ -40,7 +40,7 @@ const ScannerEntriesPage = () => {
               <div>
                 <Text weight="medium" color="primary">{entry.userId.name}</Text>
                 <Text size="sm" color="muted">{entry.userId.rollNumber}</Text>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}><span>Room: {entry.room}{entry.bed}</span><StatusBadge status={entry.status} /></div>
+                <HStack align="center" gap={4} size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}><span>Room: {entry.room}{entry.bed}</span><StatusBadge status={entry.status} /></HStack>
               </div>
             </HStack>
             <Text color="warning-text" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</Text>
@@ -121,9 +121,9 @@ const ScannerEntriesPage = () => {
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)", fontSize: "var(--font-size-sm)" }}>{time}</Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}><StatusBadge status={entry.status} /></Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          <div style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
-                            {entry.scannerType === "checkin" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-success)" }}><FaArrowDown style={{ marginRight: "var(--spacing-1)" }} /><span>Check-in</span></div> : entry.scannerType === "checkout" ? <div style={{ display: "flex", alignItems: "center", color: "var(--color-warning)" }}><FaArrowRight style={{ marginRight: "var(--spacing-1)", transform: "rotate(90deg)" }} /><span>Check-out</span></div> : <Text as="span" color="muted">Auto</Text>}
-                          </div>
+                          <HStack align="center" gap="none" size="sm">
+                            {entry.scannerType === "checkin" ? <HStack align="center" gap="none" color="success"><FaArrowDown style={{ marginRight: "var(--spacing-1)" }} /><span>Check-in</span></HStack> : entry.scannerType === "checkout" ? <HStack align="center" gap="none" color="warning"><FaArrowRight style={{ marginRight: "var(--spacing-1)", transform: "rotate(90deg)" }} /><span>Check-out</span></HStack> : <Text as="span" color="muted">Auto</Text>}
+                          </HStack>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <Text as="div" size="xs" color="muted" style={{ marginLeft: "var(--spacing-2)" }} title={entry.reason}>(Reason provided)</Text>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}

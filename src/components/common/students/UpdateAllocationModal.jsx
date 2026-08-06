@@ -1043,10 +1043,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     )}
 
                     {row.roomsLoading && (
-                      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      <HStack align="center" gap={2} size="sm" color="muted">
                         <FaSpinner className="animate-spin" />
                         Loading rooms...
-                      </div>
+                      </HStack>
                     )}
 
                     {currentHostel && currentHostel.type === "unit-based" && row.hostelId && !row.unit && !row.unitError && units.length > 0 && (

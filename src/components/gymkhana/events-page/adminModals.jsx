@@ -281,7 +281,7 @@ export const GymkhanaApprovalModal = ({
         Reviewing {calendar?.academicYear} calendar with {events.length} events
       </Text>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)" }}>
+      <HStack gap={2} wrap size="xs">
         {categoryOrder.map((category) => (
           <span
             key={category}
@@ -298,7 +298,7 @@ export const GymkhanaApprovalModal = ({
         <Surface as="span" bg="brand" padding="var(--spacing-1) var(--spacing-2)" radius="card-sm" color="brand" weight="medium">
           Total: ₹{budgetSummary.total.toLocaleString()}
         </Surface>
-      </div>
+      </HStack>
 
       {dateConflicts.length > 0 && (
         <Text as="span" size="xs" color="warning">

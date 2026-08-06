@@ -94,11 +94,11 @@ const ScanEventRow = ({ event, showHeaders }) => {
         </Text>
       </HStack>
 
-      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+      <HStack gap={2} wrap size="xs" color="muted">
         <Text as="span" weight="semibold" color="secondary">{event.method}</Text>
         <span style={{ fontFamily: "var(--font-family-mono, monospace)" }}>{event.path}</span>
         {event.ip && <span>· {event.ip}</span>}
-      </div>
+      </HStack>
 
       <div>
         <span style={{ display: "block", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>Body</span>

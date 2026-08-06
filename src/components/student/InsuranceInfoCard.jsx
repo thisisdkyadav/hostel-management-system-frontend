@@ -41,16 +41,16 @@ const InsuranceInfoCard = ({ insurance }) => {
 
       <VStack gap="var(--spacing-1-5)" style={{ marginTop: 'var(--spacing-2)' }}>
         {insurance.insuranceNumber && (
-          <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>
+          <HStack align="center" gap="none" size="xs" color="tertiary">
             <FaHashtag style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{insurance.insuranceNumber}</span>
-          </div>
+          </HStack>
         )}
         {periodLabel && (
-          <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>
+          <HStack align="center" gap="none" size="xs" color="tertiary">
             <FaRegCalendarAlt style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} />
             <span>{periodLabel}</span>
-          </div>
+          </HStack>
         )}
       </VStack>
     </div>

@@ -33,35 +33,17 @@ const PeriodCard = ({ period, onView, onEdit }) => (
     {/* Title row */}
     <HStack gap={3} align="start" justify="between">
       <div style={{ minWidth: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--spacing-2)",
-            color: "var(--color-text-heading)",
-            fontWeight: "var(--font-weight-semibold)",
-            fontSize: "var(--font-size-md)",
-          }}
-        >
+        <HStack align="center" gap={2} size="md" weight="semibold" color="heading">
           <CalendarClock size={16} style={{ color: "var(--color-primary)", flexShrink: 0 }} />
           <span>{formatDateRange(period.startDate, period.endDate)}</span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--spacing-1-5)",
-            marginTop: "var(--spacing-1-5)",
-            color: "var(--color-text-muted)",
-            fontSize: "var(--font-size-sm)",
-          }}
-        >
+        </HStack>
+        <HStack align="center" gap="var(--spacing-1-5)" size="sm" color="muted" style={{ marginTop: "var(--spacing-1-5)" }}>
           <Users size={14} />
           <span>
             {period.caterers.length} caterer{period.caterers.length === 1 ? "" : "s"} · {eligibilityLabel(period)}
             {" "}({period.eligibleStudentCount})
           </span>
-        </div>
+        </HStack>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--spacing-1-5)", flexShrink: 0 }}>
         <StatusBadge status={period.status} tone={periodStatusTone(period.status)} />

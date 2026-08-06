@@ -26,12 +26,12 @@ const RoomInfoCard = ({ roomData }) => {
 
       <HStack gap="var(--gap-md)" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
         <Text size="4xl" weight="medium" color="brand">{roomData.roomNumber}</Text>
-        <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>
+        <HStack align="center" gap="none" size="xs" color="tertiary">
           <FaUserFriends style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} />
           <span>
             {roomData.occupiedBeds}/{roomData.totalBeds} Occupied
           </span>
-        </div>
+        </HStack>
       </HStack>
 
       {roomData?.roommates?.length > 0 && (

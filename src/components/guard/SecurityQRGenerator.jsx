@@ -108,13 +108,13 @@ const SecurityQRGenerator = () => {
           </div>
 
           {countdown !== null && (
-            <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+            <HStack align="center" gap="none" size="sm" weight="medium" style={{ marginTop: 'var(--spacing-3)' }}>
               <div style={{
                 display: 'inline-block', width: 'var(--spacing-3)', height: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', backgroundColor: countdown > 60 ? 'var(--color-success)' : 'var(--color-danger)',
                 animation: countdown > 60 ? 'none' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
               }}></div>
               <span>Expires in {formatCountdown(countdown)} minutes</span>
-            </div>
+            </HStack>
           )}
 
           <Grid cols={1} gap={3} style={{ width: '100%', marginTop: 'var(--spacing-4)' }}>

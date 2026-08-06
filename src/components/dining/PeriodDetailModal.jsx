@@ -66,10 +66,10 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
       <VStack gap={6}>
         {/* Header summary */}
         <HStack gap={3} align="start" justify="between">
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", color: "var(--color-text-heading)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+          <HStack align="center" gap={2} size="lg" weight="semibold" color="heading">
             <CalendarClock size={18} style={{ color: "var(--color-primary)" }} />
             {formatDateRange(period.startDate, period.endDate)}
-          </div>
+          </HStack>
           <VStack gap="var(--spacing-1-5)" align="end">
             <StatusBadge status={period.status} tone={periodStatusTone(period.status)} />
             <StatusBadge status={`Alloc: ${period.allocationStatus}`} tone={allocationStatusTone(period.allocationStatus)} showDot={false} />

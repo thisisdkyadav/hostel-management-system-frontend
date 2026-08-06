@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { FaCalendarAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { Surface, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "@/components/ui"
 
 const EventsCalendar = ({ events = [] }) => {
   const formatDate = (dateString) => {
@@ -45,9 +45,9 @@ const EventsCalendar = ({ events = [] }) => {
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event.eventName}</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-2xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>
+                  <HStack align="center" gap="none" size="2xs" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>
                     <BsClock style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-2xs)' }} /> {time}
-                  </div>
+                  </HStack>
                   <p style={{ marginTop: 'var(--spacing-0-5)', fontSize: 'var(--text-badge)', color: 'var(--color-text-tertiary)', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{event.description}</p>
                 </div>
               </div>

@@ -52,20 +52,20 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
 
         {/* Description */}
         <Surface bg="tertiary" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
+          <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
             <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
             <Heading as="h3" weight="semibold">Description</Heading>
-          </div>
+          </HStack>
           <Text color="body" leading="var(--line-height-relaxed)">{selectedEvent.description}</Text>
         </Surface>
 
         {/* Organizer */}
         {selectedEvent.organizer && (
           <Surface bg="tertiary" padding={6} radius="xl">
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', color: 'var(--color-primary)' }}>
+            <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
               <FaUserFriends style={{ marginRight: 'var(--spacing-2)' }} />
               <Heading as="h3" weight="semibold">Organizer</Heading>
-            </div>
+            </HStack>
             <Text color="body">{selectedEvent.organizer}</Text>
           </Surface>
         )}

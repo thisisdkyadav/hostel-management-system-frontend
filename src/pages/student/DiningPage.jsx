@@ -111,9 +111,9 @@ const CatererIdentity = ({ caterer, selectedAt }) => (
           {caterer?.name || "Not selected"}
         </Text>
         {caterer?.email && (
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+          <HStack align="center" gap="var(--spacing-1-5)" size="sm" color="muted">
             <Mail size={14} /> {caterer.email}
-          </div>
+          </HStack>
         )}
       </div>
     </HStack>
