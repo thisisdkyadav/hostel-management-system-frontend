@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Alert, HStack, Label, Pagination, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, IconCircle, Label, Pagination, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -297,17 +297,17 @@ const HostelAllocation = () => {
                   <Table.Row key={allocation._id}>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
-                        <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                        <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
                           <FaBuilding style={{ color: 'var(--color-primary)' }} />
-                        </div>
+                        </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{allocation.hostelId.name}</Text>
                       </HStack>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
-                        <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                        <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
                           <FaBox style={{ color: 'var(--color-primary)' }} />
-                        </div>
+                        </IconCircle>
                         <div>
                           <Text as="div" weight="medium" color="secondary">{allocation.itemTypeId.name}</Text>
                           <Text as="div" size="sm" color="muted">{allocation.itemTypeId.description}</Text>

@@ -1,6 +1,7 @@
 import React from "react"
 import { FaUser, FaGraduationCap, FaIdCard } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import { IconCircle } from "@/components/ui"
 
 const StudentProfile = ({ profile }) => {
   if (!profile) return null
@@ -93,13 +94,13 @@ const StudentProfile = ({ profile }) => {
       
       <div className="student-profile-container">
         <div className="student-profile-avatar-wrapper">
-          <div style={{ width: 'var(--avatar-2xl)', height: 'var(--avatar-2xl)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--icon-2xl)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
+          <IconCircle size="var(--avatar-2xl)" bg="info" color="brand" style={{ fontSize: 'var(--icon-2xl)' }}>
             {profile.profileImage ? (
               <img src={getMediaUrl(profile.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
             ) : (
               <FaUser />
             )}
-          </div>
+          </IconCircle>
         </div>
 
         <div className="student-profile-info">

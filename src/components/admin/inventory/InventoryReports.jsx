@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, HStack, Label, Select, Text, VStack } from "@/components/ui"
+import { Alert, HStack, IconCircle, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 
 const InventoryReports = () => {
@@ -148,9 +148,9 @@ const InventoryReports = () => {
                 onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-card)")}
               >
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
-                  <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+                  <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
                     <FaBuilding style={{ color: "var(--color-primary)" }} />
-                  </div>
+                  </IconCircle>
                   <Text as="div" size="lg" weight="medium" color="secondary">{hostel.hostelName}</Text>
                 </HStack>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
@@ -174,9 +174,9 @@ const InventoryReports = () => {
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                       >
                         <HStack gap="none" align="center">
-                          <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-2)" }}>
+                          <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
                             <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
-                          </div>
+                          </IconCircle>
                           <Text as="span" size="sm">{item.itemName}</Text>
                         </HStack>
                         <Text as="div" size="sm">
@@ -225,9 +225,9 @@ const InventoryReports = () => {
                         <div className="space-y-1">
                           {student.items.map((item) => (
                             <div key={item.id} style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)" }}>
-                              <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-2)" }}>
+                              <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
                                 <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
-                              </div>
+                              </IconCircle>
                               <Text as="span" weight="medium" color="body">{item.itemName}</Text>
                               <span style={{ margin: "0 var(--spacing-1)", color: "var(--color-text-placeholder)" }}>•</span>
                               <Text as="span" color="tertiary">{item.count}</Text>
@@ -282,9 +282,9 @@ const InventoryReports = () => {
                     >
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <HStack gap="none" align="center">
-                          <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+                          <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
                             <FaBox style={{ color: "var(--color-primary)" }} />
-                          </div>
+                          </IconCircle>
                           <Text as="span" weight="medium" color="secondary">{item.itemName}</Text>
                         </HStack>
                       </Table.Cell>

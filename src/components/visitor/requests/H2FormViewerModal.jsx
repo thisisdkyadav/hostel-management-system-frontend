@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { HStack, Modal, Surface, Text } from "@/components/ui"
+import { HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -46,9 +46,9 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
         {/* Header with action buttons */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
           <HStack gap={3} align="center">
-            <div style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconCircle size="var(--avatar-md)" bg="brand">
               <FaFileAlt style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
-            </div>
+            </IconCircle>
             <div>
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h3>
               <Text size="sm" color="muted">Guest Room Booking Form</Text>

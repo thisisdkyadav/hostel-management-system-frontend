@@ -2,7 +2,7 @@ import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Card, HStack, Text, VStack } from "@/components/ui"
+import { Card, HStack, IconCircle, Text, VStack } from "@/components/ui"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
@@ -46,7 +46,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
               {complaint.reportedBy?.profileImage ? (
                 <img src={getMediaUrl(complaint.reportedBy.profileImage)} alt={complaint.reportedBy.name} style={{ height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', objectFit: 'cover', marginRight: 'var(--spacing-2)' }} />
               ) : (
-                <div style={{ height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', fontWeight: 'var(--font-weight-medium)', marginRight: 'var(--spacing-2)' }}>{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
+                <IconCircle size="var(--avatar-sm)" bg="brand" color="brand" style={{ fontWeight: 'var(--font-weight-medium)', marginRight: 'var(--spacing-2)' }}>{complaint.reportedBy?.name?.charAt(0) || "U"}</IconCircle>
               )}
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)' }} className="line-clamp-1">{complaint.reportedBy?.name}</div>

@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, IconCircle, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
@@ -65,9 +65,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <CardHeader className="mb-0">
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
-                <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-2) solid var(--color-primary)' }}>
+                <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
                   <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
-                </div>
+                </IconCircle>
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
@@ -119,9 +119,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <CardHeader className="mb-0">
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
-                <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-2) solid var(--color-primary)' }}>
+                <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
                   <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
-                </div>
+                </IconCircle>
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
@@ -171,9 +171,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               {warden.profileImage ? (
                 <img src={getMediaUrl(warden.profileImage)} alt={warden.name} style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-2) solid var(--color-primary)', boxShadow: 'var(--shadow-sm)' }} />
               ) : (
-                <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-2) solid var(--color-primary)' }}>
+                <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
                   <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
-                </div>
+                </IconCircle>
               )}
             </div>
             <div>

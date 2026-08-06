@@ -15,7 +15,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Badge, Card, Checkbox, Divider, HStack, Label, Spinner, Text, VStack } from "@/components/ui"
+import { Badge, Card, Checkbox, Divider, HStack, IconCircle, Label, Spinner, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { MdMeetingRoom } from "react-icons/md"
 
@@ -412,7 +412,7 @@ const UnitsAndRoomsPage = () => {
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
             <div style={{ position: 'relative', width: '4rem', height: '4rem' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-border-primary)', borderRadius: 'var(--radius-full)' }}></div>
+              <IconCircle size="100%" style={{ position: 'absolute', top: 0, left: 0, border: 'var(--border-4) solid var(--color-border-primary)' }}></IconCircle>
               <Spinner size="100%" thickness="thick" style={{ position: 'absolute', top: 0, left: 0 }} />
             </div>
           </div>

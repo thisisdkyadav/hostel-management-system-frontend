@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Input, Table } from "czero/react"
-import { Grid, HStack, Modal, Text } from "@/components/ui"
+import { Grid, HStack, IconCircle, Modal, Text } from "@/components/ui"
 import {
   BadgeCheck,
   CheckCircle2,
@@ -1301,22 +1301,9 @@ export const AdminNominationReviewModal = ({
           }}
         />
       ) : (
-        <div
-          style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "var(--radius-full)",
-            backgroundColor: "var(--color-primary-bg)",
-            color: "var(--color-primary)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "var(--font-weight-semibold)",
-            flexShrink: 0,
-          }}
-        >
+        <IconCircle size="48px" bg="brand" color="brand" style={{ fontWeight: "var(--font-weight-semibold)" }}>
           {(name || "?").trim().charAt(0).toUpperCase()}
-        </div>
+        </IconCircle>
       )}
       <div style={{ minWidth: 0, flex: 1, display: "grid", gap: "2px" }}>
         <div
@@ -1392,22 +1379,9 @@ export const AdminNominationReviewModal = ({
                   }}
                 />
               ) : (
-                <div
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-primary-bg)",
-                    color: "var(--color-primary)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: "var(--font-weight-semibold)",
-                    flexShrink: 0,
-                  }}
-                >
+                <IconCircle size="40px" bg="brand" color="brand" style={{ fontWeight: "var(--font-weight-semibold)" }}>
                   {(entry.name || entry.rollNumber || "?").trim().charAt(0).toUpperCase()}
-                </div>
+                </IconCircle>
               )}
               <button
                 type="button"

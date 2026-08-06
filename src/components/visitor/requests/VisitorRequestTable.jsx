@@ -4,7 +4,7 @@ import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -79,9 +79,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
           {request.studentProfileImage ? (
             <img style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover" }} src={getMediaUrl(request.studentProfileImage)} alt={request.studentName} />
           ) : (
-            <div style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)" }}>
+            <IconCircle size="var(--avatar-sm)" bg="muted" color="muted">
               {request.studentName?.charAt(0) || "?"}
-            </div>
+            </IconCircle>
           )}
           <div style={{ marginLeft: "var(--spacing-2)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">{request.studentName || "N/A"}</Text>

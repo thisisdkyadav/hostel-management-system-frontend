@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Page, Pagination, Surface, Text } from "@/components/ui"
+import { IconCircle, Page, Pagination, Surface, Text } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
@@ -334,18 +334,11 @@ const MyTasksPage = () => {
                       )}
 
                       <div className="mt-3 flex justify-end">
-                        <div
-                          style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: 'var(--radius-full)',
-                            backgroundColor: isPastDue(task.dueDate) && task.status !== "Completed"
+                        <IconCircle size="8px" bg={isPastDue(task.dueDate) && task.status !== "Completed"
                               ? 'var(--color-danger)'
                               : task.status === "Completed"
                                 ? 'var(--color-success)'
-                                : 'var(--color-primary)'
-                          }}
-                        ></div>
+                                : 'var(--color-primary)'}></IconCircle>
                       </div>
                     </Surface>
                   </div>

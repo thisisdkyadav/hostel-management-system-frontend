@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { Pagination, Spinner, Surface, Text } from "@/components/ui"
+import { IconCircle, Pagination, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 
 const AvailableInventory = () => {
@@ -125,9 +125,9 @@ const AvailableInventory = () => {
                   <Table.Row style={{ borderTop: `var(--border-1) solid var(--table-border)` }} key={item._id}  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                        <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
                           <FaBoxes style={{ color: 'var(--color-primary)' }} />
-                        </div>
+                        </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>
                     </Table.Cell>

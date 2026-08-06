@@ -2,7 +2,7 @@ import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, Text, VStack } from "@/components/ui"
 
 const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
   const { user } = useAuth()
@@ -30,9 +30,9 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
             {complaint.reportedBy?.profileImage ? (
               <img style={{ height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
             ) : (
-              <div style={{ height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-white)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-primary)' }} >
+              <IconCircle size="var(--avatar-sm)" bg="var(--color-primary)" color="var(--color-white)" style={{ fontWeight: 'var(--font-weight-medium)' }}>
                 {complaint.reportedBy?.name?.charAt(0) || "U"}
-              </div>
+              </IconCircle>
             )}
           </div>
           <div style={{ marginLeft: 'var(--spacing-3)' }}>

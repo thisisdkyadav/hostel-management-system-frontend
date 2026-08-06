@@ -2,18 +2,18 @@ import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
-import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
     return (
       <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-warning-bg)">
         <HStack gap={3} align="center">
-          <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-warning-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <IconCircle size="var(--avatar-sm)" bg="warning">
             <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-warning)' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
-          </div>
+          </IconCircle>
           <div>
             <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)', fontSize: 'var(--font-size-base)' }}>Payment Information Not Submitted</h4>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }}>Student has not yet submitted payment information</p>
@@ -42,11 +42,11 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   return (
     <Surface bg="var(--color-success-bg-light)" padding={6} radius="lg" border="var(--border-1) solid var(--color-success-bg)">
       <HStack gap={3} align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <IconCircle size="var(--avatar-sm)" bg="success">
           <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
           </svg>
-        </div>
+        </IconCircle>
         <div>
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success-text)', fontSize: 'var(--font-size-base)' }}>Payment Information</h4>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-success)', marginTop: 'var(--spacing-0-5)' }}>Student payment details and verification</p>

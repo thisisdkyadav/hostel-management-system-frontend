@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaTools, FaPhone } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
-import { Alert, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { Alert, HStack, IconCircle, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -102,18 +102,18 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
           {error && <Alert type="error">{error}</Alert>}
 
           <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>
-            <div style={{ position: "relative", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
+            <IconCircle size="var(--avatar-3xl)" style={{ position: "relative", marginBottom: "var(--spacing-2)" }}>
               {formData.profileImage ? (
                 <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
               ) : (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
+                <IconCircle size="var(--avatar-3xl)" bg="brand" style={{ border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
                   <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-primary)" }} />
-                </div>
+                </IconCircle>
               )}
               <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               </div>
-            </div>
+            </IconCircle>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </VStack>
 

@@ -4,7 +4,7 @@ import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },
@@ -125,23 +125,7 @@ const AdminElectionWorkspace = ({
 
           return (
             <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-              <div
-                style={{
-                  width: "var(--avatar-sm)",
-                  height: "var(--avatar-sm)",
-                  borderRadius: "var(--radius-full)",
-                  overflow: "hidden",
-                  flexShrink: 0,
-                  backgroundColor: "var(--color-primary-bg)",
-                  border: "1px solid var(--color-border-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--color-primary)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  fontSize: "var(--font-size-xs)",
-                }}
-              >
+              <IconCircle size="var(--avatar-sm)" bg="brand" color="brand" style={{ overflow: "hidden", border: "1px solid var(--color-border-primary)", fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xs)" }}>
                 {nomination.candidateProfileImage ? (
                   <img
                     src={getMediaUrl(nomination.candidateProfileImage)}
@@ -151,7 +135,7 @@ const AdminElectionWorkspace = ({
                 ) : (
                   initials || "?"
                 )}
-              </div>
+              </IconCircle>
               <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
                 <span
                   style={{

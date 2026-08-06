@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Badge, Card, HStack, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
+import { Badge, Card, HStack, IconCircle, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -77,16 +77,7 @@ const FaceScannerEntriesPage = () => {
                             Cross-Hostel Entry Requires Reason
                         </h3>
                         <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
-                            <div
-                                style={{
-                                    width: "var(--icon-4xl)",
-                                    height: "var(--icon-4xl)",
-                                    borderRadius: "var(--radius-full)",
-                                    overflow: "hidden",
-                                    backgroundColor: "var(--color-bg-muted)",
-                                    marginRight: "var(--spacing-3)",
-                                }}
-                            >
+                            <IconCircle size="var(--icon-4xl)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                                 {entry.userId?.profileImage ? (
                                     <img
                                         src={getMediaUrl(entry.userId.profileImage)}
@@ -107,7 +98,7 @@ const FaceScannerEntriesPage = () => {
                                         <User style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} />
                                     </div>
                                 )}
-                            </div>
+                            </IconCircle>
                             <div>
                                 <Text weight="medium" color="primary">
                                     {entry.userId?.name}
@@ -365,16 +356,7 @@ const FaceScannerEntriesPage = () => {
                                             <Table.Row className="table-row-hover" style={{ backgroundColor: isNewEntry ? "var(--color-success-bg-light)" : undefined }} key={entry._id}>
                                                 <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                                                     <HStack gap="none" align="center">
-                                                        <div
-                                                            style={{
-                                                                width: "var(--avatar-md)",
-                                                                height: "var(--avatar-md)",
-                                                                borderRadius: "var(--radius-full)",
-                                                                overflow: "hidden",
-                                                                backgroundColor: "var(--color-bg-muted)",
-                                                                marginRight: "var(--spacing-3)",
-                                                            }}
-                                                        >
+                                                        <IconCircle size="var(--avatar-md)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                                                             {entry.userId?.profileImage ? (
                                                                 <img
                                                                     src={getMediaUrl(entry.userId.profileImage)}
@@ -401,7 +383,7 @@ const FaceScannerEntriesPage = () => {
                                                                     />
                                                                 </div>
                                                             )}
-                                                        </div>
+                                                        </IconCircle>
                                                         <div>
                                                             <Text as="div" size="sm" weight="medium" color="primary">
                                                                 {entry.userId?.name}

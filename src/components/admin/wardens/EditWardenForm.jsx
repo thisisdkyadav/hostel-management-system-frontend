@@ -5,7 +5,7 @@ import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { ACADEMICS_SUBROLE_OPTIONS, GYMKHANA_SUBROLE_OPTIONS } from "../../../constants/adminConstants"
-import { Checkbox, EmptyState, HStack, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, HStack, IconCircle, Label, Select, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
@@ -337,7 +337,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           </Surface>
 
           <VStack gap="none" align="center" style={{ marginBottom: "var(--spacing-6)" }}>
-            <div style={{ position: "relative", height: "var(--spacing-24)", width: "var(--spacing-24)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
+            <IconCircle size="var(--spacing-24)" style={{ position: "relative", marginBottom: "var(--spacing-2)" }}>
               {formData.profileImage ? (
                 <img
                   src={getMediaUrl(formData.profileImage)}
@@ -352,21 +352,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   }}
                 />
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "var(--spacing-24)",
-                    width: "var(--spacing-24)",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-primary-bg-hover)",
-                    border: "var(--border-4) solid var(--color-primary)",
-                    boxShadow: "var(--shadow-md)",
-                  }}
-                >
+                <IconCircle size="var(--spacing-24)" bg="var(--color-primary-bg-hover)" style={{ border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
                   <FaBuilding style={{ height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-primary)" }} />
-                </div>
+                </IconCircle>
               )}
               <div
                 onClick={() => setIsImageModalOpen(true)}
@@ -390,7 +378,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
               >
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               </div>
-            </div>
+            </IconCircle>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </VStack>
 

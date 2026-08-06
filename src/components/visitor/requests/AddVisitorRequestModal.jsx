@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Alert, Grid, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Alert, Grid, HStack, IconCircle, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
@@ -214,9 +214,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   }}
                 >
                   <HStack gap="none" align="start">
-                    <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)', backgroundColor: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary)' : 'var(--color-bg-muted)', color: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-white)' : 'var(--color-text-muted)' }}>
+                    <IconCircle size="var(--avatar-sm)" bg={formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary)' : 'var(--color-bg-muted)'} color={formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-white)' : 'var(--color-text-muted)'} style={{ marginRight: 'var(--spacing-3)' }}>
                       <FaUserAlt size={12} />
-                    </div>
+                    </IconCircle>
                     <div>
                       <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{visitor.name}</h4>
                       <Text as="div" size="xs" color="muted">
@@ -265,9 +265,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           {!h2FormUploaded ? (
             <Surface padding={6} radius="lg" border="var(--border-2) dashed var(--color-border-input)">
               <Text as="div" align="center">
-                <div style={{ margin: '0 auto var(--spacing-3)', width: '48px', height: '48px', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <IconCircle size="48px" bg="brand" style={{ margin: '0 auto var(--spacing-3)' }}>
                   <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
-                </div>
+                </IconCircle>
                 <VStack gap={2}>
                   <Text color="secondary" size="sm">Upload filled H2 form</Text>
                   <Text color="muted" size="xs">PDF only (max 5MB)</Text>
@@ -308,9 +308,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           ) : (
             <Surface bg="var(--color-success-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-success-bg)">
               <HStack gap="none" align="center">
-                <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                <IconCircle size="var(--avatar-sm)" bg="success" style={{ marginRight: 'var(--spacing-3)' }}>
                   <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
-                </div>
+                </IconCircle>
                 <div style={{ flex: 1 }}>
                   <Text color="success-text" weight="medium" size="sm">H2 Form Uploaded Successfully</Text>
                   <Text color="success" size="xs">Ready to submit visitor request</Text>

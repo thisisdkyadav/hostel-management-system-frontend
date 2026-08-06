@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Select, Spinner, Text, Textarea } from "@/components/ui"
+import { IconCircle, Select, Spinner, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 const InventoryManagement = () => {
@@ -155,9 +155,9 @@ const InventoryManagement = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--gap-md)' }}>
           {students.map((student) => (
             <div key={student._id} className="flex items-center cursor-pointer" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'} onClick={() => handleSelectStudent(student)}>
-              <div className="flex items-center justify-center" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-4)' }}>
+              <IconCircle size="var(--avatar-lg)" bg="brand" style={{ marginRight: 'var(--spacing-4)' }} className="flex items-center justify-center">
                 <FaUserGraduate style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
-              </div>
+              </IconCircle>
               <div>
                 <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.userId.name}</h4>
                 <Text size="var(--text-body-sm)" color="muted">{student.rollNumber}</Text>

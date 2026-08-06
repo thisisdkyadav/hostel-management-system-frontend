@@ -3,7 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import { Button, Input, Table } from "czero/react"
-import { HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
@@ -194,7 +194,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-8) 0' }}>
               <div style={{ position: 'relative', width: 'var(--spacing-12)', height: 'var(--spacing-12)' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: `var(--border-4) solid var(--color-border-primary)`, borderRadius: 'var(--radius-full)' }}></div>
+                <IconCircle size="100%" style={{ position: 'absolute', top: 0, left: 0, border: `var(--border-4) solid var(--color-border-primary)` }}></IconCircle>
                 <Spinner size="100%" thickness="thick" style={{ position: 'absolute', top: 0, left: 0 }} />
               </div>
             </div>
@@ -227,7 +227,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                         >
                           <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                             <HStack gap="none" align="center">
-                              <div style={{ height: 'var(--spacing-9)', width: 'var(--spacing-9)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</div>
+                              <IconCircle size="var(--spacing-9)" bg="muted" color="var(--color-text-tertiary)" style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</IconCircle>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
                                 <Text as="div" size="sm" weight="medium" color="primary">{student.fullName}</Text>
                                 <Text as="div" size="sm" color="muted">{student.email}</Text>

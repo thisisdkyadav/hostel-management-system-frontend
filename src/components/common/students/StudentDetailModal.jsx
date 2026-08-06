@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, IconCircle, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -295,22 +295,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     style={{ height: "var(--avatar-2xl)", width: "var(--avatar-2xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)", flexShrink: 0 }}
                   />
                 ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "var(--avatar-2xl)",
-                      width: "var(--avatar-2xl)",
-                      borderRadius: "var(--radius-full)",
-                      backgroundColor: "var(--color-primary)",
-                      border: "var(--border-4) solid var(--color-primary)",
-                      boxShadow: "var(--shadow-md)",
-                      flexShrink: 0,
-                    }}
-                  >
+                  <IconCircle size="var(--avatar-2xl)" bg="var(--color-primary)" style={{ border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
                     <GraduationCap size={48} style={{ color: "var(--color-white)" }} />
-                  </div>
+                  </IconCircle>
                 )}
 
                 {/* Details - Middle */}
@@ -741,9 +728,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <Table.Row key={item._id}>
                         <Table.Cell style={{ whiteSpace: "nowrap" }}>
                           <HStack gap="none" align="center">
-                            <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+                            <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
                               <Package size={16} style={{ color: "var(--color-primary)" }} />
-                            </div>
+                            </IconCircle>
                             <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                           </HStack>
                         </Table.Cell>
@@ -1063,7 +1050,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "256px" }}>
             <div style={{ position: "relative", width: "var(--spacing-16)", height: "var(--spacing-16)" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "var(--border-4) solid var(--color-border-primary)", borderRadius: "var(--radius-full)" }}></div>
+              <IconCircle size="100%" style={{ position: "absolute", top: 0, left: 0, border: "var(--border-4) solid var(--color-border-primary)" }}></IconCircle>
               <Spinner size="100%" thickness="thick" style={{ position: "absolute", top: 0, left: 0 }} />
             </div>
           </div>
@@ -1119,9 +1106,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
               <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-4)" }}>
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
-                  <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+                  <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
                     <FaBoxes style={{ color: "var(--color-primary)" }} />
-                  </div>
+                  </IconCircle>
                   <div>
                     <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{selectedInventoryItem.itemTypeId.name}</h3>
                     <div style={{ display: "flex", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)" }}>

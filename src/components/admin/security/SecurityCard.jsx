@@ -3,7 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye 
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Card, CardBody, CardFooter, CardHeader, HStack, Text } from "@/components/ui"
+import { Card, CardBody, CardFooter, CardHeader, HStack, IconCircle, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
@@ -27,16 +27,16 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
     <>
       <Card className="group relative">
         <div style={{ position: 'absolute', top: 'var(--spacing-3)', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-          <div style={{ height: 'var(--spacing-3)', width: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', backgroundColor: statusColor.bg }}></div>
+          <IconCircle size="var(--spacing-3)" bg={statusColor.bg}></IconCircle>
 
           <span style={{ marginLeft: 'var(--spacing-1-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: statusColor.text }}>{security.hostelId ? "Assigned" : "Unassigned"}</span>
         </div>
 
         <CardHeader style={{ marginBottom: 0 }}>
           <HStack gap="none" align="center">
-            <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-white)', fontSize: 'var(--font-size-xl)', marginRight: 'var(--spacing-4)' }} className="sm:w-16 sm:h-16">
+            <IconCircle size="var(--avatar-lg)" bg="var(--color-primary)" color="var(--color-white)" style={{ fontSize: 'var(--font-size-xl)', marginRight: 'var(--spacing-4)' }} className="sm:w-16 sm:h-16">
               <FaShieldAlt />
-            </div>
+            </IconCircle>
             <div>
               <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-lg)' }}>{security.name}</h3>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
@@ -49,16 +49,16 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
 
         <CardBody style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <HStack gap="none" align="center">
-            <div style={{ width: 'var(--spacing-7)', height: 'var(--spacing-7)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+            <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
               <FaEnvelope style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
-            </div>
+            </IconCircle>
             <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{security.email}</span>
           </HStack>
 
           <HStack gap="none" align="center">
-            <div style={{ width: 'var(--spacing-7)', height: 'var(--spacing-7)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+            <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
               <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
-            </div>
+            </IconCircle>
             <div>
               <Text as="span" size="sm" color="body" weight="medium">{hostelName}</Text>
             </div>

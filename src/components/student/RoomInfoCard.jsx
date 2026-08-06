@@ -2,7 +2,7 @@ import React from "react"
 import { BsDoorOpenFill } from "react-icons/bs"
 import { FaUserFriends } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
@@ -43,9 +43,9 @@ const RoomInfoCard = ({ roomData }) => {
                 {roommate.avatar ? (
                   <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} style={{ width: 'var(--avatar-xs)', height: 'var(--avatar-xs)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-1)' }} />
                 ) : (
-                  <div style={{ width: 'var(--avatar-xs)', height: 'var(--avatar-xs)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-2xs)', marginRight: 'var(--spacing-1)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
+                  <IconCircle size="var(--avatar-xs)" bg="info" color="brand" style={{ fontSize: 'var(--font-size-2xs)', marginRight: 'var(--spacing-1)' }}>
                     {getOccupantInitials(roommate.name)}
-                  </div>
+                  </IconCircle>
                 )}
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80px' }}>{roommate.name}</span>
               </div>

@@ -3,7 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
 import { Button, Input, Table } from "czero/react"
-import { HStack, Modal, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, IconCircle, Modal, Text, useConfirm, VStack } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()
@@ -80,9 +80,9 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                     >
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <HStack gap="none" align="center">
-                          <div style={{ flexShrink: "0", height: "var(--avatar-md)", width: "var(--avatar-md)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <IconCircle size="var(--avatar-md)" bg="muted">
                             <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-text-muted)" }} />
-                          </div>
+                          </IconCircle>
                           <div style={{ marginLeft: "var(--spacing-4)" }}>
                             <Text as="div" size="sm" weight="medium" color="primary">{profile.name}</Text>
                           </div>

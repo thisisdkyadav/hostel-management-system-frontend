@@ -1,13 +1,13 @@
 import React from "react"
 import { FiEdit } from "react-icons/fi"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 
 const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
   return (
     <div style={{ display: "flex", alignItems: "flex-start", padding: "var(--spacing-3) 0", borderBottom: `var(--border-1) solid var(--color-border-light)`, }} className="last:border-0" >
-      <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, }} >
+      <IconCircle size="var(--avatar-md)" bg="brand">
         {Icon && <Icon style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-primary)" }} />}
-      </div>
+      </IconCircle>
       <div style={{ marginLeft: "var(--spacing-4)", flexGrow: 1 }}>
         <HStack gap="none" align="center" justify="between">
           <Text size="sm" color="muted">{label}</Text>

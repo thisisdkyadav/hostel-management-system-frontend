@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { MapPin, User, ClipboardList, FileText, Pencil, Star, CheckCircle, CalendarDays, MessageSquare } from "lucide-react"
 import { getStatusColor } from "../../utils/adminUtils"
-import { Badge, Divider, HStack, Text, VStack } from "@/components/ui"
+import { Badge, Divider, HStack, IconCircle, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { Modal } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -159,20 +159,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           }}
         />
       ) : (
-        <div style={{
-          height: "40px",
-          width: "40px",
-          borderRadius: "var(--radius-full)",
-          backgroundColor: accentBg,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: accentText,
-          fontWeight: "var(--font-weight-semibold)",
-          fontSize: "var(--font-size-base)"
-        }}>
+        <IconCircle size="40px" bg={accentBg} color={accentText} style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-base)" }}>
           {person?.name?.charAt(0) || "?"}
-        </div>
+        </IconCircle>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{

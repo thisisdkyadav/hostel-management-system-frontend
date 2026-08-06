@@ -1,7 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 
 const UnitListView = ({ units, onUnitClick }) => {
   const columns = [
@@ -10,9 +10,9 @@ const UnitListView = ({ units, onUnitClick }) => {
       key: "unitNumber",
       render: (unit) => (
         <HStack gap="none" align="center">
-          <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
+          <IconCircle size="var(--spacing-10)" bg="info">
             <FaBuilding style={{ color: "var(--color-primary)" }} />
-          </div>
+          </IconCircle>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">
               {unit.unitNumber || unit.name}

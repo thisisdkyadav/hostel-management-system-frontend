@@ -3,7 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Badge, Card, CardBody, CardFooter, CardHeader, HStack } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, HStack, IconCircle } from "@/components/ui"
 import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
@@ -69,7 +69,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
 
         <CardHeader className="mb-0">
           <HStack gap="none" align="center">
-            <div style={{ width: "var(--avatar-lg)", height: "var(--avatar-lg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-4)", overflow: "hidden" }}>
+            <IconCircle size="var(--avatar-lg)" style={{ marginRight: "var(--spacing-4)", overflow: "hidden" }}>
               {staff.profileImage ? (
                 <img src={getMediaUrl(staff.profileImage)} alt={staff.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (
@@ -77,7 +77,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
                   <FaUserCog />
                 </div>
               )}
-            </div>
+            </IconCircle>
             <div>
               <h3 style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", fontSize: "var(--font-size-lg)" }}>{staff.name}</h3>
               <div style={{ display: "flex", alignItems: "center", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
@@ -90,16 +90,16 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
 
         <CardBody style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
           <HStack gap="none" align="center">
-            <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+            <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
               <FaEnvelope style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
-            </div>
+            </IconCircle>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</span>
           </HStack>
 
           <HStack gap="none" align="center">
-            <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+            <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
               <FaPhone style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
-            </div>
+            </IconCircle>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
           </HStack>
         </CardBody>

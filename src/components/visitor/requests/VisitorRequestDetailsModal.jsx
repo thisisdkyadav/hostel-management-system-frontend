@@ -3,7 +3,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, HStack, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Grid, HStack, IconCircle, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 // Import smaller components
@@ -310,7 +310,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" }}>
           <div style={{ position: "relative", width: "var(--avatar-4xl)", height: "var(--avatar-4xl)" }}>
-            <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", border: "var(--border-4) solid var(--color-border-primary)", borderRadius: "var(--radius-full)" }}></div>
+            <IconCircle size="100%" style={{ position: "absolute", top: "0", left: "0", border: "var(--border-4) solid var(--color-border-primary)" }}></IconCircle>
             <Spinner size="100%" thickness="thick" style={{ position: "absolute", top: "0", left: "0" }} />
           </div>
         </div>
@@ -354,11 +354,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
           <Surface bg="tertiary" padding={4} radius="lg">
             <HStack gap="none" align="center" justify="between">
               <HStack gap={3} align="center">
-                <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <IconCircle size="var(--icon-2xl)" bg="brand">
                   <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
-                </div>
+                </IconCircle>
                 <div>
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>H2 Form Document</h4>
                   <Text size="sm" color="muted">Guest Room Booking Form</Text>
@@ -416,11 +416,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
           <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-info-bg)">
             <HStack gap="none" align="center" justify="between">
               <HStack gap={3} align="center">
-                <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <IconCircle size="var(--icon-2xl)" bg="info">
                   <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
                   </svg>
-                </div>
+                </IconCircle>
                 <div>
                   <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" }}>Payment Information Required</h4>
                   <Text size="sm" color="brand">Submit your payment details for verification</Text>

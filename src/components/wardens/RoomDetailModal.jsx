@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button, Table } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -174,13 +174,13 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                           <Table.Cell style={{ whiteSpace: 'nowrap', cursor: 'pointer' }} onClick={() => handleStudentClick(student)}
                           >
                             <HStack gap="none" align="center">
-                              <div style={{ height: 'var(--spacing-8)', width: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                              <IconCircle size="var(--spacing-8)" bg="muted" style={{ overflow: 'hidden' }}>
                                 {student.profileImage ? (
                                   <img src={getMediaUrl(student.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
                                 ) : (
                                   <FaUserAlt style={{ color: 'var(--color-text-muted)', fontSize: 'var(--icon-sm)' }} />
                                 )}
-                              </div>
+                              </IconCircle>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
                                 <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
                                 <div className="sm:hidden" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</div>

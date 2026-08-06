@@ -3,7 +3,7 @@ import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { isRoomActive } from "@/constants/roomStatus"
-import { HStack, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "@/components/ui"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -14,9 +14,9 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       key: "roomNumber",
       render: (room) => (
         <HStack gap="none" align="center">
-          <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
+          <IconCircle size="var(--spacing-10)" bg="info">
             <FaDoorOpen style={{ color: "var(--color-info)" }} />
-          </div>
+          </IconCircle>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">{room.roomNumber}</Text>
             <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>

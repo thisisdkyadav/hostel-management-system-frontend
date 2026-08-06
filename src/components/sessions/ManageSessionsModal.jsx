@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { HStack, Modal, Spinner, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, Modal, Spinner, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
@@ -112,9 +112,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
           </div>
         ) : devices.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', }} >
-            <div style={{ margin: '0 auto', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-placeholder)', width: 'var(--avatar-xl)', height: 'var(--avatar-xl)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-4)', }} >
+            <IconCircle size="var(--avatar-xl)" bg="muted" color="var(--color-text-placeholder)" style={{ margin: '0 auto', marginBottom: 'var(--spacing-4)' }}>
               <HiDesktopComputer size={30} />
-            </div>
+            </IconCircle>
             <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', }} >
               No Active Sessions
             </h3>

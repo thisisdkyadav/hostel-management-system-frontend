@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, Spinner, Surface, Text } from "@/components/ui"
+import { HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -34,9 +34,9 @@ const ScannerEntriesPage = () => {
           <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
             <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-2)" }}>Cross-Hostel Entry Requires Reason</h3>
             <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
-              <div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
+              <IconCircle size="var(--icon-4xl)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                 {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} /></div>}
-              </div>
+              </IconCircle>
               <div>
                 <Text weight="medium" color="primary">{entry.userId.name}</Text>
                 <Text size="sm" color="muted">{entry.userId.rollNumber}</Text>
@@ -110,9 +110,9 @@ const ScannerEntriesPage = () => {
                       <Table.Row className="table-row-hover" key={entry._id}>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           <HStack gap="none" align="center">
-                            <div style={{ width: "var(--avatar-md)", height: "var(--avatar-md)", borderRadius: "var(--radius-full)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", marginRight: "var(--spacing-3)" }}>
+                            <IconCircle size="var(--avatar-md)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
                               {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-lg)", height: "var(--icon-lg)" }} /></div>}
-                            </div>
+                            </IconCircle>
                             <div><Text as="div" size="sm" weight="medium" color="primary">{entry.userId.name}</Text><Text as="div" size="sm" color="muted">{entry.userId.email}</Text></div>
                           </HStack>
                         </Table.Cell>

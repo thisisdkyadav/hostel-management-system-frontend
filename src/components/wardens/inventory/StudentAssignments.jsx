@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
+import { IconCircle, Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -229,9 +229,9 @@ const StudentAssignments = () => {
                   <Table.Row style={{ borderTop: `var(--border-1) solid var(--table-border)` }} key={item._id}  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                        <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
                           <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
-                        </div>
+                        </IconCircle>
                         <div>
                           <Text as="div" weight="medium" color="secondary">{item.studentProfileId.userId.name}</Text>
                           <Text as="div" size="var(--text-caption)" color="muted">{item.studentProfileId.rollNumber}</Text>
@@ -240,9 +240,9 @@ const StudentAssignments = () => {
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                        <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
                           <FaBoxes style={{ color: 'var(--color-primary)' }} />
-                        </div>
+                        </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>
                     </Table.Cell>
@@ -284,9 +284,9 @@ const StudentAssignments = () => {
           <form onSubmit={submitUpdateForm} className="space-y-4">
             <Surface bg="tertiary" padding={4} radius="lg">
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-4)' }}>
-                <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                <IconCircle size="var(--avatar-md)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
                   <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
-                </div>
+                </IconCircle>
                 <div>
                   <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.studentProfileId.userId.name}</h3>
                   <Text size="var(--text-body-sm)" color="muted">{currentItem.studentProfileId.rollNumber}</Text>
@@ -367,9 +367,9 @@ const StudentAssignments = () => {
           <form onSubmit={submitReturnForm} className="space-y-4">
             <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-3)' }}>
-                <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                <IconCircle size="var(--avatar-md)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
                   <FaBoxes style={{ color: 'var(--color-primary)' }} />
-                </div>
+                </IconCircle>
                 <div>
                   <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.itemTypeId.name}</h3>
                   <div className="flex" style={{ gap: 'var(--gap-sm)', fontSize: 'var(--text-body-sm)' }}>

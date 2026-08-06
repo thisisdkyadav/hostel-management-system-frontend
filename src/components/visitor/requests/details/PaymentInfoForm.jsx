@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Grid, HStack, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Grid, HStack, IconCircle, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
@@ -142,11 +142,11 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   return (
     <Surface bg="var(--color-info-bg-light)" padding={6} radius="lg" border="var(--border-1) solid var(--color-info-bg)">
       <HStack gap={3} align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-info-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <IconCircle size="var(--avatar-sm)" bg="info">
           <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
           </svg>
-        </div>
+        </IconCircle>
         <div>
           <h4 style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-base)' }}>Submit Payment Information</h4>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>Upload your payment details and screenshot for verification</p>

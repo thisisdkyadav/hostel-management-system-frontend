@@ -1,7 +1,7 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { Button } from "czero/react"
-import { HStack, Modal } from "@/components/ui"
+import { HStack, IconCircle, Modal } from "@/components/ui"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null
@@ -11,9 +11,9 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
   return (
     <Modal title={title} onClose={onClose} width={width}>
       <div style={{ textAlign: 'center', padding: 'var(--spacing-4) 0' }}>
-        <div style={{ margin: '0 auto', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success)', width: 'var(--spacing-16)', height: 'var(--spacing-16)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-6)' }}>
+        <IconCircle size="var(--spacing-16)" bg="var(--color-success-bg-light)" color="success" style={{ margin: '0 auto', marginBottom: 'var(--spacing-6)' }}>
           <HiCheckCircle size={40} />
-        </div>
+        </IconCircle>
 
         <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>{title}</h3>
 

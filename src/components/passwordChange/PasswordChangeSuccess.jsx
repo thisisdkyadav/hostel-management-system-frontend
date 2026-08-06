@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, Modal } from "@/components/ui"
+import { HStack, IconCircle, Modal } from "@/components/ui"
 import { Button } from "czero/react"
 import { FaCheck } from "react-icons/fa"
 
@@ -7,7 +7,7 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
   return (
     <Modal title="Password Updated" onClose={onClose} width={500}>
       <div style={{ textAlign: 'center', paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)' }}>
-        <div style={{ margin: '0 auto', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success)', width: 'var(--avatar-xl)', height: 'var(--avatar-xl)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-6)' }}>
+        <IconCircle size="var(--avatar-xl)" bg="success" color="success" style={{ margin: '0 auto', marginBottom: 'var(--spacing-6)' }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             style={{ height: 'var(--icon-2xl)', width: 'var(--icon-2xl)' }}
@@ -17,7 +17,7 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-        </div>
+        </IconCircle>
 
         <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-2)' }}>
           Password Changed Successfully

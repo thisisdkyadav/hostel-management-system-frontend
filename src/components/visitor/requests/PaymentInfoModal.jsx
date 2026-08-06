@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, Modal, Surface, Text } from "@/components/ui"
+import { HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {
@@ -14,11 +14,11 @@ const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {
           </HStack>
         ) : (
           <div style={{ textAlign: 'center', paddingTop: 'var(--spacing-8)', paddingBottom: 'var(--spacing-8)' }}>
-            <div style={{ width: 'var(--avatar-4xl)', height: 'var(--avatar-4xl)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', margin: '0 auto var(--spacing-4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconCircle size="var(--avatar-4xl)" bg="muted" style={{ margin: '0 auto var(--spacing-4)' }}>
               <svg style={{ width: 'var(--icon-2xl)', height: 'var(--icon-2xl)', color: 'var(--color-text-placeholder)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
-            </div>
+            </IconCircle>
             <Text color="muted" size="base">No payment screenshot available</Text>
           </div>
         )}

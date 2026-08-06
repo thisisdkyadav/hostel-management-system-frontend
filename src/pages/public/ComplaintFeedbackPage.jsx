@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, HStack, Spinner, Surface, Text } from "@/components/ui"
+import { Alert, Card, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -101,18 +101,9 @@ const ComplaintFeedbackPage = () => {
                 padding: 'var(--spacing-4)',
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
-                    <div style={{
-                        width: '64px',
-                        height: '64px',
-                        borderRadius: 'var(--radius-full)',
-                        backgroundColor: 'var(--color-danger-bg)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto var(--spacing-4)'
-                    }}>
+                    <IconCircle size="64px" bg="danger" style={{ margin: '0 auto var(--spacing-4)' }}>
                         <FaExclamationTriangle size={32} style={{ color: 'var(--color-danger)' }} />
-                    </div>
+                    </IconCircle>
                     <h2 style={{
                         fontSize: 'var(--font-size-xl)',
                         fontWeight: 'var(--font-weight-semibold)',
@@ -150,18 +141,9 @@ const ComplaintFeedbackPage = () => {
                 padding: 'var(--spacing-4)',
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
-                    <div style={{
-                        width: '64px',
-                        height: '64px',
-                        borderRadius: 'var(--radius-full)',
-                        backgroundColor: 'var(--color-success-bg)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto var(--spacing-4)'
-                    }}>
+                    <IconCircle size="64px" bg="success" style={{ margin: '0 auto var(--spacing-4)' }}>
                         <FaCheck size={32} style={{ color: 'var(--color-success)' }} />
-                    </div>
+                    </IconCircle>
                     <h2 style={{
                         fontSize: 'var(--font-size-xl)',
                         fontWeight: 'var(--font-weight-semibold)',
