@@ -25,7 +25,13 @@ import {
   UserX,
   ShieldCheck,
 } from "lucide-react"
-import { FaBoxes, FaExpand } from "react-icons/fa"
+// FaIdCard renders at lines 746 and 769 and was dropped from this import by
+// 3a5e450 ("replace FontAwesome icons with Lucide"), which left the two usages
+// behind — so the ID-card empty state has been throwing ReferenceError since.
+// Restored rather than swapped for lucide's CreditCard: these sites size the
+// icon with fontSize, which scales a react-icon (width/height are 1em) and
+// would not scale a lucide one. Changing the glyph is a design decision.
+import { FaBoxes, FaExpand, FaIdCard } from "react-icons/fa"
 import { studentApi } from "../../../service"
 import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"

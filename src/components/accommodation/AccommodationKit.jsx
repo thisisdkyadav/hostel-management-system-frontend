@@ -14,7 +14,7 @@ import {
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
+import { HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
 
 export const money = (n) =>
   `₹${(Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -59,7 +59,10 @@ export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)",
 // This kit is where the detail row was last designed deliberately, so its
 // version is the one the rest of the app now uses. Re-exported rather than
 // deleted, because the accommodation screens import it from here.
-export { InfoRow } from "@/components/ui"
+// `export { X } from "…"` would re-export without binding X in this module's
+// own scope, and ChargesRows below renders <InfoRow>. Import it, then export
+// the binding.
+export { InfoRow }
 
 export const PersonCard = ({ person, fallbackName }) => {
   const name = person?.name || fallbackName || "—"
