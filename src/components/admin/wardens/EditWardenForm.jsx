@@ -349,7 +349,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                 />
               ) : (
                 <IconCircle size="var(--spacing-24)" bg="var(--color-primary-bg-hover)" style={{ border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
-                  <FaBuilding style={{ height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-primary)" }} />
+                  <FaBuilding style={{ height: "var(--icon-3xl)", width: "var(--icon-3xl)" }} color="var(--color-primary)" />
                 </IconCircle>
               )}
               <div

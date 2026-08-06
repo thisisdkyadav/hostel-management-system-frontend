@@ -52,7 +52,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
                   }
                 }}
               >
-                <FaBed style={{ marginRight: 'var(--spacing-1)', color: selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-muted)', fontSize: 'var(--icon-md)' }} />
+                <FaBed style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-md)' }} color={selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-muted)'} />
                 {bedNumber}
               </button>
             ))}

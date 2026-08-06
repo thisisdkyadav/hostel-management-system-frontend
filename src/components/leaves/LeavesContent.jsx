@@ -105,7 +105,7 @@ const LeavesContent = ({ loading, leaves, viewMode, filters, totalPages, updateF
         </>
       ) : (
         <div style={{ marginTop: 'var(--spacing-12)' }}>
-          <NoResults icon={<FaCalendarAlt style={{ color: 'var(--color-text-disabled)', fontSize: 'var(--font-size-5xl)' }} />} message="No leaves found" suggestion="Try changing filter criteria or create a leave" />
+          <NoResults icon={<FaCalendarAlt style={{ fontSize: 'var(--font-size-5xl)' }} color="var(--color-text-disabled)" />} message="No leaves found" suggestion="Try changing filter criteria or create a leave" />
         </div>
       )}
     </>

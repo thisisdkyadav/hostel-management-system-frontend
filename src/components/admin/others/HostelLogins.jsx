@@ -71,7 +71,7 @@ const HostelLogins = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredHostelGates.length === 0 ? (
-        <NoResults icon={<FaBuilding style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No hostel gate logins found" suggestion="Add a new hostel gate login using the button above" />
+        <NoResults icon={<FaBuilding style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No hostel gate logins found" suggestion="Add a new hostel gate login using the button above" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredHostelGates.map((gate) => (

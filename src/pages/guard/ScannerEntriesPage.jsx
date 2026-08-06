@@ -30,12 +30,12 @@ const ScannerEntriesPage = () => {
     return (
       <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-2) solid var(--color-warning)" style={{ marginBottom: "var(--spacing-4)" }}>
         <HStack gap="none" align="start">
-          <FaExclamationTriangle style={{ height: "var(--icon-xl)", width: "var(--icon-xl)", color: "var(--color-warning)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
+          <FaExclamationTriangle style={{ height: "var(--icon-xl)", width: "var(--icon-xl)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} color="var(--color-warning)" />
           <div style={{ marginLeft: "var(--spacing-3)", flex: 1 }}>
             <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: "var(--spacing-2)" }}>Cross-Hostel Entry Requires Reason</Heading>
             <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
               <IconCircle size="var(--icon-4xl)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
-                {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-xl)", height: "var(--icon-xl)" }} /></div>}
+                {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ width: "var(--icon-xl)", height: "var(--icon-xl)" }} color="var(--color-info)" /></div>}
               </IconCircle>
               <div>
                 <Text weight="medium" color="primary">{entry.userId.name}</Text>
@@ -66,12 +66,12 @@ const ScannerEntriesPage = () => {
         </div>
         <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-6)", borderLeft: "var(--border-4) solid var(--color-primary)" }}>
           <HStack gap="none" align="start">
-            <FaInfoCircle style={{ color: "var(--color-primary)", marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
+            <FaInfoCircle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-3)", flexShrink: 0 }} color="var(--color-primary)" />
             <div>
               <Text size="sm" color="body" weight="medium" style={{ marginBottom: "var(--spacing-2)" }}>External QR Scanner Instructions:</Text>
               <Text as="div" size="sm" color="muted" className="info-grid">
-                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-in Scanner: Ends with</span><FaArrowDown style={{ margin: "0 var(--spacing-2)", color: "var(--color-success)" }} /><span>(Down Arrow)</span></HStack>
-                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} /><span>Check-out Scanner: Ends with</span><FaArrowRight style={{ margin: "0 var(--spacing-2)", color: "var(--color-warning)", transform: "rotate(90deg)" }} /><span>(Tab Key)</span></HStack>
+                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)" }} color="var(--color-primary)" /><span>Check-in Scanner: Ends with</span><FaArrowDown style={{ margin: "0 var(--spacing-2)" }} color="var(--color-success)" /><span>(Down Arrow)</span></HStack>
+                <HStack gap="none" align="center"><FaKeyboard style={{ marginRight: "var(--spacing-2)" }} color="var(--color-primary)" /><span>Check-out Scanner: Ends with</span><FaArrowRight style={{ margin: "0 var(--spacing-2)", transform: "rotate(90deg)" }} color="var(--color-warning)" /><span>(Tab Key)</span></HStack>
               </Text>
             </div>
           </HStack>
@@ -79,7 +79,7 @@ const ScannerEntriesPage = () => {
         {error && <Surface bg="var(--color-danger-bg-light)" color="danger-text" padding={3} radius="lg" accent="danger" style={{ marginBottom: "var(--spacing-4)", display: "flex", alignItems: "flex-start" }}><FaTimes style={{ marginRight: "var(--spacing-2)", marginTop: "var(--spacing-0-5)", flexShrink: 0 }} /><Text size="sm">{error}</Text></Surface>}
         {pendingCrossHostelEntries.length > 0 && (
           <div style={{ marginBottom: "var(--spacing-8)" }}>
-            <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-4)", display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-2)" }} />Pending Cross-Hostel Check-In Entries ({pendingCrossHostelEntries.length})</h2>
+            <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-4)", display: "flex", alignItems: "center" }}><FaExclamationTriangle style={{ marginRight: "var(--spacing-2)" }} color="var(--color-warning)" />Pending Cross-Hostel Check-In Entries ({pendingCrossHostelEntries.length})</h2>
             {pendingCrossHostelEntries.map((entry) => <CrossHostelReasonCard key={entry._id} entry={entry} />)}
           </div>
         )}
@@ -96,7 +96,7 @@ const ScannerEntriesPage = () => {
           {loading && scannerEntries.length === 0 ? (
             <Surface padding={8} align="center"><Spinner size="var(--icon-4xl)" thickness="thick" style={{ margin: "0 auto var(--spacing-4)" }} /><Text color="muted">Loading scanner entries...</Text></Surface>
           ) : scannerEntries.length === 0 ? (
-            <Surface padding={8} align="center"><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", color: "var(--color-text-disabled)", margin: "0 auto var(--spacing-4)" }} /><Text color="muted" size="lg">No scanner entries found</Text><Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</Text></Surface>
+            <Surface padding={8} align="center"><FaQrcode style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", margin: "0 auto var(--spacing-4)" }} color="var(--color-text-disabled)" /><Text color="muted" size="lg">No scanner entries found</Text><Text color="light" size="sm" style={{ marginTop: "var(--spacing-2)" }}>Entries will appear here when scanned with external QR scanners</Text></Surface>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <Table>
@@ -111,7 +111,7 @@ const ScannerEntriesPage = () => {
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                           <HStack gap="none" align="center">
                             <IconCircle size="var(--avatar-md)" bg="muted" style={{ overflow: "hidden", marginRight: "var(--spacing-3)" }}>
-                              {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ color: "var(--color-info)", width: "var(--icon-lg)", height: "var(--icon-lg)" }} /></div>}
+                              {entry.userId.profileImage ? <img src={getMediaUrl(entry.userId.profileImage)} alt={entry.userId.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-info-bg-light)" }}><FaQrcode style={{ width: "var(--icon-lg)", height: "var(--icon-lg)" }} color="var(--color-info)" /></div>}
                             </IconCircle>
                             <div><Text as="div" size="sm" weight="medium" color="primary">{entry.userId.name}</Text><Text as="div" size="sm" color="muted">{entry.userId.email}</Text></div>
                           </HStack>
@@ -126,7 +126,7 @@ const ScannerEntriesPage = () => {
                           </HStack>
                         </Table.Cell>
                         <Table.Cell style={{ whiteSpace: "nowrap", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                          {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ color: "var(--color-warning)", marginRight: "var(--spacing-1)" }} /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <Text as="div" size="xs" color="muted" style={{ marginLeft: "var(--spacing-2)" }} title={entry.reason}>(Reason provided)</Text>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}
+                          {entry.isSameHostel === false ? <HStack gap="none" align="center"><FaExclamationTriangle style={{ marginRight: "var(--spacing-1)" }} color="var(--color-warning)" /><Text as="span" size="sm" color="warning">Yes</Text>{entry.reason && <Text as="div" size="xs" color="muted" style={{ marginLeft: "var(--spacing-2)" }} title={entry.reason}>(Reason provided)</Text>}</HStack> : <Text as="span" size="sm" color="muted">No</Text>}
                         </Table.Cell>
                       </Table.Row>
                     )

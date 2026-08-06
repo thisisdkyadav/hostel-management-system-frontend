@@ -71,7 +71,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
           <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--spacing-6)' }}>
             <Surface bg="tertiary" padding={5} radius="xl">
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
-                <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Room Information
+                <FaBed style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} color="var(--color-primary)" /> Room Information
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
                 <InfoRow label="Room Number:" value={room.roomNumber} />
@@ -84,7 +84,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
             <Surface bg="tertiary" padding={5} radius="xl">
               <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
-                <FaBuilding style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Additional Details
+                <FaBuilding style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} color="var(--color-primary)" /> Additional Details
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
                 <InfoRow label="Hostel:" value={room.hostel?.name || "N/A"} />
@@ -110,7 +110,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
           <div style={{ marginTop: 'var(--spacing-6)' }}>
             <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center' }}>
-                <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
+                <FaUserAlt style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} color="var(--color-primary)" /> Allocated Students
               </h3>
               {["Admin"].includes(user.role) && isActive && room.currentOccupancy < room.capacity && (
                 <Button onClick={onAllocate} variant="success" size="sm">
@@ -121,7 +121,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
             {!isActive ? (
               <Surface bg="tertiary" padding={8} radius="lg" align="center">
-                <FaToggleOff style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
+                <FaToggleOff style={{ margin: '0 auto', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} color="var(--color-border-primary)" />
                 <Text color="muted" size="base">{`This room is currently ${room.status.toLowerCase()} and not available for allocation`}</Text>
               </Surface>
             ) : room.students && room.students.length > 0 ? (
@@ -153,7 +153,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                                 {student.profileImage ? (
                                   <img src={getMediaUrl(student.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
                                 ) : (
-                                  <FaUserAlt style={{ color: 'var(--color-text-muted)', fontSize: 'var(--icon-sm)' }} />
+                                  <FaUserAlt style={{ fontSize: 'var(--icon-sm)' }} color="var(--color-text-muted)" />
                                 )}
                               </IconCircle>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
@@ -179,7 +179,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
               </div>
             ) : (
               <Surface bg="tertiary" padding={8} radius="lg" align="center">
-                <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
+                <FaUserAlt style={{ margin: '0 auto', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} color="var(--color-border-primary)" />
                 <Text color="muted" size="base">No students allocated to this room</Text>
                 {room.capacity > 0 && (
                   <Button onClick={onAllocate} variant="primary" size="md">

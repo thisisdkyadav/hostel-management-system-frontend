@@ -199,7 +199,7 @@ const NotificationCenterPage = () => {
 
               {notifications.length === 0 && (
                 <NoResults
-                  icon={<FaBell style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-5xl)' }} />}
+                  icon={<FaBell style={{ fontSize: 'var(--font-size-5xl)' }} color="var(--color-text-placeholder)" />}
                   message="No notifications found"
                   suggestion="Try changing your search or filter criteria"
                 />

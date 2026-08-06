@@ -156,7 +156,7 @@ const InventoryManagement = () => {
           {students.map((student) => (
             <div key={student._id} className="flex items-center cursor-pointer" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'} onClick={() => handleSelectStudent(student)}>
               <IconCircle size="var(--avatar-lg)" bg="brand" style={{ marginRight: 'var(--spacing-4)' }} className="flex items-center justify-center">
-                <FaUserGraduate style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
+                <FaUserGraduate style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
               </IconCircle>
               <div>
                 <Heading as="h4" weight="medium" color="secondary">{student.userId.name}</Heading>

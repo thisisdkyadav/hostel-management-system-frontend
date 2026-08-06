@@ -217,7 +217,7 @@ const HostelAllocation = () => {
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="1px solid var(--color-border-light)">
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-          <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Allocations
+          <FaFilter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Allocations
         </h3>
         <div className="flex flex-col md:flex-row gap-4 items-end">
           <VStack gap="xsmall" className="flex-1">
@@ -268,7 +268,7 @@ const HostelAllocation = () => {
           </div>
         ) : hostelInventory.length === 0 ? (
           <Surface padding="var(--spacing-12) 0" align="center">
-            <FaWarehouse style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+            <FaWarehouse style={{ margin: '0 auto', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
             <Text color="muted">No hostel inventory allocations found</Text>
             <Button
               onClick={openNewAllocationModal}
@@ -298,7 +298,7 @@ const HostelAllocation = () => {
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
                         <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-                          <FaBuilding style={{ color: 'var(--color-primary)' }} />
+                          <FaBuilding color="var(--color-primary)" />
                         </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{allocation.hostelId.name}</Text>
                       </HStack>
@@ -306,7 +306,7 @@ const HostelAllocation = () => {
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
                         <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-                          <FaBox style={{ color: 'var(--color-primary)' }} />
+                          <FaBox color="var(--color-primary)" />
                         </IconCircle>
                         <div>
                           <Text as="div" weight="medium" color="secondary">{allocation.itemTypeId.name}</Text>

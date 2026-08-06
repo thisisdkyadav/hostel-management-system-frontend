@@ -19,7 +19,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate style={{ color: 'var(--color-primary)' }} className="mr-2" />
+        <FaUserGraduate className="mr-2" color="var(--color-primary)" />
         <h3 className="font-semibold text-gray-800">Personal Information</h3>
       </div>
 
@@ -29,7 +29,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
             <img src={getMediaUrl(data.profileImage)} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }} />
           ) : (
             <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }}>
-              <FaUserGraduate className="h-12 w-12" style={{ color: 'var(--color-primary)' }} />
+              <FaUserGraduate className="h-12 w-12" color="var(--color-primary)" />
             </div>
           )}
           <Surface bg="var(--button-primary-bg)" onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 text-white p-1.5 rounded-full cursor-pointer transition-colors" onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>

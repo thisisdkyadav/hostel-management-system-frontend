@@ -93,7 +93,7 @@ const SecurityQRGenerator = () => {
       </HStack>
 
       <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-5)', display: 'flex', alignItems: 'flex-start' }}>
-        <FaInfoCircle style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+        <FaInfoCircle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
         <Text size="sm" color="body">Generate your QR code for attendance tracking. Hostel gate personnel will scan this code to mark your attendance. For security reasons, each code expires after 5 minutes.</Text>
       </div>
 

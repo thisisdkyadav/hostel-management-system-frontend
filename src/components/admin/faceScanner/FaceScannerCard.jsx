@@ -119,12 +119,12 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
                 {scanner.type === "hostel-gate" ? (
                     <HStack align="center" gap={2} size="sm" color="tertiary">
-                        <FaBuilding style={{ color: "var(--color-text-muted)" }} />
+                        <FaBuilding color="var(--color-text-muted)" />
                         <span>Hostel: {scanner.hostelId?.name || "Not Assigned"}</span>
                     </HStack>
                 ) : (
                     <HStack align="center" gap={2} size="sm" color="tertiary">
-                        <FaBuilding style={{ color: "var(--color-text-muted)" }} />
+                        <FaBuilding color="var(--color-text-muted)" />
                         <span>Caterer: {scanner.catererId?.name || "Not Assigned"}</span>
                     </HStack>
                 )}

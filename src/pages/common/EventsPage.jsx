@@ -129,7 +129,7 @@ const EventsPage = () => {
 
           {!loading && events.length === 0 && (
             <NoResults
-              icon={<FaCalendarAlt style={{ color: "var(--color-text-placeholder)", fontSize: "var(--font-size-4xl)" }} />}
+              icon={<FaCalendarAlt style={{ fontSize: "var(--font-size-4xl)" }} color="var(--color-text-placeholder)" />}
               message="No events found"
               suggestion="Try changing your search or filter criteria"
             />

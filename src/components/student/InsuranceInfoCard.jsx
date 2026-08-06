@@ -27,7 +27,7 @@ const InsuranceInfoCard = ({ insurance }) => {
     <div style={{ backgroundColor: 'var(--color-bg-primary)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', width: '100%', border: `var(--border-1) solid var(--color-border-light)` }}>
       <HStack gap="var(--gap-sm)" align="center" justify="between">
         <HStack gap="var(--gap-sm)" align="center">
-          <MdHealthAndSafety style={{ fontSize: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
+          <MdHealthAndSafety style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
           <Heading as="h3" color="tertiary" weight="medium" size="lg">Insurance</Heading>
         </HStack>
         {validity && (
@@ -42,13 +42,13 @@ const InsuranceInfoCard = ({ insurance }) => {
       <VStack gap="var(--spacing-1-5)" style={{ marginTop: 'var(--spacing-2)' }}>
         {insurance.insuranceNumber && (
           <HStack align="center" gap="none" size="xs" color="tertiary">
-            <FaHashtag style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} />
+            <FaHashtag style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{insurance.insuranceNumber}</span>
           </HStack>
         )}
         {periodLabel && (
           <HStack align="center" gap="none" size="xs" color="tertiary">
-            <FaRegCalendarAlt style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} />
+            <FaRegCalendarAlt style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <span>{periodLabel}</span>
           </HStack>
         )}

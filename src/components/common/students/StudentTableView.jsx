@@ -25,7 +25,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
             {student.profileImage ? (
               <img src={getMediaUrl(student.profileImage)} alt={student.name} style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover", }} />
             ) : (
-              <FaUserGraduate style={{ height: "var(--icon-md)", width: "var(--icon-md)", color: "var(--color-primary)" }} />
+              <FaUserGraduate style={{ height: "var(--icon-md)", width: "var(--icon-md)" }} color="var(--color-primary)" />
             )}
           </IconCircle>
           <div style={{ marginLeft: "var(--spacing-3)" }}>

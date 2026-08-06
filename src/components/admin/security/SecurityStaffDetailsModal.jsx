@@ -74,7 +74,7 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
         {/* Filters */}
         <Surface bg="tertiary" padding={4} radius="lg">
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-            <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
+            <FaFilter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Records
           </h3>
           <HStack gap="medium" align="end">
             <div style={{ flex: 1 }}>

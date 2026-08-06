@@ -113,7 +113,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
 
         <VStack gap="var(--gap-md)">
           <HStack gap="none" align="center">
-            <BsCalendarDate style={{ color: "var(--color-primary)", opacity: 0.7, marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+            <BsCalendarDate style={{ opacity: 0.7, marginRight: "var(--spacing-2)", flexShrink: 0 }} color="var(--color-primary)" />
             <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} />
           </HStack>
 

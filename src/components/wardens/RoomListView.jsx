@@ -15,7 +15,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       render: (room) => (
         <HStack gap="none" align="center">
           <IconCircle size="var(--spacing-10)" bg="info">
-            <FaDoorOpen style={{ color: "var(--color-info)" }} />
+            <FaDoorOpen color="var(--color-info)" />
           </IconCircle>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">{room.roomNumber}</Text>

@@ -22,13 +22,13 @@ const DashboardStats = ({ stats }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4" style={{ gap: 'var(--spacing-4)' }}>
-      <StatCard title="Upcoming Events" value={events?.upcoming || 0} icon={<FaRegCalendarAlt style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-purple-text)' }} />} linkTo="events" color="bg-purple-50" />
+      <StatCard title="Upcoming Events" value={events?.upcoming || 0} icon={<FaRegCalendarAlt style={{ fontSize: 'var(--font-size-xl)' }} color="var(--color-purple-text)" />} linkTo="events" color="bg-purple-50" />
 
-      <StatCard title="Lost & Found" value={lostAndFound?.active || 0} icon={<FaSearch style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-success)' }} />} linkTo="lost-and-found" color="bg-green-50" />
+      <StatCard title="Lost & Found" value={lostAndFound?.active || 0} icon={<FaSearch style={{ fontSize: 'var(--font-size-xl)' }} color="var(--color-success)" />} linkTo="lost-and-found" color="bg-green-50" />
 
-      <StatCard title="In Progress Complaints" value={complaints?.inProgress || 0} icon={<FaCheckCircle style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-info)' }} />} linkTo="complaints" color="bg-blue-50" />
+      <StatCard title="In Progress Complaints" value={complaints?.inProgress || 0} icon={<FaCheckCircle style={{ fontSize: 'var(--font-size-xl)' }} color="var(--color-info)" />} linkTo="complaints" color="bg-blue-50" />
 
-      <StatCard title="Pending Complaints" value={complaints?.pending || 0} icon={<FaExclamationCircle style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-orange-text)' }} />} linkTo="complaints" color="bg-orange-50" />
+      <StatCard title="Pending Complaints" value={complaints?.pending || 0} icon={<FaExclamationCircle style={{ fontSize: 'var(--font-size-xl)' }} color="var(--color-orange-text)" />} linkTo="complaints" color="bg-orange-50" />
     </div>
   )
 }

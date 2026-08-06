@@ -37,7 +37,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
         <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" border="var(--border-2) solid var(--color-warning)" style={{ marginBottom: 'var(--spacing-6)' }}>
           <HStack gap="none" align="start">
             <div style={{ flexShrink: 0 }}>
-              <FaExclamationTriangle style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', color: 'var(--color-warning)', marginTop: 'var(--spacing-0-5)' }} />
+              <FaExclamationTriangle style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', marginTop: 'var(--spacing-0-5)' }} color="var(--color-warning)" />
             </div>
             <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
               <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</Heading>
@@ -84,7 +84,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 <img src={getMediaUrl(student.profileImage)} alt={student.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-info-bg-light)' }}>
-                  <FaUser style={{ color: 'var(--color-primary)', width: '33%', height: '33%' }} />
+                  <FaUser style={{ width: '33%', height: '33%' }} color="var(--color-primary)" />
                 </div>
               )}
             </div>
@@ -93,13 +93,13 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
           {/* Student Details Section */}
           <div>
             <h3 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-4)', display: 'flex', alignItems: 'center' }}>
-              <FaUser style={{ marginRight: 'var(--spacing-3)', color: 'var(--color-primary)' }} />
+              <FaUser style={{ marginRight: 'var(--spacing-3)' }} color="var(--color-primary)" />
               {student.name}
             </h3>
 
             <Grid min={200} gap={4}>
               <HStack gap={3} align="start">
-                <FaIdCard style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
+                <FaIdCard style={{ width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} color="var(--color-primary)" />
                 <div>
                   <Text size="xs" color="muted">Roll Number</Text>
                   <Text size="sm" weight="medium" color="primary">{student.rollNumber}</Text>
@@ -107,7 +107,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               </HStack>
 
               <HStack gap={3} align="start">
-                <FaEnvelope style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
+                <FaEnvelope style={{ width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} color="var(--color-primary)" />
                 <div>
                   <Text size="xs" color="muted">Email</Text>
                   <Text size="sm" weight="medium" color="primary" style={{ wordBreak: 'break-all' }}>{student.email}</Text>
@@ -115,7 +115,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               </HStack>
 
               <HStack gap={3} align="start">
-                <FaPhone style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
+                <FaPhone style={{ width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} color="var(--color-primary)" />
                 <div>
                   <Text size="xs" color="muted">Phone</Text>
                   <Text size="sm" weight="medium" color="primary">{student.phone || "N/A"}</Text>
@@ -123,7 +123,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               </HStack>
 
               <HStack gap={3} align="start">
-                <FaVenusMars style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
+                <FaVenusMars style={{ width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} color="var(--color-primary)" />
                 <div>
                   <Text size="xs" color="muted">Gender</Text>
                   <Text size="sm" weight="medium" color="primary" style={{ textTransform: 'capitalize' }}>{student.gender || "N/A"}</Text>
@@ -131,7 +131,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               </HStack>
 
               <HStack gap={3} align="start">
-                <FaBuilding style={{ color: 'var(--color-primary)', width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} />
+                <FaBuilding style={{ width: 'var(--icon-lg)', marginTop: 'var(--spacing-1)' }} color="var(--color-primary)" />
                 <div>
                   <Text size="xs" color="muted">Hostel & Room</Text>
                   <Text size="sm" weight="medium" color="primary">
@@ -147,18 +147,18 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 <Heading as="h4" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }}>Last {lastCheckInOut.status}</Heading>
                 <HStack gap={4} wrap>
                   <HStack gap="none" align="center">
-                    <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
+                    <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" />
                     <Text as="span" size="sm">{formatDate(lastCheckInOut.dateAndTime)}</Text>
                   </HStack>
                   <HStack gap="none" align="center">
-                    <FaClock style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
+                    <FaClock style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" />
                     <Text as="span" size="sm">{formatTime(lastCheckInOut.dateAndTime)}</Text>
                   </HStack>
                   <HStack gap="none" align="center">
                     {lastCheckInOut.status === "Checked In" ? (
-                      <FaSignInAlt style={{ color: 'var(--color-success)', marginRight: 'var(--spacing-2)' }} />
+                      <FaSignInAlt style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-success)" />
                     ) : (
-                      <FaSignOutAlt style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-2)' }} />
+                      <FaSignOutAlt style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-warning)" />
                     )}
                     <Text as="span" size="sm" weight="medium">{lastCheckInOut.status}</Text>
                   </HStack>

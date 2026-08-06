@@ -107,7 +107,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
                 <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
               ) : (
                 <IconCircle size="var(--avatar-3xl)" bg="brand" style={{ border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
-                  <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-primary)" }} />
+                  <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)" }} color="var(--color-primary)" />
                 </IconCircle>
               )}
               <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>

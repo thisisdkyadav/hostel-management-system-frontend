@@ -23,19 +23,19 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   const getCategoryIcon = (category) => {
     switch (category) {
       case "Plumbing":
-        return <FaWrench style={{ color: "var(--color-info)" }} />
+        return <FaWrench color="var(--color-info)" />
       case "Electrical":
-        return <FaBolt style={{ color: "var(--color-warning)" }} />
+        return <FaBolt color="var(--color-warning)" />
       case "Civil":
-        return <FaBuilding style={{ color: "var(--color-orange-text)" }} />
+        return <FaBuilding color="var(--color-orange-text)" />
       case "Cleanliness":
-        return <FaBroom style={{ color: "var(--color-success)" }} />
+        return <FaBroom color="var(--color-success)" />
       case "Internet":
-        return <FaWifi style={{ color: "var(--color-purple-text)" }} />
+        return <FaWifi color="var(--color-purple-text)" />
       case "Attendant":
-        return <FaUserTie style={{ color: "var(--color-girls-text)" }} />
+        return <FaUserTie color="var(--color-girls-text)" />
       default:
-        return <FaEllipsisH style={{ color: "var(--color-text-muted)" }} />
+        return <FaEllipsisH color="var(--color-text-muted)" />
     }
   }
 
@@ -91,14 +91,14 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         <CardBody style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
           <HStack gap="none" align="center">
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-              <FaEnvelope style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
+              <FaEnvelope style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
             </IconCircle>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</span>
           </HStack>
 
           <HStack gap="none" align="center">
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-              <FaPhone style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
+              <FaPhone style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
             </IconCircle>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
           </HStack>

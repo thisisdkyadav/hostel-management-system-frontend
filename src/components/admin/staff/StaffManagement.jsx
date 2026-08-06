@@ -85,7 +85,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
           ))}
         </div>
 
-        {filteredStaff.length === 0 && <NoResults icon={<FaUserTie style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message={emptyMessage} suggestion="Try changing your search or filter criteria" />}
+        {filteredStaff.length === 0 && <NoResults icon={<FaUserTie style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message={emptyMessage} suggestion="Try changing your search or filter criteria" />}
 
         <AddWardenModal show={showAddModal} staffType={staffType} onClose={() => setShowAddModal(false)} onAdd={fetchStaff} />
       </Page.Body>

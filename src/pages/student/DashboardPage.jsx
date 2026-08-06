@@ -625,7 +625,7 @@ const DashboardPage = () => {
     return (
       <Surface padding={6} className="flex flex-col items-center justify-center h-full">
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
-          <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+          <BiError className="mx-auto" style={{ fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
           <Heading as="h2" size="xl" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }} className="font-semibold">Unable to Load Dashboard</Heading>
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>{error}</Text>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
@@ -640,7 +640,7 @@ const DashboardPage = () => {
     return (
       <Surface padding={6} className="flex flex-col items-center justify-center h-full">
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
-          <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+          <BiError className="mx-auto" style={{ fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
           <Heading as="h2" size="xl" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }} className="font-semibold">Dashboard Data Error</Heading>
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>
             Student dashboard data is unavailable or malformed.

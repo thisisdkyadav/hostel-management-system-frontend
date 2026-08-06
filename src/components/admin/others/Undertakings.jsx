@@ -69,7 +69,7 @@ const Undertakings = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredUndertakings.length === 0 ? (
-        <NoResults icon={<FaFileSignature style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
+        <NoResults icon={<FaFileSignature style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredUndertakings.map((undertaking) => (

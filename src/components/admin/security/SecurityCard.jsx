@@ -40,7 +40,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
             <div>
               <Heading as="h3" weight="bold" color="primary" size="lg">{security.name}</Heading>
               <HStack align="center" gap="none" size="sm" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>
-                <FaIdCard style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', opacity: 'var(--opacity-70)' }} />
+                <FaIdCard style={{ marginRight: 'var(--spacing-1-5)', opacity: 'var(--opacity-70)' }} color="var(--color-primary)" />
                 <span>Security Staff</span>
               </HStack>
             </div>
@@ -50,14 +50,14 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
         <CardBody style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <HStack gap="none" align="center">
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-              <FaEnvelope style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
+              <FaEnvelope style={{ fontSize: 'var(--font-size-xs)' }} color="var(--color-primary)" />
             </IconCircle>
             <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{security.email}</span>
           </HStack>
 
           <HStack gap="none" align="center">
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-              <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
+              <FaBuilding style={{ fontSize: 'var(--font-size-xs)' }} color="var(--color-primary)" />
             </IconCircle>
             <div>
               <Text as="span" size="sm" color="body" weight="medium">{hostelName}</Text>

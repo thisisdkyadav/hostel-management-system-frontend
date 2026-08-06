@@ -57,7 +57,7 @@ const DashboardPage = () => {
     return (
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
+          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} color="var(--color-primary)" />
           <Text as="div" size="xl" color="muted">Loading profile...</Text>
         </div>
       </div>
@@ -68,7 +68,7 @@ const DashboardPage = () => {
     return (
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
+          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} color="var(--color-primary)" />
           <Text as="div" size="xl" color="muted">Loading dashboard data...</Text>
         </div>
       </div>

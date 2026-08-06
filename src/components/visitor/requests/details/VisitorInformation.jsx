@@ -6,7 +6,7 @@ const VisitorInformation = ({ visitors }) => {
   return (
     <div>
       <Heading as="h3" weight="medium" color="secondary" size="base" style={{ marginBottom: 'var(--spacing-3)' }} className="font-medium mb-3 flex items-center">
-        <FaUser className="mr-2" style={{ color: 'var(--color-primary)' }} /> Visitor Information
+        <FaUser className="mr-2" color="var(--color-primary)" /> Visitor Information
       </Heading>
       <div className="space-y-3">
         {visitors.map((visitor, index) => (

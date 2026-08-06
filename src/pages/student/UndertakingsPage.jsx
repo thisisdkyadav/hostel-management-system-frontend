@@ -99,7 +99,7 @@ const UndertakingsPage = () => {
     <Surface bg="var(--color-bg-page)" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }} className="px-4 sm:px-6 lg:px-8 flex-1">
       <header className="flex justify-between items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-4) var(--spacing-6)', marginBottom: 'var(--spacing-6)' }}>
         <div className="flex items-center">
-          <FaFileSignature style={{ color: 'var(--color-info)', fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} />
+          <FaFileSignature style={{ fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} color="var(--color-info)" />
           <Heading as="h1" size="2xl" color="secondary" className="font-bold">My Undertakings</Heading>
         </div>
       </header>
@@ -140,7 +140,7 @@ const UndertakingsPage = () => {
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
-                      <FaClock style={{ color: 'var(--color-text-placeholder)', marginRight: 'var(--spacing-1)' }} />
+                      <FaClock style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-text-placeholder)" />
                       <Text as="span" size="xs" color="muted">Due: {formatDate(undertaking.deadline)}</Text>
 
                       {isDeadlineApproaching(undertaking.deadline) && (
@@ -188,7 +188,7 @@ const UndertakingsPage = () => {
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
-                      <FaCheck style={{ color: 'var(--color-success)', marginRight: 'var(--spacing-1)' }} />
+                      <FaCheck style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-success)" />
                       <Text as="span" size="xs" color="muted">Accepted on: {formatDate(undertaking.acceptedAt)}</Text>
                     </div>
                   </div>

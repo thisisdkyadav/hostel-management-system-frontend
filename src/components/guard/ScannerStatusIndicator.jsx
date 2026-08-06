@@ -19,22 +19,22 @@ const ScannerStatusIndicator = () => {
       <VStack gap={2} size="xs" color="muted">
         <HStack gap="none" align="center" justify="between">
           <HStack gap="none" align="center">
-            <FaKeyboard style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-info)' }} />
+            <FaKeyboard style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-info)" />
             <span>Check-in Scanner</span>
           </HStack>
           <HStack gap="none" align="center">
-            <FaArrowDown style={{ color: 'var(--color-success)' }} />
+            <FaArrowDown color="var(--color-success)" />
             <span style={{ marginLeft: 'var(--spacing-1)' }}>Down Arrow</span>
           </HStack>
         </HStack>
 
         <HStack gap="none" align="center" justify="between">
           <HStack gap="none" align="center">
-            <FaKeyboard style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-info)' }} />
+            <FaKeyboard style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-info)" />
             <span>Check-out Scanner</span>
           </HStack>
           <HStack gap="none" align="center">
-            <FaArrowRight style={{ color: 'var(--color-warning)', transform: 'rotate(90deg)' }} />
+            <FaArrowRight style={{ transform: 'rotate(90deg)' }} color="var(--color-warning)" />
             <span style={{ marginLeft: 'var(--spacing-1)' }}>Tab Key</span>
           </HStack>
         </HStack>

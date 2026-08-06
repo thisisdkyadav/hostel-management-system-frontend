@@ -135,7 +135,7 @@ const InventoryReports = () => {
         <Grid cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
           {hostelSummary.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-12) 0" }}>
-              <FaBoxes style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
+              <FaBoxes style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No hostel inventory data available</Text>
             </div>
           ) : (
@@ -148,7 +148,7 @@ const InventoryReports = () => {
               >
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
                   <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                    <FaBuilding style={{ color: "var(--color-primary)" }} />
+                    <FaBuilding color="var(--color-primary)" />
                   </IconCircle>
                   <Text as="div" size="lg" weight="medium" color="secondary">{hostel.hostelName}</Text>
                 </HStack>
@@ -174,7 +174,7 @@ const InventoryReports = () => {
                       >
                         <HStack gap="none" align="center">
                           <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
-                            <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
+                            <FaBox style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
                           </IconCircle>
                           <Text as="span" size="sm">{item.itemName}</Text>
                         </HStack>
@@ -197,7 +197,7 @@ const InventoryReports = () => {
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {studentSummary.length === 0 ? (
             <Surface padding="var(--spacing-12) 0" align="center">
-              <FaUserGraduate style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
+              <FaUserGraduate style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No student inventory data available</Text>
             </Surface>
           ) : (
@@ -225,7 +225,7 @@ const InventoryReports = () => {
                           {student.items.map((item) => (
                             <HStack align="center" gap="none" size="sm" key={item.id}>
                               <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
-                                <FaBox style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
+                                <FaBox style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
                               </IconCircle>
                               <Text as="span" weight="medium" color="body">{item.itemName}</Text>
                               <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
@@ -252,7 +252,7 @@ const InventoryReports = () => {
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {itemTypeSummary.length === 0 ? (
             <Surface padding="var(--spacing-12) 0" align="center">
-              <FaBox style={{ margin: "0 auto", color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} />
+              <FaBox style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No item type summary data available</Text>
             </Surface>
           ) : (
@@ -274,7 +274,7 @@ const InventoryReports = () => {
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <HStack gap="none" align="center">
                           <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                            <FaBox style={{ color: "var(--color-primary)" }} />
+                            <FaBox color="var(--color-primary)" />
                           </IconCircle>
                           <Text as="span" weight="medium" color="secondary">{item.itemName}</Text>
                         </HStack>

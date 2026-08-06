@@ -79,7 +79,7 @@ const AvailableInventory = () => {
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
         <Heading as="h3" size="var(--text-body-sm)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }} className="flex items-center">
-          <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Inventory
+          <FaFilter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Inventory
         </Heading>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
@@ -106,7 +106,7 @@ const AvailableInventory = () => {
           </div>
         ) : hostelInventory.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
-            <FaBoxes className="mx-auto" style={{ color: 'var(--color-border-dark)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} />
+            <FaBoxes className="mx-auto" style={{ fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-dark)" />
             <Text color="muted">No inventory items found in your hostel</Text>
           </div>
         ) : (
@@ -126,7 +126,7 @@ const AvailableInventory = () => {
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
                         <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
-                          <FaBoxes style={{ color: 'var(--color-primary)' }} />
+                          <FaBoxes color="var(--color-primary)" />
                         </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>

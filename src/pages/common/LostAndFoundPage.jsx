@@ -117,7 +117,7 @@ const LostAndFoundPage = () => {
 
           {!loading && lostItems.length === 0 && (
             <NoResults
-              icon={<MdInventory style={{ color: "var(--color-text-placeholder)", fontSize: "var(--font-size-4xl)" }} />}
+              icon={<MdInventory style={{ fontSize: "var(--font-size-4xl)" }} color="var(--color-text-placeholder)" />}
               message="No items found"
               suggestion="Try changing your search or filter criteria"
             />

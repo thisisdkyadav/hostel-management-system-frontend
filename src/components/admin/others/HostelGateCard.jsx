@@ -40,7 +40,7 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
-                <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
+                <FaBuilding style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
               </Surface>
               <Heading as="h3" weight="semibold" size="lg" color="secondary">{gate.userId?.name || "Unknown Hostel"}</Heading>
             </HStack>
@@ -53,7 +53,7 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <HStack gap="none" align="start">
-            <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaEnvelope style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted" style={{ wordBreak: 'break-all' }}>{gate.userId?.email}</Text>
           </HStack>
           <HStack gap="none" align="start">

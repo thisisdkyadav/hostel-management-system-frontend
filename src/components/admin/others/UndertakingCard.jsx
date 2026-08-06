@@ -47,7 +47,7 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
-                <FaFileSignature style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
+                <FaFileSignature style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
               </Surface>
               <Heading as="h3" weight="semibold" size="lg" color="secondary">{undertaking.title}</Heading>
             </HStack>
@@ -65,13 +65,13 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
             <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
           </Text>
           <HStack gap="none" align="start">
-            <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaCalendarAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>Deadline: {formatDate(undertaking.deadline)}</span>
             </Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaUsers style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaUsers style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>Students: {undertaking.totalStudents || 0}</span>
             </Text>

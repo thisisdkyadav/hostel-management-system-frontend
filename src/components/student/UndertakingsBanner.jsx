@@ -36,7 +36,7 @@ const UndertakingsBanner = () => {
     <Surface bg="var(--color-warning-bg-light)" padding={4} radius="lg" shadow="sm" style={{ borderLeft: `var(--border-4) solid var(--color-warning)`, marginBottom: 'var(--spacing-6)' }}>
       <HStack gap="none" align="center" justify="between">
         <HStack gap="none" align="center">
-          <FaExclamationTriangle style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-3)', fontSize: 'var(--icon-xl)' }} />
+          <FaExclamationTriangle style={{ marginRight: 'var(--spacing-3)', fontSize: 'var(--icon-xl)' }} color="var(--color-warning)" />
           <div>
             <Heading as="h3" weight="medium" color="warning-text" size="lg">
               {pendingCount === 1 ? "You have 1 pending undertaking" : `You have ${pendingCount} pending undertakings`}

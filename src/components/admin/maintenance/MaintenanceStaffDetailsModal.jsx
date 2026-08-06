@@ -137,7 +137,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
             {/* Filters */}
             <Surface bg="tertiary" padding={4} radius="lg">
               <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)", display: "flex", alignItems: "center" }}>
-                <FaFilter style={{ marginRight: "var(--spacing-2)", color: "var(--color-text-muted)" }} /> Filter Records
+                <FaFilter style={{ marginRight: "var(--spacing-2)" }} color="var(--color-text-muted)" /> Filter Records
               </h3>
               <HStack gap="medium" align="end">
                 <div style={{ flex: 1 }}>
@@ -225,7 +225,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                       <Text size="sm" color="info" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved</Text>
                     </div>
                     <Surface bg="info" padding={3} radius="full">
-                      <FaTasks style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-info)" }} />
+                      <FaTasks style={{ fontSize: "var(--font-size-3xl)" }} color="var(--color-info)" />
                     </Surface>
                   </HStack>
                 </div>
@@ -239,7 +239,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                       <Text size="sm" color="success" style={{ marginTop: "var(--spacing-1)" }}>Complaints Resolved Today</Text>
                     </div>
                     <Surface bg="success" padding={3} radius="full">
-                      <FaCalendarAlt style={{ fontSize: "var(--font-size-3xl)", color: "var(--color-success)" }} />
+                      <FaCalendarAlt style={{ fontSize: "var(--font-size-3xl)" }} color="var(--color-success)" />
                     </Surface>
                   </HStack>
                 </div>

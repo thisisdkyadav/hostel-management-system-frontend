@@ -20,7 +20,7 @@ const VisitInformation = ({ fromDate, toDate }) => {
   return (
     <Surface bg="tertiary" padding={4} radius="lg" className="p-4 rounded-lg">
       <Heading as="h3" weight="medium" color="secondary" size="base" style={{ marginBottom: 'var(--spacing-3)' }} className="font-medium mb-3 flex items-center">
-        <FaCalendarAlt className="mr-2" style={{ color: 'var(--color-primary)' }} /> Visit Information
+        <FaCalendarAlt className="mr-2" color="var(--color-primary)" /> Visit Information
       </Heading>
       <div className="space-y-2">
         <div className="flex justify-between">

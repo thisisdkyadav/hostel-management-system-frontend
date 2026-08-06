@@ -767,7 +767,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   <Surface bg="secondary" padding={8} radius="xl" border="2px dashed var(--color-border-input)" align="center" style={{ cursor: "pointer", transition: "var(--transition-colors)" }} onDragOver={handleDragOver}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}>
-                    <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem", color: "var(--color-text-placeholder)" }} />
+                    <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem" }} color="var(--color-text-placeholder)" />
                     <Text size="sm" color="tertiary" style={{ marginTop: "var(--spacing-2)" }}>
                       Drag and drop a CSV file here, or click to select a file
                     </Text>
@@ -832,7 +832,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
               {isLoading && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
-                  <FaSpinner className="animate-spin" style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", color: "var(--color-primary)" }} />
+                  <FaSpinner className="animate-spin" style={{ width: "var(--spacing-5)", height: "var(--spacing-5)" }} color="var(--color-primary)" />
                   <Text as="span" size="sm" color="tertiary" style={{ marginLeft: "var(--spacing-2)" }}>
                     Processing file...
                   </Text>
@@ -938,7 +938,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       <Surface bg="secondary" padding="0 var(--spacing-3)" radius="var(--radius-input)" border="1px solid var(--color-border-input)" color={row.student ? "var(--color-text-primary)" : "var(--color-text-muted)"} size="sm" style={{ minHeight: "40px", display: "flex", alignItems: "center" }}>
                         {row.studentLookupState === "loading" ? (
                           <>
-                            <FaSpinner className="animate-spin" style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} />
+                            <FaSpinner className="animate-spin" style={{ marginRight: "var(--spacing-2)" }} color="var(--color-primary)" />
                             Looking up student...
                           </>
                         ) : (

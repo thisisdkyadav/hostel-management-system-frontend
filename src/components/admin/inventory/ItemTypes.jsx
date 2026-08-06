@@ -171,7 +171,7 @@ const ItemTypes = () => {
           </div>
         ) : itemTypes.length === 0 ? (
           <Surface padding="var(--spacing-12) 0" align="center">
-            <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+            <FaBoxOpen style={{ margin: '0 auto', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
             <Text color="muted">No inventory item types found</Text>
             <Button onClick={openNewItemModal} variant="primary" size="sm">
               <FaPlus />

@@ -164,7 +164,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
       {step === 1 && (
         <VStack gap={5}>
           <Surface bg="var(--color-bg-hover)" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: 'pointer', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
-            <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-muted)' }} />
+            <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)' }} color="var(--color-text-muted)" />
             <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>Drag and drop a CSV file here, or click to select a file</Text>
             <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-3)' }}>
               <strong>Required fields:</strong> rollNumber

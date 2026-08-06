@@ -98,7 +98,7 @@ const ComplaintFeedbackPage = () => {
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
                     <IconCircle size="64px" bg="danger" style={{ margin: '0 auto var(--spacing-4)' }}>
-                        <FaExclamationTriangle size={32} style={{ color: 'var(--color-danger)' }} />
+                        <FaExclamationTriangle size={32} color="var(--color-danger)" />
                     </IconCircle>
                     <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Unable to Load Feedback Form
@@ -129,7 +129,7 @@ const ComplaintFeedbackPage = () => {
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
                     <IconCircle size="64px" bg="success" style={{ margin: '0 auto var(--spacing-4)' }}>
-                        <FaCheck size={32} style={{ color: 'var(--color-success)' }} />
+                        <FaCheck size={32} color="var(--color-success)" />
                     </IconCircle>
                     <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Thank You for Your Feedback!
@@ -256,11 +256,7 @@ const ComplaintFeedbackPage = () => {
                                     >
                                         <FaStar
                                             size={32}
-                                            style={{
-                                                color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)',
-                                                transition: 'var(--transition-colors)'
-                                            }}
-                                        />
+                                            style={{ transition: 'var(--transition-colors)' }} color={rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)'} />
                                     </button>
                                 ))}
                                 {feedbackRating > 0 && (

@@ -48,7 +48,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
 
           {filteredProfiles.length === 0 ? (
             <div style={{ paddingTop: "var(--spacing-8)", paddingBottom: "var(--spacing-8)", textAlign: "center" }}>
-              <FaUserAlt style={{ margin: "0 auto", height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-border-primary)" }} />
+              <FaUserAlt style={{ margin: "0 auto", height: "var(--icon-3xl)", width: "var(--icon-3xl)" }} color="var(--color-border-primary)" />
               <Heading as="h3" size="lg" weight="medium" color="primary" style={{ marginTop: "var(--spacing-4)" }}>No visitor profiles found</Heading>
               <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</Text>
             </div>
@@ -81,7 +81,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <HStack gap="none" align="center">
                           <IconCircle size="var(--avatar-md)" bg="muted">
-                            <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-text-muted)" }} />
+                            <FaUserAlt style={{ height: "var(--icon-lg)", width: "var(--icon-lg)" }} color="var(--color-text-muted)" />
                           </IconCircle>
                           <div style={{ marginLeft: "var(--spacing-4)" }}>
                             <Text as="div" size="sm" weight="medium" color="primary">{profile.name}</Text>

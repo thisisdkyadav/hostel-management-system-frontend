@@ -28,7 +28,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
           </Link>
         </div>
         <div className="flex flex-col items-center justify-center" style={{ paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)', color: 'var(--color-text-muted)' }}>
-          <FaExclamationCircle style={{ color: 'var(--color-bg-muted)', fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-1)' }} />
+          <FaExclamationCircle style={{ fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-1)' }} color="var(--color-bg-muted)" />
           <Text size="xs">No active complaints</Text>
           <Link to="complaints" className="hover:underline" style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             Submit a new complaint
@@ -42,7 +42,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
     <Surface bg="primary" radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)" className="overflow-hidden">
       <Surface padding="var(--spacing-3) var(--spacing-4)" style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }} className="flex justify-between items-center">
         <Heading as="h3" weight="medium" color="primary" size="sm" className="flex items-center">
-          <MdPendingActions style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)' }} />
+          <MdPendingActions style={{ marginRight: 'var(--spacing-1-5)' }} color="var(--color-primary)" />
           Your Active Complaints
         </Heading>
         <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>

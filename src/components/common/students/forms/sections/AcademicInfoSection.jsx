@@ -68,7 +68,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate style={{ color: 'var(--color-primary)' }} className="mr-2" />
+        <FaUserGraduate className="mr-2" color="var(--color-primary)" />
         <h3 className="font-semibold text-gray-800">Academic Information</h3>
       </div>
 

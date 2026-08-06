@@ -170,7 +170,7 @@ const StudentAssignments = () => {
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="var(--border-1) solid var(--color-border-light)">
         <Heading as="h3" size="var(--text-body-sm)" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-3)' }} className="flex items-center">
-          <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Assignments
+          <FaFilter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Assignments
         </Heading>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
@@ -208,7 +208,7 @@ const StudentAssignments = () => {
           </div>
         ) : studentInventory.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
-            <FaUserGraduate className="mx-auto" style={{ color: 'var(--color-border-dark)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} />
+            <FaUserGraduate className="mx-auto" style={{ fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-dark)" />
             <Text color="muted">No inventory assignments found</Text>
           </div>
         ) : (
@@ -230,7 +230,7 @@ const StudentAssignments = () => {
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
                         <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
-                          <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
+                          <FaUserGraduate color="var(--color-primary)" />
                         </IconCircle>
                         <div>
                           <Text as="div" weight="medium" color="secondary">{item.studentProfileId.userId.name}</Text>
@@ -241,7 +241,7 @@ const StudentAssignments = () => {
                     <Table.Cell className="whitespace-nowrap">
                       <div className="flex items-center">
                         <IconCircle size="var(--avatar-sm)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
-                          <FaBoxes style={{ color: 'var(--color-primary)' }} />
+                          <FaBoxes color="var(--color-primary)" />
                         </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{item.itemTypeId.name}</Text>
                       </div>
@@ -285,7 +285,7 @@ const StudentAssignments = () => {
             <Surface bg="tertiary" padding={4} radius="lg">
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-4)' }}>
                 <IconCircle size="var(--avatar-md)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
-                  <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
+                  <FaUserGraduate color="var(--color-primary)" />
                 </IconCircle>
                 <div>
                   <Heading as="h3" weight="medium" color="primary">{currentItem.studentProfileId.userId.name}</Heading>
@@ -368,7 +368,7 @@ const StudentAssignments = () => {
             <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
               <div className="flex items-center" style={{ marginBottom: 'var(--spacing-3)' }}>
                 <IconCircle size="var(--avatar-md)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }} className="flex items-center justify-center">
-                  <FaBoxes style={{ color: 'var(--color-primary)' }} />
+                  <FaBoxes color="var(--color-primary)" />
                 </IconCircle>
                 <div>
                   <Heading as="h3" weight="medium" color="primary">{currentItem.itemTypeId.name}</Heading>

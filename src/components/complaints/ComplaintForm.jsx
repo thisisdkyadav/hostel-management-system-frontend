@@ -65,7 +65,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaExclamationTriangle style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-danger)" />
             <Text color="danger-text">{error}</Text>
           </div>
         )}

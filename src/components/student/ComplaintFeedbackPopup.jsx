@@ -106,7 +106,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               <Button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)}
                 variant="ghost"
                 size="sm"
-              ><FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} /></Button>
+              ><FaStar size={32} style={{ transition: 'var(--transition-colors)' }} color={rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)'} /></Button>
             ))}
             {feedbackRating > 0 && (
               <Text as="span" color="body" weight="medium" size="sm" style={{ marginLeft: 'var(--spacing-2)' }}>

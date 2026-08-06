@@ -27,7 +27,7 @@ const EntryDetails = ({ entry, onClose }) => {
 
           <VStack gap={3}>
             <HStack gap="none" align="center">
-              <FaDoorOpen style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} />
+              <FaDoorOpen style={{ marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} color="var(--color-primary)" />
               <div>
                 <Text size="sm" color="muted">Room Number</Text>
                 <Text weight="medium" color="primary">{entry.room}</Text>
@@ -35,7 +35,7 @@ const EntryDetails = ({ entry, onClose }) => {
             </HStack>
 
             <HStack gap="none" align="center">
-              <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} />
+              <FaCalendarAlt style={{ marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} color="var(--color-primary)" />
               <div>
                 <Text size="sm" color="muted">Date</Text>
                 <Text weight="medium" color="primary">{entry.date}</Text>
@@ -43,7 +43,7 @@ const EntryDetails = ({ entry, onClose }) => {
             </HStack>
 
             <HStack gap="none" align="center">
-              <FaClock style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} />
+              <FaClock style={{ marginRight: 'var(--spacing-3)', width: 'var(--icon-lg)' }} color="var(--color-primary)" />
               <div>
                 <Text size="sm" color="muted">Time</Text>
                 <Text weight="medium" color="primary">{entry.time}</Text>

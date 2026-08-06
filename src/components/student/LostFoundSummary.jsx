@@ -9,7 +9,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
     <Surface bg="primary" padding={4} radius="xl" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center' }}>
-          <FiSearch style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', fontSize: 'var(--icon-sm)' }} /> Lost & Found
+          <FiSearch style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} color="var(--color-primary)" /> Lost & Found
         </h3>
         <Link to="lost-and-found" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'} onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}>
           View All
@@ -27,7 +27,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
 
         <Surface bg="success" padding="var(--spacing-2-5)" radius="lg" align="center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Surface bg="var(--color-success-light)" padding="var(--spacing-1-5)" radius="full" style={{ marginBottom: 'var(--spacing-1)' }}>
-            <FiSearch style={{ color: 'var(--color-success)', fontSize: 'var(--icon-lg)' }} />
+            <FiSearch style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-success)" />
           </Surface>
           <Text as="span" size="2xl" weight="bold" color="success">{lostAndFoundStats?.claimed || 0}</Text>
           <Text as="span" size="2xs" color="tertiary">Claimed Items</Text>

@@ -22,7 +22,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
 
           <Card.Body>
             <HStack gap="none" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
-              <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <FaBuilding style={{ opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="body" className="truncate max-w-[150px]">
                 {complaint.hostel}, Room {complaint.roomNumber}
               </Text>
@@ -34,7 +34,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
 
             <HStack gap="none" align="center" justify="between" style={{ marginTop: 'var(--spacing-4)' }}>
               <HStack gap="none" align="center">
-                <BiSolidCategory style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                <BiSolidCategory style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
                 <Text as="span" size="sm" color="body">{complaint.category}</Text>
               </HStack>
               <Text as="span" size="xs" color="muted">{getTimeSince(complaint.createdDate)}</Text>

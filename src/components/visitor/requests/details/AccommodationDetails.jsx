@@ -7,7 +7,7 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
   return (
     <Surface bg="muted" padding={4} radius="lg">
       <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)", display: "flex", alignItems: "center", }} >
-        <FaBuilding style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)", fontSize: "var(--icon-md)", }} />{" "}
+        <FaBuilding style={{ marginRight: "var(--spacing-2)", fontSize: "var(--icon-md)" }} color="var(--color-primary)" />{" "}
         Accommodation Details
       </h3>
       <VStack gap={2}>

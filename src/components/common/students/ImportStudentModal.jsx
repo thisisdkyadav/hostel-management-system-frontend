@@ -796,7 +796,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               <Surface bg="tertiary" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: "pointer" }} onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}>
-                <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-text-disabled)" }} />
+                <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)" }} color="var(--color-text-disabled)" />
                 <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-2)" }}>
                   Drag and drop a CSV file here, or click to select a file
                 </Text>

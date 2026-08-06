@@ -93,7 +93,7 @@ const QRCodeGenerator = () => {
       </div>
 
       <Surface bg="var(--color-primary-bg-light)" className="p-4 rounded-lg mb-5 flex items-start">
-        <FaInfoCircle className="mt-0.5 mr-2 flex-shrink-0" style={{ color: 'var(--color-primary)' }} />
+        <FaInfoCircle className="mt-0.5 mr-2 flex-shrink-0" color="var(--color-primary)" />
         <p className="text-sm text-gray-700">This QR code acts as your digital ID. Security personnel will scan this code to verify your identity. For security reasons, each code expires after 5 minutes.</p>
       </Surface>
 

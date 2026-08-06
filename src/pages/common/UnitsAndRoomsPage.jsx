@@ -421,7 +421,7 @@ const UnitsAndRoomsPage = () => {
             <div style={{ marginTop: 'var(--spacing-4)' }}>{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
             {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
-              <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} /> : <MdMeetingRoom style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />}
+              <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding style={{ fontSize: 'var(--font-size-4xl)' }} color="var(--color-text-placeholder)" /> : <MdMeetingRoom style={{ fontSize: 'var(--font-size-4xl)' }} color="var(--color-text-placeholder)" />}
                 message={`No ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"} found`}
                 suggestion="Try changing your search or filter criteria"
               />

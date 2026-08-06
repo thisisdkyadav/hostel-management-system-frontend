@@ -229,7 +229,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
           <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
             <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
               <HStack inline gap={2} align="center">
-                <HiCalendar size={16} style={{ color: "var(--color-primary)" }} />
+                <HiCalendar size={16} color="var(--color-primary)" />
                 <Text as="span" weight="semibold" color="heading">
                   Holidays for {selectedYear}
                 </Text>

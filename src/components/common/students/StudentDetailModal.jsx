@@ -743,7 +743,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
-                      <FaIdCard style={{ color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                      <FaIdCard style={{ marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} color="var(--color-text-disabled)" />
                       <Text color="muted" size="sm">Front side not uploaded</Text>
                     </div>
                   )}
@@ -766,7 +766,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
-                      <FaIdCard style={{ color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                      <FaIdCard style={{ marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} color="var(--color-text-disabled)" />
                       <Text color="muted" size="sm">Back side not uploaded</Text>
                     </div>
                   )}
@@ -1008,7 +1008,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-4)" }}>
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                   <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                    <FaBoxes style={{ color: "var(--color-primary)" }} />
+                    <FaBoxes color="var(--color-primary)" />
                   </IconCircle>
                   <div>
                     <Heading as="h3" weight="medium" color="primary">{selectedInventoryItem.itemTypeId.name}</Heading>

@@ -171,7 +171,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaExclamationTriangle style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-danger)" />
             <Text color="danger-text">{error}</Text>
           </div>
         )}
@@ -266,7 +266,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
             <Surface padding={6} radius="lg" border="var(--border-2) dashed var(--color-border-input)">
               <Text as="div" align="center">
                 <IconCircle size="48px" bg="brand" style={{ margin: '0 auto var(--spacing-3)' }}>
-                  <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
+                  <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)' }} color="var(--color-primary)" />
                 </IconCircle>
                 <VStack gap={2}>
                   <Text color="secondary" size="sm">Upload filled H2 form</Text>
@@ -277,7 +277,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   <VStack gap={3} style={{ marginTop: 'var(--spacing-4)' }}>
                     <Surface bg="tertiary" padding={3} radius="lg">
                       <HStack gap={2} align="center" justify="center">
-                        <FaFileAlt style={{ color: 'var(--color-text-tertiary)' }} />
+                        <FaFileAlt color="var(--color-text-tertiary)" />
                         <Text as="span" size="sm" color="secondary">{h2FormFile.name}</Text>
                       </HStack>
                     </Surface>
@@ -308,7 +308,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
             <Surface bg="var(--color-success-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-success-bg)">
               <HStack gap="none" align="center">
                 <IconCircle size="var(--avatar-sm)" bg="success" style={{ marginRight: 'var(--spacing-3)' }}>
-                  <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
+                  <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} color="var(--color-success)" />
                 </IconCircle>
                 <div style={{ flex: 1 }}>
                   <Text color="success-text" weight="medium" size="sm">H2 Form Uploaded Successfully</Text>

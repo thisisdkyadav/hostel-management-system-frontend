@@ -24,26 +24,26 @@ const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {
 
           <HStack gap="var(--gap-sm) var(--spacing-0)" wrap>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
-              <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <FaCalendarAlt style={{ opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" color="body">{date}</Text>
             </HStack>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
-              <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <BsClock style={{ opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" color="body">{time}</Text>
             </HStack>
             {selectedEvent.venue && (
               <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
-                <FaMapMarkerAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                <FaMapMarkerAlt style={{ opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
                 <Text as="span" color="body">{selectedEvent.venue}</Text>
               </HStack>
             )}
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)' }}>
-              <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <FaBuilding style={{ opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" color="body">{selectedEvent.hostel?.name || "All Hostels"}</Text>
             </HStack>
             {selectedEvent.gender && (
               <HStack gap="none" align="center">
-                <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                <FaUserFriends style={{ opacity: 'var(--opacity-80)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
                 <Text as="span" color="body">{selectedEvent.gender.charAt(0).toUpperCase() + selectedEvent.gender.slice(1) + " Only"}</Text>
               </HStack>
             )}

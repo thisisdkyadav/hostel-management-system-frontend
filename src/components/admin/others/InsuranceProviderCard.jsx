@@ -54,7 +54,7 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
-                <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
+                <FaBuilding style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
               </Surface>
               <Heading as="h3" weight="semibold" size="lg" color="secondary">{provider.name}</Heading>
             </HStack>
@@ -67,19 +67,19 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <HStack gap="none" align="start">
-            <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaEnvelope style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted" style={{ wordBreak: 'break-all' }}>{provider.email}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaPhone style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaPhone style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted">{provider.phone}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaMapMarkerAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaMapMarkerAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted">{provider.address}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <FaCalendarAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>
                 Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}

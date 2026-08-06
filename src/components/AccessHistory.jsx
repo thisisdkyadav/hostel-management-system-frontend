@@ -234,7 +234,7 @@ const AccessHistory = ({ cachedData }) => {
                         <Table.Cell className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <Surface bg={entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)'} className="p-1.5 rounded-md mr-2">
-                              {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
+                              {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" color="var(--color-success)" /> : <FaSignOutAlt className="text-sm" color="var(--color-info)" />}
                             </Surface>
                             <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                           </div>
@@ -265,7 +265,7 @@ const AccessHistory = ({ cachedData }) => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
                       <Surface bg={entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)'} className="p-1.5 rounded-md mr-2">
-                        {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
+                        {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" color="var(--color-success)" /> : <FaSignOutAlt className="text-sm" color="var(--color-info)" />}
                       </Surface>
                       <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                     </div>

@@ -11,7 +11,7 @@ const UnitListView = ({ units, onUnitClick }) => {
       render: (unit) => (
         <HStack gap="none" align="center">
           <IconCircle size="var(--spacing-10)" bg="info">
-            <FaBuilding style={{ color: "var(--color-primary)" }} />
+            <FaBuilding color="var(--color-primary)" />
           </IconCircle>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
             <Text as="div" size="sm" weight="medium" color="primary">
@@ -42,7 +42,7 @@ const UnitListView = ({ units, onUnitClick }) => {
       className: "hidden lg:table-cell",
       render: (unit) => (
         <HStack gap="none" align="center">
-          <FaDoorOpen style={{ marginRight: "var(--spacing-2)", color: "var(--color-text-disabled)" }} />
+          <FaDoorOpen style={{ marginRight: "var(--spacing-2)" }} color="var(--color-text-disabled)" />
           {unit.roomCount || 0} rooms
         </HStack>
       ),

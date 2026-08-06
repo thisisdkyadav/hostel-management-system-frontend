@@ -135,7 +135,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         {/* Bed Selection Section */}
         <div>
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
-            <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Select Bed Number
+            <FaBed style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" /> Select Bed Number
           </h3>
           {availableBeds.length === 0 ? (
             <HStack align="center" gap="none" color="warning-text" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-bg-light)', borderRadius: 'var(--radius-lg)' }}>
@@ -188,7 +188,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
         <div>
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
-            <FaUserGraduate style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Unallocated Students
+            <FaUserGraduate style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" /> Unallocated Students
           </h3>
 
           {loading ? (

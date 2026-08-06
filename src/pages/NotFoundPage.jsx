@@ -20,11 +20,7 @@ const NotFoundPage = () => {
         <HStack gap="none" justify="center" style={{ marginBottom: 'var(--spacing-6)' }}>
           <Surface bg="warning" padding={6} radius="full">
             <FaExclamationTriangle
-              style={{
-                fontSize: 'var(--font-size-5xl)',
-                color: 'var(--color-warning)'
-              }}
-            />
+              style={{ fontSize: 'var(--font-size-5xl)' }} color="var(--color-warning)" />
           </Surface>
         </HStack>
 

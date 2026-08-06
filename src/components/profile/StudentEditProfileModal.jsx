@@ -98,57 +98,57 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     const fieldConfig = {
       profileImage: {
         label: "Profile Image",
-        icon: <HiCamera style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiCamera size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       name: {
         label: "Full Name",
-        icon: <HiUser style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiUser size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       dateOfBirth: {
         label: "Date of Birth",
-        icon: <HiCalendar style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiCalendar size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       admissionDate: {
         label: "Admission Date",
-        icon: <HiCalendar style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiCalendar size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       phone: {
         label: "Phone Number",
-        icon: <HiPhone style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiPhone size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       address: {
         label: "Address",
-        icon: <HiHome style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiHome size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       gender: {
         label: "Gender",
-        icon: <HiUser style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiUser size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       bloodGroup: {
         label: "Blood Group",
-        icon: <GiDroplets style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <GiDroplets size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       guardian: {
         label: "Guardian Name",
-        icon: <FaUserShield style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <FaUserShield size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       guardianPhone: {
         label: "Guardian Phone",
-        icon: <HiPhone style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiPhone size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       guardianEmail: {
         label: "Guardian Email",
-        icon: <HiMail style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiMail size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
       secondaryEmail: {
         label: "Secondary Email",
-        icon: <HiMail style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+        icon: <HiMail size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
       },
     }
 
     const config = fieldConfig[field] || {
       label: field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1"),
-      icon: <HiUser style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+      icon: <HiUser size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} color="var(--color-primary)" />,
     }
 
     if (field === "profileImage") {

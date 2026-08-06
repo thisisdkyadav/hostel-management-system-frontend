@@ -120,7 +120,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
 
           <VStack gap="var(--gap-sm)" style={{ marginTop: 'var(--spacing-4)' }}>
             <HStack gap="none" align="center">
-              <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <BsCalendarDate style={{ opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="secondary">{formatDate(item.dateFound)}</Text>
             </HStack>
             <Surface bg="var(--table-header-bg)" padding={3} radius="lg">

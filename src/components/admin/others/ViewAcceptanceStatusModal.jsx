@@ -142,7 +142,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
             <Spinner size="var(--icon-3xl)" thickness="thin" />
           </div>
         ) : filteredStudents.length === 0 ? (
-          <NoResults icon={<FaClipboardCheck style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
+          <NoResults icon={<FaClipboardCheck style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
         ) : (
           <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
             <Table>

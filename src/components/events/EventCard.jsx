@@ -86,20 +86,20 @@ const EventCard = ({ event, refresh }) => {
         <Card.Body className="mt-4 space-y-3">
           <HStack gap="none" align="center" wrap>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
-              <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <FaCalendarAlt style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="body">{date}</Text>
             </HStack>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
-              <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <BsClock style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="body">{time}</Text>
             </HStack>
             <HStack gap="none" align="center" style={{ marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
-              <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <FaBuilding style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="body" weight="medium">{event.hostel?.name || "All Hostels"}</Text>
             </HStack>
             {event.gender && (
               <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-1)' }}>
-                <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                <FaUserFriends style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
                 <Text as="span" size="sm" color="body" weight="medium">{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</Text>
               </HStack>
             )}

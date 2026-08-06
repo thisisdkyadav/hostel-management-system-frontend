@@ -63,7 +63,7 @@ const DashboardPage = () => {
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', overflow: 'hidden', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}>
             <Surface padding="var(--spacing-5) var(--spacing-6)" className="flex items-center">
               <Surface bg="brand" padding={3} radius="full">
-                <FaUserCog style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-primary)' }} />
+                <FaUserCog style={{ height: '1.5rem', width: '1.5rem' }} color="var(--color-primary)" />
               </Surface>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
                 <Text size="sm" weight="medium" color="muted">Total Admins</Text>
@@ -80,7 +80,7 @@ const DashboardPage = () => {
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', overflow: 'hidden', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}>
             <Surface padding="var(--spacing-5) var(--spacing-6)" className="flex items-center">
               <Surface bg="var(--color-coed-light-bg)" padding={3} radius="full">
-                <FaKey style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-coed-text)' }} />
+                <FaKey style={{ height: '1.5rem', width: '1.5rem' }} color="var(--color-coed-text)" />
               </Surface>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
                 <Text size="sm" weight="medium" color="muted">Total API Keys</Text>
@@ -97,7 +97,7 @@ const DashboardPage = () => {
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', overflow: 'hidden', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}>
             <Surface padding="var(--spacing-5) var(--spacing-6)" className="flex items-center">
               <Surface bg="success" padding={3} radius="full">
-                <FaKey style={{ height: '1.5rem', width: '1.5rem', color: 'var(--color-success)' }} />
+                <FaKey style={{ height: '1.5rem', width: '1.5rem' }} color="var(--color-success)" />
               </Surface>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>
                 <Text size="sm" weight="medium" color="muted">Active API Keys</Text>

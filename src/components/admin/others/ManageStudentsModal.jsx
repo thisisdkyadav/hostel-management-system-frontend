@@ -85,7 +85,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
               <Spinner size="var(--icon-3xl)" thickness="thin" />
             </div>
           ) : filteredStudents.length === 0 ? (
-            <NoResults icon={<FaUsers style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No students found" suggestion={searchTerm ? "Try changing your search term" : "Add students to this undertaking using CSV upload"} />
+            <NoResults icon={<FaUsers style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term" : "Add students to this undertaking using CSV upload"} />
           ) : (
             <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
               <Table>

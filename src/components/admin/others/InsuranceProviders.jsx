@@ -79,7 +79,7 @@ const InsuranceProviders = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredProviders.length === 0 ? (
-        <NoResults icon={<FaBuilding style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
+        <NoResults icon={<FaBuilding style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredProviders.map((provider) => (

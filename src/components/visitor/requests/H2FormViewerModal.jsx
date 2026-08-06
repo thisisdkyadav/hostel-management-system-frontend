@@ -47,7 +47,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
           <HStack gap={3} align="center">
             <IconCircle size="var(--avatar-md)" bg="brand">
-              <FaFileAlt style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
+              <FaFileAlt style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} color="var(--color-primary)" />
             </IconCircle>
             <div>
               <Heading as="h3" weight="medium" color="secondary">H2 Form Document</Heading>
@@ -84,7 +84,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
               {isLoading && (
                 <div style={{ position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg-tertiary)' }}>
                   <HStack gap={3} align="center">
-                    <FaSpinner style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
+                    <FaSpinner style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', animation: 'spin 1s linear infinite' }} color="var(--color-primary)" />
                     <Text as="span" color="muted">Loading document...</Text>
                   </HStack>
                 </div>
@@ -98,7 +98,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
               >
                 {/* Fallback for when PDF object fails */}
                 <Surface padding={8} align="center" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <FaFileAlt style={{ width: 'var(--icon-4xl)', height: 'var(--icon-4xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-4)' }} />
+                  <FaFileAlt style={{ width: 'var(--icon-4xl)', height: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-text-placeholder)" />
                   <Heading as="h3" size="lg" weight="medium" color="body" style={{ marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</Heading>
                   <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</Text>
                   <HStack gap={3}>

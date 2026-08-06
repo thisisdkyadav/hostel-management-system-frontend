@@ -52,12 +52,12 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-input)" }}>
           <HStack gap="none" align="center">
             <Surface bg="info" padding={2} radius="full">
-              <FaFileSignature style={{ color: "var(--color-info)" }} />
+              <FaFileSignature color="var(--color-info)" />
             </Surface>
             <Text as="span" size="sm" color="tertiary" style={{ marginLeft: "var(--spacing-2)" }}>{undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}</Text>
           </HStack>
           <HStack gap="none" align="center">
-            <FaCalendarAlt style={{ color: "var(--color-text-placeholder)", marginRight: "var(--spacing-2)" }} />
+            <FaCalendarAlt style={{ marginRight: "var(--spacing-2)" }} color="var(--color-text-placeholder)" />
             <Text as="span" size="sm" color="tertiary">
               Deadline: {formatDate(undertaking.deadline)}
               {deadlinePassed && <Text as="span" size="xs" color="danger-text" style={{ marginLeft: "var(--spacing-2)" }}>(Overdue)</Text>}

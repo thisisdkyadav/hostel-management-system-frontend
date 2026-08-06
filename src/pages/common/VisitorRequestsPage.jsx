@@ -218,7 +218,7 @@ const VisitorRequestsPage = () => {
 
         {totalRequests === 0 && !hasActiveFilters ? (
           <EmptyState
-            icon={() => <FaUserFriends style={{ color: "var(--color-text-placeholder)" }} size={48} />}
+            icon={() => <FaUserFriends size={48} color="var(--color-text-placeholder)" />}
             title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
             message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
             buttonText={user.role === "Student" ? "Create Request" : null}

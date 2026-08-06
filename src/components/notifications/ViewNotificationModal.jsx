@@ -56,7 +56,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
           <VStack gap={3}>
             {notification.hostelId && notification.hostelId.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
-                <FaBuilding style={{ color: 'var(--color-info)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
+                <FaBuilding style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} color="var(--color-info)" />
                 <div>
                   <Text as="span" size="sm" weight="medium">Hostels:</Text>
                   <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.hostelId.map((h) => h.name).join(", ")}</Text>
@@ -66,7 +66,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
             {notification.department && notification.department.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
-                <FaGraduationCap style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
+                <FaGraduationCap style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} color="var(--color-purple-text)" />
                 <div>
                   <Text as="span" size="sm" weight="medium">Departments:</Text>
                   <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.department.join(", ")}</Text>
@@ -76,7 +76,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
             {notification.degree && notification.degree.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
-                <FaUserAlt style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
+                <FaUserAlt style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} color="var(--color-purple-text)" />
                 <div>
                   <Text as="span" size="sm" weight="medium">Degrees:</Text>
                   <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.degree.join(", ")}</Text>
@@ -86,7 +86,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
             {notification.gender ? (
               <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
-                <FaVenusMars style={{ color: 'var(--color-girls-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
+                <FaVenusMars style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} color="var(--color-girls-text)" />
                 <div>
                   <Text as="span" size="sm" weight="medium">Gender:</Text>
                   <Text as="span" size="sm" style={{ marginLeft: 'var(--spacing-1)' }}>{notification.gender}</Text>
@@ -96,7 +96,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
             {!notification.hostelId?.length && !notification.department?.length && !notification.degree?.length && !notification.gender && (
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
-                <FaUserAlt style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-2)' }} />
+                <FaUserAlt style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" />
                 <Text as="span" size="sm">All Students</Text>
               </div>
             )}

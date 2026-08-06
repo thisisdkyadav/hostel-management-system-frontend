@@ -66,7 +66,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
                 <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
-                  <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
+                  <FaUserTie style={{ fontSize: 'var(--icon-xl)' }} color="var(--color-primary)" />
                 </IconCircle>
               </div>
               <div>
@@ -105,7 +105,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
                 <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
-                  <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
+                  <FaUserTie style={{ fontSize: 'var(--icon-xl)' }} color="var(--color-primary)" />
                 </IconCircle>
               </div>
               <div>
@@ -148,7 +148,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
                 <img src={getMediaUrl(warden.profileImage)} alt={warden.name} style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-2) solid var(--color-primary)', boxShadow: 'var(--shadow-sm)' }} />
               ) : (
                 <IconCircle size="var(--avatar-lg)" bg="brand" style={{ border: 'var(--border-2) solid var(--color-primary)' }}>
-                  <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
+                  <FaUserTie style={{ fontSize: 'var(--icon-xl)' }} color="var(--color-primary)" />
                 </IconCircle>
               )}
             </div>
@@ -162,14 +162,14 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
         <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
           <HStack gap="none" align="center">
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
-              <FaEnvelope style={{ color: 'var(--color-text-muted)' }} />
+              <FaEnvelope color="var(--color-text-muted)" />
             </div>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-text-body)' }}>{warden.email}</span>
           </HStack>
 
           <HStack gap="none" align="center">
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
-              <FaPhone style={{ color: 'var(--color-text-muted)' }} />
+              <FaPhone color="var(--color-text-muted)" />
             </div>
             {warden.phone ? <Text as="span" color="body">{warden.phone}</Text> : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Not provided</span>}
           </HStack>
@@ -178,7 +178,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             {" "}
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center', paddingTop: 'var(--spacing-0-5)' }}>
               {" "}
-              <FaBuilding style={{ color: 'var(--color-text-muted)' }} />
+              <FaBuilding color="var(--color-text-muted)" />
             </div>
             <Text as="span" weight="medium" color="secondary" style={{ wordBreak: 'break-word' }}> {getAssignedHostelNames()}</Text>
           </HStack>
