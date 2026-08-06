@@ -211,12 +211,9 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
                       <Text as="span" color={accent} className={`flex-1 min-w-0 truncate text-sm ${isActiveGroup ? "font-semibold" : "font-medium"}`}>
                         {category.name}
                       </Text>
-                      <span
-                        className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0"
-                        style={{ backgroundColor: tint(14), color: accent }}
-                      >
+                      <Text as="span" color={accent} style={{ backgroundColor: tint(14) }} className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold tabular-nums shrink-0">
                         {category.items.length}
-                      </span>
+                      </Text>
                     </button>
 
                     {isExpanded && (

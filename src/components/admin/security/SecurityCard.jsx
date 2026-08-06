@@ -52,7 +52,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
               <FaEnvelope style={{ fontSize: 'var(--font-size-xs)' }} color="var(--color-primary)" />
             </IconCircle>
-            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{security.email}</span>
+            <Text as="span" size="sm" color="body" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{security.email}</Text>
           </HStack>
 
           <HStack gap="none" align="center">

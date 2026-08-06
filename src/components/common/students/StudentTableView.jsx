@@ -32,9 +32,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
             <Text as="div" weight="medium" color="primary" size="sm">
               {student.name}
             </Text>
-            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "150px", }} >
+            <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "150px" }}>
               {student.email}
-            </div>
+            </Text>
           </div>
         </HStack>
       ),

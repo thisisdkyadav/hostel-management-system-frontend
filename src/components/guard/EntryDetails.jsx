@@ -16,9 +16,9 @@ const EntryDetails = ({ entry, onClose }) => {
 
         <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: 'var(--spacing-4)' }}>
           <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
-            <div style={{ backgroundColor: 'var(--button-primary-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', color: 'var(--color-white)', marginRight: 'var(--spacing-4)' }}>
+            <Text as="div" color="var(--color-white)" style={{ backgroundColor: 'var(--button-primary-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-4)' }}>
               <FaUserCircle size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-2xl'))} />
-            </div>
+            </Text>
             <div>
               <Heading as="h3" size="lg" weight="semibold" color="primary">{entry.name}</Heading>
               <Text color="muted" size="sm">{entry.id}</Text>

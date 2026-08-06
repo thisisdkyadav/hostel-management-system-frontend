@@ -83,13 +83,13 @@ const OptionCard = ({ active, disabled, icon, title, description, meta, onClick 
         {title}
         {active && <CheckCircle2 size={16} color="var(--color-primary)" />}
       </span>
-      <span style={{ display: "block", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.45 }}>
+      <Text as="span" size="sm" color="muted" leading={1.45} style={{ display: "block", marginTop: "var(--spacing-1)" }}>
         {description}
-      </span>
+      </Text>
       {meta && (
-        <span style={{ display: "block", marginTop: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-tertiary)" }}>
+        <Text as="span" size="xs" color="tertiary" style={{ display: "block", marginTop: "var(--spacing-2)" }}>
           {meta}
-        </span>
+        </Text>
       )}
     </span>
   </button>
@@ -232,9 +232,9 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
         )}
 
         {error && (
-          <div style={{ padding: "var(--spacing-3)", borderRadius: "var(--radius-md)", background: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)" }}>
+          <Text as="div" color="danger-text" size="sm" style={{ padding: "var(--spacing-3)", borderRadius: "var(--radius-md)", background: "var(--color-danger-bg)" }}>
             {error}
-          </div>
+          </Text>
         )}
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)" }}>

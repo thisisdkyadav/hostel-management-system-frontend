@@ -16,7 +16,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
                 <Text as="span" size="xs" color="muted">{complaint.id?.substring(0, 8)}</Text>
                 <Heading as="h3" weight="bold" size="xl" color="secondary" style={{ marginTop: 'var(--spacing-1)' }} className="line-clamp-1">{complaint.title}</Heading>
               </VStack>
-              <span className={`${getStatusColor(complaint.status)}`} style={{ padding: 'var(--badge-padding-sm)', fontSize: 'var(--badge-font-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
+              <Text as="span" size="var(--badge-font-sm)" weight="medium" style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)' }} className={`${getStatusColor(complaint.status)}`}>{complaint.status}</Text>
             </HStack>
           </Card.Header>
 

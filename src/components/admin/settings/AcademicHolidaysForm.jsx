@@ -185,16 +185,9 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
       </Grid>
 
       {sortedYears.length === 0 ? (
-        <div
-          style={{
-            border: "var(--border-1) solid var(--color-border-primary)",
-            borderRadius: "var(--radius-card-sm)",
-            padding: "var(--spacing-4)",
-            color: "var(--color-text-muted)",
-          }}
-        >
+        <Text as="div" color="muted" style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-card-sm)", padding: "var(--spacing-4)" }}>
           No year configured yet. Add a year first, then add holidays for that year.
-        </div>
+        </Text>
       ) : (
         <>
           <HStack gap={2} wrap>

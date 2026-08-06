@@ -67,12 +67,9 @@ const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) =
         backgroundColor: palette.bg,
       }}
     >
-      <div
-        className="flex items-center justify-center"
-        style={{ width: 56, height: 56, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-bg-primary)", color: palette.color, flexShrink: 0 }}
-      >
+      <Text as="div" color={palette.color} style={{ width: 56, height: 56, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-bg-primary)", flexShrink: 0 }} className="flex items-center justify-center">
         {Icon && <Icon size={26} />}
-      </div>
+      </Text>
       <div style={{ flex: 1, minWidth: 0 }}>
         <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>
           {title}

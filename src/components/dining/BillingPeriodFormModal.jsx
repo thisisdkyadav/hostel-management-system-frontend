@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input, StatusBadge } from "czero/react"
-import { Field, Modal } from "@/components/ui"
+import { Field, Modal, Text } from "@/components/ui"
 import { CalendarClock } from "lucide-react"
 import { Alert, Label, Textarea, VStack } from "@/components/ui"
 import { formatCurrency, formatDateRange, getErrorMessage, getIdValue } from "./diningBillingHelpers"
@@ -106,12 +106,12 @@ const BillingPeriodFormModal = ({
                       <input type="checkbox" checked={selected} onChange={() => togglePeriod(period.id)} />
                       <CalendarClock size={16} style={{ color: "var(--color-text-muted)", flexShrink: 0 }} />
                       <span style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                        <Text as="span" size="sm" weight="medium" color="secondary" style={{ display: "block" }}>
                           {formatDateRange(period.startDate, period.endDate)}
-                        </span>
-                        <span style={{ display: "block", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        </Text>
+                        <Text as="span" size="xs" color="muted" style={{ display: "block" }}>
                           {period.dailyRate > 0 ? `${formatCurrency(period.dailyRate)}/day` : "No daily rate set"}
-                        </span>
+                        </Text>
                       </span>
                       {period.status && <StatusBadge status={period.status} tone={periodStatusTone(period.status)} />}
                     </label>

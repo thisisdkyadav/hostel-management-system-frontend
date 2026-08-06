@@ -388,7 +388,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <InfoRow label="Degree:" value={studentDetails.degree || "N/A"} />
                   <InfoRow label="Batch:" value={studentDetails.batch || "N/A"} />
                   <HStack gap={4} justify="between">
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Groups:</span>
+                    <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Groups:</Text>
                     <Text as="span" weight="medium" size="sm" color="body" align="right">
                       {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
                     </Text>
@@ -426,7 +426,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
                   </VStack>
                   <HStack gap={4} justify="between">
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Secondary Email:</span>
+                    <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Secondary Email:</Text>
                     <Text as="span" weight="medium" size="sm" color="body" align="right" style={{ wordBreak: "break-word" }}>
                       {studentDetails.secondaryEmail || "N/A"}
                     </Text>
@@ -736,9 +736,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       </div>
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
-                        <a href={getMediaUrl(idCardData.front)} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
+                        <Text as="a" color="brand" href={getMediaUrl(idCardData.front)} target="_blank" rel="noopener noreferrer">
                           <FaExpand size={14} />
-                        </a>
+                        </Text>
                       </div>
                     </div>
                   ) : (
@@ -759,9 +759,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       </div>
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
-                        <a href={getMediaUrl(idCardData.back)} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
+                        <Text as="a" color="brand" href={getMediaUrl(idCardData.back)} target="_blank" rel="noopener noreferrer">
                           <FaExpand size={14} />
-                        </a>
+                        </Text>
                       </div>
                     </div>
                   ) : (
@@ -911,25 +911,16 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       <HStack gap={4} justify="end">
         {!isImport && (
           <>
-            <a
-              href={`mailto:${studentDetails.guardianEmail}`}
-              style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }}
-            >
+            <Text as="a" color="var(--color-white)" style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }} href={`mailto:${studentDetails.guardianEmail}`}>
               Email Guardian
-            </a>
-            <a
-              href={`mailto:${studentDetails.email}`}
-              style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }}
-            >
+            </Text>
+            <Text as="a" color="var(--color-white)" style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }} href={`mailto:${studentDetails.email}`}>
               Email Student
-            </a>
+            </Text>
             {studentDetails.secondaryEmail ? (
-              <a
-                href={`mailto:${studentDetails.secondaryEmail}`}
-                style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }}
-              >
+              <Text as="a" color="var(--color-white)" style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }} href={`mailto:${studentDetails.secondaryEmail}`}>
                 Email Secondary Address
-              </a>
+              </Text>
             ) : null}
             {canEditStudentProfile && (
               <Button onClick={() => setShowEditModal(true)} variant="primary" size="md">

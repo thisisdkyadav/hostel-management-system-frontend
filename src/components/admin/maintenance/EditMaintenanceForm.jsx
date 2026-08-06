@@ -110,9 +110,9 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
                   <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)" }} color="var(--color-primary)" />
                 </IconCircle>
               )}
-              <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>
+              <Text as="div" color="var(--color-white)" style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }} onClick={() => setIsImageModalOpen(true)}>
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
-              </div>
+              </Text>
             </IconCircle>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </VStack>

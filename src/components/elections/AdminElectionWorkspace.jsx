@@ -137,17 +137,9 @@ const AdminElectionWorkspace = ({
                 )}
               </IconCircle>
               <Grid cols={1} gap="2px" style={{ minWidth: 0 }}>
-                <span
-                  style={{
-                    fontWeight: "var(--font-weight-semibold)",
-                    color: "var(--color-text-heading)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <Text as="span" weight="semibold" color="heading" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {candidateLabel}
-                </span>
+                </Text>
                 <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
               </Grid>
             </div>

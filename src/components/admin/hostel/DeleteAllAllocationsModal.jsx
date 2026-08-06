@@ -9,9 +9,9 @@ const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }
     <Modal isOpen={true} onClose={onClose} title="Delete All Allocations" width={450}>
       <VStack gap="large" style={{ padding: 'var(--spacing-4) 0' }}>
         <HStack gap="none" justify="center">
-          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
+          <Text as="div" color="danger-text" style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', borderRadius: 'var(--radius-full)' }}>
             <TriangleAlert size={32} />
-          </div>
+          </Text>
         </HStack>
 
         <VStack gap="medium" style={{ textAlign: 'center' }}>

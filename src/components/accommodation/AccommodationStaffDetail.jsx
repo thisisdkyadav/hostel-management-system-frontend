@@ -187,7 +187,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             <SectionCard icon={Receipt} title="Charges" accentColor="var(--color-success)">
               <ChargesRows quote={request.quote} />
               {request.payment?.screenshotFileRef && (
-                <div style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)", fontSize: "var(--font-size-sm)" }}>
+                <Text as="div" size="sm" style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)" }}>
                   <Text as="div" color="muted" size="xs" style={{ textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</Text>
                   <InfoRow label="Amount" value={money(request.payment.amount)} />
                   <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
@@ -197,7 +197,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                       <Eye size={14} /> View payment proof
                     </Button>
                   </div>
-                </div>
+                </Text>
               )}
             </SectionCard>
 

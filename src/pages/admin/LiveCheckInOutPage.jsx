@@ -423,18 +423,9 @@ const LiveCheckInOutPage = () => {
                             <TrajectoryBadge isSameHostel={entry.isSameHostel} />
                           </Table.Cell>
                           <Table.Cell>
-                            <p
-                              style={{
-                                maxWidth: "200px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                color: "var(--color-text-muted)",
-                              }}
-                              title={entry.reason || "No reason"}
-                            >
+                            <Text color="muted" style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={entry.reason || "No reason"}>
                               {entry.reason || "-"}
-                            </p>
+                            </Text>
                           </Table.Cell>
                         </Table.Row>
                       )
@@ -535,19 +526,9 @@ const LiveCheckInOutPage = () => {
                 <Card key={hostel.hostelId || hostel.hostelName} padding="p-4">
                   <HStack justify="between" align="start">
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p
-                        style={{
-                          fontSize: "var(--font-size-sm)",
-                          fontWeight: "var(--font-weight-semibold)",
-                          color: "var(--color-text-primary)",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                        title={hostel.hostelName}
-                      >
+                      <Text size="sm" weight="semibold" color="primary" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hostel.hostelName}>
                         {hostel.hostelName}
-                      </p>
+                      </Text>
                       <Text size="xs" color="muted">{hostel.hostelType}</Text>
                     </div>
                     <Badge variant="info" size="small">

@@ -135,12 +135,12 @@ const SnapColumn = ({ title, icon, accent, count, to, isFirst = false, children 
   <div className={`flex-1 min-w-0 flex flex-col p-[var(--spacing-3)] ${isFirst ? "" : "border-t xl:border-t-0 xl:border-l border-[var(--color-border-primary)]"}`}>
     <HStack align="center" justify="between" gap={2} className="mb-[var(--spacing-2-5)]">
       <HStack align="center" gap={2} className="min-w-0">
-        <span className="w-7 h-7 shrink-0 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: "var(--color-bg-secondary)", color: accent }}>
+        <Text as="span" color={accent} style={{ backgroundColor: "var(--color-bg-secondary)" }} className="w-7 h-7 shrink-0 rounded-[var(--radius-lg)] flex items-center justify-center">
           <Icon className="text-xs" />
-        </span>
+        </Text>
         <h3 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] truncate">{title}</h3>
         {count != null && (
-          <span className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums" style={{ backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}>{count}</span>
+          <Text as="span" color="muted" style={{ backgroundColor: "var(--color-bg-muted)" }} className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums">{count}</Text>
         )}
       </HStack>
       {to && (

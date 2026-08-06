@@ -87,17 +87,9 @@ const ClubPage = () => {
 
           <CardBody style={{ display: "grid", gap: "var(--spacing-4)" }}>
             {error ? (
-              <div
-                style={{
-                  borderRadius: "var(--radius-lg)",
-                  border: "var(--border-1) solid var(--color-danger)",
-                  backgroundColor: "var(--color-danger-bg)",
-                  color: "var(--color-danger-text)",
-                  padding: "var(--spacing-4)",
-                }}
-              >
+              <Text as="div" color="danger-text" style={{ borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-danger)", backgroundColor: "var(--color-danger-bg)", padding: "var(--spacing-4)" }}>
                 {error}
-              </div>
+              </Text>
             ) : null}
 
             <Grid cols={{ base: 1, md: 2 }} gap={4}>

@@ -224,17 +224,9 @@ const FaceScannerEntriesPage = () => {
                 <Card style={{ padding: "var(--spacing-6)" }}>
                     <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>
                         <HStack gap="none" align="center">
-                            <div
-                                style={{
-                                    padding: "var(--spacing-2-5)",
-                                    marginRight: "var(--spacing-3)",
-                                    borderRadius: "var(--radius-xl)",
-                                    backgroundColor: "var(--color-info-bg)",
-                                    color: "var(--color-primary)",
-                                }}
-                            >
+                            <Text as="div" color="brand" style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)" }}>
                                 <Scan size={20} />
-                            </div>
+                            </Text>
                             <Heading as="h2" size="2xl" weight="bold" color="secondary">
                                 Recent Face Scanner Entries
                             </Heading>

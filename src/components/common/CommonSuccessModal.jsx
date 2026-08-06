@@ -24,7 +24,7 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
           </div>
         )}
 
-        <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-8)', maxWidth: '28rem', margin: '0 auto var(--spacing-8)' }}>{message}</p>
+        <Text color="muted" style={{ marginBottom: 'var(--spacing-8)', maxWidth: '28rem', margin: '0 auto var(--spacing-8)' }}>{message}</Text>
 
         <HStack gap="none" justify="center">
           <Button onClick={onClose} variant="primary" size="md">

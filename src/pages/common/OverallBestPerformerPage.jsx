@@ -1406,9 +1406,9 @@ const MinimalScoredItemsEditor = ({
     <>
       <VStack gap={3}>
         {!rows.length ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", fontStyle: "italic", padding: "var(--spacing-2) 0" }}>
+          <Text as="div" color="muted" size="sm" style={{ fontStyle: "italic", padding: "var(--spacing-2) 0" }}>
             No entries added yet.
-          </div>
+          </Text>
         ) : null}
  
         {rows.map((item, index) => (
@@ -2232,9 +2232,9 @@ const ReviewItemDetailModal = ({
         <Text as="div" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
           {detail.sectionTitle}
         </Text>
-        <div style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+        <Text as="div" size="md" weight="bold" color="heading" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
           {item.title || "Untitled Item"}
-        </div>
+        </Text>
       </div>
     </HStack>
   )
@@ -2275,9 +2275,9 @@ const ReviewItemDetailModal = ({
                 <MessageSquare size={12} style={{ color: accentColor }} />
                 Student Notes
               </HStack>
-              <div style={{ color: item.notes ? "var(--color-text-body)" : "var(--color-text-muted)", fontSize: "var(--font-size-sm)", lineHeight: 1.6, fontStyle: item.notes ? "normal" : "italic" }}>
+              <Text as="div" color={item.notes ? "var(--color-text-body)" : "var(--color-text-muted)"} size="sm" leading={1.6} style={{ fontStyle: item.notes ? "normal" : "italic" }}>
                 {item.notes || "No notes added by the student."}
-              </div>
+              </Text>
             </div>
           </VStack>
 
@@ -2300,7 +2300,7 @@ const ReviewItemDetailModal = ({
                 <Text as="div" size="xs" weight="bold" color="brand" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   {hasPointChange ? "Score Preview" : "Awarded Score"}
                 </Text>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "4px", minHeight: 16 }}>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: "4px", minHeight: 16 }}>
                   {hasPointChange
                     ? selectedExcludedFromScoring
                       ? "Preview before excluding this entry from scoring"
@@ -2308,15 +2308,15 @@ const ReviewItemDetailModal = ({
                         ? "Preview before restoring this entry to scoring"
                         : "Preview before saving this classification change"
                     : "Calculated based on verified level/type points"}
-                </div>
+                </Text>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "4px", minHeight: 58 }}>
                 <HStack align="baseline" gap="6px" size="xl" weight="bold" color="brand" style={{ minHeight: 26 }}>
                   {hasPointChange ? (
                     <>
-                      <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
+                      <Text as="span" color="muted" style={{ textDecoration: "line-through" }}>
                         +{currentPoints}
-                      </span>
+                      </Text>
                       <Text as="span" color={nextPointColor}>+{nextPoints}</Text>
                     </>
                   ) : (
@@ -2467,9 +2467,9 @@ const ReviewItemDetailModal = ({
                             <ProofIcon size={16} />
                           </span>
                           <div style={{ minWidth: 0 }}>
-                            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                            <Text as="div" size="sm" weight="medium" color="primary" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
                               {proof?.label || `Proof ${index + 1}`}
-                            </div>
+                            </Text>
                             <Text as="div" size="xs" color="muted">
                               {isPor ? "Verified Gymkhana POR" : "Uploaded PDF Document"}
                             </Text>
@@ -2716,7 +2716,7 @@ const EditProjectThesisGradesModal = ({
             <Text as="span" weight="bold" color={previewPoints === 0 ? "var(--color-danger)" : "var(--color-primary)"}>
               {hasChanges ? (
                 <>
-                  <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through", marginRight: 6 }}>+{currentPoints}</span>
+                  <Text as="span" color="muted" style={{ textDecoration: "line-through", marginRight: 6 }}>+{currentPoints}</Text>
                   +{previewPoints}
                 </>
               ) : (
@@ -3113,9 +3113,9 @@ const ReviewModal = ({
                         {application.projectThesis?.btpAwardTitle || "—"}
                       </Text>
                       {application.projectThesis?.btpAwardNotes ? (
-                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
+                        <Text as="div" color="muted" size="xs" style={{ marginTop: "6px", fontStyle: "italic" }}>
                           Notes: {application.projectThesis.btpAwardNotes}
-                        </div>
+                        </Text>
                       ) : null}
                       <div style={{ marginTop: "var(--spacing-3)" }}>
                         <ProofActionButton
@@ -3139,9 +3139,9 @@ const ReviewModal = ({
                         {application.projectThesis?.projectGradeTitle || "—"}
                       </Text>
                       {application.projectThesis?.projectGradeNotes ? (
-                        <div style={{ marginTop: "6px", color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)", fontStyle: "italic" }}>
+                        <Text as="div" color="muted" size="xs" style={{ marginTop: "6px", fontStyle: "italic" }}>
                           Notes: {application.projectThesis.projectGradeNotes}
-                        </div>
+                        </Text>
                       ) : null}
                       <div style={{ marginTop: "var(--spacing-3)" }}>
                         <ProofActionButton
@@ -4025,39 +4025,15 @@ const OverallBestPerformerPage = () => {
         key: "studentName",
         render: (application) => (
           <Grid cols={1} gap="4px" style={{ minWidth: 0 }}>
-            <div
-              style={{
-                color: "var(--color-text-primary)",
-                fontWeight: "var(--font-weight-medium)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
+            <Text as="div" color="primary" weight="medium" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {application.studentName || "—"}
-            </div>
-            <div
-              style={{
-                fontSize: "var(--font-size-sm)",
-                color: "var(--color-text-muted)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
+            </Text>
+            <Text as="div" size="sm" color="muted" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {application.rollNumber || "—"}
-            </div>
-            <div
-              style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-light)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
+            </Text>
+            <Text as="div" size="xs" color="light" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {application.department || "—"}{application.degree ? ` · ${application.degree}` : ""}
-            </div>
+            </Text>
           </Grid>
         ),
       },
@@ -4235,9 +4211,9 @@ const OverallBestPerformerPage = () => {
                   {
                     title: "Application Starts",
                     value: (
-                      <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                      <Text as="span" size="sm" leading={1.4} style={{ display: "inline-block" }}>
                         {currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
-                      </span>
+                      </Text>
                     ),
                     subtitle: "Opening time",
                     icon: <Clock3 size={18} />,
@@ -4246,9 +4222,9 @@ const OverallBestPerformerPage = () => {
                   {
                     title: "Application Ends",
                     value: (
-                      <span style={{ fontSize: "var(--font-size-sm)", lineHeight: 1.4, display: "inline-block" }}>
+                      <Text as="span" size="sm" leading={1.4} style={{ display: "inline-block" }}>
                         {currentOccurrence.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
-                      </span>
+                      </Text>
                     ),
                     subtitle: "Closing time",
                     icon: <Clock3 size={18} />,
@@ -4264,17 +4240,9 @@ const OverallBestPerformerPage = () => {
                   {
                     title: "Window",
                     value: (
-                      <span
-                        style={{
-                          fontSize: "var(--font-size-sm)",
-                          lineHeight: 1.35,
-                          display: "inline-block",
-                          maxWidth: "100%",
-                          wordBreak: "break-word",
-                        }}
-                      >
+                      <Text as="span" size="sm" leading={1.35} style={{ display: "inline-block", maxWidth: "100%", wordBreak: "break-word" }}>
                         {getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)}
-                      </span>
+                      </Text>
                     ),
                     subtitle: "Current status",
                     icon: <Trophy size={18} />,
@@ -4442,9 +4410,9 @@ const OverallBestPerformerPage = () => {
                       <XCircle size={14} />
                       Needs Attention / Revise Application
                     </HStack>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.6, paddingLeft: "20px" }}>
+                    <Text as="div" size="sm" color="body" leading={1.6} style={{ paddingLeft: "20px" }}>
                       {currentApplication.review.remarks}
-                    </div>
+                    </Text>
                   </div>
                 ) : null}
               </div>
@@ -5075,12 +5043,12 @@ const OverallBestPerformerPage = () => {
                           {student.rollNumber}
                         </Text>
                       </div>
-                      <div style={{ minWidth: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                      <Text as="div" size="xs" color="muted" leading={1.5} style={{ minWidth: 0 }}>
                         <div>{student.email || "Name/email not loaded yet"}</div>
                         <div>
                           {[student.department, student.degree].filter(Boolean).join(" · ") || "Profile details unavailable"}
                         </div>
-                      </div>
+                      </Text>
                       <Button
                         variant="secondary"
                         onClick={() => handleRemoveEligibleStudent(student.rollNumber)}

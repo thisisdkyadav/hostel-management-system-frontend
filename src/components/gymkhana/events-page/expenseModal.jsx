@@ -118,9 +118,9 @@ export const GymkhanaExpenseModal = ({
     }
   >
     {expenseLoading ? (
-      <div style={{ padding: "var(--spacing-6)", color: "var(--color-text-muted)" }}>
+      <Text as="div" color="muted" style={{ padding: "var(--spacing-6)" }}>
         Loading bills...
-      </div>
+      </Text>
     ) : (
       <div
         className="grid grid-cols-1 xl:grid-cols-3"

@@ -101,13 +101,13 @@ const ScanEventRow = ({ event, showHeaders }) => {
       </HStack>
 
       <div>
-        <span style={{ display: "block", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>Body</span>
+        <Text as="span" size="xs" color="muted" style={{ display: "block", marginBottom: "var(--spacing-1)" }}>Body</Text>
         <pre style={codeBlock}>{JSON.stringify(event.body ?? null, null, 2)}</pre>
       </div>
 
       {showHeaders && (
         <div>
-          <span style={{ display: "block", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)" }}>Headers</span>
+          <Text as="span" size="xs" color="muted" style={{ display: "block", marginBottom: "var(--spacing-1)" }}>Headers</Text>
           <pre style={codeBlock}>{JSON.stringify(event.headers ?? {}, null, 2)}</pre>
         </div>
       )}

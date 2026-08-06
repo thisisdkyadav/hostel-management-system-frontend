@@ -334,19 +334,9 @@ function MonthCalendarView({
                 ))}
 
                 {extra > 0 && (
-                  <span
-                    style={{
-                      alignSelf: "flex-start",
-                      fontSize: 10,
-                      color: "var(--color-text-muted)",
-                      fontWeight: "var(--font-weight-semibold)",
-                      padding: "1px 6px",
-                      borderRadius: "var(--radius-full)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                    }}
-                  >
+                  <Text as="span" size={10} color="muted" weight="semibold" style={{ alignSelf: "flex-start", padding: "1px 6px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-secondary)" }}>
                     +{extra} more
-                  </span>
+                  </Text>
                 )}
               </div>
             )

@@ -96,7 +96,7 @@ const AvailableInventory = () => {
         </div>
       </Surface>
 
-      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
+      {error && <Text as="div" color="danger-text" style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</Text>}
 
       {/* Inventory List */}
       <Surface bg="primary" radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-light)">

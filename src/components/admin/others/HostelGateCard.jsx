@@ -57,15 +57,15 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
             <Text as="span" color="muted" style={{ wordBreak: 'break-all' }}>{gate.userId?.email}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
+            <Text as="div" color="muted" style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
               <Text as="span" size="xs" weight="medium">Created</Text>
-            </div>
+            </Text>
             <Text as="span" color="muted">{formatDate(gate.createdAt)}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <div style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
+            <Text as="div" color="muted" style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }}>
               <Text as="span" size="xs" weight="medium">Updated</Text>
-            </div>
+            </Text>
             <Text as="span" color="muted">{formatDate(gate.updatedAt)}</Text>
           </HStack>
         </CardBody>

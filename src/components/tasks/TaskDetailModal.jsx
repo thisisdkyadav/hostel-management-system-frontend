@@ -223,16 +223,16 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
                 ))}
               </VStack>
             ) : (
-              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)' }}>No users assigned</div>
+              <Text as="div" color="muted" style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>No users assigned</Text>
             )}
           </div>
 
           {/* Task Metadata */}
-          <div style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: 'var(--spacing-4)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+          <Text as="div" size="xs" color="muted" style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: 'var(--spacing-4)' }}>
             <p>Created by: {selectedTask.createdBy?.name || "Admin"}</p>
             <p>Created at: {formatDate(selectedTask.createdAt)}</p>
             <p>Last updated: {formatDate(selectedTask.updatedAt)}</p>
-          </div>
+          </Text>
 
           {/* Error Message */}
           {error && <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">{error}</Surface>}

@@ -490,12 +490,12 @@ const PeriodFormModal = ({
                     >
                       <input type="checkbox" checked={selected} onChange={() => handleCatererToggle(caterer.id)} style={{ marginTop: 3 }} />
                       <span style={{ flex: 1 }}>
-                        <span style={{ display: "block", color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-semibold)" }}>
+                        <Text as="span" color="secondary" weight="semibold" style={{ display: "block" }}>
                           {caterer.name}
-                        </span>
-                        <span style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                        </Text>
+                        <Text as="span" color="muted" size="sm" style={{ display: "block" }}>
                           {caterer.email}
-                        </span>
+                        </Text>
                         {selected && (
                           <span style={{ display: "block", marginTop: "var(--spacing-2)" }}>
                             <Label htmlFor={`capacity-${caterer.id}`} required>Max Students</Label>

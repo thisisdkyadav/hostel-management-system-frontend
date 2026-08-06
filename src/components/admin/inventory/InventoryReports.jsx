@@ -121,7 +121,7 @@ const InventoryReports = () => {
         </nav>
       </div>
 
-      {error && <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)" }}>{error}</div>}
+      {error && <Text as="div" color="danger-text" style={{ backgroundColor: "var(--color-danger-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)" }}>{error}</Text>}
 
       {/* Loading Indicator */}
       {loading && (

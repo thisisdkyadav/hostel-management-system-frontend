@@ -14,9 +14,9 @@ const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
         <InfoRow label="Hostel:" value={hostelName} />
         {allocatedRooms && allocatedRooms.length > 0 ? (
           <div>
-            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", display: "block", marginBottom: "var(--spacing-1)", }} >
+            <Text as="span" color="muted" size="sm" style={{ display: "block", marginBottom: "var(--spacing-1)" }}>
               Allocated Rooms:
-            </span>
+            </Text>
             <VStack gap={1}>
               {allocatedRooms.map((room, index) => (
                 <Text as="div" size="sm" weight="medium" key={index}>

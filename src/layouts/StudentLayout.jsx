@@ -163,9 +163,9 @@ const StudentLayout = () => {
   // If still loading, don't render anything yet to avoid flashing
   if (loading || studentStatusLoading) {
     return (
-      <div className="flex items-center justify-center" style={{ height: '100vh', backgroundColor: 'var(--color-bg-page)', color: 'var(--color-text-primary)' }} >
+      <Text as="div" color="primary" style={{ height: '100vh', backgroundColor: 'var(--color-bg-page)' }} className="flex items-center justify-center">
         Loading...
-      </div>
+      </Text>
     )
   }
 

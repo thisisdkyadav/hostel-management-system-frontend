@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
 import { Button } from "czero/react"
-import { Grid, Surface } from "@/components/ui"
+import { Grid, Surface, Text } from "@/components/ui"
 
 const QRCodeGenerator = () => {
   const { user } = useAuth()
@@ -86,9 +86,9 @@ const QRCodeGenerator = () => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <div className="flex items-center mb-4">
-        <div className="p-2.5 mr-3 rounded-xl" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
+        <Text as="div" color="brand" style={{ backgroundColor: 'var(--color-info-bg)' }} className="p-2.5 mr-3 rounded-xl">
           <FaQrcode size={20} />
-        </div>
+        </Text>
         <h2 className="text-xl font-bold text-gray-800">Campus Access QR Code</h2>
       </div>
 

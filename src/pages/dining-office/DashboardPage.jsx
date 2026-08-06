@@ -109,9 +109,9 @@ const DashboardPage = () => {
             <div className="flex flex-col lg:flex-row lg:items-center gap-[var(--spacing-5)]">
               <div style={{ flex: 1, minWidth: 0 }}>
                 <HStack gap={3} align="center">
-                  <div className="flex items-center justify-center" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", flexShrink: 0 }}>
+                  <Text as="div" color="brand" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", flexShrink: 0 }} className="flex items-center justify-center">
                     <UtensilsCrossed size={24} />
-                  </div>
+                  </Text>
                   <div style={{ minWidth: 0 }}>
                     <HStack gap={2} align="center" wrap>
                       <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>

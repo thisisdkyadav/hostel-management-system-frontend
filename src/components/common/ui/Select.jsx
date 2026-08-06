@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react"
 import { FaChevronDown, FaCheck } from "react-icons/fa"
-import { Surface } from "@/components/ui"
+import { Surface, Text } from "@/components/ui"
 
 /**
  * Select Component - Custom styled dropdown select
@@ -272,14 +272,9 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
         {/* Placeholder option if exists */}
         {placeholder && !required && (
           <div style={getOptionStyles({ value: "", label: placeholder }, -1)} onClick={() => handleSelect({ value: "", label: placeholder })} onMouseEnter={() => setHighlightedIndex(-1)} role="option" aria-selected={value === ""}>
-            <span
-              style={{
-                color: "var(--color-text-placeholder)",
-                fontStyle: "italic",
-              }}
-            >
+            <Text as="span" color="placeholder" style={{ fontStyle: "italic" }}>
               {placeholder}
-            </span>
+            </Text>
           </div>
         )}
 

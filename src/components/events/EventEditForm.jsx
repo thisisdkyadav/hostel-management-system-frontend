@@ -57,9 +57,9 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <form onSubmit={handleSubmit}>
         <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
-          <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>
+          <Text as="div" color="info-text" style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-info-bg)' }}>
             <FaCalendarAlt size={20} />
-          </div>
+          </Text>
           <div style={{ width: '100%' }}>
             <Input type="text" name="eventName" value={formData.eventName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', borderBottom: 'var(--border-1) solid var(--color-border-input)', borderRadius: 0, paddingBottom: 'var(--spacing-1)' }} required />
             <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>

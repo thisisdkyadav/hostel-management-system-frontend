@@ -150,13 +150,9 @@ const ApprovalHistory = ({
                             </Text>
 
                             {safeComments && (
-                                <p style={{
-                                    fontSize: "var(--font-size-xs)",
-                                    color: "var(--color-text-muted)",
-                                    fontStyle: "italic",
-                                }}>
+                                <Text size="xs" color="muted" style={{ fontStyle: "italic" }}>
                                     "{safeComments}"
-                                </p>
+                                </Text>
                             )}
 
                             <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>

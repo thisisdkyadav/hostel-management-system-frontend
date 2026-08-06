@@ -129,7 +129,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
               <SectionCard icon={CreditCard} title={`Pay ${money(request.payment?.amount)}`} accentColor="var(--color-primary)">
                 <VStack gap={3}>
                   {request.payment?.paymentLink && (
-                    <a href={request.payment.paymentLink} target="_blank" rel="noreferrer" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)", wordBreak: "break-all" }}>Open payment link / QR ↗</a>
+                    <Text as="a" size="sm" color="brand" style={{ wordBreak: "break-all" }} href={request.payment.paymentLink} target="_blank" rel="noreferrer">Open payment link / QR ↗</Text>
                   )}
                   {request.payment?.remarks && (
                     <Surface bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="muted" size="xs">

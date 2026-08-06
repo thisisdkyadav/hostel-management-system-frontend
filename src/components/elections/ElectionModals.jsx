@@ -335,9 +335,9 @@ export const LiveVotingFullscreenModal = ({
                               gap: "6px",
                             }}
                           >
-                            <span style={{ fontSize: "12px", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            <Text as="span" size="12px" weight="medium" color="primary" style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                               {candidate.isNota ? "NOTA" : candidate.candidateName || candidate.candidateRollNumber}
-                            </span>
+                            </Text>
                             <HStack gap="2px" align="center">
                               <Text as="span" size="12px" weight="bold" color="heading">
                                 {candidate.voteCount || 0}
@@ -1278,30 +1278,14 @@ export const AdminNominationReviewModal = ({
         </IconCircle>
       )}
       <Grid cols={1} gap="2px" style={{ minWidth: 0, flex: 1 }}>
-        <div
-          style={{
-            fontWeight: "var(--font-weight-semibold)",
-            color: "var(--color-text-heading)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <Text as="div" weight="semibold" color="heading" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {name || "Unknown student"}
-        </div>
+        </Text>
         {subtitle ? <div style={mutedTextStyle}>{subtitle}</div> : null}
         {email ? (
-          <div
-            style={{
-              fontSize: "var(--font-size-xs)",
-              color: "var(--color-text-muted)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {email}
-          </div>
+          </Text>
         ) : null}
       </Grid>
       {loading ? <span style={mutedTextStyle}>Opening...</span> : null}
@@ -1370,17 +1354,9 @@ export const AdminNominationReviewModal = ({
                   flex: 1,
                 }}
               >
-                <div
-                  style={{
-                    fontWeight: "var(--font-weight-medium)",
-                    color: "var(--color-text-heading)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <Text as="div" weight="medium" color="heading" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {entry.name || entry.rollNumber}
-                </div>
+                </Text>
                 <div style={mutedTextStyle}>{entry.rollNumber}</div>
               </button>
             </div>
@@ -1546,19 +1522,11 @@ export const AdminNominationReviewModal = ({
                     <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
                       View
                     </Button>
-                    <a
-                      href={getMediaUrl(item.value)}
+                    <Text as="a" color="brand" weight="medium" style={{ textDecoration: "none", alignSelf: "center" }} href={getMediaUrl(item.value)}
                       target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        color: "var(--color-primary)",
-                        textDecoration: "none",
-                        fontWeight: "var(--font-weight-medium)",
-                        alignSelf: "center",
-                      }}
-                    >
+                      rel="noreferrer">
                       Open
-                    </a>
+                    </Text>
                   </HStack>
                 ) : (
                   <span style={mutedTextStyle}>Not submitted</span>
@@ -1789,14 +1757,11 @@ export const StudentNominationModal = ({
                           <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
                             View
                           </Button>
-                          <a
-                            href={getMediaUrl(item.value)}
+                          <Text as="a" color="brand" style={{ textDecoration: "none", alignSelf: "center" }} href={getMediaUrl(item.value)}
                             target="_blank"
-                            rel="noreferrer"
-                            style={{ color: "var(--color-primary)", textDecoration: "none", alignSelf: "center" }}
-                          >
+                            rel="noreferrer">
                             Open
-                          </a>
+                          </Text>
                         </HStack>
                       </Grid>
                     ) : (

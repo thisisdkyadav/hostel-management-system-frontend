@@ -1391,9 +1391,9 @@ const MegaEventsPage = () => {
   if (!canViewEventsCapability) {
     return (
       <div style={{ flex: 1, padding: "var(--spacing-6)" }}>
-        <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "var(--border-1) solid var(--color-danger)" }}>
+        <Text as="div" color="danger-text" style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-danger-bg)", border: "var(--border-1) solid var(--color-danger)" }}>
           You do not have permission to view mega events.
-        </div>
+        </Text>
       </div>
     )
   }

@@ -49,7 +49,7 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
 
   return (
     <>
-      <div className="p-4 rounded-lg border" style={{ backgroundColor: statusStyles.backgroundColor, color: statusStyles.color, borderColor: statusStyles.borderColor, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', borderWidth: 'var(--border-1)' }} >
+      <Text as="div" color={statusStyles.color} style={{ backgroundColor: statusStyles.backgroundColor, borderColor: statusStyles.borderColor, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', borderWidth: 'var(--border-1)' }} className="p-4 rounded-lg border">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <FaInfoCircle className="mr-2" />
@@ -69,7 +69,7 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
             <Text as="span" weight="medium">Approved on:</Text> {formatDate(approvedAt || new Date())}
           </Text>
         )} */}
-      </div>
+      </Text>
     </>
   )
 }

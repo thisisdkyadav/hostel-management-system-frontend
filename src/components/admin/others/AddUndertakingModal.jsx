@@ -86,9 +86,9 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
 
             <Field label="Deadline" required>
               <div style={{ position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)', zIndex: 1 }}>
+                <Text as="div" color="muted" style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', zIndex: 1 }}>
                   <FaCalendarAlt />
-                </div>
+                </Text>
                 <DatePicker selected={formData.deadline} onChange={handleDateChange} dateFormat="MM-dd-yyyy" style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)' }} placeholderText="mm-dd-yyyy" required popperPlacement="bottom" showMonthDropdown showYearDropdown dropdownMode="select" autoComplete="off" wrapperClassName="w-full" className="w-full p-3 pl-10 border rounded-lg" />
               </div>
             </Field>

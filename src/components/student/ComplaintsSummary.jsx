@@ -27,13 +27,13 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
             View All
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)', color: 'var(--color-text-muted)' }}>
+        <Text as="div" color="muted" style={{ paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)' }} className="flex flex-col items-center justify-center">
           <FaExclamationCircle style={{ fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-1)' }} color="var(--color-bg-muted)" />
           <Text size="xs">No active complaints</Text>
           <Link to="complaints" className="hover:underline" style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             Submit a new complaint
           </Link>
-        </div>
+        </Text>
       </Surface>
     )
   }
@@ -60,13 +60,13 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
                 </Text>
               </div>
               <div className="flex flex-col items-end">
-                <span className={getStatusColor(complaint.status)} style={{ padding: 'var(--spacing-0-5) var(--spacing-1-5)', fontSize: 'var(--font-size-2xs)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
+                <Text as="span" size="2xs" style={{ padding: 'var(--spacing-0-5) var(--spacing-1-5)', borderRadius: 'var(--radius-full)' }} className={getStatusColor(complaint.status)}>{complaint.status}</Text>
                 <Text as="span" size="2xs" color="muted" style={{ marginTop: 'var(--spacing-0-5)' }}>{getTimeSince(complaint.createdDate)}</Text>
               </div>
             </div>
 
             <div className="flex justify-between items-center" style={{ marginTop: 'var(--spacing-1)' }}>
-              <p className="line-clamp-1" style={{ fontSize: 'var(--badge-font-xs)', color: 'var(--color-text-tertiary)', maxWidth: '70%' }}>{complaint.description}</p>
+              <Text size="var(--badge-font-xs)" color="tertiary" style={{ maxWidth: '70%' }} className="line-clamp-1">{complaint.description}</Text>
               <Link to={`complaints`} className="transition-colors" style={{ padding: 'var(--spacing-1)', borderRadius: 'var(--radius-full)', color: 'var(--color-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                 <FaEye style={{ height: 'var(--icon-xs)', width: 'var(--icon-xs)' }} />
               </Link>

@@ -2145,9 +2145,9 @@ const DisciplinaryProcessPage = () => {
                     ) : (
                       <VStack gap={3}>
                         {selectedDisciplinedStudents.length === 0 ? (
-                          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", fontStyle: "italic" }}>
+                          <Text as="div" size="sm" color="muted" style={{ fontStyle: "italic" }}>
                             Select students first
-                          </div>
+                          </Text>
                         ) : (
                           selectedDisciplinedStudents.map((student) => {
                             const studentAction = finalStudentActionMap[student.userId] || createStudentActionDraft()

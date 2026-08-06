@@ -127,9 +127,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
             {devices.map((device) => (
               <div key={device.sessionId} style={{ border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', }} >
                 <HStack gap="none" align="center">
-                  <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-4)', }} >
+                  <Text as="div" color="brand" style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-4)' }}>
                     {getDeviceIcon(device.userAgent)}
-                  </div>
+                  </Text>
                   <div>
                     <Heading as="h4" weight="medium" color="secondary">
                       {device.deviceName || "Unknown Device"}

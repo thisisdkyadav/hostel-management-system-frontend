@@ -237,15 +237,9 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   {safeComments}
                 </Text>
               ) : (
-                <p
-                  style={{
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-muted)",
-                    fontStyle: "italic",
-                  }}
-                >
+                <Text size="sm" color="muted" style={{ fontStyle: "italic" }}>
                   No comments added for this step.
-                </p>
+                </Text>
               )}
             </div>
           </Grid>

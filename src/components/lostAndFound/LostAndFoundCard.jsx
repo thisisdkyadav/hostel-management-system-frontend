@@ -8,7 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Card, Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Card, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
@@ -96,7 +96,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
                 <MdInventory size={20} />
               </Surface>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{item.itemName}</h3>
+                <Heading as="h3" weight="bold" color="primary" size="base" style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{item.itemName}</Heading>
                 <Text as="span" size="xs" color="muted">ID: {item._id.substring(0, 8)}</Text>
               </div>
             </HStack>
@@ -124,7 +124,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
               <Text as="span" size="sm" color="secondary">{formatDate(item.dateFound)}</Text>
             </HStack>
             <Surface bg="var(--table-header-bg)" padding={3} radius="lg">
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.description}</p>
+              <Text size="sm" color="secondary" style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.description}</Text>
             </Surface>
           </VStack>
         </Card.Body>

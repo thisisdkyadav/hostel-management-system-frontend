@@ -161,7 +161,7 @@ const ItemTypes = () => {
         </Button>
       </div>
 
-      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
+      {error && <Text as="div" color="danger-text" style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</Text>}
 
       {/* Items List */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>

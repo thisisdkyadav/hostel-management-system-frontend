@@ -4,7 +4,7 @@ import { Button } from "czero/react"
 import { Archive, ArchiveRestore, ArrowRight, Pencil, Plus, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, Grid, HStack, Page, SearchInput, StatCards, Text } from "@/components/ui"
+import { Alert, ConfirmDialog, EmptyState, Grid, Heading, HStack, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import CapacityBar from "@/components/dining/CapacityBar"
 import BillingPeriodFormModal from "@/components/dining/BillingPeriodFormModal"
 import { billingDateRange, formatCurrency, getErrorMessage } from "@/components/dining/diningBillingHelpers"
@@ -46,9 +46,9 @@ const BillingPeriodCard = ({ billingPeriod, onOpen, onEdit, onArchive }) => {
     >
       <HStack gap={2} justify="between">
         <div style={{ minWidth: 0 }}>
-          <h3 style={{ margin: 0, fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {billingPeriod.name}
-          </h3>
+          </Heading>
           <Text size="xs" color="muted" style={{ margin: "var(--spacing-1) 0 0" }}>
             {billingDateRange(billingPeriod)} · {periodCount} period{periodCount === 1 ? "" : "s"}
           </Text>

@@ -160,15 +160,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
         <Text as="div" weight="medium" color="primary" style={{ marginBottom: "2px" }}>
           {person?.name}
         </Text>
-        <div style={{
-          fontSize: "var(--font-size-xs)",
-          color: "var(--color-text-muted)",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap"
-        }}>
+        <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {person?.email}
-        </div>
+        </Text>
         {person?.phone && (
           <Text as="div" size="xs" color="muted">
             {person.phone}
@@ -234,27 +228,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
           }}>
             {/* Left - Metadata */}
             <HStack gap={2} align="center" wrap>
-              <span style={{
-                fontSize: "var(--font-size-xs)",
-                color: "var(--color-text-muted)",
-                fontFamily: "monospace",
-                padding: "var(--spacing-0-5) var(--spacing-2)",
-                background: "var(--color-bg-muted)",
-                borderRadius: "var(--radius-sm)"
-              }}>
+              <Text as="span" size="xs" color="muted" style={{ fontFamily: "monospace", padding: "var(--spacing-0-5) var(--spacing-2)", background: "var(--color-bg-muted)", borderRadius: "var(--radius-sm)" }}>
                 {complaintData.id}
-              </span>
-              <span
-                className={getStatusColor(complaintData.status)}
-                style={{
-                  padding: "var(--spacing-0-5) var(--spacing-2)",
-                  fontSize: "var(--font-size-xs)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  borderRadius: "var(--radius-full)"
-                }}
-              >
+              </Text>
+              <Text as="span" size="xs" weight="semibold" style={{ padding: "var(--spacing-0-5) var(--spacing-2)", borderRadius: "var(--radius-full)" }} className={getStatusColor(complaintData.status)}>
                 {complaintData.status}
-              </span>
+              </Text>
               <Surface as="span" bg="brand" padding="var(--spacing-0-5) var(--spacing-2)" radius="full" color="brand" size="xs" weight="medium">
                 {complaintData.category}
               </Surface>
@@ -302,18 +281,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                         </Badge>
                       </HStack>
                       {complaintData.feedback && (
-                        <div style={{
-                          marginTop: "var(--spacing-2)",
-                          padding: "var(--spacing-2) var(--spacing-3)",
-                          background: "var(--color-bg-secondary)",
-                          borderRadius: "var(--radius-sm)",
-                          borderLeft: "2px solid var(--color-warning)",
-                          fontSize: "var(--font-size-sm)",
-                          color: "var(--color-text-body)",
-                          fontStyle: "italic"
-                        }}>
+                        <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-3)", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)", borderLeft: "2px solid var(--color-warning)", fontStyle: "italic" }}>
                           "{complaintData.feedback}"
-                        </div>
+                        </Text>
                       )}
                     </VStack>
                   </SectionCard>
@@ -349,16 +319,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                 {complaintData.hostel && <InfoRow label="Hostel" value={complaintData.hostel} />}
                 {complaintData.roomNumber && <InfoRow label="Room" value={complaintData.roomNumber} />}
                 {complaintData.location && (
-                  <div style={{
-                    marginTop: "var(--spacing-1)",
-                    padding: "var(--spacing-2)",
-                    background: "var(--color-bg-secondary)",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-body)"
-                  }}>
+                  <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-1)", padding: "var(--spacing-2)", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)" }}>
                     {complaintData.location}
-                  </div>
+                  </Text>
                 )}
               </VStack>
             </SectionCard>
@@ -393,13 +356,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                 {complaintData.resolutionNotes}
               </Text>
             ) : (
-              <div style={{
-                color: "var(--color-text-muted)",
-                fontSize: "var(--font-size-sm)",
-                fontStyle: "italic"
-              }}>
+              <Text as="div" color="muted" size="sm" style={{ fontStyle: "italic" }}>
                 No resolution notes added yet
-              </div>
+              </Text>
             )}
           </SectionCard>
 
@@ -414,18 +373,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                   </Badge>
                 </HStack>
                 {complaintData.feedback && (
-                  <div style={{
-                    marginTop: "var(--spacing-2)",
-                    padding: "var(--spacing-2) var(--spacing-3)",
-                    background: "var(--color-bg-secondary)",
-                    borderRadius: "var(--radius-sm)",
-                    borderLeft: "2px solid var(--color-warning)",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-text-body)",
-                    fontStyle: "italic"
-                  }}>
+                  <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-3)", background: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)", borderLeft: "2px solid var(--color-warning)", fontStyle: "italic" }}>
                     "{complaintData.feedback}"
-                  </div>
+                  </Text>
                 )}
               </VStack>
             </SectionCard>

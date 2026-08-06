@@ -47,16 +47,9 @@ const DeletedRow = ({ item, onRestore, restoring, lastRow }) => (
         Deleted by {item.deletedBy?.name || "Unknown"} · {formatTimestamp(item.deletedAt)}
       </Text>
       {item.deleteReason ? (
-        <p
-          style={{
-            fontSize: "var(--font-size-xs)",
-            color: "var(--color-text-muted)",
-            fontStyle: "italic",
-            marginTop: "var(--spacing-1)",
-          }}
-        >
+        <Text size="xs" color="muted" style={{ fontStyle: "italic", marginTop: "var(--spacing-1)" }}>
           "{item.deleteReason}"
-        </p>
+        </Text>
       ) : null}
     </div>
     <Button

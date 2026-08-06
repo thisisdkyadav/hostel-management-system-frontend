@@ -352,28 +352,16 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   <FaBuilding style={{ height: "var(--icon-3xl)", width: "var(--icon-3xl)" }} color="var(--color-primary)" />
                 </IconCircle>
               )}
-              <div
-                onClick={() => setIsImageModalOpen(true)}
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: "var(--color-primary)",
-                  color: "var(--color-white)",
-                  padding: "var(--spacing-1-5)",
-                  borderRadius: "var(--radius-full)",
-                  cursor: "pointer",
-                  transition: "var(--transition-colors)",
-                }}
+              <Text as="div" color="var(--color-white)" style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }} onClick={() => setIsImageModalOpen(true)}
+               
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = "var(--color-primary-hover)"
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = "var(--color-primary)"
-                }}
-              >
+                }}>
                 <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
-              </div>
+              </Text>
             </IconCircle>
             <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
           </VStack>

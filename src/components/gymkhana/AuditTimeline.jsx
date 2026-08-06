@@ -97,9 +97,9 @@ const ChangeRow = ({ change }) => (
         <Text as="span" weight="medium" color="secondary">
             {humanizeField(change.field)}:
         </Text>
-        <span style={{ color: "var(--color-text-muted)", textDecoration: "line-through" }}>
+        <Text as="span" color="muted" style={{ textDecoration: "line-through" }}>
             {formatValue(change.from)}
-        </span>
+        </Text>
         <Text as="span" color="placeholder">→</Text>
         <Text as="span" color="body">{formatValue(change.to)}</Text>
     </HStack>
@@ -273,28 +273,16 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
 
                             {/* Reason (admin override) for edits */}
                             {isEdit && safeReason && (
-                                <p
-                                    style={{
-                                        fontSize: "var(--font-size-xs)",
-                                        color: "var(--color-text-muted)",
-                                        fontStyle: "italic",
-                                    }}
-                                >
+                                <Text size="xs" color="muted" style={{ fontStyle: "italic" }}>
                                     Reason: {safeReason}
-                                </p>
+                                </Text>
                             )}
 
                             {/* Comments for approval events */}
                             {!isEdit && safeComments && (
-                                <p
-                                    style={{
-                                        fontSize: "var(--font-size-xs)",
-                                        color: "var(--color-text-muted)",
-                                        fontStyle: "italic",
-                                    }}
-                                >
+                                <Text size="xs" color="muted" style={{ fontStyle: "italic" }}>
                                     "{safeComments}"
-                                </p>
+                                </Text>
                             )}
 
                             <Text size="xs" color="placeholder" style={{ marginTop: "var(--spacing-1)" }}>

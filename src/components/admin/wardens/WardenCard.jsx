@@ -138,7 +138,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
     <>
       <Card className="relative overflow-hidden">
         <div style={{ position: 'absolute', top: 0, right: 0, width: 'var(--spacing-16)', height: 'var(--spacing-16)' }}>
-          <div style={{ position: 'absolute', transform: 'rotate(45deg)', transformOrigin: 'bottom right', backgroundColor: statusColor.bg, color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-1) 0', right: '-6px', top: '-2px', width: 'var(--spacing-24)', textAlign: 'center' }}>{status === "assigned" ? "Assigned" : "Unassigned"}</div>
+          <Text as="div" color="var(--color-white)" size="xs" weight="medium" align="center" style={{ position: 'absolute', transform: 'rotate(45deg)', transformOrigin: 'bottom right', backgroundColor: statusColor.bg, padding: 'var(--spacing-1) 0', right: '-6px', top: '-2px', width: 'var(--spacing-24)' }}>{status === "assigned" ? "Assigned" : "Unassigned"}</Text>
         </div>
 
         <CardHeader className="mb-0">
@@ -153,8 +153,8 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               )}
             </div>
             <div>
-              <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.name}</h3>
-              {warden.category && <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.category}</div>}
+              <Heading as="h3" weight="bold" size="lg" color="secondary" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.name}</Heading>
+              {warden.category && <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-0-5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.category}</Text>}
             </div>
           </div>
         </CardHeader>
@@ -164,14 +164,14 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaEnvelope color="var(--color-text-muted)" />
             </div>
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-text-body)' }}>{warden.email}</span>
+            <Text as="span" color="body" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.email}</Text>
           </HStack>
 
           <HStack gap="none" align="center">
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaPhone color="var(--color-text-muted)" />
             </div>
-            {warden.phone ? <Text as="span" color="body">{warden.phone}</Text> : <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Not provided</span>}
+            {warden.phone ? <Text as="span" color="body">{warden.phone}</Text> : <Text as="span" color="muted" style={{ fontStyle: 'italic' }}>Not provided</Text>}
           </HStack>
 
           <HStack gap="none" align="start">

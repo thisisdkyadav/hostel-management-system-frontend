@@ -77,9 +77,9 @@ export const PersonCard = ({ person, fallbackName }) => {
         <Text as="div" weight="semibold" color="primary">{name}</Text>
         {meta && <Text as="div" size="xs" color="muted">{meta}</Text>}
         {(person?.email || person?.phone) && (
-          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {[person?.email, person?.phone].filter(Boolean).join(" · ")}
-          </div>
+          </Text>
         )}
         {person?.hostel && <Text as="div" size="xs" color="muted">{person.hostel}{person.displayRoom ? ` · Room ${person.displayRoom}` : ""}</Text>}
       </div>
@@ -102,8 +102,8 @@ export const ApplicantCell = ({ request }) => {
         </Surface>
       )}
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
-        {meta && <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{meta}</div>}
+        <Text as="div" weight="medium" color="body" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</Text>
+        {meta && <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{meta}</Text>}
       </div>
     </div>
   )

@@ -198,7 +198,7 @@ const StudentAssignments = () => {
         </div>
       </Surface>
 
-      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
+      {error && <Text as="div" color="danger-text" style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</Text>}
 
       {/* Students List */}
       <Surface bg="primary" radius="lg" shadow="sm" border="var(--border-1) solid var(--color-border-light)">
@@ -372,11 +372,11 @@ const StudentAssignments = () => {
                 </IconCircle>
                 <div>
                   <Heading as="h3" weight="medium" color="primary">{currentItem.itemTypeId.name}</Heading>
-                  <div className="flex" style={{ gap: 'var(--gap-sm)', fontSize: 'var(--text-body-sm)' }}>
+                  <Text as="div" size="var(--text-body-sm)" style={{ gap: 'var(--gap-sm)' }} className="flex">
                     <Text as="span" color="muted">Qty: {currentItem.count}</Text>
                     <Text as="span" color="muted">•</Text>
                     <Text as="span" color="muted">Assigned to: {currentItem.studentProfileId.userId.name}</Text>
-                  </div>
+                  </Text>
                 </div>
               </div>
             </Surface>

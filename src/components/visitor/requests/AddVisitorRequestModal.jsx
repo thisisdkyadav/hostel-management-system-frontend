@@ -255,11 +255,10 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         <div>
           <HStack justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
             <Label required>H2 Form Upload</Label>
-            <a href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" target="_blank" rel="noopener noreferrer" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', textDecoration: 'underline', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'}
-              onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}
-            >
+            <Text as="a" size="xs" color="brand" style={{ textDecoration: 'underline', transition: 'var(--transition-colors)' }} href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" target="_blank" rel="noopener noreferrer" onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'}
+              onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}>
               Download H2 Form
-            </a>
+            </Text>
           </HStack>
 
           {!h2FormUploaded ? (

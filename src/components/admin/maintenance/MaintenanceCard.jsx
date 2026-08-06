@@ -3,7 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Surface } from "@/components/ui"
+import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
@@ -93,14 +93,14 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
               <FaEnvelope style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
             </IconCircle>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</span>
+            <Text as="span" size="sm" color="body" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</Text>
           </HStack>
 
           <HStack gap="none" align="center">
             <IconCircle size="var(--spacing-7)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
               <FaPhone style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
             </IconCircle>
-            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
+            <Text as="span" size="sm" color="body" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</Text>
           </HStack>
         </CardBody>
 

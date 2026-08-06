@@ -389,16 +389,14 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
           <Text as="div" size="sm">
             <Text as="span" weight="semibold" color="brand" style={{ marginRight: "var(--spacing-2)" }}>Payment Link:</Text>
-            <a
-              href={request.visitorPaymentLink}
+            <Text as="a" color="brand" style={{ textDecoration: "none", wordBreak: "break-all" }} href={request.visitorPaymentLink}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--color-primary)", textDecoration: "none", wordBreak: "break-all" }}
+             
               onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
-              onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
-            >
+              onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}>
               {request.visitorPaymentLink}
-            </a>
+            </Text>
           </Text>
         )}
 

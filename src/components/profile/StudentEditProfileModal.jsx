@@ -291,9 +291,9 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
 
     if (error) {
       return (
-        <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
+        <Text as="div" color="danger-text" style={{ backgroundColor: "var(--color-danger-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
           <p>{error}</p>
-        </div>
+        </Text>
       )
     }
 
@@ -302,15 +302,15 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
         <form id="edit-profile-form" onSubmit={handleSubmit}>
           {editableFields.length === 0 ? (
             <Surface padding="var(--spacing-8) 0" align="center">
-              <div style={{ backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)" }}>
+              <Text as="div" color="warning-text" style={{ backgroundColor: "var(--color-warning-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)" }}>
                 <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
-              </div>
+              </Text>
             </Surface>
           ) : (
             <>
-              <div style={{ backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-6)" }}>
+              <Text as="div" color="info-text" style={{ backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-6)" }}>
                 <Text size="sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</Text>
-              </div>
+              </Text>
 
               <VStack gap={2}>
                 {editableFields.includes("profileImage") && renderField("profileImage")}

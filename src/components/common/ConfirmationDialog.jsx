@@ -30,9 +30,9 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
       <Surface padding="var(--spacing-4) 0">
         {isDestructive && (
           <HStack gap="none" justify="center" style={{ marginBottom: 'var(--spacing-4)' }}>
-            <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-full)' }}>
+            <Text as="div" color="danger" style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-danger-bg-light)', borderRadius: 'var(--radius-full)' }}>
               <FiAlertTriangle size={24} />
-            </div>
+            </Text>
           </HStack>
         )}
         <Text align="center" color="body">{message}</Text>

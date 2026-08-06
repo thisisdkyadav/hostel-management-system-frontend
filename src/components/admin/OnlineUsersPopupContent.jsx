@@ -55,18 +55,9 @@ const OnlineUsersPopupContent = ({ role, roleLabel }) => {
                 >
                     {roleLabel} Online
                 </Text>
-                <span
-                    style={{
-                        padding: "var(--spacing-0-5) var(--spacing-2)",
-                        background: "var(--color-success-bg)",
-                        color: "var(--color-success-text)",
-                        borderRadius: "var(--radius-full)",
-                        fontSize: "var(--font-size-xs)",
-                        fontWeight: "var(--font-weight-semibold)",
-                    }}
-                >
+                <Text as="span" color="success-text" size="xs" weight="semibold" style={{ padding: "var(--spacing-0-5) var(--spacing-2)", background: "var(--color-success-bg)", borderRadius: "var(--radius-full)" }}>
                     {users.length}
-                </span>
+                </Text>
             </div>
 
             {/* Content */}
@@ -131,18 +122,9 @@ const OnlineUsersPopupContent = ({ role, roleLabel }) => {
                                     overflow: "hidden",
                                 }}
                             >
-                                <div
-                                    style={{
-                                        fontSize: "var(--font-size-sm)",
-                                        fontWeight: "var(--font-weight-medium)",
-                                        color: "var(--color-text-primary)",
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                    }}
-                                >
+                                <Text as="div" size="sm" weight="medium" color="primary" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                     {user.userName || "Unknown"}
-                                </div>
+                                </Text>
                             </div>
                             <Text as="span" size="xs" color="muted" style={{ whiteSpace: "nowrap" }}>
                                 {getRelativeTime(user.connectedAt)}

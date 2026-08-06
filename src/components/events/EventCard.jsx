@@ -71,9 +71,9 @@ const EventCard = ({ event, refresh }) => {
         <Card.Header style={{ marginBottom: 'var(--spacing-0)' }}>
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
-              <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>
+              <Text as="div" color={isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)'} style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)' }}>
                 <FaCalendarAlt size={20} />
-              </div>
+              </Text>
               <div>
                 <Heading as="h3" weight="bold" color="primary" size="base" leading="var(--line-height-tight)" className="md:text-lg line-clamp-1">{event.eventName}</Heading>
                 <Text as="span" size="xs" color="muted">ID: {event._id.substring(0, 8)}</Text>

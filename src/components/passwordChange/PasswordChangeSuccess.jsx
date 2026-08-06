@@ -44,9 +44,9 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
           </Text>
         </div>
 
-        <p style={{ color: 'var(--color-text-body)', marginBottom: 'var(--spacing-8)', maxWidth: 'var(--container-md)', margin: '0 auto var(--spacing-8) auto' }}>
+        <Text color="body" style={{ marginBottom: 'var(--spacing-8)', maxWidth: 'var(--container-md)', margin: '0 auto var(--spacing-8) auto' }}>
           Your password has been successfully updated. You will use this new password the next time you log in.
-        </p>
+        </Text>
 
         <HStack gap="none" justify="center">
           <Button onClick={onClose} variant="primary" size="md">

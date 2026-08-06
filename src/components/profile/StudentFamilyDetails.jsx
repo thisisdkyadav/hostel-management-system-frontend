@@ -304,15 +304,15 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
   return (
     <Surface padding="var(--spacing-2) var(--spacing-1)">
       {error && (
-        <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
+        <Text as="div" color="danger-text" style={{ backgroundColor: "var(--color-danger-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
           <p>{error}</p>
-        </div>
+        </Text>
       )}
 
       {success && (
-        <div style={{ backgroundColor: "var(--color-success-bg)", color: "var(--color-success-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
+        <Text as="div" color="success-text" style={{ backgroundColor: "var(--color-success-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-md)", marginBottom: "var(--spacing-4)" }}>
           <p>{success}</p>
-        </div>
+        </Text>
       )}
 
       <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-4)" }}>

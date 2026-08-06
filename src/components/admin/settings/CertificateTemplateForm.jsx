@@ -333,9 +333,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                   }}
                 >
                   <GripVertical size={14} style={{ color: "var(--color-text-muted)" }} />
-                  <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", width: 20 }}>
+                  <Text as="span" size="xs" weight="semibold" color="muted" style={{ width: 20 }}>
                     {index + 1}
-                  </span>
+                  </Text>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <Text as="div" size="sm" color="heading" weight="medium">
                       {entry?.name || "Unknown user"}
@@ -370,9 +370,9 @@ const CertificateTemplateForm = ({ template, onUpdate, isLoading }) => {
                 <Spinner size="small" />
               </div>
             ) : filteredDirectory.length === 0 ? (
-              <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", padding: "var(--spacing-3)", textAlign: "center" }}>
+              <Text size="sm" color="muted" align="center" style={{ padding: "var(--spacing-3)" }}>
                 No users with a signature found.
-              </p>
+              </Text>
             ) : (
               filteredDirectory.map((entry) => (
                 <label
