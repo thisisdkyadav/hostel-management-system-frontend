@@ -4,7 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { HStack, Select, Text, useConfirm, VStack } from "@/components/ui"
+import { HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
@@ -68,12 +68,12 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
 
         <VStack gap={4}>
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Date and Time</label>
+            <Label color="tertiary">Date and Time</Label>
             <Input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Hostel</label>
+            <Label color="tertiary">Hostel</Label>
             <Select name="hostelId" value={formData.hostelId} onChange={handleChange} icon={<FaBuilding />} options={[
               { value: "all", label: "All Hostels" },
               ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
@@ -81,7 +81,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Gender</label>
+            <Label color="tertiary">Gender</Label>
             <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUserFriends />} options={[
               { value: "all", label: "All Genders" },
               { value: "Male", label: "Male" },
@@ -91,7 +91,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Description</label>
+            <Label color="tertiary">Description</Label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none', transition: 'var(--transition-all)' }} placeholder="Event description"></textarea>
           </div>
         </VStack>

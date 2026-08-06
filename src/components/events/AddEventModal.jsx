@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../service"
-import { Select } from "@/components/ui"
+import { Label, Select } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
@@ -63,12 +63,12 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-4">
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Event Name</label>
+            <Label color="secondary" spacing={2}>Event Name</Label>
             <Input type="text" name="eventName" value={formData.eventName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter event name" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel</label>
+            <Label color="secondary" spacing={2}>Hostel</Label>
             <Select name="hostelId" value={formData.hostelId} onChange={handleChange} icon={<FaBuilding />} options={[
               { value: "all", label: "All Hostels" },
               ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
@@ -76,7 +76,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Gender</label>
+            <Label color="secondary" spacing={2}>Gender</Label>
             <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUserFriends />} options={[
               { value: "all", label: "All Genders" },
               { value: "Male", label: "Male" },
@@ -86,12 +86,12 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
+            <Label color="secondary" spacing={2}>Description</Label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} placeholder="Describe the event, location, activities, etc." required></textarea>
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Date and Time</label>
+            <Label color="secondary" spacing={2}>Date and Time</Label>
             <Input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} icon={<BsClock />} required />
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
@@ -299,12 +299,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </div>
 
             <div>
-              <label style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--spacing-3)' }}>
+              <Label color="secondary" weight="semibold" spacing={3} style={{ display: 'flex', alignItems: 'center' }}>
                 <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-text-tertiary)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                 </svg>
                 {decisionType === "approve" ? "Approval Notes" : "Reason for Rejection"}
-              </label>
+              </Label>
               <textarea style={{ width: '100%', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-xl)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '8rem', color: 'var(--color-text-body)', fontFamily: 'inherit' }} placeholder={decisionType === "approve" ? "Add any notes or conditions for this approval..." : "Please provide a clear reason for rejecting this leave request..."} value={decisionText} onChange={(e) => setDecisionText(e.target.value)}
                 onFocus={(e) => {
                   e.target.style.boxShadow = 'var(--input-focus-ring)';
@@ -373,12 +373,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </Surface>
 
             <div>
-              <label style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--spacing-3)' }}>
+              <Label color="secondary" weight="semibold" spacing={3} style={{ display: 'flex', alignItems: 'center' }}>
                 <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-text-tertiary)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                 </svg>
                 Join Information
-              </label>
+              </Label>
               <textarea style={{ width: '100%', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-xl)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '8rem', color: 'var(--color-text-body)', fontFamily: 'inherit' }} placeholder="Please provide information about joining this leave (e.g., actual dates, location, additional details)..." value={joinInfo} onChange={(e) => setJoinInfo(e.target.value)}
                 onFocus={(e) => {
                   e.target.style.boxShadow = 'var(--input-focus-ring)';

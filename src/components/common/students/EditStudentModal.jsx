@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Heading, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Label, Modal, Text, VStack } from "@/components/ui"
 import { Checkbox, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -485,9 +485,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+            <Label spacing={1}>
               Status
-            </label>
+            </Label>
             <Select
               value={statusValue}
               onChange={(event) => setStatusValue(event.target.value)}
@@ -524,9 +524,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           {dayScholarForm.isDayScholar && (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-4)" }}>
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                <Label spacing={1}>
                   Address
-                </label>
+                </Label>
                 <Input
                   type="text"
                   value={dayScholarForm.address}
@@ -536,9 +536,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                <Label spacing={1}>
                   Owner Name
-                </label>
+                </Label>
                 <Input
                   type="text"
                   value={dayScholarForm.ownerName}
@@ -548,9 +548,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                <Label spacing={1}>
                   Owner Phone
-                </label>
+                </Label>
                 <Input
                   type="text"
                   value={dayScholarForm.ownerPhone}
@@ -560,9 +560,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               </div>
 
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                <Label spacing={1}>
                   Owner Email
-                </label>
+                </Label>
                 <Input
                   type="email"
                   value={dayScholarForm.ownerEmail}
@@ -623,9 +623,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-4)" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                  <Label spacing={1}>
                     Hostel
-                  </label>
+                  </Label>
                   <Select
                     value={allocationForm.hostelId}
                     onChange={handleAllocationHostelChange}
@@ -640,9 +640,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
                 {allocationForm.hostelType === "unit-based" && (
                   <div>
-                    <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                    <Label spacing={1}>
                       Unit Number
-                    </label>
+                    </Label>
                     <Input
                       type="text"
                       value={allocationForm.unit}
@@ -655,9 +655,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 )}
 
                 <div>
-                  <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                  <Label spacing={1}>
                     Room
-                  </label>
+                  </Label>
                   <Select
                     value={allocationForm.roomId}
                     onChange={handleAllocationRoomChange}
@@ -673,9 +673,9 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                  <Label spacing={1}>
                     Bed Number
-                  </label>
+                  </Label>
                   <Select
                     value={allocationForm.bedNumber}
                     onChange={handleAllocationBedChange}

@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Select, Surface, Text, Textarea } from "@/components/ui"
+import { Label, Select, Surface, Text, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -142,18 +142,18 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
       <form id="task-form" onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-5)" }}>
         {/* Title Field */}
         <div>
-          <label htmlFor="title" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+          <Label color="secondary" spacing={2} htmlFor="title">
             Title <Text as="span" color="danger-text">*</Text>
-          </label>
+          </Label>
           <Input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} error={errors.title} />
           {errors.title && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.title}</Text>}
         </div>
 
         {/* Description Field */}
         <div>
-          <label htmlFor="description" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+          <Label color="secondary" spacing={2} htmlFor="description">
             Description <Text as="span" color="danger-text">*</Text>
-          </label>
+          </Label>
           <Textarea id="description" name="description" rows={3} value={taskData.description} onChange={handleChange} error={errors.description} />
           {errors.description && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.description}</Text>}
         </div>
@@ -161,25 +161,25 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
         {/* Priority and Category */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
           <div>
-            <label htmlFor="priority" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+            <Label color="secondary" spacing={2} htmlFor="priority">
               Priority
-            </label>
+            </Label>
             <Select id="priority" name="priority" value={taskData.priority} onChange={handleChange} options={TASK_PRIORITIES.map((priority) => ({ value: priority, label: priority }))} />
           </div>
 
           <div>
-            <label htmlFor="category" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+            <Label color="secondary" spacing={2} htmlFor="category">
               Category
-            </label>
+            </Label>
             <Select id="category" name="category" value={taskData.category} onChange={handleChange} options={TASK_CATEGORIES.map((category) => ({ value: category, label: category }))} />
           </div>
         </div>
 
         {/* Due Date Field */}
         <div>
-          <label htmlFor="dueDate" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+          <Label color="secondary" spacing={2} htmlFor="dueDate">
             Due Date <Text as="span" color="danger-text">*</Text>
-          </label>
+          </Label>
           <Input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} error={errors.dueDate} />
           {errors.dueDate && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1)" }}>{errors.dueDate}</Text>}
         </div>

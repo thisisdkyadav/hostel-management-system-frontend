@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, Heading, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
+import { Alert, Card, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
 import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
@@ -250,15 +250,9 @@ const ComplaintFeedbackPage = () => {
                     <form onSubmit={handleSubmit}>
                         {/* Rating */}
                         <div style={{ marginBottom: 'var(--spacing-5)' }}>
-                            <label style={{
-                                display: 'block',
-                                fontSize: 'var(--font-size-sm)',
-                                fontWeight: 'var(--font-weight-medium)',
-                                color: 'var(--color-text-body)',
-                                marginBottom: 'var(--spacing-2)'
-                            }}>
+                            <Label color="body" spacing={2}>
                                 Rate the resolution <Text as="span" color="danger">*</Text>
-                            </label>
+                            </Label>
                             <HStack gap="var(--spacing-1-5)" align="center">
                                 {[1, 2, 3, 4, 5].map((rating) => (
                                     <button
@@ -297,15 +291,9 @@ const ComplaintFeedbackPage = () => {
 
                         {/* Satisfaction Status */}
                         <div style={{ marginBottom: 'var(--spacing-5)' }}>
-                            <label style={{
-                                display: 'block',
-                                fontSize: 'var(--font-size-sm)',
-                                fontWeight: 'var(--font-weight-medium)',
-                                color: 'var(--color-text-body)',
-                                marginBottom: 'var(--spacing-2)'
-                            }}>
+                            <Label color="body" spacing={2}>
                                 Satisfaction status <Text as="span" color="danger">*</Text>
-                            </label>
+                            </Label>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-2)' }}>
                                 <Button
                                     type="button"
@@ -336,18 +324,9 @@ const ComplaintFeedbackPage = () => {
 
                         {/* Comments */}
                         <div style={{ marginBottom: 'var(--spacing-5)' }}>
-                            <label
-                                htmlFor="feedback"
-                                style={{
-                                    display: 'block',
-                                    fontSize: 'var(--font-size-sm)',
-                                    fontWeight: 'var(--font-weight-medium)',
-                                    color: 'var(--color-text-body)',
-                                    marginBottom: 'var(--spacing-2)'
-                                }}
-                            >
+                            <Label color="body" spacing={2} htmlFor="feedback">
                                 Comments (Optional)
-                            </label>
+                            </Label>
                             <textarea
                                 id="feedback"
                                 value={feedback}

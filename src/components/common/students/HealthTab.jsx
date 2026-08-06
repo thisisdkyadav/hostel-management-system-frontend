@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { HStack, Select, Spinner, Surface, Text } from "@/components/ui"
+import { HStack, Label, Select, Spinner, Surface, Text } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
@@ -222,7 +222,7 @@ const HealthTab = ({ userId }) => {
           <form onSubmit={handleUpdateHealth} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
               <div>
-                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Blood Group</label>
+                <Label color="body" spacing={1}>Blood Group</Label>
                 <Select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange}
                   options={[
                     { value: "", label: "Select Blood Group" },
@@ -239,7 +239,7 @@ const HealthTab = ({ userId }) => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
+                <Label color="body" spacing={1}>Insurance Provider</Label>
                 <Select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange}
                   options={[
                     { value: "", label: "Select Insurance Provider" },
@@ -255,7 +255,7 @@ const HealthTab = ({ userId }) => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Number</label>
+                <Label color="body" spacing={1}>Insurance Number</Label>
                 <Input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} placeholder="Enter insurance number" />
               </div>
             </div>

@@ -3,7 +3,7 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { Heading, HStack, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
+import { Heading, HStack, Label, Select, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { studentProfileApi } from "../../service"
@@ -154,10 +154,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (field === "profileImage") {
       return (
         <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+          <Label color="secondary" spacing={2} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-          </label>
+          </Label>
           <div className="flex items-center">
             <div style={{ position: "relative", height: "var(--avatar-2xl)", width: "var(--avatar-2xl)", borderRadius: "var(--radius-avatar)", overflow: "hidden", marginRight: "var(--spacing-4)" }}>
               <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" style={{ height: "var(--avatar-2xl)", width: "var(--avatar-2xl)", objectFit: "cover" }} />
@@ -176,10 +176,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (field === "gender") {
       return (
         <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+          <Label color="secondary" spacing={2} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-          </label>
+          </Label>
           <Select
             value={editableData[field] || ""}
             onChange={(e) => handleChange(field, e.target.value)}
@@ -197,10 +197,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (field === "bloodGroup") {
       return (
         <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+          <Label color="secondary" spacing={2} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-          </label>
+          </Label>
           <Select
             value={editableData[field] || ""}
             onChange={(e) => handleChange(field, e.target.value)}
@@ -223,10 +223,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (type === "date") {
       return (
         <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+          <Label color="secondary" spacing={2} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-          </label>
+          </Label>
           <Input type="date" value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} />
         </div>
       )
@@ -235,10 +235,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
     if (field === "address") {
       return (
         <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+          <Label color="secondary" spacing={2} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-          </label>
+          </Label>
           <Textarea value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} rows={3} />
         </div>
       )
@@ -246,10 +246,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
 
     return (
       <div key={field} style={{ marginBottom: "var(--spacing-6)" }}>
-        <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }} className="flex items-center">
+        <Label color="secondary" spacing={2} className="flex items-center">
           {config.icon}
           <span style={{ marginLeft: "var(--spacing-2)" }}>{config.label}</span>
-        </label>
+        </Label>
         <Input type={type} value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} />
       </div>
     )

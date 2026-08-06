@@ -17,7 +17,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { FileInput, Grid, Heading, HStack, Select, Surface, Text, VStack } from "@/components/ui"
+import { FileInput, Grid, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
@@ -750,18 +750,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
           {step === 1 && (
             <VStack gap={5}>
               <div>
-                <label
-                  htmlFor="hostel-select"
-                  style={{
-                    display: "block",
-                    fontSize: "var(--font-size-sm)",
-                    fontWeight: "var(--font-weight-medium)",
-                    color: "var(--color-text-body)",
-                    marginBottom: "var(--spacing-1)",
-                  }}
-                >
+                <Label color="body" spacing={1} htmlFor="hostel-select">
                   Select Hostel
-                </label>
+                </Label>
                 <Select
                   id="hostel-select"
                   value={selectedHostel?._id || ""}
@@ -967,9 +958,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                   <Grid min={180} gap={3}>
                     <div>
-                      <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                      <Label spacing={1}>
                         Roll Number
-                      </label>
+                      </Label>
                       <Input
                         type="text"
                         value={row.rollNumber}
@@ -981,9 +972,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                      <Label spacing={1}>
                         Student
-                      </label>
+                      </Label>
                       <div
                         style={{
                           minHeight: "40px",
@@ -1009,9 +1000,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                      <Label spacing={1}>
                         Hostel
-                      </label>
+                      </Label>
                       <Select
                         value={row.hostelId}
                         onChange={(event) => handleManualFieldChange(row.id, "hostelId", event.target.value)}
@@ -1023,9 +1014,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                     {row.hostelType === "unit-based" && (
                       <div>
-                        <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                        <Label spacing={1}>
                           Unit Number
-                        </label>
+                        </Label>
                         <Input
                           type="text"
                           value={row.unit}
@@ -1038,9 +1029,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     )}
 
                     <div>
-                      <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                      <Label spacing={1}>
                         Room
-                      </label>
+                      </Label>
                       <Select
                         value={row.roomId}
                         onChange={(event) => handleManualFieldChange(row.id, "roomId", event.target.value)}
@@ -1056,9 +1047,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>
+                      <Label spacing={1}>
                         Bed Number
-                      </label>
+                      </Label>
                       <Select
                         value={row.bedNumber}
                         onChange={(event) => handleManualFieldChange(row.id, "bedNumber", event.target.value)}

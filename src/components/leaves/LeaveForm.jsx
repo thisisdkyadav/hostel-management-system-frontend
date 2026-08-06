@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, Input } from "czero/react"
-import { Grid, Modal } from "@/components/ui"
+import { Grid, Label, Modal } from "@/components/ui"
 import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
@@ -37,17 +37,17 @@ const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
         )}
 
         <div>
-          <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason</label>
+          <Label color="secondary" spacing={2}>Reason</Label>
           <textarea name="reason" placeholder="Reason for leave" value={formData.reason} onChange={handleChange} required style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-input)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '6rem' }} />
         </div>
 
         <Grid min={200} gap="var(--gap-md)">
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Start Date</label>
+            <Label color="secondary" spacing={2}>Start Date</Label>
             <Input type="date" name="startDate" value={formData.startDate} onChange={handleChange} required />
           </div>
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>End Date</label>
+            <Label color="secondary" spacing={2}>End Date</Label>
             <Input type="date" name="endDate" value={formData.endDate} onChange={handleChange} required />
           </div>
         </Grid>

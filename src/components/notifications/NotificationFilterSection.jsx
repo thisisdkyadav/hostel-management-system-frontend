@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Grid, Heading, HStack, Select, Surface } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
@@ -20,12 +20,12 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
 
       <Grid min={250} gap={4}>
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Search</label>
+          <Label color="body" spacing={2}>Search</Label>
           <Input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleChange} placeholder="Search by title or content..." icon={<FaSearch />} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Hostel</label>
+          <Label color="body" spacing={2}>Hostel</Label>
           <Select name="hostelId" value={filters.hostelId} onChange={handleChange} options={[
             { value: "all", label: "All Hostels" },
             { value: "hostel1", label: "Hostel 1" },
@@ -34,7 +34,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Department</label>
+          <Label color="body" spacing={2}>Department</Label>
           <Select name="department" value={filters.department} onChange={handleChange} options={[
             { value: "all", label: "All Departments" },
             { value: "CSE", label: "Computer Science" },
@@ -44,7 +44,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Degree</label>
+          <Label color="body" spacing={2}>Degree</Label>
           <Select name="degree" value={filters.degree} onChange={handleChange} options={[
             { value: "all", label: "All Degrees" },
             { value: "BTech", label: "BTech" },
@@ -54,7 +54,7 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Gender</label>
+          <Label color="body" spacing={2}>Gender</Label>
           <Select name="gender" value={filters.gender} onChange={handleChange} options={[
             { value: "all", label: "All Genders" },
             { value: "Male", label: "Male" },

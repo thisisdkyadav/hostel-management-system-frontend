@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
 import { Button, Input } from "czero/react"
-import { Grid, Heading, HStack, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
 import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -986,19 +986,19 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           <Heading as="h3" size="lg" weight="medium" color="secondary">Add Single Student</Heading>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
             <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Name *</label>
+              <Label spacing={1}>Name *</Label>
               <Input type="text" value={manualStudent.name} onChange={(event) => handleManualInputChange("name", event.target.value)} placeholder="Enter student's full name" />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Email *</label>
+              <Label spacing={1}>Email *</Label>
               <Input type="email" value={manualStudent.email} onChange={(event) => handleManualInputChange("email", event.target.value)} placeholder="Enter email address" />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Roll Number *</label>
+              <Label spacing={1}>Roll Number *</Label>
               <Input type="text" value={manualStudent.rollNumber} onChange={(event) => handleManualInputChange("rollNumber", event.target.value)} placeholder="Enter roll number" />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Gender *</label>
+              <Label spacing={1}>Gender *</Label>
               <select
                 value={manualStudent.gender}
                 onChange={(event) => handleManualInputChange("gender", event.target.value)}
@@ -1011,7 +1011,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </select>
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Is Day Scholar? *</label>
+              <Label spacing={1}>Is Day Scholar? *</Label>
               <select
                 value={manualStudent.isDayScholar}
                 onChange={(event) => handleManualInputChange("isDayScholar", event.target.value)}

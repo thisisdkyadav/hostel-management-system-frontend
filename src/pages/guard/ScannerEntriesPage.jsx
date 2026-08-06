@@ -3,7 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Heading, HStack, IconCircle, Spinner, Surface, Text } from "@/components/ui"
+import { Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
 
 const ScannerEntriesPage = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -45,7 +45,7 @@ const ScannerEntriesPage = () => {
             </HStack>
             <Text color="warning-text" size="sm" style={{ marginBottom: "var(--spacing-3)" }}>This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.</Text>
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text></label>
+              <Label color="warning-text" spacing={1} htmlFor={`reason-${entry._id}`}>Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text></Label>
               <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)} placeholder="Enter reason..." style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }} rows="3" disabled={isUpdating} data-no-scanner="true" />
             </div>
             <Button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} variant="warning" size="sm" loading={isUpdating}>

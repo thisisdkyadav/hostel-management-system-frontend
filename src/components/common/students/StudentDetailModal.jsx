@@ -41,7 +41,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Heading, HStack, IconCircle, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Heading, HStack, IconCircle, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
 import { Button, Input, Table } from "czero/react"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
@@ -1124,7 +1124,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {/* Item selection - only for assign */}
             {inventoryModalType === "assign" && (
               <div style={{ marginBottom: "var(--spacing-4)" }}>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Item</label>
+                <Label color="body" spacing={1}>Item</Label>
                 <Select
                   name="hostelInventoryId"
                   value={inventoryFormData.hostelInventoryId}
@@ -1142,7 +1142,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {/* Count - only for assign */}
             {inventoryModalType === "assign" && (
               <div style={{ marginBottom: "var(--spacing-4)" }}>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Count</label>
+                <Label color="body" spacing={1}>Count</Label>
                 <Input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min={1} max={getMaxCount()} required />
                 {inventoryFormData.hostelInventoryId && <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Maximum available: {getMaxCount()}</Text>}
               </div>
@@ -1151,7 +1151,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {/* Status - only for edit */}
             {inventoryModalType === "edit" && (
               <div style={{ marginBottom: "var(--spacing-4)" }}>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Status</label>
+                <Label color="body" spacing={1}>Status</Label>
                 <Select
                   name="status"
                   value={inventoryFormData.status}
@@ -1168,7 +1168,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {/* Condition - for all modes */}
             <div style={{ marginBottom: "var(--spacing-4)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Condition</label>
+              <Label color="body" spacing={1}>Condition</Label>
               <Select
                 name="condition"
                 value={inventoryFormData.condition}
@@ -1185,7 +1185,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {/* Notes - for all modes */}
             <div style={{ marginBottom: "var(--spacing-4)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Notes</label>
+              <Label color="body" spacing={1}>Notes</Label>
               <textarea
                 name="notes"
                 value={inventoryFormData.notes}

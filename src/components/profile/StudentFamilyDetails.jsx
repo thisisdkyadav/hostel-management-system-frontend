@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, Heading, HStack, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { ConfirmDialog, Heading, HStack, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -143,12 +143,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             }}
           >
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Name</label>
+              <Label size="sm" color="secondary">Name</Label>
               <Input type="text" name="name" value={formData.name} onChange={handleChange} required />
             </div>
 
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Relationship</label>
+              <Label size="sm" color="secondary">Relationship</Label>
               <Select
                 name="relationship"
                 value={formData.relationship}
@@ -167,17 +167,17 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             </div>
 
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Phone</label>
+              <Label size="sm" color="secondary">Phone</Label>
               <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
             </div>
 
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Email</label>
+              <Label size="sm" color="secondary">Email</Label>
               <Input type="email" name="email" value={formData.email} onChange={handleChange} />
             </div>
 
             <div style={{ marginBottom: "var(--spacing-3)" }}>
-              <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Address</label>
+              <Label size="sm" color="secondary">Address</Label>
               <Textarea name="address" value={formData.address} onChange={handleChange} rows={2} />
             </div>
 
@@ -242,12 +242,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           <Heading as="h3" weight="medium" color="primary" style={{ marginBottom: "var(--spacing-3)" }}>Add New Family Member</Heading>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
-            <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Name</label>
+            <Label size="sm" color="secondary">Name</Label>
             <Input type="text" name="name" value={formData.name} onChange={handleChange} required />
           </div>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
-            <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Relationship</label>
+            <Label size="sm" color="secondary">Relationship</Label>
             <Select
               name="relationship"
               value={formData.relationship}
@@ -266,17 +266,17 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           </div>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
-            <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Phone</label>
+            <Label size="sm" color="secondary">Phone</Label>
             <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
           </div>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
-            <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Email</label>
+            <Label size="sm" color="secondary">Email</Label>
             <Input type="email" name="email" value={formData.email} onChange={handleChange} />
           </div>
 
           <div style={{ marginBottom: "var(--spacing-3)" }}>
-            <label style={{ display: "block", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-1)" }}>Address</label>
+            <Label size="sm" color="secondary">Address</Label>
             <Textarea name="address" value={formData.address} onChange={handleChange} rows={2} />
           </div>
 

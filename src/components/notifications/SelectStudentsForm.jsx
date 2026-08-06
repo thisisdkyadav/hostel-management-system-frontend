@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox, Grid, Spinner, Text, VStack } from "@/components/ui"
+import { Checkbox, Grid, Label, Spinner, Text, VStack } from "@/components/ui"
 import { Input } from "czero/react"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
@@ -80,7 +80,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
     case "hostel":
       return (
         <VStack gap={4}>
-          <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Hostels</label>
+          <Label color="body" spacing={2}>Select Hostels</Label>
           <Grid min={200} gap={3}>
             {hostels?.map((hostel) => (
               <Checkbox key={hostel.id} id={`hostel-${hostel.id}`} value={hostel.id} checked={targets.hostelIds.includes(hostel.id)} onChange={handleHostelChange} label={hostel.name} />
@@ -92,7 +92,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
     case "department":
       return (
         <VStack gap={4}>
-          <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Departments</label>
+          <Label color="body" spacing={2}>Select Departments</Label>
           <Grid min={200} gap={3}>
             {departments?.map((department) => (
               <Checkbox key={department} id={`dept-${department}`} value={department} checked={targets.departments.includes(department)} onChange={handleDepartmentChange} label={department} />
@@ -104,7 +104,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
     case "degree":
       return (
         <VStack gap={4}>
-          <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Degrees</label>
+          <Label color="body" spacing={2}>Select Degrees</Label>
           <Grid min={200} gap={3}>
             {degrees?.map((degree) => (
               <Checkbox key={degree} id={`degree-${degree}`} value={degree} checked={targets.degrees.includes(degree)} onChange={handleDegreeChange} label={degree} />
@@ -116,7 +116,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
     case "admission_year":
       return (
         <VStack gap={4}>
-          <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Admission Year Range</label>
+          <Label color="body" spacing={2}>Admission Year Range</Label>
           <Grid min={250} gap={4}>
             <div>
               <label style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Start Year</label>
@@ -133,7 +133,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
     case "specific":
       return (
         <VStack gap={4}>
-          <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Select Specific Students</label>
+          <Label color="body" spacing={2}>Select Specific Students</Label>
 
           <Input type="text" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search by name, email, or roll number" icon={<FaSearch />} />
 

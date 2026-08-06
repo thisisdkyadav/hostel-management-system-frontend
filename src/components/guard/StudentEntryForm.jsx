@@ -4,7 +4,7 @@ import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Grid, Heading, HStack, Surface } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Surface } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -93,44 +93,44 @@ const StudentEntryForm = ({ onAddEntry }) => {
       <form id="studentEntryForm" onSubmit={handleSubmit}>
         <Grid min={250} gap={6}>
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student ID</label>
+            <Label color="body" spacing={1}>Student ID</Label>
             <Input type="text" name="studentId" value={entryData.studentId} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Name</label>
+            <Label color="body" spacing={1}>Student Name</Label>
             <Input type="text" name="studentName" value={entryData.studentName} onChange={handleChange} required />
           </div>
 
           {hostelType === "unit-based" && (
             <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Unit</label>
+              <Label color="body" spacing={1}>Unit</Label>
               <Input type="text" name="unit" value={entryData.unit} onChange={handleChange} required />
             </div>
           )}
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Room</label>
+            <Label color="body" spacing={1}>Room</Label>
             <Input type="text" name="room" value={entryData.room} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Bed</label>
+            <Label color="body" spacing={1}>Bed</Label>
             <Input type="text" name="bed" value={entryData.bed} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Date</label>
+            <Label color="body" spacing={1}>Date</Label>
             <Input type="date" name="date" value={entryData.date} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Time</label>
+            <Label color="body" spacing={1}>Time</Label>
             <Input type="time" name="time" value={entryData.time} onChange={handleChange} required />
           </div>
 
           <div style={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes (Optional)</label>
+            <Label color="body" spacing={1}>Notes (Optional)</Label>
             <textarea name="notes" value={entryData.notes} onChange={handleChange} style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: 'var(--border-1) solid var(--color-border-input)', fontSize: 'var(--font-size-base)', fontFamily: 'var(--font-family-primary)', resize: 'vertical', minHeight: '80px', outline: 'none', transition: 'var(--transition-all)' }} rows="2" />
           </div>
         </Grid>

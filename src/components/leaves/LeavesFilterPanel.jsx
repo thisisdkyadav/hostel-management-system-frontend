@@ -1,6 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Grid, Select, Surface } from "@/components/ui"
+import { Grid, Label, Select, Surface } from "@/components/ui"
 import { Button, Input } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
@@ -17,7 +17,7 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
 
       <Grid min={200} gap="var(--gap-md)">
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
+          <Label color="tertiary">Status</Label>
           <Select value={filters.status} onChange={(e) => updateFilter("status", e.target.value)} options={[
             { value: "all", label: "All" },
             { value: "Pending", label: "Pending" },
@@ -27,17 +27,17 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Start Date</label>
+          <Label color="tertiary">Start Date</Label>
           <Input type="date" value={filters.startDate} onChange={(e) => updateFilter("startDate", e.target.value)} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>End Date</label>
+          <Label color="tertiary">End Date</Label>
           <Input type="date" value={filters.endDate} onChange={(e) => updateFilter("endDate", e.target.value)} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Items Per Page</label>
+          <Label color="tertiary">Items Per Page</Label>
           <Select value={filters.limit} onChange={(e) => updateFilter("limit", Number(e.target.value))} options={[
             { value: 5, label: "5" },
             { value: 10, label: "10" },

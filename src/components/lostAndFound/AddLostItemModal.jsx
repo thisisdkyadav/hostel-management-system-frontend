@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { FileInput, Grid, HStack, Select, Text, VStack } from "@/components/ui"
+import { FileInput, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -94,22 +94,22 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         <VStack gap="var(--gap-md)">
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Item Name</label>
+            <Label color="secondary" spacing={2}>Item Name</Label>
             <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter item name" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
+            <Label color="secondary" spacing={2}>Description</Label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} placeholder="Describe the item, condition, where it was found, etc." required></textarea>
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>
+            <Label color="secondary" spacing={2}>
               <HStack gap="none" align="center">
                 <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
                 Item Images (Optional)
               </HStack>
-            </label>
+            </Label>
             <div style={{ position: 'relative' }}>
               <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
               {uploading && (
@@ -143,12 +143,12 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
 
           <Grid min={200} gap="var(--gap-md)">
             <div>
-              <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Date Found</label>
+              <Label color="secondary" spacing={2}>Date Found</Label>
               <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} icon={<FaCalendarAlt />} required />
             </div>
 
             <div>
-              <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Status</label>
+              <Label color="secondary" spacing={2}>Status</Label>
               <Select name="status" value={formData.status} onChange={handleChange} options={[
                 { value: "Active", label: "Active" },
                 { value: "Claimed", label: "Claimed" }

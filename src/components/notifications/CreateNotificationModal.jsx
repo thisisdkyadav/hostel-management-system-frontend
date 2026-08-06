@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Checkbox, EmptyState, Grid, Heading, HStack, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
+import { Checkbox, EmptyState, Grid, Heading, HStack, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
@@ -192,17 +192,17 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           )}
 
           <div>
-            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Notification Title</label>
+            <Label color="body" spacing={2}>Notification Title</Label>
             <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter notification title" required />
           </div>
 
           <div>
-            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Message</label>
+            <Label color="body" spacing={2}>Message</Label>
             <Textarea name="message" value={formData.message} onChange={handleChange} rows={4} placeholder="Enter notification message" required />
           </div>
 
           <div>
-            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Expiry Date</label>
+            <Label color="body" spacing={2}>Expiry Date</Label>
             <Input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} min={new Date().toISOString().split("T")[0]} required />
             <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Notifications will be shown to students until this date</Text>
           </div>
@@ -213,7 +213,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
             <Grid min={250} gap={4}>
               <div>
-                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Hostel(s)</label>
+                <Label color="body" spacing={2}>Hostel(s)</Label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {hostelList && hostelList.length > 0 ? (
                     hostelList.map((hostel) => <Checkbox key={hostel._id} id={`hostel-${hostel._id}`} name="hostelIds" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} label={hostel.name} />)
@@ -225,7 +225,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               </div>
 
               <div>
-                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Department(s)</label>
+                <Label color="body" spacing={2}>Department(s)</Label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
                     <Text size="sm" color="muted">Loading departments...</Text>
@@ -239,7 +239,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               </div>
 
               <div>
-                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Degree(s)</label>
+                <Label color="body" spacing={2}>Degree(s)</Label>
                 <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
                     <Text size="sm" color="muted">Loading degrees...</Text>
@@ -253,7 +253,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
               </div>
 
               <div>
-                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Gender</label>
+                <Label color="body" spacing={2}>Gender</Label>
                 <Select
                   name="gender"
                   value={formData.gender}

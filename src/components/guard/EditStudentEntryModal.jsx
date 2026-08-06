@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { Button, Input } from "czero/react"
-import { Grid, HStack, Modal, useConfirm } from "@/components/ui"
+import { Grid, HStack, Label, Modal, useConfirm } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -67,39 +67,39 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
 
         <Grid min={250} gap={4} style={{ marginBottom: 'var(--spacing-4)' }}>
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Email</label>
+            <Label color="body" spacing={1}>Student Email</Label>
             <Input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Name</label>
+            <Label color="body" spacing={1}>Student Name</Label>
             <Input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly />
           </div>
 
           {hostelType === "unit-based" && (
             <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Unit</label>
+              <Label color="body" spacing={1}>Unit</Label>
               <Input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly />
             </div>
           )}
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Room</label>
+            <Label color="body" spacing={1}>Room</Label>
             <Input type="text" name="room" value={formData.room} onChange={handleChange} readOnly required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Bed</label>
+            <Label color="body" spacing={1}>Bed</Label>
             <Input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Date</label>
+            <Label color="body" spacing={1}>Date</Label>
             <Input type="date" name="date" value={formData.date} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Time</label>
+            <Label color="body" spacing={1}>Time</Label>
             <Input type="time" name="time" value={formData.time} onChange={handleChange} required />
           </div>
         </Grid>

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button, Input } from "czero/react"
-import { Modal, Text, VStack } from "@/components/ui"
+import { Label, Modal, Text, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -81,13 +81,13 @@ const ChangePasswordModal = ({ onClose, email }) => {
         {errors.form && <div style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", fontSize: "var(--font-size-sm)" }}>{errors.form}</div>}
 
         <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Current Password</label>
+          <Label color="secondary" spacing={2}>Current Password</Label>
           <Input type="password" name="currentPassword" id="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Enter your current password" error={errors.currentPassword} />
           {errors.currentPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.currentPassword}</Text>}
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>New Password</label>
+          <Label color="secondary" spacing={2}>New Password</Label>
           <Input type="password" name="newPassword" id="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Enter your new password" error={errors.newPassword} />
           {errors.newPassword ? (
             <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.newPassword}</Text>
@@ -101,7 +101,7 @@ const ChangePasswordModal = ({ onClose, email }) => {
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Confirm New Password</label>
+          <Label color="secondary" spacing={2}>Confirm New Password</Label>
           <Input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your new password" error={errors.confirmPassword} />
           {errors.confirmPassword && <Text size="sm" color="danger-text" style={{ marginTop: "var(--spacing-1-5)" }}>{errors.confirmPassword}</Text>}
         </div>

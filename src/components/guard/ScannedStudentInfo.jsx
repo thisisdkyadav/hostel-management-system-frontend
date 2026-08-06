@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Button } from "czero/react"
-import { Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -43,9 +43,9 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <Heading as="h3" size="lg" weight="semibold" color="warning-text" style={{ marginBottom: 'var(--spacing-2)' }}>Cross-Hostel Entry Alert</Heading>
               <Text color="warning-text" size="sm" style={{ marginBottom: 'var(--spacing-3)' }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</Text>
               <VStack gap={2}>
-                <label htmlFor="crossHostelReason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>
+                <Label color="warning-text" spacing="0" htmlFor="crossHostelReason">
                   Reason for Cross-Hostel Entry <Text as="span" color="danger">*</Text>
-                </label>
+                </Label>
                 <textarea id="crossHostelReason" value={crossHostelReason} onChange={(e) => setCrossHostelReason(e.target.value)}
                   placeholder="Enter reason for allowing this cross-hostel entry..."
                   style={{

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { Badge, Card, Heading, HStack, IconCircle, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
+import { Badge, Card, Heading, HStack, IconCircle, Label, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
 import { Button, StatusBadge, Table } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -121,18 +121,9 @@ const FaceScannerEntriesPage = () => {
                             This student belongs to a different hostel. Please provide a reason for allowing this check-in entry.
                         </Text>
                         <div style={{ marginBottom: "var(--spacing-3)" }}>
-                            <label
-                                htmlFor={`reason-${entry._id}`}
-                                style={{
-                                    display: "block",
-                                    fontSize: "var(--font-size-sm)",
-                                    fontWeight: "var(--font-weight-medium)",
-                                    color: "var(--color-warning-text)",
-                                    marginBottom: "var(--spacing-1)",
-                                }}
-                            >
+                            <Label color="warning-text" spacing={1} htmlFor={`reason-${entry._id}`}>
                                 Reason for Cross-Hostel Check-In <Text as="span" color="danger">*</Text>
-                            </label>
+                            </Label>
                             <textarea
                                 id={`reason-${entry._id}`}
                                 value={currentReason}

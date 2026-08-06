@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Select, Text, VStack } from "@/components/ui"
+import { Label, Select, Text, VStack } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { Modal } from "@/components/ui"
 
@@ -72,25 +72,25 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
 
         <VStack gap={4}>
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Complaint Title</label>
+            <Label color="secondary" spacing={2}>Complaint Title</Label>
             <Input type="text" name="title" placeholder="Brief summary of the issue" value={formData.title} onChange={handleChange} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
+            <Label color="secondary" spacing={2}>Description</Label>
             <textarea name="description" placeholder="Please provide details about the issue..." value={formData.description} onChange={handleChange} required style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '112px', backgroundColor: 'var(--input-bg)' }} />
           </div>
 
           {/* location only for warden, associate warden, hostel supervisor, admin */}
           {["Warden", "Associate Warden", "Hostel Supervisor", "Admin"].includes(user?.role) && (
             <div>
-              <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Location</label>
+              <Label color="secondary" spacing={2}>Location</Label>
               <Input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} required />
             </div>
           )}
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
+            <Label color="secondary" spacing={2}>Category</Label>
             <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<FaClipboardList />} options={[
               { value: "Plumbing", label: "Plumbing" },
               { value: "Electrical", label: "Electrical" },

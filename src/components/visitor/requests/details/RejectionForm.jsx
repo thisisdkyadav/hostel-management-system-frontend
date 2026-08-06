@@ -1,15 +1,15 @@
 import React from "react"
 import { Button } from "czero/react"
-import { Heading, HStack } from "@/components/ui"
+import { Heading, HStack, Label } from "@/components/ui"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {
   return (
     <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', animation: 'fadeIn 0.3s ease-in-out' }}>
       <Heading as="h3" weight="medium" color="danger-text" size="base" style={{ marginBottom: 'var(--spacing-3)' }}>Reject Visitor Request</Heading>
       <div style={{ marginBottom: 'var(--spacing-3)' }}>
-        <label htmlFor="rejection-reason" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
+        <Label color="body" spacing={1} htmlFor="rejection-reason">
           Reason for Rejection (Optional)
-        </label>
+        </Label>
         <textarea id="rejection-reason" value={rejectionReason} onChange={(e) => onReasonChange(e.target.value)}
           style={{
             width: '100%',
