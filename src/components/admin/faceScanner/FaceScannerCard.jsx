@@ -13,14 +13,14 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     const getDirectionStyle = (direction) => {
         if (direction === "in") {
             return {
-                base: "bg-[var(--color-success-bg)] text-[var(--color-success-dark)]",
+                base: "bg-[var(--color-success-bg)] text-[var(--color-success-text)]",
                 hover: "bg-[var(--color-success)] text-white",
                 icon: <FaArrowRight />,
                 label: "Entry",
             }
         }
         return {
-            base: "bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)]",
+            base: "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
             hover: "bg-[var(--color-warning)] text-white",
             icon: <FaArrowLeft />,
             label: "Exit",

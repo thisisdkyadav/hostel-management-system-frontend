@@ -620,7 +620,7 @@ const SummaryMetric = ({ icon: Icon, label, value }) => {
       alignItems: "center",
       gap: "var(--spacing-3)",
       boxShadow: "var(--shadow-sm)",
-      transition: "all var(--transition-base) ease",
+      transition: "all var(--transition-normal) ease",
     }} className="summary-metric-hover">
       <div style={{
         width: 44,
@@ -1274,7 +1274,7 @@ const ReviewItemDetailModal = ({
                           border: "1px solid var(--color-border-primary)",
                           borderRadius: "var(--radius-md)",
                           backgroundColor: "var(--color-bg-primary)",
-                          transition: "all var(--transition-base) ease",
+                          transition: "all var(--transition-normal) ease",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2-5)", minWidth: 0 }}>

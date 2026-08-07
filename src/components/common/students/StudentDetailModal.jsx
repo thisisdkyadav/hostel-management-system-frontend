@@ -309,7 +309,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 {/* Details - Middle */}
                 <div style={{ marginLeft: "var(--spacing-6)", flex: 1, textAlign: "left" }}>
                   <Heading as="h3" size="2xl" weight="bold" color="secondary" style={{ marginBottom: "var(--spacing-1)" }}>{studentDetails.name || "N/A"}</Heading>
-                  <Text color="muted" style={{ marginBottom: "var(--spacing-2)", fontFamily: "var(--font-mono)" }}>{studentDetails.rollNumber || "N/A"}</Text>
+                  <Text color="muted" style={{ marginBottom: "var(--spacing-2)", fontFamily: "var(--font-family-mono)" }}>{studentDetails.rollNumber || "N/A"}</Text>
 
                   <HStack gap={4} align="center">
                     <HStack gap="none" align="center">

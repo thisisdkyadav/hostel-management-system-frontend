@@ -119,7 +119,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber || "N/A"}</Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                        <Surface as="span" bg={student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)'} size="xs" weight="semibold" leading="1.25rem" style={{ display: 'inline-flex' }}>
+                        <Surface as="span" bg={student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={student.status === "accepted" ? 'var(--color-success-text)' : student.status === "pending" ? 'var(--color-warning-text)' : 'var(--color-text-secondary)'} size="xs" weight="semibold" leading="1.25rem" style={{ display: 'inline-flex' }}>
                           {student.status === "accepted" ? "Accepted" : student.status === "pending" ? "Pending" : "Not Viewed"}
                         </Surface>
                       </Table.Cell>

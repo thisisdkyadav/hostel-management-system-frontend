@@ -41,9 +41,9 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
   const getTextColor = () => {
     switch (type) {
       case "success":
-        return "text-[var(--color-success-dark)]"
+        return "text-[var(--color-success-text)]"
       case "error":
-        return "text-[var(--color-danger-dark)]"
+        return "text-[var(--color-danger-text)]"
       default:
         return "text-[var(--color-primary-dark)]"
     }

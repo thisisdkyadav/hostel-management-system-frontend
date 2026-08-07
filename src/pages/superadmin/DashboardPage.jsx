@@ -79,7 +79,7 @@ const DashboardPage = () => {
 
           <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)', overflow: 'hidden', transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-lg)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}>
             <Surface padding="var(--spacing-5) var(--spacing-6)" className="flex items-center">
-              <Surface bg="var(--color-coed-light-bg)" padding={3} radius="full">
+              <Surface bg="var(--color-coed-bg)" padding={3} radius="full">
                 <FaKey style={{ height: '1.5rem', width: '1.5rem' }} color="var(--color-coed-text)" />
               </Surface>
               <div style={{ marginLeft: 'var(--spacing-4)' }}>

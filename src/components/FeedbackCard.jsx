@@ -39,7 +39,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   }
 
   const getStatusColor = (status) => {
-    return status === "Pending" ? "bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)]" : "bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
+    return status === "Pending" ? "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]" : "bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
   }
 
   const handleToggleSeen = async () => {

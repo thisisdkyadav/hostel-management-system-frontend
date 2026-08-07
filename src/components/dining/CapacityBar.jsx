@@ -46,7 +46,7 @@ const CapacityBar = ({ allocated = 0, total = 0, size = "md", showLabel = true, 
             height: "100%",
             backgroundColor: fillColor,
             borderRadius: "var(--radius-full)",
-            transition: "width var(--transition-slow), background-color var(--transition-base)",
+            transition: "width var(--transition-slow), background-color var(--transition-normal)",
           }}
         />
       </div>

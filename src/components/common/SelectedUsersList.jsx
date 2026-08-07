@@ -10,8 +10,8 @@ const SelectedUsersList = ({ users, onRemove, title = "Selected Users", disabled
       Warden: "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
       "Associate Warden": "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
       "Hostel Supervisor": "bg-[var(--color-success-bg-light)] text-[var(--color-success)]",
-      Security: "bg-[var(--color-success-bg-light)] text-[var(--color-success-dark)]",
-      "Maintenance Staff": "bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)]",
+      Security: "bg-[var(--color-success-bg-light)] text-[var(--color-success-text)]",
+      "Maintenance Staff": "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
       Student: "bg-[var(--color-primary-bg)] text-[var(--color-primary-dark)]",
     }
 

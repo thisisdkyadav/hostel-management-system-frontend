@@ -15,7 +15,7 @@ const OfflineBanner = ({ message = "You are currently offline", className = "", 
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <IoCloudOfflineOutline className="text-[var(--color-warning)] text-xl mr-2" />
-          <p className="text-[var(--color-warning-dark)] text-sm font-medium">{message}</p>
+          <p className="text-[var(--color-warning-text)] text-sm font-medium">{message}</p>
         </div>
         {showDismiss && (
           <Button onClick={() => setDismissed(true)} variant="ghost" size="sm" aria-label="Dismiss"><FaTimes className="h-4 w-4" /></Button>

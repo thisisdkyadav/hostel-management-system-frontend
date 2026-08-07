@@ -11,8 +11,9 @@
     "preview": "vite preview",
     "flatten-jsx": "node scripts/flatten-jsx.js",
     "lint:jsx-refs": "node scripts/check-jsx-references.js",
-    "check": "npm run lint:jsx-refs && npm run check:csv && npm run lint",
-    "check:csv": "node scripts/check-csv-escaping.js"
+    "check": "npm run lint:jsx-refs && npm run check:csv && npm run check:tokens && npm run lint",
+    "check:csv": "node scripts/check-csv-escaping.js",
+    "check:tokens": "node scripts/check-theme-tokens.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",

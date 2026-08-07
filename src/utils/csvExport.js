@@ -19,11 +19,15 @@ const FORMULA_LEAD = new Set(["=", "+", "-", "@", "\t", "\r"])
  * Blanks an importer may skip before deciding what a cell is.
  *
  * Written as explicit alternatives rather than a character class, because a
- * class is where this goes wrong: `[ \t-​]` looks like three characters
- * and is actually the range U+0020–U+200B, which matches almost everything.
- * A guard built on that silently matches the empty string and stops guarding.
+ * class is where this goes wrong: `[ \t-X]` with a literal U+200B in the X
+ * position looks like three characters and is actually the range
+ * U+0020-U+200B, which matches almost everything. A guard built on that
+ * silently matches the empty string and stops guarding.
+ *
+ * The two zero-width characters are written as escapes for the same reason
+ * the range was a trap: pasted literally they are invisible in review.
  */
-const LEADING_BLANKS = /^(?:[\s]|​|﻿)+/
+const LEADING_BLANKS = /^(?:\s|\u200B|\uFEFF)+/
 
 /**
  * A value we are certain a spreadsheet should keep as a number.
@@ -75,7 +79,7 @@ export const looksLikeFormula = (text) => {
 export const escapeCsvValue = (value) => {
   const text = toText(value)
   const guarded = looksLikeFormula(text) && !PLAIN_NUMBER.test(text) ? GUARD + text : text
-  return /["\,\n\r]/.test(guarded) ? `"${guarded.replace(/"/g, '""')}"` : guarded
+  return /[",\n\r]/.test(guarded) ? `"${guarded.replace(/"/g, '""')}"` : guarded
 }
 
 /**

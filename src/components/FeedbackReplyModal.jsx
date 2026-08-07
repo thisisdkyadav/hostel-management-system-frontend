@@ -51,7 +51,7 @@ const FeedbackReplyModal = ({ isOpen, onClose, feedback, onReply }) => {
           <p className="text-sm text-[var(--color-text-muted)]">{feedback?.description}</p>
         </div>
 
-        <div className="px-3 py-2 inline-block bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)] rounded-full text-xs">
+        <div className="px-3 py-2 inline-block bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] rounded-full text-xs">
           <span>Note: This feedback will be marked as seen after reply</span>
         </div>
 

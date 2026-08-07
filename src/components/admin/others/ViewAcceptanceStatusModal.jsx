@@ -90,11 +90,11 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
           </Surface>
           <Surface bg="success" padding={4} radius="lg">
             <Text as="div" size="sm" color="success" weight="medium">Accepted</Text>
-            <Text as="div" size="2xl" weight="bold" color="var(--color-success-dark)">{acceptedCount}</Text>
+            <Text as="div" size="2xl" weight="bold" color="var(--color-success-text)">{acceptedCount}</Text>
           </Surface>
           <Surface bg="warning" padding={4} radius="lg">
             <Text as="div" size="sm" color="warning" weight="medium">Pending</Text>
-            <Text as="div" size="2xl" weight="bold" color="var(--color-warning-dark)">{pendingCount}</Text>
+            <Text as="div" size="2xl" weight="bold" color="var(--color-warning-text)">{pendingCount}</Text>
           </Surface>
           <Surface bg="var(--color-bg-hover)" padding={4} radius="lg">
             <Text as="div" size="sm" color="muted" weight="medium">Not Viewed</Text>
@@ -176,7 +176,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)' }}>{student.rollNumber || "N/A"}</Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <Surface as="span" bg={student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)'} size="xs" weight="semibold" leading="1.25rem" style={{ display: 'inline-flex' }}>
+                      <Surface as="span" bg={student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)'} padding="var(--spacing-1) var(--spacing-2)" radius="full" color={student.status === "accepted" ? 'var(--color-success-text)' : student.status === "pending" ? 'var(--color-warning-text)' : 'var(--color-text-secondary)'} size="xs" weight="semibold" leading="1.25rem" style={{ display: 'inline-flex' }}>
                         {student.status === "accepted" ? "Accepted" : student.status === "pending" ? "Pending" : "Not Viewed"}
                       </Surface>
                     </Table.Cell>

@@ -75,7 +75,7 @@ const AdminManagementPage = () => {
         <div className="text-[var(--color-text-muted)] mb-[var(--spacing-4)]">Manage HCU staff accounts for admin operations. All users here are created with role Admin and sub-role HCU.</div>
 
         <div className="flex justify-end">
-          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search HCU staff by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search HCU staff by name or email" className="w-full sm:w-64 md:w-72" />
         </div>
       </div>
 
