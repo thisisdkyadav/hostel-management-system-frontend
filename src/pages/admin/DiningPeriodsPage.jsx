@@ -7,6 +7,7 @@ import { Alert, ConfirmDialog, EmptyState, Grid, Heading, HStack, Page, SearchIn
 import PeriodCard from "@/components/dining/PeriodCard"
 import PeriodDetailModal from "@/components/dining/PeriodDetailModal"
 import PeriodFormModal from "@/components/dining/PeriodFormModal"
+import ManageAllocationsModal from "@/components/dining/ManageAllocationsModal"
 import {
   ELIGIBILITY_MODE_CUSTOM,
   getErrorMessage,
@@ -41,6 +42,7 @@ const DiningPeriodsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPeriod, setEditingPeriod] = useState(null)
   const [viewingPeriod, setViewingPeriod] = useState(null)
+  const [managingPeriod, setManagingPeriod] = useState(null)
   const [archiveTarget, setArchiveTarget] = useState(null)
 
   const filteredPeriods = useMemo(() => {
@@ -231,7 +233,13 @@ const DiningPeriodsPage = () => {
                   <SectionHeader title={section.title} count={section.items.length} />
                   <Grid cols={{ sm: 2, xl: 3 }} gap={4}>
                     {section.items.map((period) => (
-                      <PeriodCard key={period.id} period={period} onView={setViewingPeriod} onEdit={openEdit} />
+                      <PeriodCard
+                        key={period.id}
+                        period={period}
+                        onView={setViewingPeriod}
+                        onEdit={openEdit}
+                        onManage={setManagingPeriod}
+                      />
                     ))}
                   </Grid>
                 </section>
@@ -277,6 +285,13 @@ const DiningPeriodsPage = () => {
               }
             : null
         }
+      />
+
+      <ManageAllocationsModal
+        isOpen={Boolean(managingPeriod)}
+        period={managingPeriod}
+        onClose={() => setManagingPeriod(null)}
+        onChanged={() => fetchPeriods()}
       />
 
       <ConfirmDialog

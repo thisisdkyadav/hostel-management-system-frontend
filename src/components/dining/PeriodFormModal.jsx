@@ -39,6 +39,7 @@ const FORM_TABS = [
 const initialFormState = {
   startDate: "",
   endDate: "",
+  registrationEnabled: true,
   allocationStartAt: "",
   allocationEndAt: "",
   catererIds: [],
@@ -183,6 +184,7 @@ const PeriodFormModal = ({
     setFormData({
       startDate: toDateInputValue(initialData.startDate),
       endDate: toDateInputValue(initialData.endDate),
+      registrationEnabled: initialData.registrationEnabled !== false,
       allocationStartAt: toDateTimeInputValue(initialData.allocationStartAt),
       allocationEndAt: toDateTimeInputValue(initialData.allocationEndAt),
       catererIds: selectedCatererIds,
@@ -272,12 +274,14 @@ const PeriodFormModal = ({
     const fail = (tab, message) => ({ tab, message })
 
     if (!formData.startDate || !formData.endDate) return fail("schedule", "Start date and end date are required.")
-    if (!formData.allocationStartAt || !formData.allocationEndAt)
-      return fail("schedule", "Allocation start and end time are required.")
     if (new Date(formData.startDate) > new Date(formData.endDate))
       return fail("schedule", "Start date must be before or equal to end date.")
-    if (new Date(formData.allocationStartAt) > new Date(formData.allocationEndAt))
-      return fail("schedule", "Allocation start time must be before or equal to allocation end time.")
+    if (formData.registrationEnabled) {
+      if (!formData.allocationStartAt || !formData.allocationEndAt)
+        return fail("schedule", "Allocation start and end time are required.")
+      if (new Date(formData.allocationStartAt) > new Date(formData.allocationEndAt))
+        return fail("schedule", "Allocation start time must be before or equal to allocation end time.")
+    }
 
     if (formData.catererIds.length === 0) return fail("caterers", "Please select at least one caterer.")
     if (formData.catererCapacities.some((entry) => Number(entry.maxStudentCount || 0) < 1))
@@ -315,8 +319,9 @@ const PeriodFormModal = ({
       await onSubmit({
         startDate: formData.startDate,
         endDate: formData.endDate,
-        allocationStartAt: formData.allocationStartAt,
-        allocationEndAt: formData.allocationEndAt,
+        registrationEnabled: formData.registrationEnabled,
+        allocationStartAt: formData.registrationEnabled ? formData.allocationStartAt : "",
+        allocationEndAt: formData.registrationEnabled ? formData.allocationEndAt : "",
         catererIds: formData.catererIds,
         catererCapacities: formData.catererCapacities.map((entry) => ({
           ...entry,
@@ -440,16 +445,45 @@ const PeriodFormModal = ({
                     onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
                 </Field>
               </Grid>
-              <Grid min={220} gap={4}>
-                <Field label="Allocation Opens" htmlFor="allocationStartAt" required>
-                  <Input id="allocationStartAt" type="datetime-local" value={formData.allocationStartAt}
-                    onChange={(e) => setFormData((p) => ({ ...p, allocationStartAt: e.target.value }))} required />
-                </Field>
-                <Field label="Allocation Closes" htmlFor="allocationEndAt" required>
-                  <Input id="allocationEndAt" type="datetime-local" value={formData.allocationEndAt}
-                    onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
-                </Field>
-              </Grid>
+              <Surface bg="var(--color-bg-secondary)" padding={4} radius="lg" border="1px solid var(--color-border-primary)">
+                <HStack justify="between" align="start" gap={3}>
+                  <span style={{ flex: 1 }}>
+                    <Label htmlFor="registrationEnabled" style={{ cursor: "pointer" }}>Student self-registration</Label>
+                    <Text as="span" color="muted" size="sm" style={{ display: "block" }}>
+                      When on, students pick their own caterer during a timed window. When off, you assign caterers
+                      manually from “Manage Students”.
+                    </Text>
+                  </span>
+                  <label style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-2)", whiteSpace: "nowrap", cursor: "pointer" }}>
+                    <input
+                      id="registrationEnabled"
+                      type="checkbox"
+                      checked={formData.registrationEnabled}
+                      onChange={(e) => setFormData((p) => ({ ...p, registrationEnabled: e.target.checked }))}
+                    />
+                    <Text as="span" color="secondary" size="sm" weight="medium">
+                      {formData.registrationEnabled ? "Enabled" : "Disabled"}
+                    </Text>
+                  </label>
+                </HStack>
+              </Surface>
+              {formData.registrationEnabled ? (
+                <Grid min={220} gap={4}>
+                  <Field label="Allocation Opens" htmlFor="allocationStartAt" required>
+                    <Input id="allocationStartAt" type="datetime-local" value={formData.allocationStartAt}
+                      onChange={(e) => setFormData((p) => ({ ...p, allocationStartAt: e.target.value }))} required />
+                  </Field>
+                  <Field label="Allocation Closes" htmlFor="allocationEndAt" required>
+                    <Input id="allocationEndAt" type="datetime-local" value={formData.allocationEndAt}
+                      onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
+                  </Field>
+                </Grid>
+              ) : (
+                <Alert type="warning" icon>
+                  Self-registration is off. Students won’t see this period to pick a caterer — assign them yourself
+                  from the “Manage Students” action on the period card (single, or bulk by roll-number CSV).
+                </Alert>
+              )}
               <Grid min={220} gap={4}>
                 <Field label="Daily Rate (₹ / day)" htmlFor="dailyRate">
                   <Input id="dailyRate" type="number" min="0" step="0.01" placeholder="0"
@@ -458,8 +492,8 @@ const PeriodFormModal = ({
                 </Field>
               </Grid>
               <Alert type="info" icon>
-                Students can pick a caterer only while the allocation window is open. The period dates control when meals are verified.
-                The daily rate is what each eligible student is billed per day in this period (skipping approved-rebate days) — used by billing periods.
+                The period dates control when meals are verified. The daily rate is what each eligible student is
+                billed per day in this period (skipping approved-rebate days) — used by billing periods.
               </Alert>
             </VStack>
           )}

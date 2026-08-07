@@ -120,6 +120,7 @@ export const normalizePeriod = (period = {}) => {
     id: period.id || period._id,
     startDate: period.startDate,
     endDate: period.endDate,
+    registrationEnabled: period.registrationEnabled !== false,
     allocationStartAt: period.allocationStartAt,
     allocationEndAt: period.allocationEndAt,
     catererIds: Array.isArray(period.catererIds) ? period.catererIds.map(getIdValue).filter(Boolean) : [],
@@ -166,6 +167,9 @@ export const allocationStatusTone = (status) => {
       return "warning"
     case "Not configured":
       return "danger"
+    case "Manual":
+      // No self-registration window; admin assigns caterers manually.
+      return "primary"
     default:
       return "primary"
   }

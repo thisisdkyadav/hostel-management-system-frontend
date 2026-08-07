@@ -23,7 +23,7 @@ const MealSlotChip = ({ slot }) => (
  * A single dining period rendered as a scannable card.
  * Clicking the card body opens the read-only detail drawer; Edit is explicit.
  */
-const PeriodCard = ({ period, onView, onEdit }) => (
+const PeriodCard = ({ period, onView, onEdit, onManage }) => (
   <Card
     onClick={() => onView(period)}
     padding="p-4 md:p-5"
@@ -81,6 +81,18 @@ const PeriodCard = ({ period, onView, onEdit }) => (
       >
         <Eye size={16} /> View
       </Button>
+      {onManage && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={(event) => {
+            event.stopPropagation()
+            onManage(period)
+          }}
+        >
+          <Users size={16} /> Students
+        </Button>
+      )}
       <Button
         variant="secondary"
         size="sm"

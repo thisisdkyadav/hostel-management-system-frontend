@@ -144,6 +144,51 @@ export const adminApi = {
     return apiClient.put(`/admin/dining-periods/${periodId}/archive`, { status }).then(unwrapStandardResponse)
   },
 
+  // ==================== Dining Period Allocations (manual caterer lists) ====================
+
+  /**
+   * Get the caterer-wise student lists for a dining period (with live counts).
+   * @param {string} periodId - Dining period ID
+   */
+  getDiningPeriodAllocations: (periodId) => {
+    return apiClient.get(`/admin/dining-periods/${periodId}/allocations`).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Assign or move a single student to a caterer in a period.
+   * @param {string} periodId - Dining period ID
+   * @param {Object} payload - { rollNumber?, studentUserId?, catererId, force? }
+   */
+  assignDiningAllocation: (periodId, payload) => {
+    return apiClient.post(`/admin/dining-periods/${periodId}/allocations`, payload).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Bulk-assign a roll-number list to one caterer in a period.
+   * @param {string} periodId - Dining period ID
+   * @param {Object} payload - { catererId, rollNumbers: string[], force? }
+   */
+  bulkAssignDiningAllocations: (periodId, payload) => {
+    return apiClient.post(`/admin/dining-periods/${periodId}/allocations/bulk`, payload).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Remove a student's allocation from a period.
+   * @param {string} periodId - Dining period ID
+   * @param {string} studentUserId - Student user ID
+   */
+  removeDiningAllocation: (periodId, studentUserId) => {
+    return apiClient.delete(`/admin/dining-periods/${periodId}/allocations/${studentUserId}`).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Recompute the per-caterer seat counters from the actual allocation rows.
+   * @param {string} periodId - Dining period ID
+   */
+  reconcileDiningAllocations: (periodId) => {
+    return apiClient.post(`/admin/dining-periods/${periodId}/allocations/reconcile`, {}).then(unwrapStandardResponse)
+  },
+
   /**
    * Get dining rebate requests
    */
