@@ -681,7 +681,10 @@ const PorRequestsPage = () => {
   const openRequest = (request) => {
     setSelectedRequest(request)
     setSelectedRequestGroup(null)
-    setReviewComment(request?.rejectionReason || "")
+    // Always a fresh box: prefilling with the stored rejectionReason meant a
+    // later "approve" could submit the previous reviewer's rejection text as
+    // its comment. The past reason is data, not a draft.
+    setReviewComment("")
     setPostSaAssignments({})
   }
 
