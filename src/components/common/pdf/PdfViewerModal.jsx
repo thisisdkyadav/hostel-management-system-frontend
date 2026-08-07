@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 

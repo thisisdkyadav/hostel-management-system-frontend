@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../service"
 import { Field, Label, Select } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"

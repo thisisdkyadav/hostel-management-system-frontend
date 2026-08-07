@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
 import { Field, Grid, Label, Select, Surface, Text, Textarea } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {

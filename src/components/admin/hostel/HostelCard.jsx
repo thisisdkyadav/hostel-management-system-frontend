@@ -4,7 +4,7 @@ import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
 import { Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)

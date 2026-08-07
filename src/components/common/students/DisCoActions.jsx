@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const formatDisplayDate = (value) => {
   if (!value) return "-"

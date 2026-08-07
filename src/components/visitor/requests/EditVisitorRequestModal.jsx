@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
 import { Alert, Grid, Heading, HStack, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { visitorApi } from "../../../service"
 

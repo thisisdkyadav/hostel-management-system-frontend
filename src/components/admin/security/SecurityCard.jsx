@@ -4,7 +4,7 @@ import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()

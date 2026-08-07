@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, DataTable, StatusBadge } from "czero/react"
+import { DataTable, StatusBadge } from "czero/react"
+import { Button } from "hzero"
 import { Plus, Pencil, Trash2, UserCog, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"

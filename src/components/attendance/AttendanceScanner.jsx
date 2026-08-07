@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
-import { Button, StatusBadge, Input } from "czero/react"
+import { StatusBadge } from "czero/react"
+import { Button, Input } from "hzero"
 import { Alert, Avatar, HStack, Text, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import { Camera, CameraOff, Keyboard, UserCheck } from "lucide-react"

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
 import { Alert, Field, HStack, Label, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
 

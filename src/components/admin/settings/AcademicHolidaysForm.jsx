@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
 
 const YEAR_REGEX = /^\d{4}$/

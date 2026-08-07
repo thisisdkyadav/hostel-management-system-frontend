@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
 import { Checkbox, Grid, Label, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
   if (targetType === "all") return null

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
   const [visible, setVisible] = useState(true)

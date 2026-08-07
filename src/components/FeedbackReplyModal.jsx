@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import { HiPaperAirplane } from "react-icons/hi"
 import { FaComment, FaReply } from "react-icons/fa"

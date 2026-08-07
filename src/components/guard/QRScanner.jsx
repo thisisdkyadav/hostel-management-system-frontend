@@ -4,7 +4,7 @@ import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Heading, HStack, Spinner, Surface, Text } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {

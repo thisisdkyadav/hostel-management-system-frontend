@@ -4,7 +4,7 @@ import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, InfoRow, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()

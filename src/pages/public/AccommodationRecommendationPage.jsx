@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Alert, Heading, RadioGroup, Spinner, Text, Textarea, VStack } from "@/components/ui"
 import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
 import { FileText, UserCheck, GraduationCap } from "lucide-react"

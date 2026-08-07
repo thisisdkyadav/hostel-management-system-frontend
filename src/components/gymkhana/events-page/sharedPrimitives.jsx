@@ -1,5 +1,5 @@
 import { createElement } from "react"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
 import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"

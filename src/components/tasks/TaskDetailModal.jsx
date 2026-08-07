@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
 import { Grid, Heading, HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
 const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedStatusUpdates = TASK_STATUSES, isUserView = false }) => {

@@ -1,6 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Heading, HStack, IconCircle, Surface, Text } from "@/components/ui"
 
 const AccessDenied = ({ title = "Access Denied", message = "You do not have permission to access this page.", icon, suggestion, buttonText = "Return to Home", to = "/" }) => {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"

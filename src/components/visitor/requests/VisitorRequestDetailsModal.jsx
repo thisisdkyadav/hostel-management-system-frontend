@@ -4,7 +4,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
 import { Grid, Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 // Import smaller components
 import StatusBadge from "./details/StatusBadge"

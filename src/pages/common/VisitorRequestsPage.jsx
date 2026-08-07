@@ -7,7 +7,7 @@ import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitor
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
 import { EmptyState, ErrorState, Heading, LoadingState, Pagination, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
 

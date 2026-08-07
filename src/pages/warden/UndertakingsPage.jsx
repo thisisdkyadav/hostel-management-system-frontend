@@ -6,7 +6,7 @@ import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
 import { adminApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings

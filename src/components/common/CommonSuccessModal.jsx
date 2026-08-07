@@ -1,6 +1,6 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {

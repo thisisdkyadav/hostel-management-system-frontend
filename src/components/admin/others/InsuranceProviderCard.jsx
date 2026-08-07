@@ -4,7 +4,7 @@ import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
 import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const confirm = useConfirm()

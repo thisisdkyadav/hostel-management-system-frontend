@@ -3,7 +3,7 @@ import { FormField } from "@/components/ui"
 import { FaTrash, FaUpload } from "react-icons/fa"
 import { uploadApi, certificateApi, resolveUploadedFileRef } from "../../../service"
 import { FileInput } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 
 const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null, studentId }) => {

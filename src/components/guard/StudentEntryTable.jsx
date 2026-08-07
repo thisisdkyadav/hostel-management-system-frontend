@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import { Button, StatusBadge, Table } from "czero/react"
+import { StatusBadge, Table } from "czero/react"
+import { Button } from "hzero"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
 import { Surface, Text } from "@/components/ui"

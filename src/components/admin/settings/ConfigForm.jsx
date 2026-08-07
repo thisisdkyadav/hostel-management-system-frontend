@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave } from "react-icons/hi"
 import { Alert, Checkbox, HStack, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 // "maxLeaveDays" / "max_leave_days" -> "Max Leave Days" (display only)
 const formatKeyLabel = (key) =>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { Button, Tabs } from "czero/react"
+import { Tabs } from "czero/react"
+import { Button } from "hzero"
 import { RefreshCw } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"

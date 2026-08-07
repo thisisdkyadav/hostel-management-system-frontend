@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
 import { Checkbox, EmptyState, Field, Grid, Heading, HStack, InfoRow, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
 import { useGlobal } from "../../contexts/GlobalProvider"

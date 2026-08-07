@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
 import { Alert, Grid, Heading, HStack, IconCircle, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
 

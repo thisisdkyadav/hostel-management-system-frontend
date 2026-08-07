@@ -3,7 +3,7 @@ import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Alert, Field, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   const confirm = useConfirm()

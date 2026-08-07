@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Modal } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
   const [isLoading, setIsLoading] = useState(true)

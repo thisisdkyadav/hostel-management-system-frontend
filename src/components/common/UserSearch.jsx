@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 import { userApi } from "../../service"
 
 const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder = "Search users...", maxResults = 5, disabled = false }) => {

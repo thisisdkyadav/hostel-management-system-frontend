@@ -3,7 +3,7 @@ import { FaEdit, FaEnvelope, FaPhone, FaUserShield } from "react-icons/fa"
 import EditAdminForm from "./EditAdminForm"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const AdminCard = ({ admin, onUpdate, onDelete, fixedSubRole }) => {
   const [showEditForm, setShowEditForm] = useState(false)

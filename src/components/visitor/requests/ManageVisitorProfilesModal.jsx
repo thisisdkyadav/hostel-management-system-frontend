@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import { Button, Input, Table } from "czero/react"
+import { Table } from "czero/react"
+import { Button, Input } from "hzero"
 import { Heading, HStack, IconCircle, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {

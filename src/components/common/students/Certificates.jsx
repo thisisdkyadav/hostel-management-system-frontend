@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 

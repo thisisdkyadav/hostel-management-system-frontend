@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { IoCloudOfflineOutline } from "react-icons/io5"
 import { FaTimes } from "react-icons/fa"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const OfflineBanner = ({ message = "You are currently offline", className = "", showDismiss = false }) => {
   const [dismissed, setDismissed] = useState(false)

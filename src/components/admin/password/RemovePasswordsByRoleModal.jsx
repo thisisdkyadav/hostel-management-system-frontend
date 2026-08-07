@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
 import { Alert, Field, HStack, Label, Select, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate", "Gymkhana", "Academics", "Caterer"]
 

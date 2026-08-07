@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaKey } from "react-icons/fa"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import ChangePasswordModal from "./ChangePasswordModal"
 
 const ChangePasswordButton = ({ email }) => {

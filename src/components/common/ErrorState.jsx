@@ -1,6 +1,6 @@
 import React from "react"
 import { FiAlertCircle } from "react-icons/fi"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const ErrorState = ({ message, onRetry, title = "Something went wrong", buttonText = "Try Again" }) => {
   return (

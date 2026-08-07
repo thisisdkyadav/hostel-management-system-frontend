@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { HiPlus, HiSave } from "react-icons/hi"
 import { createCustomCategoryDefinition } from "@/components/gymkhana/events-page/shared"
 

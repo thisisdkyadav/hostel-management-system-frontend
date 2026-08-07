@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Alert, Field, Label, Modal, Textarea, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import UserSelector from "../common/UserSelector"

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCheck, FaPlus, FaTrash } from "react-icons/fa"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { Alert, Checkbox, Field, Grid, HStack, Heading, Surface, VStack } from "@/components/ui"

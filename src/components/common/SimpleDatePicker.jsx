@@ -1,6 +1,6 @@
 import React from "react"
 import { FaCalendarAlt } from "react-icons/fa"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 
 const SimpleDatePicker = ({ selectedDate, onChange, placeholder, minDate }) => {
   const formatDateForInput = (date) => {

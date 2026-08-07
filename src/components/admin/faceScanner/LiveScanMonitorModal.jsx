@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"

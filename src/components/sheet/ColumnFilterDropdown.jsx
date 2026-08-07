@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react"
 import { Check, Search, X } from "lucide-react"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 
 const styles = {
   // Dropdown container

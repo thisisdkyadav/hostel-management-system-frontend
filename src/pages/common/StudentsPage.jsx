@@ -8,7 +8,7 @@ import UpdateStudentsModal from "../../components/common/students/UpdateStudents
 import StudentExportModal from "../../components/common/students/StudentExportModal"
 import StudentTableView from "../../components/common/students/StudentTableView"
 import { Pagination, Surface, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"

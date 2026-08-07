@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import { Grid, Heading, HStack, Modal, Surface, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
 

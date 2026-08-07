@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { MdComputer } from "react-icons/md"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import ManageSessionsModal from "./ManageSessionsModal"
 
 const ManageSessionsButton = ({ email }) => {

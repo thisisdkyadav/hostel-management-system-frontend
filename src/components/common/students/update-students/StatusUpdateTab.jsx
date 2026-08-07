@@ -1,5 +1,5 @@
 import React from "react"
-import { Select } from "czero/react"
+import { Select } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { Field } from "@/components/ui"

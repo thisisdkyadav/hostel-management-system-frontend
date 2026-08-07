@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 import {
     useReactTable,
     getCoreRowModel,

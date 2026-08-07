@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Upload, Eye } from "lucide-react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { useToast } from "@/components/ui/feedback"
 import { Label } from "@/components/ui/form"
 import { resolveUploadedFileRef } from "@/service"

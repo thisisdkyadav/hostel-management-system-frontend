@@ -3,7 +3,7 @@ import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Heading, IconCircle, Select, Spinner, Text, Textarea } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const InventoryManagement = () => {
   const { user } = useAuth()

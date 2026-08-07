@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Grid, Modal } from "@/components/ui"
 import { Card, SearchInput } from "@/components/ui"
 import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"

@@ -1,6 +1,6 @@
 import React from "react"
 import { Grid, Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
   // Floor numbers for dropdown

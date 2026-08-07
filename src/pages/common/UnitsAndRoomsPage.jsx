@@ -16,7 +16,7 @@ import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
 import { Badge, Card, Checkbox, Divider, Grid, HStack, IconCircle, Label, Spinner, Text, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { MdMeetingRoom } from "react-icons/md"
 
 const UnitsAndRoomsPage = () => {

@@ -2,7 +2,7 @@ import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import { VStack, HStack, Alert, FileInput } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 const styles = {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { idCardApi } from "../../service"
 import { HiCamera, HiInformationCircle } from "react-icons/hi"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
 

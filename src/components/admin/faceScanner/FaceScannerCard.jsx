@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
 import { Badge, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { faceScannerApi } from "../../../service"
 
 const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import PersonalInfoSection from "./sections/PersonalInfoSection"
 import AcademicInfoSection from "./sections/AcademicInfoSection"
 import GuardianInfoSection from "./sections/GuardianInfoSection"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialData)

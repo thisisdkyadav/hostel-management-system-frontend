@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Alert, Modal, VStack } from "@/components/ui"
 import { useToast } from "@/components/ui/feedback"
 import CsvUploader from "../common/CsvUploader"

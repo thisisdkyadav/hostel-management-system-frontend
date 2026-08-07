@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaCheckCircle, FaExclamationCircle, FaTimes } from "react-icons/fa"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const NotificationToast = ({ message, type = "info", duration = 3000, onClose }) => {
   const [visible, setVisible] = useState(true)

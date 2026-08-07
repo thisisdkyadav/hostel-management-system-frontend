@@ -8,7 +8,7 @@
  */
 
 import { useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal, Text } from "@/components/ui"
 import { Textarea } from "@/components/ui/form"
 import { Trash2 } from "lucide-react"

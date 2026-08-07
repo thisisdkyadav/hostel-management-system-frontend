@@ -1,6 +1,6 @@
 import React from "react"
 import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import MultiSelectDropdown from "../MultiSelectDropdown"
 import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, setPageSize, missingOptions = [] }) => {

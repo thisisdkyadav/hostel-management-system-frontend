@@ -1,4 +1,4 @@
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"

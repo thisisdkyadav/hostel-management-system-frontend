@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
 import { Modal } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const [formData, setFormData] = useState({

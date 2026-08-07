@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { leaveApi } from "../../service"
 
 const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {

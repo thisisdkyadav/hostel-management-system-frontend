@@ -1,4 +1,4 @@
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Grid, HStack, Modal, Surface, Text } from "@/components/ui"
 import { StatusPill } from "@/components/elections/ElectionShared"
 

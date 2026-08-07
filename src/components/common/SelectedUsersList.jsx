@@ -1,6 +1,6 @@
 import React from "react"
 import { FaTimes } from "react-icons/fa"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const SelectedUsersList = ({ users, onRemove, title = "Selected Users", disabled = false }) => {
   const getRoleColor = (role) => {

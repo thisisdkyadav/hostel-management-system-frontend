@@ -3,7 +3,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Grid, Surface, Text } from "@/components/ui"
 
 const QRCodeGenerator = () => {

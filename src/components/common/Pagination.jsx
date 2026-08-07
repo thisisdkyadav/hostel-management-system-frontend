@@ -1,5 +1,5 @@
 import React from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const Pagination = ({ currentPage, totalPages, paginate }) => {
   return (

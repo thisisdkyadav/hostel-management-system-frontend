@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, StatusBadge, Table } from "czero/react"
+import { StatusBadge, Table } from "czero/react"
+import { Button } from "hzero"
 import { Field, HStack, Modal, Text, VStack } from "@/components/ui"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
 import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"

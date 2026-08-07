@@ -1,6 +1,6 @@
 import React from "react"
 import { HStack, Select, Text, Textarea } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   const containerStyle = {

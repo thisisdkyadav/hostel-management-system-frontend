@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
 import { Heading, IconCircle, Pagination, Spinner, Surface, Text } from "@/components/ui"
-import { Button, Input, Table } from "czero/react"
+import { Table } from "czero/react"
+import { Button, Input } from "hzero"
 
 const AvailableInventory = () => {
   const [hostelInventory, setHostelInventory] = useState([])

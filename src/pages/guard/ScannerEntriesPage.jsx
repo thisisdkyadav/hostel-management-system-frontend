@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboard, FaArrowDown, FaArrowRight, FaInfoCircle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { Button, StatusBadge, Table } from "czero/react"
+import { StatusBadge, Table } from "czero/react"
+import { Button } from "hzero"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
 

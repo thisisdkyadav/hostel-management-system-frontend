@@ -5,7 +5,7 @@ import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
 import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, InfoRow, Surface, Text, useConfirm } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
   const confirm = useConfirm()

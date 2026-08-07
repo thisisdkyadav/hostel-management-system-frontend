@@ -1,5 +1,5 @@
 import PageHeader from "../common/PageHeader"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Plus } from "lucide-react"
 
 const FeedbackHeader = ({ userRole, onAddFeedback }) => {

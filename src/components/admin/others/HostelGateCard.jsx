@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
 import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
   const confirm = useConfirm()

@@ -9,7 +9,7 @@ import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Card, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const LostAndFoundCard = ({ item, refresh }) => {
   const { user } = useAuth()

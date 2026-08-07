@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Field, Label, Modal, Surface, Text, VStack } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"

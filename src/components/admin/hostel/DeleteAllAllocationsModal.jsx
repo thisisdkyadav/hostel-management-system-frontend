@@ -1,6 +1,6 @@
 import React from "react"
 import { HStack, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import { TriangleAlert } from "lucide-react"
 

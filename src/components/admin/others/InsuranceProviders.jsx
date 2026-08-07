@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { Grid, Heading, SearchInput, Spinner, Surface, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"

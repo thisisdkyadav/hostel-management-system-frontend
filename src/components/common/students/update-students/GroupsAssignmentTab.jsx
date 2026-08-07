@@ -1,7 +1,7 @@
 import React from "react"
 import { Checkbox, Grid, HStack } from "@/components/ui"
 import CsvUploader from "@/components/common/CsvUploader"
-import { Input } from "czero/react"
+import { Input } from "hzero"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "@/components/sheet/SheetPreviewTable"
 import ToggleButtonGroup from "@/components/common/ToggleButtonGroup"

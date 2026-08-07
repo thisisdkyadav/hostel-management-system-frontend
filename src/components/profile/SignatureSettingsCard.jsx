@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { compressImage } from "pdf-certificate-kit"
 import { useToast } from "@/components/ui/feedback"
 import { PenLine, Trash2, Upload, Type, Image as ImageIcon } from "lucide-react"

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
 import { Grid, HStack, Switch } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const getFieldDescription = (field) => {
   const descriptions = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { Select, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import { complaintApi } from "../../service"
 

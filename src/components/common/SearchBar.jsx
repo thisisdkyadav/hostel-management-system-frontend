@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const SearchBar = ({ value, onChange, placeholder = "Search...", className }) => {
   const [isFocused, setIsFocused] = useState(false)

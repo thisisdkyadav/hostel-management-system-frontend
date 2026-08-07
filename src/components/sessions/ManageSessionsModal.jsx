@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
 import { HiDesktopComputer, HiDeviceMobile, HiGlobeAlt, HiOutlineLogout } from "react-icons/hi"

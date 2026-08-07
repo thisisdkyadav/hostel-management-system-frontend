@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
 import { Alert, Field, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 import { adminApi } from "../../../service"
 

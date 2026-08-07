@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Grid, HStack, Modal, Text } from "@/components/ui"
 import { FileText, Plus } from "lucide-react"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"

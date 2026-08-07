@@ -1,7 +1,7 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
 import { Card, Checkbox, Grid, Heading, HStack, Label, Select, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
   return (

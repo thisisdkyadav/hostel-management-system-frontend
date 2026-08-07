@@ -5,7 +5,7 @@ import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { FileInput, Grid, HStack, Select, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const confirm = useConfirm()

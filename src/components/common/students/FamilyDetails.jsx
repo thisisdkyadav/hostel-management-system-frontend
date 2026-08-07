@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { useConfirm } from "@/components/ui"
 
 const FamilyDetails = ({ userId }) => {

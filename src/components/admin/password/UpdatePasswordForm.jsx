@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
 import { Alert, Field, HStack, Label, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const styles = {
   form: {

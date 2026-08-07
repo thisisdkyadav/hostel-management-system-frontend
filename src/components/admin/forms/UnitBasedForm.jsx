@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
 import { Grid, Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { FaTable, FaEdit } from "react-icons/fa"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 

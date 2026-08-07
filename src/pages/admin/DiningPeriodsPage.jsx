@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Archive, ArchiveRestore, CalendarDays, Plus, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"

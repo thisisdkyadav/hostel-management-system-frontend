@@ -1,7 +1,7 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
 import { Field, Grid, Heading, HStack, Label, Select, Surface } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   const handleChange = (e) => {

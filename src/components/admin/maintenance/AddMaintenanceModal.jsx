@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 

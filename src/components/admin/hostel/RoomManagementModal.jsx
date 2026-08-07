@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { HStack, Text, useConfirm, VStack } from "@/components/ui"
-import { Tabs, Button } from "czero/react"
+import { Tabs } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import { Table, Pencil, Trash2 } from "lucide-react"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"

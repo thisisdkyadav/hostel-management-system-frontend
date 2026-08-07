@@ -1,4 +1,5 @@
-import { Button, DataTable } from "czero/react"
+import { DataTable } from "czero/react"
+import { Button } from "hzero"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { Grid, Heading, HStack, Surface, Text } from "@/components/ui"

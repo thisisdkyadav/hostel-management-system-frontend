@@ -1,4 +1,4 @@
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { useNavigate } from "react-router-dom"
 import AuthzFieldGuide from "../../components/authz/AuthzFieldGuide"
 import useAuthz from "../../hooks/useAuthz"

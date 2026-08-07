@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
   const [formData, setFormData] = useState({

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 import { Field, Grid, Label, Modal, Surface } from "@/components/ui"
 import { leaveApi } from "../../service"
 

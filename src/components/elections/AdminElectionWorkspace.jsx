@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
-import { Button, DataTable, Tabs } from "czero/react"
+import { DataTable, Tabs } from "czero/react"
+import { Button } from "hzero"
 import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"

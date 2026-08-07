@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Grid, HStack, IconCircle, Modal, Text } from "@/components/ui"
 import { CheckCircle2, User, Users, XCircle } from "lucide-react"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"

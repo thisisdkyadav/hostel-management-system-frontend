@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"

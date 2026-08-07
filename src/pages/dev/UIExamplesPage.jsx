@@ -1,5 +1,5 @@
 import React from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import OldButton from "@/components/old-ui/OldButton"
 import { FaPlus, FaDownload, FaEnvelope, FaUsers, FaBed, FaClipboardCheck, FaExclamationTriangle } from "react-icons/fa"
 import { StatCards } from "@/components/ui/data-display"

@@ -5,7 +5,7 @@
  * Reusable across any auditable entity — pass entityType + entityId.
  */
 
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 import AuditTimeline from "./AuditTimeline"
 

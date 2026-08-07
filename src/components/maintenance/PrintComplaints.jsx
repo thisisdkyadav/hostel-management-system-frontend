@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaPrint } from "react-icons/fa"
 import { Checkbox, HStack, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Modal } from "@/components/ui"
 
 const PrintComplaints = ({ complaints }) => {

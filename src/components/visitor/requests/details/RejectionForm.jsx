@@ -1,5 +1,5 @@
 import React from "react"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { Heading, HStack, Label } from "@/components/ui"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {

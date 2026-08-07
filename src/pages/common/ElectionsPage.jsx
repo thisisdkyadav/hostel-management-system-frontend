@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Table } from "czero/react"
+import { Table } from "czero/react"
+import { Button } from "hzero"
 import { Grid, Modal, Text } from "@/components/ui"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
 import { Textarea, VStack, Label } from "@/components/ui"
-import { Button, Input } from "czero/react"
+import { Button, Input } from "hzero"
 
 const FeedbackForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({

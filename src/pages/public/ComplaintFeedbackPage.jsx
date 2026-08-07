@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
 import { Alert, Card, Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import { complaintApi } from "@/service"
 
 const ComplaintFeedbackPage = () => {

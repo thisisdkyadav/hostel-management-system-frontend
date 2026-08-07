@@ -4,7 +4,7 @@ import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Badge, Card, CardBody, CardFooter, CardHeader, Heading, HStack, IconCircle, Surface, Text } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button } from "hzero"
 
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",

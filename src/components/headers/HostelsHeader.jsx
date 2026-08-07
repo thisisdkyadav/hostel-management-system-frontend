@@ -1,4 +1,4 @@
-import { Button } from "czero/react"
+import { Button } from "hzero"
 import PageHeader from "../common/PageHeader"
 import { Plus, Archive } from "lucide-react"
 
