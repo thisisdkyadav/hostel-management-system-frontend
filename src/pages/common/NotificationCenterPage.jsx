@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import React, { useState, useEffect, useMemo, useCallback } from "react"
 import { FaBell } from "react-icons/fa"
 import NotificationStats from "../../components/notifications/NotificationStats"

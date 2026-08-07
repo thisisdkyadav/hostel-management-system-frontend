@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState, useEffect } from "react"
 import { EmptyState, Page, SearchInput } from "@/components/ui"
 import { Search } from "lucide-react"

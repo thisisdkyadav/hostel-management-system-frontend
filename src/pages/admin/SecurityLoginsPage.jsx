@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState, useEffect } from "react"
 import { FaUserShield } from "react-icons/fa"
 import { Page, SearchInput } from "@/components/ui"

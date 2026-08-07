@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
 import { Alert, Field, HStack, Label, Pagination, Spinner, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
-import { Table } from "czero/react"
-import { Button, Input } from "hzero"
+import { Table, Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const ItemTypes = () => {
   const confirm = useConfirm()

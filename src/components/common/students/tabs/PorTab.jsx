@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { ShieldCheck } from "lucide-react"
 import { useToast } from "@/components/ui/feedback"
-import { DataTable } from "czero/react"
+import { DataTable } from "hzero"
 import PorRequestDetailModal from "@/components/por/PorRequestDetailModal"
 import { Badge, EmptyState, Grid, Surface, Text } from "@/components/ui"
 import { porApi } from "@/service"

@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState, useEffect } from "react"
 import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"

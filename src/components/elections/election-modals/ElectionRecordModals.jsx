@@ -1,5 +1,4 @@
-import { Table } from "czero/react"
-import { Button, Input } from "hzero"
+import { Table, Button, Input } from "hzero"
 import { Grid, Modal, Surface, Text } from "@/components/ui"
 import { History } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"

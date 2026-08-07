@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
-import { DataTable } from "czero/react"
+import { DataTable } from "hzero"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 

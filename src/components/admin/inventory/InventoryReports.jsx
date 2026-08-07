@@ -3,8 +3,7 @@ import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Alert, Field, Grid, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
-import { Table } from "czero/react"
-import { Button } from "hzero"
+import { Table, Button } from "hzero"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()

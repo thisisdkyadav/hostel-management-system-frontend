@@ -1,5 +1,4 @@
-import { Table } from "czero/react"
-import { Button } from "hzero"
+import { Table, Button } from "hzero"
 import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"

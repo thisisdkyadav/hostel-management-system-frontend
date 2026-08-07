@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState } from "react"
 import { FaBuilding } from "react-icons/fa"
 

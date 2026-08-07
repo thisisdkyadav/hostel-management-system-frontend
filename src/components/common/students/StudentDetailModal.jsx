@@ -48,8 +48,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Grid, Heading, HStack, IconCircle, InfoRow, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Table } from "czero/react"
-import { Button, Input } from "hzero"
+import { Table, Button, Input } from "hzero"
 import { Modal } from "@/components/ui"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const confirm = useConfirm()

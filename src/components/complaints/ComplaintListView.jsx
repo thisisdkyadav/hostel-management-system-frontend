@@ -1,6 +1,6 @@
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
-import { DataTable } from "czero/react"
+import { DataTable } from "hzero"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { HStack, IconCircle, Text, VStack } from "@/components/ui"
 

@@ -1,4 +1,4 @@
-import { Table } from "czero/react"
+import { Table } from "hzero"
 import { HStack, Modal, Text } from "@/components/ui"
 
 export const LiveVotingFullscreenModal = ({

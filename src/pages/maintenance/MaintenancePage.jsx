@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"

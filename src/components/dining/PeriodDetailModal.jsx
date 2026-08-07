@@ -1,5 +1,4 @@
-import { StatusBadge } from "czero/react"
-import { Button } from "hzero"
+import { StatusBadge, Button } from "hzero"
 import { Heading, HStack, InfoRow, Modal, Text, VStack } from "@/components/ui"
 import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"

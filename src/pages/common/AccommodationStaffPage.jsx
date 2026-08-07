@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, createElement } from "react"
-import { Tabs, DataTable, StatusBadge } from "czero/react"
+import { Tabs, DataTable, StatusBadge } from "hzero"
 import { StatCards, Text } from "@/components/ui"
 import { FaClipboardList, FaInbox, FaRegCheckCircle, FaDoorOpen } from "react-icons/fa"
 import { MdOutlineWatchLater } from "react-icons/md"

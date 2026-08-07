@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom"
-import { StatusBadgeProvider } from "czero/react"
+import { StatusBadgeProvider } from "hzero"
 import { AuthProvider } from "./contexts/AuthProvider"
 import { SocketProvider } from "./contexts/SocketProvider"
 import { AuthzProvider } from "./contexts/AuthzProvider"

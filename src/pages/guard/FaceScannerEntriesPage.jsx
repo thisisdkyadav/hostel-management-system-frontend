@@ -2,8 +2,7 @@ import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
 import { Badge, Card, Heading, HStack, IconCircle, Label, Spinner, Surface, Switch, Text, VStack } from "@/components/ui"
-import { StatusBadge, Table } from "czero/react"
-import { Button } from "hzero"
+import { StatusBadge, Table, Button } from "hzero"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const FaceScannerEntriesPage = () => {

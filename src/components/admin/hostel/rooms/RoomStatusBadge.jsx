@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBadge } from "czero/react"
+import { StatusBadge } from "hzero"
 
 const RoomStatusBadge = ({ status }) => {
   const getStatusType = () => {

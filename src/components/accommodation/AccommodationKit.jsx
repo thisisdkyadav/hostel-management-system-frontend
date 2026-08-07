@@ -5,7 +5,7 @@
  */
 
 import { createElement } from "react"
-import { StatusBadge } from "czero/react"
+import { StatusBadge } from "hzero"
 import { CalendarDays, Users } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import {

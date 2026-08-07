@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { useState, useEffect, useCallback } from "react"
 import { FaCalendarAlt } from "react-icons/fa"
 import { Page, Pagination, SearchInput, Text } from "@/components/ui"

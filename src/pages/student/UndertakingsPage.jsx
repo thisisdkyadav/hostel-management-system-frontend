@@ -3,8 +3,7 @@ import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
 import { EmptyState, ErrorState, Heading, LoadingState, Spinner, Surface, Text } from "@/components/ui"
-import { Tabs } from "czero/react"
-import { Button } from "hzero"
+import { Tabs, Button } from "hzero"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
   const [acceptedUndertakings, setAcceptedUndertakings] = useState([])

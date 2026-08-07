@@ -7,8 +7,7 @@
  */
 
 import { useState, useEffect } from "react"
-import { Tabs } from "czero/react"
-import { Button } from "hzero"
+import { Tabs, Button } from "hzero"
 import { Modal, Surface, Text, VStack } from "@/components/ui"
 import { Spinner } from "@/components/ui/feedback"
 import { useToast } from "@/components/ui"

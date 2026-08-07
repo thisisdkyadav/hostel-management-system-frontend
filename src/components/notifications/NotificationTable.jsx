@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
-import { DataTable } from "czero/react"
+import { DataTable } from "hzero"
 import { Text, VStack } from "@/components/ui"
 
 const NotificationTable = ({ notifications, onRefresh }) => {

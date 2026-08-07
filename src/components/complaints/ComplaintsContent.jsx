@@ -1,4 +1,4 @@
-import { Tabs } from "czero/react"
+import { Tabs } from "hzero"
 import { FaClipboardList } from "react-icons/fa"
 import NoResults from "../common/NoResults"
 import ComplaintListView from "./ComplaintListView"

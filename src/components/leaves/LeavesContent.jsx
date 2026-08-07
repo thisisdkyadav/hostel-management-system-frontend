@@ -1,7 +1,7 @@
 import NoResults from "../common/NoResults"
 import { Grid, HStack, IconCircle, Pagination, Spinner, Text } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
-import { Table } from "czero/react"
+import { Table } from "hzero"
 
 // Helper function to get status colors using theme variables
 const getStatusStyle = (status) => {

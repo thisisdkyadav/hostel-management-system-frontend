@@ -7,42 +7,6 @@ import path from "path";
 import { generateBuildVersion, readPackageVersion } from "./scripts/version.js";
 
 /* --------------------------------
-   Route czero through hzero
-
-   284 files here still import czero directly. Rather than rewrite every one,
-   those imports resolve to hzero's seam, so the app's access to czero runs
-   through a place a regression can be patched once instead of in a release
-   the app has to wait for. Behaviour is unchanged — the seam re-exports
-   czero's own components with czero's own API.
-
-   Scoped to this app's source on purpose: hzero's internal `czero/react`
-   imports have to keep resolving to czero, or the seam would resolve to
-   itself. Set HZERO_SEAM_DEBUG=1 to print how many imports were redirected.
--------------------------------- */
-const APP_SRC = path.resolve(__dirname, "src");
-
-const czeroThroughHzero = () => {
-  let redirected = 0;
-  return {
-    name: "czero-through-hzero",
-    enforce: "pre",
-    async resolveId(source, importer) {
-      if (source !== "czero/react" || !importer) return null;
-      if (!path.resolve(importer).startsWith(APP_SRC)) return null;
-      const target = await this.resolve("hzero/czero", importer, { skipSelf: true });
-      if (!target) return null;
-      redirected++;
-      return target.id;
-    },
-    buildEnd() {
-      if (process.env.HZERO_SEAM_DEBUG) {
-        console.log(`[czero-through-hzero] redirected ${redirected} imports`);
-      }
-    },
-  };
-};
-
-/* --------------------------------
    Copy meta.json into dist
 -------------------------------- */
 const copyMetaJson = () => {
@@ -136,8 +100,6 @@ export default defineConfig({
   },
 
   plugins: [
-    czeroThroughHzero(),
-
     tailwindcss(),
 
     react({
