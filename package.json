@@ -26,7 +26,7 @@
     "czero": "^0.6.0",
     "date-fns": "^4.4.0",
     "html5-qrcode": "^2.3.8",
-    "hzero": "^0.1.16",
+    "hzero": "^0.1.28",
     "lucide-react": "^1.18.0",
     "node-forge": "^1.4.0",
     "papaparse": "^5.5.3",
