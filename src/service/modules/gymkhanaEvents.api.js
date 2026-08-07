@@ -39,7 +39,7 @@ export const gymkhanaEventsApi = {
   /**
    * Get dashboard summary for Gymkhana dashboard page
    */
-  getDashboardSummary: (daysUntilDue = 21) => {
+  getDashboardSummary: (daysUntilDue = 60) => {
     return apiClient.get(`${BASE_PATH}/dashboard/summary`, { params: { daysUntilDue } })
   },
 
@@ -328,7 +328,7 @@ export const gymkhanaEventsApi = {
   /**
    * Get events needing proposals (GS dashboard)
    */
-  getPendingProposals: (daysUntilDue = 21) => {
+  getPendingProposals: (daysUntilDue = 60) => {
     return apiClient.get(`${BASE_PATH}/pending-proposals`, { params: { daysUntilDue } })
   },
 

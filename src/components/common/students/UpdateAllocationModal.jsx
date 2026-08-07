@@ -394,6 +394,11 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       }
     }
 
+    if (!hostelId) {
+      setError("Please select a hostel before allocating.")
+      return
+    }
+
     setIsAllocating(true)
     setError("")
 

@@ -34,7 +34,7 @@ const DashboardPage = () => {
         try {
             setLoading(true)
             setError(null)
-            const summaryRes = await gymkhanaEventsApi.getDashboardSummary(21)
+            const summaryRes = await gymkhanaEventsApi.getDashboardSummary(60)
             const currentCalendar = summaryRes.currentCalendar || summaryRes.data?.currentCalendar || null
             const totalEvents = summaryRes.totalEvents || summaryRes.data?.totalEvents || 0
             const pendingProposalsCount =
