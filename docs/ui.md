@@ -1,1135 +1,776 @@
 # UI Component Library Reference
 
-> Component inventory for coding agents. Import shared app components from `@/components/ui` and C0 base components from `czero/react`.
+> Component inventory for coding agents. Every shared component comes from **hzero** — a fixed-theme design system published to npm. There is no czero, no Radix, and no Tailwind in the component layer.
 
 ---
 
 ## Quick Import
 
 ```jsx
-// Core components from CZero (not from @/components/ui)
-import { Button, Modal, Table, DataTable, StatusBadge, Tabs } from 'czero/react'
+// The whole library is one flat export surface
+import { Button, Modal, DataTable, Input, Card, Tabs } from "hzero"
 
-// Other UI components
-import { Input, Card, ... } from '@/components/ui'
-
-// By category
-import { IconButton } from '@/components/ui/button'
-import { Input, Select, Checkbox } from '@/components/ui/form'
-import { Card, Stack, Divider } from '@/components/ui/layout'
-import { Toast, Alert } from '@/components/ui/feedback'
+// The @/components/ui shims re-export hzero and still resolve.
+// Both forms work; prefer "hzero" in new code.
+import { Button, Input } from "@/components/ui"
 ```
 
-> **Note:** `Button`, `Modal`, `Table`, `DataTable`, `StatusBadge`, and `Tabs` are provided by the CZero UI library. Import them from `czero/react`.
+Every component listed below is exported from the package root. There are no
+sub-paths (`hzero/react` and `hzero/czero` were removed in 0.1.31).
 
-## C0 Migration Status (Current)
+### Styles
 
-- `Button` -> migrated to C0
-- `Input` -> C0-backed via compatibility adapter (`@/components/ui/form/Input`)
-- `Switch` -> C0-backed via compatibility adapter (`@/components/ui/form/Switch`)
-- `Checkbox` -> C0-backed via compatibility adapter (`@/components/ui/form/Checkbox`)
-- `SearchInput` -> frontend wrapper over C0 `Input` (`variant="search"`)
-- `Modal` -> migrated to C0
-- `Table` -> migrated to C0
-- `DataTable` -> migrated to C0
-- `StatusBadge` -> migrated to C0
-- `Tabs` -> migrated to C0 (import directly from `czero/react`)
-- `UnderlineTabs` wrapper removed. Use `Tabs` with `variant="underline"`.
-- Filter/table-style tabs standardized to C0 `Tabs` with `variant="pills"` for complaints-style parity.
-- Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
+`src/index.css` imports the one stylesheet:
 
-## C0 Theming (czero >= 0.3.0)
+```css
+@import "hzero/styles.css";   /* theme tokens + all component CSS */
+@import "tailwindcss";        /* HMS's own utilities, unrelated to hzero */
+```
 
-As of czero 0.3.0 the CLI/config codegen is gone. There is no `czero.config.js`
-and no `npx czero build` step. Theming is plain `--cz-*` CSS variables.
-
-HMS imports a single hand-maintained stylesheet, `frontend/czero.css`
-(`@import` from `src/index.css`), which contains czero's base styles plus all
-HMS overrides — global tokens (`--cz-color-*`, `--cz-radius-*`, …) and
-component-scoped tokens for input, tabs, modal, dataTable, statusBadge, table,
-and HMS's extra button variants (`success`, `white`, `gradient`).
-
-To adjust a component's look, edit `czero.css` directly (override the relevant
-`--cz-*` variable or `.cz-*` class). Many component tokens also fall back to
-HMS's own `--color-*`/`--table-*` theme variables, so dark mode and the
-sidebar's dynamic category theming flow through automatically.
+As of 0.1.33 hzero ships **no Tailwind utilities** — `dist/tailwind.css` is 116
+bytes of layer declaration. Nothing needs to scan `node_modules/hzero`.
 
 ---
 
-## Button Components
+## How hzero works
 
-### Button (CZero)
+Three rules explain almost every API decision:
 
-**Location:** `czero/react` (NOT from `@/components/ui`)
+1. **The theme decides, the call site doesn't.** Whether a button reacts on
+   hover is an hzero decision. No component takes a colour-per-instance for a
+   state, and no app should ever hold an `isHovered` in state.
+2. **State lives in the DOM, styling reads it.** Components set real ARIA
+   attributes (`aria-pressed`, `aria-selected`, `aria-checked`, `aria-current`)
+   and the CSS selects on them. There is no `data-state` to keep in sync with
+   what a screen reader is told.
+3. **Everything is a token.** Component CSS contains no colour or length
+   literals; a build check enforces it. To restyle, change a token in
+   `theme.css` — never fork a component.
 
-```jsx
-import { Button } from 'czero/react'
+### Restyling
+
+Override an hzero token in your own stylesheet, after the import:
+
+```css
+:root {
+  --btn-radius: var(--radius-full);      /* every button becomes a pill */
+  --card-padding: var(--spacing-6);
+}
 ```
+
+Per-instance overrides that the API supports are passed as props and land as
+custom properties on that element — see `Card`'s `borderColor`/`shadow`.
+
+---
+
+## Buttons
+
+### Button
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Button content (including icons) |
+| `children` | `node` | - | Button content, including icons |
 | `onClick` | `function` | - | Click handler |
 | `type` | `string` | `"button"` | `"button"`, `"submit"`, `"reset"` |
-| `variant` | `string` | `"primary"` | `"primary"`, `"secondary"`, `"danger"`, `"success"`, `"outline"`, `"ghost"`, `"white"` |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
-| `loading` | `boolean` | `false` | Show loading spinner |
+| `variant` | `string` | `"primary"` | `"primary"`, `"secondary"`, `"danger"`, `"success"`, `"warning"`, `"info"`, `"outline"`, `"ghost"`, `"white"` |
+| `size` | `string` | `"md"` | `"sm"` (32px), `"md"` (40px), `"lg"` (48px) |
+| `loading` / `isLoading` | `boolean` | `false` | Show spinner; both spellings accepted |
 | `disabled` | `boolean` | `false` | Disable button |
-| `fullWidth` | `boolean` | `false` | Full width button |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-**Usage Examples:**
+| `fullWidth` | `boolean` | `false` | Fill the container |
+| `className` / `style` | - | - | Passthrough |
 
 ```jsx
-// Basic usage
-<Button variant="primary" size="md">Save</Button>
-
-// With icon (pass as children, not as prop)
-<Button><FaPlus /> Add Item</Button>
-
-// Loading state
-<Button loading={isSubmitting} disabled={isSubmitting}>Submit</Button>
-
-// All sizes
-<Button size="sm">Small</Button>   // 32px height
-<Button size="md">Medium</Button>  // 40px height (default)
-<Button size="lg">Large</Button>   // 48px height
+<Button variant="primary">Save</Button>
+<Button><Plus size={16} /> Add item</Button>
+<Button loading={submitting} disabled={submitting}>Submit</Button>
 ```
 
-> **Migration Note:** Previous props `isLoading`, `icon`, `rounded`, and `gradient` are no longer supported.
-> - Use `loading` instead of `isLoading`
-> - Pass icons as children: `<Button><Icon /> Text</Button>`
-> - Use `className="!rounded-full"` for pill buttons
-
----
-
-**Location:** `@/components/ui/button`
+Icons are children, not a prop.
 
 ### IconButton
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `icon` | `React.ReactNode` | **required** | Button icon |
-| `onClick` | `function` | - | Click handler |
-| `type` | `string` | `"button"` | `"button"`, `"submit"`, `"reset"` |
+| `icon` | `node` | **required** | The icon |
 | `variant` | `string` | `"ghost"` | `"primary"`, `"secondary"`, `"danger"`, `"ghost"`, `"outline"` |
 | `size` | `string` | `"medium"` | `"small"` (28px), `"medium"` (36px), `"large"` (44px) |
 | `isLoading` | `boolean` | `false` | Show loading state |
-| `disabled` | `boolean` | `false` | Disable button |
-| `ariaLabel` | `string` | - | Accessibility label (recommended) |
-| `rounded` | `boolean` | `true` | Circular button |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `disabled` | `boolean` | `false` | Disable |
+| `ariaLabel` | `string` | - | **Always pass this** — the button has no text |
+| `rounded` | `boolean` | `true` | Circular |
 
 ### ButtonGroup
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Button children |
+| `children` | `node` | - | Buttons |
 | `orientation` | `string` | `"horizontal"` | `"horizontal"`, `"vertical"` |
-| `size` | `string` | - | Size passed to children: `"small"`, `"medium"`, `"large"` |
-| `variant` | `string` | - | Variant passed to children |
-| `attached` | `boolean` | `false` | Buttons are attached (no gap) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `size` / `variant` | `string` | - | Inherited by children that don't set their own |
+| `attached` | `boolean` | `false` | Seamless run — interior corners square, borders merged |
 
 ### ToggleButtonGroup
-
-A group of toggle buttons for switching between options. Supports icons, labels, multiple shapes and variants.
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
 | `options` | `Array` | **required** | `[{ value, label?, icon?, disabled?, ariaLabel? }]` |
-| `value` | `string\|number` | - | Currently selected value |
-| `onChange` | `function` | - | Change handler `(value) => void` |
+| `value` | `any` | - | Selected value |
+| `onChange` | `function` | - | `(value) => void` |
 | `shape` | `string` | `"pill"` | `"pill"`, `"rounded"`, `"square"` |
 | `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
 | `variant` | `string` | `"muted"` | `"muted"`, `"primary"`, `"outline"`, `"white"` |
-| `fullWidth` | `boolean` | `false` | Buttons fill available width |
-| `hideLabelsOnMobile` | `boolean` | `true` | Hide labels on mobile, show icons only |
-| `disabled` | `boolean` | `false` | Disable all buttons |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `fullWidth` | `boolean` | `false` | Buttons fill the row |
+| `hideLabelsOnMobile` | `boolean` | `true` | Below 640px an icon carries the button alone — only applied to options that *have* an icon |
+| `disabled` | `boolean` | `false` | Disable all |
+
+Selection is `aria-pressed` on each button.
 
 ---
 
-## Form Components
-
-**Location:** `@/components/ui/form`
+## Form
 
 ### Input
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `type` | `string` | `"text"` | `"text"`, `"email"`, `"password"`, `"number"`, `"date"`, `"time"`, `"datetime-local"`, `"tel"`, `"search"` |
-| `name` | `string` | - | Input name attribute |
-| `value` | `string` | - | Controlled input value |
-| `onChange` | `function` | - | Change handler |
-| `placeholder` | `string` | - | Placeholder text |
-| `icon` | `React.ReactNode` | - | Optional left icon |
-| `error` | `boolean\|string` | - | Error state (boolean) or error message (string) |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `readOnly` | `boolean` | `false` | ReadOnly state |
-| `required` | `boolean` | `false` | Required field |
-| `min` | `string\|number` | - | Min value for number/date types |
-| `max` | `string\|number` | - | Max value for number/date types |
-| `step` | `number` | - | Step value for number type |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `id` | `string` | - | Optional id (defaults to name) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `type` | `string` | `"text"` | Any native text-like type, incl. `"search"`, `"password"` |
+| `name` / `value` / `onChange` | - | - | Controlled field |
+| `placeholder` | `string` | - | Placeholder |
+| `leftIcon` / `icon` | `node` | - | Icon in the left gutter |
+| `onClear` | `function` | - | Renders a clear affordance when there is a value |
+| `error` | `boolean\|string` | - | Error state, or state + message |
+| `label` / `description` | `node` | - | Rendered above / below |
+| `required` | `boolean` | `false` | Marks the label |
+| `disabled` / `readOnly` | `boolean` | `false` | States |
+| `size` | `string` | `"md"` | `"sm"` (32px), `"md"` (40px), `"lg"` (48px) |
+
+A text field takes its focus ring on `:focus`, not `:focus-visible` — the caret
+has moved and that must be visible whether you clicked or tabbed.
 
 ### Select
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `name` | `string` | - | Select name attribute |
-| `value` | `string` | - | Controlled selected value |
-| `onChange` | `function` | - | Change handler |
-| `options` | `Array` | `[]` | `[{ value: "", label: "" }]` or `["option1", "option2"]` |
-| `placeholder` | `string` | - | Placeholder option text |
-| `icon` | `React.ReactNode` | - | Optional left icon |
+| `options` | `Array` | `[]` | `[{ value, label }]` or `["a", "b"]` |
+| `value` / `onChange` | - | - | Controlled |
+| `placeholder` | `string` | - | Empty-state option text |
 | `error` | `boolean\|string` | - | Error state |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `required` | `boolean` | `false` | Required field |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `id` | `string` | - | Optional id (defaults to name) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `disabled` / `required` | `boolean` | `false` | States |
+| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
 
 ### Textarea
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `name` | `string` | - | Textarea name attribute |
-| `value` | `string` | - | Controlled textarea value |
-| `onChange` | `function` | - | Change handler |
-| `placeholder` | `string` | - | Placeholder text |
-| `icon` | `React.ReactNode` | - | Optional left icon |
-| `error` | `boolean\|string` | - | Error state |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `readOnly` | `boolean` | `false` | ReadOnly state |
-| `required` | `boolean` | `false` | Required field |
-| `rows` | `number` | `4` | Number of visible text rows |
-| `resize` | `string` | `"vertical"` | `"none"`, `"vertical"`, `"horizontal"`, `"both"` |
-| `maxLength` | `number` | - | Maximum character length |
-| `showCount` | `boolean` | `false` | Show character count |
-| `id` | `string` | - | Optional id (defaults to name) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+Input's API plus `rows` (default `4`), `resize`
+(`"none"|"vertical"|"horizontal"|"both"`), `maxLength`, `showCount`.
 
 ### Checkbox
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `id` | `string` | - | Checkbox id |
-| `name` | `string` | - | Checkbox name attribute |
-| `checked` | `boolean` | `false` | Controlled checked state |
-| `onChange` | `function` | - | Change handler |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `size` | `string` | `"medium"` | `"small"` (16px), `"medium"` (18px), `"large"` (20px) |
-| `label` | `string` | - | Optional inline label text |
-| `description` | `string` | - | Optional description below label |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `checked` | `boolean\|"indeterminate"\|"mixed"` | `false` | Tri-state |
+| `onChange` | `function` | - | Receives an event-like object: `e.target.{checked,name,value,id}` |
+| `size` | `string` | `"medium"` | `"small"` (14px), `"medium"` (16px), `"large"` (20px) |
+| `label` / `description` | `node` | - | Optional text block |
+| `disabled` | `boolean` | `false` | Disable |
+
+Rendered as `<button role="checkbox" aria-checked>`, so indeterminate is the
+real ARIA value `"mixed"`. Inside a `<form>` a named checked box also renders a
+hidden input, so it still posts.
 
 ### Radio
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `id` | `string` | - | Radio id |
-| `name` | `string` | - | Radio name attribute (same for group) |
-| `value` | `string` | - | Radio value |
-| `checked` | `boolean` | `false` | Controlled checked state |
-| `onChange` | `function` | - | Change handler |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `size` | `string` | `"medium"` | `"small"` (16px), `"medium"` (18px), `"large"` (20px) |
-| `label` | `string` | - | Optional inline label text |
-| `description` | `string` | - | Optional description below label |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `name` / `value` / `checked` / `onChange` | - | - | Controlled radio; `onChange` gets the real DOM event |
+| `size` | `string` | `"medium"` | Matches Checkbox's box sizes |
+| `label` / `description` | `node` | - | Optional text block |
+| `disabled` | `boolean` | `false` | Disable |
 
-### RadioGroup
+The `<input>` **is** the circle (`appearance: none`, dot as `::after`), so
+`:checked`, `:focus-visible` and `:disabled` are the input's own states. When
+`label` is given the input is nested inside the `<label>`, so clicking the text
+always hits the right radio.
 
-| Prop | Type | Default | Values/Description |
+### RadioGroup + RadioGroupItem
+
+| Prop (RadioGroup) | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `name` | `string` | - | Radio group name |
-| `value` | `string` | - | Selected value |
-| `onChange` | `function` | - | Change handler |
-| `disabled` | `boolean` | `false` | Disable all radios |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `name` / `value` / `onChange` | - | - | Controlled; `onChange` receives the item's change event (`e.target.value`) |
 | `orientation` | `string` | `"vertical"` | `"horizontal"`, `"vertical"` |
-| `label` | `string` | - | Group label |
-| `required` | `boolean` | `false` | Required field |
-| `error` | `string` | - | Error message |
-| `children` | `React.ReactNode` | - | Radio children |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `label` | `node` | - | Group caption, styled as a field label |
+| `required` | `boolean` | `false` | Red asterisk + `aria-required` |
+| `error` | `node` | - | Error line + `aria-invalid` |
+| `size` / `disabled` | - | - | Inherited by every item |
+
+```jsx
+<RadioGroup name="decision" value={value} onChange={(e) => set(e.target.value)}>
+  <RadioGroupItem value="approve" label="Approve" />
+  <RadioGroupItem value="reject" label="Reject — back to student" />
+</RadioGroup>
+```
 
 ### Switch
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `id` | `string` | - | Switch id |
-| `name` | `string` | - | Switch name attribute |
-| `checked` | `boolean` | `false` | Controlled checked state |
-| `onChange` | `function` | - | Change handler |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `size` | `string` | `"medium"` | `"small"` (32x18px), `"medium"` (40x22px), `"large"` (48x26px) |
-| `label` | `string` | - | Optional inline label text |
-| `description` | `string` | - | Optional description below label |
+| `checked` / `onChange` | - | - | Controlled |
+| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `label` / `description` | `node` | - | Optional text |
 | `labelPosition` | `string` | `"right"` | `"left"`, `"right"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `disabled` | `boolean` | `false` | Disable |
 
 ### FileInput
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `accept` | `string` | - | Accepted file types (e.g., `".csv,.pdf,image/*"`) |
-| `onChange` | `function` | - | Change handler |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `multiple` | `boolean` | `false` | Allow multiple file selection |
-| `hidden` | `boolean` | `false` | Hide the input (for custom trigger buttons) |
-| `id` | `string` | - | Input id |
-| `name` | `string` | - | Input name |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `accept` | `string` | - | e.g. `".csv,image/*"` |
+| `onChange` | `function` | - | Real DOM event — read `e.target.files` |
+| `multiple` | `boolean` | `false` | Multi-select |
+| `hidden` | `boolean` | `false` | `display:none`, for a custom trigger |
+| `disabled` | `boolean` | `false` | Disable |
+
+Forwards its ref to the **native input**, so `ref.current.click()` and
+`ref.current.value = ""` both work. When visible, the browser's "Choose file"
+button is restyled as a secondary button.
 
 ### SearchInput
 
+A recipe over Input: search icon in the left gutter, Enter fires `onSearch`,
+clear button when there is a value.
+
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `value` | `string` | - | Controlled search value |
-| `onChange` | `function` | - | Change handler |
-| `placeholder` | `string` | `"Search..."` | Placeholder text |
-| `disabled` | `boolean` | `false` | Disabled state |
+| `value` / `onChange` | - | - | Controlled |
+| `onSearch` | `function` | - | Called with the value on Enter |
+| `showClear` | `boolean` | `true` | Clear affordance |
+| `onClear` | `function` | - | Defaults to `onChange({target:{value:""}})` |
 | `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
-| `showClear` | `boolean` | `true` | Show clear button when has value |
-| `onClear` | `function` | - | Clear button handler |
-| `onSearch` | `function` | - | Search submit handler (Enter key) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `className` / `style` | - | - | Land on the **outer wrapper** — this is where width is set |
 
 ### DatePicker
 
-Material Design 3 inspired date picker with calendar dropdown.
-
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `name` | `string` | - | Input name attribute |
-| `value` | `string` | - | Selected date in `YYYY-MM-DD` format |
-| `onChange` | `function` | - | Change handler (receives event-like object with `target.value`) |
-| `placeholder` | `string` | `"Select date"` | Placeholder text |
-| `icon` | `React.ReactNode` | `<FaCalendarAlt />` | Optional custom icon |
-| `error` | `boolean\|string` | - | Error state (boolean) or error message (string) |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `readOnly` | `boolean` | `false` | ReadOnly state |
-| `required` | `boolean` | `false` | Required field |
-| `min` | `string` | - | Minimum selectable date (`YYYY-MM-DD`) |
-| `max` | `string` | - | Maximum selectable date (`YYYY-MM-DD`) |
+| `value` | `string` | - | `YYYY-MM-DD` |
+| `onChange` | `function` | - | Event-like object with `target.value` |
+| `min` / `max` | `string` | - | Selectable range |
+| `error` / `disabled` / `readOnly` / `required` | - | - | States |
 | `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `id` | `string` | - | Optional id (defaults to name) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
 
-**Features:**
-- Smart dropdown positioning (shows above if no space below)
-- Month/year navigation with double arrows
-- Today button for quick selection
-- Clear button to reset value
-- Disabled date ranges (min/max)
-- Keyboard accessible
-- M3 transitions and hover states
+Calendar opens up or down depending on room. The chosen day carries
+`aria-current="date"`; today is marked `data-today`.
 
 ### Label
 
+`htmlFor`, `children`, `required` (red asterisk), `disabled`, `size`
+(`"sm"|"md"|"lg"`). Carries its own bottom margin per size.
+
+### Field
+
+Wraps a control with a label, help text and error, generating and wiring the id.
+
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `htmlFor` | `string` | - | Associated input id |
-| `children` | `React.ReactNode` | - | Label text |
-| `required` | `boolean` | `false` | Show required indicator (*) |
-| `disabled` | `boolean` | `false` | Disabled styling |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `label` | `node` | - | Label content |
+| `children` | `node` | - | The control — the first element receives the id |
+| `required` | `boolean` | `false` | Asterisk |
+| `help` | `node` | - | Hint below the control |
+| `error` | `node` | - | Error below the control; also marks it invalid |
+| `htmlFor` | `string` | - | Override when the control owns its id |
+| `size` / `color` / `spacing` | - | - | Label size, colour, gap |
+
+### FormField
+
+The older all-in-one: renders Label + Input/Select/Textarea from a `type` prop
+(`"textarea"`, `"select"`, or any input type), plus `options`, `rows`, `error`.
+Prefer `Field` for new code — it composes instead of switching.
 
 ---
 
-## Layout Components
+## Layout
 
-**Location:** `@/components/ui/layout`
+### Page + Page.Body
+
+The routed-page shell: a header that stays put, a body that scrolls under it.
+
+```jsx
+<Page>
+  <PageHeader />
+  <Page.Body>{content}</Page.Body>
+</Page>
+```
+
+`Page.Body` takes `padded` (default `true`). The gutters step at 640px and
+1024px and are deliberately not configurable — a page that needs different
+padding passes `padded={false}` and owns the decision visibly.
 
 ### Card
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Card content |
-| `className` | `string` | `""` | Additional CSS classes |
-| `padding` | `string` | `"p-5 md:p-6"` | Padding class |
-| `rounded` | `string` | `"rounded-[var(--radius-card)]"` | Border radius class |
+| `padding` | `string` | `"p-5 md:p-6"` | Escape hatch; a `p-N` class is translated to a custom property |
+| `rounded` | `string` | - | Class passthrough; the default radius comes from `--card-radius` |
 | `border` | `boolean` | `true` | Show border |
-| `borderColor` | `string` | `"var(--color-border-secondary)"` | Border color CSS variable |
-| `hoverBorderColor` | `string` | `"var(--color-border-hover)"` | Hover border color CSS variable |
-| `shadow` | `string` | `"var(--shadow-card)"` | Box shadow CSS variable |
-| `hoverShadow` | `string` | `"var(--shadow-card-hover)"` | Hover box shadow CSS variable |
-| `transition` | `boolean` | `true` | Enable transition |
-| `onClick` | `function` | - | Click handler (makes card clickable) |
-| `style` | `object` | `{}` | Inline styles |
+| `borderColor` / `hoverBorderColor` | `string` | - | CSS colour values |
+| `shadow` / `hoverShadow` | `string` | - | CSS shadow values |
+| `transition` | `boolean` | `true` | Animate the hover change |
+| `onClick` | `function` | - | Makes the card clickable |
 
-**Sub-components:** `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardBody`, `CardFooter`
+**Sub-components:** `CardHeader` (`icon`, `iconBg`, `iconHoverBg`, `title`,
+`subtitle`, or free children), `CardTitle` (`as`), `CardDescription`,
+`CardContent` / `CardBody`, `CardFooter`.
 
-### CardHeader
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Header content |
-| `icon` | `React.ReactNode` | - | Icon element |
-| `iconBg` | `string` | - | Icon background class |
-| `title` | `string` | - | Title text |
-| `subtitle` | `string` | - | Subtitle text |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### CardTitle
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Title content |
-| `as` | `string` | `"h3"` | HTML element: `"h1"`, `"h2"`, `"h3"`, `"h4"`, `"h5"`, `"h6"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`iconBg`/`iconHoverBg` accept a colour value (becomes a custom property) or a
+class name (passed through).
 
 ### Container
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Container content |
-| `size` | `string` | `"large"` | `"small"` (640px), `"medium"` (768px), `"large"` (1024px), `"xlarge"` (1280px), `"xxlarge"` (1536px), `"full"` (100%) |
-| `centered` | `boolean` | `true` | Center content horizontally |
-| `padding` | `string` | `"medium"` | `"none"`, `"small"`, `"medium"`, `"large"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`size` (`"small"` 640px → `"xxlarge"` 1536px, `"full"`), `centered` (default
+`true`), `padding` (`"none"|"small"|"medium"|"large"`). Max-widths are the
+theme's breakpoints, so a container and a media query can never disagree.
 
-### Stack
+### Grid
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Stack items |
-| `direction` | `string` | `"column"` | `"row"`, `"column"`, `"row-reverse"`, `"column-reverse"` |
-| `gap` | `string` | `"medium"` | `"none"`, `"xsmall"`, `"small"`, `"medium"`, `"large"`, `"xlarge"` |
-| `align` | `string` | `"stretch"` | `"start"`, `"center"`, `"end"`, `"stretch"`, `"baseline"` |
-| `justify` | `string` | `"start"` | `"start"`, `"center"`, `"end"`, `"between"`, `"around"`, `"evenly"` |
-| `wrap` | `boolean` | `false` | Flex wrap |
-| `inline` | `boolean` | `false` | Display inline-flex |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `min` | `string\|number` | - | Narrowest column (`"xs"…"xl"` or a width) — auto-fitting grid |
+| `cols` | `number\|string\|object` | - | Fixed count, a raw track list, or `{ base, sm, md, lg, xl }` |
+| `gap` | `number\|string` | `4` | A number is a spacing step |
+| `as` | `string` | `"div"` | A form or list is often the grid itself |
 
-**Shortcuts:** `HStack` (horizontal), `VStack` (vertical)
+### Surface
+
+A styled box: `bg` (surface or tint name, or a colour), `padding`, `radius`,
+`border`, `shadow`, `accent` (thick left rule, for callouts), plus text props
+(`color`, `size`, `weight`, `align`, `leading`). Any unset prop emits no
+declaration and inherits.
+
+### Stack / HStack / VStack
+
+`direction`, `gap`, `align`, `justify`, `wrap`, `inline`. `HStack` and `VStack`
+are the two directions pre-set.
 
 ### Divider
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `orientation` | `string` | `"horizontal"` | `"horizontal"`, `"vertical"` |
-| `variant` | `string` | `"solid"` | `"solid"`, `"dashed"`, `"dotted"` |
-| `color` | `string` | `"default"` | `"default"`, `"muted"`, `"primary"` |
-| `spacing` | `string` | `"md"` | `"none"`, `"sm"`, `"md"`, `"lg"` |
-| `children` | `React.ReactNode` | - | Optional label in center |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`orientation`, `variant` (`"solid"|"dashed"|"dotted"`), `color`, `spacing`,
+and optional `children` as a centred label.
 
 ### Spacer
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `size` | `string\|number` | - | Fixed size (e.g., `"16px"`, `"2rem"`, `32`) or `"xsmall"`, `"small"`, `"medium"`, `"large"`, `"xlarge"` |
-| `axis` | `string` | `"vertical"` | `"horizontal"`, `"vertical"`, `"both"` |
-| `flex` | `boolean` | `false` | Use flex grow to fill space |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`size` (named step or raw), `axis`, `flex`.
 
 ---
 
-## Feedback Components
+## Feedback
 
-**Location:** mixed
-- `Modal` from `czero/react`
-- `Toast`, `Alert`, `Spinner`, `Skeleton`, `Progress`, `LoadingState`, `ErrorState`, `EmptyState` from `@/components/ui/feedback`
-
-### Modal (CZero)
-
-**Location:** `czero/react`
+### Toast + ToastProvider + useToast
 
 ```jsx
-import { Modal } from 'czero/react'
+<ToastProvider position="top-right"><App /></ToastProvider>
+
+const { toast } = useToast()
+toast.success("Saved")
+toast.error("Failed")
 ```
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `open` | `boolean` | - | Controlled open state (Radix-compatible API) |
-| `defaultOpen` | `boolean` | auto | Uncontrolled initial state |
-| `onOpenChange` | `function` | - | Called with next open state |
-| `isOpen` | `boolean` | - | Backward-compatible alias for controlled open state |
-| `onClose` | `function` | - | Called when modal closes |
-| `trigger` | `React.ReactNode` | - | Optional trigger element (rendered with `Dialog.Trigger`) |
-| `title` | `React.ReactNode` | - | Modal title (string or JSX) |
-| `description` | `React.ReactNode` | - | Optional description text under title |
-| `children` | `React.ReactNode` | - | Modal content |
-| `footer` | `React.ReactNode` | - | Footer content |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"`, `"xl"`, `"full"` |
-| `width` | `number\|string` | - | Custom width (e.g. `560`, `"60rem"`) |
-| `minHeight` | `number\|string` | - | Minimum height (e.g. `420`, `"28rem"`) |
-| `fullHeight` | `boolean` | `false` | Use full available viewport height |
-| `tabs` | `Array` | - | Header tabs: `[{ id, name?, label?, icon?, disabled? }]` |
-| `activeTab` | `string` | - | Current active tab id |
-| `onTabChange` | `function` | - | Tab change handler |
-| `hideTitle` | `boolean` | `false` | Hide the title |
-| `showCloseButton` | `boolean` | `true` | Show/hide top-right close control |
-| `closeButtonVariant` | `string` | `"icon"` | `"icon"` (X icon) or `"button"` (small button) |
-| `closeButtonText` | `string` | `"Close"` | Label for close button variant |
-| `closeOnOverlay` | `boolean` | `true` | Close on outside click |
-| `closeOnEsc` | `boolean` | `true` | Close on escape key |
-| `portalContainer` | `HTMLElement` | - | Optional portal mount container |
-| `overlayClassName` | `string` | `""` | Extra class for overlay |
-| `headerClassName` | `string` | `""` | Extra class for header |
-| `bodyClassName` | `string` | `""` | Extra class for body |
-| `footerClassName` | `string` | `""` | Extra class for footer |
-| `className` | `string` | `""` | Extra class for modal content |
-| `style` | `object` | `{}` | Inline styles for modal content |
-
-> **Behavior Note:** Prefer `open` + `onOpenChange` for new code. `isOpen` + `onClose` is kept for compatibility and existing frontend usage.
-
-### Toast (Standalone)
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `message` | `string` | - | Toast message |
-| `title` | `string` | - | Optional title |
-| `type` | `string` | `"info"` | `"info"`, `"success"`, `"warning"`, `"error"` |
-| `isVisible` | `boolean` | - | Toast visibility |
-| `onClose` | `function` | - | Close handler |
-| `duration` | `number` | `5000` | Auto-dismiss duration in ms (use `Infinity` to disable) |
-
-### ToastProvider
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | App children |
-| `position` | `string` | `"top-right"` | `"top-right"`, `"top-left"`, `"top-center"`, `"bottom-right"`, `"bottom-left"`, `"bottom-center"` |
+`Toast` standalone takes `message`, `title`, `type`
+(`"info"|"success"|"warning"|"error"`), `isVisible`, `onClose`, `duration`
+(default 5000, `Infinity` to pin).
 
 ### Alert
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Alert content |
-| `type` | `string` | `"info"` | `"info"`, `"success"`, `"warning"`, `"error"` |
-| `title` | `string` | - | Optional title |
-| `dismissible` | `boolean` | `false` | Show close button |
-| `onDismiss` | `function` | - | Dismiss handler |
-| `icon` | `React.ReactNode` | - | Custom icon (overrides default) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`children`, `type`, `title`, `dismissible`, `onDismiss`, `icon`.
 
 ### Spinner
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `size` | `string` | `"medium"` | `"xsmall"` (12px), `"small"` (16px), `"medium"` (24px), `"large"` (32px), `"xlarge"` (48px) |
-| `color` | `string` | `"primary"` | `"primary"`, `"secondary"`, `"white"`, `"inherit"` |
-| `thickness` | `string` | `"medium"` | `"thin"` (2px), `"medium"` (3px), `"thick"` (4px) |
-| `label` | `string` | `"Loading"` | Accessibility label |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`size` (`"xsmall"`, `"small"`, `"medium"`, `"large"`, `"xlarge"`, **or an exact
+box** — a number is pixels, a string is used verbatim), `color`, `thickness`,
+`label`.
 
 ### Skeleton
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `variant` | `string` | `"text"` | `"text"`, `"circular"`, `"rectangular"`, `"rounded"` |
-| `width` | `string\|number` | - | Width (default auto based on variant) |
-| `height` | `string\|number` | - | Height (default based on variant) |
-| `animation` | `boolean` | `true` | Enable pulse animation |
-| `lines` | `number` | `1` | Number of text lines (for text variant) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-**Shortcuts:** `SkeletonText`, `SkeletonCircle`, `SkeletonCard`
+`variant` (`"text"|"circular"|"rectangular"|"rounded"`), `width`, `height`,
+`animation`, `lines`. Shorthands: `SkeletonText`, `SkeletonCircle` (`size`),
+`SkeletonCard`.
 
 ### Progress
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `value` | `number` | `0` | Current progress value (0-100) |
-| `max` | `number` | `100` | Maximum value |
-| `variant` | `string` | `"default"` | `"default"`, `"striped"`, `"indeterminate"` |
-| `size` | `string` | `"md"` | `"sm"` (4px), `"md"` (8px), `"lg"` (12px) |
-| `color` | `string` | `"primary"` | `"primary"`, `"success"`, `"warning"`, `"danger"` |
-| `showLabel` | `boolean` | `false` | Show percentage label |
-| `label` | `string` | - | Custom label |
-| `animate` | `boolean` | `true` | Animate striped variant |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`value`, `max`, `variant` (`"default"|"striped"|"indeterminate"`), `size`,
+`color`, `showLabel`, `label`, `animate`.
 
-### LoadingState
+Under `prefers-reduced-motion` the stripe stops but the indeterminate sweep only
+slows — a frozen indeterminate bar reads as "stuck", which is a lie.
+
+### The state family — EmptyState / ErrorState / LoadingState
+
+One anatomy: a tinted chip (or spinner) over a title, a muted message, and an
+optional action.
+
+**EmptyState**
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `message` | `string` | `"Loading..."` | Loading message |
-| `description` | `string` | `"Please wait"` | Additional description |
+| `icon` | `ElementType` | - | Icon **component**, not an element |
+| `title` / `label` | `node` | `"No Data Found"` | `label` is an alias |
+| `message` / `description` | `node` | (stock text) | `description` is an alias |
+| `variant` | `string` | `"block"` | `"block"` or `"inline"` (one muted line, for a dropdown) |
+| `action` | `node` | - | Rendered below the message |
+| `buttonText` + `buttonAction` | - | - | Shorthand for a primary-button action |
 
-### ErrorState
+**ErrorState** — `message`, `onRetry`, `title`, `buttonText`. Danger chip and
+`CircleAlert` are fixed.
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `message` | `string` | - | Error message |
-| `onRetry` | `function` | - | Retry handler |
-| `title` | `string` | `"Something went wrong"` | Error title |
-| `buttonText` | `string` | `"Try Again"` | Retry button text |
-
-### EmptyState
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `icon` | `React.ElementType` | - | Icon component (not instance) |
-| `title` | `string` | `"No Data Found"` | Empty state title |
-| `message` | `string` | `"There is no data available to display"` | Description/help text |
-| `iconBgColor` | `string` | `"bg-[var(--color-primary-bg)]"` | Icon background color class |
-| `iconColor` | `string` | `"text-[var(--color-primary)]"` | Icon color class |
+**LoadingState** — `message`, `description`. The spinner is decorative; the text
+block is the live region, so the message is announced once.
 
 ---
 
-## Data Display Components
-
-**Location:** `@/components/ui/data-display`
+## Data display
 
 ### Badge
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Badge content |
-| `variant` | `string` | `"default"` | `"default"`, `"primary"`, `"success"`, `"warning"`, `"danger"`, `"info"` |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `dot` | `boolean` | `false` | Show as dot indicator |
-| `outline` | `boolean` | `false` | Outlined style |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`children`, `variant` (`"default"|"primary"|"success"|"warning"|"danger"|"info"|"outline"`),
+`size`, `dot`, `outline`, `soft` (default `true`), `icon` (leading icon, sized
+to the badge's own type).
 
-### Avatar
+### Avatar / AvatarGroup
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `src` | `string` | - | Image source URL |
-| `alt` | `string` | `""` | Alt text |
-| `name` | `string` | `""` | User name (for fallback initials) |
-| `size` | `string` | `"medium"` | `"xsmall"` (24px), `"small"` (32px), `"medium"` (40px), `"large"` (48px), `"xlarge"` (64px), `"xxlarge"` (96px) |
-| `shape` | `string` | `"circle"` | `"circle"`, `"square"`, `"rounded"` |
-| `fallback` | `React.ReactNode` | - | Custom fallback content |
-| `showStatus` | `boolean` | `false` | Show online/offline status |
-| `status` | `string` | `"offline"` | `"online"`, `"offline"`, `"away"`, `"busy"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### AvatarGroup
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Avatar children |
-| `max` | `number` | `5` | Maximum visible avatars |
-| `size` | `string` | `"medium"` | Size passed to children |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+Avatar: `src`, `alt`, `name` (fallback initials), `size` (`"xsmall"` 24px →
+`"xxlarge"` 96px), `shape`, `fallback`, `showStatus`, `status`.
+AvatarGroup: `max` (default 5), `size`.
 
 ### Tag
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Tag content |
-| `color` | `string` | `"default"` | `"default"`, `"primary"`, `"success"`, `"warning"`, `"danger"`, or custom hex |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `removable` | `boolean` | `false` | Show remove button |
-| `onRemove` | `function` | - | Remove handler |
-| `icon` | `React.ReactNode` | - | Icon before text |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`children`, `color` (named or a custom hex), `size`, `removable`, `onRemove`,
+`icon`.
 
-### StatusBadge
-
-**Location:** `czero/react` (NOT from `@/components/ui`)
+### StatusBadge + StatusBadgeProvider
 
 ```jsx
-import { StatusBadge } from 'czero/react'
+<StatusBadge status="checked in" />          // tone inferred
+<StatusBadge status="Custom" tone="warning" />
 ```
 
-| Prop | Type | Default | Values/Description |
+`status`, `children` (label override), `tone`, `showDot`. Default mapping:
+success = checked in/active/present/success; danger = checked
+out/inactive/absent/danger/error; warning = maintenance/pending/warning;
+otherwise primary.
+
+Wrap a subtree in `StatusBadgeProvider` with a `map` to add or replace
+vocabulary; `defaultStatusMap` is exported for merging.
+
+### StatCard / StatCards
+
+| Prop (StatCard) | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `status` | `React.ReactNode` | - | Status text/value used for automatic tone mapping |
-| `children` | `React.ReactNode` | - | Optional label override |
-| `tone` | `string` | auto | `"primary"`, `"success"`, `"danger"`, `"warning"` |
-| `showDot` | `boolean` | `true` | Show/hide the status dot |
+| `title` / `value` / `subtitle` | - | - | Content |
+| `icon` | `node` | - | Icon element |
+| `color` | `string` | `"var(--color-primary)"` | Accent; every gradient and tint is derived from it |
+| `trend` | `object` | - | `{ direction: "up"\|"down"\|"flat", label }` |
+| `tintBackground` | `boolean` | `false` | Tint the card with the accent |
+| `loading` | `boolean` | `false` | Shimmer the value, keep the layout |
+| `valueSize` | `string` | `"lg"` | `"sm"`, `"md"`, `"lg"` |
+| `variant` | `string` | `"glass"` | `"aurora"`, `"spotlight"`, `"orb"`, `"glass"`, `"refined"`, `"expressive"` |
 
-**Automatic tone mapping (when `tone` is not passed):**
-- `success`: `checked in`, `active`, `present`, `success`
-- `danger`: `checked out`, `inactive`, `absent`, `danger`, `error`
-- `warning`: `maintenance`, `pending`, `warning`
-- fallback: `primary`
+`StatCards` takes `stats`, `columns` (default 4), `loading`, `loadingCount`,
+`valueSize`, `variant`. Two columns on a phone (one below 375px), stepping to
+`columns` at 768px for three or 1024px for four and up.
 
-### StatCard
+### CompactStudentTag / StudentTagGroup
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `title` | `string` | - | Stat title/label |
-| `value` | `string\|number` | - | Main value |
-| `subtitle` | `string` | - | Secondary text |
-| `icon` | `React.ReactNode` | - | Icon element |
-| `color` | `string` | `"var(--color-primary)"` | Icon/value color (CSS color or variable) |
+Tag: `name`, `rollNumber`, `email`, `role` (`"accused"|"accusing"` pick an
+accent), `selected`, `onClick`, `onRemove`.
+Group: `label`, `students`, `role`, `onRemove`, `emptyText`.
 
-### StatCards
+### IconCircle
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `stats` | `Array` | - | Array of stat objects: `[{ title, value, subtitle, icon, color }]` |
-| `columns` | `number` | `4` | Number of grid columns (1-5) |
+`children` (the icon), `size` (pixels or a length), `bg`, `color`.
+
+### InfoRow
+
+`label`, `value`, `strong` (for a total or headline figure).
 
 ---
 
-## Navigation Components
+## Tables
 
-### Tabs (CZero)
-
-**Location:** `czero/react` (NOT from `@/components/ui/navigation`)
+### Table (compound)
 
 ```jsx
-import { Tabs } from 'czero/react'
-```
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `tabs` / `items` | `Array` | - | Convenience mode: `[{ value, label, icon?, count?, disabled?, content? }]` |
-| `activeTab` / `value` | `string\|number\|boolean` | - | Controlled active tab |
-| `setActiveTab` / `onChange` | `function` | - | Change handler receiving tab value |
-| `children` | `React.ReactNode` | - | Primitive mode (`Tabs.List` / `Tabs.Trigger` / `Tabs.Content`) |
-| `variant` | `string` | `"underline"` | `"underline"`, `"pills"`, `"enclosed"` |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` (aliases: `"small"`, `"medium"`, `"large"`) |
-| `fullWidth` | `boolean` | `false` | Tabs take full width |
-| `showBorder` | `boolean` | `true` | Show/hide list border line |
-| `disabled` | `boolean` | `false` | Disable all triggers in convenience mode |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-**Primitive subcomponents:** `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `value` | `string\|number\|boolean` | - | Trigger/content key |
-| `children` | `React.ReactNode` | - | Label or content |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `icon` | `React.ReactNode` | - | Icon before label |
-| `count` | `React.ReactNode` | - | Optional count pill for tab trigger |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### Pagination
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `currentPage` | `number` | - | Current active page |
-| `totalPages` | `number` | - | Total number of pages |
-| `paginate` | `function` | - | Page change handler (receives page number) |
-| `compact` | `boolean` | `false` | If true, removes padding/margins for minimal height (ideal for footers) |
-| `showPageInfo` | `boolean` | `true` | If true, shows "Page X of Y" text |
-
-### Breadcrumb
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `items` | `Array` | `[]` | Breadcrumb items: `[{ label, href, icon, onClick }]` |
-| `separator` | `string` | `"chevron"` | `"chevron"` or custom character (e.g., `"/"`) |
-| `showHome` | `boolean` | `false` | Show home icon as first item |
-| `homeHref` | `string` | `"/"` | Home link href |
-| `onHomeClick` | `function` | - | Home click handler |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
----
-
-## Overlay Components
-
-**Location:** `@/components/ui/overlay`
-
-### Tooltip
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Trigger element |
-| `content` | `string` | - | Tooltip content |
-| `placement` | `string` | `"top"` | `"top"`, `"bottom"`, `"left"`, `"right"` |
-| `delay` | `number` | `200` | Show delay in ms |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### Popover
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Trigger element |
-| `content` | `React.ReactNode` | - | Popover content |
-| `placement` | `string` | `"bottom"` | `"top"`, `"bottom"`, `"left"`, `"right"` |
-| `trigger` | `string` | `"click"` | `"click"`, `"hover"` |
-| `isOpen` | `boolean` | - | Controlled open state |
-| `onOpenChange` | `function` | - | Open state change handler |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### Drawer
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `isOpen` | `boolean` | - | Drawer visibility |
-| `onClose` | `function` | - | Close handler |
-| `children` | `React.ReactNode` | - | Drawer content |
-| `title` | `string` | - | Drawer title |
-| `placement` | `string` | `"right"` | `"left"`, `"right"`, `"top"`, `"bottom"` |
-| `size` | `string` | `"medium"` | `"small"` (320px), `"medium"` (400px), `"large"` (560px), `"xlarge"` (720px), `"full"` (100%) |
-| `closeOnOverlay` | `boolean` | `true` | Close when clicking overlay |
-| `closeOnEsc` | `boolean` | `true` | Close on escape key |
-| `showCloseButton` | `boolean` | `true` | Show close button |
-| `footer` | `React.ReactNode` | - | Footer content |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### ConfirmDialog
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `isOpen` | `boolean` | - | Dialog visibility |
-| `onClose` | `function` | - | Close/cancel handler |
-| `onConfirm` | `function` | - | Confirm handler |
-| `title` | `string` | `"Confirm Action"` | Dialog title |
-| `message` | `string` | `"Are you sure you want to proceed?"` | Confirmation message |
-| `confirmText` | `string` | `"Confirm"` | Confirm button text |
-| `cancelText` | `string` | `"Cancel"` | Cancel button text |
-| `isDestructive` | `boolean` | `false` | Show danger styling |
-
----
-
-## Table Components
-
-**Location:** `czero/react` (NOT from `@/components/ui/table`)
-
-### Table (CZero Compound API)
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Table content |
-| `className` | `string` | `""` | Additional CSS classes on `<table>` |
-| `...props` | native table attrs | - | Any native table prop (`aria-*`, etc.) |
-
-**Compound sub-components:**
-- `Table.Header` (`<thead>`)
-- `Table.Body` (`<tbody>`)
-- `Table.Row` (`<tr>`)
-- `Table.Head` (`<th>`)
-- `Table.Cell` (`<td>`)
-
-```jsx
-import { Table } from 'czero/react'
-
 <Table>
   <Table.Header>
-    <Table.Row>
-      <Table.Head>Name</Table.Head>
-      <Table.Head>Email</Table.Head>
-    </Table.Row>
+    <Table.Row><Table.Head>Name</Table.Head></Table.Row>
   </Table.Header>
   <Table.Body>
-    <Table.Row>
-      <Table.Cell>Alice</Table.Cell>
-      <Table.Cell>alice@iitk.ac.in</Table.Cell>
-    </Table.Row>
+    <Table.Row><Table.Cell>Alice</Table.Cell></Table.Row>
   </Table.Body>
 </Table>
 ```
+
+Sub-components: `Table.Header`, `Table.Body`, `Table.Row`, `Table.Head`,
+`Table.Cell`. The wrapper owns horizontal overflow.
 
 ### DataTable
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `data` | `Array` | `[]` | Array of data objects |
-| `columns` | `Array` | `[]` | Column definitions: `[{ key, header, render, sortable, align, width, className }]` |
-| `selectable` | `boolean` | `false` | Enable row selection |
-| `selectedRows` | `Array` | `[]` | Controlled selected row ids |
-| `onSelectionChange` | `function` | - | Selection change handler |
+| `data` | `Array` | `[]` | Rows |
+| `columns` | `Array` | `[]` | See below |
+| `selectable` | `boolean` | `false` | Row selection with a tri-state header box |
+| `selectedRows` / `onSelectionChange` | - | - | Controlled selection |
 | `sortable` | `boolean` | `false` | Enable sorting |
-| `defaultSortKey` | `string` | `null` | Default sort column key |
-| `defaultSortDir` | `string` | `"asc"` | `"asc"`, `"desc"` |
-| `pagination` | `boolean` | `false` | Enable pagination |
-| `pageSize` | `number` | `10` | Rows per page |
-| `currentPage` | `number` | - | Controlled current page |
-| `onPageChange` | `function` | - | Page change handler |
-| `loading` | `boolean` | `false` | Loading state |
-| `isLoading` | `boolean` | `false` | Alias of `loading` |
-| `emptyState` | `React.ReactNode` | - | Custom empty state |
-| `emptyMessage` | `string` | - | Custom empty message text |
-| `onRowClick` | `function` | - | Row click handler |
-| `getRowId` | `function` | `(row, i) => row.id ?? row._id ?? i` | Function to get unique row id |
+| `defaultSortKey` / `defaultSortDir` | - | `"asc"` | Initial sort |
+| `pagination` / `pageSize` | - | `10` | Paging |
+| `currentPage` / `onPageChange` | - | - | Controlled paging |
+| `loading` / `isLoading` | `boolean` | `false` | Shimmer rows, header kept |
+| `emptyTitle` / `emptyMessage` | `node` | - | Empty-block copy |
+| `emptyState` | `node` | - | Replace the whole empty block |
+| `onRowClick` | `function` | - | Row click |
+| `getRowId` | `function` | `row.id ?? row._id ?? i` | Row identity |
 | `variant` | `string` | `"default"` | `"default"`, `"striped"`, `"bordered"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
 
-#### Column Definition Properties
+**Column definition:** `key`, `header`, `render(row, cellValue)`, `sortable`,
+`align`, `width`, `className`, `customHeaderRender()`.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `key` | `string` | Data key to access from row object |
-| `header` | `string` | Column header text |
-| `render` | `function` | Custom render: `(row, cellValue) => ReactNode` |
-| `sortable` | `boolean` | Enable sorting for this column (requires table `sortable` prop) |
-| `align` | `string` | Text alignment: `"left"`, `"center"`, `"right"` |
-| `width` | `string` | Column width (e.g., `"100px"`, `"20%"`) |
-| `className` | `string` | CSS classes applied to both header and cells (useful for responsive hiding, e.g., `"hidden md:table-cell"`) |
-| `customHeaderRender` | `function` | Custom header render: `() => ReactNode` |
-
-> **Migration Note:** Legacy imports from `@/components/ui/table` are removed. Use `Table` / `DataTable` from `czero/react`.
+Sorting is numeric for numbers, case-insensitive for strings, and null/undefined
+always sort last.
 
 ---
 
-## Typography Components
+## Navigation
 
-**Location:** `@/components/ui/typography`
+### Tabs
+
+Both APIs are supported.
+
+```jsx
+// array form
+<Tabs variant="pills" tabs={[{ value: "a", label: "All", count: 4 }]}
+      activeTab={tab} setActiveTab={setTab} />
+
+// compound form
+<Tabs value={tab} onChange={setTab} variant="underline">
+  <Tabs.List>
+    <Tabs.Trigger value="a">All</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="a">…</Tabs.Content>
+</Tabs>
+```
+
+`variant` (`"underline"|"pills"|"enclosed"`), `size`, `fullWidth`, `showBorder`,
+`disabled`. Values are compared as strings, so numbers and booleans work as keys.
+Arrow keys move between triggers and activate as they go.
+
+### FilterTabs / FilterButton / FilterChip
+
+The chip-style filter row. `FilterTabs`: `tabs` (`[{ label, value, icon?,
+count?, disabled? }]`), `activeTab`, `setActiveTab`, `size`, `disabled`.
+`FilterChip`: `label`, `onRemove`, `icon` — for showing applied filters.
+
+### Pagination
+
+`currentPage`, `totalPages`, `paginate`, `compact` (no outer margin, for a card
+footer), `showPageInfo`.
+
+### Breadcrumb
+
+`items` (`[{ label, href, icon, onClick }]`), `separator` (`"chevron"` or any
+node), `showHome`, `homeHref`, `onHomeClick`. The last item is `aria-current`
+and never a link.
+
+### StepIndicator
+
+`steps` (`[{ id, label, sublabel? }]`), `currentStep`, `onStepClick`, `compact`.
+Completed steps become real buttons when `onStepClick` is given — keyboard
+included; the current step carries `aria-current="step"`.
+
+---
+
+## Overlays
+
+### Modal
+
+| Prop | Type | Default | Values/Description |
+|------|------|---------|-------------------|
+| `isOpen` / `open` | `boolean` | - | Controlled; both spellings |
+| `onClose` / `onOpenChange` | `function` | - | Close handlers |
+| `defaultOpen` | `boolean` | - | Uncontrolled initial state |
+| `trigger` | `node` | - | Element that opens it |
+| `title` / `description` | `node` | - | Header text |
+| `children` / `footer` | `node` | - | Body / footer |
+| `headerExtra` | `node` | - | Extra header row |
+| `tabs` / `activeTab` / `onTabChange` | - | - | Header tab strip |
+| `size` | `string` | `"md"` | `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"`, `"full"` |
+| `width` / `minHeight` | `number\|string` | - | Exact sizing |
+| `fullHeight` | `boolean` | `false` | Fill the viewport height |
+| `centered` | `boolean` | `true` | `false` aligns to the top |
+| `hideTitle` | `boolean` | `false` | Removes the title visually, keeps the accessible name |
+| `showCloseButton` / `closeButtonVariant` / `closeButtonText` | - | `"icon"` | Close control |
+| `closeOnOverlay` / `closeOnEsc` | `boolean` | `true` | Dismissal |
+| `portalContainer` | `HTMLElement` | `document.body` | Mount point |
+| `overlayClassName` / `headerClassName` / `bodyClassName` / `footerClassName` | `string` | - | Slot classes |
+
+**Mount-to-show:** a Modal rendered with neither `open` nor a `trigger` opens
+on mount, which is what makes `{show && <Modal/>}` work.
+
+Stacked modals layer automatically, Escape only closes the topmost one, and the
+body scroll lock is reference-counted across the stack.
+
+### Drawer
+
+`isOpen`, `onClose`, `title`, `placement` (`"left"|"right"|"top"|"bottom"`),
+`size` (`"small"|"medium"|"large"|"xlarge"|"full"`, short aliases accepted),
+`closeOnOverlay`, `closeOnEsc`, `showCloseButton`, `footer`.
+
+### Tooltip
+
+`children` (trigger), `content`, `placement`, `delay` (default 200ms).
+
+### Popover
+
+`children` (trigger), `content`, `placement`, `align`
+(`"start"|"center"|"end"`), `trigger` (`"click"|"hover"`), `isOpen`,
+`onOpenChange`.
+
+### ConfirmDialog + ConfirmProvider + useConfirm
+
+```jsx
+<ConfirmProvider><App /></ConfirmProvider>
+
+const confirm = useConfirm()
+if (await confirm({ title: "Delete?", isDestructive: true })) remove()
+```
+
+`ConfirmDialog` directly: `isOpen`, `onClose`, `onConfirm`, `title`, `message`,
+`confirmText`, `cancelText`, `isDestructive`.
+
+---
+
+## Typography
 
 ### Heading
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Heading content |
-| `as` | `string` | `"h2"` | `"h1"`, `"h2"`, `"h3"`, `"h4"`, `"h5"`, `"h6"` |
-| `size` | `string` | (based on `as`) | `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"`, `"2xl"`, `"3xl"`, `"4xl"` |
-| `weight` | `string` | `"semibold"` | `"normal"`, `"medium"`, `"semibold"`, `"bold"` |
-| `color` | `string` | `"default"` | `"default"`, `"muted"`, `"primary"`, `"success"`, `"warning"`, `"danger"` |
-| `align` | `string` | - | `"left"`, `"center"`, `"right"` |
-| `truncate` | `boolean` | `false` | Truncate with ellipsis |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`as` (`"h1"`–`"h6"`, default `"h2"`), `size` (`"xs"`–`"4xl"`, defaults from
+`as`), `weight`, `color`, `align`, `truncate`.
 
-**Default sizes:** h1→3xl, h2→2xl, h3→xl, h4→lg, h5→md, h6→sm
+Default sizes: h1→3xl, h2→2xl, h3→xl, h4→lg, h5→md, h6→sm.
 
 ### Text
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Text content |
-| `as` | `string` | `"p"` | `"p"`, `"span"`, `"div"`, `"label"` |
-| `size` | `string` | `"md"` | `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"` |
-| `weight` | `string` | `"normal"` | `"normal"`, `"medium"`, `"semibold"`, `"bold"` |
-| `color` | `string` | `"default"` | `"default"`, `"muted"`, `"secondary"`, `"heading"`, `"primary"`, `"success"`, `"warning"`, `"danger"` |
-| `align` | `string` | - | `"left"`, `"center"`, `"right"`, `"justify"` |
-| `truncate` | `boolean` | `false` | Truncate with ellipsis |
-| `lineClamp` | `number` | - | Number of lines before truncating |
-| `italic` | `boolean` | `false` | Italic style |
-| `underline` | `boolean` | `false` | Underline style |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+`as` (`"p"|"span"|"div"|"label"`), `size` (`"xs"`–`"xl"`), `weight`, `color`,
+`align`, `truncate`, `lineClamp`, `italic`, `underline`.
+
+An unset prop emits no declaration and inherits — that is the contract, so a
+`Text` inside a coloured `Surface` picks up its colour.
 
 ---
 
-## Common Prop Patterns
+## Common patterns
 
-### Size Props
-Most components accept: `"small"`, `"medium"`, `"large"` (some use `"sm"`, `"md"`, `"lg"`)
+### Sizes
+`"sm"|"md"|"lg"` and `"small"|"medium"|"large"` are both accepted almost
+everywhere; components normalise internally.
 
-### Color/Variant Props
-- Colors: `"primary"`, `"secondary"`, `"success"`, `"warning"`, `"danger"`, `"info"`
-- Variants: Component-specific (see individual sections)
+### State props
+`disabled`, `loading`/`isLoading`, `error` (`boolean|string`), `checked`.
 
-### Event Props
-- `onClick` - Click handler: `(event) => void`
-- `onChange` - Value change handler: `(event) => void`
-- `onClose` - Close/dismiss handler: `() => void`
-- `onSubmit` - Form submit: `(event) => void`
+### Event props
+`onClick(event)`, `onChange(event)`, `onClose()`, `onSubmit(event)`.
 
-### State Props
-- `disabled` - `boolean` - Disable interaction
-- `loading` - `boolean` - Show loading state (Button only, use `loading` not `isLoading`)
-- `error` - `boolean|string` - Error message/state
-- `selected` - `boolean` - Selection state
-
-### Style Props
-- `className` - `string` - Additional CSS classes
-- `style` - `object` - Inline styles (React CSSProperties)
+Checkbox is the one component whose `onChange` receives a **synthesized**
+event-like object (it renders a button, not an input); it carries
+`target.{checked,name,value,id}`.
 
 ---
 
-## Usage Examples
+## Examples
 
-### Form with Validation
+### Form with validation
 
 ```jsx
-import { Button } from 'czero/react'
-import { Input, Select, Label } from '@/components/ui'
+import { Button, Field, Input, Select } from "hzero"
 
-<form>
-  <Label htmlFor="name" required>Name</Label>
-  <Input id="name" placeholder="Enter name" error={errors.name} />
-  
-  <Label htmlFor="role">Role</Label>
-  <Select 
-    id="role" 
-    options={[{ value: "admin", label: "Admin" }]} 
-  />
-  
+<form onSubmit={submit}>
+  <Field label="Name" required error={errors.name}>
+    <Input value={name} onChange={(e) => setName(e.target.value)} />
+  </Field>
+
+  <Field label="Role" help="Determines dashboard access">
+    <Select value={role} onChange={(e) => setRole(e.target.value)}
+            options={[{ value: "admin", label: "Admin" }]} />
+  </Field>
+
   <Button type="submit" loading={submitting}>Submit</Button>
 </form>
 ```
 
-### Card with Actions
+### Modal with a footer
 
 ```jsx
-import { Button } from 'czero/react'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui'
+import { Button, Modal, Input } from "hzero"
 
-<Card>
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-  </CardHeader>
-  <CardContent>Content here</CardContent>
-  <CardFooter>
-    <Button variant="ghost">Cancel</Button>
-    <Button>Save</Button>
-  </CardFooter>
-</Card>
+{editing && (
+  <Modal
+    isOpen
+    onClose={close}
+    title="Edit item"
+    footer={
+      <>
+        <Button variant="ghost" onClick={close}>Cancel</Button>
+        <Button onClick={save}>Save</Button>
+      </>
+    }
+  >
+    <Input value={name} onChange={(e) => setName(e.target.value)} />
+  </Modal>
+)}
 ```
 
-### Modal with Form
+### Data table
 
 ```jsx
-import { Button, Modal } from 'czero/react'
-import { Input } from '@/components/ui'
-
-<Modal 
-  isOpen={isOpen} 
-  onClose={close} 
-  title="Edit Item"
-  footer={
-    <>
-      <Button variant="ghost" onClick={close}>Cancel</Button>
-      <Button onClick={save}>Save</Button>
-    </>
-  }
->
-  <Input label="Name" value={name} onChange={setName} />
-</Modal>
-```
-
-### Data Table
-
-```jsx
-import { DataTable, StatusBadge } from 'czero/react'
+import { DataTable, StatusBadge } from "hzero"
 
 <DataTable
   data={users}
   columns={[
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'email', header: 'Email' },
-    { key: 'status', header: 'Status', render: (_row, val) => <StatusBadge status={val} /> }
+    { key: "name", header: "Name", sortable: true },
+    { key: "email", header: "Email", className: "hidden md:table-cell" },
+    { key: "status", header: "Status", render: (_row, v) => <StatusBadge status={v} /> },
   ]}
   selectable
   pagination
-  pageSize={10}
+  emptyTitle="No users yet"
+  emptyMessage="Invite someone to get started."
 />
 ```
 
-### Toast Notifications
+### Empty state with an action
 
 ```jsx
-import { Button } from 'czero/react'
-import { ToastProvider, useToast } from '@/components/ui'
-
-// Wrap app
-<ToastProvider position="top-right">
-  <App />
-</ToastProvider>
-
-// In component
-const { toast } = useToast()
-
-<Button onClick={() => toast.success('Saved!')}>Save</Button>
-<Button onClick={() => toast.error('Failed!')}>Delete</Button>
-```
-
-### Tabs Example
-
-```jsx
-import { Tabs } from 'czero/react'
-
-const [activeTab, setActiveTab] = useState('tab1')
-
-<Tabs
-  variant="pills"
-  tabs={[
-    { value: 'tab1', label: 'First Tab' },
-    { value: 'tab2', label: 'Second Tab', count: 4 }
-  ]}
-  activeTab={activeTab}
-  setActiveTab={setActiveTab}
+<EmptyState
+  icon={Users}
+  title="No visitor requests"
+  description="Requests appear here once a student submits one."
+  buttonText="Create request"
+  buttonAction={openForm}
 />
-
-<Tabs value={activeTab} onChange={setActiveTab} variant="underline">
-  <Tabs.List>
-    <Tabs.Trigger value="tab1">First Tab</Tabs.Trigger>
-    <Tabs.Trigger value="tab2">Second Tab</Tabs.Trigger>
-  </Tabs.List>
-  <Tabs.Content value="tab1">First panel content</Tabs.Content>
-  <Tabs.Content value="tab2">Second panel content</Tabs.Content>
-</Tabs>
-```
-
-### Drawer Example
-
-```jsx
-import { Drawer, Button } from '@/components/ui'
-
-<Drawer
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  title="Settings"
-  placement="right"
-  size="medium"
-  footer={<Button onClick={() => setIsOpen(false)}>Close</Button>}
->
-  <p>Drawer content here</p>
-</Drawer>
-```
-
-### Stack Layout
-
-```jsx
-import { Stack, HStack, VStack } from '@/components/ui'
-
-<Stack direction="row" gap="medium" align="center">
-  <Avatar name="John" />
-  <VStack gap="xsmall">
-    <Text weight="medium">John Doe</Text>
-    <Text size="sm" color="muted">john@example.com</Text>
-  </VStack>
-</Stack>
 ```
 
 ---
 
-## Not Included (Use From /common/)
+## Still app-specific (`/components/common/`)
 
-These domain-specific components remain in `/components/common/`:
+These stay in HMS because they carry HMS's vocabulary, not general UI:
 
-- `AccessDenied` - Auth error page
-- `CsvUploader` - CSV import utility
-- `ImageUploadModal` - Image upload modal
-- `MultiSelectDropdown` - Multi-select dropdown
-- `OfflineBanner` - PWA offline indicator
-- `PageHeader` - Page header layout
-- `PWAInstallPrompt` - PWA install prompt
-- `SimpleDatePicker` - Date picker
-- `UserSearch`, `UserSelector` - User selection
+- `AccessDenied`, `CsvUploader`, `ImageUploadModal`, `MultiSelectDropdown`,
+  `OfflineBanner`, `PageHeader`, `PWAInstallPrompt`, `UserSearch`, `UserSelector`
 
 ---
+
+## Component gallery
+
+Every component has a live sample in hzero's gallery app:
+
+```bash
+cd ../hzero && npm run gallery
+```
