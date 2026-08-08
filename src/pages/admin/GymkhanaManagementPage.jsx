@@ -1,7 +1,5 @@
-import StaffManagement from "../../components/admin/staff/StaffManagement"
+import StaffDirectory from "../../components/admin/staff/StaffDirectory"
 
-const GymkhanaManagementPage = () => {
-  return <StaffManagement staffType="gymkhana" />
-}
+const GymkhanaManagementPage = () => <StaffDirectory type="gymkhana" />
 
 export default GymkhanaManagementPage

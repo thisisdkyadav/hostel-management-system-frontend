@@ -1,7 +1,5 @@
-import StaffManagement from "../../components/admin/staff/StaffManagement"
+import StaffDirectory from "../../components/admin/staff/StaffDirectory"
 
-const HostelSupervisorsPage = () => {
-  return <StaffManagement staffType="hostelSupervisor" />
-}
+const HostelSupervisorsPage = () => <StaffDirectory type="hostelSupervisor" />
 
 export default HostelSupervisorsPage
