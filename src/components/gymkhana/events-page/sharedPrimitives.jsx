@@ -1,7 +1,7 @@
-import { DetailSection, InfoRow, Input, Text as HzText } from "hzero"
-import { Alert } from "@/components/ui/feedback"
-import { Label, Select, Textarea } from "@/components/ui/form"
-import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import {
+  Alert, DetailSection, Grid, HStack, InfoRow, Input, Label, Select, Surface,
+  Text, Textarea, VStack,
+} from "hzero"
 
 export const footerTabStyles = {
   tabsBar: {
@@ -165,7 +165,7 @@ export const EventDetailSectionCard = ({
  * coloured value colours the value rather than the row.
  */
 export const EventDetailInfoRow = ({ label, value, valueColor }) => (
-  <InfoRow label={label} value={valueColor ? <HzText as="span" color={valueColor}>{value}</HzText> : value} />
+  <InfoRow label={label} value={valueColor ? <Text as="span" color={valueColor}>{value}</Text> : value} />
 )
 
 export const DateOverlapSummary = ({
