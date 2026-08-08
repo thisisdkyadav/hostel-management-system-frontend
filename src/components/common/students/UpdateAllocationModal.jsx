@@ -1,25 +1,18 @@
 import { useMemo, useRef, useState } from "react"
 import {
-  FaCheck,
-  FaExclamationTriangle,
-  FaFileDownload,
-  FaFileUpload,
-  FaInfoCircle,
-  FaSpinner,
-  FaTimes,
-  FaTrash,
-  FaUpload,
-  FaKeyboard,
-} from "react-icons/fa"
+  Check, FileDown, FileUp, Info, Keyboard, LoaderCircle, Trash2, TriangleAlert,
+  Upload, X,
+} from "lucide-react"
 import Papa from "papaparse"
 
 import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import { Field, FileInput, Grid, Heading, HStack, Label, Select, Surface, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import {
+  Button, Field, FileInput, Grid, Heading, HStack, Input, Label, Modal, Select,
+  Surface, Text, useToast, VStack,
+} from "hzero"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 
 const createManualRowId = () => `allocation-row-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -120,6 +113,7 @@ const groupAllocationsByHostel = (rows = []) => {
 }
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
+  const { toast } = useToast()
   const { hostelList = [] } = useGlobal()
 
   const [activeTab, setActiveTab] = useState("csv")
@@ -147,8 +141,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
 
   const tabs = useMemo(() => ([
-    { id: "csv", name: "CSV Upload", icon: <FaUpload /> },
-    { id: "manual", name: "Manual Input", icon: <FaKeyboard /> },
+    { id: "csv", name: "CSV Upload", icon: <Upload size={16} /> },
+    { id: "manual", name: "Manual Input", icon: <Keyboard size={16} /> },
   ]), [])
 
   const nonBlankManualRows = useMemo(
@@ -723,7 +717,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
         return
       }
 
-      alert("Allocations updated successfully")
+      toast.success("Allocations updated.")
       handleClose()
     } finally {
       setIsAllocating(false)
@@ -772,7 +766,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   <Surface bg="secondary" padding={8} radius="xl" border="2px dashed var(--color-border-input)" align="center" style={{ cursor: "pointer", transition: "var(--transition-colors)" }} onDragOver={handleDragOver}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}>
-                    <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem" }} color="var(--color-text-placeholder)" />
+                    <FileUp size={48} style={{ margin: "0 auto", color: "var(--color-text-placeholder)" }} />
                     <Text size="sm" color="tertiary" style={{ marginTop: "var(--spacing-2)" }}>
                       Drag and drop a CSV file here, or click to select a file
                     </Text>
@@ -784,7 +778,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                   <VStack gap="none" align="center">
                     <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
-                      <FaFileDownload />
+                      <FileDown size={16} />
                       Download CSV Template
                     </Button>
 
@@ -830,14 +824,14 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     size="sm"
                     aria-label="Remove file"
                   >
-                    <FaTimes />
+                    <X size={16} />
                   </Button>
                 </div>
               )}
 
               {isLoading && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
-                  <FaSpinner className="animate-spin" style={{ width: "var(--spacing-5)", height: "var(--spacing-5)" }} color="var(--color-primary)" />
+                  <LoaderCircle size={20} className="animate-spin" style={{ color: "var(--color-primary)" }} />
                   <Text as="span" size="sm" color="tertiary" style={{ marginLeft: "var(--spacing-2)" }}>
                     Processing file...
                   </Text>
@@ -922,7 +916,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                     </Text>
                     {!isManualRowBlank(row) && (
                       <Button onClick={() => removeManualRow(row.id)} variant="ghost" size="sm">
-                        <FaTrash />
+                        <Trash2 size={16} />
                       </Button>
                     )}
                   </HStack>
@@ -943,7 +937,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                       <Surface bg="secondary" padding="0 var(--spacing-3)" radius="var(--radius-input)" border="1px solid var(--color-border-input)" color={row.student ? "var(--color-text-primary)" : "var(--color-text-muted)"} size="sm" style={{ minHeight: "40px", display: "flex", alignItems: "center" }}>
                         {row.studentLookupState === "loading" ? (
                           <>
-                            <FaSpinner className="animate-spin" style={{ marginRight: "var(--spacing-2)" }} color="var(--color-primary)" />
+                            <LoaderCircle size={16} className="animate-spin" style={{ marginRight: "var(--spacing-2)", color: "var(--color-primary)" }} />
                             Looking up student...
                           </>
                         ) : (
@@ -1005,7 +999,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   <VStack gap={2} style={{ marginTop: "var(--spacing-3)" }}>
                     {row.student?.currentAllocation && (
                       <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="info-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
-                        <FaInfoCircle style={{ marginTop: "2px" }} />
+                        <Info size={16} style={{ marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
                         <span>
                           {row.student.name} is currently allocated to{" "}
                           <strong>
@@ -1021,7 +1015,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                     {occupiedBedStudent && row.student && occupiedBedStudent.id !== row.student.id && (
                       <Surface bg="warning" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="warning-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
-                        <FaExclamationTriangle style={{ marginTop: "2px" }} />
+                        <TriangleAlert size={16} style={{ marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
                         <span>
                           Bed {row.bedNumber} is currently occupied by <strong>{occupiedBedStudent.name}</strong>.
                           Assigning {row.student.name} here will unallocate that student.
@@ -1049,7 +1043,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
                     {row.roomsLoading && (
                       <HStack align="center" gap={2} size="sm" color="muted">
-                        <FaSpinner className="animate-spin" />
+                        <LoaderCircle size={16} className="animate-spin" />
                         Loading rooms...
                       </HStack>
                     )}
@@ -1111,7 +1105,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
             {step === 2 && (
               <Button onClick={handleCsvAllocate} variant="primary" size="md" loading={isAllocating} disabled={parsedData.length === 0 || isLoading || isAllocating}>
-                <FaCheck />
+                <Check size={16} />
                 {isAllocating ? "Updating Allocations..." : "Confirm Allocations"}
               </Button>
             )}
@@ -1124,7 +1118,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               Cancel
             </Button>
             <Button onClick={handleManualAllocate} variant="primary" size="md" loading={isAllocating} disabled={manualReadyRows.length === 0 || isAllocating}>
-              <FaCheck />
+              <Check size={16} />
               {isAllocating ? "Updating Allocations..." : "Submit Manual Allocations"}
             </Button>
           </>
