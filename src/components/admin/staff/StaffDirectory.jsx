@@ -218,7 +218,7 @@ const StaffDirectory = ({ type }) => {
           />
         )}
 
-        {viewing && Details && <Details staff={viewing} onClose={() => setViewing(null)} />}
+        {viewing && Details && <Details staff={viewing} onClose={() => setViewing(null)} {...config.detailsProps} />}
       </Page.Body>
     </Page>
   )

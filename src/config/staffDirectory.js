@@ -9,8 +9,7 @@ import {
   GYMKHANA_SUBROLE_OPTIONS,
 } from "../constants/adminConstants"
 import { HCU_SUBROLE } from "../constants/adminSubRoles"
-import SecurityStaffDetailsModal from "../components/admin/security/SecurityStaffDetailsModal"
-import MaintenanceStaffDetailsModal from "../components/admin/maintenance/MaintenanceStaffDetailsModal"
+import StaffAttendanceModal from "../components/admin/staff/StaffAttendanceModal"
 
 /**
  * Every staff directory in the admin area, described rather than built.
@@ -288,9 +287,11 @@ export const STAFF_TYPES = {
       { title: "Unassigned", value: list.filter((s) => !s.hostelId).length, subtitle: "Available to assign", icon: Building2, color: "var(--color-warning)" },
     ],
 
-    // These two keep their own read-only detail modals: they show shift
-    // history and work logs, which is a different screen, not a bigger card.
-    detailsModal: SecurityStaffDetailsModal,
+    // Attendance history is a different screen from the card, not a bigger
+    // card — so it stays a modal of its own, shared with maintenance. The
+    // reference and its props stay separate so this file holds no JSX.
+    detailsModal: StaffAttendanceModal,
+    detailsProps: { staffType: "security" },
 
     card: (s, ctx) => ({
       subtitle: "Security staff",
@@ -351,7 +352,8 @@ export const STAFF_TYPES = {
       })),
     ],
 
-    detailsModal: MaintenanceStaffDetailsModal,
+    detailsModal: StaffAttendanceModal,
+    detailsProps: { staffType: "maintenance", showWorkStats: true },
 
     card: (s) => {
       const category = maintenanceCategory(s.category)
