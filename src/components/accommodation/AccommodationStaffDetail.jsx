@@ -1,12 +1,41 @@
 import { useState, useEffect, useCallback } from "react"
-import { Button, Input } from "hzero"
-import { EmptyState, Field, Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Select, Textarea, RadioGroup, Label } from "@/components/ui"
-import { RadioGroupItem } from "@/components/ui/form/RadioGroup"
-import { User, BedDouble, Users, Receipt, Clock3, Gavel, CreditCard, BadgeCheck, Building2, DoorOpen, ExternalLink, Eye, UserRoundX } from "lucide-react"
+import {
+  Alert,
+  Badge,
+  Button,
+  DetailSection,
+  EmptyState,
+  Field,
+  Grid,
+  InfoRow,
+  Input,
+  Modal,
+  RadioGroup,
+  RadioGroupItem,
+  Select,
+  Text,
+  Textarea,
+  VStack,
+} from "hzero"
+import {
+  BadgeCheck,
+  BedDouble,
+  Building2,
+  CircleCheck,
+  Clock3,
+  CreditCard,
+  DoorOpen,
+  ExternalLink,
+  Eye,
+  Gavel,
+  Receipt,
+  User,
+  UserRoundX,
+  Users,
+} from "lucide-react"
 import { accommodationApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
-import { MetaBar, SectionCard, InfoRow, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
+import { MetaBar, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
 import StudentDetailModal from "../common/students/StudentDetailModal"
 import PdfViewerModal from "../common/pdf/PdfViewerModal"
 
@@ -67,8 +96,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     }
   }, [requestId])
 
+  // Resets the console the moment a different request is opened. The reset has
+  // to land in the same commit the new request does — deferring it would flash
+  // the previous request's half-filled form — so the synchronous setState is
+  // deliberate and the rule is silenced rather than worked around. Untouched by
+  // the hzero migration, which is a presentation change only.
   useEffect(() => {
     if (!open || !request) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setError("")
     setReassigning(false)
     setDecision({ action: "approve", reason: "" })
@@ -85,9 +120,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     if (showAllot) loadAllotment()
   }, [open, request, showAllot, loadAllotment])
 
-  // Load room availability whenever the assignment form is visible.
+  // Load room availability whenever the assignment form is visible. Wrapped in
+  // an async function because react-hooks/set-state-in-effect reads any call to
+  // a setState-containing function as a synchronous one; nothing is set here
+  // before the fetch returns.
   useEffect(() => {
-    if (open && showAssign) loadRooms()
+    if (!open || !showAssign) return
+    const fetchRooms = async () => { await loadRooms() }
+    fetchRooms()
   }, [open, showAssign, loadRooms])
 
   if (!request || !open) return null
@@ -138,197 +178,194 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     label: `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber} (${r.available} free)`,
   }))
 
+  const paymentAmountOverridden = Number(payForm.amount) !== (request.quote?.total || 0)
+
   return (
     <Modal isOpen={open} onClose={onClose} title="Guest accommodation" width={900} closeButtonVariant="button">
       <VStack gap={4}>
         <MetaBar request={request} />
 
-        {error && (
-          <Surface bg="danger" padding={3} radius="md" color="danger-text" size="sm">{error}</Surface>
-        )}
+        {error && <Alert type="error">{error}</Alert>}
 
         {student && (
-          <SectionCard
-            icon={User}
+          <DetailSection
             title="Student"
-            accentColor="var(--color-primary)"
-            headerAction={
+            icon={User}
+            actions={
               (student.id || student.userId) ? (
-                <button
-                  type="button"
-                  onClick={() => setShowStudentProfile(true)}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}
-                >
-                  View full profile <ExternalLink size={12} />
-                </button>
-              ) : null
+                <Button type="button" variant="ghost" size="sm" onClick={() => setShowStudentProfile(true)}>
+                  View full profile <ExternalLink size={14} />
+                </Button>
+              ) : undefined
             }
           >
             <PersonCard person={student} fallbackName={request.applicantName} />
-          </SectionCard>
+          </DetailSection>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
+        <Grid cols={{ base: 1, lg: 2 }} gap={4} align="start">
           {/* Left: details */}
           <VStack gap={4}>
-            <SectionCard icon={BedDouble} title="Stay details" accentColor="var(--color-primary)">
-              <VStack gap={2}>
-                <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
-                <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
-                <InfoRow label="Nights" value={request.nights || 0} />
-                <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
-              </VStack>
-            </SectionCard>
+            <DetailSection title="Stay details" icon={BedDouble}>
+              <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
+              <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
+              <InfoRow label="Nights" value={request.nights || 0} />
+              <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
+            </DetailSection>
 
-            <SectionCard icon={Users} title={`Guests (${request.guests?.length || 0})`} accentColor="var(--color-info)">
+            <DetailSection title={`Guests (${request.guests?.length || 0})`} icon={Users}>
               <GuestList guests={request.guests || []} />
-            </SectionCard>
+            </DetailSection>
 
-            <SectionCard icon={Receipt} title="Charges" accentColor="var(--color-success)">
+            <DetailSection title="Charges" icon={Receipt}>
               <ChargesRows quote={request.quote} />
-              {request.payment?.screenshotFileRef && (
-                <Text as="div" size="sm" style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)" }}>
-                  <Text as="div" color="muted" size="xs" style={{ textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>Payment proof</Text>
-                  <InfoRow label="Amount" value={money(request.payment.amount)} />
-                  <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
-                  {request.payment.remarks && <InfoRow label="Remarks" value={request.payment.remarks} />}
-                  <div style={{ marginTop: "var(--spacing-2)" }}>
-                    <Button size="sm" variant="secondary" onClick={() => setShowProof(true)}>
-                      <Eye size={14} /> View payment proof
-                    </Button>
-                  </div>
-                </Text>
-              )}
-            </SectionCard>
+            </DetailSection>
 
-            <SectionCard icon={Clock3} title="Timeline" accentColor="var(--color-text-secondary)">
+            {request.payment?.screenshotFileRef && (
+              <DetailSection
+                title="Payment proof"
+                icon={CreditCard}
+                actions={
+                  <Button type="button" size="sm" variant="secondary" onClick={() => setShowProof(true)}>
+                    <Eye size={14} /> View
+                  </Button>
+                }
+              >
+                <InfoRow label="Amount" value={money(request.payment.amount)} />
+                <InfoRow label="Txn / UTR" value={request.payment.transactionId || "—"} />
+                {request.payment.remarks && <InfoRow label="Remarks" value={request.payment.remarks} />}
+              </DetailSection>
+            )}
+
+            <DetailSection title="Timeline" icon={Clock3}>
               <JourneyTimeline status={status} timeline={request.timeline} />
-            </SectionCard>
+            </DetailSection>
           </VStack>
 
           {/* Right: action console */}
           <VStack gap={4}>
             {!hasAction && !showAssignedSummary && (
-              <Surface padding={4} radius="card-sm" border="1px dashed var(--color-border-input)" color="muted" size="sm">
-                No action needed from you at this stage.
-              </Surface>
+              <EmptyState
+                size="sm"
+                icon={CircleCheck}
+                title="No action needed"
+                message="Nothing at this stage is waiting on you."
+              />
             )}
 
             {showAssignedSummary && (
-              <SectionCard icon={DoorOpen} title="Rooms assigned" accentColor="var(--color-success)" headerAction={canReassign ? (
-                <button type="button" onClick={() => setReassigning(true)} style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Reassign</button>
-              ) : null}>
-                <VStack gap={2}>
-                  {assignedRooms.map((r, i) => {
-                    const roomLabel = `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`
-                    return (
-                      <InfoRow label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`} value={<>Room {roomLabel}</>} key={i} />
-                    )
-                  })}
-                </VStack>
-              </SectionCard>
+              <DetailSection
+                title="Rooms assigned"
+                icon={DoorOpen}
+                tone="success"
+                actions={canReassign ? (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setReassigning(true)}>Reassign</Button>
+                ) : undefined}
+              >
+                {assignedRooms.map((r, i) => (
+                  <InfoRow
+                    key={i}
+                    label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}
+                    value={`Room ${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`}
+                  />
+                ))}
+              </DetailSection>
             )}
 
             {showBypassFa && (
-              <SectionCard icon={UserRoundX} title="Faculty advisor" accentColor="var(--color-warning)">
-                <VStack gap={3}>
-                  <Text size="sm" color="muted">
-                    This request is awaiting the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
-                  </Text>
-                  <Button variant="outline" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection title="Faculty advisor" icon={UserRoundX} tone="warning">
+                <Text size="sm" color="body">
+                  This request is waiting on the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
+                </Text>
+                <Button variant="secondary" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
+              </DetailSection>
             )}
 
             {showApprove && (
-              <SectionCard icon={Gavel} title="Your decision" accentColor="var(--color-primary)">
-                <VStack gap={3}>
-                  <RadioGroup name="cwdecision" value={decision.action} onChange={(e) => setDecision((d) => ({ ...d, action: e.target.value }))}>
-                    <RadioGroupItem value="approve" label="Approve" />
-                    <RadioGroupItem value="request_modification" label="Request modification (returns to student)" />
-                    <RadioGroupItem value="reject" label="Reject" />
-                  </RadioGroup>
-                  {decision.action !== "approve" && (
-                    <Textarea value={decision.reason} onChange={(e) => setDecision((d) => ({ ...d, reason: e.target.value }))} rows={2} placeholder="Reason for the student" />
-                  )}
-                  <Button onClick={submitDecision} loading={busy} disabled={busy}>Submit decision</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection title="Your decision" icon={Gavel} tone="primary">
+                <RadioGroup name="cwdecision" value={decision.action} onChange={(e) => setDecision((d) => ({ ...d, action: e.target.value }))}>
+                  <RadioGroupItem value="approve" label="Approve" />
+                  <RadioGroupItem value="request_modification" label="Request modification" description="Returns the request to the student." />
+                  <RadioGroupItem value="reject" label="Reject" />
+                </RadioGroup>
+                {decision.action !== "approve" && (
+                  <Textarea value={decision.reason} onChange={(e) => setDecision((d) => ({ ...d, reason: e.target.value }))} rows={2} placeholder="Reason for the student" />
+                )}
+                <Button onClick={submitDecision} loading={busy} disabled={busy}>Submit decision</Button>
+              </DetailSection>
             )}
 
             {showIssuePayment && (
-              <SectionCard icon={CreditCard} title="Request payment" accentColor="var(--color-primary)">
-                <VStack gap={3}>
-                  <Field label="Amount">
-                    <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
-                    <Text size="10px" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Calculated total is {money(request.quote?.total)}. Override for a custom amount.</Text>
-                  </Field>
-                  <Field label={<>Remarks {Number(payForm.amount) !== (request.quote?.total || 0) ? "(required — reason for the amount)" : "(optional)"}</>}>
-                    <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
-                  </Field>
-                  <Text size="10px" color="muted">The payment link and QR are taken automatically from settings.</Text>
-                  <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (Number(payForm.amount) !== (request.quote?.total || 0) && !payForm.remarks.trim())}>Send payment request</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection title="Request payment" icon={CreditCard} tone="primary">
+                <Field label="Amount" help={`Calculated total is ${money(request.quote?.total)}. Override it for a custom amount.`}>
+                  <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
+                </Field>
+                <Field label={<>Remarks {paymentAmountOverridden ? "(required — reason for the amount)" : "(optional)"}</>}>
+                  <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
+                </Field>
+                <Text size="xs" color="muted">The payment link and QR come from settings automatically.</Text>
+                <Button onClick={submitIssuePayment} loading={busy} disabled={busy || (paymentAmountOverridden && !payForm.remarks.trim())}>Send payment request</Button>
+              </DetailSection>
             )}
 
             {showVerify && (
-              <SectionCard icon={BadgeCheck} title="Verify payment" accentColor="var(--color-primary)">
-                <VStack gap={3}>
-                  <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
-                    <RadioGroupItem value="verify" label="Verify — amount matches" />
-                    <RadioGroupItem value="reject" label="Reject — back to student" />
-                  </RadioGroup>
-                  <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
-                  <Button onClick={submitVerify} loading={busy} disabled={busy}>Submit</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection title="Verify payment" icon={BadgeCheck} tone="primary">
+                <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
+                  <RadioGroupItem value="verify" label="Verify" description="The amount matches." />
+                  <RadioGroupItem value="reject" label="Reject" description="Sends the request back to the student." />
+                </RadioGroup>
+                <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
+                <Button onClick={submitVerify} loading={busy} disabled={busy}>Submit</Button>
+              </DetailSection>
             )}
 
             {showAllot && (
-              <SectionCard icon={Building2} title={`Allot a hostel · ${request.persons} bed(s)`} accentColor="var(--color-primary)">
-                <VStack gap={3}>
-                  {hostels.length === 0 ? (
-                    <EmptyState variant="inline" message="No hostels with guest rooms are set up yet." />
-                  ) : (
-                    <VStack gap={2}>
-                      {hostels.map((h) => {
-                        const ok = h.available >= request.persons
-                        return (
-                          <label key={h.hostelId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", padding: "var(--spacing-2) var(--spacing-3)", border: `1px solid ${hostelChoice === h.hostelId ? "var(--color-primary)" : "var(--color-border-primary)"}`, borderRadius: "var(--radius-md)", opacity: ok ? 1 : 0.5, cursor: ok ? "pointer" : "not-allowed" }}>
-                            <span style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-                              <input type="radio" name="hostel" value={h.hostelId} disabled={!ok} checked={hostelChoice === h.hostelId} onChange={() => setHostelChoice(h.hostelId)} />
-                              <Text as="span" size="sm" weight="medium">{h.name}</Text>
-                            </span>
-                            <Text as="span" size="xs" weight="semibold" color={ok ? "var(--color-success)" : "var(--color-danger)"}>{h.available}/{h.totalBeds} free</Text>
-                          </label>
-                        )
-                      })}
-                    </VStack>
-                  )}
-                  <Button onClick={submitAllot} loading={busy} disabled={busy || !hostelChoice}>Allot hostel</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection title={`Allot a hostel · ${request.persons} bed(s)`} icon={Building2} tone="primary">
+                {hostels.length === 0 ? (
+                  <EmptyState variant="inline" message="No hostels with guest rooms are set up yet." />
+                ) : (
+                  <RadioGroup name="hostel" value={hostelChoice} onChange={(e) => setHostelChoice(e.target.value)}>
+                    {hostels.map((h) => {
+                      const ok = h.available >= request.persons
+                      return (
+                        <RadioGroupItem
+                          key={h.hostelId}
+                          value={h.hostelId}
+                          disabled={!ok}
+                          label={h.name}
+                          description={
+                            <Badge variant={ok ? "success" : "danger"} size="small">{h.available} of {h.totalBeds} free</Badge>
+                          }
+                        />
+                      )
+                    })}
+                  </RadioGroup>
+                )}
+                <Button onClick={submitAllot} loading={busy} disabled={busy || !hostelChoice}>Allot hostel</Button>
+              </DetailSection>
             )}
 
             {showAssign && (
-              <SectionCard icon={DoorOpen} title={reassigning ? "Reassign rooms" : "Assign rooms"} accentColor="var(--color-primary)" allowOverflow headerAction={reassigning ? (
-                <button type="button" onClick={() => setReassigning(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)" }}>Cancel</button>
-              ) : null}>
-                <VStack gap={3}>
-                  {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
-                  {(request.guests || []).map((g, i) => (
-                    <Grid cols={2} gap={2} align="center" key={i}>
-                      <Text as="span" size="sm">{g.name}</Text>
-                      <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
-                    </Grid>
-                  ))}
-                  <Button onClick={submitAssign} loading={busy} disabled={busy || roomOptions.length === 0}>{reassigning ? "Update assignment" : "Assign rooms"}</Button>
-                </VStack>
-              </SectionCard>
+              <DetailSection
+                title={reassigning ? "Reassign rooms" : "Assign rooms"}
+                icon={DoorOpen}
+                tone="primary"
+                actions={reassigning ? (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setReassigning(false)}>Cancel</Button>
+                ) : undefined}
+              >
+                {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
+                {(request.guests || []).map((g, i) => (
+                  <Grid cols={2} gap={2} align="center" key={i}>
+                    <Text as="span" size="sm">{g.name}</Text>
+                    <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
+                  </Grid>
+                ))}
+                <Button onClick={submitAssign} loading={busy} disabled={busy || roomOptions.length === 0}>{reassigning ? "Update assignment" : "Assign rooms"}</Button>
+              </DetailSection>
             )}
           </VStack>
-        </div>
+        </Grid>
       </VStack>
 
       {showStudentProfile && student && (

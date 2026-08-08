@@ -1,5 +1,5 @@
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Mail, Paperclip, Calendar, Users } from "lucide-react"
+import { Badge, DetailSection, HStack, Modal, Text, VStack } from "hzero"
+import { Calendar, FileText, Mail, Paperclip, Users } from "lucide-react"
 
 /**
  * EmailDetailModal - Modal for viewing email details
@@ -18,10 +18,10 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
       : []
 
   const attachments = [
-    ...(emailLog.includeInitialComplaint ? [{ name: "Initial Complaint PDF", type: "complaint" }] : []),
+    ...(emailLog.includeInitialComplaint ? [{ name: "Initial complaint PDF", type: "complaint" }] : []),
     ...(emailLog.statementAttachments || []).map((a) => ({ name: a.pdfName || "Statement", type: "statement" })),
     ...(emailLog.evidenceAttachments || []).map((a) => ({ name: a.pdfName || "Evidence", type: "evidence" })),
-    ...(emailLog.extraDocumentAttachments || []).map((a) => ({ name: a.pdfName || "Extra Doc", type: "extra" })),
+    ...(emailLog.extraDocumentAttachments || []).map((a) => ({ name: a.pdfName || "Extra document", type: "extra" })),
     ...(emailLog.extraAttachments || []).map((a) => ({ name: a.fileName || "Attachment", type: "extra" })),
   ]
 
@@ -30,111 +30,50 @@ const EmailDetailModal = ({ isOpen, onClose, emailLog }) => {
     return new Date(dateStr).toLocaleString()
   }
 
-  const sectionStyle = {
-    padding: "var(--spacing-3)",
-    backgroundColor: "var(--color-bg-secondary)",
-    borderRadius: "var(--radius-md)",
-    border: "1px solid var(--color-border-primary)",
-  }
-
-  const labelStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-muted)",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-    marginBottom: 6,
-  }
-
-  const valueStyle = {
-    fontSize: "var(--font-size-sm)",
-    color: "var(--color-text-primary)",
-    lineHeight: 1.5,
-  }
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Email Details"
+      title="Email details"
       width={600}
     >
       <VStack gap={3}>
-        {/* Sent Date */}
-        <div style={sectionStyle}>
-          <div style={labelStyle}>
-            <Calendar size={12} />
-            Sent At
-          </div>
-          <div style={valueStyle}>{formatDate(emailLog.sentAt)}</div>
-        </div>
+        <DetailSection title="Sent at" icon={Calendar}>
+          <Text as="div" size="sm" color="body">{formatDate(emailLog.sentAt)}</Text>
+        </DetailSection>
 
-        {/* Recipients */}
-        <div style={sectionStyle}>
-          <div style={labelStyle}>
-            <Users size={12} />
-            Recipients ({recipients.length})
-          </div>
-          <HStack gap={4} wrap>
+        <DetailSection title={`Recipients (${recipients.length})`} icon={Users}>
+          <HStack gap={2} wrap>
             {recipients.map((email, index) => (
-              <Surface as="span" bg="brand" padding="2px 8px" radius="var(--radius-badge)" color="brand" size="xs" weight="medium" key={`${email}-${index}`}>
+              <Badge variant="primary" size="small" key={`${email}-${index}`}>
                 {email}
-              </Surface>
+              </Badge>
             ))}
           </HStack>
-        </div>
+        </DetailSection>
 
-        {/* Subject */}
-        <div style={sectionStyle}>
-          <div style={labelStyle}>
-            <Mail size={12} />
-            Subject
-          </div>
-          <Text as="div" weight="semibold">
+        <DetailSection title="Subject" icon={Mail}>
+          <Text as="div" size="sm" weight="semibold" color="body">
             {emailLog.subject || "(No subject)"}
           </Text>
-        </div>
+        </DetailSection>
 
-        {/* Body */}
-        <div style={sectionStyle}>
-          <div style={labelStyle}>
-            Body
-          </div>
-          <div
-            style={{
-              ...valueStyle,
-              whiteSpace: "pre-wrap",
-              maxHeight: 200,
-              overflowY: "auto",
-              padding: "var(--spacing-2)",
-              backgroundColor: "var(--color-bg-primary)",
-              borderRadius: "var(--radius-sm)",
-              border: "1px solid var(--color-border-light)",
-            }}
-          >
+        <DetailSection title="Body" icon={FileText}>
+          <Text as="div" size="sm" color="body" style={{ whiteSpace: "pre-wrap", maxHeight: 200, overflowY: "auto" }}>
             {emailLog.body || "(No body)"}
-          </div>
-        </div>
+          </Text>
+        </DetailSection>
 
-        {/* Attachments */}
         {attachments.length > 0 && (
-          <div style={sectionStyle}>
-            <div style={labelStyle}>
-              <Paperclip size={12} />
-              Attachments ({attachments.length})
-            </div>
-            <HStack gap={6} wrap>
+          <DetailSection title={`Attachments (${attachments.length})`} icon={Paperclip}>
+            <HStack gap={2} wrap>
               {attachments.map((attachment, index) => (
-                <Surface as="span" bg="tertiary" padding="4px 8px" radius="var(--radius-badge)" border="1px solid var(--color-border-primary)" color="body" size="xs" style={{ display: "inline-flex", alignItems: "center", gap: 4 }} key={`attachment-${index}`}>
-                  <Paperclip size={10} />
+                <Badge variant="default" size="small" icon={<Paperclip />} key={`attachment-${index}`}>
                   {attachment.name}
-                </Surface>
+                </Badge>
               ))}
             </HStack>
-          </div>
+          </DetailSection>
         )}
       </VStack>
     </Modal>

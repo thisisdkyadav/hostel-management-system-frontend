@@ -1,21 +1,28 @@
-import { Button, Input } from "hzero"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Checkbox, Select, Textarea } from "@/components/ui/form"
-import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
   Building2,
   CalendarDays,
   ClipboardCheck,
   Clock,
-  DollarSign,
   FileText,
+  IndianRupee,
   Target,
   Users,
 } from "lucide-react"
 import {
-  FormField,
-  Panel,
-} from "@/components/gymkhana/events-page/sharedPrimitives"
+  Button,
+  Checkbox,
+  DetailSection,
+  Field,
+  Grid,
+  HStack,
+  Input,
+  Modal,
+  Select,
+  Table,
+  Textarea,
+  VStack,
+} from "hzero"
+import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 
 export const GymkhanaProposalDetailsModal = ({
   isOpen,
@@ -32,7 +39,7 @@ export const GymkhanaProposalDetailsModal = ({
 }) => (
   <Modal
     isOpen={isOpen}
-    title="Proposal Details Format"
+    title="Proposal details format"
     width={1200}
     closeButtonVariant="button"
     onClose={onClose}
@@ -45,8 +52,8 @@ export const GymkhanaProposalDetailsModal = ({
     }
   >
     <VStack gap={4}>
-      <Surface bg="brand" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-primary)">
-        <FormField label="Programme Title" htmlFor="gymkhana-proposal-programme-title" required>
+      <DetailSection tone="primary">
+        <Field label="Programme title" htmlFor="gymkhana-proposal-programme-title" required>
           <Input
             id="gymkhana-proposal-programme-title"
             value={proposalForm.proposalDetails.programmeTitle}
@@ -56,14 +63,14 @@ export const GymkhanaProposalDetailsModal = ({
             placeholder="Enter the full title of the programme"
             disabled={!canEditProposalForm}
           />
-        </FormField>
-      </Surface>
+        </Field>
+      </DetailSection>
 
       <Grid cols={2} gap={4}>
         <VStack gap={4}>
-          <Panel title="Programme Details" icon={CalendarDays}>
+          <DetailSection title="Programme details" icon={CalendarDays}>
             <Grid cols={2} gap={2}>
-              <FormField label="Programme Type" htmlFor="gymkhana-proposal-programme-type" required>
+              <Field label="Programme type" htmlFor="gymkhana-proposal-programme-type" required>
                 <Select
                   id="gymkhana-proposal-programme-type"
                   options={programmeTypeOptions}
@@ -76,8 +83,8 @@ export const GymkhanaProposalDetailsModal = ({
                   }
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField label="Programme Mode" htmlFor="gymkhana-proposal-programme-mode" required>
+              </Field>
+              <Field label="Programme mode" htmlFor="gymkhana-proposal-programme-mode" required>
                 <Select
                   id="gymkhana-proposal-programme-mode"
                   options={programmeModeOptions}
@@ -90,10 +97,10 @@ export const GymkhanaProposalDetailsModal = ({
                   }
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
+              </Field>
             </Grid>
             <Grid cols={3} gap={2}>
-              <FormField label="Dates & Duration" htmlFor="gymkhana-proposal-dates-duration" required>
+              <Field label="Dates and duration" htmlFor="gymkhana-proposal-dates-duration" required>
                 <Input
                   id="gymkhana-proposal-dates-duration"
                   value={proposalForm.proposalDetails.programmeDetails.datesAndDuration}
@@ -106,8 +113,8 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="e.g., 3-5 March, 3 days"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField label="Venue" htmlFor="gymkhana-proposal-venue" required>
+              </Field>
+              <Field label="Venue" htmlFor="gymkhana-proposal-venue" required>
                 <Input
                   id="gymkhana-proposal-venue"
                   value={proposalForm.proposalDetails.programmeDetails.venue}
@@ -117,9 +124,9 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Venue"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField
-                label="Expected Participants"
+              </Field>
+              <Field
+                label="Expected participants"
                 htmlFor="gymkhana-proposal-expected-participants"
                 required
               >
@@ -137,12 +144,12 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Count"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
+              </Field>
             </Grid>
-          </Panel>
+          </DetailSection>
 
-          <Panel title="Background & Rationale" icon={FileText} accent>
-            <FormField label="Context and Relevance" htmlFor="gymkhana-proposal-context-relevance" required>
+          <DetailSection title="Background and rationale" icon={FileText}>
+            <Field label="Context and relevance" htmlFor="gymkhana-proposal-context-relevance" required>
               <Textarea
                 id="gymkhana-proposal-context-relevance"
                 value={proposalForm.proposalDetails.backgroundAndRationale.contextRelevance}
@@ -156,8 +163,8 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Describe the background context and relevance of this programme"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-            <FormField label="Expected Impact" htmlFor="gymkhana-proposal-expected-impact" required>
+            </Field>
+            <Field label="Expected impact" htmlFor="gymkhana-proposal-expected-impact" required>
               <Textarea
                 id="gymkhana-proposal-expected-impact"
                 value={proposalForm.proposalDetails.backgroundAndRationale.expectedImpact}
@@ -171,9 +178,9 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Expected institutional/societal impact"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-            <FormField
-              label="Alignment with Objectives"
+            </Field>
+            <Field
+              label="Alignment with objectives"
               htmlFor="gymkhana-proposal-alignment-objectives"
               required
             >
@@ -190,11 +197,11 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="How does this align with institute objectives?"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-          </Panel>
+            </Field>
+          </DetailSection>
 
-          <Panel title="Programme Objectives" icon={Target}>
-            <FormField label="Primary Objective" htmlFor="gymkhana-proposal-objective-1" required>
+          <DetailSection title="Programme objectives" icon={Target}>
+            <Field label="Primary objective" htmlFor="gymkhana-proposal-objective-1" required>
               <Input
                 id="gymkhana-proposal-objective-1"
                 value={proposalForm.proposalDetails.objectives.objective1}
@@ -204,9 +211,9 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Main objective of the programme"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
+            </Field>
             <Grid cols={2} gap={2}>
-              <FormField label="Secondary Objective" htmlFor="gymkhana-proposal-objective-2">
+              <Field label="Secondary objective" htmlFor="gymkhana-proposal-objective-2">
                 <Input
                   id="gymkhana-proposal-objective-2"
                   value={proposalForm.proposalDetails.objectives.objective2}
@@ -216,8 +223,8 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Optional"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField label="Tertiary Objective" htmlFor="gymkhana-proposal-objective-3">
+              </Field>
+              <Field label="Tertiary objective" htmlFor="gymkhana-proposal-objective-3">
                 <Input
                   id="gymkhana-proposal-objective-3"
                   value={proposalForm.proposalDetails.objectives.objective3}
@@ -227,14 +234,14 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Optional"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
+              </Field>
             </Grid>
-          </Panel>
+          </DetailSection>
         </VStack>
 
         <VStack gap={4}>
-          <Panel title="Organising Unit" icon={Building2} accent>
-            <FormField label="Unit Type" htmlFor="gymkhana-proposal-organising-unit-type" required>
+          <DetailSection title="Organising unit" icon={Building2}>
+            <Field label="Unit type" htmlFor="gymkhana-proposal-organising-unit-type" required>
               <Select
                 id="gymkhana-proposal-organising-unit-type"
                 options={organisingUnitOptions}
@@ -244,8 +251,8 @@ export const GymkhanaProposalDetailsModal = ({
                 }
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-            <FormField label="Coordinator Name(s)" htmlFor="gymkhana-proposal-coordinator-names" required>
+            </Field>
+            <Field label="Coordinator name(s)" htmlFor="gymkhana-proposal-coordinator-names" required>
               <Input
                 id="gymkhana-proposal-coordinator-names"
                 value={proposalForm.proposalDetails.organisingUnit.coordinatorNames}
@@ -258,9 +265,9 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Names of coordinators"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
+            </Field>
             <Grid cols={2} gap={2}>
-              <FormField label="Contact Mobile" htmlFor="gymkhana-proposal-contact-mobile" required>
+              <Field label="Contact mobile" htmlFor="gymkhana-proposal-contact-mobile" required>
                 <Input
                   id="gymkhana-proposal-contact-mobile"
                   value={proposalForm.proposalDetails.organisingUnit.contactMobile}
@@ -273,8 +280,8 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Mobile"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField label="Contact Email" htmlFor="gymkhana-proposal-contact-email" required>
+              </Field>
+              <Field label="Contact email" htmlFor="gymkhana-proposal-contact-email" required>
                 <Input
                   id="gymkhana-proposal-contact-email"
                   type="email"
@@ -288,13 +295,13 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Email"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
+              </Field>
             </Grid>
-          </Panel>
+          </DetailSection>
 
-          <Panel title="Target Participants" icon={Users}>
-            <FormField
-              label="Institute Faculty / Staff / Students"
+          <DetailSection title="Target participants" icon={Users}>
+            <Field
+              label="Institute faculty / staff / students"
               htmlFor="gymkhana-target-participants-institute"
             >
               <Textarea
@@ -310,8 +317,8 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Faculty, staff, students from the institute"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-            <FormField label="Guests / Invitees" htmlFor="gymkhana-target-participants-guests">
+            </Field>
+            <Field label="Guests / invitees" htmlFor="gymkhana-target-participants-guests">
               <Textarea
                 id="gymkhana-target-participants-guests"
                 value={proposalForm.proposalDetails.targetParticipants.guestsInvitees}
@@ -325,9 +332,9 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="Invited guests"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-            <FormField
-              label="External Visitors / Participants"
+            </Field>
+            <Field
+              label="External visitors / participants"
               htmlFor="gymkhana-target-participants-external"
             >
               <Textarea
@@ -343,12 +350,12 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="External participants"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-          </Panel>
+            </Field>
+          </DetailSection>
 
-          <Panel title="Guest & Speaker Details" icon={Users} accent>
+          <DetailSection title="Guest and speaker details" icon={Users}>
             <Grid cols={2} gap={2}>
-              <FormField label="No. of Speakers/Guests" htmlFor="gymkhana-tentative-speakers-guests">
+              <Field label="No. of speakers or guests" htmlFor="gymkhana-tentative-speakers-guests">
                 <Input
                   id="gymkhana-tentative-speakers-guests"
                   type="number"
@@ -363,8 +370,8 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="Count"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
-              <FormField label="Registration Fee Source" htmlFor="gymkhana-source-funds-registration-fee">
+              </Field>
+              <Field label="Registration fee source" htmlFor="gymkhana-source-funds-registration-fee">
                 <Input
                   id="gymkhana-source-funds-registration-fee"
                   type="number"
@@ -379,9 +386,9 @@ export const GymkhanaProposalDetailsModal = ({
                   placeholder="₹"
                   disabled={!canEditProposalForm}
                 />
-              </FormField>
+              </Field>
             </Grid>
-            <FormField label="Guest Names, Designations & Affiliations" htmlFor="gymkhana-guests-details-names">
+            <Field label="Guest names, designations and affiliations" htmlFor="gymkhana-guests-details-names">
               <Textarea
                 id="gymkhana-guests-details-names"
                 value={proposalForm.proposalDetails.guestsDetails.guestsNamesDesignationAffiliations}
@@ -395,13 +402,13 @@ export const GymkhanaProposalDetailsModal = ({
                 placeholder="List guests with their designation and affiliation"
                 disabled={!canEditProposalForm}
               />
-            </FormField>
-          </Panel>
+            </Field>
+          </DetailSection>
         </VStack>
       </Grid>
 
-      <Panel title="Programme Schedule" icon={Clock}>
-        <FormField label="Brief Schedule" htmlFor="gymkhana-programme-schedule-brief" required>
+      <DetailSection title="Programme schedule" icon={Clock}>
+        <Field label="Brief schedule" htmlFor="gymkhana-programme-schedule-brief" required>
           <Textarea
             id="gymkhana-programme-schedule-brief"
             value={proposalForm.proposalDetails.programmeSchedule.brief}
@@ -412,9 +419,9 @@ export const GymkhanaProposalDetailsModal = ({
             placeholder="Brief overview of the programme schedule"
             disabled={!canEditProposalForm}
           />
-        </FormField>
+        </Field>
         <PdfUploadField
-          label="Detailed Schedule (PDF)"
+          label="Detailed schedule (PDF)"
           value={proposalForm.proposalDetails.programmeSchedule.detailedScheduleAnnexureUrl}
           onChange={(value) =>
             handleProposalDetailsChange(["programmeSchedule", "detailedScheduleAnnexureUrl"], value)
@@ -423,11 +430,11 @@ export const GymkhanaProposalDetailsModal = ({
           disabled={!canEditProposalForm}
           viewerTitle="Detailed Schedule Annexure"
         />
-      </Panel>
+      </DetailSection>
 
-      <Panel title="Source of Funds" icon={DollarSign} accent>
+      <DetailSection title="Source of funds" icon={IndianRupee}>
         <Grid cols={4} gap={2}>
-          <FormField label="Registration Fee" htmlFor="gymkhana-source-funds-registration-fee-main">
+          <Field label="Registration fee" htmlFor="gymkhana-source-funds-registration-fee-main">
             <Input
               id="gymkhana-source-funds-registration-fee-main"
               type="number"
@@ -439,8 +446,8 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="₹"
               disabled={!canEditProposalForm}
             />
-          </FormField>
-          <FormField label="Gymkhana Fund" htmlFor="gymkhana-source-funds-gymkhana">
+          </Field>
+          <Field label="Gymkhana fund" htmlFor="gymkhana-source-funds-gymkhana">
             <Input
               id="gymkhana-source-funds-gymkhana"
               type="number"
@@ -452,8 +459,8 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="₹"
               disabled={!canEditProposalForm}
             />
-          </FormField>
-          <FormField label="Institute Support" htmlFor="gymkhana-source-funds-institute-support">
+          </Field>
+          <Field label="Institute support" htmlFor="gymkhana-source-funds-institute-support">
             <Input
               id="gymkhana-source-funds-institute-support"
               type="number"
@@ -468,8 +475,8 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="₹"
               disabled={!canEditProposalForm}
             />
-          </FormField>
-          <FormField label="Sponsorship / Grant" htmlFor="gymkhana-source-funds-sponsorship">
+          </Field>
+          <Field label="Sponsorship / grant" htmlFor="gymkhana-source-funds-sponsorship">
             <Input
               id="gymkhana-source-funds-sponsorship"
               type="number"
@@ -484,81 +491,88 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="₹"
               disabled={!canEditProposalForm}
             />
-          </FormField>
+          </Field>
         </Grid>
-      </Panel>
+      </DetailSection>
 
-      <Panel title="Registration Details by Category" icon={ClipboardCheck}>
-        <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
-          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
-            Category
-          </Text>
-          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
-            Registration Fee
-          </Text>
-          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
-            Accommodation
-          </Text>
-          <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>
-            Remarks
-          </Text>
-        </Grid>
-        {registrationCategories.map((category) => (
-          <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} align="center" style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={category.key}>
-            <Text as="span" size="sm" weight="medium" color="primary">
-              {category.label}
-            </Text>
-            <Input
-              id={`gymkhana-registration-fee-${category.key}`}
-              type="number"
-              min={0}
-              value={proposalForm.proposalDetails.registrationDetails[category.key].registrationFee}
-              onChange={(event) =>
-                handleProposalRegistrationDetailChange(
-                  category.key,
-                  "registrationFee",
-                  event.target.value
-                )
-              }
-              placeholder="₹"
-              disabled={!canEditProposalForm}
-            />
-            <Input
-              id={`gymkhana-registration-accommodation-${category.key}`}
-              type="number"
-              min={0}
-              value={
-                proposalForm.proposalDetails.registrationDetails[category.key]
-                  .accommodationCharges
-              }
-              onChange={(event) =>
-                handleProposalRegistrationDetailChange(
-                  category.key,
-                  "accommodationCharges",
-                  event.target.value
-                )
-              }
-              placeholder="₹"
-              disabled={!canEditProposalForm}
-            />
-            <Input
-              id={`gymkhana-registration-remarks-${category.key}`}
-              value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
-              onChange={(event) =>
-                handleProposalRegistrationDetailChange(
-                  category.key,
-                  "remarks",
-                  event.target.value
-                )
-              }
-              placeholder="Optional remarks"
-              disabled={!canEditProposalForm}
-            />
-          </Grid>
-        ))}
-      </Panel>
+      <DetailSection title="Registration details by category" icon={ClipboardCheck} plain>
+        <Table bordered>
+          <Table.Header>
+            <Table.Row>
+              <Table.Head>Category</Table.Head>
+              <Table.Head>Registration fee</Table.Head>
+              <Table.Head>Accommodation</Table.Head>
+              <Table.Head>Remarks</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {registrationCategories.map((category) => (
+              <Table.Row key={category.key}>
+                <Table.Cell>{category.label}</Table.Cell>
+                <Table.Cell>
+                  <Input
+                    id={`gymkhana-registration-fee-${category.key}`}
+                    aria-label={`Registration fee for ${category.label}`}
+                    type="number"
+                    min={0}
+                    value={
+                      proposalForm.proposalDetails.registrationDetails[category.key].registrationFee
+                    }
+                    onChange={(event) =>
+                      handleProposalRegistrationDetailChange(
+                        category.key,
+                        "registrationFee",
+                        event.target.value
+                      )
+                    }
+                    placeholder="₹"
+                    disabled={!canEditProposalForm}
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input
+                    id={`gymkhana-registration-accommodation-${category.key}`}
+                    aria-label={`Accommodation charges for ${category.label}`}
+                    type="number"
+                    min={0}
+                    value={
+                      proposalForm.proposalDetails.registrationDetails[category.key]
+                        .accommodationCharges
+                    }
+                    onChange={(event) =>
+                      handleProposalRegistrationDetailChange(
+                        category.key,
+                        "accommodationCharges",
+                        event.target.value
+                      )
+                    }
+                    placeholder="₹"
+                    disabled={!canEditProposalForm}
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input
+                    id={`gymkhana-registration-remarks-${category.key}`}
+                    aria-label={`Remarks for ${category.label}`}
+                    value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
+                    onChange={(event) =>
+                      handleProposalRegistrationDetailChange(
+                        category.key,
+                        "remarks",
+                        event.target.value
+                      )
+                    }
+                    placeholder="Optional remarks"
+                    disabled={!canEditProposalForm}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </DetailSection>
 
-      <Panel title="Approval Requested" icon={ClipboardCheck} accent>
+      <DetailSection title="Approval requested" icon={ClipboardCheck}>
         <Grid cols={2} gap={3}>
           <Checkbox
             checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
@@ -610,7 +624,7 @@ export const GymkhanaProposalDetailsModal = ({
           />
         </Grid>
         {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
-          <FormField label="Additional Support Details" htmlFor="gymkhana-additional-support-details">
+          <Field label="Additional support details" htmlFor="gymkhana-additional-support-details">
             <Textarea
               id="gymkhana-additional-support-details"
               value={
@@ -627,9 +641,9 @@ export const GymkhanaProposalDetailsModal = ({
               placeholder="Describe the additional institutional support required"
               disabled={!canEditProposalForm}
             />
-          </FormField>
+          </Field>
         )}
-      </Panel>
+      </DetailSection>
     </VStack>
   </Modal>
 )

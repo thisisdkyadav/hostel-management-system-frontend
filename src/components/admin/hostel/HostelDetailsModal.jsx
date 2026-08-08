@@ -1,105 +1,126 @@
-import React, { useState, useEffect } from "react"
-import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
-import { Badge, HStack, Label, Pagination, Select, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Table, Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { useEffect, useState } from "react"
+import { CalendarCheck, Filter, X } from "lucide-react"
+import {
+  Badge, Button, DatePicker, DetailSection, EmptyState, Field, HStack,
+  LoadingState, Modal, Pagination, Select, Table, Text, VStack,
+} from "hzero"
 import { securityApi } from "../../../service"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+
+/**
+ * Staff check-in and check-out history for one hostel.
+ *
+ * The filter bar was a hand-rolled heading over a tinted div; it is a
+ * DetailSection now. The two date fields were react-datepicker instances
+ * carrying border-gray-300 and focus:ring-blue-500 — literal colours that never
+ * themed and were wrong in dark mode — plus a vendor stylesheet that themed no
+ * better. They are hzero DatePickers, which makes the filter date-only; the
+ * range covers the whole of the end day, which is what "between the 3rd and the
+ * 10th" has always meant to the person asking.
+ *
+ * A second tab's worth of "present staff" markup lived here unreachably: the
+ * state behind it had no setter and the renderer was never called. It is gone.
+ */
+
+const ITEMS_PER_PAGE = 10
+
+const STAFF_TYPE_OPTIONS = [
+  { value: "all", label: "All staff" },
+  { value: "security", label: "Security guards" },
+  { value: "maintenance", label: "Maintenance staff" },
+]
+
+const startOfDay = (value) => new Date(`${value}T00:00:00`).toISOString()
+const endOfDay = (value) => new Date(`${value}T23:59:59.999`).toISOString()
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A"
+  const date = new Date(dateString)
+  return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+}
 
 const HostelDetailsModal = ({ hostel, onClose }) => {
-  const [activeTab, setActiveTab] = useState("entries")
   const [staffType, setStaffType] = useState("all")
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
   const [attendanceRecords, setAttendanceRecords] = useState([])
-  const [presentStaff, setPresentStaff] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [dateRangeMode, setDateRangeMode] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [itemsPerPage] = useState(10)
 
   useEffect(() => {
-    fetchAttendanceRecords()
-  }, [staffType, startDate, endDate, currentPage])
+    const fetchAttendanceRecords = async () => {
+      setLoading(true)
+      try {
+        const filters = {}
 
-  const fetchAttendanceRecords = async () => {
-    setLoading(true)
-    try {
-      const filters = {}
+        // Add staff type filter if not "all"
+        if (staffType !== "all") {
+          filters.staffType = staffType
+        }
 
-      // Add staff type filter if not "all"
-      if (staffType !== "all") {
-        filters.staffType = staffType
+        // Add date filters
+        if (startDate) {
+          filters.startDate = startOfDay(startDate)
+        }
+
+        if (endDate) {
+          filters.endDate = endOfDay(endDate)
+        }
+
+        // Add hostel ID filter
+        filters.hostelId = hostel.id
+
+        // Add pagination
+        filters.page = currentPage
+        filters.limit = ITEMS_PER_PAGE
+
+        // Fetch attendance records
+        const response = await securityApi.getStaffAttendanceRecords(filters)
+        if (response.success) {
+          setAttendanceRecords(response.records || [])
+          setTotalPages(Math.ceil(response.totalCount / ITEMS_PER_PAGE) || 1)
+        }
+      } catch (error) {
+        console.error("Error fetching attendance records:", error)
+      } finally {
+        setLoading(false)
       }
-
-      // Add date filters
-      if (startDate) {
-        filters.startDate = startDate.toISOString()
-      }
-
-      if (endDate) {
-        filters.endDate = endDate.toISOString()
-      }
-
-      // Add hostel ID filter
-      filters.hostelId = hostel.id
-
-      // Add pagination
-      filters.page = currentPage
-      filters.limit = itemsPerPage
-
-      // Fetch attendance records
-      const response = await securityApi.getStaffAttendanceRecords(filters)
-      if (response.success) {
-        setAttendanceRecords(response.records || [])
-        setTotalPages(Math.ceil(response.totalCount / itemsPerPage) || 1)
-      }
-    } catch (error) {
-      console.error("Error fetching attendance records:", error)
-    } finally {
-      setLoading(false)
     }
-  }
+
+    fetchAttendanceRecords()
+  }, [staffType, startDate, endDate, currentPage, hostel.id])
 
   const clearFilters = () => {
     setStaffType("all")
-    setStartDate(null)
-    setEndDate(null)
+    setStartDate("")
+    setEndDate("")
     setCurrentPage(1)
-  }
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A"
-    const date = new Date(dateString)
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber)
   }
 
+  const filtered = staffType !== "all" || Boolean(startDate) || Boolean(endDate)
+
   const renderAttendanceEntries = () => {
     if (loading) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
-          <Spinner size="lg" />
-        </div>
-      )
+      return <LoadingState message="Loading attendance records…" />
     }
 
     if (attendanceRecords.length === 0) {
       return (
-        <Surface padding="var(--spacing-8) 0" align="center">
-          <Text color="muted">No attendance records found.</Text>
-        </Surface>
+        <EmptyState
+          icon={CalendarCheck}
+          title="No attendance records"
+          message={filtered ? "Nothing matches these filters. Clear them to see everything." : "No staff has checked in at this hostel yet."}
+        />
       )
     }
 
     return (
       <>
-        <Table style={{ marginTop: 'var(--spacing-4)' }}>
+        <Table bordered striped>
           <Table.Header>
             <Table.Row>
               <Table.Head>Name</Table.Head>
@@ -116,14 +137,14 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
                   <Text as="div" size="sm" color="muted">{record.userId.email}</Text>
                 </Table.Cell>
                 <Table.Cell>
-                  <Badge variant={record.userId.role === "Security" ? "purple" : "primary"}>
+                  <Badge variant={record.userId.role === "Security" ? "purple" : "primary"} size="small">
                     {record.userId.role}
                   </Badge>
                 </Table.Cell>
                 <Table.Cell>{formatDate(record.createdAt)}</Table.Cell>
                 <Table.Cell>
-                  <Badge variant={record.type === "checkIn" ? "success" : "danger"}>
-                    {record.type === "checkIn" ? "Check In" : "Check Out"}
+                  <Badge variant={record.type === "checkIn" ? "success" : "danger"} size="small">
+                    {record.type === "checkIn" ? "Check in" : "Check out"}
                   </Badge>
                 </Table.Cell>
               </Table.Row>
@@ -131,109 +152,55 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
           </Table.Body>
         </Table>
 
-        {/* Pagination */}
         {totalPages > 1 && (
-          <div style={{ marginTop: 'var(--spacing-4)' }}>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={paginate} />
-          </div>
+          <HStack justify="center">
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+          </HStack>
         )}
       </>
     )
   }
 
-  const renderPresentStaff = () => {
-    if (loading) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
-          <Spinner size="lg" />
-        </div>
-      )
-    }
-
-    if (presentStaff.length === 0) {
-      return (
-        <Surface padding="var(--spacing-8) 0" align="center">
-          <Text color="muted">No staff present during the selected time period.</Text>
-        </Surface>
-      )
-    }
-
-    return (
-      <Table style={{ marginTop: 'var(--spacing-4)' }}>
-        <Table.Header>
-          <Table.Row>
-            <Table.Head>Name</Table.Head>
-            <Table.Head>Role</Table.Head>
-            <Table.Head>Email</Table.Head>
-            <Table.Head>Status</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {presentStaff.map((staff) => (
-            <Table.Row key={staff._id}>
-              <Table.Cell>
-                <Text as="div" size="sm" weight="medium" color="primary">{staff.name}</Text>
-              </Table.Cell>
-              <Table.Cell>
-                <Badge variant={staff.role === "Security" ? "purple" : "primary"}>
-                  {staff.role}
-                </Badge>
-              </Table.Cell>
-              <Table.Cell>{staff.email}</Table.Cell>
-              <Table.Cell>
-                <Badge variant="success" icon={<Check size={12} />}>
-                  Present
-                </Badge>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-    )
-  }
-
   return (
-    <Modal isOpen={true} onClose={onClose} title={`${hostel.name} - Staff Attendance`} width={900}>
+    <Modal isOpen onClose={onClose} title={`${hostel.name} — staff attendance`} width={900}>
       <VStack gap="large">
-        {/* Filters */}
-        <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', width: '100%' }}>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-            <Filter size={14} style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
-          </h3>
-          <HStack gap="medium" align="end" wrap>
-            <div style={{ flex: 1, minWidth: '150px' }}>
-              <Label>Staff Type</Label>
-              <Select value={staffType} onChange={(e) => setStaffType(e.target.value)} options={[{ value: "all", label: "All Staff" }, { value: "security", label: "Security Guards" }, { value: "maintenance", label: "Maintenance Staff" }]} />
-            </div>
-            <div style={{ flex: 1, minWidth: '150px' }}>
-              <Label>Start Date</Label>
-              <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholderText="Select start date & time" />
-            </div>
-            <div style={{ flex: 1, minWidth: '150px' }}>
-              <Label>End Date</Label>
-              <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
-                showTimeSelect
-                dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholderText="Select end date & time"
-                minDate={startDate}
-              />
-            </div>
-            <div>
-              <Button
-                onClick={clearFilters}
-                variant="secondary"
-                size="sm"
-              >
-                <X size={14} />
-                Clear
-              </Button>
-            </div>
-          </HStack>
-        </div>
+        <DetailSection
+          title="Filter records"
+          icon={Filter}
+          columns={2}
+          actions={<Button onClick={clearFilters} variant="secondary" size="sm"><X size={14} /> Clear</Button>}
+        >
+          <Field label="Staff type" htmlFor="staff-type">
+            <Select
+              id="staff-type"
+              name="staffType"
+              value={staffType}
+              onChange={(e) => setStaffType(e.target.value)}
+              options={STAFF_TYPE_OPTIONS}
+            />
+          </Field>
+          <Field label="From" htmlFor="attendance-from">
+            <DatePicker
+              id="attendance-from"
+              name="attendanceFrom"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              placeholder="Any date"
+            />
+          </Field>
+          <Field label="To" htmlFor="attendance-to">
+            <DatePicker
+              id="attendance-to"
+              name="attendanceTo"
+              value={endDate}
+              min={startDate || undefined}
+              onChange={(e) => setEndDate(e.target.value)}
+              placeholder="Any date"
+            />
+          </Field>
+        </DetailSection>
 
-        {/* Content */}
-        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) solid var(--color-border-primary)', width: '100%' }}>{renderAttendanceEntries()}</div>
+        {renderAttendanceEntries()}
       </VStack>
     </Modal>
   )

@@ -1,11 +1,10 @@
 /**
- * Accommodation UI kit — aligned to the app's shared detail patterns
- * (section cards with icon headers, meta bar, info rows, person card),
- * mirroring ComplaintDetailModal / EventDetailSectionCard.
+ * Accommodation UI kit — the shared pieces the accommodation screens compose
+ * from. Sections are hzero's DetailSection; the rest is the domain-specific
+ * furniture (person cells, meta bar, charges, journey timeline).
  */
 
-import { createElement } from "react"
-import { StatusBadge } from "hzero"
+import { Avatar, Badge, DetailSection, Divider, HStack, InfoRow, StatusBadge, Text, VStack } from "hzero"
 import { CalendarDays, Users } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import {
@@ -14,7 +13,6 @@ import {
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
-import { HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
 
 export const money = (n) =>
   `₹${(Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -37,31 +35,36 @@ const fmtDateTime = (d) => {
 }
 export const shortId = (id) => `#${String(id || "").slice(-6).toUpperCase()}`
 
-// ---- Section card (mirrors EventDetailSectionCard) -----------------------
+// ---- Section card --------------------------------------------------------
 
-export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)", headerAction, children, allowOverflow = false }) => (
-  <div style={{ background: "var(--color-bg-primary)", borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border-primary)", overflow: allowOverflow ? "visible" : "hidden" }}>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-3)", borderBottom: "1px solid var(--color-border-primary)", backgroundColor: "var(--color-bg-secondary)", borderTopLeftRadius: "var(--radius-card-sm)", borderTopRightRadius: "var(--radius-card-sm)" }}>
-      <HStack gap={2} align="center">
-        {icon && (
-          <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "var(--radius-sm)", backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`, color: accentColor }}>
-            {createElement(icon, { size: 13 })}
-          </span>
-        )}
-        <Text as="span" size="xs" weight="semibold" color="heading" style={{ textTransform: "uppercase", letterSpacing: "0.4px" }}>{title}</Text>
-      </HStack>
-      {headerAction}
-    </div>
-    <Surface padding={3}>{children}</Surface>
-  </div>
+// The accent each caller asks for, expressed as one of DetailSection's tones.
+// Anything else — a plain text colour, say — reads as no accent at all.
+const TONE_FOR_ACCENT = {
+  "var(--color-primary)": "primary",
+  "var(--color-info)": "info",
+  "var(--color-success)": "success",
+  "var(--color-warning)": "warning",
+  "var(--color-danger)": "danger",
+}
+
+/**
+ * A titled section. Kept under this name because the accommodation screens
+ * import it from here; it is now a thin adapter over hzero's DetailSection,
+ * which owns the panel, the padding and the heading.
+ *
+ * `allowOverflow` is still accepted from older call sites and ignored:
+ * DetailSection never clips, so a dropdown inside a section is free either way.
+ */
+export const SectionCard = ({ icon, title, accentColor = "var(--color-primary)", headerAction, children }) => (
+  <DetailSection icon={icon} title={title} tone={TONE_FOR_ACCENT[accentColor] || "neutral"} actions={headerAction}>
+    {children}
+  </DetailSection>
 )
 
-// This kit is where the detail row was last designed deliberately, so its
-// version is the one the rest of the app now uses. Re-exported rather than
-// deleted, because the accommodation screens import it from here.
-// `export { X } from "…"` would re-export without binding X in this module's
-// own scope, and ChargesRows below renders <InfoRow>. Import it, then export
-// the binding.
+// InfoRow now lives in hzero, but the accommodation screens import it from
+// here. `export { X } from "…"` would re-export without binding X in this
+// module's own scope, and ChargesRows below renders <InfoRow>. Import it, then
+// export the binding.
 export { InfoRow }
 
 export const PersonCard = ({ person, fallbackName }) => {
@@ -69,18 +72,17 @@ export const PersonCard = ({ person, fallbackName }) => {
   const meta = [person?.rollNumber, person?.department, person?.degree].filter(Boolean).join(" · ")
   return (
     <HStack gap={3} align="center">
-      {person?.profileImage ? (
-        <img src={getMediaUrl(person.profileImage)} alt={name} style={{ height: 44, width: 44, borderRadius: "var(--radius-full)", objectFit: "cover", border: "2px solid var(--color-primary-bg)" }} />
-      ) : (
-        <Surface bg="brand" radius="full" color="brand" size="lg" weight="semibold" style={{ height: 44, width: 44, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          {name.charAt(0).toUpperCase()}
-        </Surface>
-      )}
+      <Avatar
+        src={person?.profileImage ? getMediaUrl(person.profileImage) : undefined}
+        alt={name}
+        name={name}
+        size="large"
+      />
       <div style={{ flex: 1, minWidth: 0 }}>
         <Text as="div" weight="semibold" color="primary">{name}</Text>
         {meta && <Text as="div" size="xs" color="muted">{meta}</Text>}
         {(person?.email || person?.phone) && (
-          <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <Text as="div" size="xs" color="muted" truncate>
             {[person?.email, person?.phone].filter(Boolean).join(" · ")}
           </Text>
         )}
@@ -96,19 +98,18 @@ export const ApplicantCell = ({ request }) => {
   const name = s?.name || request?.applicantName || "—"
   const meta = [s?.rollNumber, s?.department].filter(Boolean).join(" · ")
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2-5)", minWidth: 0 }}>
-      {s?.profileImage ? (
-        <img src={getMediaUrl(s.profileImage)} alt={name} style={{ height: 32, width: 32, borderRadius: "var(--radius-full)", objectFit: "cover", flexShrink: 0 }} />
-      ) : (
-        <Surface as="span" bg="brand" radius="full" color="brand" size="xs" weight="semibold" style={{ height: 32, width: 32, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          {name.charAt(0).toUpperCase()}
-        </Surface>
-      )}
+    <HStack gap="var(--spacing-2-5)" align="center" style={{ minWidth: 0 }}>
+      <Avatar
+        src={s?.profileImage ? getMediaUrl(s.profileImage) : undefined}
+        alt={name}
+        name={name}
+        size="small"
+      />
       <div style={{ minWidth: 0 }}>
-        <Text as="div" weight="medium" color="body" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</Text>
-        {meta && <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{meta}</Text>}
+        <Text as="div" weight="medium" color="body" truncate>{name}</Text>
+        {meta && <Text as="div" size="xs" color="muted" truncate>{meta}</Text>}
       </div>
-    </div>
+    </HStack>
   )
 }
 
@@ -120,23 +121,22 @@ export const StayCell = ({ request }) => (
   </div>
 )
 
-// Chip used in the meta bar.
-const Chip = ({ children, bg = "var(--color-bg-muted)", color = "var(--color-text-muted)", mono }) => (
-  <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", padding: "var(--spacing-0-5) var(--spacing-2)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", background: bg, color, fontFamily: mono ? "monospace" : "inherit" }}>
-    {children}
-  </span>
-)
-
 export const MetaBar = ({ request, actions }) => (
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap", paddingBottom: "var(--spacing-3)", borderBottom: "1px solid var(--color-border-light)" }}>
+  <HStack
+    align="center"
+    justify="between"
+    gap={2}
+    wrap
+    style={{ paddingBottom: "var(--spacing-3)", borderBottom: "var(--border-1) solid var(--color-border-light)" }}
+  >
     <HStack gap={2} align="center" wrap>
-      <Chip mono>{shortId(request._id || request.id)}</Chip>
+      <Badge size="small" style={{ fontFamily: "var(--font-family-mono)" }}>{shortId(request._id || request.id)}</Badge>
       <StatusBadge status={request.status} tone={getStatusTone(request.status)}>{request.status}</StatusBadge>
-      <Chip bg="var(--color-primary-bg)" color="var(--color-primary)"><CalendarDays size={11} />{fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}</Chip>
-      <Chip><Users size={11} />{request.persons ?? (request.guests?.length || 0)} guest(s)</Chip>
+      <Badge variant="primary" size="small" icon={<CalendarDays />}>{fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}</Badge>
+      <Badge size="small" icon={<Users />}>{request.persons ?? (request.guests?.length || 0)} guest(s)</Badge>
     </HStack>
     {actions && <HStack gap={2}>{actions}</HStack>}
-  </div>
+  </HStack>
 )
 
 // ---- Charges + guest list (compose inside SectionCard) -------------------
@@ -145,7 +145,7 @@ export const ChargesRows = ({ quote = {} }) => (
   <VStack gap={2}>
     <InfoRow label={`${quote.persons || 0} guest(s) × ${quote.nights || 0} night(s)`} value={money(quote.subtotal)} />
     <InfoRow label={`GST (${quote.gstPercentage || 0}%)`} value={money(quote.gstAmount)} />
-    <div style={{ height: 1, backgroundColor: "var(--color-border-light)", margin: "2px 0" }} />
+    <Divider spacing="none" />
     <InfoRow label="Total" value={money(quote.total)} strong />
   </VStack>
 )
@@ -154,9 +154,7 @@ export const GuestList = ({ guests = [] }) => (
   <VStack gap={2}>
     {guests.map((g, i) => (
       <HStack gap={2} align="center" key={i}>
-        <Surface as="span" bg="brand" radius="full" color="brand" size="xs" weight="semibold" style={{ width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          {(g.name || "?").charAt(0).toUpperCase()}
-        </Surface>
+        <Avatar name={g.name || "?"} alt={g.name || ""} size="xsmall" />
         <Text as="span" size="sm" color="body">
           {g.name} <Text as="span" color="muted">· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</Text>
         </Text>
@@ -194,20 +192,20 @@ export const JourneyTimeline = ({ status, timeline = [] }) => {
         return (
           <HStack gap={3} key={step.key}>
             <VStack gap="none" align="center">
-              <span style={{ width: 12, height: 12, borderRadius: "50%", marginTop: 2, backgroundColor: s === "upcoming" ? "transparent" : c, border: `2px solid ${c}`, boxShadow: s === "current" ? "0 0 0 4px color-mix(in srgb, var(--color-primary) 16%, transparent)" : "none", flexShrink: 0 }} />
+              <span style={{ width: 12, height: 12, borderRadius: "var(--radius-full)", marginTop: 2, backgroundColor: s === "upcoming" ? "transparent" : c, border: `var(--border-2) solid ${c}`, boxShadow: s === "current" ? "0 0 0 4px color-mix(in srgb, var(--color-primary) 16%, transparent)" : "none", flexShrink: 0 }} />
               {!last && <span style={{ width: 2, flex: 1, minHeight: 20, backgroundColor: doneSet.has(i) ? "var(--color-success)" : "var(--color-border-light)" }} />}
             </VStack>
             <div style={{ paddingBottom: "var(--spacing-3)" }}>
-              <Text as="div" size="sm" weight={s === "upcoming" ? 400 : 600} color={s === "upcoming" ? "var(--color-text-muted)" : "var(--color-text-primary)"}>{step.label}</Text>
-              {ts && <Text as="div" size="10px" color="muted">{fmtDateTime(ts)}</Text>}
+              <Text as="div" size="sm" weight={s === "upcoming" ? "normal" : "semibold"} color={s === "upcoming" ? "muted" : "primary"}>{step.label}</Text>
+              {ts && <Text as="div" size="2xs" color="muted">{fmtDateTime(ts)}</Text>}
             </div>
           </HStack>
         )
       })}
       {terminalNegative && (
         <HStack gap={3}>
-          <span style={{ width: 12, height: 12, borderRadius: "50%", marginTop: 2, backgroundColor: "var(--color-danger)", border: "2px solid var(--color-danger)", flexShrink: 0 }} />
-          <Text as="div" size="sm" weight={600} color="danger">{status}</Text>
+          <span style={{ width: 12, height: 12, borderRadius: "var(--radius-full)", marginTop: 2, backgroundColor: "var(--color-danger)", border: "var(--border-2) solid var(--color-danger)", flexShrink: 0 }} />
+          <Text as="div" size="sm" weight="semibold" color="danger">{status}</Text>
         </HStack>
       )}
     </VStack>

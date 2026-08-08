@@ -1,6 +1,5 @@
-import { StatusBadge, Button } from "hzero"
-import { Heading, HStack, InfoRow, Modal, Text, VStack } from "@/components/ui"
-import { Archive, ArchiveRestore, CalendarClock, Pencil, Users, UtensilsCrossed } from "lucide-react"
+import { Button, DetailSection, EmptyState, HStack, InfoRow, Modal, StatusBadge, Text, VStack } from "hzero"
+import { Archive, ArchiveRestore, CalendarClock, ClipboardCheck, Pencil, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -10,40 +9,6 @@ import {
   formatDateTime,
   periodStatusTone,
 } from "./diningPeriodHelpers"
-
-const Section = ({ icon, title, children }) => (
-  <section style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-    <HStack gap={2} align="center">
-      {icon}
-      <Heading as="h3" size="sm" weight="semibold" color="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-        {title}
-      </Heading>
-    </HStack>
-    {children}
-  </section>
-)
-
-const Field = ({ label, value }) => (
-  <div>
-    <Text as="div" size="xs" color="muted">{label}</Text>
-    <Text as="div" size="sm" color="secondary" weight="medium">
-      {value}
-    </Text>
-  </div>
-)
-
-const fieldGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-  gap: "var(--spacing-4)",
-}
-
-const tile = {
-  border: "1px solid var(--color-border-primary)",
-  borderRadius: "var(--radius-lg)",
-  padding: "var(--spacing-3)",
-  backgroundColor: "var(--color-bg-secondary)",
-}
 
 /** Read-only deep view of a single dining period, in the common Modal. */
 const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive }) => {
@@ -62,7 +27,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
   )
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Dining Period" width={760} footer={footer}>
+    <Modal isOpen={isOpen} onClose={onClose} title="Dining period" width={760} footer={footer}>
       <VStack gap={6}>
         {/* Header summary */}
         <HStack gap={3} align="start" justify="between">
@@ -76,57 +41,47 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
           </VStack>
         </HStack>
 
-        <Section icon={<CalendarClock size={16} style={{ color: "var(--color-text-muted)" }} />} title="Schedule">
-          <div style={fieldGrid}>
-            <Field label="Period start" value={formatDate(period.startDate)} />
-            <Field label="Period end" value={formatDate(period.endDate)} />
-            <Field label="Allocation opens" value={formatDateTime(period.allocationStartAt)} />
-            <Field label="Allocation closes" value={formatDateTime(period.allocationEndAt)} />
-            <Field label="Daily rate" value={period.dailyRate > 0 ? `₹${period.dailyRate}/day` : "Not set"} />
-          </div>
-        </Section>
+        <DetailSection title="Schedule" icon={CalendarClock} columns={2}>
+          <InfoRow label="Period start" value={formatDate(period.startDate)} />
+          <InfoRow label="Period end" value={formatDate(period.endDate)} />
+          <InfoRow label="Allocation opens" value={formatDateTime(period.allocationStartAt)} />
+          <InfoRow label="Allocation closes" value={formatDateTime(period.allocationEndAt)} />
+          <InfoRow label="Daily rate" value={period.dailyRate > 0 ? `₹${period.dailyRate}/day` : "Not set"} />
+        </DetailSection>
 
-        <Section icon={<Users size={16} style={{ color: "var(--color-text-muted)" }} />} title="Caterers & Capacity">
+        <DetailSection title="Caterers and capacity" icon={Users}>
           <CapacityBar allocated={period.totalAllocated} total={period.totalCapacity} label="Overall capacity" />
-          <VStack gap={2}>
-            {period.catererCapacities.length === 0 && (
-              <Text as="span" size="sm" color="muted">No caterers configured.</Text>
-            )}
-            {period.catererCapacities.map((entry) => (
-              <div key={entry.catererId} style={tile}>
-                <InfoRow label={entry.caterer?.name || "Caterer"} value={<>{entry.remainingSeats} seats left</>} style={{ marginBottom: "var(--spacing-2)" }} />
-                <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
-                <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1-5)" }}>
-                  {entry.allocatedCount}/{entry.maxStudentCount} allocated
-                </Text>
-              </div>
-            ))}
-          </VStack>
-        </Section>
+          {period.catererCapacities.length === 0 && (
+            <EmptyState variant="inline" icon={Users} message="No caterers configured. Add a caterer to this period to set its capacity." />
+          )}
+          {period.catererCapacities.map((entry) => (
+            <VStack gap={2} key={entry.catererId}>
+              <InfoRow label={entry.caterer?.name || "Caterer"} value={<>{entry.remainingSeats} seats left</>} />
+              <CapacityBar allocated={entry.allocatedCount} total={entry.maxStudentCount} size="sm" showLabel={false} />
+              <Text as="div" size="xs" color="muted">
+                {entry.allocatedCount}/{entry.maxStudentCount} allocated
+              </Text>
+            </VStack>
+          ))}
+        </DetailSection>
 
-        <Section icon={<UtensilsCrossed size={16} style={{ color: "var(--color-text-muted)" }} />} title="Meal Slots">
-          <VStack gap={2}>
-            {period.mealSlots.map((slot, index) => (
-              <InfoRow label={slot.name} value={<>{slot.startTime} – {slot.endTime}</>} key={`${slot.name}-${index}`} />
-            ))}
-          </VStack>
-        </Section>
+        <DetailSection title="Meal slots" icon={UtensilsCrossed}>
+          {period.mealSlots.map((slot, index) => (
+            <InfoRow label={slot.name} value={<>{slot.startTime} – {slot.endTime}</>} key={`${slot.name}-${index}`} />
+          ))}
+        </DetailSection>
 
-        <Section icon={<Archive size={16} style={{ color: "var(--color-text-muted)" }} />} title="Short-Term Rebate Rules">
-          <div style={fieldGrid}>
-            <Field label="Max total days" value={period.rebateSettings.shortTermMaxTotalDays} />
-            <Field label="Max continuous days" value={period.rebateSettings.shortTermMaxContinuousDays} />
-            <Field label="Min days / request" value={period.rebateSettings.shortTermMinApplicationDays} />
-            <Field label="Advance notice days" value={period.rebateSettings.shortTermMinAdvanceDays} />
-          </div>
-        </Section>
+        <DetailSection title="Short-term rebate rules" icon={ClipboardCheck} columns={2}>
+          <InfoRow label="Max total days" value={period.rebateSettings.shortTermMaxTotalDays} />
+          <InfoRow label="Max continuous days" value={period.rebateSettings.shortTermMaxContinuousDays} />
+          <InfoRow label="Min days per request" value={period.rebateSettings.shortTermMinApplicationDays} />
+          <InfoRow label="Advance notice days" value={period.rebateSettings.shortTermMinAdvanceDays} />
+        </DetailSection>
 
-        <Section icon={<Users size={16} style={{ color: "var(--color-text-muted)" }} />} title="Student Eligibility">
-          <div style={fieldGrid}>
-            <Field label="Mode" value={eligibilityLabel(period)} />
-            <Field label="Eligible students" value={period.eligibleStudentCount} />
-          </div>
-        </Section>
+        <DetailSection title="Student eligibility" icon={Users} columns={2}>
+          <InfoRow label="Mode" value={eligibilityLabel(period)} />
+          <InfoRow label="Eligible students" value={period.eligibleStudentCount} />
+        </DetailSection>
       </VStack>
     </Modal>
   )

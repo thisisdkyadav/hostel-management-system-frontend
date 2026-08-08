@@ -1,12 +1,33 @@
 import { useState } from "react"
-import { Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Calendar, Check, FileText, LogIn, User, X } from "lucide-react"
+import {
+  Alert,
+  Badge,
+  Button,
+  DetailSection,
+  Field,
+  HStack,
+  InfoRow,
+  Modal,
+  Text,
+  Textarea,
+  VStack,
+} from "hzero"
 import { leaveApi } from "../../service"
 
-const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+const STATUS_VARIANT = { Approved: "success", Rejected: "danger" }
 
+const shortDate = (value) => new Date(value).toLocaleDateString()
+
+const longDate = (value) =>
+  new Date(value).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+
+const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {
   const [showDecisionModal, setShowDecisionModal] = useState(false)
   const [decisionType, setDecisionType] = useState("approve")
   const [decisionText, setDecisionText] = useState("")
@@ -24,6 +45,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
   const isJoined = leave.joinStatus === "Joined"
   const canModifyStatus = isAdmin && isPending && !isSelfView
   const canJoinLeave = isSelfView && isApproved && !isJoined
+
+  const status = leave.status || "Pending"
+  const isApprove = decisionType === "approve"
+  const durationDays =
+    Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1
+  const dateRange = `${shortDate(leave.startDate)} – ${shortDate(leave.endDate)}`
 
   const openDecisionModal = (type) => {
     setDecisionType(type)
@@ -74,333 +101,191 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
     }
   }
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Approved":
-        return {
-          backgroundColor: 'var(--color-success-bg)',
-          color: 'var(--color-success-text)',
-          border: `var(--border-1) solid var(--color-success-border, var(--color-success-bg))`
-        }
-      case "Rejected":
-        return {
-          backgroundColor: 'var(--color-danger-bg)',
-          color: 'var(--color-danger-text)',
-          border: `var(--border-1) solid var(--color-danger-border)`
-        }
-      default:
-        return {
-          backgroundColor: 'var(--color-warning-bg)',
-          color: 'var(--color-warning-text)',
-          border: `var(--border-1) solid var(--color-warning-bg)`
-        }
-    }
-  }
-
-  const iconSize = { width: 'var(--icon-md)', height: 'var(--icon-md)' }
-  const iconSizeLg = { width: 'var(--icon-lg)', height: 'var(--icon-lg)' }
-
   return (
     <>
-      <Modal title="Leave Request Details" onClose={onClose} width={800}>
-        <VStack gap={6}>
-          {error && (
-            <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
-              <div style={{ flexShrink: 0 }}>
-                <svg style={{ ...iconSizeLg, color: 'var(--color-danger)' }} viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                <Text size="sm" color="danger-text">{error}</Text>
-              </div>
-            </div>
-          )}
-
-          {/* Header with status */}
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 'var(--spacing-4)', borderBottom: `var(--border-1) solid var(--color-border-primary)`, gap: 'var(--gap-md)', flexWrap: 'wrap' }}>
-            <div>
-              <Heading as="h3" size="lg" weight="semibold" color="primary" style={{ margin: 0 }}>Leave Request</Heading>
-              <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>Submitted on {new Date(leave.createdAt || Date.now()).toLocaleDateString()}</Text>
-            </div>
-            <div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', ...getStatusStyle(leave.status || "Pending") }}>{leave.status || "Pending"}</span>
-            </div>
-          </div>
-
-          {/* User Info */}
-          <div style={{ background: 'linear-gradient(to right, var(--color-primary-bg), var(--color-primary-bg-light))', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid var(--color-primary-pale)` }}>
-            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
-              <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-              Requested By
-            </h4>
-            <Text as="div" color="primary" weight="medium">{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}</Text>
-            {leave.userId?.email && <Text as="div" size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)' }}>{leave.userId.email}</Text>}
-          </div>
-
-          {/* Leave Details */}
-          <Grid min={250} gap={5}>
-            <Surface bg="tertiary" padding={5} radius="xl" border="var(--border-1) solid var(--color-border-light)">
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                </svg>
-                Start Date
-              </h4>
-              <Text as="div" size="lg" weight="medium" color="primary">
-                {new Date(leave.startDate).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Text>
-            </Surface>
-
-            <Surface bg="tertiary" padding={5} radius="xl" border="var(--border-1) solid var(--color-border-light)">
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-danger)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                </svg>
-                End Date
-              </h4>
-              <Text as="div" size="lg" weight="medium" color="primary">
-                {new Date(leave.endDate).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Text>
-            </Surface>
-          </Grid>
-
-          {/* Duration */}
-          <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
-            <HStack gap="none" align="center">
-              <svg style={{ ...iconSizeLg, color: 'var(--color-info)', marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-              </svg>
-              <Text as="span" size="sm" weight="medium" color="info-text">Duration: {Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
-            </HStack>
-          </Surface>
-
-          {/* Reason */}
-          <div>
-            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
-              <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-text-tertiary)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-              </svg>
-              Reason for Leave
-            </h4>
-            <Surface bg="tertiary" padding={4} radius="xl" border={`var(--border-1) solid var(--color-border-light)`} color="body" leading="var(--line-height-relaxed)">{leave.reason}</Surface>
-          </div>
-
-          {/* Join Information - Only show if joined */}
-          {isJoined && leave.joinInfo && (
-            <div>
-              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', marginTop: 0, display: 'flex', alignItems: 'center' }}>
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-info)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
-                Join Information
-              </h4>
-              <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
-                <HStack gap="none" align="start">
-                  <div style={{ flexShrink: 0 }}>
-                    <Surface as="span" bg="info" padding="var(--badge-padding-xs)" radius="full" border={`var(--border-1) solid var(--color-info-bg)`} color="info-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Joined</Surface>
-                  </div>
-                  <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
-                    <Text color="info-text" leading="var(--line-height-relaxed)" style={{ margin: 0 }}>{leave.joinInfo}</Text>
-                  </div>
-                </HStack>
-              </Surface>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
+      <Modal
+        title="Leave request details"
+        onClose={onClose}
+        width={800}
+        footer={
+          <>
             <Button onClick={onClose} variant="secondary" size="md">
               Close
             </Button>
 
             {canJoinLeave && (
-              <Button onClick={() => setShowJoinModal(true)} variant="info" size="md" disabled={loading}>
-                Join Leave
+              <Button onClick={() => setShowJoinModal(true)} variant="info" size="md">
+                Join leave
               </Button>
             )}
 
             {canModifyStatus && (
               <>
-                <Button onClick={() => openDecisionModal("reject")} variant="danger" size="md" disabled={loading}>
+                <Button onClick={() => openDecisionModal("reject")} variant="danger" size="md">
                   Reject
                 </Button>
-                <Button onClick={() => openDecisionModal("approve")} variant="success" size="md" disabled={loading}>
+                <Button onClick={() => openDecisionModal("approve")} variant="success" size="md">
                   Approve
                 </Button>
               </>
             )}
-          </div>
+          </>
+        }
+      >
+        <VStack gap="large">
+          <HStack gap={3} align="center" justify="between" wrap>
+            <Text size="sm" color="muted">
+              {leave.createdAt ? `Submitted on ${shortDate(leave.createdAt)}` : "Submission date not recorded"}
+            </Text>
+            <Badge variant={STATUS_VARIANT[status] || "warning"}>{status}</Badge>
+          </HStack>
+
+          <DetailSection title="Requested by" icon={User} tone="primary">
+            <InfoRow
+              label="Name"
+              value={leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "Me"}
+            />
+            {leave.userId?.email && <InfoRow label="Email" value={leave.userId.email} />}
+          </DetailSection>
+
+          <DetailSection title="Leave period" icon={Calendar}>
+            <InfoRow label="Start date" value={longDate(leave.startDate)} />
+            <InfoRow label="End date" value={longDate(leave.endDate)} />
+            <InfoRow label="Duration" value={`${durationDays} day(s)`} strong />
+          </DetailSection>
+
+          <DetailSection title="Reason for leave" icon={FileText}>
+            <Text leading="var(--line-height-relaxed)">{leave.reason}</Text>
+          </DetailSection>
+
+          {isJoined && leave.joinInfo && (
+            <DetailSection title="Join information" icon={LogIn} tone="info">
+              <InfoRow label="Status" value={<Badge variant="info" size="small">Joined</Badge>} />
+              <Text leading="var(--line-height-relaxed)">{leave.joinInfo}</Text>
+            </DetailSection>
+          )}
         </VStack>
       </Modal>
 
       {/* Decision Modal (Approve/Reject) */}
       {showDecisionModal && (
-        <Modal title={<HStack gap="none" align="center">
-          {decisionType === "approve" ? (
-            <HStack align="center" gap="none" color="success-text">
-              <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              Approve Leave Request
+        <Modal
+          title={
+            <HStack inline gap="small" align="center" color={isApprove ? "success-text" : "danger-text"}>
+              {isApprove ? <Check size={20} /> : <X size={20} />}
+              {isApprove ? "Approve leave request" : "Reject leave request"}
             </HStack>
-          ) : (
-            <HStack align="center" gap="none" color="danger-text">
-              <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-              Reject Leave Request
-            </HStack>
-          )}
-        </HStack>
-        }
+          }
           onClose={() => setShowDecisionModal(false)}
           width={650}
-        >
-          <VStack gap={6}>
-            {decisionError && (
-              <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
-                <div style={{ flexShrink: 0 }}>
-                  <svg style={{ ...iconSizeLg, color: 'var(--color-danger)' }} viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                  <Text size="sm" color="danger-text" style={{ margin: 0 }}>{decisionError}</Text>
-                </div>
-              </div>
-            )}
-
-            {/* Leave Summary */}
-            <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', border: `var(--border-1) solid ${decisionType === "approve" ? 'var(--color-success-bg)' : 'var(--color-danger-border)'}`, backgroundColor: decisionType === "approve" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)' }}>
-              <HStack gap="none" align="center" justify="between">
-                <div>
-                  <Heading as="h4" weight="medium" color="primary" style={{ margin: 0 }}>{leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}</Heading>
-                  <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
-                    {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                  </Text>
-                </div>
-                <Text as="div" align="right">
-                  <Text size="sm" weight="medium" color="secondary" style={{ margin: 0 }}>{Math.ceil((new Date(leave.endDate) - new Date(leave.startDate)) / (1000 * 60 * 60 * 24)) + 1} day(s)</Text>
-                </Text>
-              </HStack>
-            </div>
-
-            <div>
-              <Label color="secondary" weight="semibold" spacing={3} style={{ display: 'flex', alignItems: 'center' }}>
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-text-tertiary)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                </svg>
-                {decisionType === "approve" ? "Approval Notes" : "Reason for Rejection"}
-              </Label>
-              <textarea style={{ width: '100%', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-xl)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '8rem', color: 'var(--color-text-body)', fontFamily: 'inherit' }} placeholder={decisionType === "approve" ? "Add any notes or conditions for this approval..." : "Please provide a clear reason for rejecting this leave request..."} value={decisionText} onChange={(e) => setDecisionText(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  e.target.style.borderColor = 'var(--input-border-focus)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.boxShadow = 'none';
-                  e.target.style.borderColor = 'var(--color-border-input)';
-                }}
-                required
-              />
-              <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)', marginBottom: 0 }}>{decisionType === "approve" ? "This note will be shared with the employee along with the approval." : "This reason will help the employee understand why their request was declined."}</Text>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
+          footer={
+            <>
               <Button type="button" onClick={() => setShowDecisionModal(false)} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="button" onClick={submitDecision} variant={decisionType === "approve" ? "success" : "danger"} size="md" disabled={decisionLoading} loading={decisionLoading}>
-                {decisionType === "approve" ? "Confirm Approval" : "Confirm Rejection"}
+              <Button
+                type="button"
+                onClick={submitDecision}
+                variant={isApprove ? "success" : "danger"}
+                size="md"
+                disabled={decisionLoading}
+                loading={decisionLoading}
+              >
+                {isApprove ? "Confirm approval" : "Confirm rejection"}
               </Button>
-            </div>
+            </>
+          }
+        >
+          <VStack gap="large">
+            {decisionError && <Alert type="error">{decisionError}</Alert>}
+
+            <DetailSection title="Leave request" tone={isApprove ? "success" : "danger"}>
+              <InfoRow
+                label="Requested by"
+                value={leave.requestedBy?.name || leave.user?.name || leave.userId?.name || "User"}
+              />
+              <InfoRow label="Dates" value={dateRange} />
+              <InfoRow label="Duration" value={`${durationDays} day(s)`} strong />
+            </DetailSection>
+
+            <Field
+              label={isApprove ? "Approval notes" : "Reason for rejection"}
+              required
+              help={
+                isApprove
+                  ? "This note goes to the employee along with the approval."
+                  : "This reason tells the employee why their request was declined."
+              }
+            >
+              <Textarea
+                value={decisionText}
+                onChange={(e) => setDecisionText(e.target.value)}
+                placeholder={
+                  isApprove
+                    ? "Add any notes or conditions for this approval"
+                    : "Give a clear reason for rejecting this leave request"
+                }
+                rows={5}
+                required
+                error={Boolean(decisionError)}
+              />
+            </Field>
           </VStack>
         </Modal>
       )}
 
       {/* Join Modal */}
       {showJoinModal && (
-        <Modal title={<HStack align="center" gap="none" color="info-text">
-          <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          Join Leave Request
-        </HStack>
-        }
+        <Modal
+          title={
+            <HStack inline gap="small" align="center" color="info-text">
+              <LogIn size={20} />
+              Join leave request
+            </HStack>
+          }
           onClose={() => setShowJoinModal(false)}
           width={600}
-        >
-          <VStack gap={6}>
-            {joinError && (
-              <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', display: 'flex', alignItems: 'flex-start' }}>
-                <div style={{ flexShrink: 0 }}>
-                  <svg style={{ ...iconSizeLg, color: 'var(--color-danger)' }} viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div style={{ marginLeft: 'var(--spacing-3)' }}>
-                  <Text size="sm" color="danger-text" style={{ margin: 0 }}>{joinError}</Text>
-                </div>
-              </div>
-            )}
-
-            {/* Leave Summary */}
-            <Surface bg="var(--color-info-bg-light)" padding={4} radius="xl" border="var(--border-1) solid var(--color-info-bg)">
-              <HStack gap="none" align="center" justify="between">
-                <div>
-                  <Heading as="h4" weight="medium" color="primary" style={{ margin: 0 }}>Join Your Leave</Heading>
-                  <Text size="sm" color="tertiary" style={{ marginTop: 'var(--spacing-1)', marginBottom: 0 }}>
-                    {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
-                  </Text>
-                </div>
-                <Text as="div" align="right">
-                  <Surface as="span" bg="success" padding="var(--badge-padding-xs)" radius="full" border={`var(--border-1) solid var(--color-success-bg)`} color="success-text" size="var(--badge-font-xs)" weight="medium" style={{ display: 'inline-flex', alignItems: 'center' }}>Approved</Surface>
-                </Text>
-              </HStack>
-            </Surface>
-
-            <div>
-              <Label color="secondary" weight="semibold" spacing={3} style={{ display: 'flex', alignItems: 'center' }}>
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', color: 'var(--color-text-tertiary)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                </svg>
-                Join Information
-              </Label>
-              <textarea style={{ width: '100%', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-xl)', outline: 'none', transition: 'var(--transition-all)', resize: 'none', height: '8rem', color: 'var(--color-text-body)', fontFamily: 'inherit' }} placeholder="Please provide information about joining this leave (e.g., actual dates, location, additional details)..." value={joinInfo} onChange={(e) => setJoinInfo(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  e.target.style.borderColor = 'var(--input-border-focus)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.boxShadow = 'none';
-                  e.target.style.borderColor = 'var(--color-border-input)';
-                }}
-                required
-              />
-              <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-2)', marginBottom: 0 }}>This information will be recorded with your leave request and may be used for administrative purposes.</Text>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
+          footer={
+            <>
               <Button type="button" onClick={() => setShowJoinModal(false)} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="button" onClick={submitJoinLeave} variant="info" size="md" disabled={joinLoading} loading={joinLoading}>
-                Confirm Join
+              <Button
+                type="button"
+                onClick={submitJoinLeave}
+                variant="info"
+                size="md"
+                disabled={joinLoading}
+                loading={joinLoading}
+              >
+                Confirm join
               </Button>
-            </div>
+            </>
+          }
+        >
+          <VStack gap="large">
+            {joinError && <Alert type="error">{joinError}</Alert>}
+
+            <DetailSection title="Leave you are joining" tone="info">
+              <InfoRow label="Dates" value={dateRange} />
+              <InfoRow label="Duration" value={`${durationDays} day(s)`} strong />
+              <InfoRow label="Status" value={<Badge variant="success" size="small">Approved</Badge>} />
+            </DetailSection>
+
+            <Field
+              label="Join information"
+              required
+              help="This information is recorded with your leave request and may be used for administrative purposes."
+            >
+              <Textarea
+                value={joinInfo}
+                onChange={(e) => setJoinInfo(e.target.value)}
+                placeholder="Describe how you are joining this leave — actual dates, location, any other detail"
+                rows={5}
+                required
+                error={Boolean(joinError)}
+              />
+            </Field>
           </VStack>
         </Modal>
       )}

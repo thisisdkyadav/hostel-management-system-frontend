@@ -1,35 +1,25 @@
-import React, { useState } from "react"
-import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Grid, Heading, HStack, Modal, Surface, Text } from "@/components/ui"
-import { Button } from "hzero"
+import { useState } from "react"
+import { Calendar, ChevronLeft, ChevronRight, ImageIcon, Info, X } from "lucide-react"
+import { Badge, Button, DetailSection, Grid, HStack, Heading, Modal, Text, VStack } from "hzero"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
+
+// Same three cases the hand-rolled pill covered, now on Badge's palette.
+const statusVariant = (status) => {
+  switch (status) {
+    case "Active":
+      return "success"
+    case "Claimed":
+      return "info"
+    default:
+      return "default"
+  }
+}
 
 const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null)
 
   if (!selectedItem) return null
-
-  // Helper function to get status colors using theme variables
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Active":
-        return {
-          backgroundColor: 'var(--color-success-bg)',
-          color: 'var(--color-success-text)'
-        }
-      case "Claimed":
-        return {
-          backgroundColor: 'var(--color-info-bg)',
-          color: 'var(--color-info-text)'
-        }
-      default:
-        return {
-          backgroundColor: 'var(--color-bg-muted)',
-          color: 'var(--color-text-tertiary)'
-        }
-    }
-  }
 
   const openImageViewer = (index) => {
     setSelectedImageIndex(index)
@@ -49,70 +39,75 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
 
   return (
     <>
-      <Modal title="Found Item Details" onClose={() => setShowDetailModal(false)} width={700}>
-        <div style={{ position: 'relative' }}>
-          {/* Status Badge - Positioned at top right */}
-          <div style={{ position: 'absolute', top: 0, right: 0 }}>
-            <span style={{ padding: 'var(--spacing-4) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', boxShadow: 'var(--shadow-sm)', ...getStatusStyle(selectedItem.status) }}>{selectedItem.status}</span>
-          </div>
-
-          {/* Header */}
-          <div style={{ marginBottom: 'var(--spacing-6)', paddingTop: 'var(--spacing-2)' }}>
-            <Heading as="h2" size="3xl" weight="bold" color="primary" style={{ marginBottom: 'var(--spacing-1)' }}>{selectedItem.itemName}</Heading>
-            <HStack align="center" gap="none" color="muted">
-              <FaCalendarAlt style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)' }} />
-              <span>{formatDate(selectedItem.dateFound)}</span>
-            </HStack>
-          </div>
-
-          {/* Images Section */}
-          {selectedItem.images && selectedItem.images.length > 0 && (
-            <div style={{ marginBottom: 'var(--spacing-6)' }}>
-              <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
-                <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
-                <Heading as="h3" weight="semibold">Item Images</Heading>
+      <Modal title="Found item details" onClose={() => setShowDetailModal(false)} width={700}>
+        <VStack gap="large">
+          <HStack justify="between" align="start" gap={3}>
+            <div style={{ minWidth: 0 }}>
+              <Heading as="h2" size="2xl" weight="bold" color="primary">{selectedItem.itemName}</Heading>
+              <HStack align="center" gap={2} size="sm" color="muted">
+                <Calendar size={14} />
+                <Text as="span">{formatDate(selectedItem.dateFound)}</Text>
               </HStack>
-              <Grid cols={3} gap="var(--gap-sm)">
+            </div>
+            <Badge variant={statusVariant(selectedItem.status)} size="medium">{selectedItem.status}</Badge>
+          </HStack>
+
+          {selectedItem.images && selectedItem.images.length > 0 && (
+            <DetailSection title="Item images" icon={ImageIcon} plain>
+              <Grid cols={3} gap={3}>
                 {selectedItem.images.map((imageUrl, index) => (
-                  <img key={index} src={getMediaUrl(imageUrl)} alt={`${selectedItem.itemName} ${index + 1}`} onClick={() => openImageViewer(index)}
-                    style={{
-                      width: '100%',
-                      height: '8rem',
-                      objectFit: 'cover',
-                      borderRadius: 'var(--radius-lg)',
-                      border: `var(--border-1) solid var(--color-border-gray)`,
-                      cursor: 'pointer',
-                      transition: 'var(--transition-opacity)'
-                    }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.8'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
-                  />
+                  <button
+                    type="button"
+                    key={index}
+                    onClick={() => openImageViewer(index)}
+                    aria-label={`Open image ${index + 1} of ${selectedItem.images.length}`}
+                    style={{ padding: 0, border: "none", background: "none", cursor: "pointer", display: "block" }}
+                  >
+                    <img
+                      src={getMediaUrl(imageUrl)}
+                      alt={`${selectedItem.itemName} ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "8rem",
+                        objectFit: "cover",
+                        borderRadius: "var(--radius-lg)",
+                        border: "var(--border-1) solid var(--color-border-primary)",
+                      }}
+                    />
+                  </button>
                 ))}
               </Grid>
-            </div>
+            </DetailSection>
           )}
 
-          {/* Description */}
-          <Surface bg="var(--table-header-bg)" padding={6} radius="xl" style={{ marginBottom: 'var(--spacing-6)' }}>
-            <HStack align="center" gap="none" color="brand" style={{ marginBottom: 'var(--spacing-3)' }}>
-              <FaInfoCircle style={{ marginRight: 'var(--spacing-2)' }} />
-              <Heading as="h3" weight="semibold">Description</Heading>
-            </HStack>
-            <Text color="secondary" leading="var(--line-height-relaxed)">{selectedItem.description}</Text>
-          </Surface>
-        </div>
+          <DetailSection title="Description" icon={Info}>
+            <Text size="sm" color="body" leading="var(--line-height-relaxed)">{selectedItem.description}</Text>
+          </DetailSection>
+        </VStack>
       </Modal>
 
-      {/* Image Viewer Modal */}
+      {/* Full-bleed image viewer. Bespoke on purpose — a lightbox is not a
+          panel of values, so it stays a plain overlay above the modal. */}
       {selectedImageIndex !== null && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={closeImageViewer} >
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "var(--color-bg-modal-overlay)",
+            zIndex: "calc(var(--modal-z) + 10)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={closeImageViewer}
+        >
           <Button onClick={closeImageViewer}
             variant="ghost"
             size="sm"
             aria-label="Close image viewer"
-            style={{ position: 'absolute', top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', zIndex: 10 }}
+            style={{ position: "absolute", top: "var(--spacing-4)", right: "var(--spacing-4)", color: "var(--color-on-accent)", zIndex: 10 }}
           >
-            <FaTimes size={30} />
+            <X size={28} />
           </Button>
 
           <Button onClick={(e) => {
@@ -122,14 +117,14 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
             variant="ghost"
             size="lg"
             aria-label="Previous image"
-            style={{ position: 'absolute', left: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
+            style={{ position: "absolute", left: "var(--spacing-4)", color: "var(--color-on-accent)" }}
           >
-            ‹
+            <ChevronLeft size={40} />
           </Button>
 
-          <div style={{ maxWidth: '64rem', maxHeight: '100vh', padding: 'var(--spacing-4)' }} onClick={(e) => e.stopPropagation()}>
-            <img src={getMediaUrl(selectedItem.images[selectedImageIndex])} alt={`${selectedItem.itemName} ${selectedImageIndex + 1}`} style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 'var(--radius-lg)' }} />
-            <Text color="var(--color-white)" align="center" style={{ marginTop: 'var(--spacing-4)' }}>
+          <div style={{ maxWidth: "64rem", maxHeight: "100vh", padding: "var(--spacing-4)" }} onClick={(e) => e.stopPropagation()}>
+            <img src={getMediaUrl(selectedItem.images[selectedImageIndex])} alt={`${selectedItem.itemName} ${selectedImageIndex + 1}`} style={{ maxWidth: "100%", maxHeight: "90vh", objectFit: "contain", borderRadius: "var(--radius-lg)" }} />
+            <Text color="var(--color-on-accent)" align="center" style={{ marginTop: "var(--spacing-4)" }}>
               Image {selectedImageIndex + 1} of {selectedItem.images.length}
             </Text>
           </div>
@@ -141,9 +136,9 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
             variant="ghost"
             size="lg"
             aria-label="Next image"
-            style={{ position: 'absolute', right: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
+            style={{ position: "absolute", right: "var(--spacing-4)", color: "var(--color-on-accent)" }}
           >
-            ›
+            <ChevronRight size={40} />
           </Button>
         </div>
       )}

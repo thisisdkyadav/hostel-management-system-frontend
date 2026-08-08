@@ -1,14 +1,60 @@
 import { useState } from "react"
+import { Calendar, FileText, History, Pencil, Tag, Trash2, TriangleAlert, Users } from "lucide-react"
+import {
+  Alert, Avatar, Badge, Button, DetailSection, EmptyState, Grid, Heading,
+  HStack, InfoRow, Modal, Text, VStack, useConfirm,
+} from "hzero"
 import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
+import { TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Grid, Heading, HStack, IconCircle, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
-import { FaEdit, FaTrash } from "react-icons/fa"
+
+/**
+ * One task, in full.
+ *
+ * The status and priority pills were spans carrying Tailwind colour classes
+ * straight from taskConstants; they are Badges, which is the same palette said
+ * once. The status-update buttons in the footer were hand-styled and repainted
+ * themselves through onMouseEnter/onMouseLeave — the design system owns hover,
+ * so they are Buttons now. Delete asked with a native confirm(); it asks with
+ * the app's confirm dialog.
+ */
+
+const STATUS_VARIANTS = {
+  Created: "default",
+  Assigned: "primary",
+  "In Progress": "warning",
+  Completed: "success",
+}
+
+const PRIORITY_VARIANTS = {
+  Low: "default",
+  Medium: "primary",
+  High: "warning",
+  Urgent: "danger",
+}
+
+const STATUS_BUTTON_VARIANTS = {
+  Created: "secondary",
+  Assigned: "primary",
+  "In Progress": "primary",
+  Completed: "success",
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
 
 const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedStatusUpdates = TASK_STATUSES, isUserView = false }) => {
   const { user } = useAuth()
+  const confirm = useConfirm()
   const [currentStatus, setCurrentStatus] = useState(selectedTask.status)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -31,7 +77,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
       onUpdate()
     } catch (error) {
       console.error("Error updating task status:", error)
-      setError("Failed to update task status. Please try again.")
+      setError("Could not update the status. Check your connection and try again.")
     } finally {
       setLoading(false)
     }
@@ -47,9 +93,13 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
   }
 
   const handleDeleteTask = async () => {
-    if (!confirm("Are you sure you want to delete this task? This action cannot be undone.")) {
-      return
-    }
+    const confirmed = await confirm({
+      title: "Delete this task?",
+      message: "The task and its assignments are removed for everyone. This cannot be undone.",
+      confirmText: "Delete task",
+      isDestructive: true,
+    })
+    if (!confirmed) return
 
     try {
       setLoading(true)
@@ -58,185 +108,116 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
       onUpdate()
     } catch (error) {
       console.error("Error deleting task:", error)
-      setError("Failed to delete task. Please try again.")
+      setError("Could not delete the task. Check your connection and try again.")
     } finally {
       setLoading(false)
     }
   }
 
-  const getStatusBadge = (status) => {
-    const colorClass = TASK_STATUS_COLORS[status] || "bg-gray-100 text-gray-800"
-    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{status}</span>
-  }
+  const renderFooter = () => (
+    <HStack gap="small" justify="between" wrap style={{ width: "100%" }}>
+      {/* Status Update Buttons for Users */}
+      <HStack gap="small" wrap>
+        {isUserView &&
+          allowedStatusUpdates
+            .filter((status) => status !== currentStatus)
+            .map((status) => (
+              <Button
+                key={status}
+                onClick={() => handleStatusChange(status)}
+                disabled={loading}
+                variant={STATUS_BUTTON_VARIANTS[status] || "secondary"}
+                size="md"
+              >
+                {status === "In Progress" ? "Start task" : `Mark as ${status}`}
+              </Button>
+            ))}
+      </HStack>
 
-  const getPriorityBadge = (priority) => {
-    const colorClass = TASK_PRIORITY_COLORS[priority] || "bg-gray-100 text-gray-800"
-    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{priority}</span>
-  }
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
-
-  const renderFooter = () => {
-    const getStatusButtonStyle = (status) => {
-      const baseStyle = {
-        padding: 'var(--spacing-3) var(--spacing-3)',
-        fontSize: 'var(--font-size-xs)',
-        fontWeight: 'var(--font-weight-medium)',
-        borderRadius: 'var(--radius-md)',
-        transition: 'var(--transition-all)',
-        outline: 'none',
-        border: 'none',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
-      };
-
-      if (status === "In Progress" || status === "Assigned") {
-        return { ...baseStyle, backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' };
-      } else if (status === "Completed") {
-        return { ...baseStyle, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
-      } else if (status === "Created") {
-        return { ...baseStyle, backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)' };
-      }
-      return baseStyle;
-    };
-
-    const getStatusButtonHoverStyle = (status) => {
-      if (status === "In Progress" || status === "Assigned") {
-        return { backgroundColor: 'var(--color-primary-bg-hover)' };
-      } else if (status === "Completed") {
-        return { backgroundColor: 'var(--color-success-bg-light)' };
-      } else if (status === "Created") {
-        return { backgroundColor: 'var(--color-bg-hover)' };
-      }
-      return {};
-    };
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:space-y-0">
-        {/* Status Update Buttons for Users */}
-        {isUserView && (
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)', flexGrow: 1, justifyContent: 'flex-start' }}>
-            {allowedStatusUpdates
-              .filter((status) => status !== currentStatus)
-              .map((status) => (
-                <button key={status} onClick={() => handleStatusChange(status)}
-                  disabled={loading}
-                  style={getStatusButtonStyle(status)}
-                  onMouseEnter={(e) => {
-                    if (!loading) {
-                      Object.assign(e.target.style, getStatusButtonHoverStyle(status));
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!loading) {
-                      Object.assign(e.target.style, getStatusButtonStyle(status));
-                    }
-                  }}
-                >
-                  {status === "In Progress" ? "Start Task" : `Mark as ${status}`}
-                </button>
-              ))}
-          </div>
+      {/* Admin Actions */}
+      <HStack gap="small">
+        {canEditTask && !isUserView && (
+          <>
+            <Button onClick={handleEditTask} variant="primary" size="md">
+              <Pencil size={16} /> Edit task
+            </Button>
+            <Button onClick={handleDeleteTask} disabled={loading} variant="danger" size="md">
+              <Trash2 size={16} /> Delete
+            </Button>
+          </>
         )}
 
-        {/* Admin Actions */}
-        <HStack gap={3}>
-          {canEditTask && !isUserView && (
-            <>
-              <Button onClick={handleEditTask} variant="primary" size="md">
-                <FaEdit /> Edit Task
-              </Button>
-              <Button onClick={handleDeleteTask} disabled={loading} variant="danger" size="md">
-                <FaTrash /> Delete
-              </Button>
-            </>
-          )}
-
-          <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="md">
-            Close
-          </Button>
-        </HStack>
-      </div>
-    );
-  }
+        <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="md">
+          Close
+        </Button>
+      </HStack>
+    </HStack>
+  )
 
   return (
     <>
-      <Modal title="Task Details" onClose={() => setShowDetailModal(false)} width={700} footer={renderFooter()}>
-        <Grid cols={1} gap={5}>
+      <Modal isOpen title="Task details" onClose={() => setShowDetailModal(false)} width={700} footer={renderFooter()}>
+        <VStack gap="large">
           {/* Task Header */}
-          <div>
-            <HStack gap="none" align="start" justify="between">
+          <VStack gap="small">
+            <HStack gap="medium" align="start" justify="between">
               <Heading as="h2" size="2xl" weight="semibold" color="primary">{selectedTask.title}</Heading>
-              <HStack gap={2}>
-                {getPriorityBadge(selectedTask.priority)}
-                {getStatusBadge(currentStatus)}
+              <HStack gap="xsmall">
+                <Badge variant={PRIORITY_VARIANTS[selectedTask.priority] || "default"} size="small">{selectedTask.priority}</Badge>
+                <Badge variant={STATUS_VARIANTS[currentStatus] || "default"} size="small">{currentStatus}</Badge>
               </HStack>
             </HStack>
-            {isPastDue && <Text as="div" size="sm" color="danger-text" weight="medium" style={{ marginTop: 'var(--spacing-2)' }}>This task is past due!</Text>}
-          </div>
+            {isPastDue && (
+              <HStack gap="xsmall">
+                <Badge variant="danger" size="small" icon={<TriangleAlert />}>Past due</Badge>
+              </HStack>
+            )}
+          </VStack>
 
           {/* Task Description */}
-          <div>
-            <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Description</Heading>
-            <Surface bg="tertiary" padding={4} radius="lg">
-              <Text color="body" style={{ whiteSpace: 'pre-line' }}>{selectedTask.description}</Text>
-            </Surface>
-          </div>
+          <DetailSection title="Description" icon={FileText}>
+            <Text color="body" style={{ whiteSpace: "pre-line" }}>{selectedTask.description}</Text>
+          </DetailSection>
 
           {/* Task Details */}
           <Grid cols={{ base: 1, md: 2 }} gap={4}>
-            <div>
-              <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Category</Heading>
-              <Surface bg="brand" padding={4} radius="lg" color="brand" weight="medium">{selectedTask.category}</Surface>
-            </div>
-            <div>
-              <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Due Date</Heading>
-              <Surface bg={isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)'} padding={4} radius="lg" color={isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)'} weight="medium">{formatDate(selectedTask.dueDate)}</Surface>
-            </div>
+            <DetailSection title="Category" icon={Tag} tone="primary">
+              <Text weight="medium">{selectedTask.category}</Text>
+            </DetailSection>
+            <DetailSection title="Due date" icon={Calendar} tone={isPastDue ? "danger" : "neutral"}>
+              <Text weight="medium">{formatDate(selectedTask.dueDate)}</Text>
+            </DetailSection>
           </Grid>
 
           {/* Assigned Users */}
-          <div>
-            <Heading as="h4" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }}>Assigned To</Heading>
+          <DetailSection title="Assigned to" icon={Users}>
             {selectedTask.assignedUsers && selectedTask.assignedUsers.length > 0 ? (
-              <VStack gap={2}>
-                {selectedTask.assignedUsers.map((user, idx) => (
-                  <div key={user._id || idx} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)' }}>
-                    <IconCircle size="var(--avatar-sm)" bg="var(--color-primary-bg-hover)" color="brand" style={{ marginRight: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{user.name ? user.name.charAt(0) : "U"}</IconCircle>
-                    <div>
-                      <Text size="sm" weight="medium" color="primary">{user.name}</Text>
-                      <Text size="xs" color="muted">
-                        {user.email} - {user.role}
-                      </Text>
-                    </div>
-                  </div>
-                ))}
-              </VStack>
+              selectedTask.assignedUsers.map((assignee, idx) => (
+                <HStack key={assignee._id || idx} gap="small" align="center">
+                  <Avatar name={assignee.name || "U"} size="small" />
+                  <VStack gap="none">
+                    <Text size="sm" weight="medium" color="primary">{assignee.name}</Text>
+                    <Text size="xs" color="muted">
+                      {assignee.email} — {assignee.role}
+                    </Text>
+                  </VStack>
+                </HStack>
+              ))
             ) : (
-              <Text as="div" color="muted" style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>No users assigned</Text>
+              <EmptyState variant="inline" icon={Users} message="Nobody is assigned to this task yet." />
             )}
-          </div>
+          </DetailSection>
 
           {/* Task Metadata */}
-          <Text as="div" size="xs" color="muted" style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: 'var(--spacing-4)' }}>
-            <p>Created by: {selectedTask.createdBy?.name || "Admin"}</p>
-            <p>Created at: {formatDate(selectedTask.createdAt)}</p>
-            <p>Last updated: {formatDate(selectedTask.updatedAt)}</p>
-          </Text>
+          <DetailSection title="Record" icon={History}>
+            <InfoRow label="Created by" value={selectedTask.createdBy?.name || "Admin"} />
+            <InfoRow label="Created at" value={formatDate(selectedTask.createdAt)} />
+            <InfoRow label="Last updated" value={formatDate(selectedTask.updatedAt)} />
+          </DetailSection>
 
           {/* Error Message */}
-          {error && <Surface bg="danger" padding={4} radius="lg" color="danger-text" size="sm">{error}</Surface>}
-        </Grid>
+          {error && <Alert type="error">{error}</Alert>}
+        </VStack>
       </Modal>
 
       {/* Edit Task Modal */}

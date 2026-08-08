@@ -3,28 +3,32 @@ import {
   BadgeCheck,
   Building2,
   CalendarDays,
+  ClipboardList,
   Clock3,
   FileText,
+  Paperclip,
   ShieldAlert,
   ShieldCheck,
   Users,
 } from "lucide-react"
-import { Button } from "hzero"
-import { Field, Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import {
+  Avatar,
+  Badge,
+  Button,
+  DetailSection,
+  Divider,
+  Field,
+  Grid,
+  HStack,
+  InfoRow,
+  Modal,
+  Select,
+  Text,
+  Textarea,
+  VStack,
+} from "hzero"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "@/components/por/PorApprovalHistory"
-import {
-  Badge,
-  Label,
-  Select,
-  Textarea,
-} from "@/components/ui"
-import {
-  SectionHeader,
-  eventDetailMetaChipStyles,
-  infoBoxStyle,
-} from "@/components/gymkhana/events-page/sharedPrimitives"
-import "../../styles/por-requests.css"
 
 const POST_SA_STAGE_ORDER = [
   "Officer SA",
@@ -61,40 +65,7 @@ const formatDateTime = (value) => {
   return date.toLocaleString()
 }
 
-const detailBodyStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "var(--spacing-4)",
-}
-
-const detailTextStyle = {
-  color: "var(--color-text-body)",
-  fontSize: "var(--font-size-sm)",
-  lineHeight: 1.6,
-  whiteSpace: "pre-wrap",
-}
-
-const metaBarStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: "var(--spacing-3)",
-  flexWrap: "wrap",
-  paddingBottom: "var(--spacing-3)",
-  borderBottom: "1px solid var(--color-border-primary)",
-}
-
-const metaBarLeftStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "var(--spacing-2)",
-  flexWrap: "wrap",
-}
-
-const buildMetaChipStyle = (extra = {}) => ({
-  ...eventDetailMetaChipStyles,
-  ...extra,
-})
+const bodyTextStyle = { whiteSpace: "pre-wrap" }
 
 const countSelectedPostSaApprovers = (assignments = {}) =>
   POST_SA_STAGE_ORDER.reduce(
@@ -123,51 +94,6 @@ const formatCurrentReviewerLabel = (request) => {
 
   return "—"
 }
-
-const renderStudentAvatar = (name) => {
-  const initials = String(name || "S")
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase()
-
-  return <div className="por-student-avatar">{initials}</div>
-}
-
-const PorDetailCard = ({
-  icon: Icon,
-  title,
-  accentColor = "var(--color-primary)",
-  children,
-  headerAction = null,
-}) => (
-  <div className="por-detail-card">
-    <div className="por-detail-card-header">
-      <div className="por-detail-card-header-left">
-        <span
-          className="por-detail-card-icon-wrapper"
-          style={{
-            backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
-            color: accentColor,
-          }}
-        >
-          {Icon && <Icon size={14} />}
-        </span>
-        <h4 className="por-detail-card-title">{title}</h4>
-      </div>
-      {headerAction}
-    </div>
-    <div className="por-detail-card-body">{children}</div>
-  </div>
-)
-
-const PorDetailInfoRow = ({ label, value }) => (
-  <div className="por-detail-info-row">
-    <span className="por-detail-info-label">{label}</span>
-    <span className="por-detail-info-value">{value}</span>
-  </div>
-)
 
 const PorRequestDetailModal = ({
   isOpen,
@@ -206,285 +132,259 @@ const PorRequestDetailModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="POR Request Details"
+      title="POR request details"
       width={1080}
       minHeight="50vh"
       closeButtonVariant="button"
     >
-      <div style={detailBodyStyle}>
-        <div style={metaBarStyle}>
-          <div style={metaBarLeftStyle}>
-            <span className="por-detail-meta-chip por-detail-meta-chip-id">
-              {request.id}
-            </span>
-            <Badge variant={getStatusVariant(request.status)}>{formatStatusLabel(request.status)}</Badge>
-            <span className="por-detail-meta-chip">{request.porCategoryName || "—"}</span>
-            <span className="por-detail-meta-chip">
-              <ShieldCheck size={12} />
-              {formatStageLabel(request.currentApprovalStage)}
-            </span>
-            <span className="por-detail-meta-chip">
-              <CalendarDays size={12} />
-              Submitted {formatDateTime(request.createdAt)}
-            </span>
-          </div>
+      <VStack gap={4}>
+        <VStack gap={3}>
+          <HStack gap={3} align="center" justify="between" wrap>
+            <HStack gap={2} align="center" wrap>
+              <Badge variant="outline" size="small">{request.id}</Badge>
+              <Badge variant={getStatusVariant(request.status)} size="small">
+                {formatStatusLabel(request.status)}
+              </Badge>
+              <Badge size="small">{request.porCategoryName || "—"}</Badge>
+              <Badge size="small" icon={<ShieldCheck />}>
+                {formatStageLabel(request.currentApprovalStage)}
+              </Badge>
+              <Badge size="small" icon={<CalendarDays />}>
+                Submitted {formatDateTime(request.createdAt)}
+              </Badge>
+            </HStack>
 
-          <HStack gap={2} wrap>
-            {onGenerateCertificate ? (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => onGenerateCertificate(request)}
-                loading={isGeneratingCertificate}
-              >
-                <BadgeCheck size={15} /> Generate Certificate
-              </Button>
-            ) : null}
-            {request?.permissions?.canEdit ? (
-              <Button variant="secondary" size="sm" onClick={onEdit}>
-                Edit & Resubmit
-              </Button>
-            ) : null}
+            <HStack gap={2} wrap>
+              {onGenerateCertificate ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => onGenerateCertificate(request)}
+                  loading={isGeneratingCertificate}
+                >
+                  <BadgeCheck size={15} /> Generate certificate
+                </Button>
+              ) : null}
+              {request?.permissions?.canEdit ? (
+                <Button variant="secondary" size="sm" onClick={onEdit}>
+                  Edit & resubmit
+                </Button>
+              ) : null}
+            </HStack>
           </HStack>
-        </div>
 
-        <div
-          className="grid grid-cols-1 xl:grid-cols-3"
-          style={{ gap: "var(--spacing-4)", alignItems: "start" }}
-        >
+          <Divider spacing="none" />
+        </VStack>
+
+        <Grid cols={{ base: 1, xl: 3 }} gap={4} align="start">
           <VStack gap={4} className="xl:col-span-2">
-            <PorDetailCard
-              icon={FileText}
-              title="POR Submission"
-              accentColor="var(--color-primary)"
-            >
-              <Grid cols={1} gap={4}>
-                <div className="por-detail-hero-box">
-                  <div className="por-detail-hero-title">
-                    {request.positionTitle || "—"}
-                  </div>
-                  <div className="por-detail-hero-subtitle">
-                    Tenure: {request.tenure || "—"}
-                  </div>
-                </div>
+            <DetailSection title="POR submission" icon={FileText}>
+              <InfoRow label="Position" value={request.positionTitle || "—"} strong />
+              <InfoRow label="Tenure" value={request.tenure || "—"} />
+            </DetailSection>
 
-                <SectionHeader>Responsibilities</SectionHeader>
-                <div style={detailTextStyle}>{request.positionDetails || "—"}</div>
+            <DetailSection title="Responsibilities" icon={ClipboardList}>
+              <Text size="sm" color="body" leading="var(--line-height-relaxed)" style={bodyTextStyle}>
+                {request.positionDetails || "—"}
+              </Text>
+            </DetailSection>
 
-                <SectionHeader>Supporting Document</SectionHeader>
-                {request.supportingDocumentUrl ? (
-                  <PdfUploadField
-                    label="Supporting PDF"
-                    value={request.supportingDocumentUrl}
-                    onChange={() => {}}
-                    disabled
-                    uploadedText={request.supportingDocumentName || "Supporting PDF uploaded"}
-                    viewerTitle="POR Supporting Document"
-                    viewerSubtitle="Uploaded supporting PDF"
-                    downloadFileName={request.supportingDocumentName || "por-document.pdf"}
-                  />
-                ) : (
-                  <div className="por-detail-info-grid">
-                    <div style={detailTextStyle}>
-                      No supporting PDF attached.
-                    </div>
-                  </div>
-                )}
-              </Grid>
-            </PorDetailCard>
+            <DetailSection title="Supporting document" icon={Paperclip}>
+              {request.supportingDocumentUrl ? (
+                <PdfUploadField
+                  label="Supporting PDF"
+                  value={request.supportingDocumentUrl}
+                  onChange={() => {}}
+                  disabled
+                  uploadedText={request.supportingDocumentName || "Supporting PDF uploaded"}
+                  viewerTitle="POR supporting document"
+                  viewerSubtitle="Uploaded supporting PDF"
+                  downloadFileName={request.supportingDocumentName || "por-document.pdf"}
+                />
+              ) : (
+                <Text size="sm" color="muted">No supporting PDF attached.</Text>
+              )}
+            </DetailSection>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--spacing-4)" }}>
-              <PorDetailCard
+            <Grid cols={{ base: 1, lg: 2 }} gap={4} align="start">
+              <DetailSection
+                title="Student details"
                 icon={Users}
-                title="Student Details"
-                accentColor="var(--color-info)"
-                headerAction={
+                actions={
                   canViewStudentProfile ? (
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={onOpenStudentProfile}
                     >
-                      View Profile
+                      View profile
                     </Button>
                   ) : null
                 }
               >
-                <div className="por-student-profile-header">
-                  {renderStudentAvatar(request.student?.name)}
-                  <div className="por-student-profile-info">
-                    <span className="por-student-profile-name">{request.student?.name || "—"}</span>
-                    <span className="por-student-profile-roll">{request.student?.rollNumber || "—"}</span>
-                  </div>
-                </div>
-                <div className="por-detail-info-grid">
-                  <PorDetailInfoRow label="Email" value={request.student?.email || "—"} />
-                  <PorDetailInfoRow label="Department" value={request.student?.department || "—"} />
-                  <PorDetailInfoRow label="Degree" value={request.student?.degree || "—"} />
-                  <PorDetailInfoRow label="Batch" value={request.student?.batch || "—"} />
-                </div>
-              </PorDetailCard>
+                <HStack gap={3} align="center">
+                  <Avatar name={request.student?.name || "S"} size="small" />
+                  <VStack gap="none">
+                    <Text as="span" size="sm" weight="semibold" color="heading">
+                      {request.student?.name || "—"}
+                    </Text>
+                    <Text as="span" size="xs" color="muted">
+                      {request.student?.rollNumber || "—"}
+                    </Text>
+                  </VStack>
+                </HStack>
 
-              <PorDetailCard
-                icon={Building2}
-                title="Routing Details"
-                accentColor="var(--color-success)"
-              >
-                <div className="por-detail-info-grid">
-                  <PorDetailInfoRow label="POR Category" value={request.porCategoryName || "—"} />
-                  <PorDetailInfoRow label="Club" value={request.club?.name || "—"} />
-                  <PorDetailInfoRow
-                    label="Current Stage"
-                    value={formatStageLabel(request.currentApprovalStage)}
-                  />
-                  <PorDetailInfoRow
-                    label="Current Reviewer"
-                    value={formatCurrentReviewerLabel(request)}
-                  />
-                  <PorDetailInfoRow
-                    label="Last Updated"
-                    value={formatDateTime(request.updatedAt)}
-                  />
-                </div>
-              </PorDetailCard>
-            </div>
+                <InfoRow label="Email" value={request.student?.email || "—"} />
+                <InfoRow label="Department" value={request.student?.department || "—"} />
+                <InfoRow label="Degree" value={request.student?.degree || "—"} />
+                <InfoRow label="Batch" value={request.student?.batch || "—"} />
+              </DetailSection>
 
-            <PorDetailCard
+              <DetailSection title="Routing details" icon={Building2}>
+                <InfoRow label="POR category" value={request.porCategoryName || "—"} />
+                <InfoRow label="Club" value={request.club?.name || "—"} />
+                <InfoRow
+                  label="Current stage"
+                  value={formatStageLabel(request.currentApprovalStage)}
+                />
+                <InfoRow
+                  label="Current reviewer"
+                  value={formatCurrentReviewerLabel(request)}
+                />
+                <InfoRow
+                  label="Last updated"
+                  value={formatDateTime(request.updatedAt)}
+                />
+              </DetailSection>
+            </Grid>
+
+            <DetailSection
+              title="Disciplinary disclosure"
               icon={request.hasDisciplinaryAction ? ShieldAlert : ShieldCheck}
-              title="Disciplinary Disclosure"
-              accentColor={request.hasDisciplinaryAction ? "var(--color-danger)" : "var(--color-success)"}
+              tone={request.hasDisciplinaryAction ? "danger" : "success"}
             >
               {request.hasDisciplinaryAction ? (
-                <div className="por-detail-alert-card">
-                  <Text as="div" weight="bold" color="danger" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
-                    Disciplinary Action Disclosed
+                <>
+                  <Text as="div" size="sm" weight="semibold" color="danger-text">
+                    Disciplinary action disclosed
                   </Text>
-                  <div style={detailTextStyle}>
+                  <Text size="sm" color="body" leading="var(--line-height-relaxed)" style={bodyTextStyle}>
                     {request.disciplinaryActionDetails || "No details provided."}
-                  </div>
-                </div>
-              ) : (
-                <div className="por-detail-success-card">
-                  <Text as="div" weight="bold" color="success" size="sm">
-                    ✓ No Disciplinary Action Declared
                   </Text>
-                  <div style={{ ...detailTextStyle, marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)" }}>
+                </>
+              ) : (
+                <>
+                  <Text as="div" size="sm" weight="semibold" color="success-text">
+                    No disciplinary action declared
+                  </Text>
+                  <Text size="xs" color="body">
                     The student has declared that they have no past or active disciplinary actions.
-                  </div>
-                </div>
+                  </Text>
+                </>
               )}
-            </PorDetailCard>
+            </DetailSection>
 
             {canAct ? (
-              <PorDetailCard
-                icon={BadgeCheck}
-                title="Review Decision"
-                accentColor="var(--color-primary)"
-              >
-                <Grid cols={1} gap={3}>
-                  <Field label={isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"} htmlFor="por-review-comment">
-                    <Textarea
-                      id="por-review-comment"
-                      value={reviewComment}
-                      onChange={(event) => onReviewCommentChange?.(event.target.value)}
-                      rows={5}
-                      placeholder="Add comments for approval, modification, or rejection"
-                    />
-                  </Field>
+              <DetailSection title="Review decision" icon={BadgeCheck} tone="primary">
+                <Field
+                  label={isStudentAffairsApproval ? "Review comment & next recommenders" : "Review comment"}
+                  htmlFor="por-review-comment"
+                >
+                  <Textarea
+                    id="por-review-comment"
+                    value={reviewComment}
+                    onChange={(event) => onReviewCommentChange?.(event.target.value)}
+                    rows={5}
+                    placeholder="Add comments for approval, modification, or rejection"
+                  />
+                </Field>
 
+                {isStudentAffairsApproval ? (
+                  <VStack gap={3}>
+                    <Text as="span" size="xs" weight="semibold" color="muted">
+                      Next recommenders
+                    </Text>
+                    <Grid cols={1} gap={3}>
+                      {POST_SA_STAGE_ORDER.map((stage) => (
+                        <Field key={stage} label={stage} htmlFor={`por-approver-${stage}`}>
+                          <Select
+                            id={`por-approver-${stage}`}
+                            value={postSaAssignments[stage] || ""}
+                            onChange={(event) => onPostSaAssignmentChange?.(stage, event.target.value)}
+                            options={(approversByStage?.[stage] || []).map((option) => ({
+                              value: option.userId || option.value,
+                              label: option.label,
+                            }))}
+                            placeholder="Optional"
+                          />
+                        </Field>
+                      ))}
+                    </Grid>
+                  </VStack>
+                ) : null}
+
+                <HStack justify="end" gap={3} wrap>
+                  <Button
+                    variant="secondary"
+                    onClick={onRequestRevision}
+                    disabled={actionLoading || !String(reviewComment || "").trim()}
+                    loading={actionLoading === "revision"}
+                  >
+                    Modification required
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={onReject}
+                    disabled={actionLoading || !String(reviewComment || "").trim()}
+                    loading={actionLoading === "reject"}
+                  >
+                    Reject
+                  </Button>
                   {isStudentAffairsApproval ? (
-                    <div style={infoBoxStyle}>
-                      <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                        Next Recommenders
-                      </Text>
-                      <div
-                        className="grid grid-cols-1 gap-3"
-                        style={{ marginTop: "var(--spacing-2)" }}
-                      >
-                        {POST_SA_STAGE_ORDER.map((stage) => (
-                          <div key={stage}>
-                            <Label htmlFor={`por-approver-${stage}`}>{stage}</Label>
-                            <Select
-                              id={`por-approver-${stage}`}
-                              value={postSaAssignments[stage] || ""}
-                              onChange={(event) => onPostSaAssignmentChange?.(stage, event.target.value)}
-                              options={(approversByStage?.[stage] || []).map((option) => ({
-                                value: option.userId || option.value,
-                                label: option.label,
-                              }))}
-                              placeholder="Optional"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <HStack justify="end" gap={3} wrap>
                     <Button
                       variant="secondary"
-                      onClick={onRequestRevision}
-                      disabled={actionLoading || !String(reviewComment || "").trim()}
-                      loading={actionLoading === "revision"}
+                      onClick={onApprove}
+                      disabled={actionLoading || selectedPostSaApproverCount === 0}
+                      loading={actionLoading === "approve"}
                     >
-                      Modification Required
+                      Recommend & forward
                     </Button>
-                    <Button
-                      variant="danger"
-                      onClick={onReject}
-                      disabled={actionLoading || !String(reviewComment || "").trim()}
-                      loading={actionLoading === "reject"}
-                    >
-                      Reject
-                    </Button>
-                    {isStudentAffairsApproval ? (
-                      <Button
-                        variant="secondary"
-                        onClick={onApprove}
-                        disabled={actionLoading || selectedPostSaApproverCount === 0}
-                        loading={actionLoading === "approve"}
-                      >
-                        Recommend & Forward
-                      </Button>
-                    ) : null}
-                    <Button
-                      onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
-                      disabled={actionLoading || (isStudentAffairsApproval && selectedPostSaApproverCount > 0)}
-                      loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
-                    >
-                      {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
-                    </Button>
-                  </HStack>
-                </Grid>
-              </PorDetailCard>
+                  ) : null}
+                  <Button
+                    onClick={isStudentAffairsApproval ? onDirectApprove : onApprove}
+                    disabled={actionLoading || (isStudentAffairsApproval && selectedPostSaApproverCount > 0)}
+                    loading={actionLoading === (isStudentAffairsApproval ? "direct-approve" : "approve")}
+                  >
+                    {isStudentAffairsApproval ? "Approve" : primaryDecisionLabel}
+                  </Button>
+                </HStack>
+              </DetailSection>
             ) : null}
           </VStack>
 
-          <VStack gap={4}>
-            <PorDetailCard
-              icon={Clock3}
-              title="Approval History"
-              accentColor="var(--color-text-heading)"
-              headerAction={
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setShowFullHistoryModal(true)}
-                >
-                  More Details
-                </Button>
-              }
-            >
-              <PorApprovalHistory porRequestId={request.id} compact />
-            </PorDetailCard>
-          </VStack>
-        </div>
-      </div>
+          <DetailSection
+            title="Approval history"
+            icon={Clock3}
+            plain
+            actions={
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowFullHistoryModal(true)}
+              >
+                More details
+              </Button>
+            }
+          >
+            <PorApprovalHistory porRequestId={request.id} compact />
+          </DetailSection>
+        </Grid>
+      </VStack>
 
       <Modal
         isOpen={showFullHistoryModal}
         onClose={() => setShowFullHistoryModal(false)}
-        title="Approval History Details"
+        title="Approval history details"
         width={980}
         minHeight="50vh"
         closeButtonVariant="button"

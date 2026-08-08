@@ -1,10 +1,22 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Grid, Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Banknote, CreditCard, Eye, FileSearch, FileText, Wallet } from "lucide-react"
+import {
+  Badge,
+  Button,
+  DetailSection,
+  EmptyState,
+  Grid,
+  InfoRow,
+  LoadingState,
+  Modal,
+  Text,
+  VStack,
+  useConfirm,
+  useToast,
+} from "hzero"
 
 // Import smaller components
 import StatusBadge from "./details/StatusBadge"
@@ -27,6 +39,7 @@ import PaymentInfoModal from "./PaymentInfoModal"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const confirm = useConfirm()
+  const { toast } = useToast()
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const canAllocateVisitors =
@@ -45,12 +58,12 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   const [showAllocationForm, setShowAllocationForm] = useState(false)
   const [isUnitBased, setIsUnitBased] = useState(false)
   const [allocatedRooms, setAllocatedRooms] = useState([])
-  const [currentHostel, setCurrentHostel] = useState(null)
+  const [, setCurrentHostel] = useState(null)
 
   // New states for Security functionality
   const [showCheckInForm, setShowCheckInForm] = useState(false)
   const [showCheckOutForm, setShowCheckOutForm] = useState(false)
-  const [processingAction, setProcessingAction] = useState(false)
+  const [, setProcessingAction] = useState(false)
 
   const [showEditModal, setShowEditModal] = useState(false)
   const [showH2FormModal, setShowH2FormModal] = useState(false)
@@ -146,26 +159,26 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   // API action handlers
   const handleCancelRequest = async () => {
-    if (await confirm({ message: "Are you sure you want to cancel this visitor request?", isDestructive: true })) {
+    if (await confirm({ title: "Cancel this visitor request?", message: "The request will be withdrawn and the visit won't go ahead.", confirmText: "Cancel request", cancelText: "Keep request", isDestructive: true })) {
       try {
         await visitorApi.cancelVisitorRequest(requestId)
         onRefresh()
         onClose()
       } catch (error) {
         console.error("Error canceling request:", error)
-        alert("Failed to cancel request. Please try again.")
+        toast.error("Couldn't cancel the request. Please try again.")
       }
     }
   }
 
   const handleApproveRequest = async () => {
     if (!canApproveVisitors) {
-      alert("You do not have permission to approve requests.")
+      toast.error("You don't have permission to approve requests.")
       return
     }
 
     if (!selectedHostel) {
-      alert("Please select a hostel to assign for this visit.")
+      toast.warning("Select a hostel to assign for this visit.")
       return
     }
 
@@ -176,7 +189,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       onClose()
     } catch (error) {
       console.error("Error approving request:", error)
-      alert("Failed to approve request. Please try again.")
+      toast.error("Couldn't approve the request. Please try again.")
     }
   }
 
@@ -187,13 +200,13 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       onClose()
     } catch (error) {
       console.error("Error rejecting request:", error)
-      alert("Failed to reject request. Please try again.")
+      toast.error("Couldn't reject the request. Please try again.")
     }
   }
 
   const handleAllocateRooms = async () => {
     if (!canAllocateVisitors) {
-      alert("You do not have permission to allocate rooms.")
+      toast.error("You don't have permission to allocate rooms.")
       return
     }
 
@@ -201,7 +214,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     const isValid = allocatedRooms.every((room) => (isUnitBased ? room[0].trim() !== "" && room[1].trim() !== "" : room[0].trim() !== ""))
 
     if (!isValid) {
-      alert("Please fill in all room details")
+      toast.warning("Fill in every room detail before allocating.")
       return
     }
 
@@ -211,7 +224,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       onClose()
     } catch (error) {
       console.error("Error allocating rooms:", error)
-      alert(error.message || "Failed to allocate rooms. Please try again.")
+      toast.error(error.message || "Couldn't allocate rooms. Please try again.")
     }
   }
 
@@ -224,7 +237,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setShowCheckInForm(false)
     } catch (error) {
       console.error("Error checking in visitor:", error)
-      alert("Failed to check in visitor. Please try again.")
+      toast.error("Couldn't check the visitor in. Please try again.")
     } finally {
       setProcessingAction(false)
     }
@@ -238,7 +251,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setShowCheckOutForm(false)
     } catch (error) {
       console.error("Error checking out visitor:", error)
-      alert("Failed to check out visitor. Please try again.")
+      toast.error("Couldn't check the visitor out. Please try again.")
     } finally {
       setProcessingAction(false)
     }
@@ -253,7 +266,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setShowCheckOutForm(false)
     } catch (error) {
       console.error("Error updating check times:", error)
-      alert("Failed to update check times. Please try again.")
+      toast.error("Couldn't update the check-in and check-out times. Please try again.")
     } finally {
       setProcessingAction(false)
     }
@@ -265,10 +278,10 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       await visitorApi.submitPaymentInfo(requestId, paymentData)
       await fetchRequestDetails()
       setShowPaymentForm(false)
-      alert("Payment information submitted successfully!")
+      toast.success("Payment information submitted.")
     } catch (error) {
       console.error("Error submitting payment info:", error)
-      alert("Failed to submit payment information. Please try again.")
+      toast.error("Couldn't submit the payment information. Please try again.")
     }
   }
 
@@ -307,13 +320,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   // Loading state
   if (loading) {
     return (
-      <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" }}>
-          <div style={{ position: "relative", width: "var(--avatar-4xl)", height: "var(--avatar-4xl)" }}>
-            <IconCircle size="100%" style={{ position: "absolute", top: "0", left: "0", border: "var(--border-4) solid var(--color-border-primary)" }}></IconCircle>
-            <Spinner size="100%" thickness="thick" style={{ position: "absolute", top: "0", left: "0" }} />
-          </div>
-        </div>
+      <Modal title="Visitor request details" onClose={onClose} width={650}>
+        <LoadingState message="Loading request details" />
       </Modal>
     )
   }
@@ -321,17 +329,18 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   // No request data
   if (!request) {
     return (
-      <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <Surface padding={8} align="center">
-          <Text color="muted" size="base">No request details found.</Text>
-        </Surface>
+      <Modal title="Visitor request details" onClose={onClose} width={650}>
+        <EmptyState icon={FileSearch} title="No request details found" message="We couldn't load this visitor request. Close this window and open it again." />
       </Modal>
     )
   }
 
+  const showPaymentStatus = Boolean(request.paymentStatus)
+  const showPaymentLink = user.role === "Student" && ["Approved"].includes(request.status) && Boolean(request.visitorPaymentLink)
+
   // Main render with request data
   return (
-    <Modal title="Visitor Request Details" onClose={onClose} width={650}>
+    <Modal title="Visitor request details" onClose={onClose} width={650}>
       <VStack gap={6}>
         {/* Status Badge */}
         {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
@@ -351,76 +360,64 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* H2 Form Section */}
         {request.h2FormUrl && (
-          <Surface bg="tertiary" padding={4} radius="lg">
-            <HStack gap="none" align="center" justify="between">
-              <HStack gap={3} align="center">
-                <IconCircle size="var(--icon-2xl)" bg="brand">
-                  <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                  </svg>
-                </IconCircle>
-                <div>
-                  <Heading as="h4" weight="medium" color="secondary">H2 Form Document</Heading>
-                  <Text size="sm" color="muted">Guest Room Booking Form</Text>
-                </div>
-              </HStack>
+          <DetailSection
+            title="H2 form document"
+            icon={FileText}
+            actions={
               <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="sm">
-                <FaEye />
-                View H2 Form
+                <Eye size={15} />
+                View H2 form
               </Button>
-            </HStack>
-          </Surface>
+            }
+          >
+            <Text size="sm" color="muted">Guest room booking form</Text>
+          </DetailSection>
         )}
 
         {/* Visitors Information */}
         <VisitorInformation visitors={request.visitors} />
 
-        {/* Payment Status */}
-        {request.paymentStatus && (
-          <Text as="div" size="sm" style={{ marginBottom: "var(--spacing-2)" }}>
-            <Text as="span" weight="semibold" color="body" style={{ marginRight: "var(--spacing-2)" }}>Payment Status:</Text>
-            <Surface as="span" bg={request.paymentStatus === "paid" ? "var(--color-success-bg)" : "var(--color-warning-bg)"} padding="var(--spacing-2) var(--badge-padding-sm)" radius="full" color={request.paymentStatus === "paid" ? "var(--color-success-text)" : "var(--color-warning-text)"} size="xs" weight="medium">
-              {request.paymentStatus === "paid" ? "Paid" : "Pending"}
-            </Surface>
-          </Text>
-        )}
-
-        {/* Payment Link (Student only) */}
-        {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
-          <Text as="div" size="sm">
-            <Text as="span" weight="semibold" color="brand" style={{ marginRight: "var(--spacing-2)" }}>Payment Link:</Text>
-            <Text as="a" color="brand" style={{ textDecoration: "none", wordBreak: "break-all" }} href={request.visitorPaymentLink}
-              target="_blank"
-              rel="noopener noreferrer"
-             
-              onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
-              onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}>
-              {request.visitorPaymentLink}
-            </Text>
-          </Text>
+        {/* Payment Status and Payment Link (link is Student only) */}
+        {(showPaymentStatus || showPaymentLink) && (
+          <DetailSection title="Payment" icon={Wallet}>
+            {showPaymentStatus && (
+              <InfoRow
+                label="Payment status"
+                value={
+                  <Badge variant={request.paymentStatus === "paid" ? "success" : "warning"} size="small">
+                    {request.paymentStatus === "paid" ? "Paid" : "Pending"}
+                  </Badge>
+                }
+              />
+            )}
+            {showPaymentLink && (
+              <InfoRow
+                label="Payment link"
+                value={
+                  <Text as="a" size="sm" color="brand" href={request.visitorPaymentLink} target="_blank" rel="noopener noreferrer" style={{ wordBreak: "break-all" }}>
+                    {request.visitorPaymentLink}
+                  </Text>
+                }
+              />
+            )}
+          </DetailSection>
         )}
 
         {/* Payment Information Submission (Student only) */}
         {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
-          <Surface bg="var(--color-info-bg-light)" padding={4} radius="lg" border="var(--border-1) solid var(--color-info-bg)">
-            <HStack gap="none" align="center" justify="between">
-              <HStack gap={3} align="center">
-                <IconCircle size="var(--icon-2xl)" bg="info">
-                  <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
-                  </svg>
-                </IconCircle>
-                <div>
-                  <Heading as="h4" weight="medium" color="info-text">Payment Information Required</Heading>
-                  <Text size="sm" color="brand">Submit your payment details for verification</Text>
-                </div>
-              </HStack>
+          <DetailSection
+            title="Payment information required"
+            icon={CreditCard}
+            tone="info"
+            actions={
               <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="sm">
-                <FaMoneyBillWave />
-                Submit Payment Info
+                <Banknote size={15} />
+                Submit payment info
               </Button>
-            </HStack>
-          </Surface>
+            }
+          >
+            <Text size="sm" color="muted">Submit your payment details so we can verify them.</Text>
+          </DetailSection>
         )}
 
         {/* Payment Information Form (Student only) */}

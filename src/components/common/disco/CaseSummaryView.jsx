@@ -1,20 +1,33 @@
 import { useState } from "react"
-import { Button } from "hzero"
 import {
-  Eye,
-  Download,
-  FileText,
-  Users,
-  Mail,
-  Calendar,
-  CheckCircle,
-  XCircle,
   AlertCircle,
+  CheckCircle,
   ChevronDown,
   ChevronUp,
+  Download,
+  Eye,
+  FileCheck,
+  FileText,
+  Files,
+  Gavel,
+  Mail,
+  Paperclip,
+  ShieldAlert,
+  Users,
+  XCircle,
 } from "lucide-react"
-import { Badge, HStack, Surface, Text, VStack } from "@/components/ui"
-import CompactStudentTag from "@/components/ui/data-display/CompactStudentTag"
+import {
+  Badge,
+  Button,
+  CompactStudentTag,
+  DetailSection,
+  EmptyState,
+  HStack,
+  InfoRow,
+  Table,
+  Text,
+  VStack,
+} from "hzero"
 import EmailDetailModal from "./EmailDetailModal"
 
 const formatStatusLabel = (value = "") =>
@@ -22,6 +35,7 @@ const formatStatusLabel = (value = "") =>
     .replace(/_/g, " ")
     .replace(/\b\w/g, (ch) => ch.toUpperCase())
 
+/** One vocabulary for both Badge and DetailSection — the names line up. */
 const getStatusVariant = (status = "") => {
   switch (status) {
     case "action_taken":
@@ -37,16 +51,17 @@ const getStatusVariant = (status = "") => {
   }
 }
 
+/** A component reference — DetailSection sizes and tints it itself. */
 const getStatusIcon = (status = "") => {
   switch (status) {
     case "action_taken":
     case "finalized_with_action":
-      return <CheckCircle size={16} style={{ color: "var(--color-success)" }} />
+      return CheckCircle
     case "rejected":
     case "final_rejected":
-      return <XCircle size={16} style={{ color: "var(--color-danger)" }} />
+      return XCircle
     default:
-      return <AlertCircle size={16} style={{ color: "var(--color-warning)" }} />
+      return AlertCircle
   }
 }
 
@@ -56,6 +71,17 @@ const formatDate = (value) => {
   if (Number.isNaN(parsed.getTime())) return "N/A"
   return parsed.toLocaleDateString()
 }
+
+const SectionToggle = ({ expanded, onToggle, label }) => (
+  <Button
+    size="sm"
+    variant="ghost"
+    onClick={onToggle}
+    aria-expanded={expanded}
+    aria-label={expanded ? `Hide ${label}` : `Show ${label}`}
+    icon={expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+  />
+)
 
 /**
  * CaseSummaryView - Complete case summary for closed cases
@@ -95,184 +121,102 @@ const CaseSummaryView = ({
   const finalDecision = caseData.finalDecision || {}
   const disciplinaryActions = finalDecision.studentDisciplinaryActions || []
 
-  const sectionStyle = {
-    backgroundColor: "var(--color-bg-primary)",
-    border: "1px solid var(--color-border-primary)",
-    borderRadius: "var(--radius-card-sm)",
-    overflow: "hidden",
-  }
-
-  const sectionHeaderStyle = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "var(--spacing-3)",
-    backgroundColor: "var(--color-bg-secondary)",
-    cursor: "pointer",
-    userSelect: "none",
-    transition: "background-color 0.15s ease",
-  }
-
-  const sectionTitleStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-primary)",
-  }
-
-  const sectionContentStyle = {
-    padding: "var(--spacing-3)",
-    borderTop: "1px solid var(--color-border-light)",
-  }
-
-  const infoRowStyle = {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: 8,
-    padding: "var(--spacing-2) 0",
-    borderBottom: "1px solid var(--color-border-light)",
-  }
-
-  const infoLabelStyle = {
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-muted)",
-    minWidth: 100,
-    flexShrink: 0,
-  }
-
-  const infoValueStyle = {
-    fontSize: "var(--font-size-sm)",
-    color: "var(--color-text-primary)",
-    flex: 1,
-  }
-
-  const documentChipStyle = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 4,
-    padding: "4px 8px",
-    backgroundColor: "var(--color-bg-tertiary)",
-    borderRadius: "var(--radius-badge)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-primary)",
-    cursor: "pointer",
-    border: "1px solid var(--color-border-primary)",
-    transition: "all 0.15s ease",
-  }
+  const caseStatus = finalDecision.status || caseData.caseStatus
+  const StatusIcon = getStatusIcon(caseStatus)
+  const studentCount = accusingStudents.length + accusedStudents.length
+  const documentCount =
+    statements.length +
+    evidenceDocuments.length +
+    extraDocuments.length +
+    (caseData.committeeMeetingMinutes?.pdfUrl ? 1 : 0)
 
   return (
     <VStack gap={3}>
-      {/* Case Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "var(--spacing-3)",
-          backgroundColor: "var(--color-bg-secondary)",
-          borderRadius: "var(--radius-card-sm)",
-          border: "1px solid var(--color-border-primary)",
-        }}
-      >
-        <HStack gap={12} align="center">
-          {getStatusIcon(finalDecision.status || caseData.caseStatus)}
-          <div>
-            <HStack gap={8} align="center">
-              <Text as="span" size="base" weight="semibold" color="primary">
-                Case #{caseData.id?.slice(-6)}
-              </Text>
-              <Badge variant={getStatusVariant(finalDecision.status || caseData.caseStatus)}>
-                {formatStatusLabel(finalDecision.status || caseData.caseStatus)}
-              </Badge>
-            </HStack>
-            <Text as="span" size="xs" color="muted">
-              Started by {caseData.startedBy?.name || "Unknown"} • {new Date(caseData.createdAt).toLocaleDateString()}
-            </Text>
-          </div>
-        </HStack>
-        <HStack gap={8} align="center">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() =>
-              onViewPdf(
-                caseData.complaintPdfUrl,
-                "Complaint PDF",
-                caseData.complaintPdfName || "complaint.pdf"
-              )
-            }
-          >
-            <Eye size={14} />
-            Complaint
-          </Button>
-          {typeof onDownloadBundle === "function" && (
+      <DetailSection
+        title={`Case #${caseData.id?.slice(-6)}`}
+        icon={StatusIcon}
+        tone={getStatusVariant(caseStatus)}
+        actions={
+          <>
             <Button
               size="sm"
-              variant="primary"
-              loading={isDownloadingBundle}
-              onClick={onDownloadBundle}
+              variant="outline"
+              onClick={() =>
+                onViewPdf(
+                  caseData.complaintPdfUrl,
+                  "Complaint PDF",
+                  caseData.complaintPdfName || "complaint.pdf"
+                )
+              }
             >
-              <Download size={14} />
-              Download Bundle
+              <Eye size={14} />
+              Complaint
             </Button>
-          )}
-        </HStack>
-      </div>
+            {typeof onDownloadBundle === "function" && (
+              <Button
+                size="sm"
+                variant="primary"
+                loading={isDownloadingBundle}
+                onClick={onDownloadBundle}
+              >
+                <Download size={14} />
+                Download bundle
+              </Button>
+            )}
+          </>
+        }
+      >
+        <InfoRow
+          label="Status"
+          value={
+            <Badge variant={getStatusVariant(caseStatus)} size="small">
+              {formatStatusLabel(caseStatus)}
+            </Badge>
+          }
+        />
+        <InfoRow label="Started by" value={caseData.startedBy?.name || "Unknown"} />
+        <InfoRow
+          label="Started on"
+          value={new Date(caseData.createdAt).toLocaleDateString()}
+        />
+      </DetailSection>
 
-      {/* Final Decision */}
       {finalDecision.decisionDescription && (
-        <div
-          style={{
-            padding: "var(--spacing-3)",
-            backgroundColor:
-              finalDecision.status === "action_taken"
-                ? "var(--color-success-bg-light)"
-                : "var(--color-danger-bg-light)",
-            borderRadius: "var(--radius-card-sm)",
-            border: `1px solid ${
-              finalDecision.status === "action_taken"
-                ? "var(--color-success-bg)"
-                : "var(--color-danger-bg)"
-            }`,
-          }}
+        <DetailSection
+          title="Final decision"
+          icon={Gavel}
+          tone={finalDecision.status === "action_taken" ? "success" : "danger"}
         >
-          <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 4, textTransform: "uppercase" }}>
-            Final Decision
-          </Text>
-          <Text as="div" size="sm" color="body" leading={1.5}>
+          <Text as="p" size="sm" color="body" leading={1.5}>
             {finalDecision.decisionDescription}
           </Text>
-        </div>
+        </DetailSection>
       )}
 
-      {/* Students Section */}
-      <div style={sectionStyle}>
-        <div
-          style={sectionHeaderStyle}
-          onClick={() => toggleSection("students")}
-        >
-          <div style={sectionTitleStyle}>
-            <Users size={16} />
-            Involved Students ({accusingStudents.length + accusedStudents.length})
-          </div>
-          {expandedSections.students ? (
-            <ChevronUp size={16} style={{ color: "var(--color-text-muted)" }} />
+      <DetailSection
+        plain
+        title={`Involved students (${studentCount})`}
+        icon={Users}
+        actions={
+          <SectionToggle
+            expanded={expandedSections.students}
+            onToggle={() => toggleSection("students")}
+            label="involved students"
+          />
+        }
+      >
+        {expandedSections.students &&
+          (studentCount === 0 ? (
+            <EmptyState
+              variant="inline"
+              icon={Users}
+              message="No students are linked to this case."
+            />
           ) : (
-            <ChevronDown size={16} style={{ color: "var(--color-text-muted)" }} />
-          )}
-        </div>
-        {expandedSections.students && (
-          <div style={sectionContentStyle}>
-            <VStack gap={12}>
+            <>
               {accusedStudents.length > 0 && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="danger" style={{ marginBottom: 6, textTransform: "uppercase" }}>
-                    Accused ({accusedStudents.length})
-                  </Text>
-                  <HStack gap={6} wrap>
+                <DetailSection title={`Accused (${accusedStudents.length})`} tone="danger">
+                  <HStack gap={2} wrap>
                     {accusedStudents.map((student) => (
                       <CompactStudentTag
                         key={student.id}
@@ -282,14 +226,11 @@ const CaseSummaryView = ({
                       />
                     ))}
                   </HStack>
-                </div>
+                </DetailSection>
               )}
               {accusingStudents.length > 0 && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="warning" style={{ marginBottom: 6, textTransform: "uppercase" }}>
-                    Accusing ({accusingStudents.length})
-                  </Text>
-                  <HStack gap={6} wrap>
+                <DetailSection title={`Accusing (${accusingStudents.length})`} tone="warning">
+                  <HStack gap={2} wrap>
                     {accusingStudents.map((student) => (
                       <CompactStudentTag
                         key={student.id}
@@ -299,44 +240,41 @@ const CaseSummaryView = ({
                       />
                     ))}
                   </HStack>
-                </div>
+                </DetailSection>
               )}
-            </VStack>
-          </div>
-        )}
-      </div>
+            </>
+          ))}
+      </DetailSection>
 
-      {/* Documents Section */}
-      <div style={sectionStyle}>
-        <div
-          style={sectionHeaderStyle}
-          onClick={() => toggleSection("documents")}
-        >
-          <div style={sectionTitleStyle}>
-            <FileText size={16} />
-            Documents ({statements.length + evidenceDocuments.length + extraDocuments.length + (caseData.committeeMeetingMinutes?.pdfUrl ? 1 : 0)})
-          </div>
-          {expandedSections.documents ? (
-            <ChevronUp size={16} style={{ color: "var(--color-text-muted)" }} />
+      <DetailSection
+        plain
+        title={`Documents (${documentCount})`}
+        icon={FileText}
+        actions={
+          <SectionToggle
+            expanded={expandedSections.documents}
+            onToggle={() => toggleSection("documents")}
+            label="documents"
+          />
+        }
+      >
+        {expandedSections.documents &&
+          (documentCount === 0 ? (
+            <EmptyState
+              variant="inline"
+              icon={FileText}
+              message="No documents were filed on this case."
+            />
           ) : (
-            <ChevronDown size={16} style={{ color: "var(--color-text-muted)" }} />
-          )}
-        </div>
-        {expandedSections.documents && (
-          <div style={sectionContentStyle}>
-            <VStack gap={12}>
-              {/* Statements */}
+            <>
               {statements.length > 0 && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
-                    Statements
-                  </Text>
-                  <HStack gap={6} wrap>
+                <DetailSection title="Statements" icon={FileText}>
+                  <HStack gap={2} wrap>
                     {statements.map((statement, index) => (
-                      <button
+                      <Button
                         key={statement.id || index}
-                        type="button"
-                        style={documentChipStyle}
+                        size="sm"
+                        variant="secondary"
                         onClick={() =>
                           onViewPdf(
                             statement.statementPdfUrl,
@@ -345,232 +283,166 @@ const CaseSummaryView = ({
                           )
                         }
                       >
-                        <FileText size={12} />
+                        <FileText size={14} />
                         {statement.student?.name || "Student"}
-                      </button>
+                      </Button>
                     ))}
                   </HStack>
-                </div>
+                </DetailSection>
               )}
 
-              {/* Evidence */}
               {evidenceDocuments.length > 0 && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
-                    Evidence
-                  </Text>
-                  <HStack gap={6} wrap>
+                <DetailSection title="Evidence" icon={Paperclip}>
+                  <HStack gap={2} wrap>
                     {evidenceDocuments.map((doc, index) => (
-                      <button
+                      <Button
                         key={doc.id || index}
-                        type="button"
-                        style={documentChipStyle}
+                        size="sm"
+                        variant="secondary"
                         onClick={() =>
                           onViewPdf(doc.pdfUrl, "Evidence Document", doc.pdfName)
                         }
                       >
-                        <FileText size={12} />
+                        <FileText size={14} />
                         {doc.pdfName || `Evidence ${index + 1}`}
-                      </button>
+                      </Button>
                     ))}
                   </HStack>
-                </div>
+                </DetailSection>
               )}
 
-              {/* Extra Documents */}
               {extraDocuments.length > 0 && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
-                    Extra Documents
-                  </Text>
-                  <HStack gap={6} wrap>
+                <DetailSection title="Extra documents" icon={Files}>
+                  <HStack gap={2} wrap>
                     {extraDocuments.map((doc, index) => (
-                      <button
+                      <Button
                         key={doc.id || index}
-                        type="button"
-                        style={documentChipStyle}
+                        size="sm"
+                        variant="secondary"
                         onClick={() =>
                           onViewPdf(doc.pdfUrl, "Extra Document", doc.pdfName)
                         }
                       >
-                        <FileText size={12} />
+                        <FileText size={14} />
                         {doc.pdfName || `Document ${index + 1}`}
-                      </button>
+                      </Button>
                     ))}
                   </HStack>
-                </div>
+                </DetailSection>
               )}
 
-              {/* Committee Minutes */}
               {caseData.committeeMeetingMinutes?.pdfUrl && (
-                <div>
-                  <Text as="div" size="xs" weight="semibold" color="muted" style={{ marginBottom: 6 }}>
-                    Committee Minutes
-                  </Text>
-                  <button
-                    type="button"
-                    style={{
-                      ...documentChipStyle,
-                      backgroundColor: "var(--color-primary-bg)",
-                    }}
-                    onClick={() =>
-                      onViewPdf(
-                        caseData.committeeMeetingMinutes.pdfUrl,
-                        "Committee Minutes",
-                        caseData.committeeMeetingMinutes.pdfName
-                      )
-                    }
-                  >
-                    <FileText size={12} />
-                    {caseData.committeeMeetingMinutes.pdfName || "Committee Minutes"}
-                  </button>
-                </div>
-              )}
-            </VStack>
-          </div>
-        )}
-      </div>
-
-      {/* Emails Section */}
-      {emailLogs.length > 0 && (
-        <div style={sectionStyle}>
-          <div
-            style={sectionHeaderStyle}
-            onClick={() => toggleSection("emails")}
-          >
-            <div style={sectionTitleStyle}>
-              <Mail size={16} />
-              Emails Sent ({emailLogs.length})
-            </div>
-            {expandedSections.emails ? (
-              <ChevronUp size={16} style={{ color: "var(--color-text-muted)" }} />
-            ) : (
-              <ChevronDown size={16} style={{ color: "var(--color-text-muted)" }} />
-            )}
-          </div>
-          {expandedSections.emails && (
-            <div style={sectionContentStyle}>
-              <VStack gap={8}>
-                {emailLogs.map((log, index) => (
-                  <div
-                    key={log.id || index}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "var(--spacing-2)",
-                      backgroundColor: "var(--color-bg-tertiary)",
-                      borderRadius: "var(--radius-md)",
-                      border: "1px solid var(--color-border-light)",
-                    }}
-                  >
-                    <HStack gap={8} align="center">
-                      <Mail size={14} style={{ color: "var(--color-text-muted)" }} />
-                      <div>
-                        <Text as="div" size="sm" weight="medium" color="primary">
-                          {log.subject || "(No subject)"}
-                        </Text>
-                        <Text as="div" size="xs" color="muted">
-                          {new Date(log.sentAt).toLocaleString()}
-                        </Text>
-                      </div>
-                    </HStack>
+                <DetailSection title="Committee minutes" icon={FileCheck} tone="primary">
+                  <HStack gap={2} wrap>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="secondary"
                       onClick={() =>
-                        setEmailDetailModal({ open: true, emailLog: log })
+                        onViewPdf(
+                          caseData.committeeMeetingMinutes.pdfUrl,
+                          "Committee Minutes",
+                          caseData.committeeMeetingMinutes.pdfName
+                        )
                       }
                     >
-                      <Eye size={14} />
-                      View
+                      <FileText size={14} />
+                      {caseData.committeeMeetingMinutes.pdfName || "Committee Minutes"}
                     </Button>
-                  </div>
+                  </HStack>
+                </DetailSection>
+              )}
+            </>
+          ))}
+      </DetailSection>
+
+      {emailLogs.length > 0 && (
+        <DetailSection
+          plain
+          title={`Emails sent (${emailLogs.length})`}
+          icon={Mail}
+          actions={
+            <SectionToggle
+              expanded={expandedSections.emails}
+              onToggle={() => toggleSection("emails")}
+              label="emails sent"
+            />
+          }
+        >
+          {expandedSections.emails && (
+            <Table bordered dense>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Subject</Table.Head>
+                  <Table.Head>Sent</Table.Head>
+                  <Table.Head align="right">Details</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {emailLogs.map((log, index) => (
+                  <Table.Row key={log.id || index}>
+                    <Table.Cell>{log.subject || "(No subject)"}</Table.Cell>
+                    <Table.Cell>{new Date(log.sentAt).toLocaleString()}</Table.Cell>
+                    <Table.Cell align="right">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          setEmailDetailModal({ open: true, emailLog: log })
+                        }
+                      >
+                        <Eye size={14} />
+                        View
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </VStack>
-            </div>
+              </Table.Body>
+            </Table>
           )}
-        </div>
+        </DetailSection>
       )}
 
-      {/* Disciplinary Actions */}
       {disciplinaryActions.length > 0 && (
-        <div style={sectionStyle}>
-          <div
-            style={sectionHeaderStyle}
-            onClick={() => toggleSection("actions")}
-          >
-            <div style={sectionTitleStyle}>
-              <AlertCircle size={16} />
-              Disciplinary Actions ({disciplinaryActions.length})
-            </div>
-            {expandedSections.actions ? (
-              <ChevronUp size={16} style={{ color: "var(--color-text-muted)" }} />
-            ) : (
-              <ChevronDown size={16} style={{ color: "var(--color-text-muted)" }} />
-            )}
-          </div>
-          {expandedSections.actions && (
-            <div style={sectionContentStyle}>
-              <VStack gap={12}>
-                {disciplinaryActions.map((action, index) => (
-                  <Surface bg="tertiary" padding={3} radius="md" border="1px solid var(--color-border-light)" key={action.actionId || index}>
-                    <HStack gap="none" align="center" justify="between" style={{ marginBottom: 8 }}>
-                      <Text as="span" size="sm" weight="semibold" color="primary">
-                        {action.student?.name || "Student"}
-                      </Text>
-                      {(action.createdDate || action.date) && (
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                            fontSize: "var(--font-size-xs)",
-                            color: "var(--color-text-muted)",
-                          }}
-                        >
-                          <Calendar size={12} />
-                          {formatDate(action.createdDate || action.date)}
-                        </span>
-                      )}
-                    </HStack>
-                    <div style={infoRowStyle}>
-                      <span style={infoLabelStyle}>Created:</span>
-                      <span style={infoValueStyle}>{formatDate(action.createdDate || action.date)}</span>
-                    </div>
-                    <div style={infoRowStyle}>
-                      <span style={infoLabelStyle}>Starts:</span>
-                      <span style={infoValueStyle}>{formatDate(action.punishmentStartDate || action.date)}</span>
-                    </div>
-                    <div style={infoRowStyle}>
-                      <span style={infoLabelStyle}>Ends:</span>
-                      <span style={infoValueStyle}>{formatDate(action.punishmentEndDate || action.punishmentStartDate || action.date)}</span>
-                    </div>
-                    <div style={infoRowStyle}>
-                      <span style={infoLabelStyle}>Reason:</span>
-                      <span style={infoValueStyle}>{action.reason || "N/A"}</span>
-                    </div>
-                    <div style={{ ...infoRowStyle, borderBottom: "none" }}>
-                      <span style={infoLabelStyle}>Action:</span>
-                      <span style={infoValueStyle}>
-                        {action.actionTaken || "N/A"}
-                      </span>
-                    </div>
-                    {action.remarks && (
-                      <div style={{ ...infoRowStyle, borderBottom: "none" }}>
-                        <span style={infoLabelStyle}>Remarks:</span>
-                        <span style={infoValueStyle}>{action.remarks}</span>
-                      </div>
-                    )}
-                  </Surface>
-                ))}
-              </VStack>
-            </div>
-          )}
-        </div>
+        <DetailSection
+          plain
+          title={`Disciplinary actions (${disciplinaryActions.length})`}
+          icon={ShieldAlert}
+          actions={
+            <SectionToggle
+              expanded={expandedSections.actions}
+              onToggle={() => toggleSection("actions")}
+              label="disciplinary actions"
+            />
+          }
+        >
+          {expandedSections.actions &&
+            disciplinaryActions.map((action, index) => (
+              <DetailSection
+                key={action.actionId || index}
+                title={action.student?.name || "Student"}
+              >
+                <InfoRow
+                  label="Created"
+                  value={formatDate(action.createdDate || action.date)}
+                />
+                <InfoRow
+                  label="Starts"
+                  value={formatDate(action.punishmentStartDate || action.date)}
+                />
+                <InfoRow
+                  label="Ends"
+                  value={formatDate(
+                    action.punishmentEndDate || action.punishmentStartDate || action.date
+                  )}
+                />
+                <InfoRow label="Reason" value={action.reason || "N/A"} />
+                <InfoRow label="Action" value={action.actionTaken || "N/A"} />
+                {action.remarks && <InfoRow label="Remarks" value={action.remarks} />}
+              </DetailSection>
+            ))}
+        </DetailSection>
       )}
 
-      {/* Email Detail Modal */}
       <EmailDetailModal
         isOpen={emailDetailModal.open}
         onClose={() => setEmailDetailModal({ open: false, emailLog: null })}
