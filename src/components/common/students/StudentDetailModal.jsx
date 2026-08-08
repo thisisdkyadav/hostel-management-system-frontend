@@ -1,37 +1,9 @@
 import React, { useState, useEffect, useRef } from "react"
 import {
-  Mail,
-  Phone,
-  GraduationCap,
-  Calendar,
-  MapPin,
-  Building,
-  ClipboardList,
-  History,
-  Users,
-  MessageSquare,
-  Heart,
-  Package,
-  Plus,
-  Edit,
-  Trash,
-  Undo,
-  CreditCard,
-  Maximize,
-  Clock,
-  Check,
-  X,
-  UserCheck,
-  UserX,
-  ShieldCheck,
+  Boxes, Building, Calendar, Check, ClipboardList, Clock, CreditCard, Edit, GraduationCap,
+  Heart, History, Mail, MapPin, Maximize, Maximize2, MessageSquare, Package, Phone, Plus,
+  ShieldCheck, Trash, Undo, UserCheck, UserX, Users, X
 } from "lucide-react"
-// FaIdCard renders at lines 746 and 769 and was dropped from this import by
-// 3a5e450 ("replace FontAwesome icons with Lucide"), which left the two usages
-// behind — so the ID-card empty state has been throwing ReferenceError since.
-// Restored rather than swapped for lucide's CreditCard: these sites size the
-// icon with fontSize, which scales a react-icon (width/height are 1em) and
-// would not scale a lucide one. Changing the glyph is a design decision.
-import { FaBoxes, FaExpand, FaIdCard } from "react-icons/fa"
 import { studentApi } from "../../../service"
 import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"
@@ -47,9 +19,11 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Grid, Heading, HStack, IconCircle, InfoRow, Label, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import {
+  Button, DetailSection, EmptyState, Grid, Heading, HStack, IconCircle, InfoRow,
+  Input, Label, LoadingState, Modal, Select, Spinner, Surface, Table, Text,
+  useConfirm, VStack,
+} from "hzero"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const confirm = useConfirm()
   const { user } = useAuth()
@@ -384,88 +358,59 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             </div>
 
             <Grid cols={2} gap={5}>
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <GraduationCap size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <Heading as="h4" size="sm" weight="semibold" color="brand">Academic Information</Heading>
-                </div>
-                <VStack gap="var(--spacing-2-5)">
-                  <InfoRow label="Department:" value={studentDetails.department || "N/A"} />
-                  <InfoRow label="Degree:" value={studentDetails.degree || "N/A"} />
-                  <InfoRow label="Batch:" value={studentDetails.batch || "N/A"} />
-                  <HStack gap={4} justify="between">
-                    <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Groups:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body" align="right">
-                      {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
-                    </Text>
-                  </HStack>
-                  <InfoRow label="Year:" value={studentDetails.year || "N/A"} />
-                  <InfoRow label="Admission Date:" value={formatDate(studentDetails.admissionDate)} />
-                </VStack>
-              </div>
+              <DetailSection title="Academic Information" icon={GraduationCap}>
+  <InfoRow label="Department" value={studentDetails.department || "N/A"} />
+                    <InfoRow label="Degree" value={studentDetails.degree || "N/A"} />
+                    <InfoRow label="Batch" value={studentDetails.batch || "N/A"} />
+                    <HStack gap={4} justify="between">
+                      <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Groups</Text>
+                      <Text as="span" weight="medium" size="sm" color="body" align="right">
+                        {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
+                      </Text>
+                    </HStack>
+                    <InfoRow label="Year" value={studentDetails.year || "N/A"} />
+                    <InfoRow label="Admission Date" value={formatDate(studentDetails.admissionDate)} />
+              </DetailSection>
 
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <Building size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <Heading as="h4" size="sm" weight="semibold" color="brand">Hostel Information</Heading>
-                </div>
-                <VStack gap="var(--spacing-2-5)">
-                  <InfoRow label="Hostel:" value={studentDetails.hostel || "N/A"} />
-                  {studentDetails.hostelType === "unit-based" && (
-                    <InfoRow label="Unit Number:" value={studentDetails.unit || "N/A"} />
-                  )}
-                  <InfoRow label="Room Number:" value={studentDetails.room || "N/A"} />
-                  <InfoRow label="Bed Number:" value={studentDetails.bedNumber || "N/A"} />
-                </VStack>
-              </div>
+              <DetailSection title="Hostel Information" icon={Building}>
+  <InfoRow label="Hostel" value={studentDetails.hostel || "N/A"} />
+                    {studentDetails.hostelType === "unit-based" && (
+                      <InfoRow label="Unit Number" value={studentDetails.unit || "N/A"} />
+                    )}
+                    <InfoRow label="Room Number" value={studentDetails.room || "N/A"} />
+                    <InfoRow label="Bed Number" value={studentDetails.bedNumber || "N/A"} />
+              </DetailSection>
 
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <Calendar size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <Heading as="h4" size="sm" weight="semibold" color="brand">Personal Information</Heading>
-                </div>
-                <VStack gap="var(--spacing-2-5)">
-                  <InfoRow label="Gender:" value={studentDetails.gender || "N/A"} />
-                  <InfoRow label="Date of Birth:" value={formatDate(studentDetails.dateOfBirth)} />
-                  <VStack gap="none">
-                    <Text as="span" color="muted" size="sm" style={{ marginBottom: "var(--spacing-1)" }}>Address:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
-                  </VStack>
-                  <HStack gap={4} justify="between">
-                    <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Secondary Email:</Text>
-                    <Text as="span" weight="medium" size="sm" color="body" align="right" style={{ wordBreak: "break-word" }}>
-                      {studentDetails.secondaryEmail || "N/A"}
-                    </Text>
-                  </HStack>
-                </VStack>
-              </div>
+              <DetailSection title="Personal Information" icon={Calendar}>
+  <InfoRow label="Gender" value={studentDetails.gender || "N/A"} />
+                    <InfoRow label="Date of Birth" value={formatDate(studentDetails.dateOfBirth)} />
+                    <VStack gap="none">
+                      <Text as="span" color="muted" size="sm" style={{ marginBottom: "var(--spacing-1)" }}>Address</Text>
+                      <Text as="span" weight="medium" size="sm" color="body">{studentDetails.address || "N/A"}</Text>
+                    </VStack>
+                    <HStack gap={4} justify="between">
+                      <Text as="span" color="muted" size="sm" style={{ flexShrink: 0 }}>Secondary Email</Text>
+                      <Text as="span" weight="medium" size="sm" color="body" align="right" style={{ wordBreak: "break-word" }}>
+                        {studentDetails.secondaryEmail || "N/A"}
+                      </Text>
+                    </HStack>
+              </DetailSection>
 
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <MapPin size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                  <Heading as="h4" size="sm" weight="semibold" color="brand">Emergency Contact</Heading>
-                </div>
-                <VStack gap="var(--spacing-2-5)">
-                  <InfoRow label="Guardian Name:" value={studentDetails.guardian || "N/A"} />
-                  <InfoRow label="Guardian Phone:" value={studentDetails.guardianPhone || "N/A"} />
-                  <InfoRow label="Guardian Email:" value={studentDetails.guardianEmail || "N/A"} />
-                  <InfoRow label="Faculty Advisor Email:" value={studentDetails.facultyAdvisorEmail || "N/A"} />
-                </VStack>
-              </div>
+              <DetailSection title="Emergency Contact" icon={MapPin}>
+  <InfoRow label="Guardian Name" value={studentDetails.guardian || "N/A"} />
+                    <InfoRow label="Guardian Phone" value={studentDetails.guardianPhone || "N/A"} />
+                    <InfoRow label="Guardian Email" value={studentDetails.guardianEmail || "N/A"} />
+                    <InfoRow label="Faculty Advisor Email" value={studentDetails.facultyAdvisorEmail || "N/A"} />
+              </DetailSection>
 
               {/* if day scholar is true then show the day scholar details */}
               {studentDetails.isDayScholar && (
-                <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
-                  <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                    <Heading as="h4" size="sm" weight="semibold" color="brand">Day Scholar Details</Heading>
-                  </div>
-                  <VStack gap="var(--spacing-2-5)">
-                    <InfoRow label="Address:" value={studentDetails.dayScholarDetails.address || "N/A"} />
-                    <InfoRow label="Owner Name:" value={studentDetails.dayScholarDetails.ownerName || "N/A"} />
-                    <InfoRow label="Owner Phone:" value={studentDetails.dayScholarDetails.ownerPhone || "N/A"} />
-                    <InfoRow label="Owner Email:" value={studentDetails.dayScholarDetails.ownerEmail || "N/A"} />
-                  </VStack>
-                </div>
+                <DetailSection title="Day Scholar Details">
+  <InfoRow label="Address" value={studentDetails.dayScholarDetails.address || "N/A"} />
+                      <InfoRow label="Owner Name" value={studentDetails.dayScholarDetails.ownerName || "N/A"} />
+                      <InfoRow label="Owner Phone" value={studentDetails.dayScholarDetails.ownerPhone || "N/A"} />
+                      <InfoRow label="Owner Email" value={studentDetails.dayScholarDetails.ownerEmail || "N/A"} />
+              </DetailSection>
               )}
             </Grid>
           </>
@@ -485,14 +430,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <Surface bg="primary">
             <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Access History</Heading>
             {loadingAccessRecords ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <Spinner size="var(--spacing-8)" thickness="thin" />
-              </div>
+              <LoadingState message="Loading…" description="" />
             ) : accessRecords.length === 0 ? (
-              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
-                <History size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <Text color="muted">No access records found for this student</Text>
-              </Surface>
+              <EmptyState icon={History} title="No access records found for this student" message="" />
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -528,14 +468,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <Surface bg="primary">
             <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Visitor Requests</Heading>
             {loadingVisitorRequests ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <Spinner size="var(--spacing-8)" thickness="thin" />
-              </div>
+              <LoadingState message="Loading…" description="" />
             ) : visitorRequests.length === 0 ? (
-              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
-                <Users size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <Text color="muted">No visitor requests found for this student</Text>
-              </Surface>
+              <EmptyState icon={Users} title="No visitor requests found for this student" message="" />
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -573,14 +508,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <Surface bg="primary">
             <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Feedback History</Heading>
             {loadingFeedbacks ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <Spinner size="var(--spacing-8)" thickness="thin" />
-              </div>
+              <LoadingState message="Loading…" description="" />
             ) : feedbacks.length === 0 ? (
-              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
-                <MessageSquare size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <Text color="muted">No feedback found for this student</Text>
-              </Surface>
+              <EmptyState icon={MessageSquare} title="No feedback found for this student" message="" />
             ) : (
               <VStack gap={4}>
                 {feedbacks.map((feedback) => (
@@ -616,14 +546,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             </HStack>
 
             {loadingInventory ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <Spinner size="var(--spacing-8)" thickness="thin" />
-              </div>
+              <LoadingState message="Loading…" description="" />
             ) : studentInventory.length === 0 ? (
-              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
-                <Package size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <Text color="muted">No inventory items assigned to this student</Text>
-              </Surface>
+              <EmptyState icon={Package} title="No inventory items assigned to this student" message="" />
             ) : (
               <div style={{ overflowX: "auto" }}>
                 <Table>
@@ -722,14 +647,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <Heading as="h3" size="lg" weight="semibold" color="body" style={{ marginBottom: "var(--spacing-4)" }}>Student ID Card</Heading>
 
             {loadingIdCard ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "var(--spacing-10) 0" }}>
-                <Spinner size="var(--spacing-8)" thickness="thin" />
-              </div>
+              <LoadingState message="Loading…" description="" />
             ) : !idCardData.front && !idCardData.back ? (
-              <Surface bg="tertiary" padding="var(--spacing-10) 0" radius="lg" align="center">
-                <CreditCard size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
-                <Text color="muted">No ID card images found for this student</Text>
-              </Surface>
+              <EmptyState icon={CreditCard} title="No ID card images found for this student" message="" />
             ) : (
               <Grid cols={2} gap={6}>
                 {/* Front ID Card */}
@@ -743,13 +663,13 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
                         <Text as="a" color="brand" href={getMediaUrl(idCardData.front)} target="_blank" rel="noopener noreferrer">
-                          <FaExpand size={14} />
+                          <Maximize2 size={14} />
                         </Text>
                       </div>
                     </div>
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
-                      <FaIdCard style={{ marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} color="var(--color-text-disabled)" />
+                      <CreditCard size={48} style={{ marginBottom: "var(--spacing-2)", color: "var(--color-text-disabled)" }} />
                       <Text color="muted" size="sm">Front side not uploaded</Text>
                     </div>
                   )}
@@ -766,13 +686,13 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
                         <Text as="a" color="brand" href={getMediaUrl(idCardData.back)} target="_blank" rel="noopener noreferrer">
-                          <FaExpand size={14} />
+                          <Maximize2 size={14} />
                         </Text>
                       </div>
                     </div>
                   ) : (
                     <div style={{ width: "100%", height: "192px", backgroundColor: "var(--color-bg-muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-lg)", border: "var(--border-1) dashed var(--color-border-primary)" }}>
-                      <FaIdCard style={{ marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} color="var(--color-text-disabled)" />
+                      <CreditCard size={48} style={{ marginBottom: "var(--spacing-2)", color: "var(--color-text-disabled)" }} />
                       <Text color="muted" size="sm">Back side not uploaded</Text>
                     </div>
                   )}
@@ -1005,7 +925,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <Surface bg="tertiary" padding={4} radius="lg" style={{ marginBottom: "var(--spacing-4)" }}>
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-3)" }}>
                   <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                    <FaBoxes color="var(--color-primary)" />
+                    <Boxes size={16} style={{ color: "var(--color-primary)" }} />
                   </IconCircle>
                   <div>
                     <Heading as="h3" weight="medium" color="primary">{selectedInventoryItem.itemTypeId.name}</Heading>
