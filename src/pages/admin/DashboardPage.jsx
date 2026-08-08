@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { FaUser, FaCalendarAlt, FaFileAlt, FaReceipt, FaAward, FaChevronRight, FaClipboardList, FaCheck, FaTrophy } from "react-icons/fa"
-import { MdOutlineEvent } from "react-icons/md"
-import { AiOutlineLoading3Quarters } from "react-icons/ai"
-import { HiStatusOnline } from "react-icons/hi"
+import {
+  Activity, Award, CalendarCheck, CalendarClock, ClipboardList, CornerDownLeft,
+  FileText, GraduationCap, Receipt, TriangleAlert, Trophy, User,
+} from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
 import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
 import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import { Card, Checkbox, Grid, HStack, Page, Popover, Text, VStack } from "@/components/ui"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
+// Straight from hzero rather than through @/components/ui, which is a shim
+// that re-exports it verbatim.
+import {
+  Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover,
+  Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text,
+  ToggleButtonGroup, VStack,
+} from "hzero"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
 // across activity calendars, event proposals/expenses, and POR requests.
@@ -22,94 +28,24 @@ const APPROVAL_STAGE_STATUS = {
   "Dean SA": "pending_dean",
 }
 
-// Chart components
-// (Removed chart.js imports as they were unused)
-
-// Enhanced shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] ${className}`} style={{ height, width }} aria-hidden="true" />
-
-// Shimmer for tables
-const TableShimmer = ({ rows = 4, className = "" }) => (
-  <div className={`overflow-hidden rounded-[var(--radius-lg)] ${className}`}>
-    <div className="bg-[var(--color-bg-tertiary)] py-[var(--spacing-2)] px-[var(--spacing-4)] flex">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="flex-1 px-[var(--spacing-2)]">
-          <ShimmerLoader height="1rem" className="mb-[var(--spacing-1)]" />
-        </div>
-      ))}
-    </div>
-
-    {[...Array(rows)].map((_, i) => (
-      <div key={i} className={`flex py-[var(--spacing-2)] px-[var(--spacing-4)] ${i % 2 === 0 ? "bg-[var(--color-bg-primary)]" : "bg-[var(--color-bg-tertiary)]"}`}>
-        {[...Array(4)].map((_, j) => (
-          <div key={j} className="flex-1 px-[var(--spacing-2)]">
-            <ShimmerLoader height="0.8rem" width={j === 0 ? "80%" : "50%"} className="mx-auto" />
-          </div>
-        ))}
-      </div>
-    ))}
-  </div>
-)
-
-const HeaderStatCard = ({ icon, label, value, children }) => (
-  <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
-    <HStack align="center" gap="var(--spacing-2-5)">
-      {icon}
-      <HStack align="center" gap="var(--spacing-2-5)">
-        <div>
-          <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide leading-none mb-0.5">{label}</p>
-          <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{value}</p>
-        </div>
-        <HStack gap={1} className="ml-1.5 border-l border-[var(--color-border-primary)] pl-2">
-          {children}
-        </HStack>
-      </HStack>
-    </HStack>
-  </div>
-)
-
-const HeaderStatBadge = ({ label, value }) => (
-  <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">
-    {label} {value}
-  </span>
-)
-
-// Unified card section title with accent bar and optional "View all" link
-const SectionTitle = ({ title, accent = "var(--color-primary)", to, linkLabel = "View all", children }) => (
-  <HStack align="center" justify="between" gap={2} className="mb-[var(--spacing-2)]">
-    <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
-      <span className="w-1 h-4 rounded-[var(--radius-full)]" style={{ backgroundColor: accent }}></span>
-      {title}
-    </h2>
-    <HStack align="center" gap="var(--spacing-1-5)">
-      {children}
-      {to && (
-        <Link
-          to={to}
-          className="text-[0.7rem] font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-[var(--transition-colors)] whitespace-nowrap"
-        >
-          {linkLabel} →
-        </Link>
-      )}
-    </HStack>
-  </HStack>
-)
-
 const APPROVAL_TODO_ITEMS = [
-  { key: "proposals", label: "Event Proposals", icon: FaFileAlt, accent: "var(--color-primary)", to: "/admin/gymkhana-events" },
-  { key: "megaProposals", label: "Mega Event Proposals", icon: FaTrophy, accent: "var(--color-teal-text)", to: "/admin/mega-events" },
-  { key: "calendars", label: "Activity Calendars", icon: FaCalendarAlt, accent: "var(--color-info)", to: "/admin/gymkhana-events" },
-  { key: "expenses", label: "Event Bills", icon: FaReceipt, accent: "var(--color-warning)", to: "/admin/gymkhana-events" },
-  { key: "por", label: "POR Requests", icon: FaAward, accent: "var(--color-purple-text)", to: "/admin/por" },
+  { key: "proposals", label: "Event proposals", icon: FileText, tone: "primary", to: "/admin/gymkhana-events" },
+  { key: "megaProposals", label: "Mega event proposals", icon: Trophy, tone: "teal", to: "/admin/mega-events" },
+  { key: "calendars", label: "Activity calendars", icon: CalendarCheck, tone: "info", to: "/admin/gymkhana-events" },
+  { key: "expenses", label: "Event bills", icon: Receipt, tone: "warning", to: "/admin/gymkhana-events" },
+  { key: "por", label: "POR requests", icon: Award, tone: "purple", to: "/admin/por" },
 ]
 
-// Compact row-toggle indicator (used by the split-bar / occupancy lists, where the
-// whole row is clickable — avoids nesting a real checkbox inside a clickable row)
-const RowCheck = ({ selected }) => (
-  <span className={`w-4 h-4 shrink-0 rounded-[var(--radius-sm)] border flex items-center justify-center transition-colors ${selected ? "bg-[var(--color-primary)] border-[var(--color-primary)]" : "border-[var(--color-border-input)] bg-[var(--color-bg-primary)]"}`}>
-    {selected && <FaCheck className="text-[var(--color-white)]" style={{ fontSize: "0.55rem" }} />}
-  </span>
-)
+const COHORTS = [
+  { value: "hostler", label: "Hostlers" },
+  { value: "dayScholar", label: "Day scholars" },
+  { value: "all", label: "All" },
+]
+
+const UNITS = [
+  { value: "count", label: "Count" },
+  { value: "share", label: "%" },
+]
 
 const buildComplaintDashboardLink = (filters = {}) => {
   const params = new URLSearchParams()
@@ -124,201 +60,476 @@ const buildComplaintDashboardLink = (filters = {}) => {
   return queryString ? `/admin/complaints?${queryString}` : "/admin/complaints"
 }
 
+const formatDate = (dateString) =>
+  new Date(dateString).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+
+const daysFromNow = (date) => Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+
+// A staff member rejoins the day after their leave ends. The sooner that is,
+// the warmer the row reads.
+const joinDetails = (leave) => {
+  const end = leave?.endDate ? new Date(leave.endDate) : null
+  if (!end || Number.isNaN(end.getTime())) return { label: "—", tone: "info" }
+
+  const joinDate = new Date(end)
+  joinDate.setDate(joinDate.getDate() + 1)
+  const days = daysFromNow(joinDate)
+
+  return {
+    label: joinDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+    tone: days <= 1 ? "success" : days <= 3 ? "warning" : "info",
+  }
+}
+
+const eventTiming = (date) => {
+  const days = daysFromNow(new Date(date))
+  if (days === 0) return { label: "Today", variant: "success" }
+  if (days === 1) return { label: "Tomorrow", variant: "warning" }
+  if (days <= 7) return { label: formatDate(date), variant: "primary" }
+  return { label: formatDate(date), variant: "default" }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Action Center — a single unified strip combining four operational feeds into
-// one cohesive widget (vertical-divided columns), instead of four separate cards.
+// Header figures
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SnapColumn = ({ title, icon, accent, count, to, isFirst = false, children }) => {
-  const Icon = icon
-  return (
-  <div className={`flex-1 min-w-0 flex flex-col p-[var(--spacing-3)] ${isFirst ? "" : "border-t xl:border-t-0 xl:border-l border-[var(--color-border-primary)]"}`}>
-    <HStack align="center" justify="between" gap={2} className="mb-[var(--spacing-2-5)]">
-      <HStack align="center" gap={2} className="min-w-0">
-        <Text as="span" color={accent} style={{ backgroundColor: "var(--color-bg-secondary)" }} className="w-7 h-7 shrink-0 rounded-[var(--radius-lg)] flex items-center justify-center">
-          <Icon className="text-xs" />
-        </Text>
-        <h3 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] truncate">{title}</h3>
-        {count != null && (
-          <Text as="span" color="muted" style={{ backgroundColor: "var(--color-bg-muted)" }} className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums">{count}</Text>
-        )}
+const ONLINE_ROLES = [
+  { role: "Student", roleLabel: "Students", short: "S" },
+  { role: "Hostel Supervisor", roleLabel: "Hostel supervisors", short: "HS" },
+  { role: "Admin", roleLabel: "Admins", short: "A" },
+]
+
+const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
+  if (loading) {
+    return (
+      <HStack gap="var(--spacing-2-5)">
+        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
+        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
       </HStack>
-      {to && (
-        <Link to={to} aria-label={`Open ${title}`} className="shrink-0 text-[var(--color-text-light)] hover:text-[var(--color-primary)] transition-colors">
-          <FaChevronRight className="text-[0.7rem]" />
-        </Link>
-      )}
-    </HStack>
-    <VStack gap="var(--spacing-1-5)" className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-      {children}
-    </VStack>
-  </div>
-  )
-}
+    )
+  }
 
-const SnapEmpty = ({ icon, label }) => {
-  const Icon = icon
+  if (error) {
+    return <Badge variant="danger" size="medium">Statistics unavailable</Badge>
+  }
+
+  const counts = dashboardData?.hostlerAndDayScholarCounts || {}
+  const hostler = counts.hostler || {}
+  const dayScholar = counts.dayScholar || {}
+
   return (
-  <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-6)]">
-    <div className="w-10 h-10 bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-2)]">
-      <Icon className="text-[var(--color-text-light)]" />
-    </div>
-    <p className="text-xs font-medium text-[var(--color-text-muted)]">{label}</p>
-  </div>
+    <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+      <StatPill icon={User} label="Hostlers" value={hostler.total || 0}>
+        <StatPill.Chip>B {hostler.boys || 0}</StatPill.Chip>
+        <StatPill.Chip>G {hostler.girls || 0}</StatPill.Chip>
+      </StatPill>
+
+      <StatPill icon={User} label="Day scholars" value={dayScholar.total || 0}>
+        <StatPill.Chip>B {dayScholar.boys || 0}</StatPill.Chip>
+        <StatPill.Chip>G {dayScholar.girls || 0}</StatPill.Chip>
+      </StatPill>
+
+      <StatPill icon={Activity} label="Online now" value={onlineStats?.totalOnline || 0} tone="success" live>
+        {ONLINE_ROLES.map(({ role, roleLabel, short }) => (
+          <Popover
+            key={role}
+            trigger="hover"
+            placement="bottom"
+            align="end"
+            content={<OnlineUsersPopupContent role={role} roleLabel={roleLabel} />}
+          >
+            <StatPill.Chip>{short} {onlineStats?.byRole?.[role] || 0}</StatPill.Chip>
+          </Popover>
+        ))}
+      </StatPill>
+    </HStack>
   )
 }
 
-const SnapShimmer = () => (
-  <>
-    {[...Array(4)].map((_, i) => <ShimmerLoader key={i} height="2.5rem" className="rounded-[var(--radius-lg)]" />)}
-  </>
+// ─────────────────────────────────────────────────────────────────────────────
+// Student distribution
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Rows excluded from a table's totals are tracked by their own key, not by
+ * position. Keying on the index looks equivalent and is not: the dashboard
+ * refetches, and a list that comes back in a different order would silently
+ * move every tick to a different row.
+ */
+const useExclusions = () => {
+  const [excluded, setExcluded] = useState(() => new Set())
+
+  const toggle = (key) =>
+    setExcluded((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+
+  const toggleAll = (keys) =>
+    setExcluded((prev) => (prev.size === 0 ? new Set(keys) : new Set()))
+
+  return { excluded, toggle, toggleAll }
+}
+
+const DegreeTable = ({ data, unit, cohort }) => {
+  const { excluded, toggle, toggleAll } = useExclusions()
+  const degreeWise = data?.degreeWise || []
+
+  if (!degreeWise.length) {
+    return <EmptyState size="sm" icon={GraduationCap} title="No student data" message="Nothing has been recorded yet." />
+  }
+
+  const share = unit === "share"
+
+  const rows = degreeWise.map((item) => {
+    const hostler = item.hostler || {}
+    const dayScholar = item.dayScholar || {}
+
+    let boys, girls
+    if (cohort === "hostler") {
+      boys = hostler.boys || 0
+      girls = hostler.girls || 0
+    } else if (cohort === "dayScholar") {
+      boys = dayScholar.boys || 0
+      girls = dayScholar.girls || 0
+    } else {
+      // "all" — prefer the combined count from the backend, fall back to the splits
+      boys = item.boys ?? (hostler.boys || 0) + (dayScholar.boys || 0)
+      girls = item.girls ?? (hostler.girls || 0) + (dayScholar.girls || 0)
+    }
+
+    return { ...item, key: item.degree ?? String(boys + girls), boys, girls, total: boys + girls }
+  })
+
+  const included = rows.filter((row) => !excluded.has(row.key))
+  const allIncluded = included.length === rows.length
+  const partial = included.length > 0 && !allIncluded
+
+  const totalBoys = included.reduce((sum, item) => sum + item.boys, 0)
+  const totalGirls = included.reduce((sum, item) => sum + item.girls, 0)
+  const grandTotal = included.reduce((sum, item) => sum + item.total, 0)
+  const percent = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0)
+
+  return (
+    <Table sticky dense fixed bordered striped>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head width="30%">
+            <HStack align="center" gap={2}>
+              <Checkbox
+                checked={allIncluded}
+                onChange={() => toggleAll(rows.map((row) => row.key))}
+                aria-label={allIncluded ? "Exclude every degree from the total" : "Include every degree in the total"}
+              />
+              Degree
+            </HStack>
+          </Table.Head>
+          <Table.Head width="17.5%" align="center">Boys</Table.Head>
+          <Table.Head width="17.5%" align="center">Girls</Table.Head>
+          <Table.Head width="17.5%" align="center">Total</Table.Head>
+          {share && (
+            <>
+              <Table.Head width="8.75%" align="center">B%</Table.Head>
+              <Table.Head width="8.75%" align="center">G%</Table.Head>
+            </>
+          )}
+        </Table.Row>
+      </Table.Header>
+
+      <Table.Body>
+        {rows.map((item) => {
+          const isIncluded = !excluded.has(item.key)
+          return (
+            <Table.Row key={item.key}>
+              <Table.Cell>
+                <HStack align="center" gap={2}>
+                  <Checkbox
+                    checked={isIncluded}
+                    onChange={() => toggle(item.key)}
+                    aria-label={`Include ${item.degree} in the total`}
+                  />
+                  <Text as="span" size="sm" weight="medium" color={isIncluded ? "secondary" : "muted"}>
+                    {item.degree}
+                  </Text>
+                </HStack>
+              </Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-info)] font-medium">{item.boys}</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-girls-text)] font-medium">{item.girls}</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-purple-text)] font-semibold">{item.total}</Table.Cell>
+              {share && (
+                <>
+                  <Table.Cell align="center" numeric className="text-[var(--color-info)] font-medium">{percent(item.boys, item.total)}%</Table.Cell>
+                  <Table.Cell align="center" numeric className="text-[var(--color-girls-text)] font-medium">{percent(item.girls, item.total)}%</Table.Cell>
+                </>
+              )}
+            </Table.Row>
+          )
+        })}
+      </Table.Body>
+
+      <Table.Foot>
+        <Table.Row>
+          <Table.Cell>
+            <HStack align="center" gap="var(--spacing-1-5)">
+              Total
+              {partial && <Badge variant="primary" size="small">{included.length} of {rows.length}</Badge>}
+            </HStack>
+          </Table.Cell>
+          <Table.Cell align="center" numeric className="text-[var(--color-info)]">{totalBoys}</Table.Cell>
+          <Table.Cell align="center" numeric className="text-[var(--color-girls-text)]">{totalGirls}</Table.Cell>
+          <Table.Cell align="center" numeric className="text-[var(--color-purple-text)]">{grandTotal}</Table.Cell>
+          {share && (
+            <>
+              <Table.Cell align="center" numeric className="text-[var(--color-info)]">{percent(totalBoys, grandTotal)}%</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-girls-text)]">{percent(totalGirls, grandTotal)}%</Table.Cell>
+            </>
+          )}
+        </Table.Row>
+      </Table.Foot>
+    </Table>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hostel occupancy
+// ─────────────────────────────────────────────────────────────────────────────
+
+const occupancyTone = (percent) => (percent >= 95 ? "danger" : percent >= 80 ? "warning" : "success")
+
+const hostelKey = (hostel, index) => hostel._id ?? hostel.name ?? String(index)
+
+const OccupancyTable = ({ hostels }) => {
+  const { excluded, toggle, toggleAll } = useExclusions()
+
+  if (!hostels.length) {
+    return <EmptyState size="sm" icon={ClipboardList} title="No hostels" message="Add a hostel to see occupancy." />
+  }
+
+  const keys = hostels.map(hostelKey)
+  const includedCount = keys.filter((key) => !excluded.has(key)).length
+  const allIncluded = includedCount === hostels.length
+  const partial = includedCount > 0 && !allIncluded
+  const sumOf = (field) =>
+    hostels.reduce((sum, hostel, index) => (excluded.has(keys[index]) ? sum : sum + (hostel[field] || 0)), 0)
+
+  return (
+    <Table sticky dense fixed bordered striped>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head width="40%">
+            <HStack align="center" gap={2}>
+              <Checkbox
+                checked={allIncluded}
+                onChange={() => toggleAll(keys)}
+                aria-label={allIncluded ? "Exclude every hostel from the total" : "Include every hostel in the total"}
+              />
+              Hostel
+            </HStack>
+          </Table.Head>
+          <Table.Head width="15%" align="center">Rooms</Table.Head>
+          <Table.Head width="15%" align="center">Capacity</Table.Head>
+          <Table.Head width="15%" align="center">Occupied</Table.Head>
+          <Table.Head width="15%" align="center">Vacant</Table.Head>
+        </Table.Row>
+      </Table.Header>
+
+      <Table.Body>
+        {hostels.map((hostel, index) => {
+          const key = keys[index]
+          const isIncluded = !excluded.has(key)
+          const percent = hostel.totalCapacity > 0
+            ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100)
+            : 0
+
+          return (
+            <Table.Row key={key}>
+              <Table.Cell>
+                <HStack align="center" gap={2}>
+                  <Checkbox
+                    checked={isIncluded}
+                    onChange={() => toggle(key)}
+                    aria-label={`Include ${hostel.name} in the total`}
+                  />
+                  <VStack gap="var(--spacing-1)" className="min-w-0 flex-1">
+                    <Text as="span" size="sm" weight="semibold" color={isIncluded ? "secondary" : "muted"} className="truncate">
+                      {hostel.name}
+                    </Text>
+                    <HStack align="center" gap="var(--spacing-1-5)">
+                      <span style={{ width: "var(--spacing-20)" }}>
+                        <Progress
+                          value={percent}
+                          size="sm"
+                          color={occupancyTone(percent)}
+                          aria-label={`${hostel.name} occupancy`}
+                        />
+                      </span>
+                      <Text as="span" size="2xs" color="muted" className="tabular-nums">{percent}%</Text>
+                    </HStack>
+                  </VStack>
+                </HStack>
+              </Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-text-muted)] font-medium">{hostel.totalRooms}</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-text-muted)] font-medium">{hostel.totalCapacity}</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-info)] font-bold">{hostel.currentOccupancy}</Table.Cell>
+              <Table.Cell align="center" numeric className="text-[var(--color-success)] font-bold">{hostel.vacantCapacity}</Table.Cell>
+            </Table.Row>
+          )
+        })}
+      </Table.Body>
+
+      <Table.Foot>
+        <Table.Row>
+          <Table.Cell>
+            <HStack align="center" gap="var(--spacing-1-5)">
+              Total
+              {partial && <Badge variant="primary" size="small">{includedCount} of {hostels.length}</Badge>}
+            </HStack>
+          </Table.Cell>
+          <Table.Cell align="center" numeric>{sumOf("totalRooms")}</Table.Cell>
+          <Table.Cell align="center" numeric>{sumOf("totalCapacity")}</Table.Cell>
+          <Table.Cell align="center" numeric className="text-[var(--color-info)]">{sumOf("currentOccupancy")}</Table.Cell>
+          <Table.Cell align="center" numeric className="text-[var(--color-success)]">{sumOf("vacantCapacity")}</Table.Cell>
+        </Table.Row>
+      </Table.Foot>
+    </Table>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Action centre — four operational feeds sharing one surface
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FeedSkeleton = () => (
+  <VStack gap="var(--spacing-1-5)">
+    {[0, 1, 2, 3].map((i) => (
+      <Skeleton key={i} variant="rounded" height="var(--spacing-10)" />
+    ))}
+  </VStack>
+)
+
+const Feed = ({ title, icon, accent, count, to, loading, children }) => (
+  <Panel
+    bordered={false}
+    title={title}
+    icon={icon}
+    accent={accent}
+    count={loading ? undefined : count}
+    link={to ? <Panel.Link as={Link} to={to}>Open</Panel.Link> : undefined}
+  >
+    <Panel.Body scroll>
+      {loading ? <FeedSkeleton /> : <VStack gap="var(--spacing-1-5)">{children}</VStack>}
+    </Panel.Body>
+  </Panel>
 )
 
 const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvalsLoading }) => {
   const leaves = dashboardData?.leaves?.data?.leaves || []
   const events = dashboardData?.events || []
   const complaints = dashboardData?.complaints || {}
+
   const approvalTotal = APPROVAL_TODO_ITEMS.reduce((sum, item) => sum + (approvalCounts[item.key] || 0), 0)
   const complaintsOpen = (complaints.pending || 0) + (complaints.inProgress || 0) + (complaints.forwardedToIDO || 0)
 
   const complaintRows = [
-    { label: "Pending", value: complaints.pending || 0, color: "var(--color-warning)", to: buildComplaintDashboardLink({ status: "Pending" }) },
-    { label: "In Progress", value: complaints.inProgress || 0, color: "var(--color-info)", to: buildComplaintDashboardLink({ status: "In Progress" }) },
-    { label: "To IDO", value: complaints.forwardedToIDO || 0, color: "var(--color-purple-text)", to: buildComplaintDashboardLink({ status: "Forwarded to IDO" }) },
-    { label: "Resolved Today", value: complaints.resolvedToday || 0, color: "var(--color-success)", to: buildComplaintDashboardLink({ resolvedToday: true }) },
+    { label: "Pending", value: complaints.pending || 0, tone: "warning", to: buildComplaintDashboardLink({ status: "Pending" }) },
+    { label: "In progress", value: complaints.inProgress || 0, tone: "info", to: buildComplaintDashboardLink({ status: "In Progress" }) },
+    { label: "To IDO", value: complaints.forwardedToIDO || 0, tone: "purple", to: buildComplaintDashboardLink({ status: "Forwarded to IDO" }) },
+    { label: "Resolved today", value: complaints.resolvedToday || 0, tone: "success", to: buildComplaintDashboardLink({ resolvedToday: true }) },
   ]
 
-  if (error) {
-    return <p className="m-[var(--spacing-3)] text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-  }
+  if (error) return <ErrorState message={error} />
 
   return (
-      <div className="flex flex-col xl:flex-row xl:h-[22rem]">
-        {/* Staff upcoming joins */}
-        <SnapColumn title="Upcoming Joins" icon={FaCalendarAlt} accent="var(--color-info)" count={loading ? null : leaves.length} to="/admin/leaves" isFirst>
-          {loading ? <SnapShimmer /> : leaves.length === 0 ? <SnapEmpty icon={FaCalendarAlt} label="No upcoming returns" /> : (
-            leaves.map((lv) => {
-              const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
-              let joinLabel = "—"
-              let urgency = "var(--color-info)"
-              try {
-                const end = lv?.endDate ? new Date(lv.endDate) : null
-                if (end) {
-                  const j = new Date(end)
-                  j.setDate(j.getDate() + 1)
-                  joinLabel = j.toLocaleDateString(undefined, { month: "short", day: "numeric" })
-                  const days = Math.ceil((j.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-                  urgency = days <= 1 ? "var(--color-success)" : days <= 3 ? "var(--color-warning)" : "var(--color-info)"
-                }
-              } catch {
-                joinLabel = "—"
-              }
-              return (
-                <div key={lv._id} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)]">
-                  <HStack align="center" gap={2} className="min-w-0">
-                    <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: urgency }}></span>
-                    <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate">{name}</span>
-                  </HStack>
-                  <span className="shrink-0 text-[0.7rem] font-semibold text-[var(--color-success-text)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-md)] px-[var(--spacing-2)] py-[var(--spacing-0-5)]">↩ {joinLabel}</span>
-                </div>
-              )
-            })
-          )}
-        </SnapColumn>
+    <Panel.Columns>
+      <Feed title="Upcoming joins" icon={CalendarCheck} accent="info" count={leaves.length} to="/admin/leaves" loading={loading}>
+        {leaves.length === 0 ? (
+          <EmptyState size="sm" icon={CalendarCheck} title="No upcoming returns" message="" />
+        ) : (
+          leaves.map((leave) => {
+            const { label, tone } = joinDetails(leave)
+            return (
+              <StatRow
+                key={leave._id}
+                dot
+                tone={tone}
+                label={leave?.userId?.name || leave?.userId?.email || "Unknown"}
+                value={<Badge variant="success" size="small" icon={<CornerDownLeft />}>{label}</Badge>}
+              />
+            )
+          })
+        )}
+      </Feed>
 
-        {/* My approvals */}
-        <SnapColumn title="To-Do" icon={FaFileAlt} accent="var(--color-success)" count={approvalsLoading ? null : approvalTotal}>
-          {approvalsLoading ? <SnapShimmer /> : approvalTotal === 0 ? <SnapEmpty icon={FaAward} label="All caught up" /> : (
-            APPROVAL_TODO_ITEMS.filter((item) => (approvalCounts[item.key] || 0) > 0).map((item) => {
-              const count = approvalCounts[item.key] || 0
-              const Icon = item.icon
-              const hasItems = count > 0
-              return (
-                <Link key={item.key} to={item.to} className="group flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
-                  <HStack align="center" gap={2} className="min-w-0">
-                    <Icon className="text-[0.72rem] shrink-0" style={{ color: item.accent }} />
-                    <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate group-hover:text-[var(--color-primary)] transition-colors">{item.label}</span>
-                  </HStack>
-                  <span
-                    className="shrink-0 min-w-[1.25rem] h-5 px-[var(--spacing-1-5)] inline-flex items-center justify-center rounded-[var(--radius-full)] text-[0.65rem] font-bold tabular-nums"
-                    style={hasItems ? { backgroundColor: item.accent, color: "var(--color-white)" } : { backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-muted)" }}
-                  >
-                    {count}
-                  </span>
-                </Link>
-              )
-            })
-          )}
-        </SnapColumn>
+      <Feed title="To-do" icon={ClipboardList} accent="success" count={approvalTotal} loading={approvalsLoading}>
+        {approvalTotal === 0 ? (
+          <EmptyState size="sm" icon={Award} title="All caught up" message="" />
+        ) : (
+          APPROVAL_TODO_ITEMS.filter((item) => (approvalCounts[item.key] || 0) > 0).map((item) => (
+            <StatRow
+              key={item.key}
+              as={Link}
+              to={item.to}
+              icon={item.icon}
+              tone={item.tone}
+              label={item.label}
+              value={approvalCounts[item.key]}
+            />
+          ))
+        )}
+      </Feed>
 
-        {/* Complaints */}
-        <SnapColumn title="Complaints" icon={FaClipboardList} accent="var(--color-warning)" count={loading ? null : complaintsOpen} to="/admin/complaints">
-          {loading ? <SnapShimmer /> : (
-            <>
-              {complaintRows.map((row) => (
-                <Link key={row.label} to={row.to} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] transition-colors">
-                  <HStack align="center" gap={2} className="min-w-0">
-                    <span className="w-1.5 h-1.5 rounded-[var(--radius-full)] shrink-0" style={{ backgroundColor: row.color }}></span>
-                    <span className="text-[0.78rem] font-medium text-[var(--color-text-body)] truncate">{row.label}</span>
-                  </HStack>
-                  <Text as="span" color={row.color} className="shrink-0 text-[0.85rem] font-bold tabular-nums">{row.value}</Text>
-                </Link>
-              ))}
-              <Link to={buildComplaintDashboardLink({ overdue: true })} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-danger-bg)] border border-[var(--color-danger-light)] hover:border-[var(--color-danger)] transition-colors mt-[var(--spacing-0-5)]">
-                <span className="flex items-center gap-[var(--spacing-1-5)] text-[0.72rem] font-bold text-[var(--color-danger-text)] min-w-0 truncate">⚠ Overdue 20+ days</span>
-                <span className="shrink-0 text-[0.95rem] font-black text-[var(--color-danger-text)] tabular-nums">{complaints.overdueCount || 0}</span>
-              </Link>
-            </>
-          )}
-        </SnapColumn>
+      <Feed title="Complaints" icon={FileText} accent="warning" count={complaintsOpen} to="/admin/complaints" loading={loading}>
+        {complaintRows.map((row) => (
+          <StatRow key={row.label} as={Link} to={row.to} dot tone={row.tone} label={row.label} value={row.value} />
+        ))}
+        <StatRow
+          as={Link}
+          to={buildComplaintDashboardLink({ overdue: true })}
+          icon={TriangleAlert}
+          tone="danger"
+          emphasis
+          label="Overdue 20+ days"
+          value={complaints.overdueCount || 0}
+        />
+      </Feed>
 
-        {/* Upcoming events */}
-        <SnapColumn title="Upcoming Events" icon={MdOutlineEvent} accent="var(--color-purple-text)" count={loading ? null : events.length} to="/admin/events">
-          {loading ? <SnapShimmer /> : events.length === 0 ? <SnapEmpty icon={MdOutlineEvent} label="No upcoming events" /> : (
-            events.map((event) => {
-              const eventDate = new Date(event.date)
-              const daysUntil = Math.ceil((eventDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-              const isToday = daysUntil === 0
-              const isTomorrow = daysUntil === 1
-              const isThisWeek = daysUntil > 1 && daysUntil <= 7
-              const dateColors = isToday
-                ? "bg-[var(--color-success-bg)] border-[var(--color-success-light)] text-[var(--color-success-text)]"
-                : isTomorrow
-                  ? "bg-[var(--color-warning-bg)] border-[var(--color-warning-light)] text-[var(--color-warning-text)]"
-                  : isThisWeek
-                    ? "bg-[var(--color-info-bg)] border-[var(--color-info-light)] text-[var(--color-info-text)]"
-                    : "bg-[var(--color-bg-muted)] border-[var(--color-border-primary)] text-[var(--color-text-muted)]"
-              return (
-                <div key={event.id} className="flex items-center justify-between gap-2 px-[var(--spacing-2-5)] py-[var(--spacing-2)] rounded-[var(--radius-lg)] bg-[var(--color-bg-tertiary)] border-l-2 border-[var(--color-purple-text)]">
-                  <span className="text-[0.78rem] font-medium text-[var(--color-text-primary)] truncate">{event.title}</span>
-                  <span className={`shrink-0 px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
-                    {isToday ? "Today" : isTomorrow ? "Tomorrow" : formatDate(event.date)}
-                  </span>
-                </div>
-              )
-            })
-          )}
-        </SnapColumn>
-      </div>
+      <Feed title="Upcoming events" icon={CalendarClock} accent="purple" count={events.length} to="/admin/events" loading={loading}>
+        {events.length === 0 ? (
+          <EmptyState size="sm" icon={CalendarClock} title="No upcoming events" message="" />
+        ) : (
+          events.map((event) => {
+            const { label, variant } = eventTiming(event.date)
+            return (
+              <StatRow
+                key={event.id}
+                edge
+                tone="purple"
+                label={event.title}
+                value={<Badge variant={variant} size="small">{label}</Badge>}
+              />
+            )
+          })
+        )}
+      </Feed>
+    </Panel.Columns>
   )
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const DashboardPage = () => {
   const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [normalizedView, setNormalizedView] = useState(false)
-  const [studentDataView, setStudentDataView] = useState("hostler") // "hostler" | "dayScholar" | "all"
-  const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
+  const [unit, setUnit] = useState("count")
+  const [cohort, setCohort] = useState("hostler")
   const [approvalCounts, setApprovalCounts] = useState({ proposals: 0, megaProposals: 0, calendars: 0, expenses: 0, por: 0 })
   const [approvalsLoading, setApprovalsLoading] = useState(true)
 
-  // Fetch online users stats with auto-refresh every 5 seconds
-  const { stats: onlineStats } = useOnlineUsers({
-    autoFetch: true,
-    refreshInterval: 5000, // Refresh every 5 seconds
-  })
+  const { stats: onlineStats } = useOnlineUsers({ autoFetch: true, refreshInterval: 5000 })
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -326,15 +537,10 @@ const DashboardPage = () => {
         setLoading(true)
         const response = await dashboardApi.getAdminDashboardData()
         setDashboardData(response.data)
-        setLoading(false)
-        // Using dummy data for now
-        // setTimeout(() => {
-        //   setDashboardData(getDummyData())
-        //   setLoading(false)
-        // }, 1200) // Simulate API delay
       } catch (err) {
         console.error("Error fetching dashboard data:", err)
-        setError("Failed to load dashboard statistics")
+        setError("The dashboard statistics could not be loaded.")
+      } finally {
         setLoading(false)
       }
     }
@@ -342,14 +548,7 @@ const DashboardPage = () => {
     fetchDashboardData()
   }, [])
 
-  // Initialize selected hostels when data loads
-  useEffect(() => {
-    if (dashboardData?.hostels) {
-      setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-    }
-  }, [dashboardData])
-
-  // Fetch counts of items pending the current admin's approval stage
+  // Counts of items pending the current admin's approval stage
   useEffect(() => {
     let active = true
     const myStage = APPROVAL_STAGE_STATUS[user?.subRole]
@@ -412,265 +611,57 @@ const DashboardPage = () => {
     }
   }, [user?._id, user?.subRole])
 
-  // Toggle hostel selection
-  const toggleHostelSelection = (index) => {
-    setSelectedHostels((prev) => {
-      if (prev.includes(index)) {
-        return prev.filter((i) => i !== index)
-      } else {
-        return [...prev, index]
-      }
-    })
-  }
-
-  // Check if all hostels are selected
-  const allHostelsSelected = dashboardData?.hostels ? selectedHostels.length === dashboardData.hostels.length : false
+  const hostels = dashboardData?.hostels || []
 
   return (
     <Page>
       <DashboardHeader>
-        {loading ? (
-          <HStack gap="var(--spacing-2-5)">
-            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
-            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
-          </HStack>
-        ) : error ? (
-          <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
-        ) : (
-          (() => {
-            // Actual active hostler / day-scholar counts (from the isDayScholar flag)
-            const counts = dashboardData?.hostlerAndDayScholarCounts || {}
-            const hostler = {
-              boys: counts.hostler?.boys || 0,
-              girls: counts.hostler?.girls || 0,
-              total: counts.hostler?.total || 0,
-            }
-            const finalDayScholar = {
-              boys: counts.dayScholar?.boys || 0,
-              girls: counts.dayScholar?.girls || 0,
-              total: counts.dayScholar?.total || 0,
-            }
-
-            return (
-              <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
-                <HeaderStatCard icon={<FaUser className="text-[var(--color-primary)] text-sm" />} label="Hostlers" value={hostler.total}>
-                  <HeaderStatBadge label="B" value={hostler.boys} />
-                  <HeaderStatBadge label="G" value={hostler.girls} />
-                </HeaderStatCard>
-
-                <HeaderStatCard icon={<FaUser className="text-[var(--color-primary)] text-sm" />} label="Day Scholars" value={finalDayScholar.total}>
-                  <HeaderStatBadge label="B" value={finalDayScholar.boys} />
-                  <HeaderStatBadge label="G" value={finalDayScholar.girls} />
-                </HeaderStatCard>
-
-                {/* Online Users Card */}
-                <div className="bg-[var(--color-success-bg-light)] border border-[var(--color-success-light)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-success)] transition-[var(--transition-all)]">
-                  <HStack align="center" gap="var(--spacing-2-5)">
-                    <HiStatusOnline className="text-[var(--color-success)] text-sm animate-pulse" />
-                    <HStack align="center" gap="var(--spacing-2-5)">
-                      <div>
-                        <p className="text-xs text-[var(--color-success-text)] font-medium uppercase tracking-wide leading-none mb-0.5">Online Now</p>
-                        <p className="text-lg font-bold text-[var(--color-success-text)] leading-none">{onlineStats?.totalOnline || 0}</p>
-                      </div>
-                      <HStack gap={1} className="ml-1.5 border-l border-[var(--color-success-light)] pl-2">
-                        <Popover
-                          trigger="hover"
-                          placement="bottom"
-                          align="end"
-                          content={<OnlineUsersPopupContent role="Student" roleLabel="Students" />}
-                        >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
-                            S: {onlineStats?.byRole?.Student || 0}
-                          </span>
-                        </Popover>
-                        <Popover
-                          trigger="hover"
-                          placement="bottom"
-                          align="end"
-                          content={<OnlineUsersPopupContent role="Hostel Supervisor" roleLabel="Hostel Supervisors" />}
-                        >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
-                            HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
-                          </span>
-                        </Popover>
-                        <Popover
-                          trigger="hover"
-                          placement="bottom"
-                          align="end"
-                          content={<OnlineUsersPopupContent role="Admin" roleLabel="Admins" />}
-                        >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
-                            A: {onlineStats?.byRole?.Admin || 0}
-                          </span>
-                        </Popover>
-                      </HStack>
-                    </HStack>
-                  </HStack>
-                </div>
-              </HStack>
-            )
-          })()
-        )}
+        <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
       </DashboardHeader>
 
-      {/* Dashboard panels — lightweight bordered regions separated by gaps */}
       <Page.Body padded={false} className="p-[var(--spacing-4)]">
         <VStack gap={4}>
-          {/* Top band: Student Distribution | Hostel Occupancy */}
           <Grid cols={{ base: 1, lg: 2 }} gap={4}>
-            {/* Student Distribution */}
-            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
-              {loading ? (
-                <div className="h-full flex flex-col">
-                  <div className="flex justify-between items-center mb-[var(--spacing-4)]">
-                    <ShimmerLoader height="1.25rem" width="50%" />
-                    <ShimmerLoader height="1.75rem" width="8rem" className="rounded-[var(--radius-full)]" />
-                  </div>
-                  <TableShimmer rows={6} className="flex-1" />
-                </div>
-              ) : error ? (
-                <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-              ) : (
+            <Panel
+              title="Student distribution"
+              height="lg"
+              actions={!loading && !error && (
                 <>
-                  <SectionTitle title="Student Distribution" to="/admin/students">
-                    {/* Hostler / Day Scholar / All Toggle */}
-                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                      {[{ key: "hostler", label: "Hostler" }, { key: "dayScholar", label: "Day Scholar" }, { key: "all", label: "All" }].map((opt) => (
-                        <button key={opt.key} onClick={() => setStudentDataView(opt.key)}
-                          className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === opt.key ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
-                      <button onClick={() => setNormalizedView(false)}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        Abs
-                      </button>
-                      <button onClick={() => setNormalizedView(true)}
-                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
-                      >
-                        %
-                      </button>
-                    </div>
-                  </SectionTitle>
-                  <div className="flex-1 min-h-0">
-                    <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
-                  </div>
+                  <ToggleButtonGroup options={COHORTS} value={cohort} onChange={setCohort} size="small" />
+                  <ToggleButtonGroup options={UNITS} value={unit} onChange={setUnit} size="small" />
                 </>
               )}
-            </section>
+              link={<Panel.Link as={Link} to="/admin/students">View all</Panel.Link>}
+            >
+              <Panel.Body>
+                {loading ? (
+                  <SkeletonTable rows={6} columns={4} />
+                ) : error ? (
+                  <ErrorState message={error} />
+                ) : (
+                  <DegreeTable data={dashboardData?.students} unit={unit} cohort={cohort} />
+                )}
+              </Panel.Body>
+            </Panel>
 
-            {/* Hostel Occupancy */}
-            <section className="h-[25rem] min-w-0 flex flex-col p-[var(--spacing-3)] rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
-              {loading ? (
-                <div className="h-full flex flex-col">
-                  <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
-                  <TableShimmer rows={6} className="flex-1" />
-                </div>
-              ) : error ? (
-                <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
-              ) : (
-                <>
-                  <SectionTitle title="Hostel Occupancy" to="/admin/hostels" />
-                  <div className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)]">
-                    {/* Fixed Header */}
-                    <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
-                      <table className="min-w-full table-fixed">
-                        <thead>
-                          <tr>
-                            <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
-                              <HStack align="center" gap={2}>
-                                <Checkbox checked={allHostelsSelected} onChange={() => {
-                                  if (allHostelsSelected) {
-                                    setSelectedHostels([])
-                                  } else {
-                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-                                  }
-                                }} />
-                                Hostel
-                              </HStack>
-                            </th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupancy</th>
-                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacancy</th>
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
-
-                    {/* Scrollable Body */}
-                    <Page.Body padded={false} className="scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-                      <table className="min-w-full table-fixed">
-                        <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
-                          {dashboardData?.hostels?.map((hostel, index) => {
-                            const occupancyPercent = hostel.totalCapacity > 0 ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100) : 0
-                            return (
-                              <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
-                                <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
-                                  <HStack align="center" gap={2}>
-                                    <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
-                                    <div className="flex-1 min-w-0">
-                                      <span className={`block text-[0.8125rem] font-semibold leading-tight transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
-                                      <HStack align="center" gap="var(--spacing-1-5)">
-                                        <div className="w-20 h-1 rounded-[var(--radius-full)] bg-[var(--color-bg-muted)] overflow-hidden">
-                                          <div
-                                            className={`h-full rounded-[var(--radius-full)] ${occupancyPercent >= 95 ? 'bg-[var(--color-danger)]' : occupancyPercent >= 80 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
-                                            style={{ width: `${Math.min(occupancyPercent, 100)}%` }}
-                                          ></div>
-                                        </div>
-                                        <span className="text-[0.65rem] leading-none text-[var(--color-text-muted)] tabular-nums">{occupancyPercent}%</span>
-                                      </HStack>
-                                    </div>
-                                  </HStack>
-                                </td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
-                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </Page.Body>
-
-                    {/* Fixed Footer */}
-                    <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
-                      <table className="min-w-full table-fixed">
-                        <tfoot>
-                          <tr>
-                            <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
-                              <HStack align="center" gap={2}>
-                                <div className="w-3.5 h-3.5"></div>
-                                <HStack align="center" gap="var(--spacing-1-5)">
-                                  <span className="uppercase tracking-wider font-extrabold">Total</span>
-                                  {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
-                                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
-                                  )}
-                                </HStack>
-                              </HStack>
-                            </td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
-                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  </div>
-                </>
-              )}
-            </section>
+            <Panel
+              title="Hostel occupancy"
+              height="lg"
+              link={<Panel.Link as={Link} to="/admin/hostels">View all</Panel.Link>}
+            >
+              <Panel.Body>
+                {loading ? (
+                  <SkeletonTable rows={6} columns={5} />
+                ) : error ? (
+                  <ErrorState message={error} />
+                ) : (
+                  <OccupancyTable hostels={hostels} />
+                )}
+              </Panel.Body>
+            </Panel>
           </Grid>
 
-          {/* Bottom band: Action Center */}
-          <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] shadow-[var(--shadow-card)] overflow-hidden">
+          <Panel padded={false} height="md">
             <ActionCenter
               loading={loading}
               error={error}
@@ -678,165 +669,11 @@ const DashboardPage = () => {
               approvalCounts={approvalCounts}
               approvalsLoading={approvalsLoading}
             />
-          </div>
+          </Panel>
         </VStack>
       </Page.Body>
     </Page>
   )
 }
-
-// Helper function for date formatting
-const formatDate = (dateString) => {
-  const options = { month: "short", day: "numeric", year: "numeric" }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
-
-// Chart components
-const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "normal" }) => {
-  const degreeWiseData = data?.degreeWise || []
-  const [deselectedDegrees, setDeselectedDegrees] = useState([])
-
-  if (!degreeWiseData.length) return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
-
-  const degreeData = degreeWiseData.map((item) => {
-    // Pick the active count source based on the Hostler / Day Scholar / All toggle
-    const hostler = item.hostler || { boys: 0, girls: 0 }
-    const dayScholar = item.dayScholar || { boys: 0, girls: 0 }
-    let displayBoys, displayGirls
-    if (studentDataView === "hostler") {
-      displayBoys = hostler.boys || 0
-      displayGirls = hostler.girls || 0
-    } else if (studentDataView === "dayScholar") {
-      displayBoys = dayScholar.boys || 0
-      displayGirls = dayScholar.girls || 0
-    } else {
-      // "all" — prefer the combined count from the backend, fall back to the splits
-      displayBoys = item.boys ?? (hostler.boys || 0) + (dayScholar.boys || 0)
-      displayGirls = item.girls ?? (hostler.girls || 0) + (dayScholar.girls || 0)
-    }
-
-    return {
-      ...item,
-      boys: displayBoys,
-      girls: displayGirls,
-      total: displayBoys + displayGirls,
-    }
-  })
-
-  const toggleDegreeSelection = (index) => {
-    setDeselectedDegrees((prev) => {
-      if (prev.includes(index)) {
-        return prev.filter((i) => i !== index)
-      }
-      return [...prev, index]
-    })
-  }
-
-  const selectedDegreeData = degreeData.filter((_, index) => !deselectedDegrees.includes(index))
-  const allDegreesSelected = degreeData.length > 0 && selectedDegreeData.length === degreeData.length
-
-  // Calculate totals for footer based on selected degrees
-  const totalBoys = selectedDegreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
-  const totalGirls = selectedDegreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
-  const grandTotal = selectedDegreeData.reduce((sum, item) => sum + (item.total || 0), 0)
-  const boysPercentTotal = grandTotal > 0 ? Math.round((totalBoys / grandTotal) * 100) : 0
-  const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
-
-  return (
-    <div className="h-full flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)]">
-      {/* Fixed Header */}
-      <div className="flex-shrink-0 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-primary)]">
-        <table className="min-w-full table-fixed">
-          <thead>
-            <tr>
-              <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">
-                <HStack align="center" gap={2}>
-                  <Checkbox checked={allDegreesSelected} onChange={() => {
-                    if (allDegreesSelected) {
-                      setDeselectedDegrees(degreeData.map((_, index) => index))
-                    } else {
-                      setDeselectedDegrees([])
-                    }
-                  }} />
-                  Degree
-                </HStack>
-              </th>
-              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Boys</th>
-              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Girls</th>
-              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Total</th>
-              {normalized && (
-                <>
-                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[8.75%]">B%</th>
-                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[8.75%]">G%</th>
-                </>
-              )}
-            </tr>
-          </thead>
-        </table>
-      </div>
-
-      {/* Scrollable Body */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
-        <table className="min-w-full table-fixed">
-          <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
-            {degreeData.map((item, index) => {
-              const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
-              const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
-              const isSelected = !deselectedDegrees.includes(index)
-
-              return (
-                <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-colors ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
-                  <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[30%]">
-                    <HStack align="center" gap={2}>
-                      <Checkbox checked={isSelected} onChange={() => toggleDegreeSelection(index)} />
-                      <span className={`text-[0.8125rem] font-medium transition-colors ${isSelected ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{item.degree}</span>
-                    </HStack>
-                  </td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium tabular-nums w-[17.5%]">{item.boys}</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[17.5%]">{item.girls}</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-semibold tabular-nums w-[17.5%]">{item.total}</td>
-                  {normalized && (
-                    <>
-                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium tabular-nums w-[8.75%]">{boysPercent}%</td>
-                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[8.75%]">{girlsPercent}%</td>
-                    </>
-                  )}
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Fixed Footer */}
-      <div className="flex-shrink-0 bg-[var(--color-bg-muted)] border-t-2 border-[var(--color-border-dark)]">
-        <table className="min-w-full table-fixed">
-          <tfoot>
-            <tr>
-              <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">
-                <HStack align="center" gap="var(--spacing-1-5)">
-                  <span>Total</span>
-                  {selectedDegreeData.length > 0 && selectedDegreeData.length < degreeData.length && (
-                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedDegreeData.length}</span>
-                  )}
-                </HStack>
-              </td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[17.5%]">{totalBoys}</td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold tabular-nums w-[17.5%]">{totalGirls}</td>
-              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-extrabold tabular-nums w-[17.5%]">{grandTotal}</td>
-              {normalized && (
-                <>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[8.75%]">{boysPercentTotal}%</td>
-                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold tabular-nums w-[8.75%]">{girlsPercentTotal}%</td>
-                </>
-              )}
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-  )
-}
-
 
 export default DashboardPage
