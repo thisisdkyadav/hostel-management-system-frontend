@@ -1,36 +1,17 @@
-import React from "react"
-import { FaBuilding } from "react-icons/fa"
-import { useGlobal } from "../../../../contexts/GlobalProvider"
-import { HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
+import { BedDouble } from "lucide-react"
+import { DetailSection, InfoRow } from "hzero"
 
-const AccommodationDetails = ({ hostelName, allocatedRooms }) => {
-  return (
-    <Surface bg="muted" padding={4} radius="lg">
-      <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)", display: "flex", alignItems: "center", }} >
-        <FaBuilding style={{ marginRight: "var(--spacing-2)", fontSize: "var(--icon-md)" }} color="var(--color-primary)" />{" "}
-        Accommodation Details
-      </h3>
-      <VStack gap={2}>
-        <InfoRow label="Hostel:" value={hostelName} />
-        {allocatedRooms && allocatedRooms.length > 0 ? (
-          <div>
-            <Text as="span" color="muted" size="sm" style={{ display: "block", marginBottom: "var(--spacing-1)" }}>
-              Allocated Rooms:
-            </Text>
-            <VStack gap={1}>
-              {allocatedRooms.map((room, index) => (
-                <Text as="div" size="sm" weight="medium" key={index}>
-                  {room.length > 1 ? `${room[1]}-${room[0]}` : `Room ${room[0]}`}
-                </Text>
-              ))}
-            </VStack>
-          </div>
-        ) : (
-          <InfoRow label="Room:" value="Not allocated yet" />
-        )}
-      </VStack>
-    </Surface>
-  )
-}
+// A room arrives as [number] or [number, unit].
+const roomLabel = (room) => (room.length > 1 ? `${room[1]}-${room[0]}` : `Room ${room[0]}`)
+
+const AccommodationDetails = ({ hostelName, allocatedRooms }) => (
+  <DetailSection title="Accommodation" icon={BedDouble}>
+    <InfoRow label="Hostel" value={hostelName || "Not set"} />
+    <InfoRow
+      label={allocatedRooms?.length > 1 ? "Rooms" : "Room"}
+      value={allocatedRooms?.length > 0 ? allocatedRooms.map(roomLabel).join(", ") : "Not allocated yet"}
+    />
+  </DetailSection>
+)
 
 export default AccommodationDetails

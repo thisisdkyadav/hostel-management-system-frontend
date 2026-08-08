@@ -1,20 +1,18 @@
-import React from "react"
-import { Heading, Surface, Text } from "@/components/ui"
+import { CircleCheck, MessageSquare } from "lucide-react"
+import { DetailSection, Text, VStack } from "hzero"
 
-const VisitReason = ({ reason, approvalInformation, isApproved }) => {
-  return (
-    <Surface bg="tertiary" padding={4} radius="lg" className="p-4 rounded-lg">
-      <Heading as="h3" weight="medium" color="secondary" size="base" style={{ marginBottom: 'var(--spacing-3)' }} className="font-medium mb-3">Reason for Visit</Heading>
-      <Text size="sm" color="muted">{reason}</Text>
+const VisitReason = ({ reason, approvalInformation, isApproved }) => (
+  <VStack gap="medium">
+    <DetailSection title="Reason for visit" icon={MessageSquare}>
+      <Text color="body">{reason}</Text>
+    </DetailSection>
 
-      {isApproved && approvalInformation && (
-        <div className="mt-4" style={{ marginTop: 'var(--spacing-4)' }}>
-          <Heading as="h4" size="sm" weight="medium" color="success-text" style={{ marginBottom: 'var(--spacing-1)' }} className="font-medium mb-1">Approval Information</Heading>
-          <Text size="sm" color="secondary" className="whitespace-pre-line">{approvalInformation}</Text>
-        </div>
-      )}
-    </Surface>
-  )
-}
+    {isApproved && approvalInformation && (
+      <DetailSection title="Approval information" icon={CircleCheck} tone="success">
+        <Text color="body" style={{ whiteSpace: "pre-line" }}>{approvalInformation}</Text>
+      </DetailSection>
+    )}
+  </VStack>
+)
 
 export default VisitReason
