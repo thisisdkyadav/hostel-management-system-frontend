@@ -1,79 +1,3 @@
-export const filterWardens = (wardens, filterStatus, searchTerm) => {
-  return wardens
-    .filter((warden) => {
-      if (filterStatus === "all") return true
-      return warden.status === filterStatus
-    })
-    .filter((warden) => {
-      return warden.name.toLowerCase().includes(searchTerm.toLowerCase()) || (warden.department && warden.department.toLowerCase().includes(searchTerm.toLowerCase())) || (warden.hostelAssigned && warden.hostelAssigned.toLowerCase().includes(searchTerm.toLowerCase()))
-    })
-}
-
-export const filterStaffMembers = (staffMembers = [], staffType = "warden", filterStatus = "all", searchTerm = "") => {
-  const normalizedSearchTerm = String(searchTerm || "").trim().toLowerCase()
-
-  if (staffType === "gymkhana") {
-    return staffMembers
-      .filter((staff) => filterStatus === "all" || staff.subRole === filterStatus)
-      .filter((staff) => {
-        if (!normalizedSearchTerm) return true
-
-        const categorySearchText = Array.isArray(staff.categoryLabels) && staff.categoryLabels.length > 0
-          ? staff.categoryLabels.join(" ")
-          : Array.isArray(staff.categories) && staff.categories.length > 0
-            ? staff.categories.join(" ")
-            : ""
-
-        const fields = [staff.name, staff.role, staff.subRole, staff.email]
-          .concat([staff.position, categorySearchText])
-          .filter(Boolean)
-          .map((value) => String(value).toLowerCase())
-
-        return fields.some((value) => value.includes(normalizedSearchTerm))
-      })
-  }
-
-  if (staffType === "academics") {
-    return staffMembers
-      .filter((staff) => filterStatus === "all" || staff.subRole === filterStatus)
-      .filter((staff) => {
-        if (!normalizedSearchTerm) return true
-
-        const fields = [staff.name, staff.role, staff.subRole, staff.email]
-          .filter(Boolean)
-          .map((value) => String(value).toLowerCase())
-
-        return fields.some((value) => value.includes(normalizedSearchTerm))
-      })
-  }
-
-  return staffMembers
-    .filter((staff) => {
-      if (filterStatus === "all") return true
-      const derivedStatus = staff.status || (staff.hostelIds?.length ? "assigned" : "unassigned")
-      return derivedStatus === filterStatus
-    })
-    .filter((staff) => {
-      if (!normalizedSearchTerm) return true
-
-      const fields = [
-        staff.name,
-        staff.email,
-        staff.department,
-        staff.hostelAssigned,
-        staff.category,
-      ]
-        .filter(Boolean)
-        .map((value) => String(value).toLowerCase())
-
-      return fields.some((value) => value.includes(normalizedSearchTerm))
-    })
-}
-
-export const filterAssociateWardens = (associateWardens, status, searchTerm) => {
-  return filterWardens(associateWardens, status, searchTerm)
-}
-
 export const filterStudents = (students, selectedHostel, selectedYear, selectedDepartment, selectedStatus, selectedGender, searchTerm, sortField, sortDirection) => {
   if (!students) return []
   return students
@@ -124,19 +48,6 @@ export const filterComplaints = (complaints, filterStatus, filterCategory, filte
     }
     return true
   })
-}
-
-export const filterSecurity = (securityStaff, filterStatus, searchTerm) => {
-  return securityStaff
-    .filter((staff) => {
-      if (filterStatus === "assigned") return staff.hostelId
-      if (filterStatus === "unassigned") return !staff.hostelId
-      return true // "all" filter
-    })
-    .filter((staff) => {
-      const searchLower = searchTerm.toLowerCase()
-      return staff.name.toLowerCase().includes(searchLower) || (staff.email && staff.email.toLowerCase().includes(searchLower))
-    })
 }
 
 export const filterLostItems = (items, filter, searchTerm) => {
@@ -193,11 +104,3 @@ export const getStatusColor = (status) => {
 
 
 
-export const filterMaintenanceStaff = (staff, category, searchTerm) => {
-  return staff.filter((member) => {
-    const matchesCategory = category === "all" || member.category === category
-    const matchesSearch = !searchTerm || member.name.toLowerCase().includes(searchTerm.toLowerCase()) || member.email.toLowerCase().includes(searchTerm.toLowerCase()) || member.category.toLowerCase().includes(searchTerm.toLowerCase())
-
-    return matchesCategory && matchesSearch
-  })
-}

@@ -1,9 +1,3 @@
-export const WARDEN_FILTER_TABS = [
-  { label: "All", value: "all" },
-  { label: "Assigned", value: "assigned" },
-  { label: "Unassigned", value: "unassigned" },
-]
-
 export const GYMKHANA_SUBROLE_OPTIONS = [
   { label: "GS Gymkhana", value: "GS Gymkhana" },
   { label: "President Gymkhana", value: "President Gymkhana" },
@@ -14,18 +8,8 @@ export const GYMKHANA_SUBROLE_OPTIONS = [
   { label: "Club", value: "Club" },
 ]
 
-export const GYMKHANA_FILTER_TABS = [
-  { label: "All", value: "all" },
-  ...GYMKHANA_SUBROLE_OPTIONS,
-]
-
 export const ACADEMICS_SUBROLE_OPTIONS = [
   { label: "HOD", value: "HOD" },
-]
-
-export const ACADEMICS_FILTER_TABS = [
-  { label: "All", value: "all" },
-  ...ACADEMICS_SUBROLE_OPTIONS,
 ]
 
 export const COMPLAINT_FILTER_TABS = [
@@ -43,12 +27,6 @@ export const HOSTEL_FILTER_TABS = [
   { label: "Co-ed", value: "co-ed" },
 ]
 
-export const SECURITY_FILTER_TABS = [
-  { label: "All Security", value: "all" },
-  { label: "Assigned", value: "assigned" },
-  { label: "Unassigned", value: "unassigned" },
-]
-
 export const MAINTENANCE_FILTER_TABS = [
   { label: "all", value: "all" },
   { label: "Plumber", value: "Plumbing" },
@@ -60,8 +38,3 @@ export const MAINTENANCE_FILTER_TABS = [
   { label: "Other", value: "Other" },
 ]
 
-export const ASSOCIATE_WARDEN_FILTER_TABS = [
-  { id: "all", label: "All", count: null },
-  { id: "assigned", label: "Assigned", count: null },
-  { id: "unassigned", label: "Unassigned", count: null },
-]
