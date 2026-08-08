@@ -59,8 +59,8 @@ const ASSIGNMENT_FILTERS = (isAssigned) => [
 /** Assigned/unassigned is the same question on four of these screens. */
 const assignmentStatus = (assigned) =>
   assigned
-    ? { tone: "success", label: "Assigned" }
-    : { tone: "warning", label: "Unassigned" }
+    ? { variant: "success", label: "Assigned" }
+    : { variant: "warning", label: "Unassigned" }
 
 const CREDENTIAL_FIELDS = [
   { name: "name", label: "Name", type: "text", icon: User, required: true, placeholder: "Full name" },
@@ -154,7 +154,7 @@ const subRoleRole = ({ key, title, plural, api, subRoles, extraFields = [], extr
 
   stats: (list) => [
     { title: `Total ${plural}`, value: list.length, subtitle: `${plural} on record`, icon: Users, color: "var(--color-primary)" },
-    ...subRoles.slice(0, 2).map((r) => ({
+    ...subRoles.map((r) => ({
       title: r.label,
       value: list.filter((s) => s.subRole === r.value).length,
       subtitle: "By sub-role",
@@ -165,7 +165,7 @@ const subRoleRole = ({ key, title, plural, api, subRoles, extraFields = [], extr
 
   card: (s) => ({
     subtitle: s.position || s.subRole || "No sub-role assigned",
-    status: s.subRole ? { tone: "primary", label: s.subRole } : { tone: "neutral", label: "No sub-role" },
+    status: s.subRole ? { variant: "primary", label: s.subRole } : { variant: "default", label: "No sub-role" },
     meta: `${title} user`,
     fields: [
       { icon: Mail, value: s.email || "Not available", label: "Email" },
@@ -197,15 +197,22 @@ const categoryText = (s) =>
 
 // ─── maintenance ─────────────────────────────────────────────────────────────
 
-/** The trade a maintenance member practises: its label, its mark, its colour. */
+/**
+ * The trade a maintenance member practises: its label, its mark, and its
+ * colour twice over — `badge` is an hzero Badge variant, `tone` is the CSS
+ * colour a StatCard takes. Seven trades need seven distinguishable colours,
+ * which is exactly the palette; Attendant is teal rather than the pink the
+ * old card used, because that pink is HMS's gender token and has no business
+ * labelling a job.
+ */
 export const MAINTENANCE_CATEGORIES = [
-  { value: "Plumbing", label: "Plumber", icon: Wrench, tone: "var(--color-info)" },
-  { value: "Electrical", label: "Electrician", icon: Bolt, tone: "var(--color-warning)" },
-  { value: "Civil", label: "Carpenter", icon: Hammer, tone: "var(--color-orange-text)" },
-  { value: "Cleanliness", label: "House keeping", icon: Brush, tone: "var(--color-success)" },
-  { value: "Internet", label: "IT technician", icon: Wifi, tone: "var(--color-purple-text)" },
-  { value: "Attendant", label: "Attendant", icon: User, tone: "var(--color-girls-text)" },
-  { value: "Other", label: "Other", icon: MoreHorizontal, tone: "var(--color-text-muted)" },
+  { value: "Plumbing", label: "Plumber", icon: Wrench, badge: "primary", tone: "var(--color-primary)" },
+  { value: "Electrical", label: "Electrician", icon: Bolt, badge: "warning", tone: "var(--color-warning)" },
+  { value: "Civil", label: "Carpenter", icon: Hammer, badge: "orange", tone: "var(--color-orange-text)" },
+  { value: "Cleanliness", label: "House keeping", icon: Brush, badge: "success", tone: "var(--color-success)" },
+  { value: "Internet", label: "IT technician", icon: Wifi, badge: "purple", tone: "var(--color-purple-text)" },
+  { value: "Attendant", label: "Attendant", icon: User, badge: "teal", tone: "var(--color-teal-text)" },
+  { value: "Other", label: "Other", icon: MoreHorizontal, badge: "default", tone: "var(--color-text-muted)" },
 ]
 
 const maintenanceCategory = (value) =>
@@ -331,9 +338,11 @@ export const STAFF_TYPES = {
     },
     search: (s) => [s.name, s.email, s.category, maintenanceCategory(s.category).label],
 
+    // Every trade, not a sample of them: the point of this row is to see the
+    // shape of the workforce at a glance, and three of seven is not a shape.
     stats: (list) => [
-      { title: "Total staff", value: list.length, subtitle: "Maintenance staff", icon: Wrench, color: "var(--color-primary)" },
-      ...MAINTENANCE_CATEGORIES.slice(0, 3).map((c) => ({
+      { title: "Total staff", value: list.length, subtitle: "All trades", icon: Wrench, color: "var(--color-primary)" },
+      ...MAINTENANCE_CATEGORIES.map((c) => ({
         title: c.label,
         value: list.filter((s) => s.category === c.value).length,
         subtitle: "On record",
@@ -349,7 +358,7 @@ export const STAFF_TYPES = {
       return {
         subtitle: category.label,
         image: s.profileImage,
-        status: { tone: "neutral", label: category.label },
+        status: { variant: category.badge, label: category.label },
         fields: [
           { icon: Mail, value: s.email, label: "Email" },
           { icon: Phone, value: s.phone || "Not provided", label: "Phone" },
@@ -397,7 +406,7 @@ export const STAFF_TYPES = {
 
     card: (s) => ({
       subtitle: "Health Centre Unit",
-      status: { tone: "primary", label: "HCU" },
+      status: { variant: "primary", label: "HCU" },
       fields: [
         { icon: Mail, value: s.email, label: "Email" },
         { icon: Phone, value: s.phone || "Not provided", label: "Phone" },

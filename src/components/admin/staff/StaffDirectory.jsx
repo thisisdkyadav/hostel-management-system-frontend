@@ -22,8 +22,6 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
  *   <StaffDirectory type="warden" />
  */
 
-const CARD_TONE = { success: "success", warning: "warning", danger: "danger", primary: "primary", neutral: "default" }
-
 const StaffDirectory = ({ type }) => {
   const config = STAFF_TYPES[type]
   const { hostelList } = useGlobal()
@@ -142,7 +140,7 @@ const StaffDirectory = ({ type }) => {
               subtitle={card.subtitle}
               icon={Icon}
               avatar={card.image ? { src: getMediaUrl(card.image) } : undefined}
-              status={card.status && <Badge variant={CARD_TONE[card.status.tone] || "default"} size="small">{card.status.label}</Badge>}
+              status={card.status && <Badge variant={card.status.variant} size="small">{card.status.label}</Badge>}
               meta={card.meta}
               actions={
                 <>
@@ -178,7 +176,15 @@ const StaffDirectory = ({ type }) => {
       </PageHeader>
 
       <Page.Body>
-        {!error && <StatCards stats={stats} columns={Math.min(stats.length, 4)} />}
+        {!error && (
+          <StatCards
+            stats={stats}
+            columns={Math.min(stats.length, 4)}
+            // A directory with a stat per category runs to eight of these; at
+            // full size that is more stat than staff on the first screen.
+            valueSize={stats.length > 4 ? "sm" : "lg"}
+          />
+        )}
 
         <HStack
           justify="between"
