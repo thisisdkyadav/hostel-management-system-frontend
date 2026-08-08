@@ -212,11 +212,17 @@ const DegreeTable = ({ data, unit, cohort }) => {
   const grandTotal = included.reduce((sum, item) => sum + item.total, 0)
   const percent = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0)
 
+  // Declared here, not on the header cells: a sticky table's rows are table
+  // boxes of their own, so the widths have to reach every one of them.
+  const columns = share
+    ? ["30%", "17.5%", "17.5%", "17.5%", "8.75%", "8.75%"]
+    : ["30%", "17.5%", "17.5%", "17.5%"]
+
   return (
-    <Table sticky dense fixed bordered striped>
+    <Table sticky dense bordered striped columns={columns}>
       <Table.Header>
         <Table.Row>
-          <Table.Head width="30%">
+          <Table.Head>
             <HStack align="center" gap={2}>
               <Checkbox
                 checked={allIncluded}
@@ -226,13 +232,13 @@ const DegreeTable = ({ data, unit, cohort }) => {
               Degree
             </HStack>
           </Table.Head>
-          <Table.Head width="17.5%" align="center">Boys</Table.Head>
-          <Table.Head width="17.5%" align="center">Girls</Table.Head>
-          <Table.Head width="17.5%" align="center">Total</Table.Head>
+          <Table.Head align="center">Boys</Table.Head>
+          <Table.Head align="center">Girls</Table.Head>
+          <Table.Head align="center">Total</Table.Head>
           {share && (
             <>
-              <Table.Head width="8.75%" align="center">B%</Table.Head>
-              <Table.Head width="8.75%" align="center">G%</Table.Head>
+              <Table.Head align="center">B%</Table.Head>
+              <Table.Head align="center">G%</Table.Head>
             </>
           )}
         </Table.Row>
@@ -315,10 +321,10 @@ const OccupancyTable = ({ hostels }) => {
     hostels.reduce((sum, hostel, index) => (excluded.has(keys[index]) ? sum : sum + (hostel[field] || 0)), 0)
 
   return (
-    <Table sticky dense fixed bordered striped>
+    <Table sticky dense bordered striped columns={["40%", "15%", "15%", "15%", "15%"]}>
       <Table.Header>
         <Table.Row>
-          <Table.Head width="40%">
+          <Table.Head>
             <HStack align="center" gap={2}>
               <Checkbox
                 checked={allIncluded}
@@ -328,10 +334,10 @@ const OccupancyTable = ({ hostels }) => {
               Hostel
             </HStack>
           </Table.Head>
-          <Table.Head width="15%" align="center">Rooms</Table.Head>
-          <Table.Head width="15%" align="center">Capacity</Table.Head>
-          <Table.Head width="15%" align="center">Occupied</Table.Head>
-          <Table.Head width="15%" align="center">Vacant</Table.Head>
+          <Table.Head align="center">Rooms</Table.Head>
+          <Table.Head align="center">Capacity</Table.Head>
+          <Table.Head align="center">Occupied</Table.Head>
+          <Table.Head align="center">Vacant</Table.Head>
         </Table.Row>
       </Table.Header>
 
@@ -352,8 +358,19 @@ const OccupancyTable = ({ hostels }) => {
                     onChange={() => toggle(key)}
                     aria-label={`Include ${hostel.name} in the total`}
                   />
-                  <VStack gap="var(--spacing-1)" className="min-w-0 flex-1">
-                    <Text as="span" size="sm" weight="semibold" color={isIncluded ? "secondary" : "muted"} className="truncate">
+                  {/* Name and bar sit tight against each other: the row is two
+                      lines of a single label, not two stacked things. Both
+                      leadings are pinned, or the line boxes add ~12px per row
+                      and the table stops being dense. */}
+                  <VStack gap="none" className="min-w-0 flex-1">
+                    <Text
+                      as="span"
+                      size="sm"
+                      weight="semibold"
+                      leading="var(--line-height-tight)"
+                      color={isIncluded ? "secondary" : "muted"}
+                      className="truncate"
+                    >
                       {hostel.name}
                     </Text>
                     <HStack align="center" gap="var(--spacing-1-5)">
@@ -365,7 +382,9 @@ const OccupancyTable = ({ hostels }) => {
                           aria-label={`${hostel.name} occupancy`}
                         />
                       </span>
-                      <Text as="span" size="2xs" color="muted" className="tabular-nums">{percent}%</Text>
+                      <Text as="span" size="2xs" color="muted" leading="var(--line-height-none)" className="tabular-nums">
+                        {percent}%
+                      </Text>
                     </HStack>
                   </VStack>
                 </HStack>
