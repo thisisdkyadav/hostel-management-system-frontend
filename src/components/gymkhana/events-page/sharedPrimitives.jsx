@@ -1,5 +1,4 @@
-import { createElement } from "react"
-import { Input } from "hzero"
+import { DetailSection, InfoRow, Input, Text as HzText } from "hzero"
 import { Alert } from "@/components/ui/feedback"
 import { Label, Select, Textarea } from "@/components/ui/form"
 import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
@@ -90,31 +89,6 @@ export const infoBoxStyle = {
   backgroundColor: "var(--color-bg-secondary)",
 }
 
-const panelStyle = {
-  padding: "var(--spacing-4)",
-  borderRadius: "var(--radius-card-sm)",
-  border: "var(--border-1) solid var(--color-border-primary)",
-  backgroundColor: "var(--color-bg-primary)",
-}
-
-const panelHeaderStyle = {
-  fontSize: "var(--font-size-sm)",
-  fontWeight: "var(--font-weight-semibold)",
-  color: "var(--color-text-primary)",
-  marginBottom: "var(--spacing-3)",
-  paddingBottom: "var(--spacing-2)",
-  borderBottom: "var(--border-1) solid var(--color-border-primary)",
-  display: "flex",
-  alignItems: "center",
-  gap: "var(--spacing-2)",
-}
-
-const panelAccentStyle = {
-  ...panelStyle,
-  backgroundColor: "var(--color-bg-secondary)",
-  border: "none",
-}
-
 export const eventDetailMetaChipStyles = {
   display: "inline-flex",
   alignItems: "center",
@@ -128,18 +102,15 @@ export const eventDetailMetaChipStyles = {
   backgroundColor: "var(--color-bg-secondary)",
 }
 
+/**
+ * A titled box of rows. `accent` used to mean "tinted rather than bordered";
+ * DetailSection's panel is tinted either way, so the flag now only chooses how
+ * strongly — which is the distinction the callers were reaching for.
+ */
 export const Panel = ({ title, icon: Icon, accent = false, children }) => (
-  <div style={accent ? panelAccentStyle : panelStyle}>
-    {title && (
-      <div style={panelHeaderStyle}>
-        {Icon && <Icon size={16} style={{ color: "var(--color-primary)" }} />}
-        <span>{title}</span>
-      </div>
-    )}
-    <VStack gap={2}>
-      {children}
-    </VStack>
-  </div>
+  <DetailSection title={title} icon={Icon} tone={accent ? "primary" : "neutral"}>
+    {children}
+  </DetailSection>
 )
 
 export const FormField = ({ label, htmlFor, required = false, children }) => (
@@ -158,6 +129,20 @@ export const SectionHeader = ({ children }) => (
   </div>
 )
 
+/**
+ * The accent arrives as a CSS colour because this predates hzero owning the
+ * palette. Mapped to a tone rather than passed through: a section that can be
+ * any colour is a section with no colour vocabulary.
+ */
+const TONE_FOR_ACCENT = {
+  "var(--color-primary)": "primary",
+  "var(--color-info)": "info",
+  "var(--color-success)": "success",
+  "var(--color-warning)": "warning",
+  "var(--color-danger)": "danger",
+  "var(--color-text-secondary)": "neutral",
+}
+
 export const EventDetailSectionCard = ({
   icon: Icon,
   title,
@@ -165,67 +150,22 @@ export const EventDetailSectionCard = ({
   children,
   headerAction = null,
 }) => (
-  <div
-    style={{
-      background: "var(--color-bg-primary)",
-      borderRadius: "var(--radius-card-sm)",
-      border: "var(--border-1) solid var(--color-border-primary)",
-      overflow: "hidden",
-    }}
+  <DetailSection
+    icon={Icon}
+    title={title}
+    tone={TONE_FOR_ACCENT[accentColor] || "neutral"}
+    actions={headerAction}
   >
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "var(--spacing-2)",
-        padding: "var(--spacing-2) var(--spacing-3)",
-        borderBottom: "var(--border-1) solid var(--color-border-primary)",
-        backgroundColor: "var(--color-bg-secondary)",
-      }}
-    >
-      <HStack gap={2} align="center">
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 22,
-            height: 22,
-            borderRadius: "var(--radius-sm)",
-            backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
-            color: accentColor,
-          }}
-        >
-          {createElement(Icon, { size: 12 })}
-        </span>
-        <Text as="span" size="xs" weight="semibold" color="heading" style={{ textTransform: "uppercase", letterSpacing: "0.3px" }}>
-          {title}
-        </Text>
-      </HStack>
-      {headerAction}
-    </div>
-    <Surface padding={3}>{children}</Surface>
-  </div>
+    {children}
+  </DetailSection>
 )
 
+/**
+ * hzero's InfoRow takes no styling props on purpose, so a caller that wants a
+ * coloured value colours the value rather than the row.
+ */
 export const EventDetailInfoRow = ({ label, value, valueColor }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: "var(--spacing-2)",
-      padding: "var(--spacing-1) 0",
-    }}
-  >
-    <Text as="span" size="xs" color="muted">
-      {label}
-    </Text>
-    <Text as="span" size="sm" weight="medium" color={valueColor || "var(--color-text-body)"} align="right">
-      {value}
-    </Text>
-  </div>
+  <InfoRow label={label} value={valueColor ? <HzText as="span" color={valueColor}>{value}</HzText> : value} />
 )
 
 export const DateOverlapSummary = ({
