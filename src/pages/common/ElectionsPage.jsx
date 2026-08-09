@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Table, Button } from "hzero"
+import { Table, Button, Surface } from "hzero"
 import { Grid, Modal, Text } from "@/components/ui"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
@@ -23,7 +23,7 @@ import {
 import { HeaderSelect } from "@/components/elections/ElectionShared"
 import { escapeCsvValue as escapeCsv } from "@/utils/csvExport"
 
-import { badgeRowStyle, compactStatLabelStyle, compactStatStyle, compactStatValueStyle, detailGridStyle, detailPanelStyle, errorBannerStyle, errorTextStyle, flatPanelStyle, getStatusTone, headerSelectStyle, infoBannerStyle, infoGridStyle, labelStyle, modalBodyStyle, mutedTextStyle, pageStyle, panelStyle, pillBaseStyle, postTabListStyle, postTabStyle, selectStyle, statusToneStyles, textareaStyle, timelineCellStyle, timelinePreviewStyle, workspaceStyle } from "./elections/styles"
+import { badgeRowStyle, compactStatLabelStyle, compactStatStyle, compactStatValueStyle, detailGridStyle, detailPanelStyle, errorBannerStyle, errorTextStyle, getStatusTone, headerSelectStyle, infoBannerStyle, infoGridStyle, labelStyle, modalBodyStyle, mutedTextStyle, pageStyle, pillBaseStyle, postTabListStyle, postTabStyle, selectStyle, statusToneStyles, textareaStyle, timelineCellStyle, timelinePreviewStyle, workspaceStyle } from "./elections/styles"
 import { nominationTabs, nominationTemplateHeaders, phaseOptions, postCategoryOptions, requirementFieldDefs, statusOptions, timelineFieldDefs, votingAccessOptions, votingListTemplateHeaders, wizardSteps } from "./elections/constants"
 import { buildD15Timeline, buildResultsDraftMap, formatApiErrorMessage, formatDateTime, formatElectionOptionLabel, formatStageLabel, formatVotePercentage, fromDateTimeLocal, sortByActivity, splitListInput, summarizeScope } from "./elections/helpers"
 import { buildElectionFormFromDetail, buildNominationDraftFromPost, buildNominationPayload, createBlankElectionForm, createBlankNominationForm, createBlankPost, createBlankSupporterEntry, hydrateSupporterEntries, serializeElectionFormForApi } from "./elections/form"
@@ -1365,8 +1365,6 @@ const ElectionsPage = () => {
             splitListInput={splitListInput}
             formatDateTime={formatDateTime}
             fromDateTimeLocal={fromDateTimeLocal}
-            flatPanelStyle={flatPanelStyle}
-            panelStyle={panelStyle}
             modalBodyStyle={modalBodyStyle}
             labelStyle={labelStyle}
             mutedTextStyle={mutedTextStyle}
@@ -1414,7 +1412,6 @@ const ElectionsPage = () => {
             }}
             modalBodyStyle={modalBodyStyle}
             badgeRowStyle={badgeRowStyle}
-            flatPanelStyle={flatPanelStyle}
             labelStyle={labelStyle}
             textareaStyle={textareaStyle}
             mutedTextStyle={mutedTextStyle}
@@ -1503,9 +1500,7 @@ const ElectionsPage = () => {
             detailGridStyle={detailGridStyle}
             detailPanelStyle={detailPanelStyle}
             labelStyle={labelStyle}
-            flatPanelStyle={flatPanelStyle}
             mutedTextStyle={mutedTextStyle}
-            panelStyle={panelStyle}
             textareaStyle={textareaStyle}
             pillBaseStyle={pillBaseStyle}
             statusToneStyles={statusToneStyles}
@@ -1725,7 +1720,7 @@ const ElectionsPage = () => {
               </div>
 
               <Grid min={320} gap={4}>
-                <div style={flatPanelStyle}>
+                <Surface bg="secondary" padding={3} radius="card-sm" border>
                   <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students With Active Or Used Link
                   </Text>
@@ -1755,9 +1750,9 @@ const ElectionsPage = () => {
                       )}
                     </Table.Body>
                   </Table>
-                </div>
+                </Surface>
 
-                <div style={flatPanelStyle}>
+                <Surface bg="secondary" padding={3} radius="card-sm" border>
                   <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Without Active Link
                   </Text>
@@ -1789,7 +1784,7 @@ const ElectionsPage = () => {
                       )}
                     </Table.Body>
                   </Table>
-                </div>
+                </Surface>
               </Grid>
             </Grid>
           </Modal>
@@ -1828,7 +1823,7 @@ const ElectionsPage = () => {
             }
           >
             <Grid cols={1} gap={4}>
-              <div style={flatPanelStyle}>
+              <Surface bg="secondary" padding={3} radius="card-sm" border>
                 <Text as="div" weight="semibold" color="heading">
                   Email Preview
                 </Text>
@@ -1839,9 +1834,9 @@ const ElectionsPage = () => {
                 <div style={mutedTextStyle}>
                   Please ignore this email. This is only for testing the election email system.
                 </div>
-              </div>
+              </Surface>
 
-              <div style={flatPanelStyle}>
+              <Surface bg="secondary" padding={3} radius="card-sm" border>
                 <Text as="div" weight="semibold" color="heading">
                   Send To One Student
                 </Text>
@@ -1851,9 +1846,9 @@ const ElectionsPage = () => {
                   placeholder="Enter roll number"
                   style={textareaStyle}
                 />
-              </div>
+              </Surface>
 
-              <div style={flatPanelStyle}>
+              <Surface bg="secondary" padding={3} radius="card-sm" border>
                 <Text as="div" weight="semibold" color="heading">
                   Or Upload CSV
                 </Text>
@@ -1878,7 +1873,7 @@ const ElectionsPage = () => {
                     ? `${getNormalizedTestEmailTargets().length} selected roll number(s) will be checked against the election student list.`
                     : "Add one student manually or upload a CSV to send a test email."}
                 </div>
-              </div>
+              </Surface>
             </Grid>
           </Modal>
 
@@ -1933,7 +1928,7 @@ const ElectionsPage = () => {
               </div>
 
               <Grid min={320} gap={4}>
-                <div style={flatPanelStyle}>
+                <Surface bg="secondary" padding={3} radius="card-sm" border>
                   <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Who Received Test Email
                   </Text>
@@ -1963,9 +1958,9 @@ const ElectionsPage = () => {
                       )}
                     </Table.Body>
                   </Table>
-                </div>
+                </Surface>
 
-                <div style={flatPanelStyle}>
+                <Surface bg="secondary" padding={3} radius="card-sm" border>
                   <Text as="div" weight="semibold" color="heading" style={{ marginBottom: "var(--spacing-3)" }}>
                     Students Who Have Not Received Test Email
                   </Text>
@@ -1997,7 +1992,7 @@ const ElectionsPage = () => {
                       )}
                     </Table.Body>
                   </Table>
-                </div>
+                </Surface>
               </Grid>
             </Grid>
           </Modal>

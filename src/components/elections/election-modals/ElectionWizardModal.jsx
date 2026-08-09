@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Input } from "hzero"
+import { Button, Input, Surface } from "hzero"
 import { Grid, HStack, Modal, Text } from "@/components/ui"
 import { BadgeCheck, ChevronLeft, ChevronRight, History, Plus } from "lucide-react"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
@@ -33,8 +33,6 @@ export const ElectionWizardModal = ({
   splitListInput,
   formatDateTime,
   fromDateTimeLocal,
-  flatPanelStyle,
-  panelStyle,
   modalBodyStyle,
   labelStyle,
   mutedTextStyle,
@@ -290,7 +288,7 @@ export const ElectionWizardModal = ({
         </Grid>
 
         {["email", "both"].includes(form.votingAccess?.mode || "both") ? (
-          <div style={flatPanelStyle}>
+          <Surface bg="secondary" padding={3} radius="card-sm" border>
             <HStack gap={3} align="center" justify="between" wrap>
               <div>
                 <div style={{ ...labelStyle, marginBottom: "4px" }}>Auto send voting links</div>
@@ -315,10 +313,10 @@ export const ElectionWizardModal = ({
               </label>
             </HStack>
             {basicsErrors.autoSendEnabled ? <div style={errorTextStyle}>{basicsErrors.autoSendEnabled}</div> : null}
-          </div>
+          </Surface>
         ) : null}
 
-        <div style={flatPanelStyle}>
+        <Surface bg="secondary" padding={3} radius="card-sm" border>
           <label style={labelStyle}>Description</label>
           <textarea
             style={basicsErrors.description ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
@@ -327,9 +325,9 @@ export const ElectionWizardModal = ({
             placeholder="Add constitutional notes, internal remarks, or an overview for this election cycle."
           />
           {basicsErrors.description ? <div style={errorTextStyle}>{basicsErrors.description}</div> : null}
-        </div>
+        </Surface>
 
-        <div style={flatPanelStyle}>
+        <Surface bg="secondary" padding={3} radius="card-sm" border>
           <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: form.mockSettings?.enabled ? "var(--spacing-3)" : 0 }}>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Mock election</div>
@@ -389,7 +387,7 @@ export const ElectionWizardModal = ({
               {basicsErrors.mockSettings ? <div style={errorTextStyle}>{basicsErrors.mockSettings}</div> : null}
             </Grid>
           ) : null}
-        </div>
+        </Surface>
       </Grid>
     )
   }
@@ -397,7 +395,7 @@ export const ElectionWizardModal = ({
   if (currentStep === "timeline") {
     body = (
       <Grid cols={1} gap={4}>
-        <div style={flatPanelStyle}>
+        <Surface bg="secondary" padding={3} radius="card-sm" border>
           <HStack gap={3} align="center" justify="between" wrap>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Election schedule</div>
@@ -409,11 +407,11 @@ export const ElectionWizardModal = ({
               <History size={14} /> Apply D-15 Guide
             </Button>
           </HStack>
-        </div>
+        </Surface>
 
         <Grid min={220} gap={3}>
           {visibleTimelineFieldDefs.map((field) => (
-            <div key={field.key} style={panelStyle}>
+            <Surface key={field.key} bg="primary" padding={3} radius="card-sm" border>
               <label style={labelStyle}>{field.label}</label>
               <Input
                 style={timelineErrors[field.key] ? { borderColor: "var(--color-danger)" } : undefined}
@@ -423,7 +421,7 @@ export const ElectionWizardModal = ({
               />
               <div style={{ ...mutedTextStyle, marginTop: "var(--spacing-2)" }}>{field.day}</div>
               {timelineErrors[field.key] ? <div style={errorTextStyle}>{timelineErrors[field.key]}</div> : null}
-            </div>
+            </Surface>
           ))}
         </Grid>
 
@@ -446,15 +444,15 @@ export const ElectionWizardModal = ({
   if (currentStep === "commission") {
     body = (
       <Grid cols={1} gap={4}>
-        <div style={flatPanelStyle}>
+        <Surface bg="secondary" padding={3} radius="card-sm" border>
           <div style={{ ...labelStyle, marginBottom: "4px" }}>Election Commission</div>
           <div style={mutedTextStyle}>
             Capture the Chief Election Officer and the supporting election officers for this cycle.
           </div>
-        </div>
+        </Surface>
 
         <Grid min={260} gap={3}>
-          <div style={panelStyle}>
+          <Surface bg="primary" padding={3} radius="card-sm" border>
             <label style={labelStyle}>Chief election officer roll number</label>
             <Input
               style={commissionErrors.chiefElectionOfficerRollNumber ? { borderColor: "var(--color-danger)" } : undefined}
@@ -472,9 +470,9 @@ export const ElectionWizardModal = ({
             {commissionErrors.chiefElectionOfficerRollNumber ? (
               <div style={errorTextStyle}>{commissionErrors.chiefElectionOfficerRollNumber}</div>
             ) : null}
-          </div>
+          </Surface>
 
-          <div style={panelStyle}>
+          <Surface bg="primary" padding={3} radius="card-sm" border>
             <label style={labelStyle}>Election officer roll numbers</label>
             <textarea
               style={
@@ -496,7 +494,7 @@ export const ElectionWizardModal = ({
             {commissionErrors.officerRollNumbers ? (
               <div style={errorTextStyle}>{commissionErrors.officerRollNumbers}</div>
             ) : null}
-          </div>
+          </Surface>
         </Grid>
       </Grid>
     )
@@ -505,7 +503,7 @@ export const ElectionWizardModal = ({
   if (currentStep === "posts" && activePost) {
     body = (
       <Grid cols={1} gap={4}>
-        <div style={flatPanelStyle}>
+        <Surface bg="secondary" padding={3} radius="card-sm" border>
           <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Election posts</div>
@@ -545,159 +543,159 @@ export const ElectionWizardModal = ({
               )
             })}
           </div>
-        </div>
+        </Surface>
 
-        <Grid cols={1} gap={4} style={{ ...panelStyle }}>
-          <HStack gap={3} align="start" justify="between" wrap>
-            <div>
-              <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
-              <Text as="div" size="lg" weight="semibold" color="heading">
-                {activePost.title || `Post ${activePostIndex + 1}`}
-              </Text>
-            </div>
-            {form.posts.length > 1 ? (
-              <Button size="sm" variant="ghost" onClick={() => removePost(activePostIndex)}>
-                Remove Post
-              </Button>
-            ) : null}
-          </HStack>
-
-          <Grid min={220} gap={3}>
-            <div>
-              <label style={labelStyle}>Post title</label>
-              <Input
-                style={activePostErrors.title ? { borderColor: "var(--color-danger)" } : undefined}
-                value={activePost.title}
-                onChange={(event) => updatePost(activePostIndex, { title: event.target.value })}
-              />
-              {activePostErrors.title ? <div style={errorTextStyle}>{activePostErrors.title}</div> : null}
-            </div>
-            <div>
-              <label style={labelStyle}>Code</label>
-              <Input
-                style={activePostErrors.code ? { borderColor: "var(--color-danger)" } : undefined}
-                value={activePost.code}
-                onChange={(event) => updatePost(activePostIndex, { code: event.target.value.toUpperCase() })}
-              />
-              {activePostErrors.code ? <div style={errorTextStyle}>{activePostErrors.code}</div> : null}
-            </div>
-            <div>
-              <label style={labelStyle}>Category</label>
-              <select
-                style={activePostErrors.category ? { ...selectStyle, borderColor: "var(--color-danger)" } : selectStyle}
-                value={activePost.category}
-                onChange={(event) => updatePost(activePostIndex, { category: event.target.value })}
-              >
-                {postCategoryOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              {activePostErrors.category ? <div style={errorTextStyle}>{activePostErrors.category}</div> : null}
-            </div>
-          </Grid>
-
-          <div>
-            <label style={labelStyle}>Description</label>
-            <textarea
-              style={activePostErrors.description ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
-              value={activePost.description}
-              onChange={(event) => updatePost(activePostIndex, { description: event.target.value })}
-            />
-            {activePostErrors.description ? <div style={errorTextStyle}>{activePostErrors.description}</div> : null}
-          </div>
-
-          <Grid min={320} gap={3}>
-            <ScopeEditor
-              title="Candidate eligibility"
-              scope={activePost.candidateEligibility}
-              onChange={(scope) => updatePost(activePostIndex, { candidateEligibility: scope })}
-              batchOptions={batchOptions}
-              groupOptions={groupOptions}
-              error={activePostErrors.candidateEligibility}
-              flatPanelStyle={flatPanelStyle}
-              labelStyle={labelStyle}
-              mutedTextStyle={mutedTextStyle}
-              pillBaseStyle={pillBaseStyle}
-              errorTextStyle={errorTextStyle}
-              nominationTemplateHeaders={nominationTemplateHeaders}
-            />
-            <ScopeEditor
-              title="Voter eligibility"
-              scope={activePost.voterEligibility}
-              onChange={(scope) => updatePost(activePostIndex, { voterEligibility: scope })}
-              batchOptions={batchOptions}
-              groupOptions={groupOptions}
-              error={activePostErrors.voterEligibility}
-              flatPanelStyle={flatPanelStyle}
-              labelStyle={labelStyle}
-              mutedTextStyle={mutedTextStyle}
-              pillBaseStyle={pillBaseStyle}
-              errorTextStyle={errorTextStyle}
-              nominationTemplateHeaders={nominationTemplateHeaders}
-            />
-          </Grid>
-
-          <Grid min={180} gap={3}>
-            {requirementFieldDefs.map((field) => (
-              <div key={field.key}>
-                <label style={labelStyle}>{field.label}</label>
-                <Input
-                  style={activePostErrors[field.key] ? { borderColor: "var(--color-danger)" } : undefined}
-                  type="number"
-                  step={field.step || "1"}
-                  value={activePost.requirements[field.key]}
-                  onChange={(event) => updatePostRequirements(activePostIndex, field.key, event.target.value)}
-                />
-                {activePostErrors[field.key] ? <div style={errorTextStyle}>{activePostErrors[field.key]}</div> : null}
+        <Surface bg="primary" padding={3} radius="card-sm" border>
+          <Grid cols={1} gap={4}>
+            <HStack gap={3} align="start" justify="between" wrap>
+              <div>
+                <div style={{ ...labelStyle, marginBottom: "4px" }}>Selected post</div>
+                <Text as="div" size="lg" weight="semibold" color="heading">
+                  {activePost.title || `Post ${activePostIndex + 1}`}
+                </Text>
               </div>
-            ))}
-          </Grid>
-
-          <Grid min={240} gap={3}>
-            <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
-              <input
-                type="checkbox"
-                checked={Boolean(activePost.requirements.requireHostelResident)}
-                onChange={(event) =>
-                  updatePostRequirements(activePostIndex, "requireHostelResident", event.target.checked)
-                }
-              />
-              Restrict by hostel residence
-            </label>
-          </Grid>
-
-          {activePost.requirements.requireHostelResident ? (
-            <div style={flatPanelStyle}>
-              <div style={{ ...labelStyle, marginBottom: "4px" }}>Allowed hostels</div>
-              <div style={mutedTextStyle}>Select hostels from the shared hostel list.</div>
-              <div style={{ marginTop: "var(--spacing-3)" }}>
-                <HostelPicker
-                  selectedHostels={activePost.requirements.allowedHostelNames}
-                  hostels={hostels}
-                  onChange={(value) => updatePostRequirements(activePostIndex, "allowedHostelNames", value)}
-                  pillBaseStyle={pillBaseStyle}
-                  mutedTextStyle={mutedTextStyle}
-                />
-              </div>
-              {activePostErrors.allowedHostelNames ? (
-                <div style={errorTextStyle}>{activePostErrors.allowedHostelNames}</div>
+              {form.posts.length > 1 ? (
+                <Button size="sm" variant="ghost" onClick={() => removePost(activePostIndex)}>
+                  Remove Post
+                </Button>
               ) : null}
-            </div>
-          ) : null}
+            </HStack>
 
-          <div>
-            <label style={labelStyle}>Notes</label>
-            <textarea
-              style={activePostErrors.notes ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
-              value={activePost.requirements.notes}
-              onChange={(event) => updatePostRequirements(activePostIndex, "notes", event.target.value)}
-              placeholder="Add constitutional notes or post-specific clarifications."
-            />
-            {activePostErrors.notes ? <div style={errorTextStyle}>{activePostErrors.notes}</div> : null}
-          </div>
-        </Grid>
+            <Grid min={220} gap={3}>
+              <div>
+                <label style={labelStyle}>Post title</label>
+                <Input
+                  style={activePostErrors.title ? { borderColor: "var(--color-danger)" } : undefined}
+                  value={activePost.title}
+                  onChange={(event) => updatePost(activePostIndex, { title: event.target.value })}
+                />
+                {activePostErrors.title ? <div style={errorTextStyle}>{activePostErrors.title}</div> : null}
+              </div>
+              <div>
+                <label style={labelStyle}>Code</label>
+                <Input
+                  style={activePostErrors.code ? { borderColor: "var(--color-danger)" } : undefined}
+                  value={activePost.code}
+                  onChange={(event) => updatePost(activePostIndex, { code: event.target.value.toUpperCase() })}
+                />
+                {activePostErrors.code ? <div style={errorTextStyle}>{activePostErrors.code}</div> : null}
+              </div>
+              <div>
+                <label style={labelStyle}>Category</label>
+                <select
+                  style={activePostErrors.category ? { ...selectStyle, borderColor: "var(--color-danger)" } : selectStyle}
+                  value={activePost.category}
+                  onChange={(event) => updatePost(activePostIndex, { category: event.target.value })}
+                >
+                  {postCategoryOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {activePostErrors.category ? <div style={errorTextStyle}>{activePostErrors.category}</div> : null}
+              </div>
+            </Grid>
+
+            <div>
+              <label style={labelStyle}>Description</label>
+              <textarea
+                style={activePostErrors.description ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
+                value={activePost.description}
+                onChange={(event) => updatePost(activePostIndex, { description: event.target.value })}
+              />
+              {activePostErrors.description ? <div style={errorTextStyle}>{activePostErrors.description}</div> : null}
+            </div>
+
+            <Grid min={320} gap={3}>
+              <ScopeEditor
+                title="Candidate eligibility"
+                scope={activePost.candidateEligibility}
+                onChange={(scope) => updatePost(activePostIndex, { candidateEligibility: scope })}
+                batchOptions={batchOptions}
+                groupOptions={groupOptions}
+                error={activePostErrors.candidateEligibility}
+                labelStyle={labelStyle}
+                mutedTextStyle={mutedTextStyle}
+                pillBaseStyle={pillBaseStyle}
+                errorTextStyle={errorTextStyle}
+                nominationTemplateHeaders={nominationTemplateHeaders}
+              />
+              <ScopeEditor
+                title="Voter eligibility"
+                scope={activePost.voterEligibility}
+                onChange={(scope) => updatePost(activePostIndex, { voterEligibility: scope })}
+                batchOptions={batchOptions}
+                groupOptions={groupOptions}
+                error={activePostErrors.voterEligibility}
+                labelStyle={labelStyle}
+                mutedTextStyle={mutedTextStyle}
+                pillBaseStyle={pillBaseStyle}
+                errorTextStyle={errorTextStyle}
+                nominationTemplateHeaders={nominationTemplateHeaders}
+              />
+            </Grid>
+
+            <Grid min={180} gap={3}>
+              {requirementFieldDefs.map((field) => (
+                <div key={field.key}>
+                  <label style={labelStyle}>{field.label}</label>
+                  <Input
+                    style={activePostErrors[field.key] ? { borderColor: "var(--color-danger)" } : undefined}
+                    type="number"
+                    step={field.step || "1"}
+                    value={activePost.requirements[field.key]}
+                    onChange={(event) => updatePostRequirements(activePostIndex, field.key, event.target.value)}
+                  />
+                  {activePostErrors[field.key] ? <div style={errorTextStyle}>{activePostErrors[field.key]}</div> : null}
+                </div>
+              ))}
+            </Grid>
+
+            <Grid min={240} gap={3}>
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(activePost.requirements.requireHostelResident)}
+                  onChange={(event) =>
+                    updatePostRequirements(activePostIndex, "requireHostelResident", event.target.checked)
+                  }
+                />
+                Restrict by hostel residence
+              </label>
+            </Grid>
+
+            {activePost.requirements.requireHostelResident ? (
+              <Surface bg="secondary" padding={3} radius="card-sm" border>
+                <div style={{ ...labelStyle, marginBottom: "4px" }}>Allowed hostels</div>
+                <div style={mutedTextStyle}>Select hostels from the shared hostel list.</div>
+                <div style={{ marginTop: "var(--spacing-3)" }}>
+                  <HostelPicker
+                    selectedHostels={activePost.requirements.allowedHostelNames}
+                    hostels={hostels}
+                    onChange={(value) => updatePostRequirements(activePostIndex, "allowedHostelNames", value)}
+                    pillBaseStyle={pillBaseStyle}
+                    mutedTextStyle={mutedTextStyle}
+                  />
+                </div>
+                {activePostErrors.allowedHostelNames ? (
+                  <div style={errorTextStyle}>{activePostErrors.allowedHostelNames}</div>
+                ) : null}
+              </Surface>
+            ) : null}
+
+            <div>
+              <label style={labelStyle}>Notes</label>
+              <textarea
+                style={activePostErrors.notes ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
+                value={activePost.requirements.notes}
+                onChange={(event) => updatePostRequirements(activePostIndex, "notes", event.target.value)}
+                placeholder="Add constitutional notes or post-specific clarifications."
+              />
+              {activePostErrors.notes ? <div style={errorTextStyle}>{activePostErrors.notes}</div> : null}
+            </div>
+          </Grid>
+        </Surface>
       </Grid>
     )
   }

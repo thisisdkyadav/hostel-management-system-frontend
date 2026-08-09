@@ -9,7 +9,6 @@ export const AdminResultsEditModal = ({
   onChange,
   modalBodyStyle,
   badgeRowStyle,
-  flatPanelStyle,
   labelStyle,
   textareaStyle,
   mutedTextStyle,
@@ -57,74 +56,78 @@ export const AdminResultsEditModal = ({
           </Surface>
         ) : (
           <>
-            <Grid cols={1} gap="10px" style={{ ...flatPanelStyle }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  color: "var(--color-text-body)",
-                  fontWeight: "var(--font-weight-medium)",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={draft?.showVoteCountToStudents !== false}
-                  onChange={(event) => onChange({ showVoteCountToStudents: event.target.checked })}
-                />
-                Show vote count to students for this post
-              </label>
-              <div style={mutedTextStyle}>
-                Leave this on to show candidate vote counts and percentages to students after result publication.
-                Turn it off to publish only the winner/result without the counts.
-              </div>
-            </Grid>
-
-            <Grid cols={1} gap="10px" style={{ ...flatPanelStyle }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  color: "var(--color-text-body)",
-                  fontWeight: "var(--font-weight-medium)",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={Boolean(draft?.winnerIsTie)}
-                  onChange={(event) => {
-                    const nextIsTie = event.target.checked
-                    const selectedWinnerIds = Array.isArray(draft?.winnerNominationIds)
-                      ? draft.winnerNominationIds.map((value) => String(value))
-                      : draft?.winnerNominationId
-                        ? [String(draft.winnerNominationId)]
-                        : []
-
-                    if (!nextIsTie) {
-                      const nextSingleWinnerId = selectedWinnerIds[0] || ""
-                      onChange({
-                        winnerIsTie: false,
-                        winnerNominationIds: nextSingleWinnerId ? [nextSingleWinnerId] : [],
-                        winnerNominationId: nextSingleWinnerId,
-                      })
-                      return
-                    }
-
-                    onChange({
-                      winnerIsTie: true,
-                      winnerNominationIds: selectedWinnerIds,
-                      winnerNominationId: selectedWinnerIds[0] || "",
-                    })
+            <Surface bg="secondary" padding={3} radius="card-sm" border>
+              <Grid cols={1} gap="10px">
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    color: "var(--color-text-body)",
+                    fontWeight: "var(--font-weight-medium)",
                   }}
-                />
-                Publish this post as a tie
-              </label>
-              <div style={mutedTextStyle}>
-                Turn this on to select multiple tied winners for the published result. Leave it off to publish a
-                single winner.
-              </div>
-            </Grid>
+                >
+                  <input
+                    type="checkbox"
+                    checked={draft?.showVoteCountToStudents !== false}
+                    onChange={(event) => onChange({ showVoteCountToStudents: event.target.checked })}
+                  />
+                  Show vote count to students for this post
+                </label>
+                <div style={mutedTextStyle}>
+                  Leave this on to show candidate vote counts and percentages to students after result publication.
+                  Turn it off to publish only the winner/result without the counts.
+                </div>
+              </Grid>
+            </Surface>
+
+            <Surface bg="secondary" padding={3} radius="card-sm" border>
+              <Grid cols={1} gap="10px">
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    color: "var(--color-text-body)",
+                    fontWeight: "var(--font-weight-medium)",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={Boolean(draft?.winnerIsTie)}
+                    onChange={(event) => {
+                      const nextIsTie = event.target.checked
+                      const selectedWinnerIds = Array.isArray(draft?.winnerNominationIds)
+                        ? draft.winnerNominationIds.map((value) => String(value))
+                        : draft?.winnerNominationId
+                          ? [String(draft.winnerNominationId)]
+                          : []
+
+                      if (!nextIsTie) {
+                        const nextSingleWinnerId = selectedWinnerIds[0] || ""
+                        onChange({
+                          winnerIsTie: false,
+                          winnerNominationIds: nextSingleWinnerId ? [nextSingleWinnerId] : [],
+                          winnerNominationId: nextSingleWinnerId,
+                        })
+                        return
+                      }
+
+                      onChange({
+                        winnerIsTie: true,
+                        winnerNominationIds: selectedWinnerIds,
+                        winnerNominationId: selectedWinnerIds[0] || "",
+                      })
+                    }}
+                  />
+                  Publish this post as a tie
+                </label>
+                <div style={mutedTextStyle}>
+                  Turn this on to select multiple tied winners for the published result. Leave it off to publish a
+                  single winner.
+                </div>
+              </Grid>
+            </Surface>
 
             <Grid cols={1} gap="12px">
               {(postResult.candidates || []).map((candidate) => {
@@ -191,7 +194,7 @@ export const AdminResultsEditModal = ({
               <div style={mutedTextStyle}>Select at least two options to publish this post as a tie.</div>
             ) : null}
 
-            <div style={flatPanelStyle}>
+            <Surface bg="secondary" padding={3} radius="card-sm" border>
               <label style={labelStyle}>Notes</label>
               <textarea
                 style={textareaStyle}
@@ -199,7 +202,7 @@ export const AdminResultsEditModal = ({
                 onChange={(event) => onChange({ notes: event.target.value })}
                 placeholder="Optional notes for this result."
               />
-            </div>
+            </Surface>
           </>
         )}
       </div>

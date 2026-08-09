@@ -129,20 +129,6 @@ export const textareaStyle = {
   resize: "vertical",
 }
 
-export const panelStyle = {
-  border: "1px solid var(--color-border-primary)",
-  borderRadius: "var(--radius-card-sm)",
-  backgroundColor: "var(--color-bg-primary)",
-  padding: "var(--spacing-3)",
-}
-
-export const flatPanelStyle = {
-  border: "1px solid var(--color-border-primary)",
-  borderRadius: "var(--radius-card-sm)",
-  backgroundColor: "var(--color-bg-secondary)",
-  padding: "var(--spacing-3)",
-}
-
 export const pillBaseStyle = {
   display: "inline-flex",
   alignItems: "center",

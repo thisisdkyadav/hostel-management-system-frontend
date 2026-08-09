@@ -67,7 +67,6 @@ export const ScopeEditor = ({
   batchOptions = [],
   groupOptions = [],
   error,
-  flatPanelStyle,
   labelStyle,
   mutedTextStyle,
   pillBaseStyle,
@@ -181,7 +180,7 @@ export const ScopeEditor = ({
   }
 
   return (
-    <div style={flatPanelStyle}>
+    <Surface bg="secondary" padding={3} radius="card-sm" border>
       <HStack gap={3} align="center" justify="between" style={{ marginBottom: "var(--spacing-3)" }}>
         <div>
           <div style={{ ...labelStyle, marginBottom: "4px" }}>{title}</div>
@@ -332,7 +331,7 @@ export const ScopeEditor = ({
         ) : null}
         {error ? <div style={errorTextStyle}>{error}</div> : null}
       </div>
-    </div>
+    </Surface>
   )
 }
 
@@ -382,7 +381,6 @@ export const DocumentUploadField = ({
   onChange,
   disabled = false,
   required = false,
-  flatPanelStyle,
   labelStyle,
   mutedTextStyle,
 }) => {
@@ -431,7 +429,7 @@ export const DocumentUploadField = ({
 
   return (
     <>
-      <div style={flatPanelStyle}>
+      <Surface bg="secondary" padding={3} radius="card-sm" border>
         <label style={labelStyle}>
           {label}
           {required ? " *" : ""}
@@ -477,7 +475,7 @@ export const DocumentUploadField = ({
             </label>
           </Grid>
         )}
-      </div>
+      </Surface>
 
       <CertificateViewerModal
         isOpen={viewerOpen}

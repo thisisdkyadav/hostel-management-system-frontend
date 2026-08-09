@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Input } from "hzero"
+import { Button, Input, Surface } from "hzero"
 import { Grid, HStack, Modal, Text } from "@/components/ui"
 import { FileText, Plus } from "lucide-react"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
@@ -28,9 +28,7 @@ export const StudentNominationModal = ({
   detailGridStyle,
   detailPanelStyle,
   labelStyle,
-  flatPanelStyle,
   mutedTextStyle,
-  panelStyle,
   textareaStyle,
   pillBaseStyle,
   statusToneStyles,
@@ -168,7 +166,7 @@ export const StudentNominationModal = ({
                   { label: "Front", value: idCard.front },
                   { label: "Back", value: idCard.back },
                 ].map((item) => (
-                  <div key={item.label} style={flatPanelStyle}>
+                  <Surface key={item.label} bg="secondary" padding={3} radius="card-sm" border>
                     <div style={{ ...labelStyle, marginBottom: "8px" }}>{item.label}</div>
                     {item.value ? (
                       <Grid cols={1} gap="10px">
@@ -204,20 +202,20 @@ export const StudentNominationModal = ({
                     ) : (
                       <span style={mutedTextStyle}>Not uploaded</span>
                     )}
-                  </div>
+                  </Surface>
                 ))}
               </Grid>
             </div>
           )}
 
           <Grid cols="minmax(0, 1fr)" gap={3}>
-            <div style={panelStyle}>
+            <Surface bg="primary" padding={3} radius="card-sm" border>
               <label style={labelStyle}>CGPA</label>
               <Input type="number" value={form.cgpa} onChange={(event) => updateForm({ cgpa: event.target.value })} />
-            </div>
+            </Surface>
           </Grid>
 
-          <div style={flatPanelStyle}>
+          <Surface bg="secondary" padding={3} radius="card-sm" border>
             <label
               style={{
                 display: "flex",
@@ -238,7 +236,7 @@ export const StudentNominationModal = ({
                 nomination in this election at a time.
               </span>
             </label>
-          </div>
+          </Surface>
 
           <div style={detailGridStyle}>
             {[
@@ -255,7 +253,7 @@ export const StudentNominationModal = ({
                 requiredCount: seconderRequired,
               },
             ].map((section) => (
-              <div key={section.supportType} style={flatPanelStyle}>
+              <Surface key={section.supportType} bg="secondary" padding={3} radius="card-sm" border>
                 <HStack gap="8px" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
                   <div>
                     <div style={labelStyle}>{section.label}</div>
@@ -330,7 +328,7 @@ export const StudentNominationModal = ({
                     )
                   })}
                 </Grid>
-              </div>
+              </Surface>
             ))}
           </div>
 
@@ -339,7 +337,6 @@ export const StudentNominationModal = ({
               label="Grade Card (Optional)"
               value={form.gradeCardUrl}
               onChange={(nextValue) => updateForm({ gradeCardUrl: nextValue })}
-              flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
               mutedTextStyle={mutedTextStyle}
             />
@@ -347,7 +344,6 @@ export const StudentNominationModal = ({
               label="Manifesto (Optional)"
               value={form.manifestoUrl}
               onChange={(nextValue) => updateForm({ manifestoUrl: nextValue })}
-              flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
               mutedTextStyle={mutedTextStyle}
             />
@@ -355,7 +351,6 @@ export const StudentNominationModal = ({
               label="POR Documents (Optional)"
               value={form.porDocumentUrl}
               onChange={(nextValue) => updateForm({ porDocumentUrl: nextValue })}
-              flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
               mutedTextStyle={mutedTextStyle}
             />
