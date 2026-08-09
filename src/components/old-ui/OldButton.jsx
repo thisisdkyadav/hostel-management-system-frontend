@@ -28,9 +28,9 @@ const OldButton = forwardRef(({
 
     // Border radius based on size and rounded prop
     const radiusClasses = {
-        small: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-sm)]",
-        medium: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-md)]",
-        large: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-lg)]",
+        small: rounded ? "rounded-[var(--radius-button-pill)]" : "rounded-[var(--radius-button-sm)]",
+        medium: rounded ? "rounded-[var(--radius-button-pill)]" : "rounded-[var(--radius-button-md)]",
+        large: rounded ? "rounded-[var(--radius-button-pill)]" : "rounded-[var(--radius-button-lg)]",
     }
 
     // Base classes
