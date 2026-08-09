@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
-import { Button, Card } from "hzero"
+import { Button, Card, useToast } from "hzero"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 
 const Certificates = ({ userId }) => {
+  const { toast } = useToast()
   const canManageCertificates = true
   const [certificates, setCertificates] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -58,7 +59,7 @@ const Certificates = ({ userId }) => {
       fetchCertificates() // Refresh the list
     } catch (error) {
       console.error("Error deleting certificate:", error)
-      alert("Failed to delete certificate")
+      toast.error("The certificate could not be deleted.")
     }
   }
 

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
+import { Download, ExternalLink, FileText } from "lucide-react"
+import { Button, Modal, Spinner } from "hzero"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
-import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal } from "@/components/ui"
-import { Button } from "hzero"
 
 const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -275,7 +274,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
         <div style={styles.header}>
           <div style={styles.headerLeft}>
             <div style={styles.iconWrapper}>
-              <FaFileAlt style={styles.icon} />
+              <FileText style={styles.icon} />
             </div>
             <div>
               <h3 style={styles.headerTitle}>Certificate Document</h3>
@@ -284,11 +283,11 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
           </div>
           <div style={styles.headerActions}>
             <Button onClick={handleDownload} variant="success" size="sm">
-              <FaDownload />
+              <Download />
               Download
             </Button>
             <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.openButton}>
-              <FaExternalLinkAlt style={styles.buttonIcon} />
+              <ExternalLink style={styles.buttonIcon} />
               <span>Open in New Tab</span>
             </a>
           </div>
@@ -311,7 +310,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
               {isLoading && (
                 <div style={styles.loadingOverlay}>
                   <div style={styles.loadingContent}>
-                    <FaSpinner style={styles.spinnerIcon} />
+                    <Spinner size="var(--icon-lg)" />
                     <span style={styles.loadingText}>Loading document...</span>
                   </div>
                 </div>
@@ -325,16 +324,16 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
               >
                 {/* Fallback for when PDF object fails */}
                 <div style={styles.fallbackContainer}>
-                  <FaFileAlt style={styles.fallbackIcon} />
+                  <FileText style={styles.fallbackIcon} />
                   <h3 style={styles.fallbackTitle}>Cannot display PDF in browser</h3>
                   <p style={styles.fallbackText}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={styles.fallbackActions}>
                     <Button onClick={handleDownload} variant="success" size="md">
-                      <FaDownload />
+                      <Download />
                       Download PDF
                     </Button>
                     <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.fallbackOpenButton}>
-                      <FaExternalLinkAlt style={styles.buttonIcon} />
+                      <ExternalLink style={styles.buttonIcon} />
                       <span>Open in New Tab</span>
                     </a>
                   </div>
@@ -351,7 +350,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
               <p style={styles.errorTitle}>Unable to load document</p>
               <p style={styles.errorText}>There was an error loading the document. Please try downloading it instead.</p>
               <Button onClick={handleDownload} variant="danger" size="md">
-                <FaDownload />
+                <Download />
                 Download Document
               </Button>
             </div>

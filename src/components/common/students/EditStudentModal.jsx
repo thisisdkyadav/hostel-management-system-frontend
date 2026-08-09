@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { FaExclamationTriangle, FaInfoCircle, FaSpinner } from "react-icons/fa"
-import { Button, Input } from "hzero"
-import { Field, Grid, Heading, HStack, Label, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Checkbox, Select } from "@/components/ui"
+import { Info, TriangleAlert } from "lucide-react"
+import { Button, Checkbox, Field, Grid, HStack, Heading, Input, Label, Modal, Select, Spinner, Surface, Text, VStack, useToast } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { adminApi, hostelApi, studentApi } from "../../../service"
@@ -50,6 +48,7 @@ const getBedOccupant = (room, bedNumber) => (
 )
 
 const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
+  const { toast } = useToast()
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const isAdmin = user?.role === "Admin"
@@ -412,16 +411,16 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
     try {
       if (["personal", "academic", "guardian"].includes(activeTab)) {
         await handleSaveProfile()
-        alert("Student information updated successfully")
+        toast.success("Student information updated.")
       } else if (activeTab === "status") {
         await handleSaveStatus()
-        alert("Student status updated successfully")
+        toast.success("Student status updated.")
       } else if (activeTab === "dayScholar") {
         await handleSaveDayScholar()
-        alert("Day scholar details updated successfully")
+        toast.success("Day scholar details updated.")
       } else if (activeTab === "allocation") {
         await handleSaveAllocation()
-        alert("Student allocation updated successfully")
+        toast.success("Student allocation updated.")
       }
 
       onUpdate?.()
@@ -581,14 +580,14 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
           {allocationLookupLoading ? (
             <HStack align="center" gap={2} color="muted">
-              <FaSpinner className="animate-spin" />
+              <Spinner size={16} />
               Loading current allocation details...
             </HStack>
           ) : (
             <>
               {allocationLookup?.currentAllocation && (
                 <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="info-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
-                  <FaInfoCircle style={{ marginTop: "2px" }} />
+                  <Info style={{ marginTop: "2px" }} />
                   <span>
                     Current allocation:{" "}
                     <strong>
@@ -658,7 +657,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
               <VStack gap={2}>
                 {occupiedBedStudent && occupiedBedStudent.id !== allocationLookup?.id && (
                   <Surface bg="warning" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="warning-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
-                    <FaExclamationTriangle style={{ marginTop: "2px" }} />
+                    <TriangleAlert style={{ marginTop: "2px" }} />
                     <span>
                       Bed {allocationForm.bedNumber} is currently occupied by <strong>{occupiedBedStudent.name}</strong>.
                       Updating this allocation will unallocate that student.
@@ -680,7 +679,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
                 {allocationForm.roomsLoading && (
                   <HStack align="center" gap={2} size="sm" color="muted">
-                    <FaSpinner className="animate-spin" />
+                    <Spinner size={16} />
                     Loading rooms...
                   </HStack>
                 )}

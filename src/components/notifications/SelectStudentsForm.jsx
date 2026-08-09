@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
+import { Calendar, Search } from "lucide-react"
+import { Checkbox, Grid, Input, Label, Spinner, Surface, Text, VStack } from "hzero"
 import { useStudents } from "../../hooks/useStudents"
-import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import { Checkbox, Grid, Label, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Input } from "hzero"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
   if (targetType === "all") return null
@@ -120,11 +119,11 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
           <Grid min={250} gap={4}>
             <div>
               <label style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Start Year</label>
-              <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearStart} onChange={(e) => onChange("admissionYearStart", e.target.value)} placeholder="2020" icon={<FaCalendarAlt />} />
+              <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearStart} onChange={(e) => onChange("admissionYearStart", e.target.value)} placeholder="2020" icon={<Calendar />} />
             </div>
             <div>
               <label style={{ display: "block", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>End Year</label>
-              <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearEnd} onChange={(e) => onChange("admissionYearEnd", e.target.value)} placeholder="2023" icon={<FaCalendarAlt />} />
+              <Input type="number" min="2000" max="2099" step="1" value={targets.admissionYearEnd} onChange={(e) => onChange("admissionYearEnd", e.target.value)} placeholder="2023" icon={<Calendar />} />
             </div>
           </Grid>
         </VStack>
@@ -135,7 +134,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
         <VStack gap={4}>
           <Label color="body" spacing={2}>Select Specific Students</Label>
 
-          <Input type="text" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search by name, email, or roll number" icon={<FaSearch />} />
+          <Input type="text" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search by name, email, or roll number" icon={<Search />} />
 
           <div style={{ marginTop: "var(--spacing-3)", border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: "var(--radius-lg)", maxHeight: "240px", overflowY: "auto" }}>
             {loading ? (
@@ -150,20 +149,26 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
                 {students.map((student) => {
                   const isSelected = selectedStudents.some((s) => s.id === student.id)
                   return (
-                    <li
-                      key={student.id}
-                      style={{ padding: "var(--spacing-3)", display: "flex", alignItems: "center", cursor: "pointer", backgroundColor: isSelected ? "var(--color-info-bg-light)" : "transparent", borderBottom: `var(--border-1) solid var(--color-border-primary)` }}
-                      onClick={() => handleStudentSelection(student)}
-                      onMouseEnter={(e) => !isSelected && (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
-                      onMouseLeave={(e) => !isSelected && (e.currentTarget.style.backgroundColor = "transparent")}
-                    >
-                      <Checkbox checked={isSelected} onChange={() => {}} />
-                      <div style={{ marginLeft: "var(--spacing-3)" }}>
-                        <Text size="sm" weight="medium" color="primary">{student.name}</Text>
-                        <Text size="xs" color="muted">
-                          {student.email} • {student.rollNumber || "No Roll Number"}
-                        </Text>
-                      </div>
+                    <li key={student.id}>
+                      {/* A label, so the whole row toggles and the checkbox is
+                          the control. It was an li with an onClick around a
+                          checkbox whose onChange did nothing, which meant
+                          selecting a student by keyboard was impossible.
+                          Hover is a class; the selected tint is inline and so
+                          outranks it, which is what the old !isSelected guard
+                          was doing by hand. */}
+                      <label
+                        className="flex items-center cursor-pointer p-[var(--spacing-3)] border-b border-[var(--color-border-primary)] hover:bg-[var(--color-bg-hover)]"
+                        style={isSelected ? { backgroundColor: "var(--color-info-bg-light)" } : undefined}
+                      >
+                        <Checkbox checked={isSelected} onChange={() => handleStudentSelection(student)} />
+                        <div style={{ marginLeft: "var(--spacing-3)" }}>
+                          <Text size="sm" weight="medium" color="primary">{student.name}</Text>
+                          <Text size="xs" color="muted">
+                            {student.email} • {student.rollNumber || "No Roll Number"}
+                          </Text>
+                        </div>
+                      </label>
                     </li>
                   )
                 })}

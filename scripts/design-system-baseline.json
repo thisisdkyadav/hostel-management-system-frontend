@@ -150,11 +150,6 @@
     "react-icons": 1,
     "ui-barrel-import": 1
   },
-  "src/components/admin/others/ManageStudentsModal.jsx": {
-    "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
   "src/components/admin/others/UndertakingCard.jsx": {
     "native-dialog": 2,
     "react-icons": 1,
@@ -286,50 +281,6 @@
   "src/components/common/StatCards.jsx": {
     "hex-literal": 1,
     "ui-barrel-import": 1
-  },
-  "src/components/common/students/Certificates.jsx": {
-    "native-dialog": 1
-  },
-  "src/components/common/students/CertificateViewerModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/DisCoActionModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/DisCoActions.jsx": {
-    "native-dialog": 3
-  },
-  "src/components/common/students/EditStudentModal.jsx": {
-    "native-dialog": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/FamilyDetails.jsx": {
-    "native-dialog": 2,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/FamilyMemberModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/HealthTab.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/ImportStudentModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/InsuranceClaimModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/StudentExportModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/common/students/tabs/PorTab.jsx": {
-    "ui-barrel-import": 2
   },
   "src/components/common/ToggleButtonGroup.jsx": {
     "js-hover": 2,
@@ -623,11 +574,6 @@
     "ui-barrel-import": 1
   },
   "src/components/notifications/NotificationTable.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/notifications/SelectStudentsForm.jsx": {
-    "js-hover": 2,
-    "react-icons": 1,
     "ui-barrel-import": 1
   },
   "src/components/notifications/ViewNotificationModal.jsx": {

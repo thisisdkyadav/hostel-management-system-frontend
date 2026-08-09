@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
-import { Button, Card } from "hzero"
+import { Button, Card, useToast } from "hzero"
 
 const formatDisplayDate = (value) => {
   if (!value) return "-"
@@ -16,6 +16,7 @@ const getActionStartDate = (action) => action?.punishmentStartDate || action?.da
 const getActionEndDate = (action) => action?.punishmentEndDate || action?.punishmentStartDate || action?.date || action?.createdDate || action?.createdAt || null
 
 const DisCoActions = ({ userId }) => {
+  const { toast } = useToast()
   const canManageDisciplinaryActions = true
   const [actions, setActions] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -61,7 +62,7 @@ const DisCoActions = ({ userId }) => {
       fetchDisCoActions() // Refresh the list
     } catch (error) {
       console.error("Error deleting disciplinary action:", error)
-      alert("Failed to delete disciplinary action")
+      toast.error("The disciplinary action could not be deleted.")
     }
   }
 
@@ -76,7 +77,7 @@ const DisCoActions = ({ userId }) => {
       setIsModalOpen(false)
     } catch (error) {
       console.error("Error saving disciplinary action:", error)
-      alert("Failed to save disciplinary action")
+      toast.error("The disciplinary action could not be saved.")
     }
   }
 
@@ -86,7 +87,7 @@ const DisCoActions = ({ userId }) => {
       fetchDisCoActions()
     } catch (err) {
       console.error("Failed to mark reminder done:", err)
-      alert("Failed to mark reminder done")
+      toast.error("The reminder could not be marked done.")
     }
   }
 

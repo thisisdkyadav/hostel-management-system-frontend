@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
+import { Check, Download, FileUp, Upload, User, X } from "lucide-react"
+import { Button, Field, FileInput, Grid, HStack, Heading, InfoRow, Input, Label, Modal, Spinner, Surface, Text, VStack } from "hzero"
 import Papa from "papaparse"
-import { Button, Input } from "hzero"
-import { Field, Grid, Heading, HStack, InfoRow, Label, Modal, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { FileInput } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import { useSocket } from "../../../contexts/SocketProvider"
@@ -760,8 +758,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   }
 
   const tabs = [
-    { id: "csv", name: "CSV Import", icon: <FaUpload /> },
-    { id: "manual", name: "Single Student", icon: <FaUser /> },
+    { id: "csv", name: "CSV Import", icon: <Upload /> },
+    { id: "manual", name: "Single Student", icon: <User /> },
   ]
   const hasImportSummary = Boolean(importSummary)
 
@@ -790,7 +788,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               <Surface bg="tertiary" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: "pointer" }} onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}>
-                <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)" }} color="var(--color-text-disabled)" />
+                <FileUp style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)" }} color="var(--color-text-disabled)" />
                 <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-2)" }}>
                   Drag and drop a CSV file here, or click to select a file
                 </Text>
@@ -802,7 +800,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               <VStack gap={2} align="center">
                 <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
-                  <FaFileDownload />
+                  <Download />
                   Download CSV Template
                 </Button>
                 <Surface bg="tertiary" padding={3} radius="lg" color="muted" size="xs" style={{ maxWidth: "30rem" }}>
@@ -834,7 +832,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     size="sm"
                     title="Remove file"
                   >
-                    <FaTimes />
+                    <X />
                   </Button>
                 </div>
               )}
@@ -939,7 +937,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
               <HStack gap="none" justify="end">
                 <Button onClick={handleExportCsvResults} variant="secondary" size="sm" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
-                  <FaFileDownload />
+                  <Download />
                   Export Results
                 </Button>
               </HStack>
@@ -1029,7 +1027,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
             {step === 2 ? (
               <Button onClick={handleImport} variant="primary" size="md" loading={isImporting} disabled={parsedData.length === 0 || isLoading || isImporting}>
-                {!isImporting && <FaCheck />}
+                {!isImporting && <Check />}
                 {isImporting ? "Importing Students..." : "Confirm Import"}
               </Button>
             ) : null}
@@ -1064,7 +1062,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
             {step === 3 ? (
               <Button onClick={handleExportCsvResults} variant="secondary" size="md" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
-                <FaFileDownload />
+                <Download />
                 Export Results
               </Button>
             ) : null}
@@ -1108,7 +1106,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 loading={isImporting}
                 disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || !manualStudent.gender || !manualStudent.isDayScholar || isImporting}
               >
-                {!isImporting && <FaCheck />}
+                {!isImporting && <Check />}
                 {isImporting ? "Adding Student..." : "Add Student"}
               </Button>
             ) : (

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { FormField, Grid, Text } from "@/components/ui"
-import { FaTrash } from "react-icons/fa"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Trash2 } from "lucide-react"
+import { Button, FormField, Grid, Modal, Text } from "hzero"
 
 const todayDateInput = () => new Date().toISOString().split("T")[0]
 
@@ -315,7 +313,7 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
                     style={styles.reminderInput}
                   />
                   <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveReminder(index)}>
-                    <FaTrash />
+                    <Trash2 />
                   </Button>
                 </div>
               ))
@@ -331,7 +329,7 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           <div style={styles.footerContainer}>
             {isEditing && onDelete && (
               <Button type="button" variant="danger" size="sm" onClick={confirmDelete}>
-                <FaTrash /> Delete
+                <Trash2 /> Delete
               </Button>
             )}
             <div style={styles.actionButtonsRight}>

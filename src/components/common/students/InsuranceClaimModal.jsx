@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { Field, Grid, HStack, Label, Select, Surface, Text, useConfirm } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { BriefcaseMedical, Calendar, CalendarCheck, DollarSign, FileText, Hospital, Pencil, Save, Trash2 } from "lucide-react"
+import { Button, Field, Grid, HStack, Input, Label, Modal, Select, Surface, Text, useConfirm } from "hzero"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
   const confirm = useConfirm()
@@ -91,7 +89,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       <Surface bg="brand" padding={5} radius="xl" border="var(--border-1) solid var(--color-primary-light)" style={{ marginBottom: 'var(--spacing-6)' }}>
         <HStack gap="none" align="center" justify="between" style={{ marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center' }}>
-            <FaMedkit style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" />
+            <BriefcaseMedical style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-primary)" />
             Claim Information
           </h3>
           <Text as="div" size="sm" color="muted">
@@ -101,7 +99,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
         <Grid cols={2} gap={4}>
           <HStack gap="none" align="start">
-            <FaHospital style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+            <Hospital style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
             <div>
               <Text size="sm" color="muted">Hospital</Text>
               <Text weight="medium" color="body">{claim.hospitalName}</Text>
@@ -109,7 +107,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           </HStack>
 
           <HStack gap="none" align="start">
-            <FaDollarSign style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+            <DollarSign style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
             <div>
               <Text size="sm" color="muted">Claim Amount</Text>
               <Text weight="medium" color="body">{formatCurrency(claim.amount)}</Text>
@@ -117,7 +115,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           </HStack>
 
           <HStack gap="none" align="start">
-            <FaMedkit style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+            <BriefcaseMedical style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
             <div>
               <Text size="sm" color="muted">Insurance Provider</Text>
               <Text weight="medium" color="body">{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</Text>
@@ -125,7 +123,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           </HStack>
 
           <HStack gap="none" align="start">
-            <FaCalendarAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+            <Calendar style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
             <div>
               <Text size="sm" color="muted">Last Updated</Text>
               <Text weight="medium" color="body">{formatDate(claim.updatedAt)}</Text>
@@ -135,7 +133,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           {selectedProvider && (
             <>
               <HStack gap="none" align="start">
-                <FaCalendarCheck style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+                <CalendarCheck style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
                 <div>
                   <Text size="sm" color="muted">Policy Start Date</Text>
                   <Text weight="medium" color="body">{formatDate(selectedProvider.startDate)}</Text>
@@ -143,7 +141,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
               </HStack>
 
               <HStack gap="none" align="start">
-                <FaCalendarCheck style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+                <CalendarCheck style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
                 <div>
                   <Text size="sm" color="muted">Policy End Date</Text>
                   <Text weight="medium" color="body">{formatDate(selectedProvider.endDate)}</Text>
@@ -154,7 +152,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
         </Grid>
 
         <HStack gap="none" align="start" style={{ marginTop: 'var(--spacing-4)' }}>
-          <FaFileAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
+          <FileText style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-primary)" />
           <div style={{ flex: 1 }}>
             <Text size="sm" color="muted">Description</Text>
             <Text color="body" style={{ marginTop: 'var(--spacing-1)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-primary)', minHeight: '80px' }}>{claim.description || "No description provided."}</Text>
@@ -165,12 +163,12 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       <HStack gap={3} justify="end" style={{ marginTop: 'var(--spacing-6)' }}>
         {canEditHealth && (
           <Button onClick={() => setIsEditing(true)} variant="primary" size="md">
-            <FaEdit /> Edit Claim
+            <Pencil /> Edit Claim
           </Button>
         )}
         {canEditHealth && (
           <Button onClick={handleDelete} variant="danger" size="md">
-            <FaTrash /> Delete Claim
+            <Trash2 /> Delete Claim
           </Button>
         )}
         <Button onClick={onClose} variant="secondary" size="md">
@@ -216,7 +214,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
       <HStack gap={3} justify="end">
         <Button type="submit" variant="primary" size="md">
-          <FaSave /> {isNew ? "Add Claim" : "Save Changes"}
+          <Save /> {isNew ? "Add Claim" : "Save Changes"}
         </Button>
         <Button type="button" onClick={() => {
           if (isNew) {

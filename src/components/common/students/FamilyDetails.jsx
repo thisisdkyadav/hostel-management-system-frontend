@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
+import { Button, Card, useConfirm, useToast } from "hzero"
 import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
-import { Button, Card } from "hzero"
-import { useConfirm } from "@/components/ui"
 
 const FamilyDetails = ({ userId }) => {
+  const { toast } = useToast()
   const confirm = useConfirm()
   const canEditFamilyDetails = true
   const [familyDetails, setFamilyDetails] = useState([])
@@ -62,7 +62,7 @@ const FamilyDetails = ({ userId }) => {
         fetchFamilyDetails() // Refresh the list
       } catch (error) {
         console.error("Error deleting family member:", error)
-        alert("Failed to delete family member")
+        toast.error("The family member could not be removed.")
       }
     }
   }
@@ -78,7 +78,7 @@ const FamilyDetails = ({ userId }) => {
       setIsModalOpen(false)
     } catch (error) {
       console.error("Error saving family member:", error)
-      alert("Failed to save family member")
+      toast.error("The family member could not be saved.")
     }
   }
 

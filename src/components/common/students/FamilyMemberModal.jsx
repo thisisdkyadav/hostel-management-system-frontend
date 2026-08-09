@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { FormField } from "@/components/ui"
-import { FaTrash } from "react-icons/fa"
-import { Modal } from "@/components/ui"
-import { Button } from "hzero"
+import { Trash2 } from "lucide-react"
+import { Button, FormField, Modal } from "hzero"
 
 const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const [formData, setFormData] = useState({
@@ -147,7 +145,7 @@ const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
         <div style={styles.footerContainer}>
           {isEditing && onDelete && (
             <Button type="button" variant="danger" size="sm" onClick={handleDelete}>
-              <FaTrash />
+              <Trash2 />
               Delete
             </Button>
           )}

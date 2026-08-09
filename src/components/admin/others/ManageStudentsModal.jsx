@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react"
-import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import { Alert, HStack, IconCircle, SearchInput, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { FileSpreadsheet, Search, UserMinus, Users } from "lucide-react"
+import {
+  Alert, Button, HStack, IconCircle, Input, Modal, SearchInput, Spinner, Surface,
+  Table, Text, useConfirm, useToast, VStack,
+} from "hzero"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
 
 const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, onUpdate }) => {
   const confirm = useConfirm()
+  const { toast } = useToast()
   const [assignedStudents, setAssignedStudents] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(false)
@@ -50,7 +52,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
         setLoading(true)
         setError(null)
         await adminApi.removeStudentFromUndertaking(undertakingId, studentId)
-        alert("Student removed from undertaking successfully!")
+        toast.success("Student removed from the undertaking.")
         fetchAssignedStudents()
         if (onUpdate) onUpdate()
       } catch (error) {
@@ -72,10 +74,10 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
 
           <HStack gap="medium" justify="between" align="center">
             <div style={{ position: 'relative', width: '100%', maxWidth: '20rem' }}>
-              <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
+              <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<Search />} />
             </div>
             <Button onClick={() => setShowBulkUpload(true)} variant="success" size="md">
-              <FaFileCsv />
+              <FileSpreadsheet />
               Add Students (CSV)
             </Button>
           </HStack>
@@ -85,7 +87,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
               <Spinner size="var(--icon-3xl)" thickness="thin" />
             </div>
           ) : filteredStudents.length === 0 ? (
-            <NoResults icon={<FaUsers style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term" : "Add students to this undertaking using CSV upload"} />
+            <NoResults icon={<Users style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term" : "Add students to this undertaking using CSV upload"} />
           ) : (
             <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
               <Table>
@@ -124,7 +126,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                         </Surface>
                       </Table.Cell>
                       <Table.Cell style={{ whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                        <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="sm" title="Remove student"><FaUserMinus /></Button>
+                        <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="sm" title="Remove student"><UserMinus /></Button>
                       </Table.Cell>
                     </Table.Row>
                   ))}
