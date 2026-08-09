@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
-import { Card, useConfirm } from "@/components/ui"
+import { Card, useConfirm } from "hzero"
 
 const styles = {
   pageContainer: {

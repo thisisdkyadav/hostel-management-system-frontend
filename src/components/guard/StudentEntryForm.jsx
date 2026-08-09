@@ -1,10 +1,9 @@
 import React, { useState } from "react"
 
-import { Button, Input } from "hzero"
+import { Button, Field, Grid, Heading, HStack, Input, Label, Surface } from "hzero"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Field, Grid, Heading, HStack, Label, Surface } from "@/components/ui"
 
 const StudentEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()

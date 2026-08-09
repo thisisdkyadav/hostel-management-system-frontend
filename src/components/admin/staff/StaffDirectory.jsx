@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Eye, Pencil, Plus, SearchX } from "lucide-react"
-import {
-  Button, EmptyState, ErrorState, FilterTabs, Grid, HStack, Page, ProfileCard,
-  SearchInput, Skeleton, StatCards, Badge,
-} from "hzero"
+import { Badge, Button, EmptyState, ErrorState, FilterTabs, Grid, HStack, Page, ProfileCard, SearchInput, Skeleton, StatCards } from "hzero"
 import PageHeader from "../../common/PageHeader"
 import StaffFormModal from "./StaffFormModal"
 import { STAFF_TYPES } from "../../../config/staffDirectory"

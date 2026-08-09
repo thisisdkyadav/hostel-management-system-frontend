@@ -1,7 +1,7 @@
 import React from "react"
 import { FaKeyboard, FaArrowDown, FaArrowRight, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Heading, HStack, Surface, Text, VStack } from "hzero"
 
 const ScannerStatusIndicator = () => {
   const { pendingCrossHostelEntries, error } = useQRScanner()

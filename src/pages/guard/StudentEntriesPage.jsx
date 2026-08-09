@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserGraduate, FaFilter } from "react-icons/fa"
-import { HStack, Pagination, SearchInput, Select } from "@/components/ui"
-import { Tabs, Button, Input } from "hzero"
+import { Button, HStack, Input, Pagination, SearchInput, Select, Tabs } from "hzero"
 import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../service"

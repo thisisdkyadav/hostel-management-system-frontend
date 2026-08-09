@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { ConfirmDialog, Heading, HStack, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Button, ConfirmDialog, Heading, HStack, Input, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "hzero"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
   const [loading, setLoading] = useState(true)

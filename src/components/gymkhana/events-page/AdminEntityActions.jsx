@@ -8,9 +8,7 @@
  */
 
 import { useState } from "react"
-import { Button } from "hzero"
-import { Modal, Text } from "@/components/ui"
-import { Textarea } from "@/components/ui/form"
+import { Button, Modal, Text, Textarea } from "hzero"
 import { Trash2 } from "lucide-react"
 
 const MIN_REASON = 3

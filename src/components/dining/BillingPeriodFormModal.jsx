@@ -1,8 +1,6 @@
 import { useState } from "react"
-import { StatusBadge, Button, Input } from "hzero"
-import { Field, Modal, Text } from "@/components/ui"
+import { Alert, Button, Field, Input, Label, Modal, StatusBadge, Text, Textarea, VStack } from "hzero"
 import { CalendarClock } from "lucide-react"
-import { Alert, Label, Textarea, VStack } from "@/components/ui"
 import { formatCurrency, formatDateRange, getErrorMessage, getIdValue } from "./diningBillingHelpers"
 import { periodStatusTone } from "./diningPeriodHelpers"
 

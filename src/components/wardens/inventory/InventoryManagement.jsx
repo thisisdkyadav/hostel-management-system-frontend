@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Heading, IconCircle, Select, Spinner, Text, Textarea } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Heading, IconCircle, Input, Modal, Select, Spinner, Text, Textarea } from "hzero"
 const InventoryManagement = () => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)

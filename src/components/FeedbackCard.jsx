@@ -4,9 +4,7 @@ import { feedbackApi } from "../service"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { getMediaUrl } from "../utils/mediaUtils"
-import { useConfirm } from "@/components/ui"
-import { Card } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Card, useConfirm } from "hzero"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const confirm = useConfirm()

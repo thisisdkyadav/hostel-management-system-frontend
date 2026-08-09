@@ -11,13 +11,9 @@ import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
-// Straight from hzero rather than through @/components/ui, which is a shim
+// hzero is the only component source now; the @/components/ui shim is gone
 // that re-exports it verbatim.
-import {
-  Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover,
-  Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text,
-  ToggleButtonGroup, VStack,
-} from "hzero"
+import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
 // across activity calendars, event proposals/expenses, and POR requests.

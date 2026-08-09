@@ -4,8 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { Field, HStack, Label, Select, Text, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Button, Field, HStack, Input, Label, Select, Text, useConfirm, VStack } from "hzero"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   const confirm = useConfirm()

@@ -3,8 +3,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
-import { Button } from "hzero"
-import { Grid, Heading, HStack, Text, VStack } from "@/components/ui"
+import { Button, Grid, Heading, HStack, Text, VStack } from "hzero"
 
 const SecurityQRGenerator = () => {
   const { user } = useAuth()

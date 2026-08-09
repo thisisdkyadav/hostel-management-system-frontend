@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { X } from "lucide-react"
-import { useToast } from "@/components/ui"
+import { useToast } from "hzero"
 import { appointmentsApi } from "../../service"
 
 const initialFormState = {

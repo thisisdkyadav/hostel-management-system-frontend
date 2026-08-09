@@ -1,6 +1,6 @@
 import React from "react"
 import { FaBed } from "react-icons/fa"
-import { HStack, Surface, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "hzero"
 
 const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   if (!roomDetails) {

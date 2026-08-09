@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
-import { DataTable, StatusBadge, Button, Input } from "hzero"
-import { Field, Heading, InfoRow, Modal, Page, Text } from "@/components/ui"
+import { Alert, Avatar, Button, ConfirmDialog, DataTable, EmptyState, Field, Heading, HStack, InfoRow, Input, Label, Modal, Page, SearchInput, StatusBadge, Text, VStack } from "hzero"
 import { Archive, ArchiveRestore, Mail, Pencil, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, Avatar, ConfirmDialog, EmptyState, HStack, Label, SearchInput, VStack } from "@/components/ui"
 
 const initialFormState = { name: "", email: "" }
 

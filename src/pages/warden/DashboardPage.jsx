@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { Card, Grid, HStack, Page, Text, VStack } from "@/components/ui"
+import { Card, Grid, HStack, Page, Text, VStack } from "hzero"
 import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"

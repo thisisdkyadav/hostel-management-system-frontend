@@ -1,7 +1,7 @@
 import { Activity } from "lucide-react"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { uploadApi } from "@/service"
-import { Select } from "@/components/ui"
+import { Select } from "hzero"
 
 export const formatExportDateTime = (value) => {
   if (!value) return ""

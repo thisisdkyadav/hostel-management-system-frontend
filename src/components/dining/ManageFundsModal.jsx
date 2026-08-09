@@ -1,7 +1,5 @@
 import { useState } from "react"
-import { Button } from "hzero"
-import { HStack, Modal, Text } from "@/components/ui"
-import { Alert, VStack } from "@/components/ui"
+import { Alert, Button, HStack, Modal, Text, VStack } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
 import { FUND_MODES, getErrorMessage } from "./diningBillingHelpers"
 

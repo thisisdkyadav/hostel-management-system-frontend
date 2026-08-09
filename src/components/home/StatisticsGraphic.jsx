@@ -10,7 +10,7 @@ import {
   LayoutDashboard,
   UserCheck
 } from "lucide-react"
-import { Text } from "@/components/ui"
+import { Text } from "hzero"
 
 
 const StatisticsGraphic = () => {

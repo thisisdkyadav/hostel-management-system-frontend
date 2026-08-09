@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Calendar, ChevronLeft, ChevronRight, ImageIcon, Info, X } from "lucide-react"
-import { Badge, Button, DetailSection, Grid, HStack, Heading, Modal, Text, VStack } from "hzero"
+import { Badge, Button, DetailSection, Grid, Heading, HStack, Modal, Text, VStack } from "hzero"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
 

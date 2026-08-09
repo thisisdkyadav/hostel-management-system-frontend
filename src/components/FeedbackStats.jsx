@@ -1,5 +1,5 @@
 import React from "react"
-import { StatCards } from "@/components/ui"
+import { StatCards } from "hzero"
 import { HiAnnotation, HiEye, HiClipboardList, HiClock } from "react-icons/hi"
 
 const FeedbackStats = ({ feedbacks = [], stats = null }) => {

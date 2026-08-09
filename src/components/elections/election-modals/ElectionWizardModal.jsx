@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react"
-import { Button, Input, Surface } from "hzero"
-import { Grid, HStack, Modal, Text } from "@/components/ui"
+import { Alert, Button, Grid, HStack, Input, Modal, StepIndicator, Surface, Text } from "hzero"
 import { BadgeCheck, ChevronLeft, ChevronRight, History, Plus } from "lucide-react"
-import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
 import CsvUploader from "@/components/common/CsvUploader"
-import { Alert } from "@/components/ui/feedback"
 import { HostelPicker, ScopeEditor } from "@/components/elections/ElectionShared"
 
 export const ElectionWizardModal = ({

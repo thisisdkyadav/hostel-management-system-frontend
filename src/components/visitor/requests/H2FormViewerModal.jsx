@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Heading, HStack, IconCircle, Modal, Surface, Text } from "hzero"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {

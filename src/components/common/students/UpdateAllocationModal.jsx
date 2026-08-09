@@ -9,10 +9,7 @@ import StudentTableView from "./StudentTableView"
 import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
-import {
-  Button, Field, FileInput, Grid, Heading, HStack, Input, Label, Modal, Select,
-  Surface, Text, useToast, VStack,
-} from "hzero"
+import { Button, Field, FileInput, Grid, Heading, HStack, Input, Label, Modal, Select, Surface, Text, useToast, VStack } from "hzero"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 
 const createManualRowId = () => `allocation-row-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaUserCog, FaKey } from "react-icons/fa"
 import { superAdminApi } from "../../service"
 import { Link } from "react-router-dom"
-import { Heading, Spinner, Surface, Text } from "@/components/ui"
+import { Heading, Spinner, Surface, Text } from "hzero"
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({

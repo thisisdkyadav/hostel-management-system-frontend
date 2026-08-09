@@ -1,5 +1,4 @@
-import { Table } from "hzero"
-import { HStack, Modal, Text } from "@/components/ui"
+import { HStack, Modal, Table, Text } from "hzero"
 
 export const LiveVotingFullscreenModal = ({
   isOpen,

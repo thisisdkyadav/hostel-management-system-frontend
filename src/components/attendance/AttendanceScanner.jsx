@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
-import { StatusBadge, Button, Input } from "hzero"
-import { Alert, Avatar, HStack, Text, VStack } from "@/components/ui"
-import { useToast } from "@/components/ui/feedback"
+import { Alert, Avatar, Button, HStack, Input, StatusBadge, Text, useToast, VStack } from "hzero"
 import { Camera, CameraOff, Keyboard, UserCheck } from "lucide-react"
 import { attendanceApi } from "../../service"
 

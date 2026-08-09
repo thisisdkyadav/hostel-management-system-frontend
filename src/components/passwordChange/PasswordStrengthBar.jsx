@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, VStack } from "@/components/ui"
+import { Text, VStack } from "hzero"
 
 const PasswordStrengthBar = ({ password }) => {
   const getStrength = (pwd) => {

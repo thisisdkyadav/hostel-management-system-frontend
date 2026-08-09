@@ -1,7 +1,6 @@
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import { Building2, Clock3, FilePenLine, FileText, ShieldAlert, ShieldCheck } from "lucide-react"
-import { Button, Input } from "hzero"
-import { Checkbox, Field, HStack, Label, Modal, Select, Textarea, ToggleButtonGroup } from "@/components/ui"
+import { Button, Checkbox, Field, HStack, Input, Label, Modal, Select, Textarea, ToggleButtonGroup } from "hzero"
 import { buildPorCategoryOptions } from "./listView"
 import { getFilenameFromUrl } from "./documents"
 import { uploadApi } from "@/service"

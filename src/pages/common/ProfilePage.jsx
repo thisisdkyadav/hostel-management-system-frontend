@@ -7,7 +7,7 @@ import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 import AcademicsProfile from "../../components/profile/AcademicsProfile"
 import SignatureSettingsCard from "../../components/profile/SignatureSettingsCard"
-import { Heading, Surface, Text } from "@/components/ui"
+import { Heading, Surface, Text } from "hzero"
 
 const ProfilePage = () => {
   const { user } = useAuth()

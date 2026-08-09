@@ -1,5 +1,5 @@
 import React from "react"
-import { Spinner } from "@/components/ui"
+import { Spinner } from "hzero"
 
 const LoadingState = ({ message = "Loading...", description = "Please wait" }) => {
   return (

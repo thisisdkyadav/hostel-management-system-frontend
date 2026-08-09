@@ -9,11 +9,9 @@
  */
 
 import { useState, useEffect } from "react"
-import { Badge } from "@/components/ui/data-display"
-import { Spinner } from "@/components/ui/feedback"
+import { Badge, HStack, Spinner, Surface, Text, VStack } from "hzero"
 import { Plus, Pencil, Trash2, RotateCcw, Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 // Edit actions (kind: "edit") and approval actions (kind: "approval") share one map.
 const ACTION_ICONS = {

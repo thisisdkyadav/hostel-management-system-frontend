@@ -1,8 +1,6 @@
 import React, { useState, useCallback } from "react"
 import Cropper from "react-easy-crop"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
-import FileInput from "./ui/FileInput"
+import { Button, FileInput, Modal } from "hzero"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
 

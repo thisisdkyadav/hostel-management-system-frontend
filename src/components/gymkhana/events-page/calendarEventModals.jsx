@@ -1,7 +1,4 @@
-import { Button, Input } from "hzero"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Badge } from "@/components/ui/data-display"
-import { Checkbox, Select } from "@/components/ui/form"
+import { Badge, Button, Checkbox, HStack, Input, Modal, Select, Surface, Text, VStack } from "hzero"
 import {
   CalendarDays,
   CircleDollarSign,

@@ -1,5 +1,5 @@
 import { capacityToneColor } from "./diningPeriodHelpers"
-import { HStack, Text } from "@/components/ui"
+import { HStack, Text } from "hzero"
 
 /**
  * Token-driven capacity utilisation bar.

@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { Button, Input } from "hzero"
-import { Field, Grid, Label, Modal, Surface } from "@/components/ui"
+import { Button, Field, Grid, Input, Label, Modal, Surface } from "hzero"
 import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {

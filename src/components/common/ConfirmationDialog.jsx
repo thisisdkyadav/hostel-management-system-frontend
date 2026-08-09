@@ -1,7 +1,6 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
-import { Button } from "hzero"
-import { HStack, Modal, Surface, Text } from "@/components/ui"
+import { Button, HStack, Modal, Surface, Text } from "hzero"
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed?", confirmText = "Confirm", cancelText = "Cancel", isDestructive = false }) => {
   const handleConfirm = () => {

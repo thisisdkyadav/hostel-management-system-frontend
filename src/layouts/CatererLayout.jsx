@@ -2,7 +2,7 @@ import BaseLayout from "./BaseLayout"
 import { getCatererNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import GlobalProvider from "../contexts/GlobalProvider"
-import { ToastProvider } from "../components/ui/feedback"
+import { ToastProvider } from "hzero"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const CatererLayout = () => {

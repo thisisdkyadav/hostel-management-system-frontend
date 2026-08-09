@@ -1,8 +1,7 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Button } from "hzero"
+import { Button, Grid, Heading, HStack, IconCircle, Surface, Text, VStack } from "hzero"
 import { FaEye } from "react-icons/fa"
-import { Grid, Heading, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {

@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Button, Grid, Heading, HStack, IconCircle, Input, Label, Spinner, Surface, Text, Textarea, VStack } from "hzero"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   const [formData, setFormData] = useState({

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
-import { DataTable, Button } from "hzero"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Badge, Button, DataTable, Grid, HStack, Modal, Select, Surface, Text, Textarea, useToast, VStack } from "hzero"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Badge, Select, Textarea, useToast } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 

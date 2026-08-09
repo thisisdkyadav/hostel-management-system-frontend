@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
-import { Button } from "hzero"
-import { Alert, Card, Grid, Heading, HStack, Spinner, Text } from "@/components/ui"
+import { Alert, Button, Card, Grid, Heading, HStack, Spinner, Text } from "hzero"
 import { electionsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 

@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { Text } from "@/components/ui"
+import { Text } from "hzero"
 
 /**
  * ToggleButtonGroup - A group of toggle buttons for switching between options

@@ -1,8 +1,5 @@
-import { Table, Button } from "hzero"
-import { Grid, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Select } from "@/components/ui"
+import { Button, Grid, HStack, Modal, Select, Surface, Table, Text, Textarea, VStack } from "hzero"
 import { AlertTriangle, Check, X } from "lucide-react"
-import { Textarea } from "@/components/ui/form"
 import { formLabelStyles } from "@/components/gymkhana/events-page/sharedPrimitives"
 
 export const GymkhanaPendingProposalsModal = ({

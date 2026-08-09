@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import { StatusBadge, Table, Button } from "hzero"
+import { Button, StatusBadge, Surface, Table, Text } from "hzero"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
-import { Surface, Text } from "@/components/ui"
 
 const StudentEntryTable = ({ entries, refresh }) => {
   const [selectedEntry, setSelectedEntry] = useState(null)

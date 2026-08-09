@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react"
-import { DataTable, Tabs, Button } from "hzero"
+import { Button, DataTable, Grid, HStack, IconCircle, Tabs, Text } from "hzero"
 import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
-import { Grid, HStack, IconCircle, Text } from "@/components/ui"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },

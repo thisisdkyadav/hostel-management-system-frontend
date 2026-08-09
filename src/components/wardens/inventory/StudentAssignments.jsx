@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Heading, IconCircle, Pagination, Select, Spinner, Surface, Text, Textarea } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Heading, IconCircle, Input, Modal, Pagination, Select, Spinner, Surface, Table, Text, Textarea } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentAssignments = () => {

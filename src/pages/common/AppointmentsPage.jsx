@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
-import { Tabs, DataTable, Button, Input } from "hzero"
-import { Grid, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Badge, Button, DataTable, Grid, HStack, Input, Modal, Pagination, Select, StatCards, Tabs, Text, Textarea, useToast, VStack } from "hzero"
 import { Eye, Search, CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
-import { Badge, Pagination, Select, Textarea, useToast, StatCards } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 

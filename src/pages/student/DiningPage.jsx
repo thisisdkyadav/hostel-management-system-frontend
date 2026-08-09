@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Field, Grid, Heading, InfoRow, Input, Modal, Page, StatusBadge, Surface, Table, Text } from "hzero"
+import { Alert, Avatar, Button, Card, ConfirmDialog, EmptyState, Field, Grid, Heading, HStack, InfoRow, Input, Label, LoadingState, Modal, Page, StatusBadge, Surface, Table, Text, Textarea, VStack } from "hzero"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
-import { Alert, Avatar, Card, ConfirmDialog, EmptyState, HStack, Label, LoadingState, Textarea, VStack } from "hzero"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
 import CapacityBar from "@/components/dining/CapacityBar"

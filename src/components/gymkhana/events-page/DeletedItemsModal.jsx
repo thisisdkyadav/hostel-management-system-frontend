@@ -7,10 +7,7 @@
  */
 
 import { useState, useEffect } from "react"
-import { Tabs, Button } from "hzero"
-import { Modal, Surface, Text, VStack } from "@/components/ui"
-import { Spinner } from "@/components/ui/feedback"
-import { useToast } from "@/components/ui"
+import { Button, Modal, Spinner, Surface, Tabs, Text, useToast, VStack } from "hzero"
 import { Clock, RotateCcw } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 

@@ -1,8 +1,6 @@
 import { useState } from "react"
-import { StatusBadge, Table, Button } from "hzero"
-import { Field, HStack, Modal, Text, VStack } from "@/components/ui"
+import { Button, ConfirmDialog, EmptyState, Field, HStack, Label, Modal, Spinner, StatusBadge, Table, Text, Textarea, VStack } from "hzero"
 import { CalendarRange, CheckCircle2, XCircle } from "lucide-react"
-import { ConfirmDialog, EmptyState, Label, Spinner, Textarea } from "@/components/ui"
 import { formatDate, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
 
 /**

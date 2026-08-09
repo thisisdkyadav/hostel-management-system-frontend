@@ -1,6 +1,6 @@
 import React from "react"
 import { FiEdit } from "react-icons/fi"
-import { HStack, IconCircle, Text } from "@/components/ui"
+import { HStack, IconCircle, Text } from "hzero"
 
 const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
   return (

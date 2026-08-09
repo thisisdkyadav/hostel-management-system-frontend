@@ -1,9 +1,7 @@
 import React from "react"
-import { Button } from "hzero"
+import { Button, HStack, StatCards } from "hzero"
 import OldButton from "@/components/old-ui/OldButton"
 import { FaPlus, FaDownload, FaEnvelope, FaUsers, FaBed, FaClipboardCheck, FaExclamationTriangle } from "react-icons/fa"
-import { StatCards } from "@/components/ui/data-display"
-import { HStack } from "@/components/ui"
 
 /**
  * UI Examples Page - Compare Old vs New Button implementations

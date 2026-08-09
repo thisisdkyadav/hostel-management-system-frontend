@@ -1,7 +1,5 @@
 import { useState } from "react"
-import { Button, Input } from "hzero"
-import { Field, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Label, useConfirm } from "@/components/ui"
+import { Button, Field, Input, Label, Modal, Surface, Text, useConfirm, VStack } from "hzero"
 import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
 import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"

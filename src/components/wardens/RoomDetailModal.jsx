@@ -1,9 +1,6 @@
 import { useState } from "react"
 import { BedDouble, Building2, ToggleLeft, ToggleRight, Trash2, User, UserPlus, Users } from "lucide-react"
-import {
-  Avatar, Badge, Button, DetailSection, EmptyState, Grid, HStack, InfoRow, Modal,
-  Table, Text, VStack, useConfirm, useToast,
-} from "hzero"
+import { Avatar, Badge, Button, DetailSection, EmptyState, Grid, HStack, InfoRow, Modal, Table, Text, useConfirm, useToast, VStack } from "hzero"
 import { hostelApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"

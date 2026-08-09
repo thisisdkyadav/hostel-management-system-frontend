@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { Button, Input } from "hzero"
-import { Field, Grid, HStack, Label, Modal, useConfirm } from "@/components/ui"
+import { Button, Field, Grid, HStack, Input, Label, Modal, useConfirm } from "hzero"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 

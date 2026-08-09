@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Alert, Grid, Heading, HStack, IconCircle, Label, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Grid, Heading, HStack, IconCircle, Input, Label, Modal, Surface, Text, Textarea, VStack } from "hzero"
 import { uploadApi, resolveUploadedFileRef } from "../../../service"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {

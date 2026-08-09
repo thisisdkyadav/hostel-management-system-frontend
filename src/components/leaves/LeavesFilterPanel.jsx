@@ -1,7 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Field, Grid, Label, Select, Surface } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Button, Field, Grid, Input, Label, Select, Surface } from "hzero"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (

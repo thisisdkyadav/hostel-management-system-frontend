@@ -1,6 +1,5 @@
-import { StatusBadge, Button } from "hzero"
+import { Button, Card, HStack, StatusBadge, Surface, Text } from "hzero"
 import { CalendarClock, Eye, Pencil, Users, UtensilsCrossed } from "lucide-react"
-import { Card, HStack, Surface, Text } from "@/components/ui"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,

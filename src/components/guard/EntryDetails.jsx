@@ -1,7 +1,6 @@
 import React from "react"
 import { FaTimes, FaUserCircle, FaDoorOpen, FaClock, FaCalendarAlt } from "react-icons/fa"
-import { Button } from "hzero"
-import { Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Button, Heading, HStack, Surface, Text, VStack } from "hzero"
 
 const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null

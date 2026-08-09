@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { DataTable, Button, Input } from "hzero"
-import { Grid, HStack, Modal, useConfirm } from "@/components/ui"
-import { Card, SearchInput } from "@/components/ui"
+import { Button, Card, DataTable, Grid, HStack, Input, Modal, SearchInput, useConfirm } from "hzero"
 import { FaSlidersH, FaUserShield } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import { authzApi } from "../../service"

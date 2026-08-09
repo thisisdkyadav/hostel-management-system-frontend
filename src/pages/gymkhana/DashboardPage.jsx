@@ -5,14 +5,10 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button } from "hzero"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/layout"
-import { Badge, StatCard, StatCards } from "@/components/ui/data-display"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui/feedback"
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, EmptyState, ErrorState, Heading, HStack, LoadingState, StatCard, StatCards, Text } from "hzero"
 import { CalendarDays, FileText, Clock, AlertCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { Heading, HStack, Text } from "@/components/ui"
 
 const DashboardPage = () => {
     const navigate = useNavigate()

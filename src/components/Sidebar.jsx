@@ -30,7 +30,7 @@ import {
   ADMIN_NAV_CATEGORY_DINING,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
-import { HStack, Surface, Text } from "@/components/ui"
+import { HStack, Surface, Text } from "hzero"
 
 const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin",

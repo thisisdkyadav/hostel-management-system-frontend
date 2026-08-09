@@ -1,5 +1,5 @@
 import React from "react"
-import Select from "./ui/Select"
+import { Select } from "hzero"
 
 const RoleFilter = ({ selectedRole = "all", onChange, roles = ["All Roles", "Admin", "Super Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Maintenance Staff", "Student"], label = "Filter by Role", disabled = false }) => {
   // Map display names to values for the select options

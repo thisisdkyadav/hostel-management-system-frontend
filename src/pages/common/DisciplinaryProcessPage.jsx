@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Tabs, DataTable, Button, Input } from "hzero"
-import { Grid, HStack, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Badge, Button, Checkbox, CompactStudentTag, DataTable, Grid, HStack, Input, Modal, Pagination, Radio, StatCards, StepIndicator, StudentTagGroup, Surface, Tabs, Text, Textarea, useConfirm, useToast, VStack } from "hzero"
 import {
   Eye,
   Plus,
@@ -20,9 +19,6 @@ import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
-import { Badge, Pagination, Textarea, useToast, Checkbox, Radio, StatCards } from "@/components/ui"
-import StepIndicator from "@/components/ui/navigation/StepIndicator"
-import CompactStudentTag, { StudentTagGroup } from "@/components/ui/data-display/CompactStudentTag"
 import CaseSummaryView from "../../components/common/disco/CaseSummaryView"
 import { discoApi, studentApi, uploadApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"

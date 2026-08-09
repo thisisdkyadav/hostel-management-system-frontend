@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
-import { HStack } from "@/components/ui"
+import { HStack } from "hzero"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isDark, onToggleTheme }) => {
   const navigate = useNavigate()

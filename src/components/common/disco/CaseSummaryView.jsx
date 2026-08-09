@@ -16,18 +16,7 @@ import {
   Users,
   XCircle,
 } from "lucide-react"
-import {
-  Badge,
-  Button,
-  CompactStudentTag,
-  DetailSection,
-  EmptyState,
-  HStack,
-  InfoRow,
-  Table,
-  Text,
-  VStack,
-} from "hzero"
+import { Badge, Button, CompactStudentTag, DetailSection, EmptyState, HStack, InfoRow, Table, Text, VStack } from "hzero"
 import EmailDetailModal from "./EmailDetailModal"
 
 const formatStatusLabel = (value = "") =>

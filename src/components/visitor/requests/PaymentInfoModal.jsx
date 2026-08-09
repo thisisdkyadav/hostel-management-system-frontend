@@ -1,5 +1,5 @@
 import React from "react"
-import { HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
+import { HStack, IconCircle, Modal, Surface, Text } from "hzero"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {

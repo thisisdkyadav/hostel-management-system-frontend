@@ -1,6 +1,5 @@
 import { Building2, Plus, Trash2 } from "lucide-react"
-import { DataTable, Button, Input } from "hzero"
-import { EmptyState, Field, Grid, HStack, Label, Modal, Select, Surface, Text, VStack } from "@/components/ui"
+import { Button, DataTable, EmptyState, Field, Grid, HStack, Input, Label, Modal, Select, Surface, Text, VStack } from "hzero"
 import { infoBoxStyle, sectionLabelStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 
 export const PorCategoryFormModal = ({

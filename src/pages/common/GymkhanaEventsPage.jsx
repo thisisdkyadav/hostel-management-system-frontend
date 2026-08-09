@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { ErrorState, useToast } from "@/components/ui/feedback"
+import { ErrorState, useToast } from "hzero"
 import { useAuth } from "@/contexts/AuthProvider"
 import GymkhanaEventsPageContent from "@/components/gymkhana/events-page/GymkhanaEventsPageContent"
 import DeletedItemsModal from "@/components/gymkhana/events-page/DeletedItemsModal"

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react"
-import { Toast } from "@/components/ui"
+import { Toast } from "hzero"
 
 const NotificationContext = createContext(null)
 export const useNotification = () => useContext(NotificationContext)

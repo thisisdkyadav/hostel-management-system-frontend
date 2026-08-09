@@ -1,7 +1,4 @@
-import {
-  Alert, DetailSection, Grid, HStack, InfoRow, Input, Label, Select, Surface,
-  Text, Textarea, VStack,
-} from "hzero"
+import { Alert, DetailSection, Grid, HStack, InfoRow, Input, Label, Select, Surface, Text, Textarea, VStack } from "hzero"
 
 export const footerTabStyles = {
   tabsBar: {

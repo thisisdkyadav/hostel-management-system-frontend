@@ -1,5 +1,5 @@
 import PageHeader from "../common/PageHeader"
-import { Surface } from "@/components/ui"
+import { Surface } from "hzero"
 
 const MyTasksHeader = ({ totalTasks, overdueTasks }) => {
   return (

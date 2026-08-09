@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { DataTable, Button, Input, Panel } from "hzero"
-import { Grid, HStack, InfoRow, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Badge, Button, DataTable, EmptyState, ErrorState, Grid, HStack, InfoRow, Input, LoadingState, Modal, Panel, Select, StatCards, Surface, Text, useToast, VStack } from "hzero"
 import {
   Download,
   FileText,
@@ -35,13 +34,6 @@ import {
   infoBoxStyle,
   sectionLabelStyle,
 } from "@/components/gymkhana/events-page/sharedPrimitives"
-import {
-  EmptyState,
-  ErrorState,
-  LoadingState,
-  useToast,
-} from "@/components/ui/feedback"
-import { Badge, Select, StatCards } from "@/components/ui"
 import { useAuth } from "@/contexts/AuthProvider"
 import useLocalFormDraft, {
   readLocalFormDraft,

@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react"
-import { Button } from "hzero"
-import { Grid, Modal } from "@/components/ui"
-import { Card, SearchInput } from "@/components/ui"
+import { Button, Card, Grid, Modal, SearchInput } from "hzero"
 import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"
 
 const normalize = (value = "") => String(value || "").trim().toLowerCase()

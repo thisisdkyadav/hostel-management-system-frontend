@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Button } from "hzero"
-import { Heading, HStack, IconCircle, Modal, Surface, Text } from "@/components/ui"
+import { Button, Heading, HStack, IconCircle, Modal, Surface, Text } from "hzero"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const PdfViewerModal = ({

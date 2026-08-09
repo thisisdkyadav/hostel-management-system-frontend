@@ -12,8 +12,7 @@ import CertificateTemplateForm from "../../components/admin/settings/Certificate
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
-import { useToast } from "@/components/ui/feedback"
-import { Card, HStack, Page, SearchInput, Spinner, useConfirm, VStack } from "@/components/ui"
+import { Card, HStack, Page, SearchInput, Spinner, useConfirm, useToast, VStack } from "hzero"
 
 const TabSpinner = () => (
   <div className="flex justify-center py-6">

@@ -37,8 +37,7 @@ import {
   POST_STUDENT_AFFAIRS_STAGE_OPTIONS,
 } from "@/components/gymkhana/events-page/shared"
 import { CalendarDays, FileText } from "lucide-react"
-import { Badge } from "@/components/ui/data-display"
-import { Text } from "@/components/ui"
+import { Badge, Text } from "hzero"
 
 export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [loading, setLoading] = useState(false)

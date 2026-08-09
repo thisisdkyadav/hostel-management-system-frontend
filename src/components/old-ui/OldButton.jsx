@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react"
 import PropTypes from "prop-types"
-import { Spinner } from "@/components/ui"
+import { Spinner } from "hzero"
 
 /**
  * OLD Button Component - For comparison purposes

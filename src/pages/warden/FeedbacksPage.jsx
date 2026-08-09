@@ -1,7 +1,6 @@
-import { Tabs } from "hzero"
+import { Pagination, SearchInput, Tabs, Text } from "hzero"
 import { useState, useEffect, useCallback } from "react"
 import { HiAnnotation } from "react-icons/hi"
-import { Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FeedbackStats from "../../components/FeedbackStats"
 import FeedbackCard from "../../components/FeedbackCard"

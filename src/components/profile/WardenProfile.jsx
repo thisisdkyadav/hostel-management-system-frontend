@@ -3,7 +3,7 @@ import { FiMail, FiPhone, FiHome, FiCalendar, FiMapPin, FiUser, FiBriefcase } fr
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState } from "hzero"
 import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 

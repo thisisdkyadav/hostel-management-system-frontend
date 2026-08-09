@@ -2,9 +2,8 @@ import React, { useState } from "react"
 import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/fa"
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { DataTable, Button } from "hzero"
+import { Button, DataTable, HStack, IconCircle, Surface, Text } from "hzero"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },

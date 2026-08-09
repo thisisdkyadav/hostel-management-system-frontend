@@ -4,11 +4,9 @@
  */
 
 import { useState, useEffect, useCallback } from "react"
-import { Badge } from "@/components/ui/data-display"
-import { Spinner } from "@/components/ui/feedback"
+import { Badge, HStack, Spinner, Surface, Text, VStack } from "hzero"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const ACTION_ICONS = {
     submitted: Send,

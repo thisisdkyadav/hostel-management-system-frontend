@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { StatusBadge, DataTable, Button } from "hzero"
+import { Alert, Button, Card, DataTable, EmptyState, Grid, Heading, HStack, LoadingState, Page, StatCards, StatusBadge, Text, VStack } from "hzero"
 import { CheckCircle2, Clock, RefreshCw, UtensilsCrossed, Users, Wallet, ClipboardCheck } from "lucide-react"
-import { Alert, Card, EmptyState, Grid, Heading, HStack, LoadingState, Page, StatCards, Text, VStack } from "@/components/ui"
 import PageHeader from "../../components/common/PageHeader"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { formatCurrency } from "@/components/dining/diningBillingHelpers"

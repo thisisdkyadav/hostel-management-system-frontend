@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { DataTable, StatusBadge, Button } from "hzero"
-import { HStack, InfoRow, Modal, Page, Surface, Text } from "@/components/ui"
+import { Alert, Button, DataTable, EmptyState, HStack, InfoRow, LoadingState, Modal, Page, SearchInput, StatCards, StatusBadge, Surface, Text, VStack } from "hzero"
 import { ArrowLeft, Upload, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, EmptyState, LoadingState, SearchInput, StatCards, VStack } from "@/components/ui"
 import ManageFundsModal from "@/components/dining/ManageFundsModal"
 import {
   balanceTone,

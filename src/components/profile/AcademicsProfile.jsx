@@ -1,5 +1,5 @@
 import { FiMail, FiShield, FiUser } from "react-icons/fi"
-import { EmptyState, Grid } from "@/components/ui"
+import { EmptyState, Grid } from "hzero"
 import { useAuth } from "../../contexts/AuthProvider"
 import ProfileCard from "./ProfileCard"
 import ProfileHeader from "./ProfileHeader"

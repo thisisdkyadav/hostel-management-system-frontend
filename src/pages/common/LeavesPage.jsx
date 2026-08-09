@@ -6,7 +6,7 @@ import LeavesFilterPanel from "../../components/leaves/LeavesFilterPanel"
 import LeavesContent from "../../components/leaves/LeavesContent"
 import LeaveDetailModal from "../../components/leaves/LeaveDetailModal"
 import LeaveForm from "../../components/leaves/LeaveForm"
-import { Page } from "@/components/ui"
+import { Page } from "hzero"
 
 const LeavesPage = () => {
   const { user } = useAuth()

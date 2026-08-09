@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa'
-import { Button } from 'hzero'
-import { Heading, HStack, Surface, Text } from "@/components/ui"
+import { Button, Heading, HStack, Surface, Text } from "hzero"
 
 const NotFoundPage = () => {
   return (

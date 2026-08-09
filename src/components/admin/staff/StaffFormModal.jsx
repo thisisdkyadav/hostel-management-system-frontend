@@ -1,9 +1,6 @@
 import { useState } from "react"
 import { Camera, Save, Trash2 } from "lucide-react"
-import {
-  Alert, Avatar, Button, Checkbox, EmptyState, Field, HStack, Input, Modal,
-  Select, VStack, useConfirm, useToast,
-} from "hzero"
+import { Alert, Avatar, Button, Checkbox, EmptyState, Field, HStack, Input, Modal, Select, useConfirm, useToast, VStack } from "hzero"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 

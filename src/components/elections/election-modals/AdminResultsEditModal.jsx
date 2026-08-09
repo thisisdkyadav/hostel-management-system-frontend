@@ -1,5 +1,4 @@
-import { Button } from "hzero"
-import { Grid, HStack, Modal, Surface, Text } from "@/components/ui"
+import { Button, Grid, HStack, Modal, Surface, Text } from "hzero"
 import { StatusPill } from "@/components/elections/ElectionShared"
 
 export const AdminResultsEditModal = ({

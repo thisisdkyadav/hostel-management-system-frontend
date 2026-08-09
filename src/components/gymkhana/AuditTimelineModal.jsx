@@ -5,8 +5,7 @@
  * Reusable across any auditable entity — pass entityType + entityId.
  */
 
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Modal } from "hzero"
 import AuditTimeline from "./AuditTimeline"
 
 const AuditTimelineModal = ({

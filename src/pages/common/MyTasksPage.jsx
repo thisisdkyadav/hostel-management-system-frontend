@@ -3,8 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Heading, IconCircle, Page, Pagination, Surface, Text } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Button, Heading, IconCircle, Input, Page, Pagination, Surface, Text } from "hzero"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
 const MyTasksPage = () => {

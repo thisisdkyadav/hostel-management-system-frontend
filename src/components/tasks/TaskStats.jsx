@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaTasks, FaCheckCircle, FaHourglass, FaExclamationTriangle, FaChartBar } from "react-icons/fa"
-import { Grid, Heading, HStack, StatCard } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Grid, Heading, HStack, StatCard } from "hzero"
 import DetailedTaskStats from "./DetailedTaskStats"
 
 const TaskStats = ({ stats }) => {

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
-import { Button } from "hzero"
+import { Button, Heading, HStack, Surface, Text } from "hzero"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
-import { Heading, HStack, Surface, Text } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 

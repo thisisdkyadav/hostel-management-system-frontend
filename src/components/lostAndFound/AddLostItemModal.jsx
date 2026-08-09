@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi, resolveUploadedFileRef } from "../../service"
-import { Field, FileInput, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Field, FileInput, Grid, HStack, Input, Label, Modal, Select, Text, VStack } from "hzero"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {

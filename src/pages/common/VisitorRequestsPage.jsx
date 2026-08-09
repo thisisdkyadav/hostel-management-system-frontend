@@ -6,8 +6,7 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { EmptyState, ErrorState, Heading, LoadingState, Pagination, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, EmptyState, ErrorState, Heading, LoadingState, Pagination, Surface, Text, VStack } from "hzero"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
 

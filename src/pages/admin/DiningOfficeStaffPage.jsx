@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
-import { DataTable, StatusBadge, Button } from "hzero"
+import { Alert, Button, ConfirmDialog, DataTable, EmptyState, HStack, LoadingState, Page, SearchInput, StatCards, StatusBadge, Text } from "hzero"
 import { Plus, Pencil, Trash2, UserCog, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, ConfirmDialog, EmptyState, HStack, LoadingState, Page, SearchInput, StatCards, Text } from "@/components/ui"
 import DiningOfficeFormModal, { DINING_OFFICE_CATEGORIES } from "@/components/dining/DiningOfficeFormModal"
 import { getErrorMessage } from "@/components/dining/diningBillingHelpers"
 

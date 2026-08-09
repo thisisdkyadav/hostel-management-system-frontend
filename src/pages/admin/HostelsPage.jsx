@@ -1,6 +1,5 @@
-import { Tabs } from "hzero"
+import { EmptyState, Page, SearchInput, Tabs } from "hzero"
 import { useState, useEffect } from "react"
-import { EmptyState, Page, SearchInput } from "@/components/ui"
 import { Search } from "lucide-react"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"

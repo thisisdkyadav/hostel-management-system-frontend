@@ -2,7 +2,7 @@ import BaseLayout from "./BaseLayout"
 import { getDiningOfficeNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import GlobalProvider from "../contexts/GlobalProvider"
-import { ToastProvider } from "../components/ui/feedback"
+import { ToastProvider } from "hzero"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const DiningOfficeLayout = () => {

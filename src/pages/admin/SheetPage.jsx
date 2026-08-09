@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
-import { Input } from "hzero"
+import { Input, Surface, Text } from "hzero"
 import {
     useReactTable,
     getCoreRowModel,
@@ -13,7 +13,6 @@ import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Surface, Text } from "@/components/ui"
 import { escapeCsvValue as escapeCSV, escapeTsvValue } from "@/utils/csvExport"
 
 // Row height for virtualization

@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { FaChevronDown, FaTimes } from "react-icons/fa"
-import { Button } from "hzero"
+import { Button, HStack } from "hzero"
 import Checkbox from "./ui/Checkbox"
-import { HStack } from "@/components/ui"
 
 const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, placeholder = "Select options...", label, disabled = false, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false)

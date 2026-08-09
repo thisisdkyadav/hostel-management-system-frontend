@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
-import { Grid, Pagination, Select, Surface } from "@/components/ui"
-import { Table, Tabs, Button, Input } from "hzero"
+import { Button, Grid, Input, Pagination, Select, Surface, Table, Tabs } from "hzero"
 import NoResults from "./common/NoResults"
 import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"

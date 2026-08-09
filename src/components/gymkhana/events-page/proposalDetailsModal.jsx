@@ -8,20 +8,7 @@ import {
   Target,
   Users,
 } from "lucide-react"
-import {
-  Button,
-  Checkbox,
-  DetailSection,
-  Field,
-  Grid,
-  HStack,
-  Input,
-  Modal,
-  Select,
-  Table,
-  Textarea,
-  VStack,
-} from "hzero"
+import { Button, Checkbox, DetailSection, Field, Grid, HStack, Input, Modal, Select, Table, Textarea, VStack } from "hzero"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 
 export const GymkhanaProposalDetailsModal = ({

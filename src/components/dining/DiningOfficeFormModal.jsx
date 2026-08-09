@@ -1,7 +1,5 @@
 import { useState } from "react"
-import { Button, Input } from "hzero"
-import { Field, Modal, Text } from "@/components/ui"
-import { Alert, Label, VStack } from "@/components/ui"
+import { Alert, Button, Field, Input, Label, Modal, Text, VStack } from "hzero"
 import { getErrorMessage } from "./diningBillingHelpers"
 
 export const DINING_OFFICE_CATEGORIES = ["Dining Warden", "Dining Hall Supervisor"]

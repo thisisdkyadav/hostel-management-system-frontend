@@ -1,7 +1,6 @@
-import { Tabs } from "hzero"
+import { Page, Pagination, SearchInput, Tabs, Text } from "hzero"
 import { useState, useEffect, useCallback } from "react"
 import { FaCalendarAlt } from "react-icons/fa"
-import { Page, Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import EventStats from "../../components/events/EventStats"
 import EventCard from "../../components/events/EventCard"

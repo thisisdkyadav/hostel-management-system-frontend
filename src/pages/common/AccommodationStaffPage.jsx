@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, createElement } from "react"
-import { Tabs, DataTable, StatusBadge } from "hzero"
-import { StatCards, Text } from "@/components/ui"
+import { DataTable, StatCards, StatusBadge, Tabs, Text } from "hzero"
 import { FaClipboardList, FaInbox, FaRegCheckCircle, FaDoorOpen } from "react-icons/fa"
 import { MdOutlineWatchLater } from "react-icons/md"
 import PageHeader from "../../components/common/PageHeader"

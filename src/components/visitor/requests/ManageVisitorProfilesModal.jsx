@@ -2,8 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import { Table, Button, Input } from "hzero"
-import { Heading, HStack, IconCircle, Modal, Surface, Text, useConfirm, VStack } from "@/components/ui"
+import { Button, Heading, HStack, IconCircle, Input, Modal, Surface, Table, Text, useConfirm, VStack } from "hzero"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const confirm = useConfirm()

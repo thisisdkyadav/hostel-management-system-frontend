@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Check, Plus, Trash2 } from "lucide-react"
 import CsvUploader from "@/components/common/CsvUploader"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
-import { Alert, Button, Checkbox, Field, Grid, HStack, Heading, Input, Surface, VStack } from "hzero"
+import { Alert, Button, Checkbox, Field, Grid, Heading, HStack, Input, Surface, VStack } from "hzero"
 import { FieldList, TabSection } from "./BulkUploadTab"
 import PreviewTable from "./PreviewTable"
 

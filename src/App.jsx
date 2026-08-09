@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom"
-import { StatusBadgeProvider } from "hzero"
+import { ConfirmProvider, StatusBadgeProvider, ToastProvider } from "hzero"
 import { AuthProvider } from "./contexts/AuthProvider"
 import { SocketProvider } from "./contexts/SocketProvider"
 import { AuthzProvider } from "./contexts/AuthzProvider"
@@ -7,8 +7,6 @@ import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
 import AppUpdatePrompt from "./components/common/AppUpdatePrompt"
-import { ToastProvider } from "./components/ui/feedback/Toast"
-import { ConfirmProvider } from "@/components/ui"
 
 // Hostel vocabulary for StatusBadge. czero ships the states every app shares
 // (active, pending, failed, …); these are the ones only HMS knows about.

@@ -1,6 +1,6 @@
 import React from "react"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
-import { Grid, Heading, HStack, InfoRow, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, InfoRow, Surface, Text, VStack } from "hzero"
 
 /**
  * Displays detailed task statistics with categorization by status, priority, and category

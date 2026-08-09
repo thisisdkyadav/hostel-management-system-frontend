@@ -1,5 +1,5 @@
 import React from "react"
-import { Heading } from "@/components/ui"
+import { Heading } from "hzero"
 
 const ShimmerBar = ({ width, height, style }) => (
   <div

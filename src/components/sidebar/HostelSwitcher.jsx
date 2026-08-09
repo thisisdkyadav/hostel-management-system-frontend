@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useWarden } from "../../contexts/WardenProvider"
 import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../../service"
-import { HStack, Select } from "@/components/ui"
+import { HStack, Select } from "hzero"
 import { CgSpinner } from "react-icons/cg"
 import { FaBuilding } from "react-icons/fa"
 

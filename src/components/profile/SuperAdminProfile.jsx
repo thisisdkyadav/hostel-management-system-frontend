@@ -3,7 +3,7 @@ import { FiMail, FiPhone, FiShield, FiKey, FiUser, FiClock } from "react-icons/f
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { EmptyState, ErrorState, LoadingState } from "hzero"
 import { superAdminApi } from "@/service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { format } from "date-fns"

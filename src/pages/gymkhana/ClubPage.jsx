@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Building2, Mail, ShieldCheck, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Card, CardBody, CardHeader, Grid, Heading, HStack, StatCards, Surface, Text } from "@/components/ui"
+import { Card, CardBody, CardHeader, Grid, Heading, HStack, StatCards, Surface, Text } from "hzero"
 import { clubApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 

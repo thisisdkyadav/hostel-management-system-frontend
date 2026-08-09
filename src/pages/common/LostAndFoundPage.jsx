@@ -1,6 +1,5 @@
-import { Tabs } from "hzero"
+import { Page, Pagination, SearchInput, Tabs, Text } from "hzero"
 import { useState, useEffect, useCallback } from "react"
-import { Page, Pagination, SearchInput, Text } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import LostAndFoundStats from "../../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../../components/lostAndFound/LostAndFoundCard"

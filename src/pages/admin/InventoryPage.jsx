@@ -3,7 +3,7 @@ import ItemTypes from "../../components/admin/inventory/ItemTypes"
 import HostelAllocation from "../../components/admin/inventory/HostelAllocation"
 import InventoryReports from "../../components/admin/inventory/InventoryReports"
 import InventoryHeader from "../../components/headers/InventoryHeader"
-import { Page } from "@/components/ui"
+import { Page } from "hzero"
 
 const InventoryPage = () => {
   const [activeTab, setActiveTab] = useState("itemTypes")

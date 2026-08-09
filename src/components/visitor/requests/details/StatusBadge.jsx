@@ -1,6 +1,6 @@
 import React from "react"
 import { FaInfoCircle } from "react-icons/fa"
-import { Text } from "@/components/ui"
+import { Text } from "hzero"
 
 const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
   const formatDate = (dateString) => {

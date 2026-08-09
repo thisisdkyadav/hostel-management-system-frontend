@@ -1,6 +1,6 @@
 import React from "react"
 import { FaRegCalendarAlt, FaBell, FaUsers } from "react-icons/fa"
-import { StatCards } from "@/components/ui"
+import { StatCards } from "hzero"
 
 const NotificationStats = ({ stats, loading }) => {
   const statItems = [

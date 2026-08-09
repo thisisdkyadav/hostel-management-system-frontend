@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
-import { Button, Input } from "hzero"
-import { Field, Grid, Modal, Surface, Text } from "@/components/ui"
+import { Alert, Button, Field, FileInput, Grid, HStack, Input, Label, Modal, Surface, Text, VStack } from "hzero"
 import {
   Archive,
   ArchiveRestore,
@@ -13,7 +12,6 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react"
-import { Alert, FileInput, HStack, Label, VStack } from "@/components/ui"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import {
   DEFAULT_MEAL_SLOTS,

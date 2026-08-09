@@ -1,7 +1,5 @@
 import { useState } from "react"
-import { Button } from "hzero"
-import { Alert, Modal, VStack } from "@/components/ui"
-import { useToast } from "@/components/ui/feedback"
+import { Alert, Button, Modal, useToast, VStack } from "hzero"
 import CsvUploader from "../common/CsvUploader"
 import { attendanceApi } from "../../service"
 import { MAX_ROSTER } from "./attendanceConstants"

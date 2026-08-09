@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { Pin } from "lucide-react"
-import { HStack, SearchInput } from "@/components/ui"
+import { HStack, SearchInput } from "hzero"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 

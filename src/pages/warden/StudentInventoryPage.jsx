@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-import { Tabs, Button } from "hzero"
+import { Button, Tabs } from "hzero"
 const StudentInventoryPage = () => {
   const [activeTab, setActiveTab] = useState("available")
 

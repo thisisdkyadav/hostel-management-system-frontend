@@ -1,6 +1,5 @@
 import React from "react"
-import { Heading, HStack, IconCircle, Modal, Text } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Heading, HStack, IconCircle, Modal, Text } from "hzero"
 import { FaCheck } from "react-icons/fa"
 
 const PasswordChangeSuccess = ({ email, onClose }) => {

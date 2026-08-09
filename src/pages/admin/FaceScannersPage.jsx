@@ -1,6 +1,5 @@
-import { Tabs } from "hzero"
+import { Page, SearchInput, Tabs } from "hzero"
 import { useState, useEffect } from "react"
-import { Page, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"

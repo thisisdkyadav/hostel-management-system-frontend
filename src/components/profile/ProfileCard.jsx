@@ -1,5 +1,5 @@
 import React from "react"
-import { Heading, Surface } from "@/components/ui"
+import { Heading, Surface } from "hzero"
 
 const ProfileCard = ({ title, children, actionButton }) => {
   return (

@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
-import { Button } from "hzero"
-import { Heading, HStack, Spinner, Surface, Text } from "@/components/ui"
+import { Button, Heading, HStack, Spinner, Surface, Text } from "hzero"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)

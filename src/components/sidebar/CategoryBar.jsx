@@ -1,6 +1,6 @@
 import { ADMIN_NAV_CATEGORIES } from "../../constants/navigationConfig"
 import { getCategoryTint } from "./categoryStyles"
-import { Grid, Surface } from "@/components/ui"
+import { Grid, Surface } from "hzero"
 
 /**
  * V2 bottom category bar. Accents come from --color-cat-* tokens; active

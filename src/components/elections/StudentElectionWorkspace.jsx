@@ -1,7 +1,5 @@
-import { DataTable, Button } from "hzero"
-import { Alert } from "@/components/ui/feedback"
+import { Alert, Button, DataTable, Grid, Heading, HStack, Surface, Text } from "hzero"
 import { StatusPill } from "@/components/elections/ElectionShared"
-import { Grid, Heading, HStack, Surface, Text } from "@/components/ui"
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)

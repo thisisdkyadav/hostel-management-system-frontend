@@ -19,11 +19,7 @@ import PorTab from "./tabs/PorTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import {
-  Button, DetailSection, EmptyState, Grid, Heading, HStack, IconCircle, InfoRow,
-  Input, Label, LoadingState, Modal, Select, Spinner, Surface, Table, Text,
-  useConfirm, VStack,
-} from "hzero"
+import { Button, DetailSection, EmptyState, Grid, Heading, HStack, IconCircle, InfoRow, Input, Label, LoadingState, Modal, Select, Spinner, Surface, Table, Text, useConfirm, VStack } from "hzero"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const confirm = useConfirm()
   const { user } = useAuth()

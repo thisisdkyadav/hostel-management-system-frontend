@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
-import { Tabs, Button } from "hzero"
+import { Alert, Button, Page, Tabs } from "hzero"
 import { RefreshCw } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { adminApi } from "../../service"
-import { Alert, Page } from "@/components/ui"
 import RebateRequestsPanel from "@/components/dining/RebateRequestsPanel"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 

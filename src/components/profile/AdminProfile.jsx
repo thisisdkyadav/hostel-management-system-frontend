@@ -3,7 +3,7 @@ import { FiMail, FiPhone, FiUser, FiShield } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { EmptyState, ErrorState, Grid, LoadingState } from "@/components/ui"
+import { EmptyState, ErrorState, Grid, LoadingState } from "hzero"
 import { adminApi } from "@/service"
 import { useAuth } from "../../contexts/AuthProvider"
 

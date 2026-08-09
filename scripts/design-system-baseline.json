@@ -1,71 +1,37 @@
 {
-  "src/App.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/components/AccessHistory.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/accommodation/AccommodationRequestDetail.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/accommodation/AccommodationRequestWizard.jsx": {
-    "ui-barrel-import": 3
+    "react-icons": 1
   },
   "src/components/admin/settings/CertificateTemplateForm.jsx": {
     "hex-literal": 2
   },
-  "src/components/attendance/AttendanceScanner.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/attendance/CreateOccurrenceModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/attendance/RosterUploadModal.jsx": {
-    "ui-barrel-import": 2
-  },
   "src/components/authz/AuthzFieldGuide.jsx": {
-    "raw-font-size": 4,
-    "ui-barrel-import": 2
+    "raw-font-size": 4
   },
   "src/components/BottomBar.jsx": {
     "raw-font-size": 4,
     "react-icons": 1
   },
-  "src/components/common/AccessDenied.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/components/common/AppUpdatePrompt.jsx": {
     "palette-class": 5
   },
-  "src/components/common/Card.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/components/common/CommonSuccessModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/ConfirmationDialog.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/CsvUploader.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/ErrorState.jsx": {
     "react-icons": 1
   },
   "src/components/common/ImageUploadModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/LoadingState.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/MultiSelectDropdown.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/NotificationToast.jsx": {
     "react-icons": 1
@@ -73,13 +39,9 @@
   "src/components/common/OfflineBanner.jsx": {
     "react-icons": 2
   },
-  "src/components/common/pdf/PdfUploadField.jsx": {
-    "ui-barrel-import": 3
-  },
   "src/components/common/pdf/PdfViewerModal.jsx": {
     "js-hover": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/common/SearchBar.jsx": {
     "react-icons": 1
@@ -91,222 +53,107 @@
     "react-icons": 1
   },
   "src/components/common/StatCards.jsx": {
-    "hex-literal": 1,
-    "ui-barrel-import": 1
+    "hex-literal": 1
   },
   "src/components/common/ToggleButtonGroup.jsx": {
-    "js-hover": 2,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/ui/FileInput.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/ui/Select.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/dining/BillingPeriodFormModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/dining/CapacityBar.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/dining/DiningOfficeFormModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/dining/ManageAllocationsModal.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/dining/ManageFundsModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/dining/PeriodCard.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/dining/PeriodFormModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/dining/RebateRequestsPanel.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/elections/AdminElectionWorkspace.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/elections/election-modals/AdminResultsEditModal.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/elections/election-modals/ElectionRecordModals.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/elections/election-modals/ElectionWizardModal.jsx": {
-    "ui-barrel-import": 3
+    "js-hover": 2
   },
   "src/components/elections/election-modals/LiveVotingFullscreenModal.jsx": {
-    "raw-font-size": 10,
-    "ui-barrel-import": 1
-  },
-  "src/components/elections/election-modals/StudentNominationModal.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/elections/ElectionShared.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/elections/StudentElectionWorkspace.jsx": {
-    "ui-barrel-import": 2
+    "raw-font-size": 10
   },
   "src/components/events/AddEventModal.jsx": {
     "native-dialog": 4,
-    "react-icons": 2,
-    "ui-barrel-import": 2
+    "react-icons": 2
   },
   "src/components/events/EventCard.jsx": {
     "native-dialog": 6,
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/events/EventEditForm.jsx": {
     "js-hover": 2,
-    "react-icons": 3,
-    "ui-barrel-import": 1
+    "react-icons": 3
   },
   "src/components/events/EventStats.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/FeedbackCard.jsx": {
     "native-dialog": 8,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/FeedbackReplyModal.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/FeedbackStats.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/AttendanceQRScanner.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/EditStudentEntryModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/EntryDetails.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/MaintenanceQRGenerator.jsx": {
     "hex-literal": 2,
     "js-hover": 2,
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/NewEntryForm.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/QRScanner.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/ScannedStudentInfo.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/ScannerStatusIndicator.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/SecurityQRGenerator.jsx": {
     "hex-literal": 2,
     "js-hover": 2,
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/StudentEntryForm.jsx": {
     "native-dialog": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/guard/StudentEntryTable.jsx": {
     "js-hover": 2,
     "native-dialog": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/gymkhana/ApprovalHistory.jsx": {
-    "ui-barrel-import": 3
-  },
-  "src/components/gymkhana/AuditTimeline.jsx": {
-    "ui-barrel-import": 3
-  },
-  "src/components/gymkhana/AuditTimelineModal.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/gymkhana/events-page/AdminEntityActions.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/components/gymkhana/events-page/adminModals.jsx": {
-    "ui-barrel-import": 3
+    "react-icons": 1
   },
   "src/components/gymkhana/events-page/calendarEventModals.jsx": {
-    "js-hover": 2,
-    "ui-barrel-import": 3
-  },
-  "src/components/gymkhana/events-page/DeletedItemsModal.jsx": {
-    "ui-barrel-import": 3
-  },
-  "src/components/gymkhana/events-page/expenseModal.jsx": {
-    "ui-barrel-import": 5
+    "js-hover": 2
   },
   "src/components/gymkhana/events-page/GymkhanaEventsPageContent.jsx": {
-    "js-hover": 6,
-    "ui-barrel-import": 3
-  },
-  "src/components/gymkhana/events-page/proposalModal.jsx": {
-    "ui-barrel-import": 5
-  },
-  "src/components/gymkhana/events-page/ReasonPromptModal.jsx": {
-    "ui-barrel-import": 2
+    "js-hover": 6
   },
   "src/components/gymkhana/events-page/shared.js": {
     "hex-literal": 24
-  },
-  "src/components/headers/MyTasksHeader.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/home/AppointmentFormModal.jsx": {
-    "ui-barrel-import": 1
   },
   "src/components/home/ModernHeader.jsx": {
     "react-icons": 1
   },
   "src/components/home/StatisticsGraphic.jsx": {
-    "hex-literal": 10,
-    "ui-barrel-import": 1
+    "hex-literal": 10
   },
   "src/components/IDCardUploadModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/leaves/LeaveForm.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/leaves/LeavesContent.jsx": {
     "js-hover": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/leaves/LeavesFilterPanel.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/LoginWithGoogle.jsx": {
     "palette-class": 2,
@@ -314,128 +161,85 @@
   },
   "src/components/lostAndFound/AddLostItemModal.jsx": {
     "native-dialog": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/lostAndFound/LostAndFoundCard.jsx": {
     "native-dialog": 6,
-    "react-icons": 3,
-    "ui-barrel-import": 1
+    "react-icons": 3
   },
   "src/components/lostAndFound/LostAndFoundEditForm.jsx": {
     "js-hover": 2,
     "native-dialog": 1,
-    "react-icons": 3,
-    "ui-barrel-import": 1
+    "react-icons": 3
   },
   "src/components/lostAndFound/LostAndFoundStats.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/MobileHeader.jsx": {
     "raw-font-size": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/notifications/CreateNotificationModal.jsx": {
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/notifications/NotificationFilterSection.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/notifications/NotificationStats.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/notifications/NotificationTable.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/notifications/ViewNotificationModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/old-ui/OldButton.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/passwordChange/ChangePasswordButton.jsx": {
     "react-icons": 1
   },
-  "src/components/passwordChange/ChangePasswordModal.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/components/passwordChange/PasswordChangeSuccess.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/passwordChange/PasswordStrengthBar.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/por/PorApprovalHistory.jsx": {
-    "ui-barrel-import": 3
+    "react-icons": 1
   },
   "src/components/profile/AcademicsProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/AdminProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/GymkhanaProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/profile/ProfileCard.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/ProfileHeader.jsx": {
     "native-dialog": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/ProfileInfo.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/profile/SignatureSettingsCard.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/profile/StudentEditProfileModal.jsx": {
-    "react-icons": 4,
-    "ui-barrel-import": 2
+    "react-icons": 4
   },
   "src/components/profile/StudentFamilyDetails.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/StudentProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/SuperAdminProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/profile/WardenProfile.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/QRCodeGenerator.jsx": {
     "hex-literal": 2,
     "native-dialog": 1,
     "palette-class": 6,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/sessions/ManageSessionsButton.jsx": {
     "react-icons": 1
   },
   "src/components/sessions/ManageSessionsModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/sheet/ColumnFilterDropdown.jsx": {
     "js-hover": 2,
@@ -448,20 +252,12 @@
   "src/components/sheet/FilterChips.jsx": {
     "js-hover": 4
   },
-  "src/components/Sidebar.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/sidebar/CategoryBar.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/components/sidebar/FlatGroupedNav.jsx": {
-    "raw-font-size": 1,
-    "ui-barrel-import": 1
+    "raw-font-size": 1
   },
   "src/components/sidebar/HostelSwitcher.jsx": {
     "raw-font-size": 1,
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/sidebar/NewBadge.jsx": {
     "raw-font-size": 1
@@ -478,364 +274,183 @@
   },
   "src/components/sidebar/WorkspaceNav.jsx": {
     "js-hover": 2,
-    "raw-font-size": 2,
-    "ui-barrel-import": 1
+    "raw-font-size": 2
   },
   "src/components/SSOLoginButton.jsx": {
     "palette-class": 5,
     "react-icons": 1
   },
   "src/components/tasks/DetailedTaskStats.jsx": {
-    "palette-class": 4,
-    "ui-barrel-import": 1
-  },
-  "src/components/tasks/TaskForm.jsx": {
-    "ui-barrel-import": 2
+    "palette-class": 4
   },
   "src/components/tasks/TaskStats.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/visitor/requests/AddVisitorProfileModal.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/visitor/requests/AddVisitorRequestModal.jsx": {
     "js-hover": 6,
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/visitor/requests/details/ApprovalForm.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/visitor/requests/details/CheckInOutForm.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/visitor/requests/details/PaymentInfoForm.jsx": {
-    "js-hover": 2,
-    "ui-barrel-import": 1
+    "js-hover": 2
   },
   "src/components/visitor/requests/details/PaymentInfoViewer.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/visitor/requests/details/RejectionForm.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/visitor/requests/details/RoomAllocationForm.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/visitor/requests/details/StatusBadge.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/visitor/requests/EditVisitorProfileModal.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/visitor/requests/EditVisitorRequestModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/visitor/requests/H2FormViewerModal.jsx": {
     "js-hover": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/visitor/requests/ManageVisitorProfilesModal.jsx": {
     "js-hover": 2,
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/visitor/requests/PaymentInfoModal.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/visitor/requests/VisitorRequestTable.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/AllocateStudentModal.jsx": {
     "js-hover": 6,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/BedSelectionComponent.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/inventory/AvailableInventory.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/inventory/InventoryManagement.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/wardens/inventory/StudentAssignments.jsx": {
     "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/components/wardens/RoomListView.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/RoomStats.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
-  },
-  "src/components/wardens/UnitFilterSection.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/components/wardens/UnitListView.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/components/wardens/UnitStats.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
-  },
-  "src/contexts/NotificationProvider.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/hooks/gymkhana/useGymkhanaCalendarPageState.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 2
   },
   "src/hooks/useLogout.js": {
     "native-dialog": 1
   },
-  "src/pages/admin/CaterersPage.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/pages/admin/DiningBillingDetailPage.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/pages/admin/DiningBillingPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/DiningOfficeStaffPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/DiningPeriodsPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/DiningRebatesPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/FaceScannersPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/HostelsPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/InventoryPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/LiveCheckInOutPage.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/pages/admin/OthersPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/admin/SettingsPage.jsx": {
     "raw-font-size": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/admin/SheetPage.jsx": {
     "hex-literal": 1,
     "js-hover": 6,
-    "raw-font-size": 3,
-    "ui-barrel-import": 1
-  },
-  "src/pages/admin/TaskManagementPage.jsx": {
-    "ui-barrel-import": 1
+    "raw-font-size": 3
   },
   "src/pages/admin/UpdatePasswordPage.jsx": {
     "native-dialog": 3,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/caterer/DashboardPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/caterer/MealVerificationPage.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/common/AccommodationStaffPage.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/AppointmentsPage.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/pages/common/AttendanceOccurrencePage.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/pages/common/AttendancePage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/DisciplinaryProcessPage.jsx": {
-    "ui-barrel-import": 4
-  },
-  "src/pages/common/ElectionsPage.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 2
   },
   "src/pages/common/EventsPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/GymkhanaEventsPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/LeavesPage.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/common/LostAndFoundPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/MegaEventsPage.jsx": {
-    "ui-barrel-import": 5
+    "react-icons": 1
   },
   "src/pages/common/MyTasksPage.jsx": {
-    "js-hover": 2,
-    "ui-barrel-import": 1
+    "js-hover": 2
   },
   "src/pages/common/NotificationCenterPage.jsx": {
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/overall-best-performer/documents.js": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/OverallBestPerformerPage.jsx": {
-    "ui-barrel-import": 3
+    "react-icons": 1
   },
   "src/pages/common/por-requests/PorCategoryModals.jsx": {
-    "raw-font-size": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/por-requests/PorRequestFormModal.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/por-requests/PorRequestGroupModal.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/PorRequestsPage.jsx": {
-    "ui-barrel-import": 3
-  },
-  "src/pages/common/ProfilePage.jsx": {
-    "ui-barrel-import": 1
+    "raw-font-size": 1
   },
   "src/pages/common/UnitsAndRoomsPage.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
+    "react-icons": 2
   },
   "src/pages/common/VisitorRequestsPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/dev/UIExamplesPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/pages/dining-office/DashboardPage.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/guard/AddStudentEntryPage.jsx": {
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/guard/AppointmentsGatePage.jsx": {
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/guard/AttendancePage.jsx": {
     "react-icons": 1
   },
   "src/pages/guard/FaceScannerEntriesPage.jsx": {
-    "native-dialog": 2,
-    "ui-barrel-import": 1
+    "native-dialog": 2
   },
   "src/pages/guard/HostelGateAttendancePage.jsx": {
     "react-icons": 1
   },
   "src/pages/guard/ScannerEntriesPage.jsx": {
     "native-dialog": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/guard/StudentEntriesPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/gymkhana/ClubPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/gymkhana/DashboardPage.jsx": {
-    "ui-barrel-import": 4
+    "react-icons": 1
   },
   "src/pages/maintenance/AttendancePage.jsx": {
     "react-icons": 1
   },
-  "src/pages/maintenance/MaintenancePage.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/pages/NotFoundPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/public/AccommodationRecommendationPage.jsx": {
-    "ui-barrel-import": 2
-  },
-  "src/pages/public/ElectionBallotPage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/public/ElectionSupportConfirmationPage.jsx": {
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/superadmin/AdminManagementPage.jsx": {
     "native-dialog": 10,
     "palette-class": 26,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/superadmin/ApiKeyManagementPage.jsx": {
     "native-dialog": 11,
     "palette-class": 21,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/superadmin/AuthzManagementPage.jsx": {
     "raw-font-size": 5,
-    "react-icons": 1,
-    "ui-barrel-import": 2
+    "react-icons": 1
   },
   "src/pages/superadmin/DashboardPage.jsx": {
     "js-hover": 6,
     "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/warden/DashboardPage.jsx": {
     "raw-font-size": 26,
-    "react-icons": 3,
-    "ui-barrel-import": 1
+    "react-icons": 3
   },
   "src/pages/warden/FeedbacksPage.jsx": {
     "native-dialog": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/pages/warden/UndertakingsPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
+    "react-icons": 1
   },
   "src/utils/adminUtils.js": {
     "palette-class": 12

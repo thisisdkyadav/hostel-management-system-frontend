@@ -6,8 +6,7 @@ import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
-import { ToggleButtonGroup } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, ToggleButtonGroup } from "hzero"
 
 const AddStudentEntryPage = () => {
   const { user } = useAuth()

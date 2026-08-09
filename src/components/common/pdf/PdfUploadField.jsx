@@ -1,11 +1,8 @@
 import { useState } from "react"
 import { Upload, Eye } from "lucide-react"
-import { Button } from "hzero"
-import { useToast } from "@/components/ui/feedback"
-import { Label } from "@/components/ui/form"
+import { Button, HStack, Label, Surface, Text, useToast, VStack } from "hzero"
 import { resolveUploadedFileRef } from "@/service"
 import PdfViewerModal from "./PdfViewerModal"
-import { HStack, Surface, Text, VStack } from "@/components/ui"
 
 const resolveUploadedUrl = (uploadResult) => {
   return resolveUploadedFileRef(uploadResult)

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { DataTable, StatusBadge, Tabs, Button } from "hzero"
-import { SearchInput, Text } from "@/components/ui"
+import { Button, DataTable, SearchInput, StatusBadge, Tabs, Text } from "hzero"
 import { Plus } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider.jsx"

@@ -1,7 +1,6 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
-import { Button, Input } from "hzero"
-import { Heading, Text } from "@/components/ui"
+import { Button, Heading, Input, Text } from "hzero"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
