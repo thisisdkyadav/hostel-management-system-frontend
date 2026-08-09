@@ -1,6 +1,6 @@
 import React from "react"
-import { FaMapMarkerAlt } from "react-icons/fa"
-import { FormField, Grid } from "@/components/ui"
+import { MapPin } from "lucide-react"
+import { FormField, Grid, Text } from "hzero"
 
 const GuardianInfoSection = ({ data, onChange }) => {
   const handleChange = (e) => {
@@ -11,8 +11,8 @@ const GuardianInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaMapMarkerAlt className="mr-2" color="var(--color-primary)" />
-        <h3 className="font-semibold text-gray-800">Guardian Information</h3>
+        <MapPin className="mr-[var(--spacing-2)]" color="var(--color-primary)" />
+        <Text as="h3" weight="semibold" color="heading">Guardian Information</Text>
       </div>
 
       <Grid cols={{ base: 1, md: 2 }} gap={4}>

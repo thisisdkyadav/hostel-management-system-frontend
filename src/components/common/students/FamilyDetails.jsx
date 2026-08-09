@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
-import { Button } from "hzero"
+import { Button, Card } from "hzero"
 import { useConfirm } from "@/components/ui"
 
 const FamilyDetails = ({ userId }) => {
@@ -119,14 +119,6 @@ const FamilyDetails = ({ userId }) => {
       display: "grid",
       gridTemplateColumns: "repeat(1, 1fr)",
       gap: "var(--spacing-4)",
-    },
-    card: {
-      backgroundColor: "var(--color-bg-primary)",
-      border: "var(--border-1) solid var(--color-border-primary)",
-      padding: "var(--spacing-4)",
-      borderRadius: "var(--radius-lg)",
-      boxShadow: "var(--shadow-sm)",
-      transition: "var(--transition-all)",
     },
     cardHeader: {
       display: "flex",
@@ -251,13 +243,7 @@ const FamilyDetails = ({ userId }) => {
       {familyDetails.length > 0 ? (
         <div style={styles.grid}>
           {familyDetails.map((member) => (
-            <div key={member.id} style={styles.card} onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "var(--shadow-md)"
-            }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-sm)"
-              }}
-            >
+            <Card key={member.id} padding="p-4">
               <div style={styles.cardHeader}>
                 <div style={styles.cardTitleRow}>
                   <h4 style={styles.cardTitle}>{member.name}</h4>
@@ -299,7 +285,7 @@ const FamilyDetails = ({ userId }) => {
                   <span style={styles.infoText}>{member.address}</span>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (

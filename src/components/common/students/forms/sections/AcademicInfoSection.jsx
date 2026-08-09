@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { FaUserGraduate } from "react-icons/fa"
-import { FormField, Grid, Select } from "@/components/ui"
+import { GraduationCap } from "lucide-react"
+import { Field, FormField, Grid, Select, Text } from "hzero"
 import { adminApi, studentApi } from "../../../../../service"
 
 const AcademicInfoSection = ({ data, onChange }) => {
@@ -68,13 +68,12 @@ const AcademicInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate className="mr-2" color="var(--color-primary)" />
-        <h3 className="font-semibold text-gray-800">Academic Information</h3>
+        <GraduationCap className="mr-[var(--spacing-2)]" color="var(--color-primary)" />
+        <Text as="h3" weight="semibold" color="heading">Academic Information</Text>
       </div>
 
       <Grid cols={{ base: 1, md: 2 }} gap={4}>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+        <Field label="Department">
           <Select name="department" value={data.department || ""} onChange={handleChange} disabled={isLoading}
             options={[
               { value: "", label: "Select Department" },
@@ -82,10 +81,9 @@ const AcademicInfoSection = ({ data, onChange }) => {
               ...(data.department && !validDepartments.includes(data.department) ? [{ value: data.department, label: data.department }] : [])
             ]}
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+        <Field label="Degree">
           <Select name="degree" value={data.degree || ""} onChange={handleChange} disabled={isLoading}
             options={[
               { value: "", label: "Select Degree" },
@@ -93,10 +91,9 @@ const AcademicInfoSection = ({ data, onChange }) => {
               ...(data.degree && !validDegrees.includes(data.degree) ? [{ value: data.degree, label: data.degree }] : [])
             ]}
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+        <Field label="Batch">
           <Select
             name="batch"
             value={data.batch || ""}
@@ -109,7 +106,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
             ]}
           />
           <p className="mt-1 text-xs text-[var(--color-text-muted)]">Batch options include exact matches and any mixed-scope batches configured for the selected degree and department.</p>
-        </div>
+        </Field>
 
         <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate || ""} onChange={handleChange} />
       </Grid>

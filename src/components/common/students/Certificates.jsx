@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
-import { Button } from "hzero"
+import { Button, Card } from "hzero"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 
@@ -139,14 +139,6 @@ const Certificates = ({ userId }) => {
       gridTemplateColumns: "repeat(1, 1fr)",
       gap: "var(--spacing-4)",
     },
-    card: {
-      backgroundColor: "var(--color-bg-primary)",
-      border: "var(--border-1) solid var(--color-border-primary)",
-      padding: "var(--spacing-4)",
-      borderRadius: "var(--radius-lg)",
-      boxShadow: "var(--shadow-sm)",
-      transition: "var(--transition-all)",
-    },
     cardContent: {
       display: "flex",
       justifyContent: "space-between",
@@ -253,13 +245,7 @@ const Certificates = ({ userId }) => {
       ) : (
         <div style={styles.grid}>
           {certificates.map((certificate) => (
-            <div key={certificate._id} style={styles.card} onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "var(--shadow-md)"
-            }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-sm)"
-              }}
-            >
+            <Card key={certificate._id} padding="p-4">
               <div style={styles.cardContent}>
                 <div style={styles.cardLeft}>
                   <div style={styles.fileIcon}>{getFileIcon(certificate.certificateUrl)}</div>
@@ -286,7 +272,7 @@ const Certificates = ({ userId }) => {
                   )}
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

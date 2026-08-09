@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react"
-import { FormField } from "@/components/ui"
-import { FaTrash, FaUpload } from "react-icons/fa"
+import React, { useEffect, useRef, useState } from "react"
+import { Trash2, Upload } from "lucide-react"
+import { Button, FileInput, FormField, Modal } from "hzero"
 import { uploadApi, certificateApi, resolveUploadedFileRef } from "../../../service"
-import { FileInput } from "@/components/ui"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
 
 const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null, studentId }) => {
   const [formData, setFormData] = useState({
@@ -19,6 +16,7 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [uploadedFile, setUploadedFile] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     if (initialData) {
@@ -186,23 +184,6 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       alignItems: "center",
       gap: "var(--spacing-3)",
     },
-    uploadButton: {
-      padding: "var(--spacing-2) var(--spacing-4)",
-      backgroundColor: "var(--color-primary-bg)",
-      color: "var(--color-primary)",
-      borderRadius: "var(--radius-md)",
-      transition: "var(--transition-all)",
-      display: "flex",
-      alignItems: "center",
-      gap: "var(--spacing-2)",
-      cursor: "pointer",
-      border: "none",
-      fontSize: "var(--font-size-base)",
-      fontWeight: "var(--font-weight-medium)",
-    },
-    hiddenInput: {
-      display: "none",
-    },
     uploadedFileName: {
       fontSize: "var(--font-size-sm)",
       color: "var(--color-text-muted)",
@@ -266,19 +247,18 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
               Upload Certificate <span style={styles.requiredMark}>*</span>
             </label>
             <div style={styles.uploadContainer}>
-              <label style={{ cursor: isUploading ? "not-allowed" : "pointer" }}>
-                <FileInput accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} disabled={isUploading} hidden />
-                <div style={styles.uploadButton} onMouseEnter={(e) => {
-                  if (!isUploading) e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)"
-                }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--color-primary-bg)"
-                  }}
-                >
-                  <FaUpload />
-                  <span>{isUploading ? "Uploading..." : "Choose File"}</span>
-                </div>
-              </label>
+              {/* A real button driving a hidden input, rather than a styled div
+                  inside a label. The input is display:none and a label is not
+                  focusable, so there was no keyboard path to upload at all. */}
+              <FileInput ref={fileInputRef} accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} disabled={isUploading} hidden />
+              <Button
+                variant="secondary"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+              >
+                <Upload />
+                {isUploading ? "Uploading…" : "Choose File"}
+              </Button>
               {uploadedFile && <span style={styles.uploadedFileName}>{uploadedFile}</span>}
               {formData.certificateUrl && !uploadedFile && <span style={styles.uploadedSuccess}>File uploaded</span>}
             </div>
@@ -296,7 +276,7 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           <div style={styles.footerContainer}>
             {isEditing && onDelete && (
               <Button type="button" variant="danger" size="sm" onClick={confirmDelete}>
-                <FaTrash /> Delete
+                <Trash2 /> Delete
               </Button>
             )}
             <div style={styles.actionButtonsRight}>

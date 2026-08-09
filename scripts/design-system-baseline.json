@@ -287,13 +287,7 @@
     "hex-literal": 1,
     "ui-barrel-import": 1
   },
-  "src/components/common/students/CertificateModal.jsx": {
-    "js-hover": 2,
-    "react-icons": 1,
-    "ui-barrel-import": 3
-  },
   "src/components/common/students/Certificates.jsx": {
-    "js-hover": 2,
     "native-dialog": 1
   },
   "src/components/common/students/CertificateViewerModal.jsx": {
@@ -305,7 +299,6 @@
     "ui-barrel-import": 2
   },
   "src/components/common/students/DisCoActions.jsx": {
-    "js-hover": 2,
     "native-dialog": 3
   },
   "src/components/common/students/EditStudentModal.jsx": {
@@ -314,29 +307,12 @@
     "ui-barrel-import": 2
   },
   "src/components/common/students/FamilyDetails.jsx": {
-    "js-hover": 2,
     "native-dialog": 2,
     "ui-barrel-import": 1
   },
   "src/components/common/students/FamilyMemberModal.jsx": {
     "react-icons": 1,
     "ui-barrel-import": 2
-  },
-  "src/components/common/students/forms/sections/AcademicInfoSection.jsx": {
-    "palette-class": 4,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/forms/sections/GuardianInfoSection.jsx": {
-    "palette-class": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/forms/sections/PersonalInfoSection.jsx": {
-    "js-hover": 2,
-    "palette-class": 3,
-    "react-icons": 2,
-    "ui-barrel-import": 1
   },
   "src/components/common/students/HealthTab.jsx": {
     "ui-barrel-import": 1
@@ -351,9 +327,6 @@
   },
   "src/components/common/students/StudentExportModal.jsx": {
     "ui-barrel-import": 2
-  },
-  "src/components/common/students/tabs/ComplaintsTab.jsx": {
-    "js-hover": 2
   },
   "src/components/common/students/tabs/PorTab.jsx": {
     "ui-barrel-import": 2

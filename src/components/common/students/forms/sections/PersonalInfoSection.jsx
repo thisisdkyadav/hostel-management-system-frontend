@@ -1,7 +1,6 @@
 import React, { useState } from "react"
-import { FaUserGraduate } from "react-icons/fa"
-import { HiCamera } from "react-icons/hi"
-import { FormField, Grid, Surface } from "@/components/ui"
+import { Camera, GraduationCap } from "lucide-react"
+import { FormField, Grid, IconButton, Text } from "hzero"
 import ImageUploadModal from "../../../ImageUploadModal"
 import { getMediaUrl } from "../../../../../utils/mediaUtils"
 const PersonalInfoSection = ({ data, onChange }) => {
@@ -19,8 +18,8 @@ const PersonalInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate className="mr-2" color="var(--color-primary)" />
-        <h3 className="font-semibold text-gray-800">Personal Information</h3>
+        <GraduationCap className="mr-[var(--spacing-2)]" color="var(--color-primary)" />
+        <Text as="h3" weight="semibold" color="heading">Personal Information</Text>
       </div>
 
       <div className="flex flex-col items-center mb-6">
@@ -28,15 +27,22 @@ const PersonalInfoSection = ({ data, onChange }) => {
           {data.profileImage ? (
             <img src={getMediaUrl(data.profileImage)} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }} />
           ) : (
-            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }}>
-              <FaUserGraduate className="h-12 w-12" color="var(--color-primary)" />
+            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-[var(--color-primary-bg)] border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }}>
+              <GraduationCap className="h-12 w-12" color="var(--color-primary)" />
             </div>
           )}
-          <Surface bg="var(--button-primary-bg)" onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 text-white p-1.5 rounded-full cursor-pointer transition-colors" onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
-            <HiCamera className="w-4 h-4" />
-          </Surface>
+          {/* A button, so it can be tabbed to and announced. It was a Surface
+              with an onClick and its hover assigned in JavaScript. */}
+          <IconButton
+            variant="primary"
+            size="small"
+            icon={<Camera />}
+            ariaLabel="Change profile photo"
+            onClick={() => setIsImageModalOpen(true)}
+            className="absolute bottom-0 right-0"
+          />
         </div>
-        <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
+        <Text as="span" size="sm" color="muted">Click the camera icon to change profile photo</Text>
       </div>
 
       {isImageModalOpen && <ImageUploadModal userId={data.userId} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}

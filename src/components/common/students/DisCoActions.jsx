@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
-import { Button } from "hzero"
+import { Button, Card } from "hzero"
 
 const formatDisplayDate = (value) => {
   if (!value) return "-"
@@ -144,14 +144,6 @@ const DisCoActions = ({ userId }) => {
       display: "grid",
       gridTemplateColumns: "repeat(1, 1fr)",
       gap: "var(--spacing-4)",
-    },
-    card: {
-      backgroundColor: "var(--color-bg-primary)",
-      border: "var(--border-1) solid var(--color-border-primary)",
-      padding: "var(--spacing-4)",
-      borderRadius: "var(--radius-lg)",
-      boxShadow: "var(--shadow-sm)",
-      transition: "var(--transition-all)",
     },
     cardHeader: {
       display: "flex",
@@ -298,13 +290,7 @@ const DisCoActions = ({ userId }) => {
       ) : (
         <div style={styles.grid}>
           {actions.map((action) => (
-            <div key={action._id} style={styles.card} onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "var(--shadow-md)"
-            }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-sm)"
-              }}
-            >
+            <Card key={action._id} padding="p-4">
               <div style={styles.cardHeader}>
                 <div style={styles.cardTitleRow}>
                   <h4 style={styles.cardTitle}>{action.actionTaken}</h4>
@@ -375,7 +361,7 @@ const DisCoActions = ({ userId }) => {
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
