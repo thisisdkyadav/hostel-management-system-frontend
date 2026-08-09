@@ -38,16 +38,9 @@ export const GymkhanaCalendarFooterTabs = ({
             ...footerTabStyles.tab,
             ...(selectedYear === year.academicYear ? footerTabStyles.tabActive : {}),
           }}
-          onMouseEnter={(event) => {
-            if (selectedYear !== year.academicYear) {
-              event.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
-            }
-          }}
-          onMouseLeave={(event) => {
-            if (selectedYear !== year.academicYear) {
-              event.currentTarget.style.backgroundColor = "transparent"
-            }
-          }}
+          // Only the inactive tabs react, which is a selector, not a guard
+          // repeated inside two handlers.
+          className={selectedYear === year.academicYear ? undefined : "hover:bg-[var(--color-bg-hover)]"}
         >
           {year.academicYear}
         </button>

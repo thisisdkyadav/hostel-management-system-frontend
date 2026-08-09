@@ -39,6 +39,11 @@ const calendarCardStyle = {
   boxShadow: "var(--shadow-xs)",
 }
 
+// The nav buttons' hover, as one class instead of a helper that wrote three
+// style properties on every pointer crossing.
+const NAV_HOVER =
+  "hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-bg)]"
+
 const navBtnStyle = {
   display: "inline-flex",
   alignItems: "center",
@@ -106,12 +111,6 @@ function MonthCalendarView({
     (total, date) => (date ? total + getEventsForDate(date).length : total),
     0,
   )
-  const hoverNav = (node, on) => {
-    node.currentTarget.style.borderColor = on ? "var(--color-primary)" : "var(--color-border-primary)"
-    node.currentTarget.style.color = on ? "var(--color-primary)" : "var(--color-text-muted)"
-    node.currentTarget.style.backgroundColor = on ? "var(--color-primary-bg)" : "var(--color-bg-primary)"
-  }
-
   return (
     <div style={calendarCardStyle}>
       <div
@@ -141,9 +140,8 @@ function MonthCalendarView({
           <button
             onClick={() => goMonth(-1)}
             style={navBtnStyle}
+            className={NAV_HOVER}
             aria-label="Previous month"
-            onMouseEnter={(node) => hoverNav(node, true)}
-            onMouseLeave={(node) => hoverNav(node, false)}
           >
             <ChevronLeft size={16} />
           </button>
@@ -155,17 +153,15 @@ function MonthCalendarView({
               fontSize: "var(--font-size-xs)",
               fontWeight: "var(--font-weight-medium)",
             }}
-            onMouseEnter={(node) => hoverNav(node, true)}
-            onMouseLeave={(node) => hoverNav(node, false)}
+            className={NAV_HOVER}
           >
             Today
           </button>
           <button
             onClick={() => goMonth(1)}
             style={navBtnStyle}
+            className={NAV_HOVER}
             aria-label="Next month"
-            onMouseEnter={(node) => hoverNav(node, true)}
-            onMouseLeave={(node) => hoverNav(node, false)}
           >
             <ChevronRight size={16} />
           </button>
@@ -288,14 +284,7 @@ function MonthCalendarView({
                     key={eventIndex}
                     onClick={() => onEventClick(event)}
                     title={event.title}
-                    onMouseEnter={(node) => {
-                      node.currentTarget.style.backgroundColor = solidTint(getCategoryColor(event.category), 30)
-                      node.currentTarget.style.transform = "translateX(2px)"
-                    }}
-                    onMouseLeave={(node) => {
-                      node.currentTarget.style.backgroundColor = solidTint(getCategoryColor(event.category), 16)
-                      node.currentTarget.style.transform = "none"
-                    }}
+                    className="hover:bg-[var(--evt-tint-hover)] hover:translate-x-[2px]"
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -306,6 +295,9 @@ function MonthCalendarView({
                       lineHeight: 1.25,
                       padding: "3px 6px",
                       borderRadius: "var(--radius-sm)",
+                      // Per-event data, so the hover tint rides in as a custom
+                      // property and the :hover rule stays in CSS.
+                      "--evt-tint-hover": solidTint(getCategoryColor(event.category), 30),
                       backgroundColor: solidTint(getCategoryColor(event.category), 16),
                       border: "none",
                       cursor: "pointer",
@@ -386,20 +378,7 @@ function YearCalendarView({
               transition: "var(--transition-all)",
               boxShadow: isCurrentMonth ? "inset 0 0 0 1px var(--color-primary)" : "var(--shadow-xs)",
             }}
-            onMouseEnter={(node) => {
-              node.currentTarget.style.borderColor = "var(--color-primary)"
-              node.currentTarget.style.transform = "translateY(-2px)"
-              node.currentTarget.style.boxShadow = "var(--shadow-sm)"
-            }}
-            onMouseLeave={(node) => {
-              node.currentTarget.style.borderColor = isCurrentMonth
-                ? "var(--color-primary)"
-                : "var(--color-border-primary)"
-              node.currentTarget.style.transform = "none"
-              node.currentTarget.style.boxShadow = isCurrentMonth
-                ? "inset 0 0 0 1px var(--color-primary)"
-                : "var(--shadow-xs)"
-            }}
+            className="hover:border-[var(--color-primary)] hover:-translate-y-[2px] hover:shadow-[var(--shadow-sm)]"
           >
             <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
               <Text as="span" size="sm" weight="bold" color="heading">
@@ -672,12 +651,7 @@ export default function GymkhanaEventsPageContent({
                       cursor: "pointer",
                       transition: "all 0.15s ease",
                     }}
-                    onMouseEnter={(eventNode) => {
-                      eventNode.currentTarget.style.borderColor = "var(--color-warning)"
-                    }}
-                    onMouseLeave={(eventNode) => {
-                      eventNode.currentTarget.style.borderColor = "var(--color-border-primary)"
-                    }}
+                    className="hover:border-[var(--color-warning)]"
                   >
                     <Text as="span" size="xs" weight="medium" color="heading">
                       {event.title}
