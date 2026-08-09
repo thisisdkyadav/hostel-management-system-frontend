@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaBuilding, FaPlus } from "react-icons/fa"
-import { Grid, Heading, SearchInput, Spinner, Surface, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Grid, Heading, SearchInput, Spinner, Surface, VStack } from "hzero"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
 import { insuranceProviderApi } from "../../../service"
+import { Building2, Plus } from "lucide-react"
 
 const filterInsuranceProviders = (providers, filterStatus, searchTerm) => {
   return providers
@@ -60,7 +59,7 @@ const InsuranceProviders = () => {
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <Heading as="h2" size="xl" weight="semibold" color="body">Insurance Providers</Heading>
         <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <FaPlus />
+          <Plus size="1em" />
           Add Provider
         </Button>
       </header>
@@ -79,7 +78,7 @@ const InsuranceProviders = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredProviders.length === 0 ? (
-        <NoResults icon={<FaBuilding style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
+        <NoResults icon={<Building2 size={40} color="var(--color-border-primary)" />} message="No insurance providers found" suggestion="Try changing your search or filter criteria" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredProviders.map((provider) => (

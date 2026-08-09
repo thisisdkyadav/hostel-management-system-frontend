@@ -1,11 +1,9 @@
 import { useState, useRef } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Alert, FileInput, Grid, Heading, HStack, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Table, Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, FileInput, Grid, Heading, HStack, Modal, Spinner, Surface, Table, Text, VStack } from "hzero"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { adminApi } from "../../../service"
+import { Check, Download, Upload, X } from "lucide-react"
 
 const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId, undertakingTitle }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -163,17 +161,32 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
     <Modal title={`Add Students to Undertaking - ${undertakingTitle}`} onClose={onClose} width={700}>
       {step === 1 && (
         <VStack gap={5}>
-          <Surface bg="var(--color-bg-hover)" padding={8} radius="xl" border="var(--border-2) dashed var(--color-border-input)" align="center" style={{ cursor: 'pointer', transition: 'var(--transition-colors)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}>
-            <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)' }} color="var(--color-text-muted)" />
+          {/* A button, not a div with an onClick: this is the only way to
+              choose a file, and it was unreachable by keyboard. The file
+              input is a sibling because a button may not contain one. */}
+          <Surface
+            as="button"
+            type="button"
+            bg="secondary"
+            padding={8}
+            radius="xl"
+            // font:inherit because a native button does not take the page's
+            // font, and everything inside this one is body copy.
+            className="w-full text-center border-2 border-dashed border-[var(--color-border-input)] hover:bg-[var(--color-bg-tertiary)] transition-colors [font:inherit]"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current.click()}
+          >
+            <Upload style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)' }} color="var(--color-text-muted)" />
             <Text size="sm" color="muted" style={{ marginTop: 'var(--spacing-2)' }}>Drag and drop a CSV file here, or click to select a file</Text>
             <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-3)' }}>
               <strong>Required fields:</strong> rollNumber
             </Text>
-            <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </Surface>
+          <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           <VStack gap="none" align="center">
             <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
-              <FaFileDownload /> Download CSV Template
+              <Download size="1em" /> Download CSV Template
             </Button>
 
             <Surface bg="var(--color-bg-hover)" padding={3} radius="lg" color="muted" size="xs" style={{ marginTop: 'var(--spacing-2)', maxWidth: '28rem' }}>
@@ -198,7 +211,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
                 size="sm"
                 aria-label="Remove file"
               >
-                <FaTimes />
+                <X size="1em" />
               </Button>
             </div>
           )}
@@ -255,7 +268,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
 
         {step === 2 && (
           <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
-            <FaCheck /> {isUpdating ? "Adding Students..." : "Confirm Add"}
+            <Check size="1em" /> {isUpdating ? "Adding Students..." : "Confirm Add"}
           </Button>
         )}
       </div>

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Button, Input } from "hzero"
+import { Button, Checkbox, EmptyState, Field, FileInput, Grid, Heading, HStack, Input, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, useToast, VStack } from "hzero"
 import { compressImage, extractTemplateVariables } from "pdf-certificate-kit"
-import { useToast } from "@/components/ui/feedback"
 import { Upload, Trash2, X, GripVertical } from "lucide-react"
-import { Checkbox, EmptyState, Field, FileInput, Grid, Heading, HStack, Label, SearchInput, Select, Spinner, Surface, Switch, Text, Textarea, VStack } from "@/components/ui"
 import { signatureApi, uploadApi } from "@/service"
 import { resolveUploadedFileRef } from "@/service/modules/upload.api"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -34,6 +32,9 @@ const ORIENTATION_OPTIONS = [
   { value: "portrait", label: "Portrait" },
 ]
 
+// Literal hexes on purpose: these are the certificate's own theme, handed to
+// pdf-certificate-kit to draw a PDF. A var() means nothing outside the DOM.
+// The accent matches --color-primary's light value.
 const DEFAULT_THEME = {
   orientation: "landscape",
   fontFamily: "Times",

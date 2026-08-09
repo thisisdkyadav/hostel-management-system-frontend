@@ -2,10 +2,9 @@ import React, { useState } from "react"
 import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../service"
-import { Field, Grid, Heading, HStack, Label, Select, Surface, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Field, Grid, Heading, HStack, Input, Label, Modal, Select, Surface, useToast, VStack } from "hzero"
 const AddHostelModal = ({ show, onClose, onAdd }) => {
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     name: "",
     gender: "Boys",
@@ -22,12 +21,12 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
 
     const response = await adminApi.addHostel(formData)
     if (!response?.success) {
-      alert("Failed to add hostel. Please try again.")
+      toast.error("Failed to add hostel. Please try again.")
       return
     }
     const hostel = response.data
     onAdd()
-    alert(`Hostel ${hostel.name ? hostel.name : ""} added successfully!`)
+    toast.success(`Hostel ${hostel.name ? hostel.name : ""} added successfully!`)
     onClose()
     resetForm()
   }

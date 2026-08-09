@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Heading, InfoRow, Surface, Text } from "@/components/ui"
+import { Grid, Heading, InfoRow, Surface, Text } from "hzero"
 
 const RoomStatsSummary = ({ data, isUnitBased }) => {
   const totalRooms = data.length

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
-import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Alert, Field, HStack, Label, Pagination, Spinner, Surface, Text, Textarea, useConfirm, VStack } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Pagination, Spinner, Surface, Table, Text, Textarea, useConfirm, useToast, VStack } from "hzero"
+import { PackageOpen, Pencil, Plus, Search, Trash2 } from "lucide-react"
 const ItemTypes = () => {
+  const { toast } = useToast()
   const confirm = useConfirm()
   const [itemTypes, setItemTypes] = useState([])
   const [totalPages, setTotalPages] = useState(1)
@@ -19,6 +18,10 @@ const ItemTypes = () => {
     totalCount: 0,
   })
   const [isEditMode, setIsEditMode] = useState(false)
+  // Was window.prompt, which is a blocking browser dialog that cannot be
+  // styled, cannot be dismissed with the rest of the UI, and on mobile
+  // Safari can be suppressed entirely.
+  const [countEdit, setCountEdit] = useState(null)
   const [itemsPerPage] = useState(10)
 
   // Fetch item types
@@ -120,16 +123,15 @@ const ItemTypes = () => {
   }
 
   // Handle update count
-  const handleUpdateCount = async (id, currentCount) => {
-    const newCount = window.prompt("Enter new count:", currentCount)
-    if (newCount === null) return
-
-    const parsedCount = parseInt(newCount, 10)
+  const handleUpdateCount = async () => {
+    const parsedCount = parseInt(countEdit?.value, 10)
     if (isNaN(parsedCount) || parsedCount < 0) {
-      alert("Please enter a valid number")
+      toast.error("Please enter a valid number")
       return
     }
+    const id = countEdit.id
 
+    setCountEdit(null)
     setLoading(true)
     setError(null)
     try {
@@ -150,13 +152,13 @@ const ItemTypes = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', flex: 1, maxWidth: '500px' }}>
-          <Input type="text" placeholder="Search item types..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<FaSearch />} />
+          <Input type="text" placeholder="Search item types..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<Search size="1em" />} />
           <Button onClick={handleSearch} variant="ghost" size="sm">
             Search
           </Button>
         </div>
         <Button onClick={openNewItemModal} variant="primary" size="md">
-          <FaPlus />
+          <Plus size="1em" />
           Add New Item
         </Button>
       </div>
@@ -171,10 +173,10 @@ const ItemTypes = () => {
           </div>
         ) : itemTypes.length === 0 ? (
           <Surface padding="var(--spacing-12) 0" align="center">
-            <FaBoxOpen style={{ margin: '0 auto', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
+            <PackageOpen size={32} style={{ margin: '0 auto', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
             <Text color="muted">No inventory item types found</Text>
             <Button onClick={openNewItemModal} variant="primary" size="sm">
-              <FaPlus />
+              <Plus size="1em" />
               Add your first item
             </Button>
           </Surface>
@@ -195,14 +197,14 @@ const ItemTypes = () => {
                     <Table.Cell style={{ whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)' }}>{item.name}</Table.Cell>
                     <Table.Cell>{item.description}</Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
-                      <Button onClick={() => handleUpdateCount(item._id, item.totalCount)} variant="ghost" size="sm">
+                      <Button onClick={() => setCountEdit({ id: item._id, value: String(item.totalCount) })} variant="ghost" size="sm">
                         {item.totalCount}
                       </Button>
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap={3} align="center">
-                        <Button onClick={() => handleEdit(item)} variant="secondary" size="sm"><FaEdit /></Button>
-                        <Button onClick={() => handleDelete(item._id)} variant="danger" size="sm"><FaTrash /></Button>
+                        <Button onClick={() => handleEdit(item)} variant="secondary" size="sm"><Pencil size="1em" /></Button>
+                        <Button onClick={() => handleDelete(item._id)} variant="danger" size="sm"><Trash2 size="1em" /></Button>
                       </HStack>
                     </Table.Cell>
                   </Table.Row>
@@ -215,6 +217,35 @@ const ItemTypes = () => {
 
       {/* Pagination */}
       {!loading && itemTypes.length > 0 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
+
+      {/* Update count */}
+      {countEdit && (
+        <Modal isOpen title="Update Count" onClose={() => setCountEdit(null)} width={420}>
+          <form onSubmit={(e) => { e.preventDefault(); handleUpdateCount() }}>
+            <VStack gap="large">
+              <Field label="New count" htmlFor="newCount" required>
+                <Input
+                  type="number"
+                  id="newCount"
+                  min="0"
+                  value={countEdit.value}
+                  onChange={(e) => setCountEdit((prev) => ({ ...prev, value: e.target.value }))}
+                  autoFocus
+                  required
+                />
+              </Field>
+              <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
+                <Button type="button" onClick={() => setCountEdit(null)} variant="secondary" size="md">
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
+                  Update
+                </Button>
+              </HStack>
+            </VStack>
+          </form>
+        </Modal>
+      )}
 
       {/* Modal */}
       {showModal && (

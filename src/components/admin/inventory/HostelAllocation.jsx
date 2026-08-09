@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
-import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Alert, Heading, HStack, IconCircle, Label, Pagination, Select, Spinner, Surface, Text, useConfirm, VStack } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Heading, HStack, IconCircle, Input, Label, Modal, Pagination, Select, Spinner, Surface, Table, Text, useConfirm, VStack } from "hzero"
 import { useGlobal } from "../../../contexts/GlobalProvider"
+import { Box, Building2, Filter, Pencil, Plus, Trash2, Warehouse } from "lucide-react"
 
 const HostelAllocation = () => {
   const confirm = useConfirm()
@@ -209,7 +207,7 @@ const HostelAllocation = () => {
           variant="primary"
           size="md"
         >
-          <FaPlus />
+          <Plus size="1em" />
           Allocate Items
         </Button>
       </div>
@@ -217,7 +215,7 @@ const HostelAllocation = () => {
       {/* Filters */}
       <Surface bg="tertiary" padding={4} radius="lg" border="1px solid var(--color-border-light)">
         <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-          <FaFilter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Allocations
+          <Filter style={{ marginRight: 'var(--spacing-2)' }} color="var(--color-text-muted)" /> Filter Allocations
         </h3>
         <div className="flex flex-col md:flex-row gap-4 items-end">
           <VStack gap="xsmall" className="flex-1">
@@ -251,7 +249,7 @@ const HostelAllocation = () => {
               Reset
             </Button>
             <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="md">
-              <FaFilter />
+              <Filter size="1em" />
               Filter
             </Button>
           </HStack>
@@ -268,7 +266,7 @@ const HostelAllocation = () => {
           </div>
         ) : hostelInventory.length === 0 ? (
           <Surface padding="var(--spacing-12) 0" align="center">
-            <FaWarehouse style={{ margin: '0 auto', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
+            <Warehouse size={32} style={{ margin: '0 auto', marginBottom: 'var(--spacing-4)' }} color="var(--color-border-primary)" />
             <Text color="muted">No hostel inventory allocations found</Text>
             <Button
               onClick={openNewAllocationModal}
@@ -276,7 +274,7 @@ const HostelAllocation = () => {
               size="sm"
               style={{ marginTop: 'var(--spacing-4)' }}
             >
-              <FaPlus />
+              <Plus size="1em" />
               Allocate your first item
             </Button>
           </Surface>
@@ -298,7 +296,7 @@ const HostelAllocation = () => {
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
                         <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-                          <FaBuilding color="var(--color-primary)" />
+                          <Building2 color="var(--color-primary)" />
                         </IconCircle>
                         <Text as="span" weight="medium" color="secondary">{allocation.hostelId.name}</Text>
                       </HStack>
@@ -306,7 +304,7 @@ const HostelAllocation = () => {
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap="none" align="center">
                         <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: 'var(--spacing-3)' }}>
-                          <FaBox color="var(--color-primary)" />
+                          <Box color="var(--color-primary)" />
                         </IconCircle>
                         <div>
                           <Text as="div" weight="medium" color="secondary">{allocation.itemTypeId.name}</Text>
@@ -320,8 +318,8 @@ const HostelAllocation = () => {
                     </Table.Cell>
                     <Table.Cell style={{ whiteSpace: 'nowrap' }}>
                       <HStack gap={3} align="center">
-                        <Button onClick={() => handleEdit(allocation)} variant="secondary" size="sm"><FaEdit /></Button>
-                        <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="sm"><FaTrash /></Button>
+                        <Button onClick={() => handleEdit(allocation)} variant="secondary" size="sm"><Pencil size="1em" /></Button>
+                        <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="sm"><Trash2 size="1em" /></Button>
                       </HStack>
                     </Table.Cell>
                   </Table.Row>

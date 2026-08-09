@@ -1,12 +1,12 @@
 import { useState } from "react"
-import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCalendarAlt, FaUsers } from "react-icons/fa"
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Card, CardBody, CardFooter, CardHeader, Heading, HStack, Surface, Text, useConfirm, useToast } from "hzero"
+import { Building2, Calendar, Mail, MapPin, Pencil, Phone, Trash2, Users } from "lucide-react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
+  const { toast } = useToast()
   const confirm = useConfirm()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showBulkUpdateModal, setShowBulkUpdateModal] = useState(false)
@@ -17,11 +17,11 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
       try {
         setIsDeleting(true)
         await insuranceProviderApi.deleteInsuranceProvider(provider.id)
-        alert("Insurance provider deleted successfully!")
+        toast.success("Insurance provider deleted successfully!")
         if (onDelete) onDelete()
       } catch (error) {
         console.error("Error deleting insurance provider:", error)
-        alert("Failed to delete insurance provider. Please try again.")
+        toast.error("Failed to delete insurance provider. Please try again.")
       } finally {
         setIsDeleting(false)
       }
@@ -31,11 +31,11 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const handleBulkUpdate = async (data) => {
     try {
       await insuranceProviderApi.updateBulkStudentInsurance(data)
-      alert("Student insurance details updated successfully!")
+      toast.success("Student insurance details updated successfully!")
       return true
     } catch (error) {
       console.error("Error updating student insurance details:", error)
-      alert("Failed to update student insurance details. Please try again.")
+      toast.error("Failed to update student insurance details. Please try again.")
       return false
     }
   }
@@ -54,32 +54,32 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
-                <FaBuilding style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
+                <Building2 size={20} color="var(--color-primary)" />
               </Surface>
               <Heading as="h3" weight="semibold" size="lg" color="secondary">{provider.name}</Heading>
             </HStack>
             <HStack gap={2}>
-              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit provider"><FaEdit /></Button>
-              <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete provider"><FaTrash /></Button>
+              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit provider"><Pencil size="1em" /></Button>
+              <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete provider"><Trash2 size="1em" /></Button>
             </HStack>
           </HStack>
         </CardHeader>
 
         <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <HStack gap="none" align="start">
-            <FaEnvelope style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Mail style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted" style={{ wordBreak: 'break-all' }}>{provider.email}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaPhone style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Phone style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted">{provider.phone}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaMapMarkerAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <MapPin style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="span" color="muted">{provider.address}</Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaCalendarAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Calendar style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>
                 Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}
@@ -90,7 +90,7 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
 
         <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
           <Button onClick={() => setShowBulkUpdateModal(true)} variant="secondary" size="md" fullWidth>
-            <FaUsers />
+            <Users size="1em" />
             Update Student Insurance Details
           </Button>
         </CardFooter>

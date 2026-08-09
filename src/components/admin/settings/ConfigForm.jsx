@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { HiSave } from "react-icons/hi"
-import { Alert, Checkbox, HStack, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Alert, Button, Checkbox, HStack, Input, VStack } from "hzero"
+import { Save } from "lucide-react"
 
 // "maxLeaveDays" / "max_leave_days" -> "Max Leave Days" (display only)
 const formatKeyLabel = (key) =>
@@ -94,9 +93,9 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
               <div className="flex-1 min-w-0">
                 <label htmlFor={`config-${key}`} className="flex flex-wrap items-center gap-1.5 text-sm font-medium text-[var(--color-text-secondary)]">
                   {formatKeyLabel(key)}
-                  <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[0.6rem] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">{typeof value}</span>
+                  <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[var(--font-size-2xs)] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">{typeof value}</span>
                   {isModified && (
-                    <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-warning-bg)] text-[0.6rem] font-bold uppercase tracking-wide text-[var(--color-warning-text)]">Modified</span>
+                    <span className="px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-warning-bg)] text-[var(--font-size-2xs)] font-bold uppercase tracking-wide text-[var(--color-warning-text)]">Modified</span>
                   )}
                 </label>
                 <p className="text-xs text-[var(--color-text-muted)] mt-0.5 font-mono truncate">
@@ -115,7 +114,7 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
           <span className="text-xs text-[var(--color-warning-text)]">{modifiedCount} unsaved change{modifiedCount === 1 ? "" : "s"}</span>
         )}
         <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="md" loading={isLoading}>
-          <HiSave /> Save Changes
+          <Save size="1em" /> Save Changes
         </Button>
       </HStack>
     </VStack>

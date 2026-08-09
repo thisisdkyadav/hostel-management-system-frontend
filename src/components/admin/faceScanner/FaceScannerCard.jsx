@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Badge, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Surface, Text, useConfirm, useToast, VStack } from "hzero"
 import { faceScannerApi } from "../../../service"
+import { ArrowLeft, ArrowRight, Building2, Camera, Key, Pencil, Power, Trash2 } from "lucide-react"
 
 const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
-    const [isHovered, setIsHovered] = useState(false)
+    const { toast } = useToast()
+    const confirm = useConfirm()
     const [showCredentials, setShowCredentials] = useState(false)
     const [newCredentials, setNewCredentials] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -13,16 +13,14 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     const getDirectionStyle = (direction) => {
         if (direction === "in") {
             return {
-                base: "bg-[var(--color-success-bg)] text-[var(--color-success-text)]",
-                hover: "bg-[var(--color-success)] text-white",
-                icon: <FaArrowRight />,
+                base: "bg-[var(--color-success-bg)] text-[var(--color-success-text)] group-hover:bg-[var(--color-success)] group-hover:text-[var(--color-on-accent)]",
+                icon: <ArrowRight size="1em" />,
                 label: "Entry",
             }
         }
         return {
-            base: "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
-            hover: "bg-[var(--color-warning)] text-white",
-            icon: <FaArrowLeft />,
+            base: "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] group-hover:bg-[var(--color-warning)] group-hover:text-[var(--color-on-accent)]",
+            icon: <ArrowLeft size="1em" />,
             label: "Exit",
         }
     }
@@ -30,7 +28,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     const directionStyle = getDirectionStyle(scanner.direction)
 
     const handleRegeneratePassword = async () => {
-        if (!confirm("Are you sure you want to regenerate the password? The old password will stop working.")) {
+        if (!(await confirm({ message: "Are you sure you want to regenerate the password? The old password will stop working.", isDestructive: true }))) {
             return
         }
 
@@ -41,11 +39,11 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                 setNewCredentials(response.data.credentials)
                 setShowCredentials(true)
             } else {
-                alert("Failed to regenerate password.")
+                toast.error("Failed to regenerate password.")
             }
         } catch (error) {
             console.error("Error regenerating password:", error)
-            alert("Failed to regenerate password.")
+            toast.error("Failed to regenerate password.")
         } finally {
             setLoading(false)
         }
@@ -58,14 +56,14 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             onUpdate()
         } catch (error) {
             console.error("Error updating scanner:", error)
-            alert("Failed to update scanner.")
+            toast.error("Failed to update scanner.")
         } finally {
             setLoading(false)
         }
     }
 
     const handleDelete = async () => {
-        if (!confirm(`Are you sure you want to delete "${scanner.name}"?`)) {
+        if (!(await confirm({ message: `Are you sure you want to delete "${scanner.name}"?`, isDestructive: true }))) {
             return
         }
 
@@ -75,7 +73,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             onDelete()
         } catch (error) {
             console.error("Error deleting scanner:", error)
-            alert("Failed to delete scanner.")
+            toast.error("Failed to delete scanner.")
         } finally {
             setLoading(false)
         }
@@ -83,18 +81,18 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
-        alert("Copied to clipboard!")
+        toast.success("Copied to clipboard!")
     }
 
     return (
-        <Card className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <Card className="group">
             {/* Header with Icon and Title */}
             <CardHeader>
                 <HStack gap={4} align="center">
                     <div
-                        className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? directionStyle.hover : directionStyle.base}`}
+                        className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${directionStyle.base}`}
                     >
-                        <FaCamera />
+                        <Camera size="1em" />
                     </div>
                     <div style={{ flex: 1 }}>
                         <Heading as="h3" size="xl" weight="bold" color="secondary">
@@ -119,12 +117,12 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
                 {scanner.type === "hostel-gate" ? (
                     <HStack align="center" gap={2} size="sm" color="tertiary">
-                        <FaBuilding color="var(--color-text-muted)" />
+                        <Building2 color="var(--color-text-muted)" />
                         <span>Hostel: {scanner.hostelId?.name || "Not Assigned"}</span>
                     </HStack>
                 ) : (
                     <HStack align="center" gap={2} size="sm" color="tertiary">
-                        <FaBuilding color="var(--color-text-muted)" />
+                        <Building2 color="var(--color-text-muted)" />
                         <span>Caterer: {scanner.catererId?.name || "Not Assigned"}</span>
                     </HStack>
                 )}
@@ -161,16 +159,16 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
                 <Grid cols={2} gap={2}>
                     <Button onClick={handleRegeneratePassword} variant="secondary" size="md" fullWidth disabled={loading}>
-                        <FaKey />
+                        <Key size="1em" />
                         New Password
                     </Button>
                     <Button onClick={handleToggleActive} variant="secondary" size="md" fullWidth disabled={loading}>
-                        <FaPowerOff />
+                        <Power size="1em" />
                         {scanner.isActive ? "Deactivate" : "Activate"}
                     </Button>
                 </Grid>
                 <Button onClick={handleDelete} variant="danger" size="md" fullWidth disabled={loading}>
-                    <FaTrash />
+                    <Trash2 size="1em" />
                     Delete Scanner
                 </Button>
             </CardFooter>

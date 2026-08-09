@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
-import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Grid, Heading, SearchInput, Spinner, Surface, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Grid, Heading, SearchInput, Spinner, Surface, VStack } from "hzero"
 import NoResults from "../../common/NoResults"
 import HostelGateCard from "./HostelGateCard"
 import AddHostelGateModal from "./AddHostelGateModal"
 import { hostelGateApi } from "../../../service"
+import { Building2, Plus } from "lucide-react"
 
 const filterHostelGates = (gates, searchTerm) => {
   if (!gates) return []
@@ -55,7 +54,7 @@ const HostelLogins = () => {
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <Heading as="h2" size="xl" weight="semibold" color="body">Hostel Gate Logins</Heading>
         <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <FaPlus />
+          <Plus size="1em" />
           Add Hostel Gate Login
         </Button>
       </header>
@@ -71,7 +70,7 @@ const HostelLogins = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredHostelGates.length === 0 ? (
-        <NoResults icon={<FaBuilding style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No hostel gate logins found" suggestion="Add a new hostel gate login using the button above" />
+        <NoResults icon={<Building2 size={40} color="var(--color-border-primary)" />} message="No hostel gate logins found" suggestion="Add a new hostel gate login using the button above" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredHostelGates.map((gate) => (

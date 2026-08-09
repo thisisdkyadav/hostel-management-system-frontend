@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react"
-import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Alert, Grid, HStack, IconCircle, InfoRow, SearchInput, Spinner, Surface, Text, VStack } from "@/components/ui"
-import { Table, Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Grid, HStack, IconCircle, InfoRow, Input, Modal, SearchInput, Spinner, Surface, Table, Text, VStack } from "hzero"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
+import { ClipboardCheck, Download, Search } from "lucide-react"
 
 const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onClose }) => {
   const [students, setStudents] = useState([])
@@ -128,9 +126,9 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
           </HStack>
 
           <HStack gap="small" align="center">
-            <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
+            <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<Search size="1em" />} />
             <Button onClick={exportToCSV} variant="primary" size="md" title="Export to CSV">
-              <FaFileDownload />
+              <Download size="1em" />
               Export
             </Button>
           </HStack>
@@ -142,7 +140,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
             <Spinner size="var(--icon-3xl)" thickness="thin" />
           </div>
         ) : filteredStudents.length === 0 ? (
-          <NoResults icon={<FaClipboardCheck style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
+          <NoResults icon={<ClipboardCheck size={40} color="var(--color-border-primary)" />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
         ) : (
           <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
             <Table>

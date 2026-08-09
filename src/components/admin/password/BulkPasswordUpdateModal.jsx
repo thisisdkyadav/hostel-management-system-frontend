@@ -1,10 +1,8 @@
 import { useState, useRef } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { VStack, HStack, Alert, FileInput } from "@/components/ui"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, FileInput, HStack, Modal, VStack } from "hzero"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
+import { Check, Download, Upload, X } from "lucide-react"
 const styles = {
   spaceY5: {
     display: 'flex',
@@ -416,7 +414,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
         <div style={styles.spaceY5}>
           <div style={{ ...styles.dropzone, ...(dropzoneHover ? styles.dropzoneHover : {}) }} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}
           >
-            <FaFileUpload style={styles.uploadIcon} />
+            <Upload style={styles.uploadIcon} />
             <p style={styles.dropzoneText}>Drag and drop a CSV file here, or click to select a file</p>
             <p style={styles.dropzoneHint}>
               <strong>Required fields:</strong> email, password
@@ -425,7 +423,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
           </div>
           <div style={styles.centerColumn}>
             <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
-              <FaFileDownload /> Download CSV Template
+              <Download size="1em" /> Download CSV Template
             </Button>
 
             <div style={styles.infoBox}>
@@ -454,7 +452,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
                 size="sm"
                 aria-label="Remove file"
               >
-                <FaTimes />
+                <X size="1em" />
               </Button>
             </div>
           )}
@@ -515,7 +513,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
 
         {step === 2 && (
           <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
-            <FaCheck /> {isUpdating ? "Updating Passwords..." : "Confirm Update"}
+            <Check size="1em" /> {isUpdating ? "Updating Passwords..." : "Confirm Update"}
           </Button>
         )}
       </div>

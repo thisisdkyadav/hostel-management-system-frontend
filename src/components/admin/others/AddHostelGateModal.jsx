@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaBuilding, FaEnvelope, FaKey } from "react-icons/fa"
-import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
 import { hostelGateApi } from "../../../service"
+import { Building2, Key, Mail } from "lucide-react"
 
 const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     hostelId: "",
     password: "",
@@ -75,7 +74,7 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
         password: formData.password,
       })
 
-      alert("Hostel gate login created successfully!")
+      toast.success("Hostel gate login created successfully!")
 
       // Reset form
       setFormData({
@@ -110,7 +109,7 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
                 name="hostelId"
                 value={formData.hostelId}
                 onChange={handleChange}
-                icon={<FaBuilding />}
+                icon={<Building2 size="1em" />}
                 options={[{ value: "", label: "Select a hostel" }, ...availableHostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
                 required
               />
@@ -119,17 +118,17 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
 
             {generatedEmail && (
               <Field label="Generated Email">
-                <Input type="text" value={generatedEmail} icon={<FaEnvelope />} disabled />
+                <Input type="text" value={generatedEmail} icon={<Mail size="1em" />} disabled />
                 <Text size="xs" color="muted" style={{ marginTop: 'var(--spacing-1)' }}>This email will be automatically created for the hostel gate login.</Text>
               </Field>
             )}
 
             <Field label="Password" htmlFor="password" required>
-              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter password" required />
+              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<Key size="1em" />} placeholder="Enter password" required />
             </Field>
 
             <Field label="Confirm Password" htmlFor="confirmPassword" required>
-              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm password" required />
+              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<Key size="1em" />} placeholder="Confirm password" required />
             </Field>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button } from "hzero"
-import { HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Button, HStack, Modal, Surface, Text, VStack } from "hzero"
 import { Radio, Trash2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { useSocket } from "@/contexts/SocketProvider"
 

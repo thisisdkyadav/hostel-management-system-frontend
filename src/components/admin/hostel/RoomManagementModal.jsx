@@ -1,13 +1,10 @@
 import React, { useState } from "react"
-import { HStack, Text, useConfirm, VStack } from "@/components/ui"
-import { Tabs, Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, HStack, Modal, Tabs, Text, useConfirm, useToast, VStack } from "hzero"
 import { Table, Pencil, Trash2 } from "lucide-react"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
 import AddRoomsCsv from "./rooms/AddRoomsCsv"
 import { hostelApi } from "../../../service"
-import { useToast } from "@/components/ui/feedback"
 
 const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
   const { toast } = useToast()

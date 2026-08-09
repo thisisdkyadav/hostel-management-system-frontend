@@ -1,5 +1,5 @@
-import { StatCards } from "@/components/ui"
-import { FaCamera, FaCheckCircle, FaArrowRight, FaArrowLeft } from "react-icons/fa"
+import { StatCards } from "hzero"
+import { ArrowLeft, ArrowRight, Camera, CircleCheck } from "lucide-react"
 
 const FaceScannerStats = ({ scanners }) => {
     const totalScanners = scanners.length
@@ -12,28 +12,28 @@ const FaceScannerStats = ({ scanners }) => {
             title: "Total Scanners",
             value: totalScanners,
             subtitle: "Registered devices",
-            icon: <FaCamera style={{ fontSize: "var(--icon-xl)" }} />,
+            icon: <Camera size={24} />,
             color: "var(--color-primary)",
         },
         {
             title: "Active",
             value: activeScanners,
             subtitle: "Currently enabled",
-            icon: <FaCheckCircle style={{ fontSize: "var(--icon-xl)" }} />,
+            icon: <CircleCheck size={24} />,
             color: "var(--color-success)",
         },
         {
             title: "Entry Scanners",
             value: entryScanners,
             subtitle: "Check-in devices",
-            icon: <FaArrowRight style={{ fontSize: "var(--icon-xl)" }} />,
+            icon: <ArrowRight size={24} />,
             color: "var(--color-success)",
         },
         {
             title: "Exit Scanners",
             value: exitScanners,
             subtitle: "Check-out devices",
-            icon: <FaArrowLeft style={{ fontSize: "var(--icon-xl)" }} />,
+            icon: <ArrowLeft size={24} />,
             color: "var(--color-warning)",
         },
     ]

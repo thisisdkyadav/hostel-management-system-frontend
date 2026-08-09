@@ -1,14 +1,13 @@
 import { useState } from "react"
-import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
-import { Alert, Field, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Text, Textarea, useToast, VStack } from "hzero"
 import { adminApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { format, parseISO } from "date-fns"
+import { Calendar, FileSignature, Info } from "lucide-react"
 
 const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,7 +46,7 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
       }
 
       await adminApi.createUndertaking(payload)
-      alert("Undertaking created successfully!")
+      toast.success("Undertaking created successfully!")
 
       // Reset form
       setFormData({
@@ -77,17 +76,17 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
             <Field label="Title" htmlFor="title" required>
-              <Input type="text" id="title" name="title" value={formData.title} onChange={handleChange} icon={<FaFileSignature />} placeholder="Undertaking Title" required />
+              <Input type="text" id="title" name="title" value={formData.title} onChange={handleChange} icon={<FileSignature size="1em" />} placeholder="Undertaking Title" required />
             </Field>
 
             <Field label="Description" htmlFor="description" required>
-              <Textarea id="description" name="description" value={formData.description} onChange={handleChange} icon={<FaInfoCircle />} rows={2} placeholder="Brief description of this undertaking" required />
+              <Textarea id="description" name="description" value={formData.description} onChange={handleChange} icon={<Info size="1em" />} rows={2} placeholder="Brief description of this undertaking" required />
             </Field>
 
             <Field label="Deadline" required>
               <div style={{ position: 'relative' }}>
                 <Text as="div" color="muted" style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', zIndex: 1 }}>
-                  <FaCalendarAlt />
+                  <Calendar size="1em" />
                 </Text>
                 <DatePicker selected={formData.deadline} onChange={handleDateChange} dateFormat="MM-dd-yyyy" style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)' }} placeholderText="mm-dd-yyyy" required popperPlacement="bottom" showMonthDropdown showYearDropdown dropdownMode="select" autoComplete="off" wrapperClassName="w-full" className="w-full p-3 pl-10 border rounded-lg" />
               </div>

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaFileSignature, FaPlus } from "react-icons/fa"
-import { Grid, Heading, HStack, SearchInput, Spinner, Surface } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Grid, Heading, HStack, SearchInput, Spinner, Surface } from "hzero"
 import NoResults from "../../common/NoResults"
 import UndertakingCard from "./UndertakingCard"
 import AddUndertakingModal from "./AddUndertakingModal"
 import { adminApi } from "../../../service"
+import { FileSignature, Plus } from "lucide-react"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings
@@ -54,7 +53,7 @@ const Undertakings = () => {
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <Heading as="h2" size="xl" weight="semibold" color="body">Undertakings</Heading>
         <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <FaPlus /> Add Undertaking
+          <Plus size="1em" /> Add Undertaking
         </Button>
       </header>
 
@@ -69,7 +68,7 @@ const Undertakings = () => {
       ) : error ? (
         <Surface padding={8} color="danger" align="center">{error}</Surface>
       ) : filteredUndertakings.length === 0 ? (
-        <NoResults icon={<FaFileSignature style={{ fontSize: 'var(--icon-3xl)' }} color="var(--color-border-primary)" />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
+        <NoResults icon={<FileSignature size={40} color="var(--color-border-primary)" />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (
         <Grid cols={3} gap={6} style={{ marginTop: 'var(--spacing-6)' }}>
           {filteredUndertakings.map((undertaking) => (

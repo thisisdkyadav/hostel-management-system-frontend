@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Grid, Select } from "@/components/ui"
+import { Grid, Select } from "hzero"
 import ConfigListManager from "./ConfigListManager"
 import {
   countConfiguredBatches,

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Alert, Field, HStack, Label, Select, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Select, useConfirm, VStack } from "hzero"
 import { Building, User, DoorOpen, Archive } from "lucide-react"
 import RoomManagementModal from "./RoomManagementModal"
 import { hostelApi } from "../../../service"

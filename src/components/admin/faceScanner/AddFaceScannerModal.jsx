@@ -1,11 +1,10 @@
 import React, { useState } from "react"
-import { Alert, Field, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
 import { faceScannerApi, adminApi } from "../../../service"
 import { useEffect } from "react"
 
 const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
+    const { toast } = useToast()
     const [formData, setFormData] = useState({
         name: "",
         type: "hostel-gate",
@@ -55,7 +54,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (formData.type === "dining-meal" && !formData.catererId) {
-            alert("Please select a caterer for the dining meal scanner.")
+            toast.error("Please select a caterer for the dining meal scanner.")
             return
         }
         setLoading(true)
@@ -66,11 +65,11 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                 setCredentials(response.data.credentials)
                 onAdd()
             } else {
-                alert("Failed to create scanner. Please try again.")
+                toast.error("Failed to create scanner. Please try again.")
             }
         } catch (error) {
             console.error("Error creating scanner:", error)
-            alert("Failed to create scanner. Please try again.")
+            toast.error("Failed to create scanner. Please try again.")
         } finally {
             setLoading(false)
         }
@@ -90,7 +89,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
-        alert("Copied to clipboard!")
+        toast.success("Copied to clipboard!")
     }
 
     if (!show) return null

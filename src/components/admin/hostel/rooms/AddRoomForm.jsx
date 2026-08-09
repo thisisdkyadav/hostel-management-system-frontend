@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { Alert, Field, Grid, Heading, Label, Select, Surface, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Alert, Button, Field, Grid, Heading, Input, Label, Select, Surface, Text, Textarea, VStack } from "hzero"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
 import { MANUAL_ROOM_STATUS_OPTIONS } from "@/constants/roomStatus"

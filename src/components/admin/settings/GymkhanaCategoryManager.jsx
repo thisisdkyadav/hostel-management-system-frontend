@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, Input } from "hzero"
-import { HiPlus, HiSave } from "react-icons/hi"
 import { createCustomCategoryDefinition } from "@/components/gymkhana/events-page/shared"
+import { Plus, Save } from "lucide-react"
 
 const panelStyles = {
   wrapper: {
@@ -168,7 +168,7 @@ const GymkhanaCategoryManager = ({
           disabled={isLoading}
         />
         <Button type="button" variant="secondary" onClick={handleAddCategory} disabled={isLoading}>
-          <HiPlus /> Add
+          <Plus size="1em" /> Add
         </Button>
       </div>
 
@@ -188,7 +188,7 @@ const GymkhanaCategoryManager = ({
           loading={isLoading}
           disabled={isLoading || !hasUnsavedChanges}
         >
-          {!isLoading ? <HiSave size={20} /> : null}{" "}
+          {!isLoading ? <Save size={20} /> : null}{" "}
           {isLoading ? "Saving..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
         </Button>
       </div>

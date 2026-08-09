@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
-import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Alert, Field, Grid, Heading, HStack, IconCircle, Label, Select, Surface, Text, VStack } from "@/components/ui"
-import { Table, Button } from "hzero"
+import { Alert, Button, Field, Grid, Heading, HStack, IconCircle, Label, Select, Surface, Table, Text, VStack } from "hzero"
+import { Box, Boxes, Building2, Filter, GraduationCap, List, PieChart } from "lucide-react"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()
@@ -96,7 +95,7 @@ const InventoryReports = () => {
           <HStack align="center" gap={2}>
             <VStack gap="medium">
               <Field label="Choose Hostel">
-                <Select value={selectedHostel} onChange={handleHostelChange} icon={<FaBuilding />} options={[{ value: "", label: "Select a hostel..." }, ...hostelList.map((h) => ({ value: h._id, label: h.name }))]} />
+                <Select value={selectedHostel} onChange={handleHostelChange} icon={<Building2 size="1em" />} options={[{ value: "", label: "Select a hostel..." }, ...hostelList.map((h) => ({ value: h._id, label: h.name }))]} />
               </Field>
             </VStack>
           </HStack>
@@ -104,18 +103,18 @@ const InventoryReports = () => {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-[var(--color-border-primary)] mb-6">
         <nav className="flex space-x-8">
           <Button onClick={() => setActiveTab("hostel")} variant={activeTab === "hostel" ? "primary" : "ghost"} size="md">
-            <FaBuilding />
+            <Building2 size="1em" />
             By Hostel
           </Button>
           <Button onClick={() => setActiveTab("student")} variant={activeTab === "student" ? "primary" : "ghost"} size="md">
-            <FaUserGraduate />
+            <GraduationCap size="1em" />
             By Student
           </Button>
           <Button onClick={() => setActiveTab("itemType")} variant={activeTab === "itemType" ? "primary" : "ghost"} size="md">
-            <FaListAlt />
+            <List size="1em" />
             By Item Type
           </Button>
         </nav>
@@ -135,20 +134,19 @@ const InventoryReports = () => {
         <Grid cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
           {hostelSummary.length === 0 ? (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-12) 0" }}>
-              <FaBoxes style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
+              <Boxes size={32} style={{ margin: "0 auto", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No hostel inventory data available</Text>
             </div>
           ) : (
             hostelSummary.map((hostel) => (
               <div
                 key={hostel._id}
-                style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", transition: "var(--transition-all)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-card-hover)")}
-                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-card)")}
+                className="hover:shadow-[var(--shadow-card-hover)]"
+                style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-card)", border: "var(--border-1) solid var(--card-border)", transition: "var(--transition-all)" }}
               >
                 <HStack gap="none" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
                   <IconCircle size="var(--spacing-10)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                    <FaBuilding color="var(--color-primary)" />
+                    <Building2 color="var(--color-primary)" />
                   </IconCircle>
                   <Text as="div" size="lg" weight="medium" color="secondary">{hostel.hostelName}</Text>
                 </HStack>
@@ -168,13 +166,12 @@ const InventoryReports = () => {
                     {hostel.items.map((item) => (
                       <div
                         key={item.itemTypeId}
+                        className="hover:bg-[var(--color-bg-tertiary)]"
                         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-md)", transition: "var(--transition-colors)" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-tertiary)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                       >
                         <HStack gap="none" align="center">
                           <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
-                            <FaBox style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
+                            <Box size={12} color="var(--color-primary)" />
                           </IconCircle>
                           <Text as="span" size="sm">{item.itemName}</Text>
                         </HStack>
@@ -197,7 +194,7 @@ const InventoryReports = () => {
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {studentSummary.length === 0 ? (
             <Surface padding="var(--spacing-12) 0" align="center">
-              <FaUserGraduate style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
+              <GraduationCap size={32} style={{ margin: "0 auto", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No student inventory data available</Text>
             </Surface>
           ) : (
@@ -225,7 +222,7 @@ const InventoryReports = () => {
                           {student.items.map((item) => (
                             <HStack align="center" gap="none" size="sm" key={item.id}>
                               <IconCircle size="var(--spacing-6)" bg="brand" style={{ marginRight: "var(--spacing-2)" }}>
-                                <FaBox style={{ fontSize: "var(--font-size-xs)" }} color="var(--color-primary)" />
+                                <Box size={12} color="var(--color-primary)" />
                               </IconCircle>
                               <Text as="span" weight="medium" color="body">{item.itemName}</Text>
                               <Text as="span" color="placeholder" style={{ margin: "0 var(--spacing-1)" }}>•</Text>
@@ -252,7 +249,7 @@ const InventoryReports = () => {
         <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "var(--card-radius)", boxShadow: "var(--shadow-card)", border: "1px solid var(--card-border)", overflow: "hidden" }}>
           {itemTypeSummary.length === 0 ? (
             <Surface padding="var(--spacing-12) 0" align="center">
-              <FaBox style={{ margin: "0 auto", fontSize: "var(--font-size-5xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
+              <Box size={32} style={{ margin: "0 auto", marginBottom: "var(--spacing-4)" }} color="var(--color-border-primary)" />
               <Text color="muted">No item type summary data available</Text>
             </Surface>
           ) : (
@@ -274,7 +271,7 @@ const InventoryReports = () => {
                       <Table.Cell style={{ whiteSpace: "nowrap" }}>
                         <HStack gap="none" align="center">
                           <IconCircle size="var(--spacing-8)" bg="brand" style={{ marginRight: "var(--spacing-3)" }}>
-                            <FaBox color="var(--color-primary)" />
+                            <Box color="var(--color-primary)" />
                           </IconCircle>
                           <Text as="span" weight="medium" color="secondary">{item.itemName}</Text>
                         </HStack>

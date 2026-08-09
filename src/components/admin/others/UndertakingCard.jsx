@@ -1,13 +1,13 @@
 import { useState } from "react"
-import { FaFileSignature, FaEdit, FaTrash, FaCalendarAlt, FaUsers, FaInfoCircle, FaClipboardCheck } from "react-icons/fa"
 import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, InfoRow, Surface, Text, useConfirm } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Card, CardBody, CardFooter, CardHeader, Heading, HStack, InfoRow, Surface, Text, useConfirm, useToast } from "hzero"
+import { Calendar, ClipboardCheck, FileSignature, Info, Pencil, Trash2, Users } from "lucide-react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
+  const { toast } = useToast()
   const confirm = useConfirm()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showManageStudentsModal, setShowManageStudentsModal] = useState(false)
@@ -19,11 +19,11 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
       try {
         setIsDeleting(true)
         await adminApi.deleteUndertaking(undertaking.id)
-        alert("Undertaking deleted successfully!")
+        toast.success("Undertaking deleted successfully!")
         if (onDelete) onDelete()
       } catch (error) {
         console.error("Error deleting undertaking:", error)
-        alert("Failed to delete undertaking. Please try again.")
+        toast.error("Failed to delete undertaking. Please try again.")
       } finally {
         setIsDeleting(false)
       }
@@ -47,14 +47,14 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
           <HStack gap="none" align="start" justify="between">
             <HStack gap="none" align="center">
               <Surface bg="brand" padding={2} radius="lg" style={{ marginRight: 'var(--spacing-3)' }}>
-                <FaFileSignature style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
+                <FileSignature size={20} color="var(--color-primary)" />
               </Surface>
               <Heading as="h3" weight="semibold" size="lg" color="secondary">{undertaking.title}</Heading>
             </HStack>
             {!isReadOnly && (
               <HStack gap={2}>
-                <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit undertaking"><FaEdit /></Button>
-                <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete undertaking"><FaTrash /></Button>
+                <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit undertaking"><Pencil size="1em" /></Button>
+                <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete undertaking"><Trash2 size="1em" /></Button>
               </HStack>
             )}
           </HStack>
@@ -65,13 +65,13 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
             <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
           </Text>
           <HStack gap="none" align="start">
-            <FaCalendarAlt style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Calendar style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>Deadline: {formatDate(undertaking.deadline)}</span>
             </Text>
           </HStack>
           <HStack gap="none" align="start">
-            <FaUsers style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Users style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <Text as="div" color="muted">
               <span>Students: {undertaking.totalStudents || 0}</span>
             </Text>
@@ -89,12 +89,12 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
         <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
           {!isReadOnly && (
             <Button onClick={() => setShowManageStudentsModal(true)} variant="secondary" size="sm">
-              <FaUsers />
+              <Users size="1em" />
               Manage Students
             </Button>
           )}
           <Button onClick={() => setShowStatusModal(true)} variant="success" size="sm">
-            <FaClipboardCheck />
+            <ClipboardCheck size="1em" />
             View Status
           </Button>
         </CardFooter>

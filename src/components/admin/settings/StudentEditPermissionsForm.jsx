@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
-import { Grid, HStack, Switch } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Grid, HStack, Switch } from "hzero"
+import { Lock, Pencil, Save } from "lucide-react"
 
 const getFieldDescription = (field) => {
   const descriptions = {
@@ -85,9 +84,9 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
                 <HStack align="center" gap="var(--spacing-1-5)">
                   <p className="text-sm font-medium text-[var(--color-text-secondary)]">{permission.label}</p>
                   {permission.allowed ? (
-                    <HiPencil className="h-3 w-3 shrink-0 text-[var(--color-primary)]" title="Editable by students" />
+                    <Pencil className="h-3 w-3 shrink-0 text-[var(--color-primary)]" title="Editable by students" />
                   ) : (
-                    <HiLockClosed className="h-3 w-3 shrink-0 text-[var(--color-text-muted)]" title="Locked for students" />
+                    <Lock className="h-3 w-3 shrink-0 text-[var(--color-text-muted)]" title="Locked for students" />
                   )}
                 </HStack>
                 <p className="text-xs text-[var(--color-text-muted)] mt-0.5 leading-snug">{getFieldDescription(permission.field)}</p>
@@ -104,7 +103,7 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
 
       <div className="pt-2">
         <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading}>
-          {!isLoading && <HiSave size={20} />}
+          {!isLoading && <Save size={20} />}
           {isLoading ? "Updating..." : "Update Permissions"}
         </Button>
       </div>

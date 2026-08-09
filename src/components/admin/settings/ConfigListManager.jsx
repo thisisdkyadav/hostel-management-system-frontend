@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
-import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import { ConfirmDialog, Field, HStack, Label, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, ConfirmDialog, Field, HStack, Input, Label, Modal, Text, VStack } from "hzero"
+import { Pencil, Plus, Save, Trash2, X } from "lucide-react"
 const styles = {
   form: {
     display: "flex",
@@ -297,7 +295,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               disabled={isLoading}
             />
             <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="md">
-              <HiPlus />
+              <Plus size="1em" />
             </Button>
           </div>
           {error && <p style={styles.errorText}>{error}</p>}
@@ -306,7 +304,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         <div style={styles.itemsContainer}>
           <h4 style={styles.itemsTitle}>
             Current {itemLabel}s
-            <span className="ml-1.5 px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[0.65rem] font-bold text-[var(--color-text-muted)] tabular-nums">{localItems.length}</span>
+            <span className="ml-1.5 px-1.5 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[var(--font-size-2xs)] font-bold text-[var(--color-text-muted)] tabular-nums">{localItems.length}</span>
           </h4>
           {localItems.length === 0 ? (
             <p style={styles.emptyText}>No {itemLabel.toLowerCase()}s added yet</p>
@@ -326,7 +324,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
                       : "bg-[var(--color-bg-primary)] border-[var(--color-border-primary)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"}`}
                   >
                     <span>{item}</span>
-                    <HiPencil className="h-3 w-3 opacity-40 group-hover:opacity-100 transition-opacity" />
+                    <Pencil className="h-3 w-3 opacity-40 group-hover:opacity-100 transition-opacity" />
                   </button>
                 )
               })}
@@ -341,7 +339,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
             </p>
           )}
           <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading || !hasUnsavedChanges}>
-            {!isLoading && <HiSave size={20} />} {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
+            {!isLoading && <Save size={20} />} {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
           </Button>
         </div>
       </form>
@@ -364,10 +362,10 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
                 Cancel
               </Button>
               <Button type="button" onClick={handleDeleteRequest} variant="danger" size="md" disabled={renameLoading}>
-                <HiTrash /> Delete
+                <Trash2 size="1em" /> Delete
               </Button>
               <Button type="button" onClick={handleRename} variant="primary" size="md" loading={renameLoading} disabled={renameLoading}>
-                <HiPencil /> {renameLoading ? "Renaming..." : "Rename"}
+                <Pencil size="1em" /> {renameLoading ? "Renaming..." : "Rename"}
               </Button>
             </HStack>
           </VStack>

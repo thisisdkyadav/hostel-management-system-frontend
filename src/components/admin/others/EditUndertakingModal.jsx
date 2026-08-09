@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
-import { Alert, Field, HStack, Label, Text, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Text, Textarea, useToast, VStack } from "hzero"
 import { adminApi } from "../../../service"
+import { Calendar, FileSignature, Info } from "lucide-react"
 
 const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -41,7 +40,7 @@ const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
       setError(null)
 
       await adminApi.updateUndertaking(undertaking.id, formData)
-      alert("Undertaking updated successfully!")
+      toast.success("Undertaking updated successfully!")
 
       if (onUpdate) onUpdate()
       onClose()
@@ -63,15 +62,15 @@ const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
             <Field label="Title" htmlFor="title" required>
-              <Input type="text" id="title" name="title" value={formData.title} onChange={handleChange} icon={<FaFileSignature />} placeholder="Undertaking Title" required />
+              <Input type="text" id="title" name="title" value={formData.title} onChange={handleChange} icon={<FileSignature size="1em" />} placeholder="Undertaking Title" required />
             </Field>
 
             <Field label="Description" htmlFor="description" required>
-              <Textarea id="description" name="description" value={formData.description} onChange={handleChange} icon={<FaInfoCircle />} rows={2} placeholder="Brief description of this undertaking" required />
+              <Textarea id="description" name="description" value={formData.description} onChange={handleChange} icon={<Info size="1em" />} rows={2} placeholder="Brief description of this undertaking" required />
             </Field>
 
             <Field label="Deadline" htmlFor="deadline" required>
-              <Input type="date" id="deadline" name="deadline" value={formData.deadline} onChange={handleChange} icon={<FaCalendarAlt />} required />
+              <Input type="date" id="deadline" name="deadline" value={formData.deadline} onChange={handleChange} icon={<Calendar size="1em" />} required />
             </Field>
 
             <Field label="Undertaking Content" htmlFor="content" required>

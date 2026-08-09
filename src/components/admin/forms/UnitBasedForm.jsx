@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { Grid, Heading, HStack, Label, Surface, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { FaTable, FaEdit } from "react-icons/fa"
+import { Button, Grid, Heading, HStack, Input, Label, Surface, Text, VStack } from "hzero"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
+import { Pencil, Table2 } from "lucide-react"
 
 const UnitBasedForm = ({ formData, setFormData }) => {
   const [inputMethod, setInputMethod] = useState("form")
@@ -172,7 +171,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             onClick={() => setInputMethod("form")}
             style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
           >
-            <FaEdit />
+            <Pencil size="1em" />
             Form Input
           </Button>
           <Button
@@ -182,7 +181,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             onClick={() => setInputMethod("csv")}
             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
           >
-            <FaTable />
+            <Table2 size="1em" />
             CSV Import
           </Button>
         </div>

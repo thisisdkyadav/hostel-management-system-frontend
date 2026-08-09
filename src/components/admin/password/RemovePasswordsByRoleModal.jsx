@@ -1,8 +1,6 @@
 import { useState } from "react"
-import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
-import { Alert, Field, HStack, Label, Select, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Select, VStack } from "hzero"
+import { AlertCircle, ShieldAlert } from "lucide-react"
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate", "Gymkhana", "Academics", "Caterer"]
 
 const styles = {
@@ -263,7 +261,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           <div style={styles.warningBanner}>
             <div style={styles.bannerFlex}>
               <div style={styles.iconWrapper}>
-                <HiExclamationCircle style={styles.warningIcon} />
+                <AlertCircle style={styles.warningIcon} />
               </div>
               <div style={styles.bannerContent}>
                 <p style={styles.bannerText}>
@@ -287,7 +285,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <div style={styles.errorBanner}>
               <div style={styles.bannerFlex}>
                 <div style={styles.iconWrapper}>
-                  <HiExclamationCircle style={styles.errorIcon} />
+                  <AlertCircle style={styles.errorIcon} />
                 </div>
                 <div style={styles.bannerContent}>
                   <p style={styles.errorText}>{error}</p>
@@ -310,7 +308,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           <div style={styles.dangerBanner}>
             <div style={styles.bannerFlex}>
               <div style={styles.iconWrapper}>
-                <HiShieldExclamation style={styles.dangerIcon} />
+                <ShieldAlert style={styles.dangerIcon} />
               </div>
               <div style={styles.bannerContent}>
                 <h3 style={styles.dangerTitle}>Warning: This action cannot be undone</h3>
@@ -334,7 +332,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <div style={styles.errorBanner}>
               <div style={styles.bannerFlex}>
                 <div style={styles.iconWrapper}>
-                  <HiExclamationCircle style={styles.errorIcon} />
+                  <AlertCircle style={styles.errorIcon} />
                 </div>
                 <div style={styles.bannerContent}>
                   <p style={styles.errorText}>{error}</p>

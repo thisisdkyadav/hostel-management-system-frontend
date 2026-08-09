@@ -1,4 +1,4 @@
-import { StatCards } from "@/components/ui"
+import { StatCards } from "hzero"
 import { Building, Bed, UserRound, Sparkles } from "lucide-react"
 
 const HostelStats = ({ hostels }) => {

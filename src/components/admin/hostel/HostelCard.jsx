@@ -3,13 +3,11 @@ import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } 
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import { Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Text, VStack } from "hzero"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
 
   // Icon colors based on gender
   const getIconStyle = (gender) => {
@@ -55,7 +53,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
   return (
     <>
-      <Card className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <Card className="group">
         {/* Header with Icon and Title */}
         <CardHeader>
           <HStack gap="medium" align="center">

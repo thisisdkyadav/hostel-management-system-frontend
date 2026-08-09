@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
-import { Alert, Field, HStack, Label, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { Alert, Button, Field, HStack, Input, Label, VStack } from "hzero"
+import { AlertCircle, Lock, Mail, TriangleAlert } from "lucide-react"
 
 const styles = {
   form: {
@@ -211,24 +210,24 @@ const UpdatePasswordForm = ({ onSubmit }) => {
     <form onSubmit={handleSubmit}>
       <VStack gap="large">
         <Field label="Email Address" htmlFor="email" required>
-          <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} icon={<HiMail size={20} />} placeholder="Enter user's email address" error={errors.email} />
+          <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} icon={<Mail size={20} />} placeholder="Enter user's email address" error={errors.email} />
         </Field>
 
         <Field label="New Password" htmlFor="newPassword" required>
-          <Input type="password" id="newPassword" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Enter new password" error={errors.newPassword} />
+          <Input type="password" id="newPassword" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<Lock size={20} />} placeholder="Enter new password" error={errors.newPassword} />
           {!errors.newPassword && (
             <p style={styles.hintText}>Password must be at least 6 characters long</p>
           )}
         </Field>
 
         <Field label="Confirm New Password" htmlFor="confirmPassword" required>
-          <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
+          <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<Lock size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
         </Field>
 
         <VStack gap="medium" align="center" style={{ paddingTop: 'var(--spacing-4)' }}>
           <div style={styles.warningText}>
             <p style={styles.warningContent}>
-              <HiExclamation style={styles.warningIcon} />
+              <TriangleAlert style={styles.warningIcon} />
               This action will immediately change the user's password
             </p>
           </div>

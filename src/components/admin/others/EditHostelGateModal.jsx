@@ -1,11 +1,10 @@
 import { useState } from "react"
-import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
-import { Alert, Field, HStack, Label, useConfirm, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Alert, Button, Field, HStack, Input, Label, Modal, useConfirm, useToast, VStack } from "hzero"
 import { hostelGateApi } from "../../../service"
+import { Building2, Key, Mail, Save, Trash2 } from "lucide-react"
 
 const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
+  const { toast } = useToast()
   const confirm = useConfirm()
   const [formData, setFormData] = useState({
     password: "",
@@ -36,7 +35,7 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
       setError(null)
 
       await hostelGateApi.updateHostelGate(gate.hostelId._id, { password: formData.password })
-      alert("Hostel gate login password updated successfully!")
+      toast.success("Hostel gate login password updated successfully!")
 
       // Reset form
       setFormData({
@@ -60,7 +59,7 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
         setLoading(true)
 
         await hostelGateApi.deleteHostelGate(gate.hostelId._id)
-        alert("Hostel gate login deleted successfully!")
+        toast.success("Hostel gate login deleted successfully!")
         if (onUpdate) onUpdate()
         onClose()
       } catch (error) {
@@ -82,24 +81,24 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
         <form onSubmit={handleSubmit}>
           <VStack gap="large">
             <Field label="Hostel">
-              <Input type="text" value={gate.userId?.name || "Unknown Hostel"} icon={<FaBuilding />} disabled />
+              <Input type="text" value={gate.userId?.name || "Unknown Hostel"} icon={<Building2 size="1em" />} disabled />
             </Field>
 
             <Field label="Email">
-              <Input type="email" value={gate.userId?.email} icon={<FaEnvelope />} disabled />
+              <Input type="email" value={gate.userId?.email} icon={<Mail size="1em" />} disabled />
             </Field>
 
             <Field label="New Password" htmlFor="password" required>
-              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter new password" required />
+              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<Key size="1em" />} placeholder="Enter new password" required />
             </Field>
 
             <Field label="Confirm Password" htmlFor="confirmPassword" required>
-              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm new password" required />
+              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<Key size="1em" />} placeholder="Confirm new password" required />
             </Field>
 
             <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
               <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>
-                <FaTrash />
+                <Trash2 size="1em" />
                 Delete Gate Login
               </Button>
 
@@ -108,7 +107,7 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading || !formData.password || !formData.confirmPassword}>
-                  <FaSave />
+                  <Save size="1em" />
                   Update Password
                 </Button>
               </HStack>

@@ -1,6 +1,6 @@
 import React from "react"
 import { useOnlineUsersList } from "../../hooks/useOnlineUsers"
-import { Avatar, Spinner, Surface, Text } from "@/components/ui"
+import { Avatar, Spinner, Surface, Text } from "hzero"
 
 /**
  * Popup content showing latest online users filtered by role
@@ -102,12 +102,7 @@ const OnlineUsersPopupContent = ({ role, roleLabel }) => {
                                 borderRadius: "var(--radius-md)",
                                 transition: "var(--transition-fast)",
                             }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = "var(--color-bg-hover)"
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = "transparent"
-                            }}
+                            className="hover:bg-[var(--color-bg-hover)]"
                         >
                             <Avatar
                                 name={user.userName || user.userEmail}

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react"
-import { HiCalendar, HiPlus, HiSave, HiTrash } from "react-icons/hi"
-import { Button, Input } from "hzero"
-import { Grid, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Button, Grid, HStack, Input, Surface, Text, VStack } from "hzero"
+import { Calendar, Plus, Save, Trash2 } from "lucide-react"
 
 const YEAR_REGEX = /^\d{4}$/
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
@@ -180,7 +179,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
           disabled={isLoading}
         />
         <Button type="button" variant="primary" onClick={handleAddYear} disabled={isLoading}>
-          <HiPlus size={16} /> Add Year
+          <Plus size={16} /> Add Year
         </Button>
       </Grid>
 
@@ -222,7 +221,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
           <Surface bg="primary" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-border-primary)">
             <HStack gap={3} align="center" justify="between" wrap style={{ marginBottom: "var(--spacing-3)" }}>
               <HStack inline gap={2} align="center">
-                <HiCalendar size={16} color="var(--color-primary)" />
+                <Calendar size={16} color="var(--color-primary)" />
                 <Text as="span" weight="semibold" color="heading">
                   Holidays for {selectedYear}
                 </Text>
@@ -237,7 +236,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 onClick={() => handleDeleteYear(selectedYear)}
                 disabled={isLoading}
               >
-                <HiTrash size={14} /> Delete Year
+                <Trash2 size={14} /> Delete Year
               </Button>
             </HStack>
 
@@ -267,7 +266,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                 onClick={handleAddHoliday}
                 disabled={isLoading || !selectedYear}
               >
-                <HiPlus size={14} /> Add
+                <Plus size={14} /> Add
               </Button>
             </Grid>
 
@@ -292,7 +291,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
                       onClick={() => handleDeleteHoliday(holiday)}
                       disabled={isLoading}
                     >
-                      <HiTrash size={14} />
+                      <Trash2 size={14} />
                     </Button>
                   </Grid>
                 ))}
@@ -323,7 +322,7 @@ const AcademicHolidaysForm = ({ academicHolidays, onUpdate, isLoading }) => {
           loading={isLoading}
           disabled={isLoading || !hasChanges}
         >
-          <HiSave size={16} /> Save Academic Holidays
+          <Save size={16} /> Save Academic Holidays
         </Button>
       </div>
     </VStack>
