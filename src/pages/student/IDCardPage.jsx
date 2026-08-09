@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { idCardApi } from "../../service"
-import { HiCamera, HiInformationCircle } from "react-icons/hi"
+import { Camera, Info } from "lucide-react"
 import { Button } from "hzero"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -199,9 +199,7 @@ const IDCardPage = () => {
     const imageUrl = idCardData[side]
 
     return (
-      <div style={styles.card} onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-md)")}
-        onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-sm)")}
-      >
+      <div style={styles.card} className="transition-shadow hover:shadow-[var(--shadow-md)]">
         <h3 style={styles.cardTitle}>{title}</h3>
 
         <div style={styles.imageContainer}>
@@ -214,12 +212,12 @@ const IDCardPage = () => {
                 style={styles.cameraButton}
                 aria-label="Change image"
               >
-                <HiCamera style={styles.cameraIcon} />
+                <Camera style={styles.cameraIcon} />
               </Button>
             </div>
           ) : (
             <div style={styles.placeholder}>
-              <HiCamera style={styles.placeholderIcon} />
+              <Camera style={styles.placeholderIcon} />
               <p style={styles.placeholderText}>No image uploaded</p>
             </div>
           )}
@@ -242,14 +240,14 @@ const IDCardPage = () => {
       {error && (
         <div style={styles.errorBox}>
           <div style={styles.errorContent}>
-            <HiInformationCircle style={styles.errorIcon} size={20} />
+            <Info style={styles.errorIcon} size={20} />
             <p style={styles.errorText}>{error}</p>
           </div>
         </div>
       )}
 
       <div style={styles.infoBox}>
-        <HiInformationCircle style={styles.infoIcon} size={20} />
+        <Info style={styles.infoIcon} size={20} />
         <div style={styles.infoContent}>
           <p>Please upload clear images of both sides of your student ID card. These images will be used for verification purposes by hostel staff and security personnel.</p>
           <p style={styles.infoNote}>Maximum file size: 1MB per image</p>

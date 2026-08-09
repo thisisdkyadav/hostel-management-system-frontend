@@ -1,8 +1,7 @@
 import React from "react"
-import { BsDoorOpenFill } from "react-icons/bs"
-import { FaUserFriends } from "react-icons/fa"
+import { DoorOpen, Users } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Heading, HStack, IconCircle, Surface, Text } from "@/components/ui"
+import { Card, Heading, HStack, IconCircle, Surface, Text } from "hzero"
 
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
@@ -15,10 +14,10 @@ const RoomInfoCard = ({ roomData }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', width: '100%', border: `var(--border-1) solid var(--color-border-light)` }}>
+    <Card padding="p-4" className="w-full">
       <HStack gap="none" align="center" justify="between">
         <HStack gap="var(--gap-sm)" align="center">
-          <BsDoorOpenFill style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
+          <DoorOpen size={20} color="var(--color-primary)" />
           <Heading as="h3" color="tertiary" weight="medium" size="lg">Your Room</Heading>
         </HStack>
         <Surface as="span" bg="info" padding={`var(--spacing-0-5) var(--spacing-2)`} radius="full" color="brand" size="xs">{roomData.hostelName}</Surface>
@@ -27,7 +26,7 @@ const RoomInfoCard = ({ roomData }) => {
       <HStack gap="var(--gap-md)" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
         <Text size="4xl" weight="medium" color="brand">{roomData.roomNumber}</Text>
         <HStack align="center" gap="none" size="xs" color="tertiary">
-          <FaUserFriends style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} color="var(--color-text-muted)" />
+          <Users size={14} style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-text-muted)" />
           <span>
             {roomData.occupiedBeds}/{roomData.totalBeds} Occupied
           </span>
@@ -53,7 +52,7 @@ const RoomInfoCard = ({ roomData }) => {
           </HStack>
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 

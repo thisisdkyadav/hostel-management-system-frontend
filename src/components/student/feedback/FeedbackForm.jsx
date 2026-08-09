@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Textarea, VStack, Label } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { AlertCircle, FileText, Pencil } from "lucide-react"
+import { Button, Input, Label, Textarea, VStack } from "hzero"
 
 const FeedbackForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -65,20 +64,20 @@ const FeedbackForm = ({ onSubmit }) => {
     <VStack as="form" gap="large" onSubmit={handleSubmit}>
       <VStack gap="xsmall">
         <Label htmlFor="feedbackTitle" required>Feedback Title</Label>
-        <Input id="feedbackTitle" type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<HiPencil size={20} />} />
+        <Input id="feedbackTitle" type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<Pencil size={20} />} />
         {errors.title && (
           <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", display: "flex", alignItems: "center" }}>
-            <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
+            <AlertCircle size="1em" style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
           </p>
         )}
       </VStack>
 
       <VStack gap="xsmall">
         <Label htmlFor="feedbackDescription" required>Description</Label>
-        <Textarea id="feedbackDescription" name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<HiDocumentText size={20} />} />
+        <Textarea id="feedbackDescription" name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<FileText size={20} />} />
         {errors.description && (
           <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", display: "flex", alignItems: "center" }}>
-            <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
+            <AlertCircle size="1em" style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
           </p>
         )}
       </VStack>

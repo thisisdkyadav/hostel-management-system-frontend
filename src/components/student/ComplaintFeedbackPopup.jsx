@@ -1,8 +1,7 @@
 import React, { useState } from "react"
-import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
+import { ClipboardList, Info, Star } from "lucide-react"
 import { complaintApi } from "../../service"
-import { Heading, Modal, Surface, Text, VStack } from "@/components/ui"
-import { Button } from "hzero"
+import { Button, Heading, Modal, Surface, Text, VStack } from "hzero"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
   const [feedback, setFeedback] = useState("")
@@ -46,7 +45,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
         Skip for Now
       </Button>
       <Button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} variant="primary" size="md" loading={isSubmitting}>
-        <FaStar /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
+        <Star size="1em" /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
       </Button>
     </div>
   )
@@ -65,7 +64,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
           <div className="flex items-start justify-between" style={{ gap: 'var(--spacing-3)' }}>
             <div className="flex-1 min-w-0">
               <Heading as="h4" size="sm" weight="medium" color="brand" style={{ marginBottom: 'var(--spacing-1)' }} className="flex items-center">
-                <FaClipboardList className="flex-shrink-0" style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Complaint
+                <ClipboardList size={14} className="flex-shrink-0" style={{ marginRight: 'var(--spacing-1-5)' }} /> Complaint
               </Heading>
               <Text weight="semibold" color="primary" size="base" leading="var(--line-height-tight)">{complaint.title}</Text>
             </div>
@@ -87,7 +86,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               {complaint.resolutionNotes && (
                 <div>
                   <Heading as="h5" size="xs" weight="medium" color="brand" style={{ marginBottom: 'var(--spacing-0-5)' }} className="flex items-center">
-                    <FaInfoCircle style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-xs)' }} /> Resolution
+                    <Info size={12} style={{ marginRight: 'var(--spacing-1)' }} /> Resolution
                   </Heading>
                   <Text color="body" size="sm" leading="var(--line-height-snug)" className="line-clamp-2">{complaint.resolutionNotes}</Text>
                 </div>
@@ -106,7 +105,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
               <Button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)}
                 variant="ghost"
                 size="sm"
-              ><FaStar size={32} style={{ transition: 'var(--transition-colors)' }} color={rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)'} /></Button>
+              ><Star size={32} style={{ transition: 'var(--transition-colors)' }} color={rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)'} /></Button>
             ))}
             {feedbackRating > 0 && (
               <Text as="span" color="body" weight="medium" size="sm" style={{ marginLeft: 'var(--spacing-2)' }}>

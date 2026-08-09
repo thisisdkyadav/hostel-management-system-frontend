@@ -1,8 +1,7 @@
 import React from "react"
-import { MdHealthAndSafety } from "react-icons/md"
-import { FaRegCalendarAlt, FaHashtag } from "react-icons/fa"
+import { CalendarDays, Hash, ShieldPlus } from "lucide-react"
 import { formatDateTime } from "../../utils/dateUtils"
-import { Heading, HStack, Surface, Text, VStack } from "@/components/ui"
+import { Card, Heading, HStack, Surface, Text, VStack } from "hzero"
 
 const getValidity = (endDate) => {
   if (!endDate) return null
@@ -24,10 +23,10 @@ const InsuranceInfoCard = ({ insurance }) => {
   const validity = getValidity(provider?.endDate)
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', width: '100%', border: `var(--border-1) solid var(--color-border-light)` }}>
+    <Card padding="p-4" className="w-full">
       <HStack gap="var(--gap-sm)" align="center" justify="between">
         <HStack gap="var(--gap-sm)" align="center">
-          <MdHealthAndSafety style={{ fontSize: 'var(--icon-lg)' }} color="var(--color-primary)" />
+          <ShieldPlus size={20} color="var(--color-primary)" />
           <Heading as="h3" color="tertiary" weight="medium" size="lg">Insurance</Heading>
         </HStack>
         {validity && (
@@ -42,18 +41,18 @@ const InsuranceInfoCard = ({ insurance }) => {
       <VStack gap="var(--spacing-1-5)" style={{ marginTop: 'var(--spacing-2)' }}>
         {insurance.insuranceNumber && (
           <HStack align="center" gap="none" size="xs" color="tertiary">
-            <FaHashtag style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <Hash size={14} style={{ marginRight: 'var(--spacing-1-5)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{insurance.insuranceNumber}</span>
           </HStack>
         )}
         {periodLabel && (
           <HStack align="center" gap="none" size="xs" color="tertiary">
-            <FaRegCalendarAlt style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)', flexShrink: 0 }} color="var(--color-text-muted)" />
+            <CalendarDays size={14} style={{ marginRight: 'var(--spacing-1-5)', flexShrink: 0 }} color="var(--color-text-muted)" />
             <span>{periodLabel}</span>
           </HStack>
         )}
       </VStack>
-    </div>
+    </Card>
   )
 }
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
+import { AlertTriangle, Check, Clock, FileSignature } from "lucide-react"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { EmptyState, ErrorState, Heading, LoadingState, Spinner, Surface, Text } from "@/components/ui"
-import { Tabs, Button } from "hzero"
+import { Button, EmptyState, ErrorState, Heading, LoadingState, Spinner, Surface, Tabs, Text, useToast } from "hzero"
 const UndertakingsPage = () => {
+  const { toast } = useToast()
   const [pendingUndertakings, setPendingUndertakings] = useState([])
   const [acceptedUndertakings, setAcceptedUndertakings] = useState([])
   const [selectedUndertaking, setSelectedUndertaking] = useState(null)
@@ -46,7 +46,7 @@ const UndertakingsPage = () => {
       setShowDetailModal(true)
     } catch (err) {
       console.error("Error fetching undertaking details:", err)
-      alert("Failed to load undertaking details. Please try again.")
+      toast.error("Failed to load undertaking details. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -56,12 +56,12 @@ const UndertakingsPage = () => {
   const handleAcceptUndertaking = async (undertakingId) => {
     try {
       await undertakingApi.acceptUndertaking(undertakingId)
-      alert("Undertaking accepted successfully!")
+      toast.success("Undertaking accepted successfully!")
       setShowDetailModal(false)
       fetchUndertakings() // Refresh the lists
     } catch (err) {
       console.error("Error accepting undertaking:", err)
-      alert("Failed to accept undertaking. Please try again.")
+      toast.error("Failed to accept undertaking. Please try again.")
     }
   }
 
@@ -99,7 +99,7 @@ const UndertakingsPage = () => {
     <Surface bg="var(--color-bg-page)" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }} className="px-4 sm:px-6 lg:px-8 flex-1">
       <header className="flex justify-between items-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-4) var(--spacing-6)', marginBottom: 'var(--spacing-6)' }}>
         <div className="flex items-center">
-          <FaFileSignature style={{ fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} color="var(--color-info)" />
+          <FileSignature size={20} style={{ marginRight: 'var(--spacing-3)' }} color="var(--color-info)" />
           <Heading as="h1" size="2xl" color="secondary" className="font-bold">My Undertakings</Heading>
         </div>
       </header>
@@ -127,11 +127,11 @@ const UndertakingsPage = () => {
               <Spinner size={48} thickness="thin" color="inherit" className="text-[var(--color-info)]" />
             </div>
           ) : pendingUndertakings.length === 0 ? (
-            <EmptyState icon={FaFileSignature} title="No Pending Undertakings" message="You don't have any undertakings that require your attention." />
+            <EmptyState icon={FileSignature} title="No Pending Undertakings" message="You don't have any undertakings that require your attention." />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {pendingUndertakings.map((undertaking) => (
-                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-info)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-info)' }} key={undertaking.id} className="transition-shadow hover:shadow-[var(--shadow-md)]">
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
                     <Surface as="span" bg={undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)'} padding="var(--spacing-1) var(--spacing-2)" color={undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)'} size="xs" className="rounded-full">{undertaking.status === "not_viewed" ? "New" : "Pending"}</Surface>
@@ -140,18 +140,18 @@ const UndertakingsPage = () => {
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
-                      <FaClock style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-text-placeholder)" />
+                      <Clock size="1em" style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-text-placeholder)" />
                       <Text as="span" size="xs" color="muted">Due: {formatDate(undertaking.deadline)}</Text>
 
                       {isDeadlineApproaching(undertaking.deadline) && (
                         <Text as="span" size="xs" color="warning-text" style={{ marginLeft: 'var(--spacing-2)' }} className="flex items-center">
-                          <FaExclamationTriangle style={{ marginRight: 'var(--spacing-1)' }} /> Approaching
+                          <AlertTriangle size="1em" style={{ marginRight: 'var(--spacing-1)' }} /> Approaching
                         </Text>
                       )}
 
                       {isDeadlinePassed(undertaking.deadline) && (
                         <Text as="span" size="xs" color="danger-text" style={{ marginLeft: 'var(--spacing-2)' }} className="flex items-center">
-                          <FaExclamationTriangle style={{ marginRight: 'var(--spacing-1)' }} /> Overdue
+                          <AlertTriangle size="1em" style={{ marginRight: 'var(--spacing-1)' }} /> Overdue
                         </Text>
                       )}
                     </div>
@@ -175,11 +175,11 @@ const UndertakingsPage = () => {
               <Spinner size={48} thickness="thin" color="inherit" className="text-[var(--color-info)]" />
             </div>
           ) : acceptedUndertakings.length === 0 ? (
-            <EmptyState icon={FaCheck} title="No Accepted Undertakings" message="You haven't accepted any undertakings yet." />
+            <EmptyState icon={Check} title="No Accepted Undertakings" message="You haven't accepted any undertakings yet." />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {acceptedUndertakings.map((undertaking) => (
-                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-success)' }} key={undertaking.id} className="transition-shadow" onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <Surface bg="primary" padding={5} radius="xl" shadow="sm" style={{ borderLeft: 'var(--border-4) solid var(--color-success)' }} key={undertaking.id} className="transition-shadow hover:shadow-[var(--shadow-md)]">
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <Heading as="h3" size="lg" color="secondary" className="font-semibold">{undertaking.title}</Heading>
                     <Surface as="span" bg="success" padding="var(--spacing-1) var(--spacing-2)" color="success-text" size="xs" className="rounded-full">Accepted</Surface>
@@ -188,7 +188,7 @@ const UndertakingsPage = () => {
 
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
-                      <FaCheck style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-success)" />
+                      <Check size="1em" style={{ marginRight: 'var(--spacing-1)' }} color="var(--color-success)" />
                       <Text as="span" size="xs" color="muted">Accepted on: {formatDate(undertaking.acceptedAt)}</Text>
                     </div>
                   </div>

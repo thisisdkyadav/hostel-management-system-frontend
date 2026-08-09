@@ -1,7 +1,7 @@
 import React from "react"
-import { FaUser, FaGraduationCap, FaIdCard } from "react-icons/fa"
+import { GraduationCap, IdCard, User } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Heading, IconCircle, Surface } from "@/components/ui"
+import { Heading, IconCircle, Surface } from "hzero"
 
 const StudentProfile = ({ profile }) => {
   if (!profile) return null
@@ -98,7 +98,7 @@ const StudentProfile = ({ profile }) => {
             {profile.profileImage ? (
               <img src={getMediaUrl(profile.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
             ) : (
-              <FaUser />
+              <User size="1em" />
             )}
           </IconCircle>
         </div>
@@ -107,14 +107,14 @@ const StudentProfile = ({ profile }) => {
           <Heading as="h2" size="2xl" weight="bold" color="secondary">{profile.name}</Heading>
           <div className="student-profile-details">
             <span className="student-profile-detail-item">
-              <FaIdCard style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.rollNumber}
+              <IdCard size={14} style={{ marginRight: 'var(--spacing-1)' }} /> {profile.rollNumber}
             </span>
             <span className="student-profile-detail-item">
-              <FaGraduationCap style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.degree}
+              <GraduationCap size={14} style={{ marginRight: 'var(--spacing-1)' }} /> {profile.degree}
             </span>
             {profile.batch && (
               <span className="student-profile-detail-item">
-                <FaGraduationCap style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.batch}
+                <GraduationCap size={14} style={{ marginRight: 'var(--spacing-1)' }} /> {profile.batch}
               </span>
             )}
           </div>

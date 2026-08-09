@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
-import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Field, HStack, Label, Textarea, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { AlertCircle, FileText, Pencil } from "lucide-react"
+import { Button, Field, HStack, Input, Label, Modal, Textarea, VStack } from "hzero"
 
 const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false }) => {
   const [formData, setFormData] = useState({
@@ -78,19 +76,19 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
       <VStack gap={5}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           <Field label="Feedback Title" color="body" spacing={2}>
-            <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<HiPencil size={20} />} />
+            <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<Pencil size={20} />} />
             {errors.title && (
               <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
-                <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
+                <AlertCircle size="1em" style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
               </p>
             )}
           </Field>
 
           <Field label="Description" color="body" spacing={2}>
-            <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<HiDocumentText size={20} />} />
+            <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<FileText size={20} />} />
             {errors.description && (
               <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
-                <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
+                <AlertCircle size="1em" style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
               </p>
             )}
           </Field>

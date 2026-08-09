@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
-import { DataTable, StatusBadge, Button } from "hzero"
+import { Button, DataTable, StatusBadge, Text } from "hzero"
 import { Plus } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { accommodationApi } from "@/service"
@@ -8,7 +8,6 @@ import { getStatusTone } from "@/constants/accommodationStatus"
 import { money, shortId, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationRequestWizard from "../../components/accommodation/AccommodationRequestWizard"
 import AccommodationRequestDetail from "../../components/accommodation/AccommodationRequestDetail"
-import { Text } from "@/components/ui"
 
 const AccommodationPage = () => {
   const [requests, setRequests] = useState([])

@@ -14,7 +14,7 @@ import {
   getStudentPwaHiddenItems
 } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
-import { Heading, Surface, Text } from "@/components/ui"
+import { Heading, Surface, Text } from "hzero"
 
 const StudentLayout = () => {
   const navigate = useNavigate()

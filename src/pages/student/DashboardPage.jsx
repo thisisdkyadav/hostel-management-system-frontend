@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import { studentApi, electionsApi } from "../../service"
-import { BiError } from "react-icons/bi"
-import { FaQrcode } from "react-icons/fa"
+import { AlertCircle, QrCode } from "lucide-react"
 import OfflineBanner from "../../components/common/OfflineBanner"
 import StudentProfile from "../../components/student/StudentProfile"
 import RoomInfoCard from "../../components/student/RoomInfoCard"
@@ -13,7 +12,7 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
+import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "hzero"
 import { Button } from "hzero"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
@@ -560,7 +559,7 @@ const DashboardPage = () => {
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
         <div className="relative text-white overflow-hidden" style={{ background: 'var(--gradient-primary)', borderRadius: 'var(--radius-2xl)', padding: 'var(--spacing-6)', width: 'min(95%, 720px)', margin: '0 var(--spacing-4)', boxShadow: 'var(--shadow-xl)' }}>
-          <button onClick={onClose} className="absolute rounded-full transition-colors" style={{ top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: 'var(--spacing-2)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}>
+          <button onClick={onClose} className="absolute rounded-full transition-colors bg-[color-mix(in_srgb,var(--color-on-accent)_10%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-on-accent)_20%,transparent)]" style={{ top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', padding: 'var(--spacing-2)' }}>
             ✕
           </button>
           <div className="flex flex-col items-center text-center" style={{ gap: 'var(--gap-md)' }}>
@@ -572,16 +571,14 @@ const DashboardPage = () => {
             </div>
 
             <div className="w-full grid grid-cols-2" style={{ marginTop: 'var(--spacing-4)', gap: 'var(--gap-sm)' }}>
-              <button onClick={onClose} className="font-semibold transition-colors" style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-white)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-white)'}>
+              <button onClick={onClose} className="font-semibold transition-colors bg-[var(--color-white)] hover:bg-[var(--color-bg-hover)]" style={{ padding: 'var(--spacing-2)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)' }}>
                 Thanks!
               </button>
               <button onClick={() => {
                 onClose()
               }}
-                className="transition-colors"
-                style={{ padding: 'var(--spacing-2)', backgroundColor: 'rgba(255, 255, 255, 0.2)', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+                className="transition-colors bg-[color-mix(in_srgb,var(--color-on-accent)_20%,transparent)] hover:bg-[var(--overlay-gloss)]"
+                style={{ padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--overlay-gloss)', borderRadius: 'var(--radius-lg)' }}
               >
                 Celebrate
               </button>
@@ -625,7 +622,7 @@ const DashboardPage = () => {
     return (
       <Surface padding={6} className="flex flex-col items-center justify-center h-full">
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
-          <BiError className="mx-auto" style={{ fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
+          <AlertCircle size={48} className="mx-auto" style={{ marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
           <Heading as="h2" size="xl" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }} className="font-semibold">Unable to Load Dashboard</Heading>
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>{error}</Text>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
@@ -640,7 +637,7 @@ const DashboardPage = () => {
     return (
       <Surface padding={6} className="flex flex-col items-center justify-center h-full">
         <Surface bg="primary" padding={6} radius="xl" shadow="sm" className="max-w-md w-full text-center">
-          <BiError className="mx-auto" style={{ fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
+          <AlertCircle size={48} className="mx-auto" style={{ marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
           <Heading as="h2" size="xl" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }} className="font-semibold">Dashboard Data Error</Heading>
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>
             Student dashboard data is unavailable or malformed.
@@ -692,7 +689,7 @@ const DashboardPage = () => {
       <Button onClick={() => setShowQRModal(true)}
         className={`fixed md:hidden rounded-full ${isPwaMobile ? "bottom-20" : ""}`}
         variant="primary"
-        icon={<FaQrcode style={{ fontSize: 'var(--font-size-2xl)' }} />}
+        icon={<QrCode size={24} />}
         style={{
           padding: 'var(--spacing-4)',
           boxShadow: 'var(--shadow-lg)',
