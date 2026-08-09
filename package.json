@@ -26,7 +26,7 @@
     "@tanstack/react-virtual": "^3.14.2",
     "date-fns": "^4.4.0",
     "html5-qrcode": "^2.3.8",
-    "hzero": "^0.1.42",
+    "hzero": "^0.1.44",
     "lucide-react": "^1.18.0",
     "node-forge": "^1.4.0",
     "papaparse": "^5.5.3",
