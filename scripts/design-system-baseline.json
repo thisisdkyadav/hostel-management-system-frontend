@@ -293,36 +293,6 @@
     "react-icons": 1,
     "ui-barrel-import": 2
   },
-  "src/components/complaints/ComplaintCardView.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
-  },
-  "src/components/complaints/ComplaintForm.jsx": {
-    "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/complaints/ComplaintListView.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/complaints/ComplaintsContent.jsx": {
-    "react-icons": 1
-  },
-  "src/components/complaints/ComplaintsFilterPanel.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/complaints/ComplaintStats.jsx": {
-    "react-icons": 3,
-    "ui-barrel-import": 1
-  },
-  "src/components/complaints/FeedbackModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
-  "src/components/complaints/UpdateComplaintModal.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 2
-  },
   "src/components/dining/BillingPeriodFormModal.jsx": {
     "ui-barrel-import": 2
   },
@@ -549,11 +519,6 @@
   "src/components/lostAndFound/LostAndFoundStats.jsx": {
     "react-icons": 2,
     "ui-barrel-import": 1
-  },
-  "src/components/maintenance/PrintComplaints.jsx": {
-    "native-dialog": 1,
-    "react-icons": 1,
-    "ui-barrel-import": 2
   },
   "src/components/MobileHeader.jsx": {
     "raw-font-size": 1,
@@ -902,9 +867,6 @@
   "src/pages/common/AttendancePage.jsx": {
     "ui-barrel-import": 1
   },
-  "src/pages/common/ComplaintsPage.jsx": {
-    "ui-barrel-import": 1
-  },
   "src/pages/common/DisciplinaryProcessPage.jsx": {
     "ui-barrel-import": 4
   },
@@ -1019,10 +981,6 @@
   },
   "src/pages/public/AccommodationRecommendationPage.jsx": {
     "ui-barrel-import": 2
-  },
-  "src/pages/public/ComplaintFeedbackPage.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
   },
   "src/pages/public/ElectionBallotPage.jsx": {
     "ui-barrel-import": 1

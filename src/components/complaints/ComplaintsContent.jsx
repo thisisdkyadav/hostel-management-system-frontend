@@ -1,5 +1,5 @@
 import { Tabs } from "hzero"
-import { FaClipboardList } from "react-icons/fa"
+import { ClipboardList } from "lucide-react"
 import NoResults from "../common/NoResults"
 import ComplaintListView from "./ComplaintListView"
 import ComplaintCardView from "./ComplaintCardView"
@@ -20,7 +20,7 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, COMPLAINT_F
         ) : complaints.length > 0 ? (
           <ComplaintCardView complaints={complaints} onViewDetails={onViewDetails} />
         ) : (
-          <NoResults icon={<FaClipboardList style={{ fontSize: "var(--font-size-5xl)" }} color="var(--color-border-primary)" />} message="No complaints found" suggestion="Try changing your search or filter criteria" />
+          <NoResults icon={<ClipboardList size={32} color="var(--color-border-primary)" />} message="No complaints found" suggestion="Try changing your search or filter criteria" />
         )}
       </div>
     </>

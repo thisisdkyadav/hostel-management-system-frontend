@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Alert, Card, Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "@/components/ui"
-import { Button } from "hzero"
+import { AlertTriangle, ArrowRight, Check, ClipboardList, Info, Star } from "lucide-react"
+import { Alert, Button, Card, Grid, Heading, HStack, IconCircle, Label, Spinner, Surface, Text } from "hzero"
 import { complaintApi } from "@/service"
 
 const ComplaintFeedbackPage = () => {
@@ -98,7 +97,7 @@ const ComplaintFeedbackPage = () => {
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
                     <IconCircle size="64px" bg="danger" style={{ margin: '0 auto var(--spacing-4)' }}>
-                        <FaExclamationTriangle size={32} color="var(--color-danger)" />
+                        <AlertTriangle size={32} color="var(--color-danger)" />
                     </IconCircle>
                     <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Unable to Load Feedback Form
@@ -108,7 +107,7 @@ const ComplaintFeedbackPage = () => {
                     </Text>
                     <Link to="/login">
                         <Button variant="primary">
-                            <FaArrowRight /> Go to Login
+                            <ArrowRight size="1em" /> Go to Login
                         </Button>
                     </Link>
                 </Card>
@@ -129,7 +128,7 @@ const ComplaintFeedbackPage = () => {
             }}>
                 <Card style={{ maxWidth: '500px', width: '100%', textAlign: 'center' }}>
                     <IconCircle size="64px" bg="success" style={{ margin: '0 auto var(--spacing-4)' }}>
-                        <FaCheck size={32} color="var(--color-success)" />
+                        <Check size={32} color="var(--color-success)" />
                     </IconCircle>
                     <Heading as="h2" size="xl" weight="semibold" color="heading" style={{ marginBottom: 'var(--spacing-2)' }}>
                         Thank You for Your Feedback!
@@ -139,7 +138,7 @@ const ComplaintFeedbackPage = () => {
                     </Text>
                     <Link to="/login">
                         <Button variant="primary">
-                            <FaArrowRight /> Go to Login
+                            <ArrowRight size="1em" /> Go to Login
                         </Button>
                     </Link>
                 </Card>
@@ -181,7 +180,7 @@ const ComplaintFeedbackPage = () => {
                                     alignItems: 'center',
                                     marginBottom: 'var(--spacing-1)'
                                 }}>
-                                    <FaClipboardList style={{ marginRight: 'var(--spacing-1-5)' }} /> Complaint
+                                    <ClipboardList size="1em" style={{ marginRight: 'var(--spacing-1-5)' }} /> Complaint
                                 </h4>
                                 <Text weight="semibold" color="primary" size="base">
                                     {complaint.title}
@@ -218,7 +217,7 @@ const ComplaintFeedbackPage = () => {
                                     alignItems: 'center',
                                     marginBottom: 'var(--spacing-0-5)'
                                 }}>
-                                    <FaInfoCircle style={{ marginRight: 'var(--spacing-1)' }} /> Resolution Notes
+                                    <Info size="1em" style={{ marginRight: 'var(--spacing-1)' }} /> Resolution Notes
                                 </h5>
                                 <Text color="body" size="sm">
                                     {complaint.resolutionNotes}
@@ -254,7 +253,7 @@ const ComplaintFeedbackPage = () => {
                                             padding: 'var(--spacing-1)',
                                         }}
                                     >
-                                        <FaStar
+                                        <Star
                                             size={32}
                                             style={{ transition: 'var(--transition-colors)' }} color={rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)'} />
                                     </button>
@@ -346,7 +345,7 @@ const ComplaintFeedbackPage = () => {
                             loading={isSubmitting}
                             disabled={isSubmitting || feedbackRating === 0}
                         >
-                            <FaStar /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
+                            <Star size="1em" /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
                         </Button>
                     </form>
                 </Card>

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
+import { AlertTriangle, ClipboardList } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Field, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import { Button, Field, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
 
 const ComplaintForm = ({ isOpen, setIsOpen }) => {
+  const { toast } = useToast()
   const { user } = useAuth()
   const [formData, setFormData] = useState({
     title: "",
@@ -44,7 +43,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
       }
 
       await complaintApi.createComplaint(complaintData)
-      alert("Complaint submitted successfully!")
+      toast.success("Complaint submitted successfully!")
       setIsOpen(false)
       setFormData({
         title: "",
@@ -65,7 +64,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
           <div style={{ backgroundColor: 'var(--color-danger-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-danger)" />
+            <AlertTriangle size="1em" style={{ marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} color="var(--color-danger)" />
             <Text color="danger-text">{error}</Text>
           </div>
         )}
@@ -87,7 +86,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           )}
 
           <Field label="Category" color="secondary" spacing={2}>
-            <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<FaClipboardList />} options={[
+            <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<ClipboardList size="1em" />} options={[
               { value: "Plumbing", label: "Plumbing" },
               { value: "Electrical", label: "Electrical" },
               { value: "Internet", label: "Internet" },

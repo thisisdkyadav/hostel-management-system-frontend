@@ -1,8 +1,6 @@
 import React, { useState } from "react"
-import { FaStar } from "react-icons/fa"
-import { Select, Text } from "@/components/ui"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Star } from "lucide-react"
+import { Button, Modal, Select, Text } from "hzero"
 import { complaintApi } from "../../service"
 
 const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
@@ -77,7 +75,7 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
           </Button>
           <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}
           >
-            {!isSubmitting && <FaStar />} {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+            {!isSubmitting && <Star size="1em" />} {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
           </Button>
         </div>
       </form>

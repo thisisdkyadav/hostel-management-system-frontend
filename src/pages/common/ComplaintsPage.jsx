@@ -12,7 +12,7 @@ import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterP
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import useAuthz from "../../hooks/useAuthz"
-import { Page, Pagination, Text } from "@/components/ui"
+import { Page, Pagination, Text } from "hzero"
 import PageFooter from "../../components/common/PageFooter"
 
 const DEFAULT_FILTERS = {

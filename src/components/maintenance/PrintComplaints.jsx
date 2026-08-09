@@ -1,10 +1,9 @@
 import React, { useState } from "react"
-import { FaPrint } from "react-icons/fa"
-import { Checkbox, HStack, VStack } from "@/components/ui"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Printer } from "lucide-react"
+import { Button, Checkbox, HStack, Modal, useToast, VStack } from "hzero"
 
 const PrintComplaints = ({ complaints }) => {
+  const { toast } = useToast()
   const [showPrintModal, setShowPrintModal] = useState(false)
   const [selectedPrintStatuses, setSelectedPrintStatuses] = useState([])
   const [printComplaints, setPrintComplaints] = useState([])
@@ -30,7 +29,7 @@ const PrintComplaints = ({ complaints }) => {
   // Handle print confirmation
   const confirmPrint = () => {
     if (selectedPrintStatuses.length === 0) {
-      alert("Please select at least one complaint status to print.")
+      toast.error("Please select at least one complaint status to print.")
       return
     }
     const filteredForPrint = complaints.filter(c => selectedPrintStatuses.includes(c.status))
@@ -101,7 +100,7 @@ const PrintComplaints = ({ complaints }) => {
     <>
       {/* Print Button */}
       <Button variant="white" size="md" onClick={handlePrint} className="no-print" aria-label="Print complaints">
-        <FaPrint />
+        <Printer size="1em" />
         <span className="hidden sm:inline">Print</span>
       </Button>
 
@@ -122,7 +121,7 @@ const PrintComplaints = ({ complaints }) => {
                 Cancel
               </Button>
               <Button variant="primary" size="md" onClick={confirmPrint}>
-                <FaPrint /> Print
+                <Printer size="1em" /> Print
               </Button>
             </HStack>
           </VStack>

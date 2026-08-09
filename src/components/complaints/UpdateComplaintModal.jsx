@@ -1,8 +1,6 @@
 import React, { useState } from "react"
-import { FaEdit } from "react-icons/fa"
-import { Select, Text } from "@/components/ui"
-import { Button } from "hzero"
-import { Modal } from "@/components/ui"
+import { Pencil } from "lucide-react"
+import { Button, Modal, Select, Text } from "hzero"
 import { complaintApi } from "../../service"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
@@ -97,7 +95,7 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
           </Button>
           <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}
           >
-            {!isSubmitting && <FaEdit />} {isSubmitting ? 'Updating...' : 'Update Complaint'}
+            {!isSubmitting && <Pencil size="1em" />} {isSubmitting ? 'Updating...' : 'Update Complaint'}
           </Button>
         </div>
       </form>

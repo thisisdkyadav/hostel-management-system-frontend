@@ -1,8 +1,7 @@
-import { FaBuilding } from "react-icons/fa"
-import { BiSolidCategory } from "react-icons/bi"
+import { Building2, Tag } from "lucide-react"
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Card, Heading, HStack, IconCircle, Surface, Text, VStack } from "@/components/ui"
+import { Card, Heading, HStack, IconCircle, Surface, Text, VStack } from "hzero"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
@@ -22,7 +21,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
 
           <Card.Body>
             <HStack gap="none" align="center" style={{ marginTop: 'var(--spacing-3)' }}>
-              <FaBuilding style={{ opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
+              <Building2 size={13} style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
               <Text as="span" size="sm" color="body" className="truncate max-w-[150px]">
                 {complaint.hostel}, Room {complaint.roomNumber}
               </Text>
@@ -34,7 +33,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
 
             <HStack gap="none" align="center" justify="between" style={{ marginTop: 'var(--spacing-4)' }}>
               <HStack gap="none" align="center">
-                <BiSolidCategory style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
+                <Tag size="1em" style={{ opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} color="var(--color-primary)" />
                 <Text as="span" size="sm" color="body">{complaint.category}</Text>
               </HStack>
               <Text as="span" size="xs" color="muted">{getTimeSince(complaint.createdDate)}</Text>

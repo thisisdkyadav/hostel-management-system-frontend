@@ -1,8 +1,6 @@
 import React from "react"
-import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
-import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
-import { TbProgressCheck } from "react-icons/tb"
-import { StatCards } from "@/components/ui"
+import { CircleAlert, CircleCheck, ClipboardList, Clock, LoaderCircle } from "lucide-react"
+import { StatCards } from "hzero"
 
 const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
   const normalizedStats = statsData?.data || statsData || {}
@@ -19,7 +17,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
       title: "Total",
       value: totalComplaints,
       subtitle: entityLabel,
-      icon: <FaClipboardList style={{ fontSize: 'var(--icon-2xl)' }} />,
+      icon: <ClipboardList size={32} />,
       color: "var(--color-primary)",
       iconColor: "var(--color-primary)",
     },
@@ -27,7 +25,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
       title: "Pending",
       value: pendingComplaints,
       subtitle: `Pending ${entityLabel}`,
-      icon: <MdOutlineWatchLater style={{ fontSize: 'var(--icon-2xl)' }} />,
+      icon: <Clock size={32} />,
       color: "var(--color-info)",
       iconColor: "var(--color-info)",
     },
@@ -35,7 +33,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
       title: "In Progress",
       value: inProgressComplaints,
       subtitle: `${entityLabel} In Progress`,
-      icon: <TbProgressCheck style={{ fontSize: 'var(--icon-2xl)' }} />,
+      icon: <LoaderCircle size={32} />,
       color: "var(--color-warning)",
       iconColor: "var(--color-warning)",
     },
@@ -43,7 +41,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
       title: "Resolved",
       value: resolvedComplaints,
       subtitle: entityLabelLower === "issues" ? "Fixed Issues" : `Resolved ${entityLabel}`,
-      icon: <FaRegCheckCircle style={{ fontSize: 'var(--icon-2xl)' }} />,
+      icon: <CircleCheck size={32} />,
       color: "var(--color-success)",
       iconColor: "var(--color-success)",
     },
@@ -51,7 +49,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
       title: "Forwarded to IDO",
       value: forwardedToIDOComplaints,
       subtitle: `Escalated ${entityLabel}`,
-      icon: <MdPriorityHigh style={{ fontSize: 'var(--icon-2xl)' }} />,
+      icon: <CircleAlert size={32} />,
       color: "var(--color-orange-text)",
       iconColor: "var(--color-orange-text)",
     },
@@ -59,7 +57,7 @@ const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
     //   title: "Urgent",
     //   value: urgentComplaints,
     //   subtitle: "High Priority",
-    //   icon: <MdPriorityHigh style={{ fontSize: 'var(--icon-2xl)' }} />,
+    //   icon: <CircleAlert size={32} />,
     //   color: "var(--color-danger)",
     //   iconColor: "var(--color-danger)",
     // },

@@ -2,7 +2,7 @@ import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "hzero"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { HStack, IconCircle, Text, VStack } from "@/components/ui"
+import { HStack, IconCircle, Text, VStack } from "hzero"
 
 const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
   const { user } = useAuth()
