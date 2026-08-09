@@ -1,9 +1,8 @@
 import React, { useState } from "react"
-import { FaCheck, FaPlus, FaTrash } from "react-icons/fa"
-import { Button, Input } from "hzero"
+import { Check, Plus, Trash2 } from "lucide-react"
 import CsvUploader from "@/components/common/CsvUploader"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
-import { Alert, Checkbox, Field, Grid, HStack, Heading, Surface, VStack } from "@/components/ui"
+import { Alert, Button, Checkbox, Field, Grid, HStack, Heading, Input, Surface, VStack } from "hzero"
 import { FieldList, TabSection } from "./BulkUploadTab"
 import PreviewTable from "./PreviewTable"
 
@@ -107,7 +106,7 @@ const FamilyMembersTab = ({ familyData, error, replaceExisting, onReplaceExistin
                       size="sm"
                       aria-label="Remove family member"
                     >
-                      <FaTrash />
+                      <Trash2 />
                     </Button>
                   )}
                 </HStack>
@@ -137,11 +136,11 @@ const FamilyMembersTab = ({ familyData, error, replaceExisting, onReplaceExistin
 
             <HStack gap={4}>
               <Button onClick={() => setMembers((current) => [...current, EMPTY_MEMBER])} variant="outline" size="md">
-                <FaPlus />
+                <Plus />
                 Add Another Family Member
               </Button>
               <Button onClick={saveManual} variant="primary" size="md">
-                <FaCheck />
+                <Check />
                 Save Family Members
               </Button>
             </HStack>

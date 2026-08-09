@@ -1,7 +1,6 @@
 import React from "react"
-import { Checkbox, Grid, HStack } from "@/components/ui"
+import { Alert, Checkbox, Grid, HStack, Input } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
-import { Input } from "hzero"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import SheetPreviewTable from "@/components/sheet/SheetPreviewTable"
 import ToggleButtonGroup from "@/components/common/ToggleButtonGroup"
@@ -163,7 +162,7 @@ return (
       </div>
     )}
 
-    {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+    {error && <Alert type="error">{error}</Alert>}
   </div>
 )
 }

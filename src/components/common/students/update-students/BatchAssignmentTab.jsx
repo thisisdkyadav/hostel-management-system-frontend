@@ -1,7 +1,6 @@
 import React from "react"
 import CsvUploader from "@/components/common/CsvUploader"
-import { Grid, Select } from "@/components/ui"
-import { Input } from "hzero"
+import { Alert, Grid, Input, Select } from "hzero"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { MIXED_BATCH_SCOPE_KEY, getBatchScopeLabel } from "@/utils/studentBatchConfig"
 import SheetPreviewTable from "@/components/sheet/SheetPreviewTable"
@@ -178,7 +177,7 @@ return (
       </div>
     )}
 
-    {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+    {error && <Alert type="error">{error}</Alert>}
   </div>
 )
 }

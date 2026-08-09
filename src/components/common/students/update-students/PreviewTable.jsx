@@ -1,5 +1,5 @@
 import React from "react"
-import { Surface, Text } from "@/components/ui"
+import { Surface, Text } from "hzero"
 
 /**
  * The first few parsed rows, so someone can see the file landed as expected.

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome, FaSearch } from "react-icons/fa"
+import { Check, Download, FileUp, GraduationCap, HeartPulse, House, Search, User, Users, X } from "lucide-react"
 import Papa from "papaparse"
 import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -7,10 +7,10 @@ import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import { studentApi } from "../../../service"
-import { useToast } from "@/components/ui/feedback"
-import { Checkbox, FileInput, Grid, HStack, Select, Spinner } from "@/components/ui"
-import { Button, Input } from "hzero"
-import { Modal } from "@/components/ui"
+import {
+  Alert, Badge, Button, Checkbox, FileInput, Grid, HStack, Input, Modal, Select,
+  Spinner, StatTile, Surface, Text, VStack, useToast,
+} from "hzero"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { useSocket } from "../../../contexts/SocketProvider"
 import { createBatchScopeOptions, MIXED_BATCH_SCOPE_KEY } from "../../../utils/studentBatchConfig"
@@ -694,10 +694,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     return (
       <div>
-        <p className="font-medium text-blue-700">{title} ({values.length})</p>
-        <div className="text-gray-700 bg-blue-50 p-2 rounded max-h-40 overflow-auto">
+        <Text as="p" size="sm" weight="medium" color="brand">{title} ({values.length})</Text>
+        <Surface bg="brand" padding={2} radius="md" color="body" size="sm" className="max-h-40 overflow-auto">
           {displayedValues.join(", ")}
-        </div>
+        </Surface>
         {values.length > VISIBLE_REFERENCE_LIMIT && (
           <Button
             onClick={() => setShowAll((prev) => !prev)}
@@ -1315,14 +1315,14 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
   // Define tabs
   const tabs = [
-    { id: "basic", name: "Basic Details", icon: <FaUser /> },
-    { id: "batch", name: "Batch Assignment", icon: <FaUsers /> },
-    { id: "groups", name: "Groups", icon: <FaUsers /> },
-    { id: "health", name: "Health Info", icon: <FaHeartbeat /> },
-    { id: "family", name: "Family Members", icon: <FaUsers /> },
-    { id: "status", name: "Status Update", icon: <FaUserGraduate /> },
-    { id: "rollCheck", name: "Check Roll Numbers", icon: <FaSearch /> },
-    { id: "dayScholar", name: "Day Scholar", icon: <FaHome /> },
+    { id: "basic", name: "Basic Details", icon: <User /> },
+    { id: "batch", name: "Batch Assignment", icon: <Users /> },
+    { id: "groups", name: "Groups", icon: <Users /> },
+    { id: "health", name: "Health Info", icon: <HeartPulse /> },
+    { id: "family", name: "Family Members", icon: <Users /> },
+    { id: "status", name: "Status Update", icon: <GraduationCap /> },
+    { id: "rollCheck", name: "Check Roll Numbers", icon: <Search /> },
+    { id: "dayScholar", name: "Day Scholar", icon: <House /> },
   ]
 
 
@@ -1338,24 +1338,39 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <>
           {step === 1 && (
             <div className="space-y-5">
-              <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-                <p className="mt-3 text-xs text-gray-500">
-                  <strong>Required field:</strong> rollNumber (used as identifier - cannot be changed)
-                </p>
-                <p className="mt-1 text-xs text-gray-500">
+              {/* A button, not a div with an onClick: this is the only way to
+                  choose a file, and it was unreachable by keyboard. The file
+                  input is a sibling because a button may not contain one. */}
+              <Surface
+                as="button"
+                type="button"
+                bg="secondary"
+                padding={8}
+                radius="xl"
+                // font:inherit because a native button does not take the page's
+                // font, and everything inside this one is body copy.
+                className="w-full text-center border-2 border-dashed border-[var(--color-border-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors [font:inherit]"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FileUp className="mx-auto" size={48} color="var(--color-text-muted)" />
+                <Text as="p" size="sm" color="muted" className="mt-[var(--spacing-2)]">Drag and drop a CSV file here, or click to select a file</Text>
+                <Text as="p" size="xs" color="tertiary" className="mt-[var(--spacing-3)]">
+                  <strong>Required field:</strong> rollNumber (used as identifier — cannot be changed)
+                </Text>
+                <Text as="p" size="xs" color="tertiary" className="mt-[var(--spacing-1)]">
                   <strong>Updatable fields:</strong> {availableFields.join(", ")}
-                </p>
-                <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
-              </div>
+                </Text>
+              </Surface>
+              <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
               <div className="flex flex-col items-center">
                 <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
-                  <FaFileDownload />
+                  <Download />
                   Download CSV Template
                 </Button>
 
-                <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
+                <Surface bg="secondary" padding={3} radius="lg" color="muted" size="xs" className="mt-[var(--spacing-2)] max-w-md">
                   <p className="font-medium mb-1">Field Input Types:</p>
                   <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
                     <li>
@@ -1412,24 +1427,24 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                       {renderReferenceValues("Valid Departments", validDepartments, displayedDepartments, showAllDepartments, setShowAllDepartments)}
                     </div>
                   )}
-                </div>
+                </Surface>
               </div>
               {csvFile && (
-                <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
-                  <span className="text-sm text-blue-700">
-                    Selected file: <span className="font-medium">{csvFile.name}</span>
-                  </span>
+                <Surface bg="brand" padding="var(--spacing-2) var(--spacing-4)" radius="lg" className="flex items-center justify-between">
+                  <Text as="span" size="sm" color="brand">
+                    Selected file: <Text as="span" weight="medium">{csvFile.name}</Text>
+                  </Text>
                   <Button onClick={(e) => {
                     e.stopPropagation()
                     setCsvFile(null)
-                  }} variant="ghost" size="sm" aria-label="Remove file"><FaTimes /></Button>
-                </div>
+                  }} variant="ghost" size="sm" aria-label="Remove file"><X /></Button>
+                </Surface>
               )}
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {error && <Alert type="error"><span className="whitespace-pre-line">{error}</span></Alert>}
               {(isLoading || configLoading) && (
                 <div className="flex items-center justify-center py-4">
                   <Spinner size={24} thickness="thin" />
-                  <span className="ml-2 text-sm text-gray-600">{isLoading ? "Processing file..." : "Loading configuration..."}</span>
+                  <Text as="span" size="sm" color="muted" className="ml-[var(--spacing-2)]">{isLoading ? "Processing file…" : "Loading configuration…"}</Text>
                 </div>
               )}
             </div>
@@ -1438,51 +1453,47 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           {step === 2 && (
             <div className="space-y-5">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-800">Preview Updates</h3>
-                <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students will be updated</div>
+                <Text as="h3" size="lg" weight="medium" color="heading">Preview Updates</Text>
+                <Badge variant="primary" soft className="mt-[var(--spacing-2)] sm:mt-0">{parsedData.length} students will be updated</Badge>
               </div>
               <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 items-start">
                 <div className="border rounded-lg overflow-hidden">
                   <SheetPreviewTable rows={parsedData} getCellStyle={getBasicPreviewCellStyle} />
                 </div>
 
-                <div className="space-y-3">
-                  <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
-                    <div className="text-xs text-[var(--color-info-text)]">Rows In Sheet</div>
-                    <div className="text-lg font-semibold text-[var(--color-info-text)]">{parsedData.length}</div>
-                  </div>
-                  <div className="p-3 rounded-lg border bg-[var(--color-success-bg)] border-[var(--color-success-light)]">
-                    <div className="text-xs text-[var(--color-success-text)]">Rows Ready To Update</div>
-                    <div className="text-lg font-semibold text-[var(--color-success-text)]">{Math.max(parsedData.length - Object.keys(basicInvalidCellMap).length, 0)}</div>
-                  </div>
-                  <div className="p-3 rounded-lg border bg-[var(--color-warning-bg)] border-[var(--color-warning-light)]">
-                    <div className="text-xs text-[var(--color-warning-text)]">Invalid Degree Values</div>
-                    <div className="text-lg font-semibold text-[var(--color-warning-text)]">{invalidDegreeValues.length}</div>
-                    {invalidDegreeValues.length > 0 && (
-                      <div className="mt-2 text-xs text-[var(--color-warning-text)] max-h-24 overflow-auto">
-                        {invalidDegreeValues.join(", ")}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3 rounded-lg border bg-[var(--color-danger-bg)] border-[var(--color-danger-border)]">
-                    <div className="text-xs text-[var(--color-danger-text)]">Invalid Department Values</div>
-                    <div className="text-lg font-semibold text-[var(--color-danger-text)]">{invalidDepartmentValues.length}</div>
-                    {invalidDepartmentValues.length > 0 && (
-                      <div className="mt-2 text-xs text-[var(--color-danger-text)] max-h-24 overflow-auto">
-                        {invalidDepartmentValues.join(", ")}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <VStack gap="small">
+                  <StatTile label="Rows In Sheet" value={parsedData.length} tone="info" />
+                  <StatTile
+                    label="Rows Ready To Update"
+                    value={Math.max(parsedData.length - Object.keys(basicInvalidCellMap).length, 0)}
+                    tone="success"
+                  />
+                  <StatTile
+                    label="Invalid Degree Values"
+                    value={invalidDegreeValues.length}
+                    tone="warning"
+                    note={invalidDegreeValues.length > 0 ? (
+                      <span className="block max-h-24 overflow-auto">{invalidDegreeValues.join(", ")}</span>
+                    ) : undefined}
+                  />
+                  <StatTile
+                    label="Invalid Department Values"
+                    value={invalidDepartmentValues.length}
+                    tone="danger"
+                    note={invalidDepartmentValues.length > 0 ? (
+                      <span className="block max-h-24 overflow-auto">{invalidDepartmentValues.join(", ")}</span>
+                    ) : undefined}
+                  />
+                </VStack>
               </div>
 
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {error && <Alert type="error"><span className="whitespace-pre-line">{error}</span></Alert>}
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-5">
-              <h3 className="text-lg font-medium text-gray-800">Update Progress</h3>
+              <Text as="h3" size="lg" weight="medium" color="heading">Update Progress</Text>
 
               <div className="border rounded-lg p-3 bg-[var(--color-bg-tertiary)]">
                 <div className="flex justify-between mb-2 text-xs text-[var(--color-text-body)]">
@@ -1541,7 +1552,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 </div>
               )}
 
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {error && <Alert type="error"><span className="whitespace-pre-line">{error}</span></Alert>}
             </div>
           )}
         </>
@@ -1676,7 +1687,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               isUpdating
             }
           >
-            <FaCheck />
+            <Check />
             {isUpdating
               ? (activeTab === "rollCheck" ? "Checking Roll Numbers..." : "Updating Students...")
               : activeTab === "rollCheck"
@@ -1701,7 +1712,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               size="md"
               disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.missingRollNumbers) || rollNumberCheckSummary.missingRollNumbers.length === 0}
               >
-                <FaFileDownload />
+                <Download />
                 Export Missing
               </Button>
             <Button
@@ -1718,7 +1729,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               size="md"
               disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Inactive) || rollNumberCheckSummary.statusRollNumbers.Inactive.length === 0}
             >
-              <FaFileDownload />
+              <Download />
               Export Inactive
             </Button>
             <Button
@@ -1735,7 +1746,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               size="md"
               disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Dropped) || rollNumberCheckSummary.statusRollNumbers.Dropped.length === 0}
             >
-              <FaFileDownload />
+              <Download />
               Export Dropped
             </Button>
             <Button
@@ -1752,7 +1763,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               size="md"
               disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Graduated) || rollNumberCheckSummary.statusRollNumbers.Graduated.length === 0}
             >
-              <FaFileDownload />
+              <Download />
               Export Graduated
             </Button>
             {rollNumberCheckScopeType !== "system" && (
@@ -1770,7 +1781,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 size="md"
                 disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.outOfScopeRollNumbers) || rollNumberCheckSummary.outOfScopeRollNumbers.length === 0}
               >
-                <FaFileDownload />
+                <Download />
                 Export Outside Scope
               </Button>
             )}
@@ -1780,7 +1791,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         {activeTab === "basic" && step === 3 && (
           <>
             <Button onClick={handleExportUpdateResults} variant="secondary" size="md" disabled={!isBasicUpdateCompleted || updateResultSheetRows.length === 0 || isUpdating}>
-              <FaFileDownload />
+              <Download />
               Export Results
             </Button>
             <Button onClick={handleCloseModal} variant="primary" size="md" disabled={isUpdating}>

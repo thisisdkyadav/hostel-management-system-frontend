@@ -1,5 +1,5 @@
 import React from "react"
-import { Alert, Heading, Surface, Text, VStack } from "@/components/ui"
+import { Alert, Heading, Surface, Text, VStack } from "hzero"
 
 /**
  * The shape every bulk-update tab has.

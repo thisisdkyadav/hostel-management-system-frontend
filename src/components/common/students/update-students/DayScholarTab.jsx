@@ -1,10 +1,9 @@
 import React, { useState } from "react"
-import { FaCheck, FaPlus, FaTrash } from "react-icons/fa"
-import { Button, Input } from "hzero"
+import { Check, Plus, Trash2 } from "lucide-react"
 import CsvUploader from "@/components/common/CsvUploader"
 import ToggleButtonGroup from "@/components/common/ToggleButtonGroup"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
-import { Alert, Field, Grid, HStack, Heading, Surface, VStack } from "@/components/ui"
+import { Alert, Button, Field, Grid, HStack, Heading, Input, Surface, VStack } from "hzero"
 import { FieldList, TabSection } from "./BulkUploadTab"
 import PreviewTable from "./PreviewTable"
 
@@ -134,7 +133,7 @@ const DayScholarTab = ({ mode, onModeChange, dayScholarData, error, status, onDa
                       size="sm"
                       aria-label="Remove student"
                     >
-                      <FaTrash />
+                      <Trash2 />
                     </Button>
                   )}
                 </HStack>
@@ -160,11 +159,11 @@ const DayScholarTab = ({ mode, onModeChange, dayScholarData, error, status, onDa
 
             <HStack gap={4}>
               <Button onClick={() => setStudents((current) => [...current, EMPTY_STUDENT])} variant="outline" size="md">
-                <FaPlus />
+                <Plus />
                 Add Another Student
               </Button>
               <Button onClick={saveManual} variant="primary" size="md">
-                <FaCheck />
+                <Check />
                 Save Students
               </Button>
             </HStack>

@@ -1,8 +1,7 @@
 import React from "react"
-import { Select } from "hzero"
 import CsvUploader from "@/components/common/CsvUploader"
 import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
-import { Field } from "@/components/ui"
+import { Field, Select } from "hzero"
 import BulkUploadTab, { FieldList, TabSection } from "./BulkUploadTab"
 import PreviewTable from "./PreviewTable"
 

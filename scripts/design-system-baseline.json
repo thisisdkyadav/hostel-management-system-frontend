@@ -358,40 +358,6 @@
   "src/components/common/students/tabs/PorTab.jsx": {
     "ui-barrel-import": 2
   },
-  "src/components/common/students/update-students/BatchAssignmentTab.jsx": {
-    "palette-class": 3,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/BulkUploadTab.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/DayScholarTab.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/FamilyMembersTab.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/GroupsAssignmentTab.jsx": {
-    "palette-class": 3,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/PreviewTable.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/RollNumberCheckTab.jsx": {
-    "palette-class": 28,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/update-students/StatusUpdateTab.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/UpdateStudentsModal.jsx": {
-    "palette-class": 27,
-    "react-icons": 1,
-    "ui-barrel-import": 3
-  },
   "src/components/common/ToggleButtonGroup.jsx": {
     "js-hover": 2,
     "ui-barrel-import": 1
