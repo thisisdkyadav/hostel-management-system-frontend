@@ -20,8 +20,10 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, 
   let iconColor
   if (useAccent) {
     if (isActive) {
-      buttonStyle = { backgroundColor: accent, color: "#fff", boxShadow: `0 2px 8px ${tint(30)}` }
-      iconColor = "#fff"
+      // --color-on-accent, not --color-white: this reads against the button's own
+      // accent fill, so it must not follow the theme.
+      buttonStyle = { backgroundColor: accent, color: "var(--color-on-accent)", boxShadow: `0 2px 8px ${tint(30)}` }
+      iconColor = "var(--color-on-accent)"
     } else if (hovered) {
       buttonStyle = { backgroundColor: tint(20), color: accent }
       iconColor = accent

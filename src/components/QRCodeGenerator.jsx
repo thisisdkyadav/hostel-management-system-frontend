@@ -103,6 +103,10 @@ const QRCodeGenerator = () => {
       ) : (
         <div className="flex flex-col items-center">
           <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 inline-block">
+            {/* Literal on purpose: a QR needs a white ground and a dark
+                module colour to scan, and the fallback covers the frame before
+                getComputedStyle can read the token. Neither must stay literal
+                for style reasons — they are scanner requirements. */}
             <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || "#1360AB"} level={"H"} includeMargin={true} />
           </div>
 

@@ -103,6 +103,10 @@ const SecurityQRGenerator = () => {
       ) : (
         <VStack gap="none" align="center">
           <div style={{ backgroundColor: 'var(--color-white)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: `var(--border-1) solid var(--color-border-primary)`, display: 'inline-block' }}>
+            {/* Literal on purpose: a QR needs a white ground and a dark
+                module colour to scan, and the fallback covers the frame before
+                getComputedStyle can read the token. Neither must stay literal
+                for style reasons — they are scanner requirements. */}
             <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || "#1360AB"} level={"H"} includeMargin={true} />
           </div>
 
