@@ -2,8 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, useSearchParams, useNavigate } from "react-router-dom"
 import { ArrowLeft, ArrowRight, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react"
 import { authApi } from "@/service"
-import hmsLogo from "../../assets/hms-logo-t-256.svg"
-import "../../styles/login.css"
+import AuthLayout, { AuthSpinner } from "../../components/auth/AuthLayout"
 
 const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams()
@@ -77,51 +76,19 @@ const ResetPasswordPage = () => {
     // Loading state while verifying token
     if (verifying) {
         return (
-            <div className="login-page">
-                <div className="login-bg-container">
-                    <div className="login-blob-1"></div>
-                    <div className="login-blob-2"></div>
-                    <div className="login-blob-3"></div>
-                    <div className="login-blob-4"></div>
+            <AuthLayout>
+                <div className="login-loading-state">
+                    <AuthSpinner size="large" />
+                    <p className="login-loading-text" role="status" aria-live="polite">Verifying reset link...</p>
                 </div>
-                <div className="login-content-container">
-                    <div className="login-card-wrapper">
-                        <div className="login-card">
-                            <div className="login-logo-section">
-                                <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
-                            </div>
-                            <div className="login-loading-state">
-                                <svg className="login-spinner-large" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <p className="login-loading-text">Verifying reset link...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </AuthLayout>
         )
     }
 
     // Token error state
     if (tokenError) {
         return (
-            <div className="login-page">
-                <div className="login-bg-container">
-                    <div className="login-blob-1"></div>
-                    <div className="login-blob-2"></div>
-                    <div className="login-blob-3"></div>
-                    <div className="login-blob-4"></div>
-                    <div className="login-blob-5"></div>
-                    <div className="login-blob-6"></div>
-                </div>
-                <div className="login-content-container">
-                    <div className="login-card-wrapper">
-                        <div className="login-card">
-                            <div className="login-logo-section">
-                                <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
-                            </div>
+            <AuthLayout>
                             <div className="login-error-state">
                                 <AlertCircle className="login-error-icon" size={48} />
                                 <h3 className="login-error-title">Invalid Reset Link</h3>
@@ -141,58 +108,12 @@ const ResetPasswordPage = () => {
                                 <ArrowLeft size={16} />
                                 Back to Login
                             </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </AuthLayout>
         )
     }
 
     return (
-        <div className="login-page">
-            <div className="login-bg-container">
-                {/* Large background blobs */}
-                <div className="login-blob-1"></div>
-                <div className="login-blob-2"></div>
-                <div className="login-blob-3"></div>
-                <div className="login-blob-4"></div>
-
-                {/* Medium size floating elements */}
-                <div className="login-blob-5"></div>
-                <div className="login-blob-6"></div>
-                <div className="login-blob-7"></div>
-                <div className="login-blob-8"></div>
-                <div className="login-blob-9"></div>
-
-                {/* Smaller dynamic elements */}
-                <div className="login-blob-10"></div>
-                <div className="login-blob-11"></div>
-                <div className="login-blob-12"></div>
-                <div className="login-blob-13"></div>
-                <div className="login-blob-14"></div>
-
-                {/* Fast moving tiny elements */}
-                <div className="login-blob-15"></div>
-                <div className="login-blob-16"></div>
-                <div className="login-blob-17"></div>
-                <div className="login-blob-18"></div>
-                <div className="login-blob-19"></div>
-
-                {/* Floating elements with float animation */}
-                <div className="login-blob-20"></div>
-                <div className="login-blob-21"></div>
-                <div className="login-blob-22"></div>
-                <div className="login-blob-23"></div>
-                <div className="login-blob-24"></div>
-            </div>
-
-            <div className="login-content-container">
-                <div className="login-card-wrapper">
-                    <div className="login-card">
-                        <div className="login-logo-section">
-                            <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
-                        </div>
-
+        <AuthLayout>
                         {success ? (
                             <div className="login-form">
                                 <div className="login-success-message">
@@ -244,11 +165,13 @@ const ResetPasswordPage = () => {
                                                 className="login-input login-input-with-icon"
                                                 autoComplete="new-password"
                                             />
+                                            {/* Reachable by keyboard: it was tabIndex={-1}, which left
+                                                the only way to check what you typed being a mouse. */}
                                             <button
                                                 type="button"
                                                 className="login-password-toggle"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                tabIndex={-1}
+                                                aria-label={showPassword ? "Hide password" : "Show password"}
                                             >
                                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
@@ -276,7 +199,7 @@ const ResetPasswordPage = () => {
                                                 type="button"
                                                 className="login-password-toggle"
                                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                tabIndex={-1}
+                                                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                                             >
                                                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
@@ -293,10 +216,7 @@ const ResetPasswordPage = () => {
                                         <span className="login-button-content">
                                             {loading ? (
                                                 <>
-                                                    <svg className="login-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                    </svg>
+                                                    <AuthSpinner />
                                                     Resetting...
                                                 </>
                                             ) : (
@@ -315,10 +235,7 @@ const ResetPasswordPage = () => {
                                 </Link>
                             </>
                         )}
-                    </div>
-                </div>
-            </div>
-        </div>
+        </AuthLayout>
     )
 }
 

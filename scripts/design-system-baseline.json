@@ -871,10 +871,6 @@
     "react-icons": 2,
     "ui-barrel-import": 1
   },
-  "src/constants/themeConfig.js": {
-    "hex-literal": 44,
-    "palette-class": 22
-  },
   "src/contexts/NotificationProvider.jsx": {
     "ui-barrel-import": 1
   },
@@ -938,10 +934,6 @@
   "src/pages/admin/UpdatePasswordPage.jsx": {
     "native-dialog": 3,
     "react-icons": 1,
-    "ui-barrel-import": 1
-  },
-  "src/pages/auth/SSOLoginPage.jsx": {
-    "palette-class": 82,
     "ui-barrel-import": 1
   },
   "src/pages/caterer/DashboardPage.jsx": {

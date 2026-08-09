@@ -2,8 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ArrowLeft, Mail, CheckCircle } from "lucide-react"
 import { authApi } from "@/service"
-import hmsLogo from "../../assets/hms-logo-t-256.svg"
-import "../../styles/login.css"
+import AuthLayout, { AuthSpinner } from "../../components/auth/AuthLayout"
 
 const ForgotPasswordPage = () => {
     const [email, setEmail] = useState("")
@@ -27,50 +26,7 @@ const ForgotPasswordPage = () => {
     }
 
     return (
-        <div className="login-page">
-            <div className="login-bg-container">
-                {/* Large background blobs */}
-                <div className="login-blob-1"></div>
-                <div className="login-blob-2"></div>
-                <div className="login-blob-3"></div>
-                <div className="login-blob-4"></div>
-
-                {/* Medium size floating elements */}
-                <div className="login-blob-5"></div>
-                <div className="login-blob-6"></div>
-                <div className="login-blob-7"></div>
-                <div className="login-blob-8"></div>
-                <div className="login-blob-9"></div>
-
-                {/* Smaller dynamic elements */}
-                <div className="login-blob-10"></div>
-                <div className="login-blob-11"></div>
-                <div className="login-blob-12"></div>
-                <div className="login-blob-13"></div>
-                <div className="login-blob-14"></div>
-
-                {/* Fast moving tiny elements */}
-                <div className="login-blob-15"></div>
-                <div className="login-blob-16"></div>
-                <div className="login-blob-17"></div>
-                <div className="login-blob-18"></div>
-                <div className="login-blob-19"></div>
-
-                {/* Floating elements with float animation */}
-                <div className="login-blob-20"></div>
-                <div className="login-blob-21"></div>
-                <div className="login-blob-22"></div>
-                <div className="login-blob-23"></div>
-                <div className="login-blob-24"></div>
-            </div>
-
-            <div className="login-content-container">
-                <div className="login-card-wrapper">
-                    <div className="login-card">
-                        <div className="login-logo-section">
-                            <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
-                        </div>
-
+        <AuthLayout>
                         {success ? (
                             <div className="login-form">
                                 <div className="login-success-message">
@@ -132,10 +88,7 @@ const ForgotPasswordPage = () => {
                                         <span className="login-button-content">
                                             {loading ? (
                                                 <>
-                                                    <svg className="login-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                    </svg>
+                                                    <AuthSpinner />
                                                     Sending...
                                                 </>
                                             ) : (
@@ -154,10 +107,7 @@ const ForgotPasswordPage = () => {
                                 </Link>
                             </>
                         )}
-                    </div>
-                </div>
-            </div>
-        </div>
+        </AuthLayout>
     )
 }
 
