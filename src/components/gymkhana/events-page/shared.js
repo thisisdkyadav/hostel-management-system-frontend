@@ -1,3 +1,5 @@
+import { SERIES_LENGTH, seriesColor, seriesTint } from "hzero"
+
 export const DEFAULT_CATEGORY_DEFINITIONS = [
   { key: "academic", label: "Academic", isDefault: true },
   { key: "cultural", label: "Cultural", isDefault: true },
@@ -6,23 +8,6 @@ export const DEFAULT_CATEGORY_DEFINITIONS = [
 ]
 
 export const DEFAULT_CATEGORY_KEY = DEFAULT_CATEGORY_DEFINITIONS[0].key
-
-const DEFAULT_CATEGORY_COLORS = {
-  academic: "#475569",
-  cultural: "#BE185D",
-  sports: "#0D9488",
-  technical: "#D97706",
-}
-
-const DEFAULT_CATEGORY_BADGE_BACKGROUNDS = {
-  academic: "#F1F5F9",
-  cultural: "#FFF1F2",
-  sports: "#F0FDFA",
-  technical: "#FFFBEB",
-}
-
-const CATEGORY_COLOR_PALETTE = ["#1D4ED8", "#B45309", "#0F766E", "#7C3AED", "#C2410C", "#15803D", "#BE123C", "#4338CA"]
-const CATEGORY_BACKGROUND_PALETTE = ["#DBEAFE", "#FEF3C7", "#CCFBF1", "#EDE9FE", "#FFEDD5", "#DCFCE7", "#FFE4E6", "#E0E7FF"]
 
 export const getDefaultCategoryDefinitions = () =>
   DEFAULT_CATEGORY_DEFINITIONS.map((definition) => ({ ...definition }))
@@ -135,16 +120,28 @@ export const getCategoryLabelsMap = (source = null) =>
 export const getCategoryOrder = (source = null) =>
   getCalendarCategoryDefinitions(source).map((definition) => definition.key)
 
-const getCategoryPaletteIndex = (category = "") =>
-  [...String(category || "")].reduce((hash, character) => hash + character.charCodeAt(0), 0) %
-  CATEGORY_COLOR_PALETTE.length
+/**
+ * Which slot of hzero's categorical palette a category draws from.
+ *
+ * Position in the calendar's own definition list, not a hash of the name: the
+ * defaults are upserted first, so Academic/Cultural/Sports/Technical always
+ * hold the first four slots, and every category after them is guaranteed a
+ * different colour up to the palette's length — where hashing collided by
+ * chance long before that.
+ *
+ * A category the calendar does not list gets the neutral slot rather than
+ * borrowing slot 1 from whatever legitimately holds it.
+ */
+const getCategorySlot = (category, categoryOrder = []) => {
+  const index = categoryOrder.indexOf(category)
+  return index === -1 ? SERIES_LENGTH - 1 : index
+}
 
-export const getCategoryColor = (category) =>
-  DEFAULT_CATEGORY_COLORS[category] || CATEGORY_COLOR_PALETTE[getCategoryPaletteIndex(category)]
+export const getCategoryColor = (category, categoryOrder = []) =>
+  seriesColor(getCategorySlot(category, categoryOrder))
 
-export const getCategoryBadgeBackground = (category) =>
-  DEFAULT_CATEGORY_BADGE_BACKGROUNDS[category] ||
-  CATEGORY_BACKGROUND_PALETTE[getCategoryPaletteIndex(category)]
+export const getCategoryBadgeBackground = (category, categoryOrder = []) =>
+  seriesTint(getCategorySlot(category, categoryOrder))
 
 export const createCustomCategoryDefinition = (label = "", existingDefinitions = []) => {
   const usedKeys = new Set(
@@ -240,9 +237,9 @@ export const REGISTRATION_CATEGORIES = [
   { key: "industryProfessionals", label: "Industry / Professionals" },
 ]
 
-export const getCategoryBadgeStyle = (category) => ({
-  backgroundColor: getCategoryBadgeBackground(category),
-  color: getCategoryColor(category),
+export const getCategoryBadgeStyle = (category, categoryOrder = []) => ({
+  backgroundColor: getCategoryBadgeBackground(category, categoryOrder),
+  color: getCategoryColor(category, categoryOrder),
   border: "1px solid transparent",
 })
 

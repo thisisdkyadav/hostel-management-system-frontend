@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import {
   CALENDAR_STATUS_TO_APPROVER,
@@ -178,6 +178,14 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const categoryLabels = useMemo(() => getCategoryLabelsMap(categoryDefinitions), [categoryDefinitions])
   const categoryOrder = useMemo(() => getCategoryOrder(categoryDefinitions), [categoryDefinitions])
 
+  // A category's colour is its position in this calendar's list, so the two
+  // helpers that need that position get bound to it here — the components
+  // rendering a badge keep asking for one by category alone.
+  const badgeStyleForCategory = useCallback(
+    (category) => getCategoryBadgeStyle(category, categoryOrder),
+    [categoryOrder]
+  )
+
   function buildCalendarSettingsForm(calendarData = null) {
     const nextCategoryDefinitions = getCalendarCategoryDefinitions(calendarData)
     return {
@@ -235,7 +243,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         key: "category",
         header: "Category",
         render: (event) => (
-          <Badge style={getCategoryBadgeStyle(event.category)}>
+          <Badge style={badgeStyleForCategory(event.category)}>
             {categoryLabels[event.category] || event.category}
           </Badge>
         ),
@@ -251,7 +259,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
       },
     ],
-    [categoryLabels]
+    [categoryLabels, badgeStyleForCategory]
   )
   const holidaysByDate = useMemo(() => {
     const map = new Map()
@@ -281,7 +289,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         value: `₹${(budgetSummary.byCategory[definition.key] || 0).toLocaleString()}`,
         subtitle: getBudgetStatSubtitle(definition.key),
         icon: <CalendarDays size={16} />,
-        color: getCategoryColor(definition.key),
+        color: getCategoryColor(definition.key, categoryOrder),
         tintBackground: true,
       })),
       {
@@ -1152,7 +1160,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     filteredEvents,
     formatDateRange,
     getDaysInMonth,
-    getCategoryBadgeStyle,
+    getCategoryBadgeStyle: badgeStyleForCategory,
     getEventStatusVariant,
     getEventsForDate: getEventsForCurrentDate,
     getHolidaysForDate: getHolidaysForCurrentDate,

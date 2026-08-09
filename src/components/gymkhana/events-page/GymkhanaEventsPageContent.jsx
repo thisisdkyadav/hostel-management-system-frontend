@@ -186,7 +186,7 @@ function MonthCalendarView({
                 width: 9,
                 height: 9,
                 borderRadius: 3,
-                backgroundColor: getCategoryColor(category),
+                backgroundColor: getCategoryColor(category, categoryOrder),
                 flexShrink: 0,
               }}
             />
@@ -297,8 +297,8 @@ function MonthCalendarView({
                       borderRadius: "var(--radius-sm)",
                       // Per-event data, so the hover tint rides in as a custom
                       // property and the :hover rule stays in CSS.
-                      "--evt-tint-hover": solidTint(getCategoryColor(event.category), 30),
-                      backgroundColor: solidTint(getCategoryColor(event.category), 16),
+                      "--evt-tint-hover": solidTint(getCategoryColor(event.category, categoryOrder), 30),
+                      backgroundColor: solidTint(getCategoryColor(event.category, categoryOrder), 16),
                       border: "none",
                       cursor: "pointer",
                       color: "var(--color-text-body)",
@@ -312,7 +312,7 @@ function MonthCalendarView({
                         width: 5,
                         height: 5,
                         borderRadius: "var(--radius-full)",
-                        backgroundColor: getCategoryColor(event.category),
+                        backgroundColor: getCategoryColor(event.category, categoryOrder),
                         flexShrink: 0,
                       }}
                     />
@@ -342,6 +342,7 @@ function YearCalendarView({
   getEventsForDate,
   getHolidaysForDate,
   filteredEvents,
+  categoryOrder,
   onSelectMonth,
 }) {
   const todayStr = new Date().toDateString()
@@ -442,7 +443,7 @@ function YearCalendarView({
                   const isHoliday = dayHolidays.length > 0
                   const hasEvents = dayEvents.length > 0
                   const isWeekend = weekday === 0 || weekday === 6
-                  const color = hasEvents ? getCategoryColor(dayEvents[0].category) : null
+                  const color = hasEvents ? getCategoryColor(dayEvents[0].category, categoryOrder) : null
 
                   return (
                     <span
@@ -841,6 +842,7 @@ export default function GymkhanaEventsPageContent({
               getEventsForDate={getEventsForDate}
               getHolidaysForDate={getHolidaysForDate}
               filteredEvents={filteredEvents}
+              categoryOrder={categoryOrder}
               onSelectMonth={(month) => {
                 setCalendarMonth(month)
                 setViewMode("calendar")
