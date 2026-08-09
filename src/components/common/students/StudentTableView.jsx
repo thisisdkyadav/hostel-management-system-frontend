@@ -1,96 +1,76 @@
-import React from "react"
-import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
-import { DataTable } from "hzero"
+import { Avatar, Badge, DataTable, Text, VStack } from "hzero"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { HStack, IconCircle, Surface, Text } from "@/components/ui"
 
-const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
-  const columns = [
-    {
-      header: "Student",
-      key: "name",
-      customHeaderRender: () => (
-        <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("name")}>
-          <span>Student</span>
-          {sortField === "name" && (
-            <Text as="span" color="brand" style={{ marginLeft: "var(--spacing-2)" }}>
-              {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
-            </Text>
-          )}
-        </div>
-      ),
-      render: (student) => (
-        <HStack gap="none" align="center">
-          <IconCircle size="var(--avatar-sm)" bg="brand">
-            {student.profileImage ? (
-              <img src={getMediaUrl(student.profileImage)} alt={student.name} style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover", }} />
-            ) : (
-              <FaUserGraduate style={{ height: "var(--icon-md)", width: "var(--icon-md)" }} color="var(--color-primary)" />
-            )}
-          </IconCircle>
-          <div style={{ marginLeft: "var(--spacing-3)" }}>
-            <Text as="div" weight="medium" color="primary" size="sm">
-              {student.name}
-            </Text>
-            <Text as="div" size="xs" color="muted" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "150px" }}>
-              {student.email}
-            </Text>
-          </div>
-        </HStack>
-      ),
-    },
-    {
-      header: "Roll Number",
-      key: "rollNumber",
-      render: (student) => (
-        <Text as="span" size="sm" color="body" weight="medium">
-          {student.rollNumber}
-        </Text>
-      ),
-    },
-    {
-      header: "Hostel",
-      key: "hostel",
-      className: "hidden md:table-cell",
-      customHeaderRender: () => (
-        <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("hostel")}>
-          <span>Hostel</span>
-          {sortField === "hostel" && (
-            <Text as="span" color="brand" style={{ marginLeft: "var(--spacing-2)" }}>
-              {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
-            </Text>
-          )}
-        </div>
-      ),
-      render: (student) => (
-        <Surface as="span" bg="brand" padding="var(--spacing-1) var(--spacing-2)" radius="full" color="brand" size="xs" weight="medium" leading="1.25" style={{ display: "inline-flex" }}>
-          {student.hostel}
-        </Surface>
-      ),
-    },
-    {
-      header: "Batch",
-      key: "batch",
-      className: "hidden lg:table-cell",
-      render: (student) => (
-        <Text as="span" size="sm" color="body" weight="medium">
-          {student.batch || "—"}
-        </Text>
-      ),
-    },
-    {
-      header: "Room",
-      key: "room",
-      className: "hidden sm:table-cell",
-      render: (student) => (
-        <Text as="span" size="sm" color="tertiary" weight="medium">
-          {student.displayRoom}
-        </Text>
-      ),
-    },
-  ]
+/**
+ * The students table.
+ *
+ * Sorting happens on the server — the page holds one slice of a set it cannot
+ * see — so the columns are declared sortable and the order comes back from
+ * useStudents. The header used to be rebuilt here out of a div and an onClick,
+ * which meant it could not be tabbed to or operated by keyboard; DataTable's
+ * own header does that properly now that it takes controlled sort.
+ */
 
-  return <DataTable columns={columns} data={currentStudents} emptyMessage="Try changing your search or filter criteria" onRowClick={viewStudentDetails} loading={loading} />
-}
+const columns = [
+  {
+    key: "name",
+    header: "Student",
+    render: (student) => (
+      <div className="flex items-center gap-[var(--spacing-3)] min-w-0">
+        <Avatar
+          src={student.profileImage ? getMediaUrl(student.profileImage) : undefined}
+          name={student.name}
+          size="small"
+        />
+        <VStack gap="none" className="min-w-0">
+          <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
+          <Text as="div" size="xs" color="muted" className="truncate max-w-[15rem]">{student.email}</Text>
+        </VStack>
+      </div>
+    ),
+  },
+  {
+    key: "rollNumber",
+    header: "Roll Number",
+    sortable: false,
+    render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.rollNumber}</Text>,
+  },
+  {
+    key: "hostel",
+    header: "Hostel",
+    className: "hidden md:table-cell",
+    render: (student) => <Badge variant="primary" soft size="small">{student.hostel}</Badge>,
+  },
+  {
+    key: "batch",
+    header: "Batch",
+    className: "hidden lg:table-cell",
+    sortable: false,
+    render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.batch || "—"}</Text>,
+  },
+  {
+    key: "room",
+    header: "Room",
+    className: "hidden sm:table-cell",
+    sortable: false,
+    render: (student) => <Text as="span" size="sm" color="tertiary" weight="medium">{student.displayRoom}</Text>,
+  },
+]
+
+const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => (
+  <DataTable
+    columns={columns}
+    data={currentStudents}
+    // No handler means nothing can act on a sort, so the headers should not
+    // offer one — UpdateAllocationModal shows a fixed preview list.
+    sortable={Boolean(handleSort)}
+    sortKey={sortField}
+    sortDir={sortDirection}
+    onSortChange={handleSort}
+    emptyMessage="Try changing your search or filter criteria"
+    onRowClick={viewStudentDetails}
+    loading={loading}
+  />
+)
 
 export default StudentTableView

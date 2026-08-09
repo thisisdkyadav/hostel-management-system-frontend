@@ -1,7 +1,6 @@
-import { FaUsers } from "react-icons/fa"
-import { BsGenderMale, BsGenderFemale } from "react-icons/bs"
-import { StatCards } from "@/components/ui"
 import { useEffect, useState } from "react"
+import { Mars, Users, Venus } from "lucide-react"
+import { StatCards } from "hzero"
 import { dashboardApi } from "../../../service"
 
 const StudentStats = () => {
@@ -28,26 +27,29 @@ const StudentStats = () => {
     fetchStudentCounts()
   }, [])
 
+  const share = (count) =>
+    studentCounts.total > 0 ? `${((count / studentCounts.total) * 100).toFixed(1)}% of total` : "0% of total"
+
   const statsData = [
     {
       title: "Total Students",
       value: studentCounts.total,
       subtitle: "Currently enrolled",
-      icon: <FaUsers style={{ fontSize: "var(--font-size-2xl)" }} />,
+      icon: <Users />,
       color: "var(--color-primary)",
     },
     {
       title: "Male Students",
       value: studentCounts.boys,
-      subtitle: studentCounts.total > 0 ? `${((studentCounts.boys / studentCounts.total) * 100).toFixed(1)}% of total` : "0% of total",
-      icon: <BsGenderMale style={{ fontSize: "var(--font-size-2xl)" }} />,
+      subtitle: share(studentCounts.boys),
+      icon: <Mars />,
       color: "var(--color-info)",
     },
     {
       title: "Female Students",
       value: studentCounts.girls,
-      subtitle: studentCounts.total > 0 ? `${((studentCounts.girls / studentCounts.total) * 100).toFixed(1)}% of total` : "0% of total",
-      icon: <BsGenderFemale style={{ fontSize: "var(--font-size-2xl)" }} />,
+      subtitle: share(studentCounts.girls),
+      icon: <Venus />,
       color: "var(--color-girls-text)",
     },
   ]

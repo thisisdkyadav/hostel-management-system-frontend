@@ -352,17 +352,6 @@
   "src/components/common/students/StudentExportModal.jsx": {
     "ui-barrel-import": 2
   },
-  "src/components/common/students/StudentFilterSection.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/StudentStats.jsx": {
-    "react-icons": 2,
-    "ui-barrel-import": 1
-  },
-  "src/components/common/students/StudentTableView.jsx": {
-    "react-icons": 1,
-    "ui-barrel-import": 1
-  },
   "src/components/common/students/tabs/ComplaintsTab.jsx": {
     "js-hover": 2
   },
@@ -1144,10 +1133,6 @@
     "ui-barrel-import": 3
   },
   "src/pages/common/ProfilePage.jsx": {
-    "ui-barrel-import": 1
-  },
-  "src/pages/common/StudentsPage.jsx": {
-    "native-dialog": 8,
     "ui-barrel-import": 1
   },
   "src/pages/common/UnitsAndRoomsPage.jsx": {

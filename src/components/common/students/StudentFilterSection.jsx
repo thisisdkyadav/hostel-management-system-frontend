@@ -1,118 +1,103 @@
-import React, { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
+import {
+  Badge, Button, Card, DatePicker, Divider, Field, Grid, HStack, Input, Select, VStack,
+} from "hzero"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import { Badge, Card, DatePicker, Divider, Grid, HStack, Label, Select, Text, VStack } from "@/components/ui"
-import { Button, Input } from "hzero"
+import { useAsyncOptions } from "../../../hooks/useAsyncOptions"
 import { studentApi } from "../../../service"
 
+/**
+ * Search and filters for the students list.
+ *
+ * Every filter is a label above a control, which is what Field is; the three
+ * that fetch their options share one hook rather than three copies of the same
+ * loading/error/retry state.
+ *
+ * A loading select is disabled with a placeholder saying so, rather than
+ * carrying a fake "Loading departments..." option — that option was selectable,
+ * and choosing it filtered by the empty string.
+ */
+
+const GENDERS = [
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+  { value: "Other", label: "Other" },
+]
+
+const STATUSES = [
+  { value: "Active", label: "Active" },
+  { value: "Graduated", label: "Graduated" },
+  { value: "Dropped", label: "Dropped" },
+  { value: "Inactive", label: "Inactive" },
+  { value: "", label: "All Statuses" },
+]
+
+const ALLOCATION = [
+  { value: "true", label: "Allocated Room" },
+  { value: "false", label: "No Allocation" },
+]
+
+const DAY_SCHOLAR = [
+  { value: "true", label: "Day Scholar" },
+  { value: "false", label: "Hosteller" },
+]
+
+const PAGE_SIZES = ["10", "20", "50", "100", "200"].map((value) => ({ value, label: value }))
+
+/** The filters that narrow the list, as opposed to search and page size. */
+const NARROWING = [
+  "hostelId", "unitNumber", "roomNumber", "department", "degree", "batch",
+  "gender", "status", "hasAllocation", "isDayScholar",
+  "admissionDateFrom", "admissionDateTo",
+]
+
+const toOptions = (values) => values.map((value) => ({ value, label: value }))
+
+/** A Select whose options are fetched, so it can be loading or have failed. */
+const AsyncSelect = ({ label, placeholder, source, value, onChange }) => (
+  <Field
+    label={label}
+    error={source.error ? (
+      <HStack gap="small" align="center">
+        <span>{source.error}</span>
+        <Button onClick={source.reload} variant="ghost" size="sm" disabled={source.loading}>Retry</Button>
+      </HStack>
+    ) : undefined}
+  >
+    <Select
+      value={value}
+      onChange={onChange}
+      disabled={source.loading}
+      placeholder={source.loading ? "Loading…" : placeholder}
+      options={toOptions(source.options)}
+    />
+  </Field>
+)
+
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, setPageSize, missingOptions = [] }) => {
-  const [departments, setDepartments] = useState([])
-  const [degreeOptions, setDegreeOptions] = useState([])
-  const [batchOptions, setBatchOptions] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [degreesLoading, setDegreesLoading] = useState(false)
-  const [degreesError, setDegreesError] = useState(null)
-  const [batchLoading, setBatchLoading] = useState(false)
-  const [batchError, setBatchError] = useState(null)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const fetchDepartments = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const departmentData = await studentApi.getDepartmentList()
-      if (departmentData && Array.isArray(departmentData)) {
-        setDepartments(departmentData)
-      } else {
-        setDepartments([])
-      }
-    } catch (error) {
-      console.error("Failed to fetch departments:", error)
-      setError("Failed to load departments")
-      setDepartments([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const departments = useAsyncOptions(studentApi.getDepartmentList, [], "departments")
+  const degrees = useAsyncOptions(studentApi.getDegreesList, [], "degrees")
+  const batches = useAsyncOptions(
+    () => studentApi.getBatchList({ degree: filters.degree || undefined, department: filters.department || undefined }),
+    [filters.degree, filters.department],
+    "batches",
+  )
 
-  const fetchDegrees = async () => {
-    setDegreesLoading(true)
-    setDegreesError(null)
-    try {
-      const degreesData = await studentApi.getDegreesList()
-      if (degreesData && Array.isArray(degreesData)) {
-        setDegreeOptions(degreesData)
-      } else {
-        setDegreeOptions([])
-      }
-    } catch (error) {
-      console.error("Failed to fetch degrees:", error)
-      setDegreesError("Failed to load degrees")
-      setDegreeOptions([])
-    } finally {
-      setDegreesLoading(false)
-    }
-  }
-
-  const fetchBatches = async () => {
-    setBatchLoading(true)
-    setBatchError(null)
-    try {
-      const batchesData = await studentApi.getBatchList({
-        degree: filters.degree || undefined,
-        department: filters.department || undefined,
-      })
-      if (batchesData && Array.isArray(batchesData)) {
-        setBatchOptions(batchesData)
-        if (filters.batch && !batchesData.includes(filters.batch)) {
-          updateFilter("batch", "")
-        }
-      } else {
-        setBatchOptions([])
-      }
-    } catch (error) {
-      console.error("Failed to fetch batches:", error)
-      setBatchError("Failed to load batches")
-      setBatchOptions([])
-    } finally {
-      setBatchLoading(false)
-    }
-  }
-
+  // Narrowing the degree or department can strip the chosen batch out of the
+  // list, which would otherwise leave the filter applied but unnamed.
   useEffect(() => {
-    fetchDepartments()
-    fetchDegrees()
-  }, [])
+    if (batches.loading || !filters.batch) return
+    if (!batches.options.includes(filters.batch)) updateFilter("batch", "")
+  }, [batches.loading, batches.options, filters.batch, updateFilter])
 
-  useEffect(() => {
-    fetchBatches()
-  }, [filters.degree, filters.department])
-
-  // Count active filters (excluding searchTerm and studentsPerPage)
-  const getActiveFilterCount = () => {
-    let count = 0
-    if (filters.hostelId) count++
-    if (filters.unitNumber) count++
-    if (filters.roomNumber) count++
-    if (filters.department) count++
-    if (filters.degree) count++
-    if (filters.batch) count++
-    if (filters.gender) count++
-    if (filters.status) count++
-    if (filters.hasAllocation) count++
-    if (filters.isDayScholar) count++
-    if (filters.admissionDateFrom) count++
-    if (filters.admissionDateTo) count++
-    if (filters.missingOptions && filters.missingOptions.length > 0) count++
-    return count
-  }
-
-  const activeFilterCount = getActiveFilterCount()
+  const activeFilterCount =
+    NARROWING.filter((key) => filters[key]).length + (filters.missingOptions?.length > 0 ? 1 : 0)
 
   return (
-    <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
-      {/* Compact row: Search + More Filters + Reset */}
+    <Card style={{ marginTop: "var(--spacing-6)", overflow: "visible" }} padding="p-4">
       <HStack gap="small" align="center">
         <div style={{ flex: 1 }}>
           <Input
@@ -120,207 +105,111 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
             placeholder="Search by name, roll number, or email..."
             value={filters.searchTerm}
             onChange={(e) => updateFilter("searchTerm", e.target.value)}
-            icon={<Search size={16} />}
+            icon={<Search />}
+            aria-label="Search students"
           />
         </div>
-        <Button
-          onClick={() => setIsExpanded(!isExpanded)}
-          variant="secondary"
-          size="sm"
-        >
-          <SlidersHorizontal size={16} />
+        <Button onClick={() => setIsExpanded(!isExpanded)} variant="secondary" size="sm" aria-expanded={isExpanded}>
+          <SlidersHorizontal />
           {isExpanded ? "Less" : "More"}
-          {activeFilterCount > 0 && !isExpanded && (
-            <Badge variant="primary" size="small" style={{ marginLeft: 'var(--spacing-1-5)' }}>
-              {activeFilterCount}
-            </Badge>
-          )}
-          {isExpanded ? <ChevronUp size={14} style={{ marginLeft: 'var(--spacing-1)' }} /> : <ChevronDown size={14} style={{ marginLeft: 'var(--spacing-1)' }} />}
+          {activeFilterCount > 0 && !isExpanded && <Badge variant="primary" size="small">{activeFilterCount}</Badge>}
+          {isExpanded ? <ChevronUp /> : <ChevronDown />}
         </Button>
         <Button onClick={resetFilters} variant="ghost" size="sm">
-          <RotateCcw size={14} />
-          Reset
+          <RotateCcw /> Reset
         </Button>
       </HStack>
 
-      {/* Expanded filters section */}
       {isExpanded && (
-        <VStack gap="medium" style={{ marginTop: 'var(--spacing-4)' }}>
+        <VStack gap="medium" style={{ marginTop: "var(--spacing-4)" }}>
           <Divider spacing="none" />
 
-          <Grid cols={3} gap="0" style={{ rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+          <Grid cols={3} gap={4} style={{ paddingTop: "var(--spacing-4)" }}>
             {hostels.length > 0 && (
-              <VStack gap="xsmall">
-                <Label size="sm">Hostel</Label>
+              <Field label="Hostel">
                 <Select
                   value={filters.hostelId}
                   onChange={(e) => updateFilter("hostelId", e.target.value)}
                   placeholder="All Hostels"
-                  options={hostels.map((hostel) => ({
-                    value: hostel._id || hostel.id,
-                    label: hostel.name || hostel
-                  }))}
+                  options={hostels.map((hostel) => ({ value: hostel._id || hostel.id, label: hostel.name || hostel }))}
                 />
-              </VStack>
+              </Field>
             )}
 
-            <VStack gap="xsmall">
-              <Label size="sm">Unit</Label>
+            <Field label="Unit">
               <Input type="text" placeholder="Unit number" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
-            </VStack>
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Room Number</Label>
+            <Field label="Room Number">
               <Input type="text" placeholder="Room number" value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
-            </VStack>
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Department</Label>
-              <Select
-                value={filters.department}
-                onChange={(e) => updateFilter("department", e.target.value)}
-                disabled={loading}
-                placeholder="All Departments"
-                options={loading ? [{ value: "", label: "Loading departments..." }] : error ? [{ value: "", label: "Error loading departments" }] : departments.map((dept) => ({ value: dept, label: dept }))}
-              />
-              {error && (
-                <HStack gap="small" align="center">
-                  <Text as="span" size="xs" color="danger">{error}</Text>
-                  <Button onClick={fetchDepartments} variant="ghost" size="sm" disabled={loading}>
-                    Retry
-                  </Button>
-                </HStack>
-              )}
-            </VStack>
+            <AsyncSelect
+              label="Department"
+              placeholder="All Departments"
+              source={departments}
+              value={filters.department}
+              onChange={(e) => updateFilter("department", e.target.value)}
+            />
 
-            <VStack gap="xsmall">
-              <Label size="sm">Degree</Label>
-              <Select
-                value={filters.degree}
-                onChange={(e) => updateFilter("degree", e.target.value)}
-                disabled={degreesLoading}
-                placeholder="All Degrees"
-                options={degreesLoading ? [{ value: "", label: "Loading degrees..." }] : degreesError ? [{ value: "", label: "Error loading degrees" }] : degreeOptions.map((degree) => ({ value: degree, label: degree }))}
-              />
-              {degreesError && (
-                <HStack gap="small" align="center">
-                  <Text as="span" size="xs" color="danger">{degreesError}</Text>
-                  <Button onClick={fetchDegrees} variant="ghost" size="sm" disabled={degreesLoading}>
-                    Retry
-                  </Button>
-                </HStack>
-              )}
-            </VStack>
+            <AsyncSelect
+              label="Degree"
+              placeholder="All Degrees"
+              source={degrees}
+              value={filters.degree}
+              onChange={(e) => updateFilter("degree", e.target.value)}
+            />
 
-            <VStack gap="xsmall">
-              <Label size="sm">Gender</Label>
-              <Select
-                value={filters.gender}
-                onChange={(e) => updateFilter("gender", e.target.value)}
-                placeholder="All Genders"
-                options={[
-                  { value: "Male", label: "Male" },
-                  { value: "Female", label: "Female" },
-                  { value: "Other", label: "Other" }
-                ]}
-              />
-            </VStack>
+            <Field label="Gender">
+              <Select value={filters.gender} onChange={(e) => updateFilter("gender", e.target.value)} placeholder="All Genders" options={GENDERS} />
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Batch</Label>
-              <Select
-                value={filters.batch}
-                onChange={(e) => updateFilter("batch", e.target.value)}
-                disabled={batchLoading}
-                placeholder="All Batches"
-                options={batchLoading ? [{ value: "", label: "Loading batches..." }] : batchError ? [{ value: "", label: "Error loading batches" }] : batchOptions.map((batch) => ({ value: batch, label: batch }))}
-              />
-              {batchError && (
-                <HStack gap="small" align="center">
-                  <Text as="span" size="xs" color="danger">{batchError}</Text>
-                  <Button onClick={fetchBatches} variant="ghost" size="sm" disabled={batchLoading}>
-                    Retry
-                  </Button>
-                </HStack>
-              )}
-            </VStack>
+            <AsyncSelect
+              label="Batch"
+              placeholder="All Batches"
+              source={batches}
+              value={filters.batch}
+              onChange={(e) => updateFilter("batch", e.target.value)}
+            />
 
-            <VStack gap="xsmall">
-              <Label size="sm">Status</Label>
-              <Select
-                value={filters.status}
-                onChange={(e) => updateFilter("status", e.target.value)}
-                options={[
-                  { value: "Active", label: "Active" },
-                  { value: "Graduated", label: "Graduated" },
-                  { value: "Dropped", label: "Dropped" },
-                  { value: "Inactive", label: "Inactive" },
-                  { value: "", label: "All Statuses" }
-                ]}
-              />
-            </VStack>
+            <Field label="Status">
+              <Select value={filters.status} onChange={(e) => updateFilter("status", e.target.value)} options={STATUSES} />
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Allocation Status</Label>
-              <Select
-                value={filters.hasAllocation}
-                onChange={(e) => updateFilter("hasAllocation", e.target.value)}
-                placeholder="All Students"
-                options={[
-                  { value: "true", label: "Allocated Room" },
-                  { value: "false", label: "No Allocation" }
-                ]}
-              />
-            </VStack>
+            <Field label="Allocation Status">
+              <Select value={filters.hasAllocation} onChange={(e) => updateFilter("hasAllocation", e.target.value)} placeholder="All Students" options={ALLOCATION} />
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Day Scholar</Label>
-              <Select
-                value={filters.isDayScholar}
-                onChange={(e) => updateFilter("isDayScholar", e.target.value)}
-                placeholder="All Students"
-                options={[
-                  { value: "true", label: "Day Scholar" },
-                  { value: "false", label: "Hosteller" }
-                ]}
-              />
-            </VStack>
+            <Field label="Day Scholar">
+              <Select value={filters.isDayScholar} onChange={(e) => updateFilter("isDayScholar", e.target.value)} placeholder="All Students" options={DAY_SCHOLAR} />
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Students per page</Label>
-              <Select
-                value={filters.studentsPerPage}
-                onChange={(e) => setPageSize(e.target.value)}
-                options={[
-                  { value: "10", label: "10" },
-                  { value: "20", label: "20" },
-                  { value: "50", label: "50" },
-                  { value: "100", label: "100" },
-                  { value: "200", label: "200" }
-                ]}
-              />
-            </VStack>
+            <Field label="Students per page">
+              <Select value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)} options={PAGE_SIZES} />
+            </Field>
 
             {missingOptions.length > 0 && (
-              <div>
-                <MultiSelectDropdown label="Missing Information" options={missingOptions} selectedValues={filters.missingOptions || []} onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)} placeholder="Select missing fields..." />
-              </div>
+              <MultiSelectDropdown
+                label="Missing Information"
+                options={missingOptions}
+                selectedValues={filters.missingOptions || []}
+                onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)}
+                placeholder="Select missing fields..."
+              />
             )}
           </Grid>
 
           <Grid cols={2} gap={4}>
-            <VStack gap="xsmall">
-              <Label size="sm">Admission Date From</Label>
+            <Field label="Admission Date From">
               <DatePicker
                 name="admissionDateFrom"
                 value={filters.admissionDateFrom}
                 onChange={(e) => updateFilter("admissionDateFrom", e.target.value)}
                 placeholder="Select start date"
               />
-            </VStack>
+            </Field>
 
-            <VStack gap="xsmall">
-              <Label size="sm">Admission Date To</Label>
+            <Field label="Admission Date To">
               <DatePicker
                 name="admissionDateTo"
                 value={filters.admissionDateTo}
@@ -328,7 +217,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
                 placeholder="Select end date"
                 min={filters.admissionDateFrom}
               />
-            </VStack>
+            </Field>
           </Grid>
         </VStack>
       )}

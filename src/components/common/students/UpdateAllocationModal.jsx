@@ -852,7 +852,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </VStack>
 
               <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
-                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
+                <StudentTableView currentStudents={parsedData} viewStudentDetails={viewStudentDetails} />
               </div>
             </VStack>
           )}

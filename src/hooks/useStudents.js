@@ -112,11 +112,16 @@ export const useStudents = (options = {}) => {
   )
 
   const handleSort = useCallback(
-    (field) => {
+    // The table works out the next direction when it renders the header — a new
+    // column starts ascending, the sorted one flips — and passes it. Taking it
+    // rather than recomputing keeps the arrow and the order the server is asked
+    // for from ever disagreeing. The fallback is that same rule, for a caller
+    // that only names the field.
+    (field, direction) => {
       shouldDebounce.current = false
       setSorting((prev) => ({
         sortField: field,
-        sortDirection: prev.sortField === field && prev.sortDirection === "asc" ? "desc" : "asc",
+        sortDirection: direction ?? (prev.sortField === field && prev.sortDirection === "asc" ? "desc" : "asc"),
       }))
     },
     []
