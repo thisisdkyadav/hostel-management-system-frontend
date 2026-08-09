@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { DataTable, Button, Input } from "hzero"
+import { DataTable, Button, Input, Panel } from "hzero"
 import { Grid, HStack, InfoRow, Modal, Surface, Text, VStack } from "@/components/ui"
 import {
   Download,
@@ -50,7 +50,7 @@ import { overallBestPerformerApi, porApi, studentApi } from "@/service"
 import "../../styles/por-requests.css"
 
 import { ACTIVITY_LEVEL_OPTIONS, APPLICANT_STAGE_OPTIONS, AWARD_OPTIONS, BTP_AWARD_OPTIONS, BTP_AWARD_POINTS, CO_CURRICULAR_OPTIONS, MARKING_SCHEME_ROWS, PROJECT_GRADE_OPTIONS, PROJECT_GRADE_POINTS, PROOF_SOURCE_OPTIONS, PUBLICATION_OPTIONS, RESPONSIBILITY_OPTIONS, REVIEW_SECTION_META, SECTION_MAX_POINTS, TECH_TRANSFER_OPTIONS, clampPoints, computeStudentScorePreview, formatScoreTypeLabel, formatSignedPoints, getApplicantStage, getApplicationItemsForReviewSection, validateScoredItems } from "./overall-best-performer/scoring"
-import { badgeStyle, buildMetaChipStyle, checklistItemStyle, fieldClusterStyle, fieldLabelStyle, getApplicationWindowLabel, getPointBadgeStyle, helperTextStyle, inputStyle, panelBodyStyle, panelHeaderStyle, panelStyle, statusTone, surfaceStyle, textareaStyle } from "./overall-best-performer/styles"
+import { badgeStyle, buildMetaChipStyle, checklistItemStyle, fieldClusterStyle, fieldLabelStyle, getApplicationWindowLabel, getPointBadgeStyle, helperTextStyle, inputStyle, statusTone, textareaStyle } from "./overall-best-performer/styles"
 import { collectApplicationPdfDocuments, collectLinkedPorsFromApplication, downloadBlobFile, downloadCsvFile, escapeCsvValue, formatExportDateTime, getPorOptionLabel, mergePdfDocuments, resolvePrimaryProof, slugifyFilePart, summarizeItemsForExport, summarizeProofsForExport, uploadBestPerformerProof } from "./overall-best-performer/documents"
 import { buildEligibleStudentRows, buildOverallBestPerformerDraftKey, buildPayload, createEmptyItem, createInitialForm, createOccurrenceFormState, formatDateTimeInput, getDefaultBestPerformerOccurrenceId, hasSelectedProof, normalizeRollNumbers } from "./overall-best-performer/form"
 
@@ -477,12 +477,12 @@ const MinimalScoredItemsEditor = ({
   }
  
   return (
-    <SectionPanel
+    <Panel
       title={`${step}. ${title}`}
       actions={!disabled ? <Button size="sm" variant="secondary" onClick={addItem}><Plus size={14} /> Add item</Button> : null}
     >
       {content}
-    </SectionPanel>
+    </Panel>
   )
 }
  
@@ -565,25 +565,6 @@ const SingleSelectionAchievementEditor = ({
   </Grid>
 )
 
-const SectionPanel = ({ title, subtitle = null, actions = null, children }) => (
-  <section style={panelStyle}>
-    <div style={panelHeaderStyle}>
-      <div>
-        <Text as="div" size="lg" weight="semibold" color="primary">
-          {title}
-        </Text>
-        {subtitle && (
-          <Text as="div" size="xs" color="muted" style={{ marginTop: "4px" }}>
-            {subtitle}
-          </Text>
-        )}
-      </div>
-      {actions}
-    </div>
-    <div style={panelBodyStyle}>{children}</div>
-  </section>
-)
-
 const SummaryMetric = ({ icon: Icon, label, value }) => {
   const getMetricSettings = (lbl) => {
     const l = String(lbl).toLowerCase()
@@ -660,13 +641,8 @@ const ScoreBreakdownCard = ({ breakdown }) => {
   ]
 
   return (
-    <div style={{ ...surfaceStyle, overflow: "hidden" }}>
-      <Surface bg="secondary" padding="var(--spacing-3) var(--spacing-4)" style={{ borderBottom: "1px solid var(--color-border-primary)" }}>
-        <Text as="div" size="lg" weight="semibold" color="primary">
-          Score Breakdown
-        </Text>
-      </Surface>
-      <Surface padding="var(--spacing-3) var(--spacing-4)">
+    <Panel title="Score Breakdown">
+      <Panel.Body>
         {rows.map(([label, value, max]) => {
           const pct = Math.min(100, Math.max(0, (value / max) * 100))
           return (
@@ -690,8 +666,8 @@ const ScoreBreakdownCard = ({ breakdown }) => {
           )
         })}
         <InfoRow label="Total Score" value={breakdown?.total || 0} style={{ marginTop: "var(--spacing-4)" }} />
-      </Surface>
-    </div>
+      </Panel.Body>
+    </Panel>
   )
 }
 
@@ -3078,10 +3054,8 @@ const OverallBestPerformerPage = () => {
             ) : null}
 
             {!isReviewerView && currentOccurrence.description ? (
-              <Surface bg="brand">
-                <div style={{ ...panelBodyStyle, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
-                  {currentOccurrence.description}
-                </div>
+              <Surface bg="brand" padding={4} size="sm" color="body" style={{ whiteSpace: "pre-wrap" }}>
+                {currentOccurrence.description}
               </Surface>
             ) : null}
           </>
@@ -3116,16 +3090,15 @@ const OverallBestPerformerPage = () => {
             {/* Active Application Round Details Dashboard */}
             <Grid min={360} gap={4} style={{ marginBottom: "var(--spacing-4)" }}>
               {/* Left Card: Application Period & Eligibility */}
-              <div style={{
-                ...panelStyle,
-                background: "var(--color-bg-primary)",
-                borderLeft: "4px solid var(--color-primary)",
-                padding: "var(--spacing-4)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--spacing-3)",
-                boxShadow: "var(--shadow-sm)"
-              }}>
+              <Surface
+                bg="primary"
+                padding={4}
+                radius="card"
+                border
+                shadow
+                accent="brand"
+                style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", overflow: "hidden" }}
+              >
                 <HStack align="center" gap={2} color="brand">
                   <CalendarDays size={18} />
                   <Text as="span" size="md" weight="bold" color="heading">
@@ -3149,20 +3122,22 @@ const OverallBestPerformerPage = () => {
                     Status: Active / Graduated
                   </Surface>
                 </HStack>
-              </div>
+              </Surface>
 
               {/* Right Card: Reference Guide & Marking Scheme */}
-              <div style={{
-                ...panelStyle,
-                background: "linear-gradient(135deg, var(--color-primary-bg) 0%, rgba(91, 159, 232, 0.03) 100%)",
-                borderLeft: "4px solid var(--color-info)",
-                padding: "var(--spacing-4)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                boxShadow: "var(--shadow-sm)"
-              }}>
+              {/* The gradient this used to carry ended on a literal
+                  rgba(91, 159, 232, 0.03) — a fixed light-mode blue that stayed
+                  put in dark mode. The brand tint is the theme's version of the
+                  same wash. */}
+              <Surface
+                bg="brand"
+                padding={4}
+                radius="card"
+                border
+                shadow
+                accent="info"
+                style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "var(--spacing-3)", overflow: "hidden" }}
+              >
                 <div>
                   <HStack align="center" gap={2} color="info">
                     <BookOpen size={18} />
@@ -3178,20 +3153,19 @@ const OverallBestPerformerPage = () => {
                 <Button variant="secondary" onClick={() => setShowMarkingSchemeModal(true)} style={{ width: "100%", justifyContent: "center" }}>
                   <FileText size={16} /> View Marking Scheme
                 </Button>
-              </div>
+              </Surface>
             </Grid>
 
             <VStack gap={4}>
               {/* Personalized Student Profile & Status card */}
-              <div style={{
-                ...panelStyle,
-                background: "var(--color-bg-primary)",
-                padding: "var(--spacing-4)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--spacing-3)",
-                boxShadow: "var(--shadow-sm)"
-              }}>
+              <Surface
+                bg="primary"
+                padding={4}
+                radius="card"
+                border
+                shadow
+                style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", overflow: "hidden" }}
+              >
                 <HStack gap={3} align="center" wrap>
                   <ProfileAvatar
                     user={{
@@ -3240,9 +3214,9 @@ const OverallBestPerformerPage = () => {
                     </Text>
                   </div>
                 ) : null}
-              </div>
+              </Surface>
 
-              <SectionPanel title="Score Preview">
+              <Panel title="Score Preview">
                 <Grid cols={1} gap={4}>
                   <Grid min={220} gap={3}>
                     <SummaryMetric icon={Trophy} label="Current Score" value={studentScorePreview.total} />
@@ -3269,9 +3243,9 @@ const OverallBestPerformerPage = () => {
 
                   <ScoreBreakdownCard breakdown={studentScorePreview} />
                 </Grid>
-              </SectionPanel>
+              </Panel>
 
-              <SectionPanel title="1. Academic achievements">
+              <Panel title="1. Academic achievements">
                 <Grid cols={1} gap={4}>
                   <Grid cols={1} gap={2}>
                     <span style={sectionLabelStyle}>Programme Type</span>
@@ -3344,9 +3318,9 @@ const OverallBestPerformerPage = () => {
                     </div>
                   </Grid>
                 </Grid>
-              </SectionPanel>
+              </Panel>
  
-              <SectionPanel title="2. Project / thesis work">
+              <Panel title="2. Project / thesis work">
                 <Grid cols={1} gap={4}>
                   <Grid cols={1} gap={2}>
                     <span style={sectionLabelStyle}>Project Track</span>
@@ -3530,7 +3504,7 @@ const OverallBestPerformerPage = () => {
                     />
                   ) : null}
                 </Grid>
-              </SectionPanel>
+              </Panel>
 
               <MinimalScoredItemsEditor
                 step="3"
@@ -3628,7 +3602,7 @@ const OverallBestPerformerPage = () => {
                 descriptionPlaceholder="Describe the activity briefly."
               />
 
-              <SectionPanel title="Final Declaration">
+              <Panel title="Final Declaration">
                 <VStack gap={3} color="body">
                   <label style={checklistItemStyle}>
                     <input
@@ -3691,7 +3665,7 @@ const OverallBestPerformerPage = () => {
                     ) : null}
                   </Grid>
                 </VStack>
-              </SectionPanel>
+              </Panel>
             </VStack>
           </>
         )}
@@ -3744,7 +3718,7 @@ const OverallBestPerformerPage = () => {
             </Grid>
 
             {occurrenceModalMode === "edit" ? (
-              <SectionPanel
+              <Panel
                 title="Eligible students"
                 subtitle="Review and update the student list without reuploading unless you want to replace it."
                 actions={(
@@ -3764,9 +3738,9 @@ const OverallBestPerformerPage = () => {
                     </Grid>
                   </div>
                 </Grid>
-              </SectionPanel>
+              </Panel>
             ) : (
-              <SectionPanel
+              <Panel
                 title="Eligible students CSV"
                 subtitle="Upload a CSV with a single required column: rollNumber"
               >
@@ -3778,7 +3752,7 @@ const OverallBestPerformerPage = () => {
                   maxRecords={5000}
                   instructionText="Upload the exact roll numbers allowed to apply in this occurrence."
                 />
-              </SectionPanel>
+              </Panel>
             )}
 
             <HStack gap={2} justify="end">
@@ -3838,7 +3812,7 @@ const OverallBestPerformerPage = () => {
               </div>
             </Grid>
 
-            <SectionPanel
+            <Panel
               title="Replace entire list"
               subtitle="Upload a new CSV to overwrite the current eligible student list for this occurrence."
             >
@@ -3850,9 +3824,9 @@ const OverallBestPerformerPage = () => {
                 maxRecords={5000}
                 instructionText="Uploading here replaces the current list inside this edit session. Save the occurrence to apply the changes."
               />
-            </SectionPanel>
+            </Panel>
 
-            <SectionPanel
+            <Panel
               title="Eligible students"
               subtitle={`${occurrenceForm.eligibleRollNumbers.length || 0} students currently in this edit list.`}
             >
@@ -3888,7 +3862,7 @@ const OverallBestPerformerPage = () => {
                   </Text>
                 )}
               </Grid>
-            </SectionPanel>
+            </Panel>
 
             <HStack gap={2} justify="end">
               <Button variant="ghost" onClick={() => setShowEligibleStudentsModal(false)}>

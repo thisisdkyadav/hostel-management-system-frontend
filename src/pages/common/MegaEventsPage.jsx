@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { Button, Input } from "hzero"
+import { Button, DetailSection, Input } from "hzero"
 import { Grid, Heading, HStack, Modal, Surface, Text, VStack } from "@/components/ui"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
-import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
+import { Textarea, Checkbox, Select } from "@/components/ui/form"
 import { LoadingState, ErrorState, EmptyState, Alert, useToast } from "@/components/ui/feedback"
 import { Badge } from "@/components/ui/data-display"
 import { CalendarDays, History, Plus, FileText, Receipt, Building2, Users, Target, DollarSign, ClipboardCheck, MapPin, Clock } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
+import { FormField, SectionHeader, sectionLabelStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 
@@ -181,107 +182,6 @@ const layoutStyles = {
     backgroundColor: "var(--color-bg-primary)",
   },
 }
-
-const formLabelStyles = {
-  display: "block",
-  fontSize: "var(--font-size-xs)",
-  fontWeight: "var(--font-weight-semibold)",
-  color: "var(--color-text-muted)",
-  marginBottom: "var(--spacing-1)",
-  textTransform: "uppercase",
-  letterSpacing: "0.04em",
-}
-
-const sectionHeaderStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "var(--spacing-2)",
-  paddingTop: "var(--spacing-2)",
-  marginBottom: "var(--spacing-2)",
-}
-
-const sectionLabelStyle = {
-  fontSize: "var(--font-size-xs)",
-  fontWeight: "var(--font-weight-semibold)",
-  color: "var(--color-text-muted)",
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-}
-
-const sectionDividerStyle = {
-  flex: 1,
-  height: 1,
-  backgroundColor: "var(--color-border-primary)",
-}
-
-const infoBoxStyle = {
-  padding: "var(--spacing-3)",
-  borderRadius: "var(--radius-card-sm)",
-  backgroundColor: "var(--color-bg-secondary)",
-}
-
-const compactCardStyle = {
-  padding: "var(--spacing-2) var(--spacing-3)",
-  borderRadius: "var(--radius-card-sm)",
-  border: "var(--border-1) solid var(--color-border-primary)",
-  backgroundColor: "var(--color-bg-primary)",
-}
-
-// Panel styles for wide modal layout
-const panelStyle = {
-  padding: "var(--spacing-4)",
-  borderRadius: "var(--radius-card-sm)",
-  border: "var(--border-1) solid var(--color-border-primary)",
-  backgroundColor: "var(--color-bg-primary)",
-}
-
-const panelHeaderStyle = {
-  fontSize: "var(--font-size-sm)",
-  fontWeight: "var(--font-weight-semibold)",
-  color: "var(--color-text-primary)",
-  marginBottom: "var(--spacing-3)",
-  paddingBottom: "var(--spacing-2)",
-  borderBottom: "var(--border-1) solid var(--color-border-primary)",
-  display: "flex",
-  alignItems: "center",
-  gap: "var(--spacing-2)",
-}
-
-const panelAccentStyle = {
-  ...panelStyle,
-  backgroundColor: "var(--color-bg-secondary)",
-  border: "none",
-}
-
-const Panel = ({ title, icon: Icon, accent = false, children }) => (
-  <div style={accent ? panelAccentStyle : panelStyle}>
-    {title && (
-      <div style={panelHeaderStyle}>
-        {Icon && <Icon size={16} style={{ color: "var(--color-primary)" }} />}
-        <span>{title}</span>
-      </div>
-    )}
-    <VStack gap={2}>
-      {children}
-    </VStack>
-  </div>
-)
-
-const FormField = ({ label, htmlFor, required = false, children }) => (
-  <div>
-    <Label htmlFor={htmlFor} required={required} size="sm" style={formLabelStyles}>
-      {label}
-    </Label>
-    {children}
-  </div>
-)
-
-const SectionHeader = ({ children }) => (
-  <div style={sectionHeaderStyle}>
-    <span style={sectionLabelStyle}>{children}</span>
-    <div style={sectionDividerStyle} />
-  </div>
-)
 
 const MiniStat = ({ icon: Icon, label, value, tone = "var(--color-primary)" }) => (
   <div style={layoutStyles.miniStat}>
@@ -1718,12 +1618,11 @@ const MegaEventsPage = () => {
           )}
 
           {detailedProposalPreviewText && (
-            <div style={infoBoxStyle}>
-              <span style={sectionLabelStyle}>Proposal Preview</span>
-              <Text as="div" size="sm" color="body" leading={1.5} style={{ marginTop: "var(--spacing-2)", whiteSpace: "pre-wrap" }}>
+            <DetailSection title="Proposal Preview">
+              <Text as="div" size="sm" color="body" leading={1.5} style={{ whiteSpace: "pre-wrap" }}>
                 {detailedProposalPreviewText.slice(0, 400)}{detailedProposalPreviewText.length > 400 ? "..." : ""}
               </Text>
-            </div>
+            </DetailSection>
           )}
 
           <SectionHeader>Financials</SectionHeader>
@@ -1769,12 +1668,11 @@ const MegaEventsPage = () => {
           />
 
           {detailedExternalGuestsText && (
-            <div style={infoBoxStyle}>
-              <span style={sectionLabelStyle}>External Guests</span>
-              <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-1)" }}>
+            <DetailSection title="External Guests">
+              <Text as="div" size="sm" color="body">
                 {detailedExternalGuestsText}
               </Text>
-            </div>
+            </DetailSection>
           )}
 
           <SectionHeader>Documents</SectionHeader>
@@ -1801,9 +1699,8 @@ const MegaEventsPage = () => {
             <>
               <SectionHeader>Review</SectionHeader>
               {requiresProposalStageSelection && (
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
-                  <Grid cols={3} gap={2} style={{ marginTop: "var(--spacing-2)" }}>
+                <DetailSection title="Next Approval Stage(s)">
+                  <Grid cols={3} gap={2}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -1814,7 +1711,7 @@ const MegaEventsPage = () => {
                       />
                     ))}
                   </Grid>
-                </div>
+                </DetailSection>
               )}
               <FormField label="Review Comments" htmlFor="mega-proposal-review-comments">
                 <Textarea
@@ -1829,15 +1726,12 @@ const MegaEventsPage = () => {
           )}
 
           {proposalData?._id && (
-            <div style={infoBoxStyle}>
-              <span style={sectionLabelStyle}>Approval History</span>
-              <div style={{ marginTop: "var(--spacing-2)" }}>
-                <ApprovalHistory
-                  key={`proposal-${selectedOccurrence?._id}-${proposalHistoryRefreshKey}`}
-                  megaProposalOccurrenceId={selectedOccurrence?._id}
-                />
-              </div>
-            </div>
+            <DetailSection title="Approval History">
+              <ApprovalHistory
+                key={`proposal-${selectedOccurrence?._id}-${proposalHistoryRefreshKey}`}
+                megaProposalOccurrenceId={selectedOccurrence?._id}
+              />
+            </DetailSection>
           )}
         </VStack>
       </Modal>
@@ -1874,7 +1768,7 @@ const MegaEventsPage = () => {
             {/* Left Column */}
             <VStack gap={4}>
               {/* Programme Details Panel */}
-              <Panel title="Programme Details" icon={CalendarDays}>
+              <DetailSection title="Programme Details" icon={CalendarDays}>
                 <Grid cols={2} gap={2}>
                   <FormField label="Programme Type" htmlFor="mega-proposal-programme-type" required>
                     <Select
@@ -1926,10 +1820,10 @@ const MegaEventsPage = () => {
                     />
                   </FormField>
                 </Grid>
-              </Panel>
+              </DetailSection>
 
               {/* Background & Rationale Panel */}
-              <Panel title="Background & Rationale" icon={FileText} accent>
+              <DetailSection title="Background & Rationale" icon={FileText} tone="primary">
                 <FormField label="Context and Relevance" htmlFor="mega-proposal-context-relevance" required>
                   <Textarea
                     id="mega-proposal-context-relevance"
@@ -1960,10 +1854,10 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditProposal}
                   />
                 </FormField>
-              </Panel>
+              </DetailSection>
 
               {/* Objectives Panel */}
-              <Panel title="Programme Objectives" icon={Target}>
+              <DetailSection title="Programme Objectives" icon={Target}>
                 <FormField label="Primary Objective" htmlFor="mega-proposal-objective-1" required>
                   <Input
                     id="mega-proposal-objective-1"
@@ -1993,13 +1887,13 @@ const MegaEventsPage = () => {
                     />
                   </FormField>
                 </Grid>
-              </Panel>
+              </DetailSection>
             </VStack>
 
             {/* Right Column */}
             <VStack gap={4}>
               {/* Organising Unit Panel */}
-              <Panel title="Organising Unit" icon={Building2} accent>
+              <DetailSection title="Organising Unit" icon={Building2} tone="primary">
                 <FormField label="Unit Type" htmlFor="mega-proposal-organising-unit-type" required>
                   <Select
                     id="mega-proposal-organising-unit-type"
@@ -2039,10 +1933,10 @@ const MegaEventsPage = () => {
                     />
                   </FormField>
                 </Grid>
-              </Panel>
+              </DetailSection>
 
               {/* Target Participants Panel */}
-              <Panel title="Target Participants" icon={Users}>
+              <DetailSection title="Target Participants" icon={Users}>
                 <FormField label="Institute Faculty / Staff / Students" htmlFor="mega-target-participants-institute">
                   <Textarea
                     id="mega-target-participants-institute"
@@ -2073,10 +1967,10 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditProposal}
                   />
                 </FormField>
-              </Panel>
+              </DetailSection>
 
               {/* Guest Details Panel */}
-              <Panel title="Guest & Speaker Details" icon={Users} accent>
+              <DetailSection title="Guest & Speaker Details" icon={Users} tone="primary">
                 <Grid cols={2} gap={2}>
                   <FormField label="No. of Speakers/Guests" htmlFor="mega-tentative-speakers-guests">
                     <Input
@@ -2111,12 +2005,12 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditProposal}
                   />
                 </FormField>
-              </Panel>
+              </DetailSection>
             </VStack>
           </Grid>
 
           {/* Programme Schedule - Full Width */}
-          <Panel title="Programme Schedule" icon={Clock}>
+          <DetailSection title="Programme Schedule" icon={Clock}>
             <FormField label="Brief Schedule" htmlFor="mega-programme-schedule-brief" required>
               <Textarea
                 id="mega-programme-schedule-brief"
@@ -2135,10 +2029,10 @@ const MegaEventsPage = () => {
               disabled={!canCreateOrEditProposal}
               viewerTitle="Detailed Schedule Annexure"
             />
-          </Panel>
+          </DetailSection>
 
           {/* Source of Funds - Full Width */}
-          <Panel title="Source of Funds" icon={DollarSign} accent>
+          <DetailSection title="Source of Funds" icon={DollarSign} tone="primary">
             <Grid cols={4} gap={2}>
               <FormField label="Registration Fee" htmlFor="mega-source-funds-registration-fee-main">
                 <Input
@@ -2185,10 +2079,10 @@ const MegaEventsPage = () => {
                 />
               </FormField>
             </Grid>
-          </Panel>
+          </DetailSection>
 
           {/* Registration Details - Full Width Table-style */}
-          <Panel title="Registration Details by Category" icon={ClipboardCheck}>
+          <DetailSection title="Registration Details by Category" icon={ClipboardCheck}>
             <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Category</Text>
               <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Registration Fee</Text>
@@ -2225,10 +2119,10 @@ const MegaEventsPage = () => {
                 />
               </Grid>
             ))}
-          </Panel>
+          </DetailSection>
 
           {/* Approval Requested - Full Width */}
-          <Panel title="Approval Requested" icon={ClipboardCheck} accent>
+          <DetailSection title="Approval Requested" icon={ClipboardCheck} tone="primary">
             <Grid cols={2} gap={3}>
               <Checkbox
                 checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
@@ -2267,7 +2161,7 @@ const MegaEventsPage = () => {
                 />
               </FormField>
             )}
-          </Panel>
+          </DetailSection>
         </VStack>
       </Modal>
 
@@ -2421,9 +2315,8 @@ const MegaEventsPage = () => {
             <>
               <SectionHeader>Review</SectionHeader>
               {requiresExpenseStageSelection && (
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
-                  <Grid cols={3} gap={2} style={{ marginTop: "var(--spacing-2)" }}>
+                <DetailSection title="Next Approval Stage(s)">
+                  <Grid cols={3} gap={2}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -2434,7 +2327,7 @@ const MegaEventsPage = () => {
                       />
                     ))}
                   </Grid>
-                </div>
+                </DetailSection>
               )}
               <FormField label="Review Comments" htmlFor="mega-expense-review-comments">
                 <Textarea
@@ -2449,15 +2342,12 @@ const MegaEventsPage = () => {
           )}
 
           {expenseData?._id && (
-            <div style={infoBoxStyle}>
-              <span style={sectionLabelStyle}>Approval History</span>
-              <div style={{ marginTop: "var(--spacing-2)" }}>
-                <ApprovalHistory
-                  key={`expense-${selectedOccurrence?._id}-${expenseHistoryRefreshKey}`}
-                  megaExpenseOccurrenceId={selectedOccurrence?._id}
-                />
-              </div>
-            </div>
+            <DetailSection title="Approval History">
+              <ApprovalHistory
+                key={`expense-${selectedOccurrence?._id}-${expenseHistoryRefreshKey}`}
+                megaExpenseOccurrenceId={selectedOccurrence?._id}
+              />
+            </DetailSection>
           )}
         </VStack>
       </Modal>

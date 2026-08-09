@@ -1,27 +1,5 @@
 import { eventDetailMetaChipStyles, infoBoxStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 
-export const surfaceStyle = {
-  backgroundColor: "var(--color-bg-primary)",
-  border: "1px solid var(--color-border-primary)",
-  borderRadius: "var(--radius-card)",
-  boxShadow: "var(--shadow-card)",
-}
-
-export const panelStyle = {
-  ...surfaceStyle,
-  overflow: "hidden",
-}
-
-export const panelHeaderStyle = {
-  display: "flex",
-  alignItems: "flex-start",
-  justifyContent: "space-between",
-  gap: "var(--spacing-3)",
-  padding: "var(--spacing-3) var(--spacing-4)",
-  borderBottom: "1px solid var(--color-border-primary)",
-  backgroundColor: "var(--color-bg-secondary)",
-}
-
 export const fieldLabelStyle = {
   display: "block",
   fontSize: "var(--font-size-xs)",
@@ -46,10 +24,6 @@ export const textareaStyle = {
   ...inputStyle,
   minHeight: "110px",
   resize: "vertical",
-}
-
-export const panelBodyStyle = {
-  padding: "var(--spacing-4)",
 }
 
 export const helperTextStyle = {
