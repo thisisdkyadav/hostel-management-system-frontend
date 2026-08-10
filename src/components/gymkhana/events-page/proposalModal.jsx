@@ -150,7 +150,7 @@ export const GymkhanaProposalModal = ({
                   <Text as="span" size="xs" color="muted">
                     Budget:{" "}
                     <Text as="strong" color="heading">
-                      ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
+                      {formatINR(proposalEvent.estimatedBudget)}
                     </Text>
                   </Text>
                   {(() => {
@@ -159,7 +159,7 @@ export const GymkhanaProposalModal = ({
                       <Text as="span" size="xs" color="muted">
                         Due:{" "}
                         <Text as="strong" color="heading">
-                          {proposalDueDate.toLocaleDateString()}
+                          {formatIndianDate(proposalDueDate)}
                         </Text>
                       </Text>
                     ) : null
@@ -317,15 +317,15 @@ export const GymkhanaProposalModal = ({
             <HStack gap={3} align="center" justify="between" wrap>
               <EventDetailInfoRow
                 label="Income"
-                value={`₹${Number(computedTotalExpectedIncome || 0).toLocaleString()}`}
+                value={formatINR(computedTotalExpectedIncome)}
               />
               <EventDetailInfoRow
                 label="Expenditure"
-                value={`₹${Number(proposalForm.totalExpenditure || 0).toLocaleString()}`}
+                value={formatINR(proposalForm.totalExpenditure)}
               />
               <EventDetailInfoRow
                 label="Deflection"
-                value={`₹${proposalDeflection.toLocaleString()}`}
+                value={formatINR(proposalDeflection)}
                 valueColor={
                   proposalDeflection > 0
                     ? "var(--color-danger)"
@@ -454,14 +454,14 @@ export const GymkhanaProposalModal = ({
                 label="Due Date"
                 value={
                   proposalEvent
-                    ? getProposalDueDate(proposalEvent)?.toLocaleDateString() ||
+                    ? formatIndianDate(getProposalDueDate(proposalEvent), "") ||
                       "Not available"
                     : "Not available"
                 }
               />
               <EventDetailInfoRow
                 label="Event Budget"
-                value={`₹${Number(proposalEvent?.estimatedBudget || 0).toLocaleString()}`}
+                value={formatINR(proposalEvent?.estimatedBudget)}
               />
             </VStack>
           </EventDetailSectionCard>

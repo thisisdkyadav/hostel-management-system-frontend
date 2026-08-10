@@ -1,4 +1,5 @@
 import { SERIES_LENGTH, seriesColor, seriesTint } from "hzero"
+import { formatIndianDate } from "@/utils/formatters"
 
 export const DEFAULT_CATEGORY_DEFINITIONS = [
   { key: "academic", label: "Academic", isDefault: true },
@@ -304,10 +305,114 @@ export const formatDateRange = (startDate, endDate) => {
   const sameDay = start.toDateString() === end.toDateString()
 
   if (sameDay) {
-    return start.toLocaleDateString()
+    return formatIndianDate(start, "TBD")
   }
 
-  return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
+  return `${formatIndianDate(start, "TBD")} – ${formatIndianDate(end, "TBD")}`
+}
+
+export const EVENT_TIMELINE_SECTIONS = ["current", "upcoming", "past"]
+
+const monthName = (date) => date.toLocaleString("en-IN", { month: "long" })
+
+/**
+ * Split events into the three sections the list shows, by when they happen.
+ *
+ *   current   ongoing right now, or starting before this month is out
+ *   upcoming  starts next month or later
+ *   past      finished before today
+ *
+ * Every event lands in exactly one section and none is dropped — the list is
+ * the only place some events are ever seen, so a gap here loses them silently.
+ * Comparison is by calendar day, not by instant: an event ending today is
+ * still running, and a date stored at midnight must not read as yesterday.
+ *
+ * An event with no usable date at all cannot be placed by time. It goes to
+ * `current` rather than nowhere, because an unscheduled event is a thing
+ * somebody needs to fix and the first section is the one people read.
+ */
+export const partitionEventsByTimeline = (events = [], now = new Date()) => {
+  const todayStart = startOfDay(now)
+  // Day 0 of next month is the last day of this one.
+  const monthEndStart = startOfDay(new Date(now.getFullYear(), now.getMonth() + 1, 0))
+
+  // startOfDay(null) is 1 Jan 1970, not null — new Date(null) is the epoch and
+  // only new Date(undefined) is NaN. normalizeEvent hands us an explicit null
+  // for a missing date, so without this guard every undated event reads as
+  // fifty years past.
+  const dayOf = (value) => (value ? startOfDay(value) : null)
+
+  const startDayOf = (event) => {
+    const normalized = normalizeEvent(event || {})
+    return dayOf(normalized.startDate) || dayOf(normalized.endDate)
+  }
+
+  const sections = { current: [], upcoming: [], past: [] }
+
+  for (const event of events) {
+    const normalized = normalizeEvent(event || {})
+    const start = dayOf(normalized.startDate)
+    const end = dayOf(normalized.endDate)
+    const effectiveStart = start || end
+    const effectiveEnd = end || start
+
+    if (!effectiveStart) sections.current.push(event)
+    else if (effectiveEnd < todayStart) sections.past.push(event)
+    else if (effectiveStart > monthEndStart) sections.upcoming.push(event)
+    else sections.current.push(event)
+  }
+
+  // Soonest first while looking forward; most recent first when looking back.
+  // Undated events sort last either way — they have no place on a timeline.
+  const byStart = (direction) => (a, b) => {
+    const aStart = startDayOf(a)
+    const bStart = startDayOf(b)
+    if (!aStart && !bStart) return 0
+    if (!aStart) return 1
+    if (!bStart) return -1
+    return direction * (aStart - bStart)
+  }
+  sections.current.sort(byStart(1))
+  sections.upcoming.sort(byStart(1))
+  sections.past.sort(byStart(-1))
+
+  return sections
+}
+
+/**
+ * The three sections ready to render, headings and all.
+ *
+ * The labels name months, so they are built from the same `now` that did the
+ * splitting — computed apart, a page open across midnight on the 31st could
+ * say "before August ends" over a list already split on September.
+ */
+export const buildEventTimelineSections = (events = [], now = new Date()) => {
+  const sections = partitionEventsByTimeline(events, now)
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+
+  return [
+    {
+      key: "current",
+      title: "This month",
+      subtitle: `Running now, or starting before ${monthName(now)} ends`,
+      tone: "primary",
+      events: sections.current,
+    },
+    {
+      key: "upcoming",
+      title: "Later",
+      subtitle: `Scheduled from ${monthName(nextMonth)} onwards`,
+      tone: "info",
+      events: sections.upcoming,
+    },
+    {
+      key: "past",
+      title: "Past",
+      subtitle: "Finished before today",
+      tone: "neutral",
+      events: sections.past,
+    },
+  ]
 }
 
 export const getBudgetSummary = (events = [], categoryDefinitions = []) => {

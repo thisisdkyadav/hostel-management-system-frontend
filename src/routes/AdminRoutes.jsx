@@ -47,6 +47,8 @@ const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestP
 const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
 const AttendancePage = lazy(() => import("../pages/common/AttendancePage"))
 const AttendanceOccurrencePage = lazy(() => import("../pages/common/AttendanceOccurrencePage"))
+const ExpenditureManagementPage = lazy(() => import("../pages/common/ExpenditureManagementPage"))
+const ExpenditureOccurrencePage = lazy(() => import("../pages/common/ExpenditureOccurrencePage"))
 
 // Warden pages (shared)
 const FeedbacksPage = lazy(() => import("../pages/warden/FeedbacksPage"))
@@ -103,6 +105,8 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/PorRequestsPage"),
   () => import("../pages/common/AttendancePage"),
   () => import("../pages/common/AttendanceOccurrencePage"),
+  () => import("../pages/common/ExpenditureManagementPage"),
+  () => import("../pages/common/ExpenditureOccurrencePage"),
   () => import("../pages/warden/FeedbacksPage"),
 ]
 
@@ -172,6 +176,8 @@ const AdminRoutes = () => {
                 <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />
                 <Route path="attendance" element={guardRoute("route.admin.attendance", <AttendancePage basePath="/admin/attendance" />)} />
                 <Route path="attendance/:occurrenceId" element={guardRoute("route.admin.attendance", <AttendanceOccurrencePage basePath="/admin/attendance" />)} />
+                <Route path="expenditure" element={guardRoute("route.admin.expenditure", <ExpenditureManagementPage basePath="/admin/expenditure" />)} />
+                <Route path="expenditure/:occurrenceId" element={guardRoute("route.admin.expenditure", <ExpenditureOccurrencePage basePath="/admin/expenditure" />)} />
                 <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                 <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
                 <Route path="overall-best-performer" element={guardRoute("route.admin.overallBestPerformer", <OverallBestPerformerPage />)} />

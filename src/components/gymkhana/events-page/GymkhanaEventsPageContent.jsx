@@ -1,8 +1,9 @@
-import { Button, DataTable, EmptyState, Grid, Heading, HStack, LoadingState, StatCards, Surface, Tabs, Text, ToggleButtonGroup } from "hzero"
+import { Button, DataTable, EmptyState, Grid, Heading, HStack, LoadingState, Panel, StatCards, Surface, Tabs, Text, ToggleButtonGroup, VStack } from "hzero"
 import PageHeader from "@/components/common/PageHeader"
 import {
   AlertTriangle,
   Bell,
+  CalendarClock,
   CalendarDays,
   CalendarRange,
   Check,
@@ -26,6 +27,18 @@ const viewOptions = [
   { value: "calendar", label: "Month", icon: <CalendarDays size={14} /> },
   { value: "year", label: "Year", icon: <CalendarRange size={14} /> },
 ]
+
+// Which section a heading belongs to is shared.js's call; what it looks like
+// is this file's. Keyed rather than inlined so the two cannot drift.
+const SECTION_ICONS = {
+  current: CalendarClock,
+  upcoming: CalendarRange,
+  past: History,
+}
+
+const getEventRowId = (event) =>
+  event?._id ||
+  `${event?.title || "event"}-${event?.category || "na"}-${event?.startDate || "na"}-${event?.endDate || "na"}`
 
 const tint = (color, pct) => `color-mix(in srgb, ${color} ${pct}%, transparent)`
 // Opaque tint (mixed with the surface) — stays legible when layered over a colored cell strip.
@@ -517,6 +530,7 @@ export default function GymkhanaEventsPageContent({
   categoryFilterTabs,
   dateConflicts,
   eventTableColumns,
+  eventTimelineSections,
   filteredEvents,
   getDaysInMonth,
   getEventsForDate,
@@ -795,15 +809,31 @@ export default function GymkhanaEventsPageContent({
                 }
               />
             ) : (
-              <DataTable
-                data={filteredEvents}
-                columns={eventTableColumns}
-                onRowClick={handleEventRowClick}
-                getRowId={(event) =>
-                  event?._id ||
-                  `${event?.title || "event"}-${event?.category || "na"}-${event?.startDate || "na"}-${event?.endDate || "na"}`
-                }
-              />
+              <VStack gap="var(--gap-md)">
+                {/* A section with nothing in it is a heading that says nothing —
+                    hidden, not rendered empty. The partition is total, so the
+                    ones shown always account for every event. */}
+                {eventTimelineSections
+                  .filter((section) => section.events.length > 0)
+                  .map((section) => (
+                    <Panel
+                      key={section.key}
+                      title={section.title}
+                      subtitle={section.subtitle}
+                      icon={SECTION_ICONS[section.key]}
+                      accent={section.tone}
+                      count={section.events.length}
+                      padded={false}
+                    >
+                      <DataTable
+                        data={section.events}
+                        columns={eventTableColumns}
+                        onRowClick={handleEventRowClick}
+                        getRowId={getEventRowId}
+                      />
+                    </Panel>
+                  ))}
+              </VStack>
             )}
           </>
         )}

@@ -135,7 +135,7 @@ export const GymkhanaEventDetailsModal = ({
     {selectedEvent && isOpen && (() => {
       const proposalDueDate = getProposalDueDate(selectedEvent)
       const proposalDueText = proposalDueDate
-        ? proposalDueDate.toLocaleDateString()
+        ? formatIndianDate(proposalDueDate)
         : "Not available"
       const canOpenProposal =
         canViewEventsCapability &&
@@ -192,8 +192,8 @@ export const GymkhanaEventDetailsModal = ({
                 {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
               </span>
                 <span style={eventDetailMetaChipStyles}>
-                  <CircleDollarSign size={12} />₹
-                  {Number(selectedEvent.estimatedBudget || 0).toLocaleString()}
+                  <CircleDollarSign size={12} />
+                  {formatINR(selectedEvent.estimatedBudget)}
                 </span>
               </HStack>
             {(canEditEvent || canRequestEventAmendment) && (
@@ -223,7 +223,7 @@ export const GymkhanaEventDetailsModal = ({
                   label="Start"
                   value={
                     selectedEvent.startDate
-                      ? new Date(selectedEvent.startDate).toLocaleDateString()
+                      ? formatIndianDate(selectedEvent.startDate)
                       : "TBD"
                   }
                 />
@@ -231,14 +231,14 @@ export const GymkhanaEventDetailsModal = ({
                   label="End"
                   value={
                     selectedEvent.endDate
-                      ? new Date(selectedEvent.endDate).toLocaleDateString()
+                      ? formatIndianDate(selectedEvent.endDate)
                       : "TBD"
                   }
                 />
                 <EventDetailInfoRow label="Proposal Due" value={proposalDueText} />
                 <EventDetailInfoRow
                   label="Budget"
-                  value={`₹${Number(selectedEvent.estimatedBudget || 0).toLocaleString()}`}
+                  value={formatINR(selectedEvent.estimatedBudget)}
                 />
               </VStack>
             </EventDetailSectionCard>
@@ -565,11 +565,11 @@ export const GymkhanaSettingsModal = ({
           <Text size="xs" color="muted" style={{ margin: 0 }}>
             Leave a field blank to keep that category unlimited. Event saves will be blocked once a category total exceeds its cap.
             <br />
-            Configured category caps total: ₹{Object.values(settingsForm?.budgetCaps || {}).reduce((sum, value) => {
+            Configured category caps total: {formatINR(Object.values(settingsForm?.budgetCaps || {}).reduce((sum, value) => {
               if (value === null || value === undefined || value === "") return sum
               const parsedValue = Number(value)
               return Number.isFinite(parsedValue) && parsedValue >= 0 ? sum + parsedValue : sum
-            }, 0).toLocaleString()}
+            }, 0))}
           </Text>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
@@ -590,7 +590,7 @@ export const GymkhanaSettingsModal = ({
                   onChange={(event) => onBudgetCapChange?.(category.key, event.target.value)}
                 />
                 <Text as="span" size="xs" color="muted">
-                  Current allocated budget: ₹{allocated.toLocaleString()}
+                  Current allocated budget: {formatINR(allocated)}
                 </Text>
               </VStack>
             )

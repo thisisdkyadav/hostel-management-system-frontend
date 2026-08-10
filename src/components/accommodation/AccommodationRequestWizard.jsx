@@ -32,7 +32,7 @@ const STEPS = [
   { id: "review", label: "Review" },
 ]
 
-const emptyGuest = () => ({ name: "", gender: "", relation: "", aadharNumber: "", occupation: "" })
+const emptyGuest = () => ({ name: "", gender: "", relation: "", aadharNumber: "" })
 
 const toDateInput = (d) => {
   if (!d) return ""
@@ -88,7 +88,6 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
           gender: g.gender || "",
           relation: g.relation || "",
           aadharNumber: g.aadharNumber || "",
-          occupation: g.occupation || "",
         })) || [emptyGuest()],
         stay: {
           fromDate: toDateInput(existingRequest.stay?.fromDate),
@@ -245,7 +244,6 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                   <Select placeholder="Gender *" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
                   <Input placeholder="Relation to you *" value={g.relation} onChange={(e) => setGuest(i, "relation", e.target.value)} />
                   <Input placeholder="Aadhaar number *" inputMode="numeric" maxLength={12} value={g.aadharNumber} onChange={(e) => setGuest(i, "aadharNumber", e.target.value.replace(/\D/g, "").slice(0, 12))} />
-                  <Input placeholder="Occupation (optional)" value={g.occupation} onChange={(e) => setGuest(i, "occupation", e.target.value)} style={{ gridColumn: "1 / -1" }} />
                 </Grid>
               </div>
             ))}

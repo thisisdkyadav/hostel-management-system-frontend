@@ -170,6 +170,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "POR", icon: BadgeCheck, section: "main", path: "/admin/por", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Attendance", icon: CheckSquare, section: "main", path: "/admin/attendance", pathPattern: "^/admin/attendance(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Expenditure", icon: Wallet, section: "main", path: "/admin/expenditure", routeKey: "route.admin.expenditure", pathPattern: "^/admin/expenditure(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },

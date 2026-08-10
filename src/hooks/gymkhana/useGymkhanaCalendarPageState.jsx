@@ -4,6 +4,7 @@ import {
   CALENDAR_STATUS_TO_APPROVER,
   buildAvailableYearsForCreation,
   buildBudgetCapsPayload,
+  buildEventTimelineSections,
   buildNextApproversPayload,
   createDefaultOverlapState,
   createDefaultEventForm,
@@ -230,6 +231,9 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     if (activeCategoryFilter === "all") return events
     return events.filter((event) => event.category === activeCategoryFilter)
   }, [events, activeCategoryFilter])
+  // The list reads as three sections by when an event happens. Built here so
+  // "now" is fixed once per change to the list rather than per render.
+  const eventTimelineSections = useMemo(() => buildEventTimelineSections(filteredEvents), [filteredEvents])
   const eventTableColumns = useMemo(
     () => [
       {
@@ -1158,6 +1162,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     fetchCalendar,
     fetchYears,
     filteredEvents,
+    eventTimelineSections,
     formatDateRange,
     getDaysInMonth,
     getCategoryBadgeStyle: badgeStyleForCategory,

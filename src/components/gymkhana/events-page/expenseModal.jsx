@@ -143,13 +143,13 @@ export const GymkhanaExpenseModal = ({
                   <Text as="span" size="xs" color="muted">
                     Budget:{" "}
                     <Text as="strong" color="heading">
-                      ₹{assignedExpenseBudget.toLocaleString()}
+                      {formatINR(assignedExpenseBudget)}
                     </Text>
                   </Text>
                   <Text as="span" size="xs" color="muted">
                     Total:{" "}
                     <Text as="strong" color="heading">
-                      ₹{expenseTotal.toLocaleString()}
+                      {formatINR(expenseTotal)}
                     </Text>
                   </Text>
                   {expenseData && (
@@ -376,14 +376,14 @@ export const GymkhanaExpenseModal = ({
             accentColor="var(--color-success)"
           >
             <HStack gap={3} align="center" justify="between" wrap>
-              <EventDetailInfoRow label="Bills" value={`₹${expenseTotal.toLocaleString()}`} />
+              <EventDetailInfoRow label="Bills" value={formatINR(expenseTotal)} />
               <EventDetailInfoRow
                 label="Budget"
-                value={`₹${assignedExpenseBudget.toLocaleString()}`}
+                value={formatINR(assignedExpenseBudget)}
               />
               <EventDetailInfoRow
                 label="Variance"
-                value={`₹${expenseVariance.toLocaleString()}`}
+                value={formatINR(expenseVariance)}
                 valueColor={
                   expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)"
                 }

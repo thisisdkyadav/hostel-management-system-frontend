@@ -139,6 +139,7 @@ const EventsPage = () => {
         dateConflicts={calendarState.dateConflicts}
         eventTableColumns={calendarState.eventTableColumns}
         filteredEvents={calendarState.filteredEvents}
+        eventTimelineSections={calendarState.eventTimelineSections}
         getDaysInMonth={calendarState.getDaysInMonth}
         getEventsForDate={calendarState.getEventsForDate}
         getHolidaysForDate={calendarState.getHolidaysForDate}

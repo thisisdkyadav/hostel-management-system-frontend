@@ -1,6 +1,7 @@
 import { Button, Grid, HStack, Modal, Select, Surface, Table, Text, Textarea, VStack } from "hzero"
 import { AlertTriangle, Check, X } from "lucide-react"
 import { formLabelStyles } from "@/components/gymkhana/events-page/sharedPrimitives"
+import { formatINR } from "@/utils/formatters"
 
 export const GymkhanaPendingProposalsModal = ({
   isOpen,
@@ -55,10 +56,10 @@ export const GymkhanaPendingProposalsModal = ({
                 )}
               </Table.Cell>
               <Table.Cell>
-                ₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}
+                {formatINR(proposal.totalExpectedIncome)}
               </Table.Cell>
               <Table.Cell>
-                ₹{Number(proposal.totalExpenditure || 0).toLocaleString()}
+                {formatINR(proposal.totalExpenditure)}
               </Table.Cell>
               <Table.Cell
                 style={{
@@ -68,7 +69,7 @@ export const GymkhanaPendingProposalsModal = ({
                       : "var(--color-success)",
                 }}
               >
-                ₹{Number(proposal.budgetDeflection || 0).toLocaleString()}
+                {formatINR(proposal.budgetDeflection)}
               </Table.Cell>
               <Table.Cell align="right">
                 <Button
@@ -140,9 +141,9 @@ export const GymkhanaPendingBillsModal = ({
               </Table.Cell>
               <Table.Cell>{expense.submittedBy?.name || "Unknown"}</Table.Cell>
               <Table.Cell>
-                ₹{Number(expense.totalExpenditure || 0).toLocaleString()}
+                {formatINR(expense.totalExpenditure)}
               </Table.Cell>
-              <Table.Cell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</Table.Cell>
+              <Table.Cell>{formatINR(expense.estimatedBudget)}</Table.Cell>
               <Table.Cell
                 style={{
                   color:
@@ -151,7 +152,7 @@ export const GymkhanaPendingBillsModal = ({
                       : "var(--color-success)",
                 }}
               >
-                ₹{Number(expense.budgetVariance || 0).toLocaleString()}
+                {formatINR(expense.budgetVariance)}
               </Table.Cell>
               <Table.Cell align="right">
                 <Button
@@ -288,12 +289,11 @@ export const GymkhanaApprovalModal = ({
               borderRadius: "var(--radius-card-sm)",
             }}
           >
-            {categoryLabels[category]}: ₹
-            {(budgetSummary.byCategory[category] || 0).toLocaleString()}
+            {categoryLabels[category]}: {formatINR(budgetSummary.byCategory[category])}
           </span>
         ))}
         <Surface as="span" bg="brand" padding="var(--spacing-1) var(--spacing-2)" radius="card-sm" color="brand" weight="medium">
-          Total: ₹{budgetSummary.total.toLocaleString()}
+          Total: {formatINR(budgetSummary.total)}
         </Surface>
       </HStack>
 
