@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Badge, HStack, Spinner, Surface, Text, VStack } from "hzero"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
+import { formatIndianDateTime } from "@/utils/formatters"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 
 const ACTION_ICONS = {
@@ -36,7 +37,7 @@ const formatTimestamp = (value) => {
     if (!value) return "Date unavailable"
     const date = new Date(value)
     if (Number.isNaN(date.getTime())) return "Date unavailable"
-    return date.toLocaleString()
+    return formatIndianDateTime(date)
 }
 
 const ApprovalHistory = ({

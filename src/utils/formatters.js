@@ -44,7 +44,16 @@ export const formatDateOnly = (value, locale = "en-US") => {
 export const formatINR = (value) => {
   const amount = Number(value)
   if (!Number.isFinite(amount)) return "₹0"
-  return `₹${amount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`
+  // The sign belongs outside the symbol — a variance of -₹45,000, not ₹-45,000.
+  const sign = amount < 0 ? "-" : ""
+  // Paise only when there are paise: a budget reads as ₹1,50,000, a bill for
+  // 1234.5 reads as ₹1,234.50, and neither picks up the other's noise.
+  const digits = Number.isInteger(amount) ? 0 : 2
+  const magnitude = Math.abs(amount).toLocaleString("en-IN", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
+  return `${sign}₹${magnitude}`
 }
 
 /**

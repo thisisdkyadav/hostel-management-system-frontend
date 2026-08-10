@@ -5,6 +5,7 @@ import AuditTimelineModal from "@/components/gymkhana/AuditTimelineModal"
 import AdminEntityActions from "@/components/gymkhana/events-page/AdminEntityActions"
 import ReasonPromptModal from "@/components/gymkhana/events-page/ReasonPromptModal"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
+import { formatINR } from "@/utils/formatters"
 import {
   Check,
   CircleDollarSign,

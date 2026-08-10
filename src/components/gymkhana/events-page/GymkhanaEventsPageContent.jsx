@@ -138,7 +138,7 @@ function MonthCalendarView({
       >
         <HStack gap="var(--spacing-2-5)" align="baseline">
           <Heading as="h3" size="xl" weight="bold" color="heading" style={{ margin: 0, letterSpacing: "-0.02em" }}>
-            {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
+            {calendarMonth.toLocaleString("en-IN", { month: "long" })}{" "}
             <Text as="span" color="muted" weight="normal">
               {calendarMonth.getFullYear()}
             </Text>
@@ -396,7 +396,7 @@ function YearCalendarView({
           >
             <HStack gap="none" align="center" justify="between" style={{ marginBottom: "var(--spacing-2)" }}>
               <Text as="span" size="sm" weight="bold" color="heading">
-                {monthDate.toLocaleString("default", { month: "short" })}{" "}
+                {monthDate.toLocaleString("en-IN", { month: "short" })}{" "}
                 <Text as="span" color="muted" weight="normal">
                   &rsquo;{String(monthDate.getFullYear()).slice(2)}
                 </Text>

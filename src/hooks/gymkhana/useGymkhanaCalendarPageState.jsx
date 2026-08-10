@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { formatINR } from "@/utils/formatters"
 import {
   CALENDAR_STATUS_TO_APPROVER,
   buildAvailableYearsForCreation,
@@ -260,7 +261,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         key: "estimatedBudget",
         header: "Budget",
-        render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
+        render: (event) => formatINR(event.estimatedBudget),
       },
     ],
     [categoryLabels, badgeStyleForCategory]
@@ -282,7 +283,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   }, [calendarHolidays])
   const getBudgetStatSubtitle = (category) => {
     const cap = calendar?.budgetCaps?.[category]
-    const capLabel = cap === null || cap === undefined ? "No cap" : `Cap ₹${Number(cap).toLocaleString()}`
+    const capLabel = cap === null || cap === undefined ? "No cap" : `Cap ${formatINR(cap)}`
     return `${budgetSummary.counts[category] || 0} event(s) · ${capLabel}`
   }
 
@@ -290,7 +291,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     () => [
       ...categoryDefinitions.map((definition) => ({
         title: `${definition.label} Budget`,
-        value: `₹${(budgetSummary.byCategory[definition.key] || 0).toLocaleString()}`,
+        value: formatINR(budgetSummary.byCategory[definition.key]),
         subtitle: getBudgetStatSubtitle(definition.key),
         icon: <CalendarDays size={16} />,
         color: getCategoryColor(definition.key, categoryOrder),
@@ -298,7 +299,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       })),
       {
         title: "Total Budget",
-        value: `₹${budgetSummary.total.toLocaleString()}`,
+        value: formatINR(budgetSummary.total),
         subtitle: `${events.length} event(s)`,
         icon: <FileText size={16} />,
         color: "var(--color-primary)",
@@ -730,7 +731,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       )
       if (!budgetCapValidation.isValid) {
         toast.error(
-          `${budgetCapValidation.label} category budget would become ₹${budgetCapValidation.total.toLocaleString()} which exceeds the configured cap of ₹${budgetCapValidation.cap.toLocaleString()}. Reduce the budget or ask Admin to increase the limit.`
+          `${budgetCapValidation.label} category budget would become ${formatINR(budgetCapValidation.total)} which exceeds the configured cap of ${formatINR(budgetCapValidation.cap)}. Reduce the budget or ask Admin to increase the limit.`
         )
         return
       }
@@ -1055,8 +1056,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       toast.error(
         "Cannot set the " +
           budgetCapValidation.label +
-          " cap below the current allocated budget of ₹" +
-          budgetCapValidation.total.toLocaleString() +
+          " cap below the current allocated budget of " +
+          formatINR(budgetCapValidation.total) +
           ". Increase the cap or reduce events in that category first."
       )
       return
@@ -1077,10 +1078,10 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
     if (nextOverallBudget !== null && configuredCategoryCapsTotal > nextOverallBudget) {
       toast.error(
-        "Total configured category caps (₹" +
-          configuredCategoryCapsTotal.toLocaleString() +
-          ") exceed overall calendar budget (₹" +
-          nextOverallBudget.toLocaleString() +
+        "Total configured category caps (" +
+          formatINR(configuredCategoryCapsTotal) +
+          ") exceed overall calendar budget (" +
+          formatINR(nextOverallBudget) +
           "). Reduce category caps or increase overall budget."
       )
       return

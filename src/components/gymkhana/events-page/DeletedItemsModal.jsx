@@ -10,11 +10,12 @@ import { useState, useEffect } from "react"
 import { Button, Modal, Spinner, Surface, Tabs, Text, useToast, VStack } from "hzero"
 import { Clock, RotateCcw } from "lucide-react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { formatIndianDateTime } from "@/utils/formatters"
 
 const formatTimestamp = (value) => {
   if (!value) return "—"
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString()
+  return formatIndianDateTime(date)
 }
 
 const DeletedRow = ({ item, onRestore, restoring, lastRow }) => (
