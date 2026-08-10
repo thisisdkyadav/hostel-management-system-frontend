@@ -5,6 +5,15 @@
  */
 
 import apiClient from "../core/apiClient"
+import { API_BACKENDS, getApiBaseUrl } from "@/constants/appConstants"
+
+/**
+ * Direct URL to the invoice PDF. It is a plain authenticated GET, so it drops
+ * straight into a viewer or a download link — `attachment` makes the browser
+ * save it instead of rendering it inline.
+ */
+export const invoiceFileUrl = (requestId, disposition = "inline") =>
+  `${getApiBaseUrl(API_BACKENDS.NODE)}/accommodation/requests/${requestId}/invoice?disposition=${disposition}`
 
 export const accommodationApi = {
   // ---- Shared / student ----
@@ -18,14 +27,25 @@ export const accommodationApi = {
 
   getRequest: (requestId) => apiClient.get(`/accommodation/requests/${requestId}`),
 
+  /** Absolute URL of the generated invoice PDF (view or download). */
+  invoiceFileUrl,
+
   submitRequest: (body) => apiClient.post("/accommodation/requests", body),
 
   resubmitRequest: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/resubmit`, body),
 
   cancelRequest: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/cancel`),
 
-  /** Student uploads payment proof. body: { screenshotFileRef, transactionId } */
+  /** Student uploads payment proof. body: { screenshotFileRef, utr, paidAt } */
   submitPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment`, body),
+
+  /** Student opts to settle the bill after their rooms are assigned. */
+  deferPayment: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/defer-payment`),
+
+  // ---- Chief Warden Office (capacity screening) ----
+  /** body: { action: "approve" | "request_modification" | "reject", reason? } */
+  capacityDecision: (requestId, body) =>
+    apiClient.post(`/accommodation/requests/${requestId}/capacity-decision`, body),
 
   // ---- Chief Warden ----
   /** body: { action: "approve" | "request_modification" | "reject", reason? } */
@@ -35,19 +55,27 @@ export const accommodationApi = {
   bypassFacultyAdvisor: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/bypass-fa`),
 
   // ---- Chief Warden Office ----
-  /** body: { amount?, paymentLink?, qrRef? } */
+  /** Sets the amount AND allots the hostel. body: { hostelId, amount?, remarks? } */
   issuePaymentRequest: (requestId, body = {}) =>
     apiClient.post(`/accommodation/requests/${requestId}/payment-request`, body),
 
+  /** Free guest beds per hostel for the requested dates. */
   getAllotmentAvailability: (requestId) =>
     apiClient.get(`/accommodation/requests/${requestId}/allotment-availability`),
 
-  /** body: { hostelId } */
-  allotHostel: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/allot`, body),
-
   // ---- Accountant ----
-  /** body: { action: "verify" | "reject", note? } */
+  /** body: { action: "verify" | "reject", note? } — on a portal-submitted payment */
   verifyPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment-verify`, body),
+
+  /**
+   * Records money that never went through the portal, or corrects a mistake.
+   * body: { action: "mark_paid", method, reference?, paidAt?, note? }
+   *     | { action: "mark_unpaid", note }
+   */
+  settlePayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment-settle`, body),
+
+  /** Chief Warden / CW Office cancel. body: { reason } */
+  adminCancel: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/admin-cancel`, body),
 
   // ---- Hostel Supervisor / Guest House Manager ----
   getRoomAvailability: (requestId) => apiClient.get(`/accommodation/requests/${requestId}/room-availability`),

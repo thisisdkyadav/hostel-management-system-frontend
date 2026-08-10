@@ -6,15 +6,17 @@
 export const ACCOMMODATION_STATUS = {
   DRAFT: "Draft",
   SUBMITTED: "Submitted",
+  PENDING_CWO_CAPACITY: "Pending CWO Capacity Check",
   PENDING_FA_RECOMMENDATION: "Pending FA Recommendation",
   PENDING_CW_APPROVAL: "Pending CW Approval",
   RETURNED_TO_STUDENT: "Returned to Student",
   REJECTED: "Rejected",
   CW_APPROVED: "CW Approved",
   PAYMENT_REQUESTED: "Payment Requested",
+  PAYMENT_DEFERRED: "Payment Deferred",
   PAYMENT_SUBMITTED: "Payment Submitted",
   PAYMENT_VERIFIED: "Payment Verified",
-  HOSTEL_ALLOTTED: "Hostel Allotted",
+  HOSTEL_ALLOTTED: "Hostel Allotted", // legacy — allotment now happens with the payment request
   ROOMS_ASSIGNED: "Rooms Assigned",
   CHECKED_IN: "Checked In",
   CHECKED_OUT: "Checked Out",
@@ -22,10 +24,51 @@ export const ACCOMMODATION_STATUS = {
   CANCELLED: "Cancelled",
 }
 
+// Student's choice of when to settle the bill.
+export const PAYMENT_MODE = { NOW: "now", LATER: "later" }
+
+export const PAYMENT_STATUS = {
+  PENDING: "Pending",
+  DEFERRED: "Deferred",
+  SUBMITTED: "Submitted",
+  VERIFIED: "Verified",
+  REJECTED: "Rejected",
+}
+
+// Guest days run 11:00 → 11:00; outside that is a requested extension.
+export const STANDARD_CHECK_TIME = "11:00"
+const STANDARD_CHECK_HOUR = 11
+
+const parseTimeOfDay = (value) => {
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(value || "").trim())
+  return m ? Number(m[1]) + Number(m[2]) / 60 : NaN
+}
+const round2 = (n) => Math.round(n * 100) / 100
+
+/** Hours requested outside the standard window, from the two times. */
+export const extensionHours = (checkInTime, checkOutTime) => {
+  const inH = parseTimeOfDay(checkInTime)
+  const outH = parseTimeOfDay(checkOutTime)
+  return {
+    earlyCheckInHours: Number.isNaN(inH) ? 0 : round2(Math.max(0, STANDARD_CHECK_HOUR - inH)),
+    lateCheckOutHours: Number.isNaN(outH) ? 0 : round2(Math.max(0, outH - STANDARD_CHECK_HOUR)),
+  }
+}
+
+/** "2h early check-in · 3h late check-out", or "" when the stay is standard. */
+export const describeExtension = (stay = {}) => {
+  const parts = []
+  if ((stay.earlyCheckInHours || 0) > 0) parts.push(`${stay.earlyCheckInHours}h early check-in`)
+  if ((stay.lateCheckOutHours || 0) > 0) parts.push(`${stay.lateCheckOutHours}h late check-out`)
+  return parts.join(" · ")
+}
+
 // Tone for the C0 StatusBadge (success | warning | danger | info | primary).
 export const STATUS_TONE = {
   [ACCOMMODATION_STATUS.DRAFT]: "primary",
   [ACCOMMODATION_STATUS.SUBMITTED]: "warning",
+  [ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY]: "warning",
+  [ACCOMMODATION_STATUS.PAYMENT_DEFERRED]: "warning",
   [ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION]: "warning",
   [ACCOMMODATION_STATUS.PENDING_CW_APPROVAL]: "warning",
   [ACCOMMODATION_STATUS.RETURNED_TO_STUDENT]: "warning",
@@ -52,6 +95,7 @@ export const getStatusTone = (status) => {
 // Ordered milestones for the student status timeline (happy path).
 export const STUDENT_STEPS = [
   { key: "submitted", label: "Submitted", statuses: [ACCOMMODATION_STATUS.SUBMITTED] },
+  { key: "capacity", label: "Capacity Check", statuses: [ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY] },
   {
     key: "review",
     label: "Recommendation & Approval",
@@ -60,14 +104,15 @@ export const STUDENT_STEPS = [
   { key: "approved", label: "Approved", statuses: [ACCOMMODATION_STATUS.CW_APPROVED] },
   {
     key: "payment",
-    label: "Payment",
+    label: "Payment & Hostel",
     statuses: [
       ACCOMMODATION_STATUS.PAYMENT_REQUESTED,
+      ACCOMMODATION_STATUS.PAYMENT_DEFERRED,
       ACCOMMODATION_STATUS.PAYMENT_SUBMITTED,
       ACCOMMODATION_STATUS.PAYMENT_VERIFIED,
+      ACCOMMODATION_STATUS.HOSTEL_ALLOTTED,
     ],
   },
-  { key: "allotted", label: "Allotment", statuses: [ACCOMMODATION_STATUS.HOSTEL_ALLOTTED] },
   {
     key: "stay",
     label: "Stay",

@@ -19,22 +19,45 @@ const LANE_PALETTE = [
 const S = ACCOMMODATION_STATUS
 const ALL = "__all"
 
+// A lane is normally one status; `match` covers queues that can't be expressed
+// that way — a deferred payment reaches the accountant after the booking has
+// already moved on, so its lane keys off the payment instead.
 const lanesFor = (user) => {
-  const l = (status, label) => ({ status, label })
-  if (user?.role === "Hostel Supervisor") return [l(S.HOSTEL_ALLOTTED, "Assign rooms"), l(S.ROOMS_ASSIGNED, "Assigned"), l(S.CHECKED_IN, "Checked in")]
+  const l = (status, label, match) => ({ status, label, match })
+  if (user?.role === "Hostel Supervisor") {
+    return [
+      l("__assign", "Assign rooms", (r) => [S.PAYMENT_VERIFIED, S.PAYMENT_DEFERRED, S.HOSTEL_ALLOTTED].includes(r.status)),
+      l(S.ROOMS_ASSIGNED, "Assigned"),
+      l(S.CHECKED_IN, "Checked in"),
+    ]
+  }
   if (user?.role === "Admin" && user.subRole === "Chief Warden") return [l(S.PENDING_CW_APPROVAL, "Awaiting you"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.CW_APPROVED, "Approved"), l(S.RETURNED_TO_STUDENT, "Returned")]
-  if (user?.role === "Admin" && user.subRole === "Chief Warden Office") return [l(S.CW_APPROVED, "Request payment"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.PAYMENT_VERIFIED, "Allot hostel"), l(S.HOSTEL_ALLOTTED, "Allotted")]
-  if (user?.role === "Admin" && user.subRole === "Accountant") return [l(S.PAYMENT_SUBMITTED, "Verify payment"), l(S.PAYMENT_VERIFIED, "Verified")]
-  return [l(S.PENDING_CW_APPROVAL, "In approval"), l(S.PAYMENT_SUBMITTED, "In payment"), l(S.HOSTEL_ALLOTTED, "Allotted")]
+  if (user?.role === "Admin" && user.subRole === "Chief Warden Office") {
+    return [
+      l(S.PENDING_CWO_CAPACITY, "Capacity check"),
+      l(S.CW_APPROVED, "Request payment"),
+      l(S.PENDING_FA_RECOMMENDATION, "FA pending"),
+      l("__awaitingPayment", "Awaiting payment", (r) => [S.PAYMENT_REQUESTED, S.PAYMENT_DEFERRED].includes(r.status)),
+    ]
+  }
+  if (user?.role === "Admin" && user.subRole === "Accountant") {
+    return [
+      l("__toVerify", "Verify payment", (r) => r.payment?.status === "Submitted"),
+      l("__verified", "Verified", (r) => r.payment?.status === "Verified"),
+    ]
+  }
+  return [l(S.PENDING_CWO_CAPACITY, "Capacity check"), l(S.PENDING_CW_APPROVAL, "In approval"), l(S.PAYMENT_SUBMITTED, "In payment")]
 }
 
 const subtitleFor = (user) => {
   if (user?.role === "Hostel Supervisor") return "Assign rooms to allotted guest bookings."
   if (user?.subRole === "Chief Warden") return "Review and approve guest accommodation requests."
-  if (user?.subRole === "Chief Warden Office") return "Issue payment requests and allot hostels."
+  if (user?.subRole === "Chief Warden Office") return "Check capacity, then set the amount and allot the hostel."
   if (user?.subRole === "Accountant") return "Verify guest accommodation payments."
   return "Manage guest accommodation requests."
 }
+
+const laneMatcher = (lane) => lane.match || ((r) => r.status === lane.status)
 
 const AccommodationStaffPage = () => {
   const { user } = useAuth()
@@ -64,9 +87,12 @@ const AccommodationStaffPage = () => {
 
   const counts = useMemo(() => {
     const map = {}
-    for (const r of allRequests) map[r.status] = (map[r.status] || 0) + 1
+    for (const lane of lanes) {
+      const matches = laneMatcher(lane)
+      map[lane.status] = allRequests.filter(matches).length
+    }
     return map
-  }, [allRequests])
+  }, [lanes, allRequests])
 
   const tabs = useMemo(
     () => [
@@ -87,7 +113,11 @@ const AccommodationStaffPage = () => {
     return cards
   }, [lanes, counts, allRequests.length])
 
-  const visible = useMemo(() => (filter === ALL ? allRequests : allRequests.filter((r) => r.status === filter)), [allRequests, filter])
+  const visible = useMemo(() => {
+    if (filter === ALL) return allRequests
+    const lane = lanes.find((l) => l.status === filter)
+    return allRequests.filter(lane ? laneMatcher(lane) : (r) => r.status === filter)
+  }, [allRequests, filter, lanes])
 
   const openDetail = async (row) => {
     setSelected(row)

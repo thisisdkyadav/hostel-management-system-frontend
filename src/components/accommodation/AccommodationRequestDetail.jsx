@@ -1,8 +1,14 @@
 import { useState } from "react"
-import { Button, Field, Input, Label, Modal, Surface, Text, useConfirm, VStack } from "hzero"
-import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2 } from "lucide-react"
+import { Button, DatePicker, Field, HStack, Input, Modal, Surface, Text, useConfirm, VStack } from "hzero"
+import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2, Wallet, Eye, Download } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
-import { ACCOMMODATION_STATUS } from "@/constants/accommodationStatus"
+import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
+import {
+  ACCOMMODATION_STATUS,
+  PAYMENT_MODE,
+  PAYMENT_STATUS,
+  describeExtension,
+} from "@/constants/accommodationStatus"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import { MetaBar, SectionCard, InfoRow, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
 
@@ -15,16 +21,31 @@ const uploadPaymentScreenshot = (file) => {
 const CANCELLABLE = [
   ACCOMMODATION_STATUS.DRAFT,
   ACCOMMODATION_STATUS.SUBMITTED,
+  ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY,
   ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION,
   ACCOMMODATION_STATUS.PENDING_CW_APPROVAL,
   ACCOMMODATION_STATUS.RETURNED_TO_STUDENT,
 ]
 
+// A deferred bill can be settled from room assignment onwards.
+const DEFERRED_PAYABLE = [
+  ACCOMMODATION_STATUS.ROOMS_ASSIGNED,
+  ACCOMMODATION_STATUS.CHECKED_IN,
+  ACCOMMODATION_STATUS.CHECKED_OUT,
+  ACCOMMODATION_STATUS.INVOICED,
+]
+
+const todayYmd = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
 const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResubmit }) => {
   const confirm = useConfirm()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
-  const [pay, setPay] = useState({ transactionId: "", screenshotFileRef: "" })
+  const [pay, setPay] = useState({ utr: "", paidAt: "", screenshotFileRef: "" })
+  const [showInvoice, setShowInvoice] = useState(false)
 
   if (!request) return null
   if (!open) return null
@@ -34,6 +55,20 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
   const lastReturn = [...(request.approvals || [])].reverse().find((a) => a.action === "request_modification" || a.action === "reject")
   const assignedRooms = request.assignedRooms || []
   const showAccommodation = Boolean(request.allottedHostelName) || assignedRooms.length > 0
+  const extension = describeExtension(request.stay)
+
+  // The bill is open either right after the payment request, or later on for a
+  // student who deferred it and whose rooms are now assigned.
+  const payment = request.payment || {}
+  const isDeferred = payment.mode === PAYMENT_MODE.LATER
+  const awaitingChoice = status === ACCOMMODATION_STATUS.PAYMENT_REQUESTED
+  const canSettleDeferred =
+    isDeferred &&
+    DEFERRED_PAYABLE.includes(status) &&
+    [PAYMENT_STATUS.DEFERRED, PAYMENT_STATUS.REJECTED].includes(payment.status)
+  const showPaymentForm = awaitingChoice || canSettleDeferred
+  const utrValid = /^\d{12}$/.test(pay.utr)
+  const payReady = utrValid && Boolean(pay.paidAt) && Boolean(pay.screenshotFileRef.trim())
 
   const act = async (fn) => {
     setBusy(true)
@@ -78,9 +113,10 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
           <VStack gap={4}>
             <SectionCard icon={BedDouble} title="Stay details" accentColor="var(--color-primary)">
               <VStack gap={2}>
-                <InfoRow label="Check-in" value={fmtDate(request.stay?.fromDate)} />
-                <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
+                <InfoRow label="Check-in" value={`${fmtDate(request.stay?.fromDate)} · ${request.stay?.checkInTime || "11:00"}`} />
+                <InfoRow label="Check-out" value={`${fmtDate(request.stay?.toDate)} · ${request.stay?.checkOutTime || "11:00"}`} />
                 <InfoRow label="Nights" value={request.nights || 0} />
+                {extension && <InfoRow label="Extension" value={extension} />}
                 <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
               </VStack>
             </SectionCard>
@@ -123,19 +159,39 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
               </SectionCard>
             )}
 
-            {status === ACCOMMODATION_STATUS.PAYMENT_REQUESTED && (
-              <SectionCard icon={CreditCard} title={`Pay ${money(request.payment?.amount)}`} accentColor="var(--color-primary)">
+            {showPaymentForm && (
+              <SectionCard icon={CreditCard} title={`Pay ${money(payment.amount)}`} accentColor="var(--color-primary)">
                 <VStack gap={3}>
-                  {request.payment?.paymentLink && (
-                    <Text as="a" size="sm" color="brand" style={{ wordBreak: "break-all" }} href={request.payment.paymentLink} target="_blank" rel="noreferrer">Open payment link / QR ↗</Text>
+                  {payment.paymentLink && (
+                    <Text as="a" size="sm" color="brand" style={{ wordBreak: "break-all" }} href={payment.paymentLink} target="_blank" rel="noreferrer">Open payment link / QR ↗</Text>
                   )}
-                  {request.payment?.remarks && (
+                  {payment.remarks && (
                     <Surface bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="muted" size="xs">
-                      <strong>Note:</strong> {request.payment.remarks}
+                      <strong>Note:</strong> {payment.remarks}
                     </Surface>
                   )}
-                  <Field label="Transaction ID / UTR" required>
-                    <Input value={pay.transactionId} onChange={(e) => setPay((p) => ({ ...p, transactionId: e.target.value }))} placeholder="Reference number" />
+                  {payment.status === PAYMENT_STATUS.REJECTED && payment.note && (
+                    <Surface bg="danger" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="danger-text" size="xs">
+                      <strong>Payment rejected:</strong> {payment.note}
+                    </Surface>
+                  )}
+
+                  <Field
+                    label="UTR"
+                    required
+                    help="The 12-digit numeric UTR / reference number of the transfer."
+                    error={pay.utr && !utrValid ? "UTR must be exactly 12 digits" : undefined}
+                  >
+                    <Input
+                      value={pay.utr}
+                      inputMode="numeric"
+                      maxLength={12}
+                      placeholder="12-digit number"
+                      onChange={(e) => setPay((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                    />
+                  </Field>
+                  <Field label="Date of payment" required>
+                    <DatePicker value={pay.paidAt} max={todayYmd()} onChange={(e) => setPay((p) => ({ ...p, paidAt: e.target.value }))} />
                   </Field>
                   <PdfUploadField
                     label="Payment screenshot"
@@ -151,25 +207,90 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     viewerSubtitle="Payment proof"
                     downloadFileName="payment-screenshot.png"
                   />
-                  <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !pay.screenshotFileRef.trim() || !pay.transactionId.trim()}>Submit payment</Button>
+
+                  <HStack gap={2} wrap>
+                    <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !payReady}>
+                      Pay now — submit proof
+                    </Button>
+                    {awaitingChoice && (
+                      <Button
+                        variant="outline"
+                        disabled={busy}
+                        onClick={async () => {
+                          if (await confirm({
+                            message: "Pay later? Your booking continues, and you can settle the bill any time once your rooms are assigned.",
+                            confirmText: "Pay later",
+                            cancelText: "Go back",
+                          })) {
+                            act(() => accommodationApi.deferPayment(requestId))
+                          }
+                        }}
+                      >
+                        Pay later
+                      </Button>
+                    )}
+                  </HStack>
+                  <Text size="xs" color="muted">All three fields are required before the accounts office can verify your payment.</Text>
                 </VStack>
               </SectionCard>
             )}
 
-            {status === ACCOMMODATION_STATUS.PAYMENT_SUBMITTED && (
+            {status === ACCOMMODATION_STATUS.PAYMENT_DEFERRED && (
+              <SectionCard icon={Wallet} title={`${money(payment.amount)} due`} accentColor="var(--color-warning)">
+                <Text size="sm" color="muted">
+                  You chose to pay later. Once the hostel supervisor assigns your rooms, the payment form opens here —
+                  your invoice is issued as soon as the accounts office verifies it.
+                </Text>
+              </SectionCard>
+            )}
+
+            {isDeferred && payment.status === PAYMENT_STATUS.VERIFIED && status !== ACCOMMODATION_STATUS.INVOICED && (
+              <SectionCard icon={Wallet} title="Payment settled" accentColor="var(--color-success)">
+                <InfoRow label="UTR" value={payment.utr || "—"} />
+                <InfoRow label="Paid on" value={fmtDate(payment.paidAt)} />
+              </SectionCard>
+            )}
+
+            {(status === ACCOMMODATION_STATUS.PAYMENT_SUBMITTED ||
+              (isDeferred && payment.status === PAYMENT_STATUS.SUBMITTED)) && (
               <SectionCard icon={Clock3} title="Awaiting verification" accentColor="var(--color-info)">
                 <Text size="sm" color="muted">The accounts office is checking your payment. You’ll be notified once it’s confirmed.</Text>
               </SectionCard>
             )}
 
-            {status === ACCOMMODATION_STATUS.INVOICED && request.invoice?.number && (
+            {request.invoice?.number && (
               <SectionCard icon={FileText} title={`Invoice ${request.invoice.number}`} accentColor="var(--color-success)">
-                <InfoRow label="Total" value={`${money(request.quote?.total)}${request.invoice.gstApplicable ? " (incl. GST)" : ""}`} strong />
+                <VStack gap={3}>
+                  <InfoRow label="Total" value={`${money(payment.amount || request.quote?.total)}${request.invoice.gstApplicable ? " (incl. GST)" : ""}`} strong />
+                  <InfoRow label="Issued" value={fmtDate(request.invoice.generatedAt)} />
+                  <HStack gap={2} wrap>
+                    <Button size="sm" variant="secondary" onClick={() => setShowInvoice(true)}>
+                      <Eye size={14} /> View invoice
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      as="a"
+                      href={accommodationApi.invoiceFileUrl(requestId, "attachment")}
+                    >
+                      <Download size={14} /> Download
+                    </Button>
+                  </HStack>
+                </VStack>
               </SectionCard>
             )}
           </VStack>
         </div>
       </VStack>
+
+      <PdfViewerModal
+        isOpen={showInvoice}
+        onClose={() => setShowInvoice(false)}
+        documentUrl={accommodationApi.invoiceFileUrl(requestId)}
+        title={`Invoice ${request.invoice?.number || ""}`}
+        subtitle="Accommodation invoice"
+        downloadFileName={`${String(request.invoice?.number || "invoice").replace(/[^\w-]+/g, "-")}.pdf`}
+      />
     </Modal>
   )
 }

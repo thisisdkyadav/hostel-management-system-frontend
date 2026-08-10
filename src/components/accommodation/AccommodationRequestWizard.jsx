@@ -3,6 +3,7 @@ import { Button, DatePicker, Field, Grid, HStack, IconButton, Input, Label, Moda
 import { Plus, Trash2 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { accommodationApi, studentApi } from "@/service"
+import { extensionHours, STANDARD_CHECK_TIME } from "@/constants/accommodationStatus"
 import { ChargesRows } from "./AccommodationKit"
 
 const MIN_LEAD_WORKING_DAYS = 2
@@ -34,6 +35,16 @@ const STEPS = [
 
 const emptyGuest = () => ({ name: "", gender: "", relation: "", aadharNumber: "" })
 
+const emptyStay = () => ({
+  fromDate: "",
+  toDate: "",
+  checkInTime: STANDARD_CHECK_TIME,
+  checkOutTime: STANDARD_CHECK_TIME,
+  purpose: "",
+})
+
+const TIME_RE = /^([01]\d|2[0-3]):([0-5]\d)$/
+
 const toDateInput = (d) => {
   if (!d) return ""
   try {
@@ -51,7 +62,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
   const [form, setForm] = useState({
     applicantPhone: "",
     guests: [emptyGuest()],
-    stay: { fromDate: "", toDate: "", purpose: "" },
+    stay: emptyStay(),
     permanentAddress: "",
     facultyAdvisorEmail: "",
   })
@@ -92,6 +103,8 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         stay: {
           fromDate: toDateInput(existingRequest.stay?.fromDate),
           toDate: toDateInput(existingRequest.stay?.toDate),
+          checkInTime: existingRequest.stay?.checkInTime || STANDARD_CHECK_TIME,
+          checkOutTime: existingRequest.stay?.checkOutTime || STANDARD_CHECK_TIME,
           purpose: existingRequest.stay?.purpose || "",
         },
         permanentAddress: existingRequest.permanentAddress || "",
@@ -101,7 +114,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       setForm({
         applicantPhone: user?.phone || "",
         guests: [emptyGuest()],
-        stay: { fromDate: "", toDate: "", purpose: "" },
+        stay: emptyStay(),
         permanentAddress: "",
         facultyAdvisorEmail: "",
       })
@@ -120,6 +133,13 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
 
   const setStay = (field, value) =>
     setForm((prev) => ({ ...prev, stay: { ...prev.stay, [field]: value } }))
+
+  // Hours outside the standard 11:00 window, described for the student.
+  const { earlyCheckInHours, lateCheckOutHours } = extensionHours(form.stay.checkInTime, form.stay.checkOutTime)
+  const extensionSummary = [
+    earlyCheckInHours > 0 ? `${earlyCheckInHours}h early check-in` : null,
+    lateCheckOutHours > 0 ? `${lateCheckOutHours}h late check-out` : null,
+  ].filter(Boolean).join(" · ")
 
   const fetchQuote = useCallback(async () => {
     setLoadingQuote(true)
@@ -150,6 +170,8 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       if (!form.stay.fromDate || !form.stay.toDate) return "Stay start and end dates are required"
       if (form.stay.fromDate < earliestStart) return `The earliest start date is ${earliestStart} (at least ${MIN_LEAD_WORKING_DAYS} working days from today)`
       if (new Date(form.stay.toDate) <= new Date(form.stay.fromDate)) return "End date must be after start date"
+      if (!TIME_RE.test(form.stay.checkInTime)) return "Enter a valid check-in time"
+      if (!TIME_RE.test(form.stay.checkOutTime)) return "Enter a valid check-out time"
       if (!form.stay.purpose.trim()) return "Purpose of visit is required"
     }
     return ""
@@ -254,13 +276,26 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         {step === 1 && (
           <VStack gap={4}>
             <Grid cols={2} gap={3}>
-              <Field label="From" required>
+              <Field label="Check-in date" required>
                 <DatePicker name="fromDate" value={form.stay.fromDate} min={earliestStart} onChange={(e) => setStay("fromDate", e.target.value)} />
               </Field>
-              <Field label="To" required>
+              <Field label="Check-in time" required>
+                <Input type="time" value={form.stay.checkInTime} onChange={(e) => setStay("checkInTime", e.target.value)} />
+              </Field>
+              <Field label="Check-out date" required>
                 <DatePicker name="toDate" value={form.stay.toDate} min={form.stay.fromDate || earliestStart} onChange={(e) => setStay("toDate", e.target.value)} />
               </Field>
+              <Field label="Check-out time" required>
+                <Input type="time" value={form.stay.checkOutTime} onChange={(e) => setStay("checkOutTime", e.target.value)} />
+              </Field>
             </Grid>
+
+            <Surface bg="secondary" padding={3} radius="md" size="xs" color="muted">
+              A guest day runs <strong>11:00 AM to 11:00 AM</strong>. {extensionSummary
+                ? <>You are requesting <strong>{extensionSummary}</strong> — the extra hours are free, but the hostel has to hold the room, so they need approval.</>
+                : <>Leave the times at 11:00 unless your guests arrive earlier or leave later.</>}
+            </Surface>
+
             <Text size="xs" color="muted" style={{ marginTop: "calc(-1 * var(--spacing-2))" }}>
               Requests must be raised at least {MIN_LEAD_WORKING_DAYS} working days in advance — earliest start date is {earliestStart}.
             </Text>
@@ -288,7 +323,10 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         {step === 2 && (
           <VStack gap={4}>
             <Surface bg="tertiary" padding={4} radius="lg" size="sm" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
-              <div><strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} → {form.stay.toDate || "—"}</div>
+              <div>
+                <strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} {form.stay.checkInTime} → {form.stay.toDate || "—"} {form.stay.checkOutTime}
+              </div>
+              {extensionSummary && <Text as="div" color="muted">Extension requested: {extensionSummary}</Text>}
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
             </Surface>
             {loadingQuote ? (
