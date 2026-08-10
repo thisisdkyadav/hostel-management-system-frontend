@@ -488,14 +488,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const fetchConfigData = async () => {
     setConfigLoading(true)
     try {
-      const [degreesResponse, departmentsResponse, studentGroupsResponse] = await Promise.all([
-        adminApi.getDegrees(),
-        adminApi.getDepartments(),
-        adminApi.getStudentGroups(),
-      ])
-      setValidDegrees(uniqueNonEmptyValues(degreesResponse.value || []))
-      setValidDepartments(uniqueNonEmptyValues(departmentsResponse.value || []))
-      setAvailableStudentGroups(uniqueNonEmptyValues(studentGroupsResponse.value || []))
+      const options = await studentApi.getTaxonomyOptions()
+      setValidDegrees(uniqueNonEmptyValues(options?.degrees || []))
+      setValidDepartments(uniqueNonEmptyValues(options?.departments || []))
+      setAvailableStudentGroups(uniqueNonEmptyValues(options?.studentGroups || []))
     } catch (err) {
       console.error("Error fetching config data:", err)
       toast.error("Failed to load degree, department, or group options. Some validations may not work properly.")

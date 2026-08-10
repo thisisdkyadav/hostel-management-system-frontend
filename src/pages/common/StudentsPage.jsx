@@ -13,17 +13,20 @@ import StudentTableView from "../../components/common/students/StudentTableView"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
+import useAuthz from "../../hooks/useAuthz"
 import { hostelApi, studentApi } from "../../service"
 import { buildCsvContent } from "@/utils/csvExport"
 
 /**
  * The students list, and the four bulk operations that hang off it.
  *
- * Import, bulk update and allocation are Admin-only; the list, the detail
- * modal and export are open to every role that can reach this route.
+ * Import and allocation are Admin-only. Bulk update also runs for Hostel
+ * Supervisors, who hold `cap.students.edit.personal` by default. The list, the
+ * detail modal and export are open to every role that can reach this route.
  */
 
 const isAdmin = (role) => role === "Admin"
+const BULK_UPDATE_ROLES = ["Admin", "Hostel Supervisor"]
 
 /** Columns that identify a record to the system rather than to a reader. */
 const INTERNAL_FIELDS = ["id", "userId", "allocationId"]
@@ -42,10 +45,13 @@ const countOf = (value) => (Array.isArray(value) ? value.length : 1)
 
 const StudentsPage = () => {
   const { user } = useAuth()
+  const { can } = useAuthz()
   const { hostelList = [] } = useGlobal()
   const { toast } = useToast()
 
   const canManage = isAdmin(user?.role)
+  const canBulkUpdate =
+    canManage || (BULK_UPDATE_ROLES.includes(user?.role) && can("cap.students.edit.personal"))
   const hostels = useMemo(() => (canManage ? hostelList : []), [hostelList, canManage])
 
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -82,7 +88,7 @@ const StudentsPage = () => {
 
   const handleUpdateStudents = async (updatedStudents, _tab, options = {}) => {
     const total = countOf(updatedStudents)
-    if (!canManage) return failure("You do not have permission to bulk update students.", total)
+    if (!canBulkUpdate) return failure("You do not have permission to bulk update students.", total)
 
     try {
       const response = await studentApi.updateStudents(updatedStudents, options)
@@ -208,9 +214,8 @@ const StudentsPage = () => {
         onBulkUpdate={() => setOpenModal("update")}
         onUpdateAllocations={() => setOpenModal("allocate")}
         onExport={() => setOpenModal("export")}
-        userRole={user?.role}
         canImport={canManage}
-        canBulkUpdate={canManage}
+        canBulkUpdate={canBulkUpdate}
         canUpdateAllocations={canManage}
       />
 
@@ -250,11 +255,14 @@ const StudentsPage = () => {
         {canManage && (
           <>
             <ImportStudentModal isOpen={openModal === "import"} onClose={close} onImport={handleImportStudents} />
-            <UpdateStudentsModal isOpen={openModal === "update"} onClose={close} onUpdate={handleUpdateStudents} />
             {openModal === "allocate" && (
               <UpdateAllocationModal isOpen onClose={close} onAllocate={handleUpdateAllocations} />
             )}
           </>
+        )}
+
+        {canBulkUpdate && (
+          <UpdateStudentsModal isOpen={openModal === "update"} onClose={close} onUpdate={handleUpdateStudents} />
         )}
 
         <StudentExportModal

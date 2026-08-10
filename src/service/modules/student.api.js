@@ -189,6 +189,15 @@ export const studentApi = {
   },
 
   /**
+   * Get the configured degrees, departments and student groups the bulk student
+   * tools validate against. Readable by every role that manages students, unlike
+   * /config/:key which is Settings-scoped and Admin-only.
+   */
+  getTaxonomyOptions: () => {
+    return apiClient.get("/students/profiles-admin/taxonomy/options").then(unwrapStandardResponse)
+  },
+
+  /**
    * Get batch list
    */
   getBatchList: (filters = {}) => {

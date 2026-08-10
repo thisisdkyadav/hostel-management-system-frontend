@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { GraduationCap } from "lucide-react"
 import { Field, FormField, Grid, Select, Text } from "hzero"
-import { adminApi, studentApi } from "../../../../../service"
+import { studentApi } from "../../../../../service"
 
 const AcademicInfoSection = ({ data, onChange }) => {
   const [validDegrees, setValidDegrees] = useState([])
@@ -45,10 +45,10 @@ const AcademicInfoSection = ({ data, onChange }) => {
   const fetchConfigData = async () => {
     setIsLoading(true)
     try {
-      const [degreesResponse, departmentsResponse] = await Promise.all([adminApi.getDegrees(), adminApi.getDepartments()])
+      const options = await studentApi.getTaxonomyOptions()
 
-      setValidDegrees(degreesResponse.value || [])
-      setValidDepartments(departmentsResponse.value || [])
+      setValidDegrees(options?.degrees || [])
+      setValidDepartments(options?.departments || [])
     } catch (err) {
       console.error("Error fetching academic configuration:", err)
     } finally {
