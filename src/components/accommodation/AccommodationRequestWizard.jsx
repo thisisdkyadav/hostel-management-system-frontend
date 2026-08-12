@@ -6,7 +6,7 @@ import { accommodationApi, studentApi } from "@/service"
 import { extensionHours, STANDARD_CHECK_TIME } from "@/constants/accommodationStatus"
 import { ChargesRows } from "./AccommodationKit"
 
-const MIN_LEAD_WORKING_DAYS = 2
+const MIN_LEAD_WORKING_DAYS = 3
 const pad2 = (n) => String(n).padStart(2, "0")
 const toYmd = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`
 // Add n working days (skip Sat/Sun) to today; used for the minimum stay start.
