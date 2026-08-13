@@ -49,7 +49,7 @@ const ProfilePage = () => {
           <Surface padding={6}>{renderProfile()}</Surface>
         </div>
 
-        {user ? <SignatureSettingsCard user={user} /> : null}
+        {user && user.role !== "Student" ? <SignatureSettingsCard user={user} /> : null}
       </div>
     </div>
   )
