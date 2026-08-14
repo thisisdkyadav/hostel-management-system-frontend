@@ -5,6 +5,7 @@ import {
   Ban,
   BedDouble,
   Building2,
+  CalendarRange,
   CircleCheck,
   Clock3,
   CreditCard,
@@ -25,6 +26,8 @@ import {
   ACCOMMODATION_STATUS,
   PAYMENT_MODE,
   PAYMENT_STATUS,
+  SCHEDULE_CHANGE_TYPE,
+  SCHEDULE_CHANGE_STATUS,
   describeExtension,
 } from "@/constants/accommodationStatus"
 import { MetaBar, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
@@ -56,6 +59,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [gstOptions, setGstOptions] = useState([])
   const [verify, setVerify] = useState({ action: "verify", note: "" })
   const [payEdit, setPayEdit] = useState({ utr: "", paidAt: "" })
+  const [schedDecision, setSchedDecision] = useState({ action: "approve", note: "", extraAmount: "" })
   const [settle, setSettle] = useState({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
   const [cancelReason, setCancelReason] = useState("")
   const [cancelling, setCancelling] = useState(false)
@@ -84,8 +88,26 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const showBypassFa = (isChiefWarden || isCWOffice) && status === ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION
   const showApprove = isChiefWarden && status === ACCOMMODATION_STATUS.PENDING_CW_APPROVAL
   const showIssuePayment = isCWOffice && status === ACCOMMODATION_STATUS.CW_APPROVED
+  const pendingSchedule = (request?.scheduleChanges || []).find((c) => c.status === SCHEDULE_CHANGE_STATUS.PENDING)
+  const showScheduleDecision = isCWOffice && Boolean(pendingSchedule)
+  const paymentStepPassed =
+    Number(payment.amount) > 0 ||
+    [
+      ACCOMMODATION_STATUS.PAYMENT_REQUESTED,
+      ACCOMMODATION_STATUS.PAYMENT_DEFERRED,
+      ACCOMMODATION_STATUS.PAYMENT_SUBMITTED,
+      ACCOMMODATION_STATUS.PAYMENT_VERIFIED,
+      ACCOMMODATION_STATUS.HOSTEL_ALLOTTED,
+      ACCOMMODATION_STATUS.ROOMS_ASSIGNED,
+      ACCOMMODATION_STATUS.CHECKED_IN,
+      ACCOMMODATION_STATUS.CHECKED_OUT,
+      ACCOMMODATION_STATUS.INVOICED,
+    ].includes(status)
+  const initialPaid = payment.status === PAYMENT_STATUS.VERIFIED
+  const submittedAdditional = (request?.additionalPayments || []).find((p) => p.status === PAYMENT_STATUS.SUBMITTED)
   // Accountant queue keys off payment.status so deferred bills still appear.
-  const showVerify = isAccountant && payment.status === PAYMENT_STATUS.SUBMITTED
+  const showVerify =
+    isAccountant && (payment.status === PAYMENT_STATUS.SUBMITTED || Boolean(submittedAdditional))
   // Rooms only after payment is verified (pay-later waits for payment too).
   const readyToAssign = [
     ACCOMMODATION_STATUS.PAYMENT_VERIFIED,
@@ -102,8 +124,8 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   // Fix typos in UTR / payment date after proof is in, or after the bill is paid.
   const showEditPaymentDetails =
     isAccountant &&
-    [PAYMENT_STATUS.SUBMITTED, PAYMENT_STATUS.VERIFIED].includes(payment.status) &&
-    !showVerify // verify form already includes these fields
+    payment.status === PAYMENT_STATUS.VERIFIED &&
+    !submittedAdditional
   // The student cannot withdraw after payment is requested, so the office holds
   // the release valve for the whole run up to invoicing.
   const canAdminCancel =
@@ -114,6 +136,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     showBypassFa ||
     showApprove ||
     showIssuePayment ||
+    showScheduleDecision ||
     showVerify ||
     showEditPaymentDetails ||
     showAssign ||
@@ -164,6 +187,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
       utr: request.payment?.utr || "",
       paidAt: toYmd(request.payment?.paidAt),
     })
+    setSchedDecision({ action: "approve", note: "", extraAmount: "" })
     setSettle({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
     setCancelReason("")
     setCancelling(false)
@@ -259,16 +283,38 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     guestCharges.every((c) => Number(c.price) > 0 && Number.isFinite(Number(c.gstPercentage)) && Number(c.gstPercentage) >= 0)
   const submitVerify = run(() => {
     if (verify.action === "reject" && !verify.note.trim()) throw new Error("Add a reason for rejecting the payment.")
-    if (verify.action === "verify") {
+    if (verify.action === "verify" && payment.status === PAYMENT_STATUS.SUBMITTED) {
       if (!/^\d{12}$/.test(payEdit.utr || "")) throw new Error("UTR must be exactly 12 digits.")
       if (!payEdit.paidAt) throw new Error("Payment date is required.")
     }
+    const addl = (request.additionalPayments || []).find((p) => p.status === PAYMENT_STATUS.SUBMITTED)
     return accommodationApi.verifyPayment(requestId, {
       action: verify.action,
       note: verify.note.trim(),
-      ...(verify.action === "verify"
+      ...(payment.status === PAYMENT_STATUS.SUBMITTED && verify.action === "verify"
         ? { utr: payEdit.utr.trim(), paidAt: payEdit.paidAt }
         : {}),
+      ...(payment.status !== PAYMENT_STATUS.SUBMITTED && addl
+        ? { additionalPaymentId: addl._id }
+        : {}),
+    })
+  })
+  const submitScheduleDecision = run(() => {
+    if (!pendingSchedule) throw new Error("No pending date-change request.")
+    if (schedDecision.action === "reject" && !schedDecision.note.trim()) {
+      throw new Error("Add a reason for rejecting.")
+    }
+    const extra = Number(schedDecision.extraAmount)
+    if (schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== "" && (Number.isNaN(extra) || extra < 0)) {
+      throw new Error("Extra amount is invalid.")
+    }
+    return accommodationApi.decideScheduleChange(requestId, pendingSchedule._id, {
+      action: schedDecision.action,
+      note: schedDecision.note.trim() || undefined,
+      extraAmount:
+        schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== ""
+          ? Number(schedDecision.extraAmount)
+          : 0,
     })
   })
   const submitPayEdit = run(() => {
@@ -405,6 +451,30 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <ChargesRows quote={request.quote} />
             </DetailSection>
 
+            {(request.scheduleChanges || []).length > 0 && (
+              <DetailSection title="Date changes" icon={CalendarRange}>
+                {(request.scheduleChanges || []).map((c) => (
+                  <InfoRow
+                    key={c._id || `${c.type}-${c.requestedAt}`}
+                    label={`${c.type === SCHEDULE_CHANGE_TYPE.POSTPONE ? "Postpone" : "Extend"} · ${c.status}`}
+                    value={`${fmtDate(c.requestedFromDate)} → ${fmtDate(c.requestedToDate)}${c.extraAmount ? ` · +${money(c.extraAmount)}` : ""}`}
+                  />
+                ))}
+              </DetailSection>
+            )}
+
+            {(request.additionalPayments || []).length > 0 && (
+              <DetailSection title="Additional payments" icon={Wallet}>
+                {(request.additionalPayments || []).map((p) => (
+                  <InfoRow
+                    key={p._id}
+                    label={`${p.label || "Extra"} · ${p.status}`}
+                    value={money(p.amount)}
+                  />
+                ))}
+              </DetailSection>
+            )}
+
             {request.payment?.screenshotFileRef && (
               <DetailSection
                 title="Payment proof"
@@ -527,6 +597,64 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               </DetailSection>
             )}
 
+            {showScheduleDecision && pendingSchedule && (
+              <DetailSection
+                title={
+                  pendingSchedule.type === SCHEDULE_CHANGE_TYPE.POSTPONE
+                    ? "Postponement request"
+                    : "Extension request"
+                }
+                icon={CalendarRange}
+                tone="primary"
+              >
+                <InfoRow
+                  label="Current dates"
+                  value={`${fmtDate(pendingSchedule.previousFromDate)} → ${fmtDate(pendingSchedule.previousToDate)}`}
+                />
+                <InfoRow
+                  label="Requested dates"
+                  value={`${fmtDate(pendingSchedule.requestedFromDate)} → ${fmtDate(pendingSchedule.requestedToDate)}`}
+                />
+                {pendingSchedule.reason && <InfoRow label="Student reason" value={pendingSchedule.reason} />}
+                <RadioGroup
+                  name="schedDecision"
+                  value={schedDecision.action}
+                  onChange={(e) => setSchedDecision((s) => ({ ...s, action: e.target.value }))}
+                >
+                  <RadioGroupItem value="approve" label="Approve" description="Apply the new stay dates." />
+                  <RadioGroupItem value="reject" label="Reject" description="Keep the current dates." />
+                </RadioGroup>
+                {schedDecision.action === "approve" && paymentStepPassed && (
+                  <Field
+                    label="Extra amount (optional)"
+                    help={
+                      initialPaid
+                        ? "Initial bill is already paid — this opens a second payment request for the student."
+                        : "Student has not finished paying yet — extra is added to the open bill so they pay once."
+                    }
+                  >
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={schedDecision.extraAmount}
+                      placeholder="0"
+                      onChange={(e) => setSchedDecision((s) => ({ ...s, extraAmount: e.target.value }))}
+                    />
+                  </Field>
+                )}
+                <Textarea
+                  value={schedDecision.note}
+                  onChange={(e) => setSchedDecision((s) => ({ ...s, note: e.target.value }))}
+                  rows={2}
+                  placeholder={schedDecision.action === "reject" ? "Reason (required)" : "Note (optional)"}
+                />
+                <Button onClick={submitScheduleDecision} loading={busy} disabled={busy}>
+                  {schedDecision.action === "approve" ? "Approve date change" : "Reject date change"}
+                </Button>
+              </DetailSection>
+            )}
+
             {showIssuePayment && (
               <DetailSection title="Request payment & allot hostel" icon={CreditCard} tone="primary">
                 <Text size="sm" color="muted">
@@ -622,32 +750,53 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             )}
 
             {showVerify && (
-              <DetailSection title="Verify payment" icon={BadgeCheck} tone="primary">
-                <Text size="sm" color="muted">
-                  Confirm the UTR and payment date match the proof. You can correct them here if the student mistyped.
-                </Text>
-                <Field
-                  label="UTR"
-                  required={verify.action === "verify"}
-                  help="12-digit transfer reference."
-                  error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
-                >
-                  <Input
-                    value={payEdit.utr}
-                    inputMode="numeric"
-                    maxLength={12}
-                    onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
-                    placeholder="12-digit UTR"
-                  />
-                </Field>
-                <Field label="Payment date" required={verify.action === "verify"}>
-                  <Input
-                    type="date"
-                    value={payEdit.paidAt}
-                    max={todayYmd()}
-                    onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
-                  />
-                </Field>
+              <DetailSection
+                title={
+                  payment.status === PAYMENT_STATUS.SUBMITTED
+                    ? "Verify payment"
+                    : `Verify ${submittedAdditional?.label || "additional payment"}`
+                }
+                icon={BadgeCheck}
+                tone="primary"
+              >
+                {payment.status === PAYMENT_STATUS.SUBMITTED ? (
+                  <>
+                    <Text size="sm" color="muted">
+                      Confirm the UTR and payment date match the proof. You can correct them here if the student mistyped.
+                    </Text>
+                    <InfoRow label="Amount" value={money(payment.amount)} />
+                    <Field
+                      label="UTR"
+                      required={verify.action === "verify"}
+                      help="12-digit transfer reference."
+                      error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
+                    >
+                      <Input
+                        value={payEdit.utr}
+                        inputMode="numeric"
+                        maxLength={12}
+                        onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                        placeholder="12-digit UTR"
+                      />
+                    </Field>
+                    <Field label="Payment date" required={verify.action === "verify"}>
+                      <Input
+                        type="date"
+                        value={payEdit.paidAt}
+                        max={todayYmd()}
+                        onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
+                      />
+                    </Field>
+                  </>
+                ) : (
+                  <>
+                    <Text size="sm" color="muted">
+                      Additional charge after a date change. Amount {money(submittedAdditional?.amount)}.
+                    </Text>
+                    <InfoRow label="UTR" value={submittedAdditional?.utr || "—"} />
+                    <InfoRow label="Paid on" value={fmtDate(submittedAdditional?.paidAt)} />
+                  </>
+                )}
                 <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
                   <RadioGroupItem value="verify" label="Verify" description="The amount matches." />
                   <RadioGroupItem value="reject" label="Reject" description="Sends the request back to the student." />
@@ -658,7 +807,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   loading={busy}
                   disabled={
                     busy ||
-                    (verify.action === "verify" && (!payEditUtrValid || !payEdit.utr || !payEdit.paidAt))
+                    (verify.action === "verify" &&
+                      payment.status === PAYMENT_STATUS.SUBMITTED &&
+                      (!payEditUtrValid || !payEdit.utr || !payEdit.paidAt))
                   }
                 >
                   Submit

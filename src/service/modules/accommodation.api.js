@@ -42,6 +42,19 @@ export const accommodationApi = {
   /** Student opts to pay later (rooms allocated only after payment). */
   deferPayment: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/defer-payment`),
 
+  /**
+   * Student postpone / extend stay dates.
+   * body: { type: "postpone"|"extend", fromDate?, toDate, reason }
+   */
+  requestScheduleChange: (requestId, body) =>
+    apiClient.post(`/accommodation/requests/${requestId}/schedule-change`, body),
+
+  /**
+   * CWO decide postpone/extend. body: { action: "approve"|"reject", note?, extraAmount? }
+   */
+  decideScheduleChange: (requestId, changeId, body) =>
+    apiClient.post(`/accommodation/requests/${requestId}/schedule-change/${changeId}/decision`, body),
+
   // ---- Chief Warden Office (capacity screening) ----
   /** body: { action: "approve" | "request_modification" | "reject", reason? } */
   capacityDecision: (requestId, body) =>

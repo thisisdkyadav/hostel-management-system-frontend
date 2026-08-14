@@ -38,11 +38,22 @@ const lanesFor = (user) => {
       l(S.CW_APPROVED, "Request payment"),
       l(S.PENDING_FA_RECOMMENDATION, "FA pending"),
       l("__awaitingPayment", "Awaiting payment", (r) => [S.PAYMENT_REQUESTED, S.PAYMENT_DEFERRED].includes(r.status)),
+      l(
+        "__dateChange",
+        "Date changes",
+        (r) => (r.scheduleChanges || []).some((c) => c.status === "pending")
+      ),
     ]
   }
   if (user?.role === "Admin" && user.subRole === "Accountant") {
     return [
-      l("__toVerify", "Verify payment", (r) => r.payment?.status === "Submitted"),
+      l(
+        "__toVerify",
+        "Verify payment",
+        (r) =>
+          r.payment?.status === "Submitted" ||
+          (r.additionalPayments || []).some((p) => p.status === "Submitted")
+      ),
       l("__verified", "Verified", (r) => r.payment?.status === "Verified"),
     ]
   }
@@ -52,8 +63,10 @@ const lanesFor = (user) => {
 const subtitleFor = (user) => {
   if (user?.role === "Hostel Supervisor") return "Assign rooms to allotted guest bookings."
   if (user?.subRole === "Chief Warden") return "Review and approve guest accommodation requests."
-  if (user?.subRole === "Chief Warden Office") return "Check capacity, then set the amount and allot the hostel."
-  if (user?.subRole === "Accountant") return "Verify guest accommodation payments."
+  if (user?.subRole === "Chief Warden Office") {
+    return "Check capacity, set amount, allot hostels, and review postponement/extension requests."
+  }
+  if (user?.subRole === "Accountant") return "Verify guest accommodation payments (including extension charges)."
   return "Manage guest accommodation requests."
 }
 

@@ -35,6 +35,24 @@ export const PAYMENT_STATUS = {
   REJECTED: "Rejected",
 }
 
+/** Stay date-change requests (student → Chief Warden Office). */
+export const SCHEDULE_CHANGE_TYPE = {
+  POSTPONE: "postpone",
+  EXTEND: "extend",
+}
+
+export const SCHEDULE_CHANGE_STATUS = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+}
+
+/** Max requests of each kind per booking. */
+export const SCHEDULE_LIMITS = {
+  postpone: 1,
+  extend: 2,
+}
+
 // Guest days run 11:00 → 11:00; outside that is a requested extension.
 export const STANDARD_CHECK_TIME = "11:00"
 const STANDARD_CHECK_HOUR = 11
