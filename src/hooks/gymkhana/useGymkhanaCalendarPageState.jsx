@@ -235,11 +235,14 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   // The list reads as three sections by when an event happens. Built here so
   // "now" is fixed once per change to the list rather than per render.
   const eventTimelineSections = useMemo(() => buildEventTimelineSections(filteredEvents), [filteredEvents])
+  // Fixed percentage widths so the three timeline tables (this month / later /
+  // past) share the same column geometry regardless of cell content length.
   const eventTableColumns = useMemo(
     () => [
       {
         key: "title",
         header: "Event",
+        width: "40%",
         render: (event) => (
           <Text as="span" weight="medium">{event.title}</Text>
         ),
@@ -247,6 +250,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         key: "category",
         header: "Category",
+        width: "18%",
         render: (event) => (
           <Badge style={badgeStyleForCategory(event.category)}>
             {categoryLabels[event.category] || event.category}
@@ -256,11 +260,14 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         key: "dateRange",
         header: "Date Range",
+        width: "27%",
         render: (event) => formatDateRange(event.startDate, event.endDate),
       },
       {
         key: "estimatedBudget",
         header: "Budget",
+        width: "15%",
+        align: "right",
         render: (event) => formatINR(event.estimatedBudget),
       },
     ],

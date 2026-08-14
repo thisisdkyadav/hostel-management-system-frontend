@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { AlertTriangle, ClipboardList } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Button, Field, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
+import { Button, Field, Input, Modal, Select, Text, useToast, VStack } from "hzero"
+import { COMPLAINT_CATEGORIES } from "../../constants/complaintConstants"
 
 const ComplaintForm = ({ isOpen, setIsOpen }) => {
   const { toast } = useToast()
@@ -86,14 +87,15 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           )}
 
           <Field label="Category" color="secondary" spacing={2}>
-            <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<ClipboardList size="1em" />} options={[
-              { value: "Plumbing", label: "Plumbing" },
-              { value: "Electrical", label: "Electrical" },
-              { value: "Internet", label: "Internet" },
-              { value: "Cleanliness", label: "Cleanliness" },
-              { value: "Civil", label: "Civil" },
-              { value: "Other", label: "Other" }
-            ]} required />
+            <Select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Select Category"
+              icon={<ClipboardList size="1em" />}
+              options={COMPLAINT_CATEGORIES.map((option) => ({ value: option, label: option }))}
+              required
+            />
           </Field>
         </VStack>
 

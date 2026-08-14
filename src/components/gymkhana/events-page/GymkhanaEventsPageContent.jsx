@@ -795,6 +795,7 @@ export default function GymkhanaEventsPageContent({
                 columns={eventTableColumns}
                 loading
                 emptyMessage="No events available"
+                className="gymkhana-event-timeline-table"
               />
             ) : !calendar ? null : filteredEvents.length === 0 ? (
               <EmptyState
@@ -819,7 +820,6 @@ export default function GymkhanaEventsPageContent({
                     <Panel
                       key={section.key}
                       title={section.title}
-                      subtitle={section.subtitle}
                       icon={SECTION_ICONS[section.key]}
                       accent={section.tone}
                       count={section.events.length}
@@ -830,6 +830,8 @@ export default function GymkhanaEventsPageContent({
                         columns={eventTableColumns}
                         onRowClick={handleEventRowClick}
                         getRowId={getEventRowId}
+                        className="gymkhana-event-timeline-table"
+                        style={{ width: "100%" }}
                       />
                     </Panel>
                   ))}

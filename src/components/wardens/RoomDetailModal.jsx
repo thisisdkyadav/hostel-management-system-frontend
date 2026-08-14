@@ -24,6 +24,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   // Only "Active" rooms are operational; every other status is out of service.
   const isActive = isRoomActive(room.status)
   const isAdmin = user.role === "Admin"
+  // Admin or Hostel Supervisor can add/remove students; room active/inactive toggle stays Admin-only.
+  const canManageAllocations = isAdmin || user.role === "Hostel Supervisor"
   const status = occupancyBadge(room, isActive)
 
   const removeStudent = async (allocationId) => {
@@ -110,7 +112,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             title="Allocated students"
             icon={Users}
             plain
-            actions={isAdmin && isActive && room.currentOccupancy < room.capacity ? allocateButton("success", "sm") : undefined}
+            actions={canManageAllocations && isActive && room.currentOccupancy < room.capacity ? allocateButton("success", "sm") : undefined}
           >
             {!isActive ? (
               <EmptyState
@@ -126,7 +128,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                     <Table.Head className="hidden sm:table-cell">Roll number</Table.Head>
                     <Table.Head className="hidden lg:table-cell">Bed</Table.Head>
                     <Table.Head className="hidden md:table-cell">Department</Table.Head>
-                    {isAdmin && <Table.Head align="right">Action</Table.Head>}
+                    {canManageAllocations && <Table.Head align="right">Action</Table.Head>}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -151,7 +153,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                       <Table.Cell className="hidden sm:table-cell">{student.rollNumber}</Table.Cell>
                       <Table.Cell className="hidden lg:table-cell">{student.bedNumber}</Table.Cell>
                       <Table.Cell className="hidden md:table-cell">{student.department}</Table.Cell>
-                      {isAdmin && (
+                      {canManageAllocations && (
                         <Table.Cell align="right">
                           <Button
                             onClick={() => removeStudent(student.allocationId)}
@@ -173,7 +175,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 icon={User}
                 title="No students allocated"
                 message="This room is empty."
-                action={room.capacity > 0 ? allocateButton("primary", "md") : undefined}
+                action={canManageAllocations && room.capacity > 0 ? allocateButton("primary", "md") : undefined}
               />
             )}
           </DetailSection>

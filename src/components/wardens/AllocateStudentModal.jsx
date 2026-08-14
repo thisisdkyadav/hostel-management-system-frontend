@@ -67,10 +67,13 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
       setAllocating(true)
       setError(null)
 
+      const hostelId = room.hostel?._id || room.hostel?.id || room.hostel
+      const unitId = room.unit?._id || room.unit?.id || room.unit
+
       const response = await hostelApi.allocateRoom({
         roomId: room.id,
-        hostelId: room.hostel,
-        unitId: room.unit,
+        hostelId,
+        unitId,
         studentId: selectedStudent.id,
         userId: selectedStudent.userId,
         bedNumber: selectedBed,
@@ -82,7 +85,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         setError(response.message || "Failed to allocate room")
       }
     } catch (err) {
-      setError("An error occurred while allocating the room. Please try again.")
+      setError(err?.message || "An error occurred while allocating the room. Please try again.")
       console.error("Error allocating room:", err)
     } finally {
       setAllocating(false)

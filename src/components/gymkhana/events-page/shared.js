@@ -313,8 +313,6 @@ export const formatDateRange = (startDate, endDate) => {
 
 export const EVENT_TIMELINE_SECTIONS = ["current", "upcoming", "past"]
 
-const monthName = (date) => date.toLocaleString("en-IN", { month: "long" })
-
 /**
  * Split events into the three sections the list shows, by when they happen.
  *
@@ -381,34 +379,27 @@ export const partitionEventsByTimeline = (events = [], now = new Date()) => {
 
 /**
  * The three sections ready to render, headings and all.
- *
- * The labels name months, so they are built from the same `now` that did the
- * splitting — computed apart, a page open across midnight on the 31st could
- * say "before August ends" over a list already split on September.
+ * Partition uses `now`; pass the same clock for split + labels if either changes later.
  */
 export const buildEventTimelineSections = (events = [], now = new Date()) => {
   const sections = partitionEventsByTimeline(events, now)
-  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
 
   return [
     {
       key: "current",
       title: "This month",
-      subtitle: `Running now, or starting before ${monthName(now)} ends`,
       tone: "primary",
       events: sections.current,
     },
     {
       key: "upcoming",
       title: "Later",
-      subtitle: `Scheduled from ${monthName(nextMonth)} onwards`,
       tone: "info",
       events: sections.upcoming,
     },
     {
       key: "past",
       title: "Past",
-      subtitle: "Finished before today",
       tone: "neutral",
       events: sections.past,
     },

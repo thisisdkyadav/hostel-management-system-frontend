@@ -2,9 +2,18 @@ import React, { useState } from "react"
 import { Pencil } from "lucide-react"
 import { Button, Modal, Select, Text } from "hzero"
 import { complaintApi } from "../../service"
+import { useAuth } from "../../contexts/AuthProvider"
+import {
+  COMPLAINT_CATEGORIES,
+  WHO_CAN_CHANGE_COMPLAINT_CATEGORY,
+} from "../../constants/complaintConstants"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
+  const { user } = useAuth()
+  const canChangeCategory = WHO_CAN_CHANGE_COMPLAINT_CATEGORY.includes(user?.role)
+
   const [status, setStatus] = useState(complaint?.status || "")
+  const [category, setCategory] = useState(complaint?.category || "")
   const [resolutionNotes, setResolutionNotes] = useState(complaint?.resolutionNotes || "")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
@@ -22,6 +31,11 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
         await complaintApi.updateStatus(complaint.id, status)
       }
 
+      // Update category if allowed and changed
+      if (canChangeCategory && category && category !== complaint.category) {
+        await complaintApi.updateCategory(complaint.id, category)
+      }
+
       // Update resolution notes if changed
       if (resolutionNotes !== complaint.resolutionNotes) {
         await complaintApi.updateComplaintResolutionNotes(complaint.id, resolutionNotes)
@@ -30,12 +44,13 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
       onUpdate({
         ...complaint,
         status,
+        ...(canChangeCategory ? { category } : {}),
         resolutionNotes,
         lastUpdated: new Date().toISOString(),
       })
       onClose()
     } catch (err) {
-      setError("Failed to update complaint. Please try again.")
+      setError(err?.message || "Failed to update complaint. Please try again.")
       console.error("Error updating complaint:", err)
     } finally {
       setIsSubmitting(false)
@@ -60,6 +75,21 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
           </Text>
           <Select id="status" value={status} onChange={(e) => setStatus(e.target.value)} options={statusOptions.map((option) => ({ value: option, label: option }))} required />
         </div>
+
+        {canChangeCategory && (
+          <div>
+            <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="category" className="block">
+              Category
+            </Text>
+            <Select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              options={COMPLAINT_CATEGORIES.map((option) => ({ value: option, label: option }))}
+              required
+            />
+          </div>
+        )}
 
         <div>
           <Text as="label" size="sm" weight="medium" color="secondary" style={{ marginBottom: 'var(--spacing-1)' }} htmlFor="resolutionNotes" className="block">

@@ -346,3 +346,13 @@ body {
 .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
+
+/* Gymkhana list view: keep column widths identical across the three timeline tables. */
+.gymkhana-event-timeline-table .hz-table {
+  table-layout: fixed;
+}
+
+.gymkhana-event-timeline-table .hz-table-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

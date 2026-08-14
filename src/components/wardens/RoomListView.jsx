@@ -6,6 +6,7 @@ import { isRoomActive } from "@/constants/roomStatus"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
+  const canManageAllocations = user?.role === "Admin" || user?.role === "Hostel Supervisor"
 
   const columns = [
     {
@@ -93,7 +94,7 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       render: (room) => (
         <HStack gap="var(--gap-sm)" align="center" justify="end">
           <Button onClick={(e) => { e.stopPropagation(); onRoomClick(room); }} variant="ghost" size="sm" aria-label="View details"><FaEye /></Button>
-          {["Admin"].includes(user.role) && isRoomActive(room.status) && room.currentOccupancy < room.capacity && (
+          {canManageAllocations && isRoomActive(room.status) && room.currentOccupancy < room.capacity && (
             <Button onClick={(e) => { e.stopPropagation(); onAllocateClick(room); }} variant="ghost" size="sm" aria-label="Allocate student"><FaUserPlus /></Button>
           )}
         </HStack>

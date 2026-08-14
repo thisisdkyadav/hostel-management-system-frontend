@@ -10,6 +10,7 @@ import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import PrintComplaints from "../../components/maintenance/PrintComplaints"
+import { COMPLAINT_CATEGORIES } from "../../constants/complaintConstants"
 
 const MAINTENANCE_STATUS_TABS = [
   { label: "All", value: "all", color: "primary" },
@@ -22,7 +23,7 @@ const MaintenancePage = () => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const hostels = ["Admin", "Maintenance Staff"].includes(user?.role) ? hostelList : []
-  const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
+  const categories = COMPLAINT_CATEGORIES
 
   const [filters, setFilters] = useState({
     status: "all",

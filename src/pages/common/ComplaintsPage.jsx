@@ -10,7 +10,7 @@ import ComplaintForm from "../../components/complaints/ComplaintForm"
 import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
-import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
+import { COMPLAINT_CATEGORIES, WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import useAuthz from "../../hooks/useAuthz"
 import { Page, Pagination, Text } from "hzero"
 import PageFooter from "../../components/common/PageFooter"
@@ -52,7 +52,7 @@ const ComplaintsPage = () => {
     )
     return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
   }, [constrainedHostelIds, hostelList, user?.role])
-  const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
+  const categories = COMPLAINT_CATEGORIES
   const canViewComplaints = true
   const canCreateComplaint = WHO_CAN_CREATE_COMPLAINT.includes(user?.role)
 

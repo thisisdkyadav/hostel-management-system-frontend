@@ -33,6 +33,15 @@ export const complaintApi = {
   },
 
   /**
+   * Update complaint category (type)
+   * @param {string} complaintId - Complaint ID
+   * @param {string} category - New category
+   */
+  updateCategory: (complaintId, category) => {
+    return apiClient.put(`/complaint/${complaintId}/category`, { category })
+  },
+
+  /**
    * Get complaint statistics
    * @param {Object} query - Query parameters
    */
