@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Check, FileDown, FileUp, Info, Keyboard, LoaderCircle, Trash2, TriangleAlert,
   Upload, X,
@@ -10,18 +10,41 @@ import StudentDetailModal from "./StudentDetailModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { hostelApi, studentApi } from "../../../service"
 import { Button, Field, FileInput, Grid, Heading, HStack, Input, Label, Modal, Select, Surface, Text, useToast, VStack } from "hzero"
+import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
+
+const ALLOCATION_MODE_UPDATE = "update"
+const ALLOCATION_MODE_REPLACE = "replace"
+
+const ALLOCATION_MODE_OPTIONS = [
+  {
+    value: ALLOCATION_MODE_UPDATE,
+    label: "Update listed students",
+    description: "Only change students in the upload. Other occupants stay put.",
+  },
+  {
+    value: ALLOCATION_MODE_REPLACE,
+    label: "Replace all hostel allocations",
+    description: "Clear every allocation in the selected hostel, then assign only this list.",
+  },
+]
 
 const createManualRowId = () => `allocation-row-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
 
-const createEmptyManualRow = () => ({
+const normalizeHostelId = (value) => {
+  if (!value) return ""
+  if (typeof value === "string") return value
+  return value?.toString?.() || ""
+}
+
+const createEmptyManualRow = (defaultHostel = null) => ({
   id: createManualRowId(),
   rollNumber: "",
   student: null,
   studentLookupState: "idle",
   studentError: "",
-  hostelId: "",
-  hostelType: "",
+  hostelId: defaultHostel?._id ? normalizeHostelId(defaultHostel._id) : "",
+  hostelType: defaultHostel?.type || "",
   unit: "",
   unitId: "",
   unitError: "",
@@ -35,15 +58,30 @@ const createEmptyManualRow = () => ({
 const normalizeRollNumber = (value) => String(value || "").trim().toUpperCase()
 const normalizeLookupValue = (value) => String(value || "").trim().toLowerCase()
 
+/**
+ * When restrictStudentsToHostels is on, only unallocated students or students
+ * already in an allowed hostel may be assigned. Anyone allocated elsewhere is
+ * rejected with a clear message for the operator.
+ */
+const getStudentAllocationScopeError = (student, allowedHostelIds, restrictStudentsToHostels) => {
+  if (!restrictStudentsToHostels) return ""
+  const currentHostelId = normalizeHostelId(student?.currentAllocation?.hostelId)
+  if (!currentHostelId) return ""
+  if (allowedHostelIds.has(currentHostelId)) return ""
+  const hostelName = student?.currentAllocation?.hostelName || "another hostel"
+  return `Student is allocated in ${hostelName} and cannot be reassigned here`
+}
+
+// Hostel may be pre-filled for a locked single-hostel scope; blank means the
+// operator has not entered any student/room data yet.
 const isManualRowBlank = (row = {}) => (
   !row.rollNumber
-  && !row.hostelId
   && !row.unit
   && !row.roomId
   && !row.bedNumber
 )
 
-const withTrailingBlankManualRow = (rows = []) => {
+const withTrailingBlankManualRow = (rows = [], defaultHostel = null) => {
   const nextRows = [...rows]
 
   while (
@@ -55,7 +93,7 @@ const withTrailingBlankManualRow = (rows = []) => {
   }
 
   if (nextRows.length === 0 || !isManualRowBlank(nextRows[nextRows.length - 1])) {
-    nextRows.push(createEmptyManualRow())
+    nextRows.push(createEmptyManualRow(defaultHostel))
   }
 
   return nextRows
@@ -109,14 +147,33 @@ const groupAllocationsByHostel = (rows = []) => {
   }))
 }
 
-const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
+const UpdateAllocationModal = ({
+  isOpen,
+  onClose,
+  onAllocate,
+  hostels,
+  restrictStudentsToHostels = false,
+}) => {
   const { toast } = useToast()
   const { hostelList = [] } = useGlobal()
+  // Parent can pass a narrowed list (e.g. supervisor active hostel only).
+  const availableHostels = useMemo(() => {
+    const source = Array.isArray(hostels) ? hostels : hostelList
+    return (source || []).filter(Boolean)
+  }, [hostels, hostelList])
+  const allowedHostelIds = useMemo(
+    () => new Set(availableHostels.map((hostel) => normalizeHostelId(hostel._id)).filter(Boolean)),
+    [availableHostels]
+  )
+  const defaultHostel = availableHostels.length === 1 ? availableHostels[0] : null
+  const hostelSelectLocked = availableHostels.length === 1
 
   const [activeTab, setActiveTab] = useState("csv")
   const [selectedHostel, setSelectedHostel] = useState(null)
-  const hostelId = selectedHostel?._id || null
+  const hostelId = selectedHostel?._id ? normalizeHostelId(selectedHostel._id) : null
   const hostelType = selectedHostel?.type || null
+  const [allocationMode, setAllocationMode] = useState(ALLOCATION_MODE_UPDATE)
+  const isReplaceMode = allocationMode === ALLOCATION_MODE_REPLACE
 
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -161,23 +218,24 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     [nonBlankManualRows]
   )
 
-  const resetCsvState = () => {
-    setSelectedHostel(null)
+  const resetCsvState = (nextDefaultHostel = defaultHostel) => {
+    setSelectedHostel(nextDefaultHostel || null)
     setCsvFile(null)
     setParsedData([])
     setStep(1)
   }
 
-  const resetManualState = () => {
-    setManualRows([createEmptyManualRow()])
+  const resetManualState = (nextDefaultHostel = defaultHostel) => {
+    setManualRows([createEmptyManualRow(nextDefaultHostel)])
     setUnitsByHostelId({})
     setRoomsByCacheKey({})
   }
 
   const resetAllState = () => {
     setActiveTab("csv")
-    resetCsvState()
-    resetManualState()
+    setAllocationMode(ALLOCATION_MODE_UPDATE)
+    resetCsvState(defaultHostel)
+    resetManualState(defaultHostel)
     setError("")
     setIsLoading(false)
     setIsAllocating(false)
@@ -185,13 +243,62 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     setSelectedStudent(null)
   }
 
+  const renderAllocationModePicker = () => (
+    <VStack gap={2}>
+      <Field label="Allocation mode" spacing={1}>
+        <ToggleButtonGroup
+          options={ALLOCATION_MODE_OPTIONS.map(({ value, label }) => ({ value, label }))}
+          value={allocationMode}
+          onChange={setAllocationMode}
+          fullWidth
+        />
+      </Field>
+      <Text size="sm" color="muted">
+        {ALLOCATION_MODE_OPTIONS.find((option) => option.value === allocationMode)?.description}
+      </Text>
+      {isReplaceMode && (
+        <Surface
+          bg="warning"
+          padding="var(--spacing-2) var(--spacing-3)"
+          radius="lg"
+          color="warning-text"
+          size="sm"
+          style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}
+        >
+          <TriangleAlert size={16} style={{ marginTop: "var(--spacing-0-5)", flexShrink: 0 }} />
+          <span>
+            Replace mode removes <strong>all current allocations in the selected hostel</strong>, then
+            assigns only the students in this list. Anyone not listed will be left unallocated in that hostel.
+          </span>
+        </Surface>
+      )}
+    </VStack>
+  )
+
+  // Lock / preselect when the caller only exposed one hostel (supervisor case).
+  useEffect(() => {
+    if (!isOpen) return
+    if (defaultHostel) {
+      setSelectedHostel(defaultHostel)
+      setManualRows((current) => {
+        if (current.length === 1 && isManualRowBlank(current[0])) {
+          return [createEmptyManualRow(defaultHostel)]
+        }
+        return current
+      })
+    }
+  }, [isOpen, defaultHostel])
+
   const handleClose = () => {
     resetAllState()
     onClose()
   }
 
   const updateManualRows = (updater) => {
-    setManualRows((currentRows) => withTrailingBlankManualRow(typeof updater === "function" ? updater(currentRows) : updater))
+    setManualRows((currentRows) => withTrailingBlankManualRow(
+      typeof updater === "function" ? updater(currentRows) : updater,
+      defaultHostel
+    ))
   }
 
   const updateManualRow = (rowId, updater) => {
@@ -242,8 +349,11 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   }
 
   const handleHostelChange = (event) => {
-    const nextHostelId = event.target.value
-    const nextSelectedHostel = hostelList.find((hostel) => hostel._id === nextHostelId) || null
+    if (hostelSelectLocked) return
+    const nextHostelId = normalizeHostelId(event.target.value)
+    const nextSelectedHostel = availableHostels.find(
+      (hostel) => normalizeHostelId(hostel._id) === nextHostelId
+    ) || null
     setSelectedHostel(nextSelectedHostel)
     setError("")
   }
@@ -394,8 +504,14 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     setError("")
 
     try {
-      const result = await onAllocate(parsedData, hostelId)
+      // Parent owns success toast/close for CSV (non-silent). Surface partial
+      // errors here so the preview stays open for review.
+      const result = await onAllocate(parsedData, hostelId, { mode: allocationMode })
       if (result?.success) {
+        if (Array.isArray(result.errors) && result.errors.length > 0) {
+          setError(`Some allocations could not be completed:\n${result.errors.map((item) => `${item.rollNumber || "Unknown"}: ${item.message}`).join("\n")}`)
+          return
+        }
         handleClose()
       } else if (result?.message) {
         setError(result.message)
@@ -421,10 +537,18 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     }
 
     if (field === "hostelId") {
-      const nextHostel = hostelList.find((hostel) => hostel._id === value) || null
+      if (hostelSelectLocked) return
+      const nextHostelId = normalizeHostelId(value)
+      if (!allowedHostelIds.has(nextHostelId)) {
+        setError("You can only allocate students to your active hostel.")
+        return
+      }
+      const nextHostel = availableHostels.find(
+        (hostel) => normalizeHostelId(hostel._id) === nextHostelId
+      ) || null
 
       updateManualRow(rowId, {
-        hostelId: value,
+        hostelId: nextHostelId,
         hostelType: nextHostel?.type || "",
         unit: "",
         unitId: "",
@@ -437,13 +561,13 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       })
 
       if (nextHostel?.type === "unit-based") {
-        loadUnitsForHostel(value).catch(() => {
+        loadUnitsForHostel(nextHostelId).catch(() => {
           updateManualRow(rowId, {
             unitError: "Failed to load units for this hostel.",
           })
         })
       } else if (nextHostel?.type === "room-only") {
-        loadRoomOnlyRooms(value)
+        loadRoomOnlyRooms(nextHostelId)
           .then(() => {
             updateManualRow(rowId, { roomsLoading: false })
           })
@@ -517,11 +641,29 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
     try {
       const student = await studentApi.getAllocationStudentByRollNumber(normalizedRollNumber)
+      const scopeError = getStudentAllocationScopeError(
+        student,
+        allowedHostelIds,
+        restrictStudentsToHostels
+      )
 
       updateManualRow(rowId, (currentRow) => {
         if (normalizeRollNumber(currentRow.rollNumber) !== normalizedRollNumber) {
           return currentRow
         }
+
+        if (scopeError) {
+          return {
+            ...currentRow,
+            rollNumber: student?.rollNumber || normalizedRollNumber,
+            student: null,
+            studentLookupState: "error",
+            studentError: scopeError,
+          }
+        }
+
+        const nextHostelId = currentRow.hostelId || (defaultHostel ? normalizeHostelId(defaultHostel._id) : "")
+        const nextHostelType = currentRow.hostelType || defaultHostel?.type || ""
 
         return {
           ...currentRow,
@@ -529,6 +671,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
           student,
           studentLookupState: "success",
           studentError: "",
+          hostelId: nextHostelId,
+          hostelType: nextHostelType,
         }
       })
     } catch (lookupError) {
@@ -606,7 +750,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   const removeManualRow = (rowId) => {
     updateManualRows((rows) => {
       const nextRows = rows.filter((row) => row.id !== rowId)
-      return nextRows.length > 0 ? nextRows : [createEmptyManualRow()]
+      return nextRows.length > 0 ? nextRows : [createEmptyManualRow(defaultHostel)]
     })
   }
 
@@ -623,11 +767,21 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       if (isManualRowBlank(row)) return row
 
       let validationError = ""
+      const scopeError = getStudentAllocationScopeError(
+        row.student,
+        allowedHostelIds,
+        restrictStudentsToHostels
+      )
+      const hostelAllowed = !row.hostelId || allowedHostelIds.has(normalizeHostelId(row.hostelId))
 
       if (!row.student) {
         validationError = row.studentError || "Enter a valid roll number and wait for lookup."
+      } else if (scopeError) {
+        validationError = scopeError
       } else if (!row.hostelId) {
         validationError = "Select a hostel."
+      } else if (!hostelAllowed) {
+        validationError = "You can only allocate students to your active hostel."
       } else if (row.hostelType === "unit-based" && !row.unitId) {
         validationError = row.unitError || "Enter a valid unit number."
       } else if (!row.roomId) {
@@ -638,6 +792,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
       return {
         ...row,
+        studentError: scopeError || row.studentError,
         validationError,
       }
     })
@@ -661,7 +816,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       }
     })
 
-    setManualRows(withTrailingBlankManualRow(dedupedRows))
+    setManualRows(withTrailingBlankManualRow(dedupedRows, defaultHostel))
 
     const hasRowErrors = dedupedRows.some((row) => !isManualRowBlank(row) && (
       row.studentLookupState === "loading"
@@ -691,7 +846,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       const aggregatedErrors = []
 
       for (const group of groupedAllocations) {
-        const result = await onAllocate(group.allocations, group.hostelId, { silent: true })
+        const result = await onAllocate(group.allocations, group.hostelId, {
+          silent: true,
+          mode: allocationMode,
+        })
 
         if (!result?.success) {
           if (result?.message) {
@@ -714,7 +872,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
         return
       }
 
-      toast.success("Allocations updated.")
+      toast.success(isReplaceMode ? "Hostel allocations replaced." : "Allocations updated.")
       handleClose()
     } finally {
       setIsAllocating(false)
@@ -745,18 +903,26 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
         <>
           {step === 1 && (
             <VStack gap={5}>
+              {renderAllocationModePicker()}
+
               <Field label="Select Hostel" color="body" spacing={1} htmlFor="hostel-select">
                 <Select
                   id="hostel-select"
-                  value={selectedHostel?._id || ""}
+                  value={selectedHostel?._id ? normalizeHostelId(selectedHostel._id) : ""}
                   onChange={handleHostelChange}
                   placeholder="-- Select a hostel --"
-                  options={hostelList.map((hostel) => ({
-                    value: hostel._id,
-                    label: `${hostel.name} (${hostel.type})`,
+                  disabled={hostelSelectLocked || availableHostels.length === 0}
+                  options={availableHostels.map((hostel) => ({
+                    value: normalizeHostelId(hostel._id),
+                    label: `${hostel.name}${hostel.type ? ` (${hostel.type})` : ""}`,
                   }))}
                 />
               </Field>
+              {restrictStudentsToHostels && (
+                <Surface bg="info" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="info-text" size="sm">
+                  You can only allocate students to your active hostel. Students already allocated in other hostels are not allowed.
+                </Surface>
+              )}
 
               {selectedHostel ? (
                 <>
@@ -839,6 +1005,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
           {step === 2 && (
             <VStack gap={5}>
+              {renderAllocationModePicker()}
+
               <VStack gap="none" justify="between" style={{ marginBottom: "var(--spacing-4)" }} className="sm:flex-row sm:items-center">
                 <Heading as="h3" size="lg" weight="medium" color="secondary">
                   Preview Room Allocations - {selectedHostel?.name}
@@ -858,6 +1026,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
       {activeTab === "manual" && (
         <VStack gap={4}>
+          {renderAllocationModePicker()}
+
           <HStack gap={4} align="center" justify="between" wrap>
             <div>
               <Heading as="h3" size="lg" weight="medium" color="secondary">
@@ -865,6 +1035,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </Heading>
               <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                 Fill a row and the next empty row appears automatically. Roll number lookup runs on blur.
+                {isReplaceMode && " Replace mode clears each selected hostel fully before applying its rows."}
               </Text>
             </div>
 
@@ -875,7 +1046,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", maxHeight: "32rem", overflowY: "auto", paddingRight: "var(--spacing-1)" }}>
             {manualRows.map((row, index) => {
-              const currentHostel = hostelList.find((hostel) => hostel._id === row.hostelId) || null
+              const currentHostel = availableHostels.find(
+                (hostel) => normalizeHostelId(hostel._id) === normalizeHostelId(row.hostelId)
+              ) || null
               const currentRoom = getSelectedRoom(row, roomsByCacheKey)
               const occupiedBedStudent = getBedOccupant(currentRoom, row.bedNumber)
 
@@ -900,9 +1073,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                   })
                 : []
 
-              const hostelOptions = hostelList.map((hostel) => ({
-                value: hostel._id,
-                label: `${hostel.name} (${hostel.type})`,
+              const hostelOptions = availableHostels.map((hostel) => ({
+                value: normalizeHostelId(hostel._id),
+                label: `${hostel.name}${hostel.type ? ` (${hostel.type})` : ""}`,
               }))
 
               return (
@@ -949,6 +1122,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                         onChange={(event) => handleManualFieldChange(row.id, "hostelId", event.target.value)}
                         options={hostelOptions}
                         placeholder="Select hostel"
+                        disabled={hostelSelectLocked || availableHostels.length === 0}
                         error={Boolean(row.validationError && !row.hostelId)}
                       />
                     </Field>
@@ -1101,9 +1275,17 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
             )}
 
             {step === 2 && (
-              <Button onClick={handleCsvAllocate} variant="primary" size="md" loading={isAllocating} disabled={parsedData.length === 0 || isLoading || isAllocating}>
+              <Button
+                onClick={handleCsvAllocate}
+                variant={isReplaceMode ? "danger" : "primary"}
+                size="md"
+                loading={isAllocating}
+                disabled={parsedData.length === 0 || isLoading || isAllocating}
+              >
                 <Check size={16} />
-                {isAllocating ? "Updating Allocations..." : "Confirm Allocations"}
+                {isAllocating
+                  ? (isReplaceMode ? "Replacing Allocations..." : "Updating Allocations...")
+                  : (isReplaceMode ? "Clear Hostel & Allocate" : "Confirm Allocations")}
               </Button>
             )}
           </>
@@ -1114,9 +1296,17 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
             <Button onClick={handleClose} variant="secondary" size="md" disabled={isAllocating}>
               Cancel
             </Button>
-            <Button onClick={handleManualAllocate} variant="primary" size="md" loading={isAllocating} disabled={manualReadyRows.length === 0 || isAllocating}>
+            <Button
+              onClick={handleManualAllocate}
+              variant={isReplaceMode ? "danger" : "primary"}
+              size="md"
+              loading={isAllocating}
+              disabled={manualReadyRows.length === 0 || isAllocating}
+            >
               <Check size={16} />
-              {isAllocating ? "Updating Allocations..." : "Submit Manual Allocations"}
+              {isAllocating
+                ? (isReplaceMode ? "Replacing Allocations..." : "Updating Allocations...")
+                : (isReplaceMode ? "Clear Hostel(s) & Allocate" : "Submit Manual Allocations")}
             </Button>
           </>
         )}

@@ -20,12 +20,15 @@ import { buildCsvContent } from "@/utils/csvExport"
 /**
  * The students list, and the four bulk operations that hang off it.
  *
- * Import and allocation are Admin-only. Bulk update also runs for Hostel
- * Supervisors, who hold `cap.students.edit.personal` by default. The list, the
- * detail modal and export are open to every role that can reach this route.
+ * Import is Admin-only. Bulk profile update and bulk allocation also run for
+ * Hostel Supervisors (status + personal fields via `cap.students.edit.personal`;
+ * allocation limited to their active hostel and to students already there or
+ * unallocated). The list, detail modal and export are open to every role that
+ * can reach this route.
  */
 
 const isAdmin = (role) => role === "Admin"
+const isHostelSupervisorRole = (role) => role === "Hostel Supervisor"
 const BULK_UPDATE_ROLES = ["Admin", "Hostel Supervisor"]
 
 /** Columns that identify a record to the system rather than to a reader. */
@@ -43,6 +46,12 @@ const failure = (message, count) => ({
 
 const countOf = (value) => (Array.isArray(value) ? value.length : 1)
 
+const normalizeHostelId = (value) => {
+  if (!value) return ""
+  if (typeof value === "string") return value
+  return value?.toString?.() || ""
+}
+
 const StudentsPage = () => {
   const { user } = useAuth()
   const { can } = useAuthz()
@@ -50,9 +59,31 @@ const StudentsPage = () => {
   const { toast } = useToast()
 
   const canManage = isAdmin(user?.role)
+  const isHostelSupervisor = isHostelSupervisorRole(user?.role)
   const canBulkUpdate =
     canManage || (BULK_UPDATE_ROLES.includes(user?.role) && can("cap.students.edit.personal"))
+  // Supervisors only get allocation tooling for their active hostel.
+  const canUpdateAllocations = canManage || isHostelSupervisor
   const hostels = useMemo(() => (canManage ? hostelList : []), [hostelList, canManage])
+  const allocationHostels = useMemo(() => {
+    if (canManage) return Array.isArray(hostelList) ? hostelList.filter(Boolean) : []
+    if (!isHostelSupervisor) return []
+
+    const activeId = normalizeHostelId(user?.hostel?._id)
+    if (!activeId) return []
+
+    const fromList = (Array.isArray(hostelList) ? hostelList : []).find(
+      (hostel) => normalizeHostelId(hostel?._id) === activeId
+    )
+    if (fromList) return [fromList]
+
+    // Auth payload carries the active hostel even if the global list is empty.
+    return [{
+      _id: activeId,
+      name: user.hostel.name || "Active hostel",
+      type: user.hostel.type || "",
+    }]
+  }, [canManage, hostelList, isHostelSupervisor, user?.hostel])
 
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [openModal, setOpenModal] = useState(null)
@@ -113,15 +144,25 @@ const StudentsPage = () => {
 
   // `silent` is set when this runs as one step of a larger batch, so the batch
   // reports once rather than once per hostel.
-  const handleUpdateAllocations = async (allocations, hostelId, { silent = false } = {}) => {
+  // mode: "update" (only listed students) or "replace" (clear hostel, then list).
+  const handleUpdateAllocations = async (allocations, hostelId, { silent = false, mode = "update" } = {}) => {
     const deny = "You do not have permission to update allocations."
-    if (!canManage) {
+    if (!canUpdateAllocations) {
       if (!silent) toast.error(deny)
       return { success: false, errors: [{ message: deny }], message: deny }
     }
 
+    if (isHostelSupervisor) {
+      const allowedIds = new Set(allocationHostels.map((hostel) => normalizeHostelId(hostel._id)))
+      if (!allowedIds.has(normalizeHostelId(hostelId))) {
+        const message = "You can only update allocations for your active hostel."
+        if (!silent) toast.error(message)
+        return { success: false, errors: [{ message }], message }
+      }
+    }
+
     try {
-      const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
+      const response = await hostelApi.updateRoomAllocations(allocations, hostelId, { mode })
       if (!response.success) {
         const message = response.message || "Failed to update allocations"
         if (!silent) toast.error(message)
@@ -134,11 +175,18 @@ const StudentsPage = () => {
         if (errors.length > 0) {
           toast.warning(`${errors.length} allocation${errors.length === 1 ? "" : "s"} failed: ${errors.map((e) => `${e.rollNumber}: ${e.message}`).join(", ")}`)
         } else {
-          toast.success("Allocations updated.")
+          toast.success(response.message || (mode === "replace" ? "Hostel allocations replaced." : "Allocations updated."))
         }
         close()
       }
-      return { success: true, errors, data: response.data || [], message: response.message || null }
+      return {
+        success: true,
+        errors,
+        data: response.data || [],
+        clearedCount: response.clearedCount || 0,
+        mode: response.mode || mode,
+        message: response.message || null,
+      }
     } catch (cause) {
       const message = cause.message || "An error occurred while updating allocations"
       if (!silent) toast.error(message)
@@ -216,7 +264,7 @@ const StudentsPage = () => {
         onExport={() => setOpenModal("export")}
         canImport={canManage}
         canBulkUpdate={canBulkUpdate}
-        canUpdateAllocations={canManage}
+        canUpdateAllocations={canUpdateAllocations && allocationHostels.length > 0}
       />
 
       <Page.Body>
@@ -253,12 +301,17 @@ const StudentsPage = () => {
         )}
 
         {canManage && (
-          <>
-            <ImportStudentModal isOpen={openModal === "import"} onClose={close} onImport={handleImportStudents} />
-            {openModal === "allocate" && (
-              <UpdateAllocationModal isOpen onClose={close} onAllocate={handleUpdateAllocations} />
-            )}
-          </>
+          <ImportStudentModal isOpen={openModal === "import"} onClose={close} onImport={handleImportStudents} />
+        )}
+
+        {canUpdateAllocations && openModal === "allocate" && (
+          <UpdateAllocationModal
+            isOpen
+            onClose={close}
+            onAllocate={handleUpdateAllocations}
+            hostels={allocationHostels}
+            restrictStudentsToHostels={isHostelSupervisor}
+          />
         )}
 
         {canBulkUpdate && (

@@ -4,8 +4,8 @@ import { UserPlus, Edit, RefreshCw, Download } from "lucide-react"
 
 /**
  * Each action is shown purely on its own `can*` flag — the page owns the role
- * and capability rules, since they differ per action (import and allocation are
- * Admin-only, bulk update also runs for Hostel Supervisors).
+ * and capability rules (import is Admin-only; bulk update and allocation also
+ * run for Hostel Supervisors, with allocation scoped to their active hostel).
  */
 const StudentsHeader = ({
   onImport,

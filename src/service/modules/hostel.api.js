@@ -72,15 +72,27 @@ export const hostelApi = {
   },
 
   /**
-   * Update room allocations
-   * @param {Object} allocationData - Allocation data
+   * Update room allocations for a hostel.
+   * @param {Array|Object} allocationData - Allocation rows
    * @param {string} hostelId - Hostel ID
+   * @param {Object} [options]
+   * @param {"update"|"replace"} [options.mode="update"]
+   *   - update: only change students in the provided list
+   *   - replace: clear every allocation in the hostel, then apply the list
    */
-  updateRoomAllocations: (allocationData, hostelId) => {
-    return apiClient.put(`/hostel/update-allocations/${hostelId}`, allocationData).then((response) => ({
+  updateRoomAllocations: (allocationData, hostelId, options = {}) => {
+    const mode = options.mode === "replace" ? "replace" : "update"
+    const payload = {
+      allocations: Array.isArray(allocationData) ? allocationData : [allocationData],
+      mode,
+    }
+
+    return apiClient.put(`/hostel/update-allocations/${hostelId}`, payload).then((response) => ({
       success: response?.success === true,
       data: response?.data?.allocations || [],
       errors: response?.data?.errors || [],
+      clearedCount: response?.data?.clearedCount || 0,
+      mode: response?.data?.mode || mode,
       message: response?.message || null,
     }))
   },

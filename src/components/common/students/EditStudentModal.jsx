@@ -52,6 +52,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const isAdmin = user?.role === "Admin"
+  const isHostelSupervisor = user?.role === "Hostel Supervisor"
+  // Supervisors get status on top of the basic profile tabs; full allocation /
+  // day-scholar tooling stays Admin-only.
+  const canEditStatus = isAdmin || isHostelSupervisor
   const safeHostels = useMemo(() => hostelList.filter(Boolean), [hostelList])
 
   const [loading, setLoading] = useState(false)
@@ -91,15 +95,21 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       { id: "guardian", label: "Guardian" },
     ]
 
-    if (!isAdmin) return baseTabs
+    if (isAdmin) {
+      return [
+        ...baseTabs,
+        { id: "status", label: "Status" },
+        { id: "dayScholar", label: "Day Scholar" },
+        { id: "allocation", label: "Allocation" },
+      ]
+    }
 
-    return [
-      ...baseTabs,
-      { id: "status", label: "Status" },
-      { id: "dayScholar", label: "Day Scholar" },
-      { id: "allocation", label: "Allocation" },
-    ]
-  }, [isAdmin])
+    if (canEditStatus) {
+      return [...baseTabs, { id: "status", label: "Status" }]
+    }
+
+    return baseTabs
+  }, [isAdmin, canEditStatus])
 
   const loadUnitsForHostel = async (hostelId) => {
     if (!hostelId) return []
