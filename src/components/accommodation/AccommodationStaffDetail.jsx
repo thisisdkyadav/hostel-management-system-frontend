@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { Alert, Badge, Button, DetailSection, EmptyState, Field, Grid, InfoRow, Input, Modal, RadioGroup, RadioGroupItem, Select, Text, Textarea, VStack } from "hzero"
+import { Alert, Badge, Button, DetailSection, EmptyState, Field, Grid, HStack, InfoRow, Input, Modal, RadioGroup, RadioGroupItem, Select, Surface, Text, Textarea, ToggleButtonGroup, VStack } from "hzero"
 import {
   BadgeCheck,
   Ban,
@@ -31,6 +31,15 @@ import { MetaBar, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fm
 import StudentDetailModal from "../common/students/StudentDetailModal"
 import PdfViewerModal from "../common/pdf/PdfViewerModal"
 
+const toYmd = (d) => {
+  if (!d) return ""
+  const dt = new Date(d)
+  if (Number.isNaN(dt.getTime())) return ""
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`
+}
+
+const todayYmd = () => toYmd(new Date())
+
 const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) => {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
@@ -40,8 +49,13 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
   const [decision, setDecision] = useState({ action: "approve", reason: "" })
   const [capacity, setCapacity] = useState({ action: "approve", reason: "" })
-  const [payForm, setPayForm] = useState({ amount: 0, remarks: "" })
+  const [payRemarks, setPayRemarks] = useState("")
+  // Per-guest { price, gstPercentage } strings while editing; office picks presets or types.
+  const [guestCharges, setGuestCharges] = useState([])
+  const [priceOptions, setPriceOptions] = useState([])
+  const [gstOptions, setGstOptions] = useState([])
   const [verify, setVerify] = useState({ action: "verify", note: "" })
+  const [payEdit, setPayEdit] = useState({ utr: "", paidAt: "" })
   const [settle, setSettle] = useState({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
   const [cancelReason, setCancelReason] = useState("")
   const [cancelling, setCancelling] = useState(false)
@@ -70,12 +84,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const showBypassFa = (isChiefWarden || isCWOffice) && status === ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION
   const showApprove = isChiefWarden && status === ACCOMMODATION_STATUS.PENDING_CW_APPROVAL
   const showIssuePayment = isCWOffice && status === ACCOMMODATION_STATUS.CW_APPROVED
-  // A deferred payment lands after the booking has moved on, so the accountant
-  // queue keys off the payment itself rather than the workflow status.
+  // Accountant queue keys off payment.status so deferred bills still appear.
   const showVerify = isAccountant && payment.status === PAYMENT_STATUS.SUBMITTED
+  // Rooms only after payment is verified (pay-later waits for payment too).
   const readyToAssign = [
     ACCOMMODATION_STATUS.PAYMENT_VERIFIED,
-    ACCOMMODATION_STATUS.PAYMENT_DEFERRED,
     ACCOMMODATION_STATUS.HOSTEL_ALLOTTED, // legacy in-flight requests
   ].includes(status)
   // Show the assignment form when the booking is ready, or when reassigning.
@@ -86,14 +99,28 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   // reconciliation) — available to accounts once an amount has been set.
   const showSettle = isAccountant && Boolean(payment.amount) && payment.status !== PAYMENT_STATUS.SUBMITTED
   const isPaid = payment.status === PAYMENT_STATUS.VERIFIED
+  // Fix typos in UTR / payment date after proof is in, or after the bill is paid.
+  const showEditPaymentDetails =
+    isAccountant &&
+    [PAYMENT_STATUS.SUBMITTED, PAYMENT_STATUS.VERIFIED].includes(payment.status) &&
+    !showVerify // verify form already includes these fields
   // The student cannot withdraw after payment is requested, so the office holds
   // the release valve for the whole run up to invoicing.
   const canAdminCancel =
     (isChiefWarden || isCWOffice) &&
     ![ACCOMMODATION_STATUS.INVOICED, ACCOMMODATION_STATUS.REJECTED, ACCOMMODATION_STATUS.CANCELLED].includes(status)
   const hasAction =
-    showCapacity || showBypassFa || showApprove || showIssuePayment || showVerify || showAssign || showSettle || canAdminCancel
+    showCapacity ||
+    showBypassFa ||
+    showApprove ||
+    showIssuePayment ||
+    showVerify ||
+    showEditPaymentDetails ||
+    showAssign ||
+    showSettle ||
+    canAdminCancel
   const needsHostelPick = showCapacity || showIssuePayment
+  const payEditUtrValid = !payEdit.utr || /^\d{12}$/.test(payEdit.utr)
 
   const requestId = request?._id || request?.id
   const student = request?.student
@@ -102,8 +129,12 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     try {
       const res = await accommodationApi.getAllotmentAvailability(requestId)
       setHostels(res?.data?.hostels || [])
+      setPriceOptions(res?.data?.pricing?.priceOptions || [])
+      setGstOptions(res?.data?.pricing?.gstOptions || [])
     } catch {
       setHostels([])
+      setPriceOptions([])
+      setGstOptions([])
     }
   }, [requestId])
 
@@ -129,10 +160,23 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     setDecision({ action: "approve", reason: "" })
     setCapacity({ action: "approve", reason: "" })
     setVerify({ action: "verify", note: "" })
+    setPayEdit({
+      utr: request.payment?.utr || "",
+      paidAt: toYmd(request.payment?.paidAt),
+    })
     setSettle({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
     setCancelReason("")
     setCancelling(false)
-    setPayForm({ amount: request.quote?.total || 0, remarks: "" })
+    setPayRemarks("")
+    setGuestCharges(
+      (request.guests || []).map((g, i) => {
+        const existing = request.quote?.guestCharges?.find((c) => Number(c.guestIndex) === i)
+        return {
+          price: existing?.price != null && existing.price > 0 ? String(existing.price) : "",
+          gstPercentage: existing?.gstPercentage != null ? String(existing.gstPercentage) : "0",
+        }
+      })
+    )
     setHostelChoice("")
     // Prefill room choices from any existing assignment (used when reassigning).
     const count = request.persons || (request.guests?.length || 0)
@@ -181,15 +225,59 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   })
   const submitIssuePayment = run(() => {
     if (!hostelChoice) throw new Error("Pick the hostel the guests will stay in.")
+    if (!guestCharges.length || guestCharges.length !== (request.guests?.length || 0)) {
+      throw new Error("Set price and GST for every guest.")
+    }
+    for (let i = 0; i < guestCharges.length; i++) {
+      const price = Number(guestCharges[i].price)
+      const gst = Number(guestCharges[i].gstPercentage)
+      if (!(price > 0)) throw new Error(`Enter a price for ${request.guests[i]?.name || `guest ${i + 1}`}.`)
+      if (!Number.isFinite(gst) || gst < 0) throw new Error(`Enter a valid GST % for ${request.guests[i]?.name || `guest ${i + 1}`}.`)
+    }
     return accommodationApi.issuePaymentRequest(requestId, {
       hostelId: hostelChoice,
-      amount: Number(payForm.amount) || undefined,
-      remarks: payForm.remarks.trim() || undefined,
+      remarks: payRemarks.trim() || undefined,
+      guestCharges: guestCharges.map((c, i) => ({
+        guestIndex: i,
+        price: Number(c.price),
+        gstPercentage: Number(c.gstPercentage),
+      })),
     })
   })
+
+  const setGuestCharge = (index, patch) => {
+    setGuestCharges((prev) => prev.map((c, i) => (i === index ? { ...c, ...patch } : c)))
+  }
+
+  const guestChargeTotal = guestCharges.reduce((sum, c) => {
+    const price = Number(c.price) || 0
+    const gst = Number(c.gstPercentage) || 0
+    return sum + price + (price * gst) / 100
+  }, 0)
+  const chargesReady =
+    guestCharges.length === (request?.guests?.length || 0) &&
+    guestCharges.every((c) => Number(c.price) > 0 && Number.isFinite(Number(c.gstPercentage)) && Number(c.gstPercentage) >= 0)
   const submitVerify = run(() => {
     if (verify.action === "reject" && !verify.note.trim()) throw new Error("Add a reason for rejecting the payment.")
-    return accommodationApi.verifyPayment(requestId, { action: verify.action, note: verify.note.trim() })
+    if (verify.action === "verify") {
+      if (!/^\d{12}$/.test(payEdit.utr || "")) throw new Error("UTR must be exactly 12 digits.")
+      if (!payEdit.paidAt) throw new Error("Payment date is required.")
+    }
+    return accommodationApi.verifyPayment(requestId, {
+      action: verify.action,
+      note: verify.note.trim(),
+      ...(verify.action === "verify"
+        ? { utr: payEdit.utr.trim(), paidAt: payEdit.paidAt }
+        : {}),
+    })
+  })
+  const submitPayEdit = run(() => {
+    if (!payEdit.utr.trim() && !payEdit.paidAt) throw new Error("Enter a UTR and/or payment date.")
+    if (payEdit.utr.trim() && !/^\d{12}$/.test(payEdit.utr.trim())) throw new Error("UTR must be exactly 12 digits.")
+    return accommodationApi.updatePaymentDetails(requestId, {
+      utr: payEdit.utr.trim() || undefined,
+      paidAt: payEdit.paidAt || undefined,
+    })
   })
   const submitSettle = run(() => {
     if (settle.action === "mark_paid" && !settle.method.trim()) throw new Error("Record how the payment was received.")
@@ -218,8 +306,6 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     value: r.roomId,
     label: `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber} (${r.available} free)`,
   }))
-
-  const paymentAmountOverridden = Number(payForm.amount) !== (request.quote?.total || 0)
 
   // Rooms are booked whole, so a hostel fits this party only if it has a free
   // room for them AND enough beds inside it.
@@ -308,6 +394,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 />
               )}
               <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
+              <InfoRow label="Room preference" value={request.roomPreference || "—"} />
             </DetailSection>
 
             <DetailSection title={`Guests (${request.guests?.length || 0})`} icon={Users}>
@@ -418,11 +505,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             )}
 
             {showBypassFa && (
-              <DetailSection title="Faculty advisor" icon={UserRoundX} tone="warning">
+              <DetailSection title="Faculty advisor / supervisor" icon={UserRoundX} tone="warning">
                 <Text size="sm" color="body">
-                  This request is waiting on the faculty advisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
+                  This request is waiting on the faculty advisor / supervisor ({request.facultyAdvisorEmail || "—"}). You can bypass this step and move it to Chief Warden approval.
                 </Text>
-                <Button variant="secondary" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor</Button>
+                <Button variant="secondary" onClick={submitBypassFa} loading={busy} disabled={busy}>Bypass faculty advisor / supervisor</Button>
               </DetailSection>
             )}
 
@@ -442,11 +529,81 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
             {showIssuePayment && (
               <DetailSection title="Request payment & allot hostel" icon={CreditCard} tone="primary">
-                <Field label="Amount" help={`Calculated total is ${money(request.quote?.total)}. Override it for a custom amount.`}>
-                  <Input type="number" value={payForm.amount} onChange={(e) => setPayForm((p) => ({ ...p, amount: e.target.value }))} />
-                </Field>
-                <Field label={<>Remarks {paymentAmountOverridden ? "(required — reason for the amount)" : "(optional)"}</>}>
-                  <Textarea value={payForm.remarks} onChange={(e) => setPayForm((p) => ({ ...p, remarks: e.target.value }))} rows={2} placeholder="e.g., extra night charged, discount applied" />
+                <Text size="sm" color="muted">
+                  Set price and GST for each guest (presets from Accommodation settings, or type a custom value). Total is calculated from your selections — not auto-estimated.
+                </Text>
+
+                {(request.guests || []).map((g, i) => {
+                  const line = guestCharges[i] || { price: "", gstPercentage: "0" }
+                  const priceNum = Number(line.price) || 0
+                  const gstNum = Number(line.gstPercentage) || 0
+                  const lineTotal = priceNum + (priceNum * gstNum) / 100
+                  const pricePresetValue = priceOptions.some((p) => String(p) === String(line.price)) ? String(line.price) : null
+                  const gstPresetValue = gstOptions.some((p) => String(p) === String(line.gstPercentage))
+                    ? String(line.gstPercentage)
+                    : null
+                  return (
+                    <Surface key={i} padding={3} radius="md" border="1px solid var(--color-border-primary)" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                      <div>
+                        <Text as="div" size="sm" weight="semibold">{g.name || `Guest ${i + 1}`}</Text>
+                        <Text as="div" size="xs" color="muted">
+                          {[g.gender, g.age === 0 || g.age ? `Age ${g.age}` : null, g.relation].filter(Boolean).join(" · ") || "—"}
+                        </Text>
+                      </div>
+                      <Field label="Price per person" required>
+                        {priceOptions.length > 0 && (
+                          <div style={{ marginBottom: "var(--spacing-2)" }}>
+                            <ToggleButtonGroup
+                              size="small"
+                              options={priceOptions.map((p) => ({ value: String(p), label: money(p) }))}
+                              value={pricePresetValue}
+                              onChange={(val) => setGuestCharge(i, { price: String(val) })}
+                            />
+                          </div>
+                        )}
+                        <Input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          value={line.price}
+                          placeholder={priceOptions.length ? "Or enter manually" : "Enter amount"}
+                          onChange={(e) => setGuestCharge(i, { price: e.target.value })}
+                        />
+                      </Field>
+                      <Field label="GST %" required>
+                        {gstOptions.length > 0 && (
+                          <div style={{ marginBottom: "var(--spacing-2)" }}>
+                            <ToggleButtonGroup
+                              size="small"
+                              options={gstOptions.map((p) => ({ value: String(p), label: `${p}%` }))}
+                              value={gstPresetValue}
+                              onChange={(val) => setGuestCharge(i, { gstPercentage: String(val) })}
+                            />
+                          </div>
+                        )}
+                        <Input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          value={line.gstPercentage}
+                          placeholder={gstOptions.length ? "Or enter manually" : "GST %"}
+                          onChange={(e) => setGuestCharge(i, { gstPercentage: e.target.value })}
+                        />
+                      </Field>
+                      <InfoRow label="Line total" value={money(lineTotal)} />
+                    </Surface>
+                  )
+                })}
+
+                <InfoRow label="Grand total" value={money(guestChargeTotal)} />
+
+                <Field label="Remarks (optional)">
+                  <Textarea
+                    value={payRemarks}
+                    onChange={(e) => setPayRemarks(e.target.value)}
+                    rows={2}
+                    placeholder="e.g. different rate for child, discount applied"
+                  />
                 </Field>
                 <Field label={`Hostel · ${request.persons} bed(s) needed`} required>
                   {hostelCapacity(true)}
@@ -457,7 +614,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 <Button
                   onClick={submitIssuePayment}
                   loading={busy}
-                  disabled={busy || !hostelChoice || (paymentAmountOverridden && !payForm.remarks.trim())}
+                  disabled={busy || !hostelChoice || !chargesReady}
                 >
                   Send payment request
                 </Button>
@@ -466,12 +623,82 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
             {showVerify && (
               <DetailSection title="Verify payment" icon={BadgeCheck} tone="primary">
+                <Text size="sm" color="muted">
+                  Confirm the UTR and payment date match the proof. You can correct them here if the student mistyped.
+                </Text>
+                <Field
+                  label="UTR"
+                  required={verify.action === "verify"}
+                  help="12-digit transfer reference."
+                  error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
+                >
+                  <Input
+                    value={payEdit.utr}
+                    inputMode="numeric"
+                    maxLength={12}
+                    onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                    placeholder="12-digit UTR"
+                  />
+                </Field>
+                <Field label="Payment date" required={verify.action === "verify"}>
+                  <Input
+                    type="date"
+                    value={payEdit.paidAt}
+                    max={todayYmd()}
+                    onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
+                  />
+                </Field>
                 <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
                   <RadioGroupItem value="verify" label="Verify" description="The amount matches." />
                   <RadioGroupItem value="reject" label="Reject" description="Sends the request back to the student." />
                 </RadioGroup>
                 <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
-                <Button onClick={submitVerify} loading={busy} disabled={busy}>Submit</Button>
+                <Button
+                  onClick={submitVerify}
+                  loading={busy}
+                  disabled={
+                    busy ||
+                    (verify.action === "verify" && (!payEditUtrValid || !payEdit.utr || !payEdit.paidAt))
+                  }
+                >
+                  Submit
+                </Button>
+              </DetailSection>
+            )}
+
+            {showEditPaymentDetails && (
+              <DetailSection title="Edit payment details" icon={CreditCard} tone="primary">
+                <Text size="sm" color="muted">
+                  Correct the UTR or payment date if it was entered wrong. This does not change verification status.
+                </Text>
+                <Field
+                  label="UTR"
+                  help="12-digit transfer reference."
+                  error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
+                >
+                  <Input
+                    value={payEdit.utr}
+                    inputMode="numeric"
+                    maxLength={12}
+                    onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                    placeholder="12-digit UTR"
+                  />
+                </Field>
+                <Field label="Payment date">
+                  <Input
+                    type="date"
+                    value={payEdit.paidAt}
+                    max={todayYmd()}
+                    onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
+                  />
+                </Field>
+                <Button
+                  onClick={submitPayEdit}
+                  loading={busy}
+                  disabled={busy || !payEditUtrValid || (!payEdit.utr.trim() && !payEdit.paidAt)}
+                >
+                  Save payment details
+                </Button>
               </DetailSection>
             )}
 
@@ -562,16 +789,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <Button type="button" variant="ghost" size="sm" onClick={() => setReassigning(false)}>Cancel</Button>
                 ) : undefined}
               >
-                {status === ACCOMMODATION_STATUS.PAYMENT_DEFERRED && (
-                  <Alert type="warning">
-                    This student chose to pay later — {money(payment.amount)} is still outstanding. Assign the rooms as
-                    usual; they settle the bill from their portal and the invoice follows.
-                  </Alert>
-                )}
                 {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
                 {(request.guests || []).map((g, i) => (
                   <Grid cols={2} gap={2} align="center" key={i}>
-                    <Text as="span" size="sm">{g.name}</Text>
+                    <Text as="span" size="sm">
+                      {g.name}
+                      {(g.age === 0 || g.age) ? ` · Age ${g.age}` : ""}
+                      {g.gender ? ` · ${g.gender}` : ""}
+                    </Text>
                     <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
                   </Grid>
                 ))}

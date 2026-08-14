@@ -141,25 +141,57 @@ export const MetaBar = ({ request, actions }) => (
 
 // ---- Charges + guest list (compose inside SectionCard) -------------------
 
-export const ChargesRows = ({ quote = {} }) => (
-  <VStack gap={2}>
-    <InfoRow label={`${quote.persons || 0} guest(s) × ${quote.nights || 0} night(s)`} value={money(quote.subtotal)} />
-    <InfoRow label={`GST (${quote.gstPercentage || 0}%)`} value={money(quote.gstAmount)} />
-    <Divider spacing="none" />
-    <InfoRow label="Total" value={money(quote.total)} strong />
-  </VStack>
-)
+export const ChargesRows = ({ quote = {} }) => {
+  const lines = Array.isArray(quote.guestCharges) ? quote.guestCharges : []
+  const hasCharges = lines.length > 0 || Number(quote.total) > 0
+  if (!hasCharges) {
+    return (
+      <Text size="sm" color="muted">
+        Amount not set yet — Chief Warden Office sets price and GST per guest when requesting payment.
+      </Text>
+    )
+  }
+  return (
+    <VStack gap={2}>
+      {lines.length > 0
+        ? lines.map((g, i) => (
+            <InfoRow
+              key={i}
+              label={`${g.guestName || `Guest ${i + 1}`} · ${money(g.price)} + GST ${g.gstPercentage || 0}%`}
+              value={money(g.total)}
+            />
+          ))
+        : (
+          <>
+            <InfoRow label={`${quote.persons || 0} guest(s) × ${quote.nights || 0} night(s)`} value={money(quote.subtotal)} />
+            <InfoRow label={`GST (${quote.gstPercentage || 0}%)`} value={money(quote.gstAmount)} />
+          </>
+        )}
+      <Divider spacing="none" />
+      <InfoRow label="Subtotal" value={money(quote.subtotal)} />
+      <InfoRow label="GST" value={money(quote.gstAmount)} />
+      <InfoRow label="Total" value={money(quote.total)} strong />
+    </VStack>
+  )
+}
 
 export const GuestList = ({ guests = [] }) => (
   <VStack gap={2}>
-    {guests.map((g, i) => (
-      <HStack gap={2} align="center" key={i}>
-        <Avatar name={g.name || "?"} alt={g.name || ""} size="xsmall" />
-        <Text as="span" size="sm" color="body">
-          {g.name} <Text as="span" color="muted">· {g.gender}{g.relation ? ` · ${g.relation}` : ""}</Text>
-        </Text>
-      </HStack>
-    ))}
+    {guests.map((g, i) => {
+      const meta = [
+        g.gender,
+        g.age === 0 || g.age ? `Age ${g.age}` : null,
+        g.relation || null,
+      ].filter(Boolean).join(" · ")
+      return (
+        <HStack gap={2} align="center" key={i}>
+          <Avatar name={g.name || "?"} alt={g.name || ""} size="xsmall" />
+          <Text as="span" size="sm" color="body">
+            {g.name}{meta ? <Text as="span" color="muted"> · {meta}</Text> : null}
+          </Text>
+        </HStack>
+      )
+    })}
   </VStack>
 )
 

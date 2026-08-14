@@ -240,7 +240,34 @@ const SettingsPage = () => {
     setError((prev) => ({ ...prev, accommodation: null }))
     try {
       const response = await adminApi.getAccommodationSettings()
-      setAccommodationSettings(response.value || {})
+      // Merge defaults so new preset keys appear even on older saved configs.
+      const defaults = {
+        defaultPaymentLink: "",
+        defaultPaymentQR: "",
+        pricePerPerson1: 0,
+        pricePerPerson2: 0,
+        pricePerPerson3: 0,
+        gstPercentage1: 0,
+        gstPercentage2: 0,
+        gstPercentage3: 0,
+        gstin: "",
+      }
+      const raw = response.value || {}
+      // Drop legacy auto-calc keys from the editor so they are not re-saved.
+      const { feePerPersonPerNight: _legacyFee, gstPercentage: _legacyGst, ...rest } = raw
+      setAccommodationSettings({
+        ...defaults,
+        ...rest,
+        // Migrate old single fee/GST into slot 1 when presets were never set.
+        pricePerPerson1:
+          Number(rest.pricePerPerson1) ||
+          Number(raw.feePerPersonPerNight) ||
+          defaults.pricePerPerson1,
+        gstPercentage1:
+          rest.gstPercentage1 != null && rest.gstPercentage1 !== ""
+            ? Number(rest.gstPercentage1)
+            : Number(raw.gstPercentage) || defaults.gstPercentage1,
+      })
     } catch (err) {
       console.error("Error fetching accommodation settings:", err)
       setError((prev) => ({
@@ -699,7 +726,7 @@ const SettingsPage = () => {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
-        { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation settings: default payment link/QR, fee per person per night, GST percentage, and the GSTIN shown on invoices." },
+        { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation: payment link/QR, three preset prices per person, three GST % options (Chief Warden Office selects per guest), and GSTIN for invoices." },
       ],
     },
   ]

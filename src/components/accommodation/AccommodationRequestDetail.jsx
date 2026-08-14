@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, DatePicker, Field, HStack, Input, Modal, Surface, Text, useConfirm, VStack } from "hzero"
-import { BedDouble, Users, Receipt, Clock3, CreditCard, RotateCcw, FileText, Building2, Wallet, Eye, Download } from "lucide-react"
+import { BedDouble, Users, Clock3, CreditCard, RotateCcw, FileText, Building2, Wallet, Eye, Download } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
 import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import {
@@ -10,7 +10,7 @@ import {
   describeExtension,
 } from "@/constants/accommodationStatus"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
-import { MetaBar, SectionCard, InfoRow, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
+import { MetaBar, SectionCard, InfoRow, GuestList, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
 
 const uploadPaymentScreenshot = (file) => {
   const formData = new FormData()
@@ -27,8 +27,10 @@ const CANCELLABLE = [
   ACCOMMODATION_STATUS.RETURNED_TO_STUDENT,
 ]
 
-// A deferred bill can be settled from room assignment onwards.
+// Pay later is open at PAYMENT_DEFERRED; legacy bookings that already got rooms
+// under the old rules can still settle afterwards.
 const DEFERRED_PAYABLE = [
+  ACCOMMODATION_STATUS.PAYMENT_DEFERRED,
   ACCOMMODATION_STATUS.ROOMS_ASSIGNED,
   ACCOMMODATION_STATUS.CHECKED_IN,
   ACCOMMODATION_STATUS.CHECKED_OUT,
@@ -57,8 +59,8 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
   const showAccommodation = Boolean(request.allottedHostelName) || assignedRooms.length > 0
   const extension = describeExtension(request.stay)
 
-  // The bill is open either right after the payment request, or later on for a
-  // student who deferred it and whose rooms are now assigned.
+  // Bill is open after the payment request, while deferred (any time), or on a
+  // legacy deferred booking that already moved past rooms.
   const payment = request.payment || {}
   const isDeferred = payment.mode === PAYMENT_MODE.LATER
   const awaitingChoice = status === ACCOMMODATION_STATUS.PAYMENT_REQUESTED
@@ -118,15 +120,12 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                 <InfoRow label="Nights" value={request.nights || 0} />
                 {extension && <InfoRow label="Extension" value={extension} />}
                 <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
+                <InfoRow label="Room preference" value={request.roomPreference || "—"} />
               </VStack>
             </SectionCard>
 
             <SectionCard icon={Users} title={`Guests (${request.guests?.length || 0})`} accentColor="var(--color-info)">
               <GuestList guests={request.guests || []} />
-            </SectionCard>
-
-            <SectionCard icon={Receipt} title="Charges" accentColor="var(--color-success)">
-              <ChargesRows quote={request.quote} />
             </SectionCard>
 
             {showAccommodation && (
@@ -160,8 +159,11 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
             )}
 
             {showPaymentForm && (
-              <SectionCard icon={CreditCard} title={`Pay ${money(payment.amount)}`} accentColor="var(--color-primary)">
+              <SectionCard icon={CreditCard} title="Payment" accentColor="var(--color-primary)">
                 <VStack gap={3}>
+                  {Boolean(payment.amount) && (
+                    <InfoRow label="Amount payable" value={money(payment.amount)} strong />
+                  )}
                   {payment.paymentLink && (
                     <Text as="a" size="sm" color="brand" style={{ wordBreak: "break-all" }} href={payment.paymentLink} target="_blank" rel="noreferrer">Open payment link / QR ↗</Text>
                   )}
@@ -208,9 +210,16 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                     downloadFileName="payment-screenshot.png"
                   />
 
+                  {canSettleDeferred && !awaitingChoice && (
+                    <Surface bg="tertiary" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="muted" size="xs">
+                      You chose to pay later. Rooms will be allocated only after payment is verified.
+                      You can pay any time — including when your guest arrives.
+                    </Surface>
+                  )}
+
                   <HStack gap={2} wrap>
                     <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !payReady}>
-                      Pay now — submit proof
+                      {awaitingChoice ? "Pay now — submit proof" : "Submit payment proof"}
                     </Button>
                     {awaitingChoice && (
                       <Button
@@ -218,7 +227,8 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
                         disabled={busy}
                         onClick={async () => {
                           if (await confirm({
-                            message: "Pay later? Your booking continues, and you can settle the bill any time once your rooms are assigned.",
+                            message:
+                              "Pay later? Rooms will be allocated only after payment. You can pay when the guest arrives.",
                             confirmText: "Pay later",
                             cancelText: "Go back",
                           })) {
@@ -235,15 +245,6 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
               </SectionCard>
             )}
 
-            {status === ACCOMMODATION_STATUS.PAYMENT_DEFERRED && (
-              <SectionCard icon={Wallet} title={`${money(payment.amount)} due`} accentColor="var(--color-warning)">
-                <Text size="sm" color="muted">
-                  You chose to pay later. Once the hostel supervisor assigns your rooms, the payment form opens here —
-                  your invoice is issued as soon as the accounts office verifies it.
-                </Text>
-              </SectionCard>
-            )}
-
             {isDeferred && payment.status === PAYMENT_STATUS.VERIFIED && status !== ACCOMMODATION_STATUS.INVOICED && (
               <SectionCard icon={Wallet} title="Payment settled" accentColor="var(--color-success)">
                 <InfoRow label="UTR" value={payment.utr || "—"} />
@@ -252,7 +253,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
             )}
 
             {(status === ACCOMMODATION_STATUS.PAYMENT_SUBMITTED ||
-              (isDeferred && payment.status === PAYMENT_STATUS.SUBMITTED)) && (
+              (isDeferred && payment.status === PAYMENT_STATUS.SUBMITTED && !showPaymentForm)) && (
               <SectionCard icon={Clock3} title="Awaiting verification" accentColor="var(--color-info)">
                 <Text size="sm" color="muted">The accounts office is checking your payment. You’ll be notified once it’s confirmed.</Text>
               </SectionCard>

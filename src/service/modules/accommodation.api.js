@@ -39,7 +39,7 @@ export const accommodationApi = {
   /** Student uploads payment proof. body: { screenshotFileRef, utr, paidAt } */
   submitPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment`, body),
 
-  /** Student opts to settle the bill after their rooms are assigned. */
+  /** Student opts to pay later (rooms allocated only after payment). */
   deferPayment: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/defer-payment`),
 
   // ---- Chief Warden Office (capacity screening) ----
@@ -55,17 +55,24 @@ export const accommodationApi = {
   bypassFacultyAdvisor: (requestId) => apiClient.post(`/accommodation/requests/${requestId}/bypass-fa`),
 
   // ---- Chief Warden Office ----
-  /** Sets the amount AND allots the hostel. body: { hostelId, amount?, remarks? } */
+  /**
+   * Sets per-guest price + GST, allots the hostel, and requests payment.
+   * body: { hostelId, remarks?, guestCharges: [{ guestIndex, price, gstPercentage }] }
+   */
   issuePaymentRequest: (requestId, body = {}) =>
     apiClient.post(`/accommodation/requests/${requestId}/payment-request`, body),
 
-  /** Free guest beds per hostel for the requested dates. */
+  /** Free guest beds per hostel + price/GST presets for the charge form. */
   getAllotmentAvailability: (requestId) =>
     apiClient.get(`/accommodation/requests/${requestId}/allotment-availability`),
 
   // ---- Accountant ----
-  /** body: { action: "verify" | "reject", note? } — on a portal-submitted payment */
+  /** body: { action: "verify" | "reject", note?, utr?, paidAt? } — on a portal-submitted payment */
   verifyPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment-verify`, body),
+
+  /** Correct UTR / payment date. body: { utr?, paidAt? } — at least one required */
+  updatePaymentDetails: (requestId, body) =>
+    apiClient.post(`/accommodation/requests/${requestId}/payment-details`, body),
 
   /**
    * Records money that never went through the portal, or corrects a mistake.

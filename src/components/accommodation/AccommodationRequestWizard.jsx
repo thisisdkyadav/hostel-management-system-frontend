@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback } from "react"
-import { Button, DatePicker, Field, Grid, HStack, IconButton, Input, Label, Modal, Select, StepIndicator, Surface, Text, Textarea, VStack } from "hzero"
+import { useState, useEffect } from "react"
+import { Button, DatePicker, Field, Grid, HStack, IconButton, Input, Modal, Select, StepIndicator, Surface, Text, Textarea, ToggleButtonGroup, VStack } from "hzero"
 import { Plus, Trash2 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { accommodationApi, studentApi } from "@/service"
 import { extensionHours, STANDARD_CHECK_TIME } from "@/constants/accommodationStatus"
-import { ChargesRows } from "./AccommodationKit"
 
 const MIN_LEAD_WORKING_DAYS = 3
 const pad2 = (n) => String(n).padStart(2, "0")
@@ -27,13 +26,18 @@ const GENDERS = [
   { value: "Other", label: "Other" },
 ]
 
+const ROOM_PREFERENCE_OPTIONS = [
+  { value: "Single", label: "Single" },
+  { value: "Double", label: "Double" },
+]
+
 const STEPS = [
   { id: "guests", label: "Guests" },
   { id: "stay", label: "Stay & Details" },
   { id: "review", label: "Review" },
 ]
 
-const emptyGuest = () => ({ name: "", gender: "", relation: "", aadharNumber: "" })
+const emptyGuest = () => ({ name: "", gender: "", age: "", relation: "", aadharNumber: "" })
 
 const emptyStay = () => ({
   fromDate: "",
@@ -65,17 +69,16 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
     stay: emptyStay(),
     permanentAddress: "",
     facultyAdvisorEmail: "",
+    roomPreference: "",
   })
-  const [quote, setQuote] = useState(null)
-  const [loadingQuote, setLoadingQuote] = useState(false)
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const [profileFA, setProfileFA] = useState("") // faculty advisor email from the student's profile
+  const [profileFA, setProfileFA] = useState("") // faculty advisor / supervisor email from profile
 
   const earliestStart = toYmd(addWorkingDays(new Date(), MIN_LEAD_WORKING_DAYS))
 
-  // Load the faculty advisor already on the student's profile; if present we show
-  // it read-only instead of letting the student type one.
+  // Load the faculty advisor / supervisor already on the student's profile; if
+  // present we show it read-only instead of letting the student type one.
   useEffect(() => {
     if (!open) return
     let active = true
@@ -90,13 +93,13 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
     if (!open) return
     setStep(0)
     setError("")
-    setQuote(null)
     if (existingRequest) {
       setForm({
         applicantPhone: existingRequest.applicantPhone || user?.phone || "",
         guests: (existingRequest.guests || []).map((g) => ({
           name: g.name || "",
           gender: g.gender || "",
+          age: g.age === 0 || g.age ? String(g.age) : "",
           relation: g.relation || "",
           aadharNumber: g.aadharNumber || "",
         })) || [emptyGuest()],
@@ -109,6 +112,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         },
         permanentAddress: existingRequest.permanentAddress || "",
         facultyAdvisorEmail: existingRequest.facultyAdvisorEmail || "",
+        roomPreference: existingRequest.roomPreference || "",
       })
     } else {
       setForm({
@@ -117,6 +121,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
         stay: emptyStay(),
         permanentAddress: "",
         facultyAdvisorEmail: "",
+        roomPreference: "",
       })
     }
   }, [open, existingRequest, user])
@@ -141,27 +146,16 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
     lateCheckOutHours > 0 ? `${lateCheckOutHours}h late check-out` : null,
   ].filter(Boolean).join(" · ")
 
-  const fetchQuote = useCallback(async () => {
-    setLoadingQuote(true)
-    try {
-      const res = await accommodationApi.previewQuote({ guests: form.guests, stay: form.stay })
-      setQuote(res?.data || null)
-    } catch {
-      setQuote(null)
-    } finally {
-      setLoadingQuote(false)
-    }
-  }, [form.guests, form.stay])
-
-  useEffect(() => {
-    if (open && step === 2) fetchQuote()
-  }, [open, step, fetchQuote])
-
   const validateStep = () => {
     if (step === 0) {
       if (form.guests.length === 0) return "Add at least one guest"
       for (const g of form.guests) {
         if (!g.name.trim() || !g.gender) return "Every guest needs a name and gender"
+        const age = Number(g.age)
+        if (g.age === "" || g.age === null || g.age === undefined || !Number.isFinite(age)) {
+          return "Every guest needs an age"
+        }
+        if (age < 0 || age > 150 || !Number.isInteger(age)) return "Guest age must be a whole number between 0 and 150"
         if (!g.relation.trim()) return "Every guest needs a relation to you"
         if (!/^\d{12}$/.test(String(g.aadharNumber || "").trim())) return "Every guest needs a valid 12-digit Aadhaar number"
       }
@@ -173,6 +167,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       if (!TIME_RE.test(form.stay.checkInTime)) return "Enter a valid check-in time"
       if (!TIME_RE.test(form.stay.checkOutTime)) return "Enter a valid check-out time"
       if (!form.stay.purpose.trim()) return "Purpose of visit is required"
+      if (!form.roomPreference) return "Room preference (Single or Double) is required"
     }
     return ""
   }
@@ -197,10 +192,14 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
     try {
       const body = {
         applicantPhone: form.applicantPhone,
-        guests: form.guests,
+        guests: form.guests.map((g) => ({
+          ...g,
+          age: Number(g.age),
+        })),
         stay: form.stay,
         permanentAddress: form.permanentAddress,
         facultyAdvisorEmail: form.facultyAdvisorEmail || undefined,
+        roomPreference: form.roomPreference,
       }
       if (isResubmit) {
         await accommodationApi.resubmitRequest(existingRequest._id || existingRequest.id, body)
@@ -264,6 +263,12 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <Grid cols={2} gap={2}>
                   <Input placeholder="Full name *" value={g.name} onChange={(e) => setGuest(i, "name", e.target.value)} />
                   <Select placeholder="Gender *" options={GENDERS} value={g.gender} onChange={(e) => setGuest(i, "gender", e.target.value)} />
+                  <Input
+                    placeholder="Age *"
+                    inputMode="numeric"
+                    value={g.age}
+                    onChange={(e) => setGuest(i, "age", e.target.value.replace(/\D/g, "").slice(0, 3))}
+                  />
                   <Input placeholder="Relation to you *" value={g.relation} onChange={(e) => setGuest(i, "relation", e.target.value)} />
                   <Input placeholder="Aadhaar number *" inputMode="numeric" maxLength={12} value={g.aadharNumber} onChange={(e) => setGuest(i, "aadharNumber", e.target.value.replace(/\D/g, "").slice(0, 12))} />
                 </Grid>
@@ -302,19 +307,33 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
             <Field label="Purpose of visit" required>
               <Input value={form.stay.purpose} onChange={(e) => setStay("purpose", e.target.value)} placeholder="e.g., Convocation, personal visit" />
             </Field>
+            <Field label="Room preference" required>
+              <ToggleButtonGroup
+                options={ROOM_PREFERENCE_OPTIONS}
+                value={form.roomPreference || null}
+                onChange={(value) => setForm((p) => ({ ...p, roomPreference: value }))}
+              />
+              <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
+                Choose single or double occupancy for your guests. Required.
+              </Text>
+            </Field>
             <Field label="Permanent address">
               <Textarea value={form.permanentAddress} onChange={(e) => setForm((p) => ({ ...p, permanentAddress: e.target.value }))} rows={2} placeholder="Address of the guests" />
             </Field>
             {profileFA ? (
-              <Field label="Faculty advisor email">
+              <Field label="Faculty advisor / supervisor email">
                 <Surface bg="secondary" padding="var(--spacing-2) var(--spacing-3)" radius="md" border="1px solid var(--color-border-primary)" color="body" size="sm">
                   {profileFA}
                 </Surface>
                 <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</Text>
               </Field>
             ) : (
-              <Field label="Faculty advisor email (optional)">
-                <Input value={form.facultyAdvisorEmail} onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))} placeholder="Your faculty advisor's email" />
+              <Field label="Faculty advisor / supervisor email (optional)">
+                <Input
+                  value={form.facultyAdvisorEmail}
+                  onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))}
+                  placeholder="Faculty advisor or supervisor email"
+                />
               </Field>
             )}
           </VStack>
@@ -326,20 +345,12 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
               <div>
                 <strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} {form.stay.checkInTime} → {form.stay.toDate || "—"} {form.stay.checkOutTime}
               </div>
+              {form.roomPreference && <Text as="div" color="muted">Room preference: {form.roomPreference}</Text>}
               {extensionSummary && <Text as="div" color="muted">Extension requested: {extensionSummary}</Text>}
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
             </Surface>
-            {loadingQuote ? (
-              <Text color="muted" size="sm">Calculating estimate…</Text>
-            ) : quote ? (
-              <Surface padding={3} radius="card-sm" border="1px solid var(--color-border-primary)">
-                <ChargesRows quote={quote} />
-              </Surface>
-            ) : (
-              <Text color="muted" size="sm">Estimate unavailable.</Text>
-            )}
             <Text size="xs" color="muted">
-              Final amount is confirmed by the Chief Warden office at approval.
+              The Chief Warden Office will set the payable amount after your request is approved. No estimate is shown here.
             </Text>
           </VStack>
         )}

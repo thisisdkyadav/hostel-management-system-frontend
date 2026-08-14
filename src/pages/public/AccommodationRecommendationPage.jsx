@@ -74,7 +74,7 @@ const AccommodationRecommendationPage = () => {
   return (
     <Shell>
       <Text as="div" align="center">
-        <Heading as="h1" size="2xl" weight="semibold" color="heading">Faculty advisor recommendation</Heading>
+        <Heading as="h1" size="2xl" weight="semibold" color="heading">Faculty advisor / supervisor recommendation</Heading>
         <Text size="sm" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
           {student?.name || request.applicantName || "A student"} has requested hostel accommodation for visitors.
         </Text>
@@ -101,6 +101,7 @@ const AccommodationRecommendationPage = () => {
           <InfoRow label="Check-out" value={fmtDate(request.stay?.toDate)} />
           <InfoRow label="Nights" value={request.nights || 0} />
           <InfoRow label="Purpose" value={request.stay?.purpose || "—"} />
+          <InfoRow label="Room preference" value={request.roomPreference || "—"} />
         </VStack>
         {Array.isArray(request.guests) && request.guests.length > 0 && (
           <div style={{ marginTop: "var(--spacing-3)", paddingTop: "var(--spacing-3)", borderTop: "1px solid var(--color-border-light)" }}>

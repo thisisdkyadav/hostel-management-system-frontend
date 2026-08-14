@@ -20,13 +20,13 @@ const S = ACCOMMODATION_STATUS
 const ALL = "__all"
 
 // A lane is normally one status; `match` covers queues that can't be expressed
-// that way — a deferred payment reaches the accountant after the booking has
-// already moved on, so its lane keys off the payment instead.
+// that way — e.g. accountant verification keys off payment.status.
 const lanesFor = (user) => {
   const l = (status, label, match) => ({ status, label, match })
   if (user?.role === "Hostel Supervisor") {
     return [
-      l("__assign", "Assign rooms", (r) => [S.PAYMENT_VERIFIED, S.PAYMENT_DEFERRED, S.HOSTEL_ALLOTTED].includes(r.status)),
+      // Rooms only after payment is verified (pay-later waits for payment first).
+      l("__assign", "Assign rooms", (r) => [S.PAYMENT_VERIFIED, S.HOSTEL_ALLOTTED].includes(r.status)),
       l(S.ROOMS_ASSIGNED, "Assigned"),
       l(S.CHECKED_IN, "Checked in"),
     ]
@@ -138,7 +138,7 @@ const AccommodationStaffPage = () => {
     { key: "applicant", header: "Applicant", render: (r) => <ApplicantCell request={r} /> },
     { key: "stay", header: "Stay", render: (r) => <StayCell request={r} /> },
     { key: "persons", header: "Guests", align: "center", render: (r) => r.persons ?? (r.guests?.length || 0) },
-    { key: "total", header: "Amount", align: "right", render: (r) => money(r.quote?.total) },
+    { key: "total", header: "Amount", align: "right", render: (r) => money(r.payment?.amount || r.quote?.total) },
     { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} tone={getStatusTone(r.status)}>{r.status}</StatusBadge> },
     { key: "id", header: "ID", align: "right", render: (r) => <Text as="span" size="10px" color="muted" style={{ fontFamily: "monospace" }}>{shortId(r._id || r.id)}</Text> },
   ]
