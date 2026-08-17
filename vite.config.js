@@ -123,10 +123,10 @@ export default defineConfig({
       ],
 
       manifest: {
-        name: "Hostel Management System - IIT Indore",
-        short_name: "HMS - IITI",
+        name: "Student Management System - IIT Indore",
+        short_name: "SMS - IITI",
         description:
-          "Hostel Management System for IIT Indore students and staff",
+          "Student Management System for IIT Indore students and staff",
 
         start_url: "/",
         scope: "/",

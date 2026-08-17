@@ -1,8 +1,8 @@
-# Hostel Management System - Frontend
+# Student Management System - Frontend
 
 ## Overview
 
-The frontend is built using React, Tailwind CSS, React Context API, and React Router. It provides the user interface for students, wardens, security, and administrators to interact with the hostel management system.
+The frontend is built using React, Tailwind CSS, React Context API, and React Router. It provides the user interface for students, wardens, security, and administrators to interact with the student management system.
 
 ## Technology Stack
 

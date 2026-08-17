@@ -28,7 +28,7 @@ export const AuthLayout = ({ children }) => (
       <div className="login-card-wrapper">
         <div className="login-card">
           <div className="login-logo-section">
-            <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
+            <img src={hmsLogo} className="login-logo" alt="SMS Logo" />
           </div>
           {children}
         </div>

@@ -71,12 +71,12 @@ const HomePage = () => {
             {/* Heading */}
             <h1 className="homepage-heading">
               Welcome to
-              <span className="homepage-heading-highlight">Hostel Management System</span>
+              <span className="homepage-heading-highlight">Student Management System</span>
             </h1>
 
             {/* Description */}
             <p className="homepage-description">
-              Access all hostel services and resources in one place. Manage your accommodation, requests, and stay informed about important updates.
+              Access all student services and resources in one place. Manage your accommodation, requests, and stay informed about important updates.
             </p>
 
             {/* CTA Button */}

@@ -262,7 +262,7 @@ const Sidebar = ({ navItems }) => {
   const activeCategoryConfig = isCategorizedMode
     ? ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
     : null
-  const headerTitle = activeCategoryConfig?.name || "HMS"
+  const headerTitle = activeCategoryConfig?.name || "SMS"
   const headerTitleColor = activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)"
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (

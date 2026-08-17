@@ -1,6 +1,6 @@
 # API Service Layer - New Structure
 
-This is the improved API service layer for the Hostel Management System. All endpoints and data structures are preserved exactly as they were.
+This is the improved API service layer for the Student Management System. All endpoints and data structures are preserved exactly as they were.
 
 ## Structure
 

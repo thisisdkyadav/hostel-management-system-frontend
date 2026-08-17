@@ -90,7 +90,7 @@ const ModernHeader = () => {
               </div>
               <div className="modern-header-logo-text">
                 <h1 className="modern-header-logo-title">IIT INDORE</h1>
-                <p className="modern-header-logo-subtitle">Halls of Residence</p>
+                <p className="modern-header-logo-subtitle">Student Management System</p>
               </div>
             </Link>
 

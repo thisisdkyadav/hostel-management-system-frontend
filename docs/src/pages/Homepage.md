@@ -1,6 +1,6 @@
 # Homepage Page (`/src/pages/Homepage.jsx`)
 
-This component serves as the main landing page for the Hostel Management System, typically displayed to unauthenticated users or as the root entry point.
+This component serves as the main landing page for the Student Management System, typically displayed to unauthenticated users or as the root entry point.
 
 ## Route
 

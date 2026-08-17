@@ -67,9 +67,9 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
         {isOpen ? <FaTimes size={16} /> : <FaBars size={16} />}
       </button>
 
-      {/* HMS Logo Text */}
+      {/* SMS Logo Text */}
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
-        <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">HMS</span>
+        <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">SMS</span>
       </div>
 
       {/* Right cluster: theme toggle + profile dropdown */}

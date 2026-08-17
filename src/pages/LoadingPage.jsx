@@ -10,7 +10,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           <div className="geo-square geo-square--1"></div>
           <div className="geo-square geo-square--2"></div>
           <div className="geo-center">
-            <span className="logo-text">HMS</span>
+            <span className="logo-text">SMS</span>
           </div>
         </div>
 
