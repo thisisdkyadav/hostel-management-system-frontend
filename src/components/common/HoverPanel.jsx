@@ -40,6 +40,10 @@ const place = (trigger, panel, placement, align) => {
   if (placement === "auto") {
     const below = window.innerHeight - t.bottom
     used = below < p.height + GAP && t.top > below ? "top" : "bottom"
+  } else if (placement === "right" && t.right + GAP + p.width > window.innerWidth - VIEWPORT_PAD && t.left > window.innerWidth - t.right) {
+    used = "left"
+  } else if (placement === "left" && t.left - GAP - p.width < VIEWPORT_PAD && window.innerWidth - t.right > t.left) {
+    used = "right"
   }
 
   switch (used) {
@@ -87,8 +91,8 @@ const HoverPanel = ({
   placement = "bottom",
   align = "center",
   portal = true,
-  closeDelay = 160,
-  openDelay = 50,
+  closeDelay = 120,
+  openDelay = 120,
   onOpenChange,
   className = "",
   panelClassName = "",
@@ -108,8 +112,10 @@ const HoverPanel = ({
   const parentRef = useRef(parent)
   const hoverableRef = useRef(canHoverFine())
   const activeChildClose = useRef(null)
+  const onOpenChangeRef = useRef(onOpenChange)
   parentRef.current = parent
   hoverableRef.current = canHoverFine()
+  onOpenChangeRef.current = onOpenChange
 
   const clearTimers = () => {
     if (openTimer.current) clearTimeout(openTimer.current)
@@ -133,16 +139,13 @@ const HoverPanel = ({
     return false
   }
 
-  const setOpenSafe = useCallback(
-    (next) => {
-      if (openRef.current === next) return
-      openRef.current = next
-      setOpen(next)
-      if (!next) setCoords(null)
-      onOpenChange?.(next)
-    },
-    [onOpenChange]
-  )
+  const setOpenSafe = useCallback((next) => {
+    if (openRef.current === next) return
+    openRef.current = next
+    setOpen(next)
+    if (!next) setCoords(null)
+    onOpenChangeRef.current?.(next)
+  }, [])
 
   const forceClose = useCallback(() => {
     pointerInside.current = false
@@ -163,6 +166,10 @@ const HoverPanel = ({
 
   const requestOpen = useCallback(() => {
     clearTimers()
+    if (openDelay <= 0) {
+      setOpenSafe(true)
+      return
+    }
     openTimer.current = setTimeout(() => setOpenSafe(true), openDelay)
   }, [openDelay, setOpenSafe])
 

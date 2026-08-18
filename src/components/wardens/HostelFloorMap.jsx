@@ -28,11 +28,23 @@ const LEGEND = [
   { tone: "inactive", label: "Inactive" },
 ]
 
-const RoomCell = ({ room, hostelId, canEdit, onViewMore, onSaved, portal = true, size = "md" }) => (
+const RoomCell = ({
+  room,
+  hostelId,
+  canEdit,
+  onViewMore,
+  onSaved,
+  portal = true,
+  size = "md",
+  placement = "auto",
+  align = "start",
+  openDelay,
+}) => (
   <HoverPanel
-    placement="auto"
-    align="start"
+    placement={placement}
+    align={align}
     portal={portal}
+    openDelay={openDelay}
     content={
       <RoomPeekPanel
         key={`${room.id}-${room.status}-${room.capacity}-${occupancyOf(room)}`}
@@ -57,9 +69,7 @@ const RoomCell = ({ room, hostelId, canEdit, onViewMore, onSaved, portal = true,
 const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
   const provided = Array.isArray(unit.rooms) ? unit.rooms : null
   const [fetched, setFetched] = useState(null)
-  const [activeId, setActiveId] = useState(null)
   const rooms = provided ?? fetched
-  const active = rooms?.find((room) => room.id === activeId) ?? null
 
   useEffect(() => {
     if (provided !== null || !unit.id) return undefined
@@ -94,34 +104,21 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
   }
 
   return (
-    <div className="floor-map__unit-flyout">
-      <div className="floor-map__rooms">
-        {rooms.map((room) => (
-          <OccupancyTile
-            key={room.id}
-            label={room.roomNumber}
-            used={occupancyOf(room)}
-            total={room.capacity || 0}
-            status={room.status}
-            size="sm"
-            expanded={room.id === activeId}
-            onPointerEnter={() => setActiveId(room.id)}
-            onFocus={() => setActiveId(room.id)}
-          />
-        ))}
-      </div>
-      {active ? (
-        <RoomPeekPanel
-          key={`${active.id}-${active.status}-${active.capacity}-${occupancyOf(active)}`}
-          room={active}
+    <div className="floor-map__rooms">
+      {rooms.map((room) => (
+        <RoomCell
+          key={room.id}
+          room={room}
           hostelId={hostelId}
           canEdit={canEdit}
           onViewMore={onViewMore}
           onSaved={onSaved}
+          size="sm"
+          placement="auto"
+          align="center"
+          openDelay={0}
         />
-      ) : (
-        <div className="floor-map__peek floor-map__peek--idle">Hover a room</div>
-      )}
+      ))}
     </div>
   )
 }

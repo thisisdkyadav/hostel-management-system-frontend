@@ -69,18 +69,15 @@
   gap: var(--spacing-2-5);
 }
 
-.floor-map__unit-flyout {
-  display: flex;
-  align-items: stretch;
-  gap: var(--spacing-3);
-}
-
 .floor-map__rooms {
   display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   gap: var(--spacing-2);
-  max-width: calc(var(--spacing-16) * 4 + var(--spacing-2) * 3);
+}
+
+.floor-map__rooms > * {
+  flex: 0 0 auto;
 }
 
 .floor-map__peek {
@@ -89,11 +86,6 @@
   gap: var(--spacing-3);
   width: calc(var(--spacing-20) * 4.5);
   min-width: calc(var(--spacing-20) * 3.5);
-}
-
-.floor-map__unit-flyout .floor-map__peek {
-  padding-left: var(--spacing-3);
-  border-left: var(--border-1) solid var(--color-border-light);
 }
 
 .floor-map__peek-head {
@@ -339,7 +331,6 @@
 
 .floor-map__idle-plate,
 .floor-map__guest-note,
-.floor-map__peek--idle,
 .floor-map__warn {
   margin: 0;
   font-size: var(--font-size-xs);
@@ -348,15 +339,6 @@
 
 .floor-map__warn {
   color: var(--color-danger);
-}
-
-.floor-map__peek--idle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-placeholder);
-  font-size: var(--font-size-xs);
-  letter-spacing: 0.04em;
 }
 
 .floor-map__actions {
