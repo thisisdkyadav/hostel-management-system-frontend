@@ -24,8 +24,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   // Only "Active" rooms are operational; every other status is out of service.
   const isActive = isRoomActive(room.status)
   const isAdmin = user.role === "Admin"
-  // Admin or Hostel Supervisor can add/remove students; room active/inactive toggle stays Admin-only.
   const canManageAllocations = isAdmin || user.role === "Hostel Supervisor"
+  const canEditRoom = canManageAllocations
   const status = occupancyBadge(room, isActive)
 
   const removeStudent = async (allocationId) => {
@@ -99,7 +99,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             </DetailSection>
           </Grid>
 
-          {isAdmin && (
+          {canEditRoom && (
             <HStack justify="start">
               <Button onClick={toggleStatus} disabled={loading} variant={isActive ? "danger" : "success"} size="md">
                 {isActive ? <ToggleRight /> : <ToggleLeft />}

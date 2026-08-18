@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
-import { FaBuilding, FaDoorOpen } from "react-icons/fa"
+import { useParams, useNavigate } from "react-router-dom"
+import { FaBuilding } from "react-icons/fa"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
 import UnitStats from "../../components/wardens/UnitStats"
-import UnitListView from "../../components/wardens/UnitListView"
-import RoomListView from "../../components/wardens/RoomListView"
+import { dismissAllHoverPanels } from "../../components/common/HoverPanel"
+import HostelFloorMap from "../../components/wardens/HostelFloorMap"
 import RoomDetailModal from "../../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import RoomStats from "../../components/wardens/RoomStats"
@@ -15,7 +15,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Badge, Button, Card, Checkbox, Divider, Grid, HStack, IconCircle, Input, Label, Spinner, Text, VStack } from "hzero"
+import { Button, Card, Checkbox, Divider, Grid, HStack, IconCircle, Input, Label, Spinner, Text, VStack } from "hzero"
 import { MdMeetingRoom } from "react-icons/md"
 
 const UnitsAndRoomsPage = () => {
@@ -73,7 +73,7 @@ const UnitsAndRoomsPage = () => {
     try {
       setLoading(true)
       const response = await hostelApi.getUnits(hostelId)
-      const fetchedUnits = response || []
+      const fetchedUnits = Array.isArray(response) ? response : response?.data || []
       setAllUnits(fetchedUnits)
 
       if (unitNumber && fetchedUnits.length > 0) {
@@ -116,63 +116,33 @@ const UnitsAndRoomsPage = () => {
     }
   }
 
-  const fetchData = () => {
-    if (hostelType === "unit-based") {
-      fetchUnits()
-
-      if (currentView === "rooms" && unitNumber) {
-        const unitObj = units.find((u) => u.unitNumber === unitNumber)
-        if (unitObj) {
-          fetchRooms(unitObj.id)
-        }
-      }
-    } else {
-      fetchRooms()
-    }
-  }
-
-
-
-  const handleUnitClick = (unit) => {
-    // Reset filters when navigating from units to rooms
-    setFilters({
-      ...filters,
-      searchTerm: "",
-      minCapacity: "",
-      maxCapacity: "",
-      minOccupancy: "",
-      maxOccupancy: "",
-      showEmptyOnly: false,
-    })
-    navigate(`${getHomeRoute()}/hostels/${encodedHostelName}/units/${unit.unitNumber}`)
-  }
-
   const handleRoomClick = (room) => {
+    dismissAllHoverPanels()
     setSelectedRoom(room)
     setShowRoomDetail(true)
   }
 
-  const handleAllocateStudent = (room) => {
-    setSelectedRoom(room)
-    setShowAllocateModal(true)
-  }
-
   const handleAllocationSuccess = () => {
-    if (unitNumber) {
-      const unitObj = units.find((u) => u.unitNumber === unitNumber)
-      if (unitObj) {
-        fetchRooms(unitObj.id)
-      }
-    } else {
-      fetchRooms()
-    }
+    refreshMap()
     setShowAllocateModal(false)
     setShowRoomDetail(false)
     setSelectedRoom(null)
   }
 
+  const refreshMap = () => {
+    if (hostelType === "unit-based") {
+      fetchUnits()
+      if (currentView === "rooms") {
+        const unitObj = selectedUnit || units.find((u) => u.unitNumber === unitNumber)
+        if (unitObj) fetchRooms(unitObj.id)
+      }
+    } else {
+      fetchRooms()
+    }
+  }
+
   const handleUpdateSuccess = () => {
-    fetchData()
+    refreshMap()
     setShowRoomDetail(false)
   }
 
@@ -208,7 +178,7 @@ const UnitsAndRoomsPage = () => {
             if (unitsToSearch.length === 0) {
               setLoading(true)
               const unitResponse = await hostelApi.getUnits(hostelId)
-              unitsToSearch = unitResponse || []
+              unitsToSearch = Array.isArray(unitResponse) ? unitResponse : unitResponse?.data || []
               setAllUnits(unitsToSearch)
               setLoading(false)
             }
@@ -417,7 +387,20 @@ const UnitsAndRoomsPage = () => {
           </div>
         ) : (
           <>
-            <div style={{ marginTop: 'var(--spacing-4)' }}>{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
+            {((hostelType === "unit-based" && currentView === "units" && units.length > 0) ||
+              (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length > 0)) && (
+              <div style={{ marginTop: "var(--spacing-4)" }}>
+                <HostelFloorMap
+                  mode={hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
+                  units={units}
+                  rooms={rooms}
+                  hostelId={hostelId}
+                  canEdit={user?.role === "Admin" || user?.role === "Hostel Supervisor"}
+                  onViewRoom={handleRoomClick}
+                  onUpdated={refreshMap}
+                />
+              </div>
+            )}
 
             {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
               <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding style={{ fontSize: 'var(--font-size-4xl)' }} color="var(--color-text-placeholder)" /> : <MdMeetingRoom style={{ fontSize: 'var(--font-size-4xl)' }} color="var(--color-text-placeholder)" />}

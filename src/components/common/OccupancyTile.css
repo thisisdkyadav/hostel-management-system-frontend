@@ -1,0 +1,218 @@
+/* Generic occupancy tile — a labelled floor plate. Seat pips carry the
+   count so the number can stay the hero. Tone lives on a data attribute. */
+
+.occ-tile {
+  --occ-tile-size: var(--spacing-20);
+  --occ-accent: var(--color-border-primary);
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--occ-tile-size);
+  height: var(--occ-tile-size);
+  padding: var(--spacing-2) var(--spacing-1-5) var(--spacing-2);
+  gap: var(--spacing-1-5);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 var(--border-1) var(--color-bg-primary);
+  transition:
+    transform var(--transition-fast) var(--ease-out),
+    box-shadow var(--transition-fast) var(--ease-out),
+    border-color var(--transition-fast) var(--ease-out),
+    background-color var(--transition-fast) var(--ease-out);
+}
+
+.occ-tile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18%;
+  right: 18%;
+  height: var(--border-2, 2px);
+  border-radius: 0 0 var(--radius-full) var(--radius-full);
+  background: var(--occ-accent);
+}
+
+.occ-tile--sm {
+  --occ-tile-size: var(--spacing-16);
+  padding: var(--spacing-1-5) var(--spacing-1) var(--spacing-1-5);
+  gap: var(--spacing-1);
+}
+
+.occ-tile--lg {
+  --occ-tile-size: var(--spacing-24);
+}
+
+.occ-tile--lg.occ-tile--grouped {
+  gap: var(--spacing-2);
+}
+
+.occ-tile__label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.04em;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.occ-tile--lg .occ-tile__label {
+  font-size: var(--font-size-lg);
+}
+
+.occ-tile--sm .occ-tile__label {
+  font-size: var(--font-size-xs);
+}
+
+.occ-tile__count {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.02em;
+}
+
+.occ-tile__groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding-inline: var(--spacing-1);
+}
+
+.occ-tile__group {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.occ-tile__group + .occ-tile__group::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--spacing-1) * -1);
+  top: 15%;
+  bottom: 15%;
+  width: var(--border-1);
+  background: var(--color-border-primary);
+  opacity: 0.45;
+}
+
+.occ-tile__pips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-0-5);
+  max-width: 80%;
+}
+
+.occ-tile__group .occ-tile__pips {
+  max-width: none;
+}
+
+.occ-tile--sm .occ-tile__pips {
+  gap: var(--spacing-0-5);
+}
+
+.occ-tile__pip {
+  width: var(--spacing-1-5);
+  height: var(--spacing-1-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-muted);
+  box-shadow: inset 0 0 0 var(--border-1) var(--color-border-primary);
+}
+
+.occ-tile--sm .occ-tile__pip {
+  width: var(--spacing-1);
+  height: var(--spacing-1);
+}
+
+.occ-tile__pip[data-on="true"] {
+  background: var(--occ-accent);
+  box-shadow: none;
+}
+
+.occ-tile[data-tone="empty"] {
+  background: var(--color-bg-secondary);
+  --occ-accent: var(--color-text-disabled);
+}
+
+.occ-tile[data-tone="partial"] {
+  background: var(--color-info-bg-light);
+  border-color: var(--color-info-border);
+  --occ-accent: var(--color-info);
+}
+
+.occ-tile[data-tone="full"] {
+  background: var(--color-success-bg-light);
+  border-color: var(--color-success-border);
+  --occ-accent: var(--color-success);
+}
+
+.occ-tile[data-tone="inactive"] {
+  --occ-accent: var(--color-text-disabled);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-bg-muted),
+    var(--color-bg-muted) var(--spacing-1),
+    var(--color-bg-secondary) var(--spacing-1),
+    var(--color-bg-secondary) var(--spacing-2)
+  );
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+
+.occ-tile[data-tone="inactive"] .occ-tile__count {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--font-size-2xs);
+}
+
+.occ-tile:hover,
+.occ-tile:focus-visible {
+  transform: translateY(calc(var(--spacing-0-5) * -1));
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-hover);
+  outline: none;
+}
+
+.occ-tile:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.occ-tile[aria-expanded="true"] {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus-primary);
+  transform: translateY(calc(var(--spacing-0-5) * -1));
+}
+
+.occ-tile:disabled {
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .occ-tile {
+    transition: none;
+  }
+
+  .occ-tile:hover,
+  .occ-tile:focus-visible,
+  .occ-tile[aria-expanded="true"] {
+    transform: none;
+  }
+}

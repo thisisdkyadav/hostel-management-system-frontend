@@ -1,0 +1,39 @@
+/* Generic hover-intent panel. Chrome uses the same tokens as hzero's Popover
+   so a second project can lift this file unchanged. Position (top/left) is
+   data written by the component; colour, radius, and motion stay in tokens. */
+
+.hover-panel {
+  display: inline-flex;
+  position: relative;
+  vertical-align: top;
+}
+
+.hover-panel__trigger {
+  display: inline-flex;
+}
+
+.hover-panel__content {
+  position: fixed;
+  z-index: var(--popover-z);
+  padding: var(--popover-padding);
+  background: var(--popover-bg);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--popover-radius);
+  box-shadow: var(--popover-shadow);
+  max-width: calc(100vw - var(--spacing-8));
+  animation: hover-panel-in var(--transition-fast) var(--ease-out);
+}
+
+.hover-panel__content[data-ready="false"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes hover-panel-in {
+  from { opacity: 0; transform: translateY(var(--spacing-1)) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-panel__content { animation: none; }
+}
