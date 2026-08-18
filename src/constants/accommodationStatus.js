@@ -81,6 +81,21 @@ export const describeExtension = (stay = {}) => {
   return parts.join(" · ")
 }
 
+/**
+ * Student-facing labels. Internal/staff statuses still use ACCOMMODATION_STATUS
+ * values; these soften wording that says "approve/approved" before the Chief
+ * Warden Office has allotted a hostel and asked for payment.
+ */
+export const STUDENT_STATUS_LABEL = {
+  [ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY]: "Checking availability",
+  [ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION]: "With faculty advisor / supervisor",
+  [ACCOMMODATION_STATUS.PENDING_CW_APPROVAL]: "With Chief Warden",
+  [ACCOMMODATION_STATUS.CW_APPROVED]: "Processing — payment details coming",
+  [ACCOMMODATION_STATUS.RETURNED_TO_STUDENT]: "Returned for updates",
+}
+
+export const getStudentStatusLabel = (status) => STUDENT_STATUS_LABEL[status] || status
+
 // Tone for the C0 StatusBadge (success | warning | danger | info | primary).
 export const STATUS_TONE = {
   [ACCOMMODATION_STATUS.DRAFT]: "primary",
@@ -113,16 +128,16 @@ export const getStatusTone = (status) => {
 // Ordered milestones for the student status timeline (happy path).
 export const STUDENT_STEPS = [
   { key: "submitted", label: "Submitted", statuses: [ACCOMMODATION_STATUS.SUBMITTED] },
-  { key: "capacity", label: "Capacity Check", statuses: [ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY] },
+  { key: "capacity", label: "Availability check", statuses: [ACCOMMODATION_STATUS.PENDING_CWO_CAPACITY] },
   {
     key: "review",
-    label: "Recommendation & Approval",
+    label: "Recommendation & review",
     statuses: [ACCOMMODATION_STATUS.PENDING_FA_RECOMMENDATION, ACCOMMODATION_STATUS.PENDING_CW_APPROVAL],
   },
-  { key: "approved", label: "Approved", statuses: [ACCOMMODATION_STATUS.CW_APPROVED] },
+  { key: "processing", label: "Processing", statuses: [ACCOMMODATION_STATUS.CW_APPROVED] },
   {
     key: "payment",
-    label: "Payment & Hostel",
+    label: "Payment & hostel",
     statuses: [
       ACCOMMODATION_STATUS.PAYMENT_REQUESTED,
       ACCOMMODATION_STATUS.PAYMENT_DEFERRED,

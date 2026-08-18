@@ -10,6 +10,7 @@ import { getMediaUrl } from "../../utils/mediaUtils"
 import {
   ACCOMMODATION_STATUS,
   getStatusTone,
+  getStudentStatusLabel,
   STUDENT_STEPS,
   stepIndexForStatus,
 } from "@/constants/accommodationStatus"
@@ -121,23 +122,26 @@ export const StayCell = ({ request }) => (
   </div>
 )
 
-export const MetaBar = ({ request, actions }) => (
-  <HStack
-    align="center"
-    justify="between"
-    gap={2}
-    wrap
-    style={{ paddingBottom: "var(--spacing-3)", borderBottom: "var(--border-1) solid var(--color-border-light)" }}
-  >
-    <HStack gap={2} align="center" wrap>
-      <Badge size="small" style={{ fontFamily: "var(--font-family-mono)" }}>{shortId(request._id || request.id)}</Badge>
-      <StatusBadge status={request.status} tone={getStatusTone(request.status)}>{request.status}</StatusBadge>
-      <Badge variant="primary" size="small" icon={<CalendarDays />}>{fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}</Badge>
-      <Badge size="small" icon={<Users />}>{request.persons ?? (request.guests?.length || 0)} guest(s)</Badge>
+export const MetaBar = ({ request, actions, studentFacing = false }) => {
+  const statusLabel = studentFacing ? getStudentStatusLabel(request.status) : request.status
+  return (
+    <HStack
+      align="center"
+      justify="between"
+      gap={2}
+      wrap
+      style={{ paddingBottom: "var(--spacing-3)", borderBottom: "var(--border-1) solid var(--color-border-light)" }}
+    >
+      <HStack gap={2} align="center" wrap>
+        <Badge size="small" style={{ fontFamily: "var(--font-family-mono)" }}>{shortId(request._id || request.id)}</Badge>
+        <StatusBadge status={statusLabel} tone={getStatusTone(request.status)}>{statusLabel}</StatusBadge>
+        <Badge variant="primary" size="small" icon={<CalendarDays />}>{fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}</Badge>
+        <Badge size="small" icon={<Users />}>{request.persons ?? (request.guests?.length || 0)} guest(s)</Badge>
+      </HStack>
+      {actions && <HStack gap={2}>{actions}</HStack>}
     </HStack>
-    {actions && <HStack gap={2}>{actions}</HStack>}
-  </HStack>
-)
+  )
+}
 
 // ---- Charges + guest list (compose inside SectionCard) -------------------
 
@@ -197,9 +201,10 @@ export const GuestList = ({ guests = [] }) => (
 
 // ---- Journey timeline ----------------------------------------------------
 
-export const JourneyTimeline = ({ status, timeline = [] }) => {
+export const JourneyTimeline = ({ status, timeline = [], studentFacing = false }) => {
   const currentIdx = stepIndexForStatus(status)
   const terminalNegative = status === ACCOMMODATION_STATUS.REJECTED || status === ACCOMMODATION_STATUS.CANCELLED
+  const terminalLabel = studentFacing ? getStudentStatusLabel(status) : status
 
   const doneSet = new Set()
   for (const t of timeline) {
@@ -237,7 +242,7 @@ export const JourneyTimeline = ({ status, timeline = [] }) => {
       {terminalNegative && (
         <HStack gap={3}>
           <span style={{ width: 12, height: 12, borderRadius: "var(--radius-full)", marginTop: 2, backgroundColor: "var(--color-danger)", border: "var(--border-2) solid var(--color-danger)", flexShrink: 0 }} />
-          <Text as="div" size="sm" weight="semibold" color="danger">{status}</Text>
+          <Text as="div" size="sm" weight="semibold" color="danger">{terminalLabel}</Text>
         </HStack>
       )}
     </VStack>

@@ -162,7 +162,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
   return (
     <Modal isOpen={open} onClose={onClose} title="Guest accommodation" width={860} closeButtonVariant="button">
       <VStack gap={4}>
-        <MetaBar request={request} actions={cancelAction} />
+        <MetaBar request={request} actions={cancelAction} studentFacing />
 
         {error && (
           <Surface bg="danger" padding={3} radius="md" color="danger-text" size="sm">{error}</Surface>
@@ -206,7 +206,7 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
           {/* Right column */}
           <VStack gap={4}>
             <SectionCard icon={Clock3} title="Timeline" accentColor="var(--color-primary)">
-              <JourneyTimeline status={status} timeline={request.timeline} />
+              <JourneyTimeline status={status} timeline={request.timeline} studentFacing />
             </SectionCard>
 
             {status === ACCOMMODATION_STATUS.RETURNED_TO_STUDENT && (
