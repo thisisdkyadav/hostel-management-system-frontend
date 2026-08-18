@@ -47,7 +47,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [showStudentProfile, setShowStudentProfile] = useState(false)
-  const [showProof, setShowProof] = useState(false)
+  const [proofFileRef, setProofFileRef] = useState("")
   const [showInvoice, setShowInvoice] = useState(false)
 
   const [decision, setDecision] = useState({ action: "approve", reason: "" })
@@ -59,6 +59,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [gstOptions, setGstOptions] = useState([])
   const [verify, setVerify] = useState({ action: "verify", note: "" })
   const [payEdit, setPayEdit] = useState({ utr: "", paidAt: "" })
+  // null | "main" | additionalPaymentId — post-verify UTR/date edit, one row at a time
+  const [editingPaymentKey, setEditingPaymentKey] = useState(null)
+  const [showSettleForm, setShowSettleForm] = useState(false)
   const [schedDecision, setSchedDecision] = useState({ action: "approve", note: "", extraAmount: "" })
   const [settle, setSettle] = useState({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
   const [cancelReason, setCancelReason] = useState("")
@@ -119,13 +122,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const canReassign = isSupervisor && status === ACCOMMODATION_STATUS.ROOMS_ASSIGNED
   // Money that never went through the portal (cash/DD at the counter, a bank
   // reconciliation) — available to accounts once an amount has been set.
-  const showSettle = isAccountant && Boolean(payment.amount) && payment.status !== PAYMENT_STATUS.SUBMITTED
+  // Custom / counter payment — button opens the form (not always visible).
+  const canSettle = isAccountant && Boolean(payment.amount) && payment.status !== PAYMENT_STATUS.SUBMITTED
   const isPaid = payment.status === PAYMENT_STATUS.VERIFIED
-  // Fix typos in UTR / payment date after proof is in, or after the bill is paid.
-  const showEditPaymentDetails =
-    isAccountant &&
-    payment.status === PAYMENT_STATUS.VERIFIED &&
-    !submittedAdditional
   // The student cannot withdraw after payment is requested, so the office holds
   // the release valve for the whole run up to invoicing.
   const canAdminCancel =
@@ -138,12 +137,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     showIssuePayment ||
     showScheduleDecision ||
     showVerify ||
-    showEditPaymentDetails ||
     showAssign ||
-    showSettle ||
+    canSettle ||
     canAdminCancel
   const needsHostelPick = showCapacity || showIssuePayment
   const payEditUtrValid = !payEdit.utr || /^\d{12}$/.test(payEdit.utr)
+  // After verify only — during verify, UTR/date are edited in the verify panel.
+  const canEditPaymentRow = (statusValue) =>
+    isAccountant && statusValue === PAYMENT_STATUS.VERIFIED
 
   const requestId = request?._id || request?.id
   const student = request?.student
@@ -183,10 +184,19 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     setDecision({ action: "approve", reason: "" })
     setCapacity({ action: "approve", reason: "" })
     setVerify({ action: "verify", note: "" })
-    setPayEdit({
-      utr: request.payment?.utr || "",
-      paidAt: toYmd(request.payment?.paidAt),
-    })
+    setEditingPaymentKey(null)
+    setShowSettleForm(false)
+    {
+      const addlSubmitted = (request.additionalPayments || []).find((p) => p.status === PAYMENT_STATUS.SUBMITTED)
+      const seedFrom =
+        request.payment?.status === PAYMENT_STATUS.SUBMITTED
+          ? request.payment
+          : addlSubmitted || request.payment
+      setPayEdit({
+        utr: seedFrom?.utr || "",
+        paidAt: toYmd(seedFrom?.paidAt),
+      })
+    }
     setSchedDecision({ action: "approve", note: "", extraAmount: "" })
     setSettle({ action: "mark_paid", method: "Cash", reference: "", paidAt: "", note: "" })
     setCancelReason("")
@@ -283,20 +293,19 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     guestCharges.every((c) => Number(c.price) > 0 && Number.isFinite(Number(c.gstPercentage)) && Number(c.gstPercentage) >= 0)
   const submitVerify = run(() => {
     if (verify.action === "reject" && !verify.note.trim()) throw new Error("Add a reason for rejecting the payment.")
-    if (verify.action === "verify" && payment.status === PAYMENT_STATUS.SUBMITTED) {
+    const verifyingMain = payment.status === PAYMENT_STATUS.SUBMITTED
+    const addl = verifyingMain
+      ? null
+      : (request.additionalPayments || []).find((p) => p.status === PAYMENT_STATUS.SUBMITTED)
+    if (verify.action === "verify") {
       if (!/^\d{12}$/.test(payEdit.utr || "")) throw new Error("UTR must be exactly 12 digits.")
       if (!payEdit.paidAt) throw new Error("Payment date is required.")
     }
-    const addl = (request.additionalPayments || []).find((p) => p.status === PAYMENT_STATUS.SUBMITTED)
     return accommodationApi.verifyPayment(requestId, {
       action: verify.action,
       note: verify.note.trim(),
-      ...(payment.status === PAYMENT_STATUS.SUBMITTED && verify.action === "verify"
-        ? { utr: payEdit.utr.trim(), paidAt: payEdit.paidAt }
-        : {}),
-      ...(payment.status !== PAYMENT_STATUS.SUBMITTED && addl
-        ? { additionalPaymentId: addl._id }
-        : {}),
+      ...(verify.action === "verify" ? { utr: payEdit.utr.trim(), paidAt: payEdit.paidAt } : {}),
+      ...(addl ? { additionalPaymentId: addl._id } : {}),
     })
   })
   const submitScheduleDecision = run(() => {
@@ -317,24 +326,36 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
           : 0,
     })
   })
-  const submitPayEdit = run(() => {
+  const startEditPayment = (key, source) => {
+    setEditingPaymentKey(key)
+    setPayEdit({
+      utr: source?.utr || "",
+      paidAt: toYmd(source?.paidAt),
+    })
+  }
+  const submitPayEdit = run(async () => {
     if (!payEdit.utr.trim() && !payEdit.paidAt) throw new Error("Enter a UTR and/or payment date.")
     if (payEdit.utr.trim() && !/^\d{12}$/.test(payEdit.utr.trim())) throw new Error("UTR must be exactly 12 digits.")
-    return accommodationApi.updatePaymentDetails(requestId, {
+    await accommodationApi.updatePaymentDetails(requestId, {
       utr: payEdit.utr.trim() || undefined,
       paidAt: payEdit.paidAt || undefined,
+      ...(editingPaymentKey && editingPaymentKey !== "main"
+        ? { additionalPaymentId: editingPaymentKey }
+        : {}),
     })
+    setEditingPaymentKey(null)
   })
-  const submitSettle = run(() => {
+  const submitSettle = run(async () => {
     if (settle.action === "mark_paid" && !settle.method.trim()) throw new Error("Record how the payment was received.")
     if (settle.action === "mark_unpaid" && !settle.note.trim()) throw new Error("Add a reason for marking it unpaid.")
-    return accommodationApi.settlePayment(requestId, {
+    await accommodationApi.settlePayment(requestId, {
       action: settle.action,
       method: settle.method.trim() || undefined,
       reference: settle.reference.trim() || undefined,
       paidAt: settle.paidAt || undefined,
       note: settle.note.trim() || undefined,
     })
+    setShowSettleForm(false)
   })
   const submitAdminCancel = run(() => {
     if (!cancelReason.trim()) throw new Error("Add a reason for cancelling.")
@@ -476,35 +497,152 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               </DetailSection>
             )}
 
-            {(request.additionalPayments || []).length > 0 && (
-              <DetailSection title="Additional payments" icon={Wallet}>
-                {(request.additionalPayments || []).map((p) => (
-                  <InfoRow
-                    key={p._id}
-                    label={`${p.label || "Extra"} · ${p.status}`}
-                    value={money(p.amount)}
-                  />
-                ))}
-              </DetailSection>
-            )}
+            {Boolean(payment.amount) && (
+              <DetailSection title="Payments" icon={CreditCard}>
+                <VStack gap={3}>
+                  <Surface bg="tertiary" padding="var(--spacing-3)" radius="md">
+                    <VStack gap={2}>
+                      <HStack justify="between" align="center" wrap gap={2}>
+                        <Text size="sm" weight="semibold">Main payment · {payment.status || "—"}</Text>
+                        <HStack gap={2} wrap>
+                          {payment.screenshotFileRef && (
+                            <Button type="button" size="sm" variant="secondary" onClick={() => setProofFileRef(payment.screenshotFileRef)}>
+                              <Eye size={14} /> Proof
+                            </Button>
+                          )}
+                          {canEditPaymentRow(payment.status) && editingPaymentKey !== "main" && (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => startEditPayment("main", payment)}
+                            >
+                              Edit
+                            </Button>
+                          )}
+                        </HStack>
+                      </HStack>
+                      <InfoRow label="Amount" value={money(payment.amount)} />
+                      {payment.mode === PAYMENT_MODE.LATER && (
+                        <InfoRow label="Mode" value={<Badge variant="warning" size="small">Deferred (pay later)</Badge>} />
+                      )}
+                      {payment.remarks && <InfoRow label="Remarks" value={payment.remarks} />}
+                      {editingPaymentKey === "main" ? (
+                        <VStack gap={2}>
+                          <Field
+                            label="UTR"
+                            help="12-digit transfer reference."
+                            error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
+                          >
+                            <Input
+                              value={payEdit.utr}
+                              inputMode="numeric"
+                              maxLength={12}
+                              onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                              placeholder="12-digit UTR"
+                            />
+                          </Field>
+                          <Field label="Payment date">
+                            <Input
+                              type="date"
+                              value={payEdit.paidAt}
+                              max={todayYmd()}
+                              onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
+                            />
+                          </Field>
+                          <HStack gap={2} wrap>
+                            <Button
+                              size="sm"
+                              onClick={submitPayEdit}
+                              loading={busy}
+                              disabled={busy || !payEditUtrValid || (!payEdit.utr.trim() && !payEdit.paidAt)}
+                            >
+                              Save
+                            </Button>
+                            <Button size="sm" variant="outline" disabled={busy} onClick={() => setEditingPaymentKey(null)}>
+                              Cancel
+                            </Button>
+                          </HStack>
+                        </VStack>
+                      ) : (
+                        <>
+                          <InfoRow label="UTR" value={payment.utr || "—"} />
+                          <InfoRow label="Paid on" value={fmtDate(payment.paidAt)} />
+                        </>
+                      )}
+                    </VStack>
+                  </Surface>
 
-            {request.payment?.screenshotFileRef && (
-              <DetailSection
-                title="Payment proof"
-                icon={CreditCard}
-                actions={
-                  <Button type="button" size="sm" variant="secondary" onClick={() => setShowProof(true)}>
-                    <Eye size={14} /> View
-                  </Button>
-                }
-              >
-                <InfoRow label="Amount" value={money(payment.amount)} />
-                <InfoRow label="UTR" value={payment.utr || "—"} />
-                <InfoRow label="Paid on" value={fmtDate(payment.paidAt)} />
-                {payment.mode === PAYMENT_MODE.LATER && (
-                  <InfoRow label="Mode" value={<Badge variant="warning" size="small">Deferred (pay later)</Badge>} />
-                )}
-                {payment.remarks && <InfoRow label="Remarks" value={payment.remarks} />}
+                  {(request.additionalPayments || []).map((p) => {
+                    const key = String(p._id)
+                    const editing = editingPaymentKey === key
+                    return (
+                      <Surface key={key} bg="tertiary" padding="var(--spacing-3)" radius="md">
+                        <VStack gap={2}>
+                          <HStack justify="between" align="center" wrap gap={2}>
+                            <Text size="sm" weight="semibold">{p.label || "Additional"} · {p.status}</Text>
+                            <HStack gap={2} wrap>
+                              {p.screenshotFileRef && (
+                                <Button type="button" size="sm" variant="secondary" onClick={() => setProofFileRef(p.screenshotFileRef)}>
+                                  <Eye size={14} /> Proof
+                                </Button>
+                              )}
+                              {canEditPaymentRow(p.status) && !editing && (
+                                <Button type="button" size="sm" variant="outline" onClick={() => startEditPayment(key, p)}>
+                                  Edit
+                                </Button>
+                              )}
+                            </HStack>
+                          </HStack>
+                          <InfoRow label="Amount" value={money(p.amount)} />
+                          {editing ? (
+                            <VStack gap={2}>
+                              <Field
+                                label="UTR"
+                                help="12-digit transfer reference."
+                                error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
+                              >
+                                <Input
+                                  value={payEdit.utr}
+                                  inputMode="numeric"
+                                  maxLength={12}
+                                  onChange={(e) => setPayEdit((prev) => ({ ...prev, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                                  placeholder="12-digit UTR"
+                                />
+                              </Field>
+                              <Field label="Payment date">
+                                <Input
+                                  type="date"
+                                  value={payEdit.paidAt}
+                                  max={todayYmd()}
+                                  onChange={(e) => setPayEdit((prev) => ({ ...prev, paidAt: e.target.value }))}
+                                />
+                              </Field>
+                              <HStack gap={2} wrap>
+                                <Button
+                                  size="sm"
+                                  onClick={submitPayEdit}
+                                  loading={busy}
+                                  disabled={busy || !payEditUtrValid || (!payEdit.utr.trim() && !payEdit.paidAt)}
+                                >
+                                  Save
+                                </Button>
+                                <Button size="sm" variant="outline" disabled={busy} onClick={() => setEditingPaymentKey(null)}>
+                                  Cancel
+                                </Button>
+                              </HStack>
+                            </VStack>
+                          ) : (
+                            <>
+                              <InfoRow label="UTR" value={p.utr || "—"} />
+                              <InfoRow label="Paid on" value={fmtDate(p.paidAt)} />
+                            </>
+                          )}
+                        </VStack>
+                      </Surface>
+                    )
+                  })}
+                </VStack>
               </DetailSection>
             )}
 
@@ -750,7 +888,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   {hostelCapacity(true)}
                 </Field>
                 <Text size="xs" color="muted">
-                  This is the only hostel selection — the supervisor picks rooms inside it. The payment link and QR come from settings automatically.
+                  This is the only hostel selection — the supervisor picks rooms inside it. The payment QR comes from Accommodation settings automatically.
                 </Text>
                 <Button
                   onClick={submitIssuePayment}
@@ -772,71 +910,38 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 icon={BadgeCheck}
                 tone="primary"
               >
-                {payment.status === PAYMENT_STATUS.SUBMITTED ? (
-                  <>
-                    <Text size="sm" color="muted">
-                      Confirm the UTR and payment date match the proof. You can correct them here if the student mistyped.
-                    </Text>
-                    <InfoRow label="Amount" value={money(payment.amount)} />
-                    <Field
-                      label="UTR"
-                      required={verify.action === "verify"}
-                      help="12-digit transfer reference."
-                      error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
-                    >
-                      <Input
-                        value={payEdit.utr}
-                        inputMode="numeric"
-                        maxLength={12}
-                        onChange={(e) => setPayEdit((p) => ({ ...p, utr: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
-                        placeholder="12-digit UTR"
-                      />
-                    </Field>
-                    <Field label="Payment date" required={verify.action === "verify"}>
-                      <Input
-                        type="date"
-                        value={payEdit.paidAt}
-                        max={todayYmd()}
-                        onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
-                      />
-                    </Field>
-                  </>
-                ) : (
-                  <>
-                    <Text size="sm" color="muted">
-                      Additional charge after a date change. Amount {money(submittedAdditional?.amount)}.
-                    </Text>
-                    <InfoRow label="UTR" value={submittedAdditional?.utr || "—"} />
-                    <InfoRow label="Paid on" value={fmtDate(submittedAdditional?.paidAt)} />
-                  </>
-                )}
-                <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
-                  <RadioGroupItem value="verify" label="Verify" description="The amount matches." />
-                  <RadioGroupItem value="reject" label="Reject" description="Sends the request back to the student." />
-                </RadioGroup>
-                <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
-                <Button
-                  onClick={submitVerify}
-                  loading={busy}
-                  disabled={
-                    busy ||
-                    (verify.action === "verify" &&
-                      payment.status === PAYMENT_STATUS.SUBMITTED &&
-                      (!payEditUtrValid || !payEdit.utr || !payEdit.paidAt))
-                  }
-                >
-                  Submit
-                </Button>
-              </DetailSection>
-            )}
-
-            {showEditPaymentDetails && (
-              <DetailSection title="Edit payment details" icon={CreditCard} tone="primary">
                 <Text size="sm" color="muted">
-                  Correct the UTR or payment date if it was entered wrong. This does not change verification status.
+                  Confirm the UTR and payment date match the proof. Correct them here before verifying if the student mistyped.
                 </Text>
+                <InfoRow
+                  label="Amount"
+                  value={money(
+                    payment.status === PAYMENT_STATUS.SUBMITTED
+                      ? payment.amount
+                      : submittedAdditional?.amount
+                  )}
+                />
+                {(payment.status === PAYMENT_STATUS.SUBMITTED
+                  ? payment.screenshotFileRef
+                  : submittedAdditional?.screenshotFileRef) && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      setProofFileRef(
+                        payment.status === PAYMENT_STATUS.SUBMITTED
+                          ? payment.screenshotFileRef
+                          : submittedAdditional.screenshotFileRef
+                      )
+                    }
+                  >
+                    <Eye size={14} /> View proof
+                  </Button>
+                )}
                 <Field
                   label="UTR"
+                  required={verify.action === "verify"}
                   help="12-digit transfer reference."
                   error={payEdit.utr && !payEditUtrValid ? "UTR must be exactly 12 digits" : undefined}
                 >
@@ -848,7 +953,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     placeholder="12-digit UTR"
                   />
                 </Field>
-                <Field label="Payment date">
+                <Field label="Payment date" required={verify.action === "verify"}>
                   <Input
                     type="date"
                     value={payEdit.paidAt}
@@ -856,65 +961,98 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     onChange={(e) => setPayEdit((p) => ({ ...p, paidAt: e.target.value }))}
                   />
                 </Field>
+                <RadioGroup name="verify" value={verify.action} onChange={(e) => setVerify((v) => ({ ...v, action: e.target.value }))}>
+                  <RadioGroupItem value="verify" label="Verify" description="The amount matches." />
+                  <RadioGroupItem value="reject" label="Reject" description="Sends the request back to the student." />
+                </RadioGroup>
+                <Textarea value={verify.note} onChange={(e) => setVerify((v) => ({ ...v, note: e.target.value }))} rows={2} placeholder={verify.action === "reject" ? "Reason (required)" : "Note (optional)"} />
                 <Button
-                  onClick={submitPayEdit}
+                  onClick={submitVerify}
                   loading={busy}
-                  disabled={busy || !payEditUtrValid || (!payEdit.utr.trim() && !payEdit.paidAt)}
+                  disabled={
+                    busy ||
+                    (verify.action === "verify" && (!payEditUtrValid || !payEdit.utr || !payEdit.paidAt))
+                  }
                 >
-                  Save payment details
+                  Submit
                 </Button>
               </DetailSection>
             )}
 
-            {showSettle && (
-              <DetailSection title="Record a payment" icon={Wallet} tone={isPaid ? "success" : "warning"}>
-                <Text size="sm" color="muted">
-                  {isPaid
-                    ? "This bill is settled. Only mark it unpaid if it was recorded in error."
-                    : `${money(payment.amount)} outstanding. Use this for money taken at the counter or reconciled from the bank — a payment uploaded on the portal goes through Verify instead.`}
-                </Text>
-                <RadioGroup name="settle" value={settle.action} onChange={(e) => setSettle((s) => ({ ...s, action: e.target.value }))}>
-                  <RadioGroupItem value="mark_paid" label="Mark as paid" description="Records the money and issues the invoice." disabled={isPaid} />
-                  <RadioGroupItem value="mark_unpaid" label="Mark as not paid" description="Puts the bill back to outstanding." disabled={!isPaid} />
-                </RadioGroup>
-
-                {settle.action === "mark_paid" && (
+            {canSettle && (
+              <DetailSection title="Custom payment" icon={Wallet} tone={isPaid ? "success" : "warning"}>
+                {!showSettleForm ? (
                   <>
-                    <Field label="Received as" required>
-                      <Select
-                        options={[
-                          { value: "Cash", label: "Cash" },
-                          { value: "Demand draft", label: "Demand draft" },
-                          { value: "Bank transfer", label: "Bank transfer / NEFT" },
-                          { value: "UPI", label: "UPI" },
-                          { value: "Adjusted", label: "Adjusted / waived by office" },
-                        ]}
-                        value={settle.method}
-                        onChange={(e) => setSettle((s) => ({ ...s, method: e.target.value }))}
-                      />
-                    </Field>
-                    <Field label="UTR (optional)" help="Only for a transfer — 12 digits.">
-                      <Input
-                        value={settle.reference}
-                        inputMode="numeric"
-                        maxLength={12}
-                        onChange={(e) => setSettle((s) => ({ ...s, reference: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
-                      />
-                    </Field>
-                    <Field label="Date received (optional)">
-                      <Input type="date" value={settle.paidAt} onChange={(e) => setSettle((s) => ({ ...s, paidAt: e.target.value }))} />
-                    </Field>
+                    <Text size="sm" color="muted">
+                      {isPaid
+                        ? "Bill is settled. Open this only to mark it unpaid if it was recorded in error."
+                        : `${money(payment.amount)} outstanding. Use for cash/DD/bank counter payments — portal uploads go through Verify instead.`}
+                    </Text>
+                    <Button type="button" size="sm" variant="outline" onClick={() => setShowSettleForm(true)}>
+                      {isPaid ? "Adjust payment record" : "Record custom payment"}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Text size="sm" color="muted">
+                      {isPaid
+                        ? "This bill is settled. Only mark it unpaid if it was recorded in error."
+                        : `${money(payment.amount)} outstanding. Use this for money taken at the counter or reconciled from the bank.`}
+                    </Text>
+                    <RadioGroup name="settle" value={settle.action} onChange={(e) => setSettle((s) => ({ ...s, action: e.target.value }))}>
+                      <RadioGroupItem value="mark_paid" label="Mark as paid" description="Records the money and issues the invoice." disabled={isPaid} />
+                      <RadioGroupItem value="mark_unpaid" label="Mark as not paid" description="Puts the bill back to outstanding." disabled={!isPaid} />
+                    </RadioGroup>
+
+                    {settle.action === "mark_paid" && (
+                      <>
+                        <Field label="Received as" required>
+                          <Select
+                            options={[
+                              { value: "Cash", label: "Cash" },
+                              { value: "Demand draft", label: "Demand draft" },
+                              { value: "Bank transfer", label: "Bank transfer / NEFT" },
+                              { value: "UPI", label: "UPI" },
+                              { value: "Adjusted", label: "Adjusted / waived by office" },
+                            ]}
+                            value={settle.method}
+                            onChange={(e) => setSettle((s) => ({ ...s, method: e.target.value }))}
+                          />
+                        </Field>
+                        <Field label="UTR (optional)" help="Only for a transfer — 12 digits.">
+                          <Input
+                            value={settle.reference}
+                            inputMode="numeric"
+                            maxLength={12}
+                            onChange={(e) => setSettle((s) => ({ ...s, reference: e.target.value.replace(/\D/g, "").slice(0, 12) }))}
+                          />
+                        </Field>
+                        <Field label="Date received (optional)">
+                          <Input type="date" value={settle.paidAt} onChange={(e) => setSettle((s) => ({ ...s, paidAt: e.target.value }))} />
+                        </Field>
+                      </>
+                    )}
+                    <Textarea
+                      value={settle.note}
+                      onChange={(e) => setSettle((s) => ({ ...s, note: e.target.value }))}
+                      rows={2}
+                      placeholder={settle.action === "mark_unpaid" ? "Reason (required)" : "Note (optional) — receipt no., who paid…"}
+                    />
+                    <HStack gap={2} wrap>
+                      <Button onClick={submitSettle} loading={busy} disabled={busy}>
+                        {settle.action === "mark_paid" ? "Mark as paid" : "Mark as not paid"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() => setShowSettleForm(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </HStack>
                   </>
                 )}
-                <Textarea
-                  value={settle.note}
-                  onChange={(e) => setSettle((s) => ({ ...s, note: e.target.value }))}
-                  rows={2}
-                  placeholder={settle.action === "mark_unpaid" ? "Reason (required)" : "Note (optional) — receipt no., who paid…"}
-                />
-                <Button onClick={submitSettle} loading={busy} disabled={busy}>
-                  {settle.action === "mark_paid" ? "Mark as paid" : "Mark as not paid"}
-                </Button>
               </DetailSection>
             )}
 
@@ -989,11 +1127,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
       />
 
       <PdfViewerModal
-        isOpen={showProof}
-        onClose={() => setShowProof(false)}
-        documentUrl={request.payment?.screenshotFileRef}
+        isOpen={Boolean(proofFileRef)}
+        onClose={() => setProofFileRef("")}
+        documentUrl={proofFileRef}
         title="Payment proof"
-        subtitle={`UTR ${payment.utr || "—"}`}
+        subtitle="Submitted payment screenshot"
         downloadFileName="payment-proof.png"
       />
     </Modal>

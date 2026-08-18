@@ -26,7 +26,7 @@ const STEPS = [
   {
     icon: UserCheck,
     title: "Forwarding for recommendation",
-    body: "If space is available, the request is sent to your Faculty Advisor / Professor-in-Charge for recommendation.",
+    body: "If space is available, the request is sent to your Faculty Advisor / supervisor for recommendation.",
   },
   {
     icon: Gavel,

@@ -6,6 +6,7 @@ import StudentEditPermissionsForm from "../../components/admin/settings/StudentE
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import StudentBatchManager from "../../components/admin/settings/StudentBatchManager"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
+import AccommodationSettingsForm from "../../components/admin/settings/AccommodationSettingsForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
 import CertificateTemplateForm from "../../components/admin/settings/CertificateTemplateForm"
@@ -76,12 +77,21 @@ const SettingsPage = () => {
     "porCertificate",
   ]
 
+  // Accommodation tariffs / payment QR — Chief Warden Office + Accountant only.
+  const canAccessAccommodationSettings =
+    user?.role === "Admin" &&
+    (user?.subRole === "Chief Warden Office" || user?.subRole === "Accountant")
+
   const canViewTab = (tab) => {
-    return SETTINGS_TABS.includes(tab)
+    if (!SETTINGS_TABS.includes(tab)) return false
+    if (tab === "accommodation") return canAccessAccommodationSettings
+    return true
   }
 
   const canUpdateTab = (tab) => {
-    return SETTINGS_TABS.includes(tab)
+    if (!SETTINGS_TABS.includes(tab)) return false
+    if (tab === "accommodation") return canAccessAccommodationSettings
+    return true
   }
 
   const canRenameInTab = (tab) => {
@@ -242,7 +252,6 @@ const SettingsPage = () => {
       const response = await adminApi.getAccommodationSettings()
       // Merge defaults so new preset keys appear even on older saved configs.
       const defaults = {
-        defaultPaymentLink: "",
         defaultPaymentQR: "",
         pricePerPerson1: 0,
         pricePerPerson2: 0,
@@ -253,20 +262,29 @@ const SettingsPage = () => {
         gstin: "",
       }
       const raw = response.value || {}
-      // Drop legacy auto-calc keys from the editor so they are not re-saved.
-      const { feePerPersonPerNight: _legacyFee, gstPercentage: _legacyGst, ...rest } = raw
+      // Drop legacy payment-link / auto-calc keys from the editor so they are not re-saved.
+      const {
+        feePerPersonPerNight: _legacyFee,
+        gstPercentage: _legacyGst,
+        defaultPaymentLink: _legacyLink,
+        ...rest
+      } = raw
       setAccommodationSettings({
         ...defaults,
-        ...rest,
-        // Migrate old single fee/GST into slot 1 when presets were never set.
+        defaultPaymentQR: rest.defaultPaymentQR || "",
         pricePerPerson1:
           Number(rest.pricePerPerson1) ||
           Number(raw.feePerPersonPerNight) ||
           defaults.pricePerPerson1,
+        pricePerPerson2: Number(rest.pricePerPerson2) || 0,
+        pricePerPerson3: Number(rest.pricePerPerson3) || 0,
         gstPercentage1:
           rest.gstPercentage1 != null && rest.gstPercentage1 !== ""
             ? Number(rest.gstPercentage1)
             : Number(raw.gstPercentage) || defaults.gstPercentage1,
+        gstPercentage2: Number(rest.gstPercentage2) || 0,
+        gstPercentage3: Number(rest.gstPercentage3) || 0,
+        gstin: rest.gstin || "",
       })
     } catch (err) {
       console.error("Error fetching accommodation settings:", err)
@@ -544,8 +562,21 @@ const SettingsPage = () => {
 
     setLoading((prev) => ({ ...prev, accommodation: true }))
     try {
-      const response = await adminApi.updateAccommodationSettings(updatedSettings)
-      setAccommodationSettings(response.configuration.value || {})
+      const response = await adminApi.updateAccommodationSettings({
+        ...updatedSettings,
+        defaultPaymentLink: "",
+      })
+      const saved = response.configuration.value || {}
+      setAccommodationSettings({
+        defaultPaymentQR: saved.defaultPaymentQR || "",
+        pricePerPerson1: Number(saved.pricePerPerson1) || 0,
+        pricePerPerson2: Number(saved.pricePerPerson2) || 0,
+        pricePerPerson3: Number(saved.pricePerPerson3) || 0,
+        gstPercentage1: Number(saved.gstPercentage1) || 0,
+        gstPercentage2: Number(saved.gstPercentage2) || 0,
+        gstPercentage3: Number(saved.gstPercentage3) || 0,
+        gstin: saved.gstin || "",
+      })
       setSuccessMessage(`Accommodation settings updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
       setShowSuccessModal(true)
     } catch (err) {
@@ -726,24 +757,27 @@ const SettingsPage = () => {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
-        { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation: payment link/QR, three preset prices per person, three GST % options (Chief Warden Office selects per guest), and GSTIN for invoices." },
+        { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation: payment QR image, three preset prices per person, three GST % options (Chief Warden Office selects per guest), and GSTIN for invoices." },
       ],
     },
   ]
 
   const allNavItems = settingsNav.flatMap((section) => section.items)
-  const activeItem = allNavItems.find((item) => item.key === activeTab) || allNavItems[0]
-  const ActiveIcon = activeItem.icon
+  const visibleNavItems = allNavItems.filter((item) => canViewTab(item.key))
+  const activeItem = visibleNavItems.find((item) => item.key === activeTab) || visibleNavItems[0]
+  const ActiveIcon = activeItem?.icon || HiCog
 
   const normalizedNavQuery = navQuery.trim().toLowerCase()
-  const filteredNav = normalizedNavQuery
-    ? settingsNav
-      .map((section) => ({
-        ...section,
-        items: section.items.filter((item) => item.label.toLowerCase().includes(normalizedNavQuery)),
-      }))
-      .filter((section) => section.items.length > 0)
-    : settingsNav
+  const filteredNav = settingsNav
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        if (!canViewTab(item.key)) return false
+        if (!normalizedNavQuery) return true
+        return item.label.toLowerCase().includes(normalizedNavQuery)
+      }),
+    }))
+    .filter((section) => section.items.length > 0)
 
   if (user?.role !== "Admin" || !hasAnySettingsView) {
     return (
@@ -946,13 +980,13 @@ const SettingsPage = () => {
                 </>
               )}
 
-              {/* Accommodation Settings Tab */}
-              {activeTab === "accommodation" && (
+              {/* Accommodation Settings Tab — CWO + Accountant only */}
+              {activeTab === "accommodation" && canViewTab("accommodation") && (
                 <>
                   {loading.accommodation && Object.keys(accommodationSettings).length === 0 ? (
                     <TabSpinner />
                   ) : (
-                    <ConfigForm config={accommodationSettings} onUpdate={handleUpdateAccommodationSettings} isLoading={loading.accommodation} />
+                    <AccommodationSettingsForm config={accommodationSettings} onUpdate={handleUpdateAccommodationSettings} isLoading={loading.accommodation} />
                   )}
                 </>
               )}

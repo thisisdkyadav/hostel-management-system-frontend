@@ -83,7 +83,7 @@ export const accommodationApi = {
   /** body: { action: "verify" | "reject", note?, utr?, paidAt? } — on a portal-submitted payment */
   verifyPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment-verify`, body),
 
-  /** Correct UTR / payment date. body: { utr?, paidAt? } — at least one required */
+  /** Correct UTR / payment date. body: { utr?, paidAt?, additionalPaymentId? } — at least one of utr/paidAt */
   updatePaymentDetails: (requestId, body) =>
     apiClient.post(`/accommodation/requests/${requestId}/payment-details`, body),
 

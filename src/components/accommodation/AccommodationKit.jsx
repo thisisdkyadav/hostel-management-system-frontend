@@ -7,6 +7,42 @@
 import { Avatar, Badge, DetailSection, Divider, HStack, InfoRow, StatusBadge, Text, VStack } from "hzero"
 import { CalendarDays, Users } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
+
+/** Inline payment QR for students (fileRef or legacy URL in payment.qrRef). */
+export const PaymentQrImage = ({ qrRef, size = 200 }) => {
+  const src = getMediaUrl(qrRef)
+  if (!src) return null
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "var(--spacing-2)",
+        padding: "var(--spacing-3)",
+        border: "1px solid var(--color-border-primary)",
+        borderRadius: "var(--radius-lg)",
+        background: "var(--color-bg-secondary)",
+        alignSelf: "flex-start",
+      }}
+    >
+      <img
+        src={src}
+        alt="Payment QR code"
+        style={{
+          width: size,
+          height: size,
+          objectFit: "contain",
+          background: "var(--color-bg-primary)",
+          borderRadius: "var(--radius-md)",
+        }}
+      />
+      <Text size="xs" color="muted">
+        Scan to pay
+      </Text>
+    </div>
+  )
+}
 import {
   ACCOMMODATION_STATUS,
   getStatusTone,

@@ -10,6 +10,12 @@ import GuardianInfoSection from "./forms/sections/GuardianInfoSection"
 
 const normalizeLookupValue = (value) => String(value || "").trim().toLowerCase()
 
+const normalizeHostelId = (value) => {
+  if (!value) return ""
+  if (typeof value === "string") return value
+  return value?.toString?.() || ""
+}
+
 const createDefaultDayScholarForm = (studentData = {}) => ({
   isDayScholar: Boolean(studentData?.isDayScholar),
   address: studentData?.dayScholarDetails?.address || "",
@@ -18,9 +24,9 @@ const createDefaultDayScholarForm = (studentData = {}) => ({
   ownerEmail: studentData?.dayScholarDetails?.ownerEmail || "",
 })
 
-const createDefaultAllocationForm = () => ({
-  hostelId: "",
-  hostelType: "",
+const createDefaultAllocationForm = (defaultHostel = null) => ({
+  hostelId: defaultHostel?._id ? normalizeHostelId(defaultHostel._id) : "",
+  hostelType: defaultHostel?.type || "",
   unit: "",
   unitId: "",
   unitError: "",
@@ -53,10 +59,33 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   const { hostelList = [] } = useGlobal()
   const isAdmin = user?.role === "Admin"
   const isHostelSupervisor = user?.role === "Hostel Supervisor"
-  // Supervisors get status on top of the basic profile tabs; full allocation /
-  // day-scholar tooling stays Admin-only.
+  // Supervisors get status + allocation (active hostel only). Day scholar stays Admin-only.
   const canEditStatus = isAdmin || isHostelSupervisor
-  const safeHostels = useMemo(() => hostelList.filter(Boolean), [hostelList])
+  const canEditAllocation = isAdmin || isHostelSupervisor
+  const allocationHostels = useMemo(() => {
+    const allHostels = (Array.isArray(hostelList) ? hostelList : []).filter(Boolean)
+    if (isAdmin) return allHostels
+    if (!isHostelSupervisor) return []
+
+    const activeId = normalizeHostelId(user?.hostel?._id)
+    if (!activeId) return []
+
+    const fromList = allHostels.find((hostel) => normalizeHostelId(hostel?._id) === activeId)
+    if (fromList) return [fromList]
+
+    return [{
+      _id: activeId,
+      name: user.hostel.name || "Active hostel",
+      type: user.hostel.type || "",
+    }]
+  }, [hostelList, isAdmin, isHostelSupervisor, user?.hostel])
+  const allowedAllocationHostelIds = useMemo(
+    () => new Set(allocationHostels.map((hostel) => normalizeHostelId(hostel._id)).filter(Boolean)),
+    [allocationHostels]
+  )
+  const defaultAllocationHostel = allocationHostels.length === 1 ? allocationHostels[0] : null
+  const hostelSelectLocked = isHostelSupervisor && allocationHostels.length === 1
+  const safeHostels = allocationHostels
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -79,14 +108,14 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
     setProfileFormData(studentData)
     setStatusValue(studentData.status || "Active")
     setDayScholarForm(createDefaultDayScholarForm(studentData))
-    setAllocationForm(createDefaultAllocationForm())
+    setAllocationForm(createDefaultAllocationForm(defaultAllocationHostel))
     setAllocationLookup(null)
     setUnitsByHostelId({})
     setRoomsByCacheKey({})
     setError("")
     setActiveTab("personal")
     allocationInitializedRef.current = false
-  }, [studentData, isOpen])
+  }, [studentData, isOpen, defaultAllocationHostel])
 
   const tabs = useMemo(() => {
     const baseTabs = [
@@ -104,12 +133,13 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       ]
     }
 
-    if (canEditStatus) {
-      return [...baseTabs, { id: "status", label: "Status" }]
-    }
+    const supervisorTabs = [...baseTabs]
+    if (canEditStatus) supervisorTabs.push({ id: "status", label: "Status" })
+    if (canEditAllocation) supervisorTabs.push({ id: "allocation", label: "Allocation" })
+    if (supervisorTabs.length > baseTabs.length) return supervisorTabs
 
     return baseTabs
-  }, [isAdmin, canEditStatus])
+  }, [isAdmin, canEditStatus, canEditAllocation])
 
   const loadUnitsForHostel = async (hostelId) => {
     if (!hostelId) return []
@@ -160,20 +190,42 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       setAllocationLookup(lookupStudent)
 
       const currentAllocation = lookupStudent?.currentAllocation
-      if (!currentAllocation?.hostelId) {
-        setAllocationForm(createDefaultAllocationForm())
+      const currentHostelId = normalizeHostelId(currentAllocation?.hostelId)
+
+      if (isHostelSupervisor) {
+        if (allowedAllocationHostelIds.size === 0) {
+          setAllocationForm(createDefaultAllocationForm())
+          setError("No active hostel is assigned. Switch to an active hostel before editing allocations.")
+          return
+        }
+
+        if (currentHostelId && !allowedAllocationHostelIds.has(currentHostelId)) {
+          setAllocationForm(createDefaultAllocationForm(defaultAllocationHostel))
+          setError("This student is allocated in another hostel. You can only edit unallocated students or students in your active hostel.")
+          return
+        }
+      }
+
+      if (!currentHostelId) {
+        const emptyForm = createDefaultAllocationForm(defaultAllocationHostel)
+        setAllocationForm(emptyForm)
+        if (defaultAllocationHostel?.type === "unit-based") {
+          await loadUnitsForHostel(normalizeHostelId(defaultAllocationHostel._id))
+        } else if (defaultAllocationHostel?.type === "room-only") {
+          await loadRoomOnlyRooms(normalizeHostelId(defaultAllocationHostel._id))
+        }
         return
       }
 
       const nextForm = {
         ...createDefaultAllocationForm(),
-        hostelId: currentAllocation.hostelId,
+        hostelId: currentHostelId,
         hostelType: currentAllocation.hostelType || "",
         bedNumber: currentAllocation.bedNumber ? String(currentAllocation.bedNumber) : "",
       }
 
       if (currentAllocation.hostelType === "unit-based") {
-        const units = await loadUnitsForHostel(currentAllocation.hostelId)
+        const units = await loadUnitsForHostel(currentHostelId)
         const matchedUnit = units.find((unit) => normalizeLookupValue(unit.unitNumber) === normalizeLookupValue(currentAllocation.unitNumber))
 
         nextForm.unit = currentAllocation.unitNumber || ""
@@ -186,7 +238,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           nextForm.roomNumber = matchedRoom?.roomNumber || currentAllocation.roomNumber || ""
         }
       } else {
-        const rooms = await loadRoomOnlyRooms(currentAllocation.hostelId)
+        const rooms = await loadRoomOnlyRooms(currentHostelId)
         const matchedRoom = rooms.find((room) => normalizeLookupValue(room.roomNumber) === normalizeLookupValue(currentAllocation.roomNumber))
         nextForm.roomId = matchedRoom?.id || ""
         nextForm.roomNumber = matchedRoom?.roomNumber || currentAllocation.roomNumber || ""
@@ -195,7 +247,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       setAllocationForm(nextForm)
     } catch (lookupError) {
       setAllocationLookup(null)
-      setAllocationForm(createDefaultAllocationForm())
+      setAllocationForm(createDefaultAllocationForm(defaultAllocationHostel))
       setError(lookupError.message || "Failed to load current allocation details.")
     } finally {
       setAllocationLookupLoading(false)
@@ -203,10 +255,10 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   }
 
   useEffect(() => {
-    if (!isOpen || !isAdmin || activeTab !== "allocation" || allocationInitializedRef.current) return
+    if (!isOpen || !canEditAllocation || activeTab !== "allocation" || allocationInitializedRef.current) return
     allocationInitializedRef.current = true
     initializeAllocationForm()
-  }, [activeTab, isAdmin, isOpen])
+  }, [activeTab, canEditAllocation, isOpen])
 
   const handleProfileChange = (data) => {
     setProfileFormData((prev) => ({
@@ -216,8 +268,15 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   }
 
   const handleAllocationHostelChange = async (event) => {
-    const nextHostelId = event.target.value
-    const nextHostel = safeHostels.find((hostel) => hostel._id === nextHostelId) || null
+    if (hostelSelectLocked) return
+
+    const nextHostelId = normalizeHostelId(event.target.value)
+    if (isHostelSupervisor && nextHostelId && !allowedAllocationHostelIds.has(nextHostelId)) {
+      setError("You can only allocate students in your active hostel.")
+      return
+    }
+
+    const nextHostel = safeHostels.find((hostel) => normalizeHostelId(hostel._id) === nextHostelId) || null
 
     setAllocationForm({
       ...createDefaultAllocationForm(),
@@ -378,9 +437,12 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
   const handleSaveAllocation = async () => {
     let validationError = ""
+    const targetHostelId = normalizeHostelId(allocationForm.hostelId)
 
-    if (!allocationForm.hostelId) {
+    if (!targetHostelId) {
       validationError = "Select a hostel."
+    } else if (isHostelSupervisor && !allowedAllocationHostelIds.has(targetHostelId)) {
+      validationError = "You can only allocate students in your active hostel."
     } else if (allocationForm.hostelType === "unit-based" && !allocationForm.unitId) {
       validationError = allocationForm.unitError || "Enter a valid unit number."
     } else if (!allocationForm.roomId) {
@@ -404,7 +466,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
       allocationPayload.unit = allocationForm.unit
     }
 
-    const response = await hostelApi.updateRoomAllocations([allocationPayload], allocationForm.hostelId)
+    const response = await hostelApi.updateRoomAllocations([allocationPayload], targetHostelId)
     if (!response?.success) {
       throw new Error(response?.message || "Failed to update allocation")
     }
@@ -445,7 +507,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
 
   const currentRoom = getSelectedRoom(allocationForm, roomsByCacheKey)
   const occupiedBedStudent = getBedOccupant(currentRoom, allocationForm.bedNumber)
-  const currentHostel = safeHostels.find((hostel) => hostel._id === allocationForm.hostelId) || null
+  const currentHostel = safeHostels.find((hostel) => normalizeHostelId(hostel._id) === normalizeHostelId(allocationForm.hostelId)) || null
   const units = unitsByHostelId[allocationForm.hostelId] || []
   const roomOptions = (roomsByCacheKey[getRoomCacheKey(allocationForm)] || [])
     .filter((room) => room.status === "Active")
@@ -615,11 +677,12 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                   <Select
                     value={allocationForm.hostelId}
                     onChange={handleAllocationHostelChange}
+                    disabled={hostelSelectLocked || safeHostels.length === 0}
                     options={safeHostels.map((hostel) => ({
                       value: hostel._id,
                       label: `${hostel.name} (${hostel.type})`,
                     }))}
-                    placeholder="Select hostel"
+                    placeholder={safeHostels.length === 0 ? "No hostel available" : "Select hostel"}
                     error={Boolean(allocationForm.validationError && !allocationForm.hostelId)}
                   />
                 </Field>

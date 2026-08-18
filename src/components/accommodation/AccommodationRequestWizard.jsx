@@ -321,7 +321,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 onChange={(value) => setForm((p) => ({ ...p, roomPreference: value }))}
               />
               <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
-                Choose single or double occupancy for your guests. Required.
+                Only single-occupancy rooms are available for parents in the TEQIP Rooms. Double-occupancy rooms are available for male and female guests in separate hostels.
               </Text>
             </Field>
             <Field label="Permanent address">
