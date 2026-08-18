@@ -20,6 +20,8 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
     autoFetch: true,
     initialFilters: {
       hasAllocation: "false",
+      isDayScholar: "false",
+      status: "Active",
     },
   })
 

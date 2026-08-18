@@ -435,7 +435,17 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
     }
   }
 
+  const isStudentAllocatable = studentData?.status === "Active" && !studentData?.isDayScholar
+
   const handleSaveAllocation = async () => {
+    if (!isStudentAllocatable) {
+      throw new Error(
+        studentData?.isDayScholar
+          ? "Day scholars cannot be allocated a room."
+          : "Only active students can be allocated a room."
+      )
+    }
+
     let validationError = ""
     const targetHostelId = normalizeHostelId(allocationForm.hostelId)
 
@@ -650,6 +660,17 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
             </Text>
           </div>
 
+          {!isStudentAllocatable && (
+            <Surface bg="warning" padding="var(--spacing-2) var(--spacing-3)" radius="lg" color="warning-text" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "var(--spacing-2)" }}>
+              <TriangleAlert style={{ marginTop: "2px" }} />
+              <span>
+                {studentData?.isDayScholar
+                  ? "This student is a day scholar, so they cannot be allocated a hostel room."
+                  : "Only students with Active status can be allocated a hostel room."}
+              </span>
+            </Surface>
+          )}
+
           {allocationLookupLoading ? (
             <HStack align="center" gap={2} color="muted">
               <Spinner size={16} />
@@ -677,7 +698,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                   <Select
                     value={allocationForm.hostelId}
                     onChange={handleAllocationHostelChange}
-                    disabled={hostelSelectLocked || safeHostels.length === 0}
+                    disabled={!isStudentAllocatable || hostelSelectLocked || safeHostels.length === 0}
                     options={safeHostels.map((hostel) => ({
                       value: hostel._id,
                       label: `${hostel.name} (${hostel.type})`,
@@ -694,6 +715,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                       value={allocationForm.unit}
                       onChange={handleAllocationUnitChange}
                       onBlur={handleAllocationUnitBlur}
+                      disabled={!isStudentAllocatable}
                       placeholder={units.length > 0 ? `Example: ${units[0].unitNumber}` : "Enter unit number"}
                       error={Boolean(allocationForm.unitError || (allocationForm.validationError && !allocationForm.unitId))}
                     />
@@ -710,7 +732,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                         ? allocationForm.unitId ? "Select room" : "Enter unit first"
                         : allocationForm.hostelId ? "Select room" : "Select hostel first"
                     }
-                    disabled={!allocationForm.hostelId || (allocationForm.hostelType === "unit-based" && !allocationForm.unitId) || allocationForm.roomsLoading}
+                    disabled={!isStudentAllocatable || !allocationForm.hostelId || (allocationForm.hostelType === "unit-based" && !allocationForm.unitId) || allocationForm.roomsLoading}
                     error={Boolean(allocationForm.validationError && !allocationForm.roomId)}
                   />
                 </Field>
@@ -721,7 +743,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
                     onChange={handleAllocationBedChange}
                     options={bedOptions}
                     placeholder={allocationForm.roomId ? "Select bed" : "Select room first"}
-                    disabled={!allocationForm.roomId}
+                    disabled={!isStudentAllocatable || !allocationForm.roomId}
                     error={Boolean(allocationForm.validationError && !allocationForm.bedNumber)}
                   />
                 </Field>
@@ -788,7 +810,7 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
           <Button type="button" onClick={onClose} disabled={loading} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="button" onClick={handleSubmit} disabled={loading || allocationLookupLoading} variant="primary" size="md" loading={loading}>
+          <Button type="button" onClick={handleSubmit} disabled={loading || allocationLookupLoading || (activeTab === "allocation" && !isStudentAllocatable)} variant="primary" size="md" loading={loading}>
             Save Changes
           </Button>
         </HStack>
