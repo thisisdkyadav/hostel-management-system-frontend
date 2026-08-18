@@ -168,6 +168,13 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
       if (!TIME_RE.test(form.stay.checkOutTime)) return "Enter a valid check-out time"
       if (!form.stay.purpose.trim()) return "Purpose of visit is required"
       if (!form.roomPreference) return "Room preference (Single or Double) is required"
+      if (!profileFA) {
+        const fa = String(form.facultyAdvisorEmail || "").trim()
+        if (!fa) return "Faculty advisor / supervisor email is required"
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fa)) {
+          return "Enter a valid faculty advisor / supervisor email"
+        }
+      }
     }
     return ""
   }
@@ -328,12 +335,16 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>Taken from your profile. Contact the office to change it.</Text>
               </Field>
             ) : (
-              <Field label="Faculty advisor / supervisor email (optional)">
+              <Field label="Faculty advisor / supervisor email" required>
                 <Input
+                  type="email"
                   value={form.facultyAdvisorEmail}
                   onChange={(e) => setForm((p) => ({ ...p, facultyAdvisorEmail: e.target.value }))}
-                  placeholder="Faculty advisor or supervisor email"
+                  placeholder="advisor@iiti.ac.in"
                 />
+                <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
+                  Required — not on your profile yet. Used to request their recommendation for this stay.
+                </Text>
               </Field>
             )}
           </VStack>
@@ -346,6 +357,9 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
                 <strong>{form.guests.length}</strong> guest(s) · {form.stay.fromDate || "—"} {form.stay.checkInTime} → {form.stay.toDate || "—"} {form.stay.checkOutTime}
               </div>
               {form.roomPreference && <Text as="div" color="muted">Room preference: {form.roomPreference}</Text>}
+              {(profileFA || form.facultyAdvisorEmail) && (
+                <Text as="div" color="muted">Faculty advisor / supervisor: {profileFA || form.facultyAdvisorEmail}</Text>
+              )}
               {extensionSummary && <Text as="div" color="muted">Extension requested: {extensionSummary}</Text>}
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
             </Surface>

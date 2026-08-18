@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge, Text } from "hzero"
-import { Plus } from "lucide-react"
+import { BookOpen, Plus } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { accommodationApi } from "@/service"
 import { getStatusTone } from "@/constants/accommodationStatus"
 import { shortId, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationRequestWizard from "../../components/accommodation/AccommodationRequestWizard"
 import AccommodationRequestDetail from "../../components/accommodation/AccommodationRequestDetail"
+import AccommodationGuidelinesModal from "../../components/accommodation/AccommodationGuidelinesModal"
 
 const AccommodationPage = () => {
   const [requests, setRequests] = useState([])
@@ -15,6 +16,7 @@ const AccommodationPage = () => {
   const [wizardOpen, setWizardOpen] = useState(false)
   const [resubmitTarget, setResubmitTarget] = useState(null)
   const [selected, setSelected] = useState(null)
+  const [guidelinesOpen, setGuidelinesOpen] = useState(true)
   const [searchParams] = useSearchParams()
   const handledRequestParamRef = useRef(null)
 
@@ -49,17 +51,18 @@ const AccommodationPage = () => {
     }
   }
 
-  // Open a specific request's detail when deep-linked via ?request=<id> (from emails)
+  // Open a specific request's detail when deep-linked via ?request=<id> (from emails).
+  // Wait until guidelines are dismissed so the two modals do not stack.
   useEffect(() => {
     const id = searchParams.get("request")
-    if (!id || loading) return
+    if (!id || loading || guidelinesOpen) return
     if (handledRequestParamRef.current === id) return
     const match = requests.find((r) => String(r._id) === String(id) || String(r.id) === String(id))
     if (match) {
       handledRequestParamRef.current = id
       openDetail(match)
     }
-  }, [searchParams, requests, loading])
+  }, [searchParams, requests, loading, guidelinesOpen])
 
   const handleResubmit = (request) => {
     setSelected(null)
@@ -89,6 +92,9 @@ const AccommodationPage = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <PageHeader title="Guest Accommodation" subtitle="Request and track hostel stays for your visitors">
+        <Button variant="ghost" size="md" onClick={() => setGuidelinesOpen(true)}>
+          <BookOpen size={16} /> Guidelines
+        </Button>
         <Button variant="primary" size="md" onClick={openNew}>
           <Plus size={16} /> New Request
         </Button>
@@ -105,6 +111,8 @@ const AccommodationPage = () => {
           emptyMessage="No accommodation requests yet. Create one to get started."
         />
       </div>
+
+      <AccommodationGuidelinesModal open={guidelinesOpen} onClose={() => setGuidelinesOpen(false)} />
 
       <AccommodationRequestWizard
         open={wizardOpen}
