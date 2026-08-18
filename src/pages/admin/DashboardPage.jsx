@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
   Activity, Award, CalendarCheck, CalendarClock, ClipboardList, CornerDownLeft,
-  FileText, GraduationCap, Receipt, TriangleAlert, Trophy, User,
+  FileText, GraduationCap, Receipt, TriangleAlert, Trophy, User, Users,
 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
@@ -101,6 +101,8 @@ const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
       <HStack gap="var(--spacing-2-5)">
         <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
         <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
+        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
+        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
       </HStack>
     )
   }
@@ -112,15 +114,25 @@ const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
   const counts = dashboardData?.hostlerAndDayScholarCounts || {}
   const hostler = counts.hostler || {}
   const dayScholar = counts.dayScholar || {}
+  const total = {
+    boys: (hostler.boys || 0) + (dayScholar.boys || 0),
+    girls: (hostler.girls || 0) + (dayScholar.girls || 0),
+    total: (hostler.total || 0) + (dayScholar.total || 0),
+  }
 
   return (
     <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+      <StatPill icon={Users} label="Total" value={total.total}>
+        <StatPill.Chip>B {total.boys}</StatPill.Chip>
+        <StatPill.Chip>G {total.girls}</StatPill.Chip>
+      </StatPill>
+
       <StatPill icon={User} label="Hostlers" value={hostler.total || 0}>
         <StatPill.Chip>B {hostler.boys || 0}</StatPill.Chip>
         <StatPill.Chip>G {hostler.girls || 0}</StatPill.Chip>
       </StatPill>
 
-      <StatPill icon={User} label="Day scholars" value={dayScholar.total || 0}>
+      <StatPill icon={User} label="Day-sch." value={dayScholar.total || 0}>
         <StatPill.Chip>B {dayScholar.boys || 0}</StatPill.Chip>
         <StatPill.Chip>G {dayScholar.girls || 0}</StatPill.Chip>
       </StatPill>

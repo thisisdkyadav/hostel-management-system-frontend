@@ -80,6 +80,7 @@ const CaseSummaryView = ({
   onViewPdf,
   onDownloadBundle,
   isDownloadingBundle = false,
+  onStudentClick,
 }) => {
   const [expandedSections, setExpandedSections] = useState({
     students: true,
@@ -104,6 +105,13 @@ const CaseSummaryView = ({
   const accusingStudents = caseData.selectedStudents?.accusing || []
   const accusedStudents = caseData.selectedStudents?.accused || []
   const statements = caseData.statements || []
+  const canOpenStudentProfile = typeof onStudentClick === "function"
+
+  const handleStudentClick = (studentId) => {
+    if (!canOpenStudentProfile || !studentId) return
+    onStudentClick(studentId)
+  }
+
   const evidenceDocuments = caseData.evidenceDocuments || []
   const extraDocuments = caseData.extraDocuments || []
   const emailLogs = caseData.emailLogs || []
@@ -212,6 +220,7 @@ const CaseSummaryView = ({
                         name={student.name}
                         email={student.email}
                         role="accused"
+                        onClick={canOpenStudentProfile ? () => handleStudentClick(student.id) : undefined}
                       />
                     ))}
                   </HStack>
@@ -226,6 +235,7 @@ const CaseSummaryView = ({
                         name={student.name}
                         email={student.email}
                         role="accusing"
+                        onClick={canOpenStudentProfile ? () => handleStudentClick(student.id) : undefined}
                       />
                     ))}
                   </HStack>
@@ -409,6 +419,18 @@ const CaseSummaryView = ({
               <DetailSection
                 key={action.actionId || index}
                 title={action.student?.name || "Student"}
+                actions={
+                  canOpenStudentProfile && action.student?.id ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleStudentClick(action.student.id)}
+                    >
+                      View profile
+                    </Button>
+                  ) : undefined
+                }
               >
                 <InfoRow
                   label="Created"

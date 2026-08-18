@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Badge, Button, Checkbox, CompactStudentTag, DataTable, Grid, HStack, Input, Modal, Pagination, Radio, StatCards, StepIndicator, StudentTagGroup, Surface, Tabs, Text, Textarea, useConfirm, useToast, VStack } from "hzero"
+import { Badge, Button, Checkbox, CompactStudentTag, DataTable, Grid, HStack, Input, Modal, Pagination, Radio, StatCards, StepIndicator, Surface, Tabs, Text, Textarea, useConfirm, useToast, VStack } from "hzero"
 import {
   Eye,
   Plus,
@@ -20,6 +20,7 @@ import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
 import CaseSummaryView from "../../components/common/disco/CaseSummaryView"
+import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import { discoApi, studentApi, uploadApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -162,6 +163,39 @@ const getStepIndex = (stage) => {
   return index >= 0 ? index : 0
 }
 
+const CaseStudentTagGroup = ({ label, students, role, onRemove, onStudentClick, emptyText }) => (
+  <VStack gap={1}>
+    <Text
+      as="div"
+      size="xs"
+      weight="semibold"
+      color="muted"
+      style={{ textTransform: "uppercase", letterSpacing: "0.5px" }}
+    >
+      {label}
+    </Text>
+    <HStack gap={2} wrap>
+      {students.length === 0 ? (
+        <Text as="span" size="sm" color="muted">
+          {emptyText}
+        </Text>
+      ) : (
+        students.map((student) => (
+          <CompactStudentTag
+            key={student.userId}
+            name={student.name}
+            rollNumber={student.rollNumber}
+            email={student.email}
+            role={role}
+            onClick={onStudentClick ? () => onStudentClick(student.userId) : undefined}
+            onRemove={onRemove ? () => onRemove(student.userId) : undefined}
+          />
+        ))
+      )}
+    </HStack>
+  </VStack>
+)
+
 // ============================================================================
 // STYLES
 // ============================================================================
@@ -213,6 +247,7 @@ const DisciplinaryProcessPage = () => {
   const { toast } = useToast()
 
   const isAdmin = ["Admin", "Super Admin"].includes(user?.role)
+  const canOpenStudentProfile = isAdmin
 
   // PDF Viewer state
   const [pdfViewer, setPdfViewer] = useState({
@@ -250,6 +285,8 @@ const DisciplinaryProcessPage = () => {
   const [selectedAdminCase, setSelectedAdminCase] = useState(null)
   const [viewingHistoryStep, setViewingHistoryStep] = useState(null)
   const [exportingCaseBundle, setExportingCaseBundle] = useState(false)
+  const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
+  const [studentDetailTarget, setStudentDetailTarget] = useState(null)
 
   // Student Search state
   const [studentSearchRoll, setStudentSearchRoll] = useState("")
@@ -371,6 +408,33 @@ const DisciplinaryProcessPage = () => {
     } finally {
       setAdminModalLoading(false)
     }
+  }
+
+  const handleStudentUpdate = () => {
+    setShowStudentDetailModal(false)
+    setStudentDetailTarget(null)
+  }
+
+  const openStudentDetail = async (userId) => {
+    if (!canOpenStudentProfile || !userId) return
+
+    try {
+      const studentId = await studentApi.getStudentId(userId)
+      if (!studentId) {
+        toast.error("Student profile could not be found.")
+        return
+      }
+      setStudentDetailTarget({ _id: studentId, userId })
+      setShowStudentDetailModal(true)
+    } catch (error) {
+      toast.error(error.message || "Failed to open student profile")
+    }
+  }
+
+  const closeAdminCaseModal = () => {
+    setAdminModalOpen(false)
+    setShowStudentDetailModal(false)
+    setStudentDetailTarget(null)
   }
 
   const fetchAdminCaseCounts = async () => {
@@ -1410,7 +1474,7 @@ const DisciplinaryProcessPage = () => {
             ? `Case #${selectedAdminCase.id?.slice(-6)}`
             : "Case Details"
         }
-        onClose={() => setAdminModalOpen(false)}
+        onClose={closeAdminCaseModal}
         width={900}
         isOpen={adminModalOpen}
         footer={
@@ -1472,6 +1536,7 @@ const DisciplinaryProcessPage = () => {
             onViewPdf={showPdf}
             onDownloadBundle={handleDownloadCaseBundle}
             isDownloadingBundle={exportingCaseBundle}
+            onStudentClick={canOpenStudentProfile ? openStudentDetail : undefined}
           />
         ) : (
           <VStack gap={3}>
@@ -1589,18 +1654,20 @@ const DisciplinaryProcessPage = () => {
 
                 {/* Selected Students */}
                 <Grid cols={2} gap={3}>
-                  <StudentTagGroup
+                  <CaseStudentTagGroup
                     label="Accused (Required)"
                     students={stage2AccusedStudents}
                     role="accused"
                     onRemove={(id) => removeStudentFromGroup(id, "accused")}
+                    onStudentClick={canOpenStudentProfile ? openStudentDetail : undefined}
                     emptyText="None selected"
                   />
-                  <StudentTagGroup
+                  <CaseStudentTagGroup
                     label="Accusing (Optional)"
                     students={stage2AccusingStudents}
                     role="accusing"
                     onRemove={(id) => removeStudentFromGroup(id, "accusing")}
+                    onStudentClick={canOpenStudentProfile ? openStudentDetail : undefined}
                     emptyText="None selected"
                   />
                 </Grid>
@@ -1639,6 +1706,7 @@ const DisciplinaryProcessPage = () => {
                               name={student.name}
                               rollNumber={student.rollNumber}
                               role={role}
+                              onClick={canOpenStudentProfile ? () => openStudentDetail(student.userId) : undefined}
                             />
                             <div style={{ flex: 1 }}>
                               <PdfUploadField
@@ -2160,9 +2228,21 @@ const DisciplinaryProcessPage = () => {
                                   gap: "var(--spacing-2)",
                                 }}
                               >
-                                <Text as="div" weight="semibold" color="primary" size="sm">
-                                  {student.name}
-                                </Text>
+                                <HStack justify="between" align="center" wrap>
+                                  <Text as="div" weight="semibold" color="primary" size="sm">
+                                    {student.name}
+                                  </Text>
+                                  {canOpenStudentProfile && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => openStudentDetail(student.userId)}
+                                    >
+                                      View profile
+                                    </Button>
+                                  )}
+                                </HStack>
                                 <Input
                                   placeholder="Reason"
                                   value={studentAction.reason}
@@ -2274,6 +2354,14 @@ const DisciplinaryProcessPage = () => {
         title={pdfViewer.title}
         downloadFileName={pdfViewer.fileName}
       />
+
+      {showStudentDetailModal && studentDetailTarget && (
+        <StudentDetailModal
+          selectedStudent={studentDetailTarget}
+          setShowStudentDetail={setShowStudentDetailModal}
+          onUpdate={handleStudentUpdate}
+        />
+      )}
     </div>
   )
 }

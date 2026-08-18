@@ -1,14 +1,16 @@
 import { Button } from "hzero"
 import PageHeader from "../common/PageHeader"
 import { Link } from "react-router-dom"
-import { Building } from "lucide-react"
+import { Building, DoorOpen } from "lucide-react"
 
 const UnitsAndRoomsHeader = ({
   title,
   onBackToUnits,
   showBackToUnits,
   showBackToHostels,
-  userRole
+  userRole,
+  canManageRooms = false,
+  onManageRooms,
 }) => {
   return (
     <PageHeader title={title}>
@@ -24,6 +26,12 @@ const UnitsAndRoomsHeader = ({
             <Building size={18} /> Back to Hostels
           </Button>
         </Link>
+      )}
+
+      {canManageRooms && (
+        <Button variant="primary" onClick={onManageRooms}>
+          <DoorOpen size={18} /> Manage Rooms
+        </Button>
       )}
     </PageHeader>
   )

@@ -10,6 +10,7 @@ import RoomDetailModal from "../../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import RoomStats from "../../components/wardens/RoomStats"
 import UnitsAndRoomsHeader from "../../components/headers/UnitsAndRoomsHeader"
+import RoomManagementModal from "../../components/admin/hostel/RoomManagementModal"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
@@ -38,6 +39,7 @@ const UnitsAndRoomsPage = () => {
   const [selectedRoom, setSelectedRoom] = useState(null)
   const [showRoomDetail, setShowRoomDetail] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
+  const [showRoomManagement, setShowRoomManagement] = useState(false)
 
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
   const [currentHostel, setCurrentHostel] = useState(null)
@@ -55,7 +57,11 @@ const UnitsAndRoomsPage = () => {
     showEmptyOnly: false,
   })
 
-  const hostelId = currentHostel?._id || null
+  const hostelId = currentHostel?._id || currentHostel?.id || null
+  const canManageRooms = user?.role === "Admin" || user?.role === "Hostel Supervisor"
+  const manageHostel = currentHostel
+    ? { ...currentHostel, id: currentHostel.id || currentHostel._id }
+    : null
 
   const resetFilters = () => {
     setFilters({
@@ -303,6 +309,8 @@ const UnitsAndRoomsPage = () => {
         showBackToUnits={hostelType === "unit-based" && currentView === "rooms"}
         showBackToHostels={true}
         userRole={user.role}
+        canManageRooms={canManageRooms}
+        onManageRooms={() => setShowRoomManagement(true)}
       />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
@@ -416,6 +424,14 @@ const UnitsAndRoomsPage = () => {
         {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
 
         {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
+
+        {showRoomManagement && manageHostel && (
+          <RoomManagementModal
+            hostel={manageHostel}
+            onClose={() => setShowRoomManagement(false)}
+            onRoomsUpdated={refreshMap}
+          />
+        )}
 
       </div>
     </div>
