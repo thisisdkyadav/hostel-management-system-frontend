@@ -350,7 +350,7 @@ const AccommodationRequestWizard = ({ open, onClose, onSubmitted, existingReques
               {form.stay.purpose && <Text as="div" color="muted">{form.stay.purpose}</Text>}
             </Surface>
             <Text size="xs" color="muted">
-              The Chief Warden Office will set the payable amount after your request is approved. No estimate is shown here.
+              The Chief Warden Office will set the payable amount after your request is approved.
             </Text>
           </VStack>
         )}

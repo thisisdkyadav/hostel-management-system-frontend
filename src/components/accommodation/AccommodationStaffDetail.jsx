@@ -353,10 +353,23 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     label: `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber} (${r.available} free)`,
   }))
 
-  // Rooms are booked whole, so a hostel fits this party only if it has a free
-  // room for them AND enough beds inside it.
-  const hostelFits = (h) =>
-    (h.availableRooms ?? 0) >= 1 && (h.available ?? 0) >= (request.persons || 1)
+  // Rooms are booked whole. A large party may need several rooms — same rule as
+  // the backend allotment check (ceil(persons / largestRoom)).
+  const roomsNeededFor = (persons, largestRoom) => {
+    const party = Math.max(1, Number(persons) || 0)
+    const capacity = Math.max(1, Number(largestRoom) || 1)
+    return Math.ceil(party / capacity)
+  }
+  const hostelFits = (h) => {
+    const need = roomsNeededFor(request.persons, h.largestRoom)
+    return (h.availableRooms ?? 0) >= need && (h.available ?? 0) >= (request.persons || 1)
+  }
+  const hostelCapacityLabel = (h) => {
+    const need = roomsNeededFor(request.persons, h.largestRoom)
+    const rooms = `${h.availableRooms ?? 0} of ${h.roomCount ?? 0} rooms free`
+    const needHint = need > 1 ? ` · needs ${need}` : ""
+    return `${rooms}${needHint} · ${h.available ?? 0} beds`
+  }
 
   // Free guest rooms per hostel for these dates — read-only during the capacity
   // screening, selectable when the payment request allots the hostel.
@@ -373,7 +386,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               label={h.name}
               value={
                 <Badge variant={hostelFits(h) ? "success" : "danger"} size="small">
-                  {h.availableRooms ?? 0} of {h.roomCount ?? 0} rooms free
+                  {hostelCapacityLabel(h)}
                 </Badge>
               }
             />
@@ -393,7 +406,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               label={h.name}
               description={
                 <Badge variant={ok ? "success" : "danger"} size="small">
-                  {h.availableRooms ?? 0} of {h.roomCount ?? 0} rooms free · {h.available ?? 0} beds
+                  {hostelCapacityLabel(h)}
                 </Badge>
               }
             />
