@@ -4,6 +4,8 @@ import { Button, HStack, Label, Surface, Text, useToast, VStack } from "hzero"
 import { resolveUploadedFileRef } from "@/service"
 import PdfViewerModal from "./PdfViewerModal"
 
+const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|bmp|svg)(?:$|\?)/i
+
 const resolveUploadedUrl = (uploadResult) => {
   return resolveUploadedFileRef(uploadResult)
 }
@@ -24,7 +26,15 @@ const PdfUploadField = ({
   accept = ".pdf",
   acceptHint = "PDF only",
   validateType,
+  fileTypeHint,
 }) => {
+  const resolvedFileTypeHint =
+    fileTypeHint ||
+    (typeof accept === "string" && accept.startsWith("image/")
+      ? "image"
+      : IMAGE_EXT_RE.test(String(downloadFileName || ""))
+        ? "image"
+        : undefined)
   const { toast } = useToast()
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -161,6 +171,7 @@ const PdfUploadField = ({
         title={viewerTitle}
         subtitle={viewerSubtitle}
         downloadFileName={downloadFileName}
+        fileTypeHint={resolvedFileTypeHint}
       />
     </>
   )

@@ -3,6 +3,15 @@ import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons
 import { Button, Heading, HStack, IconCircle, Modal, Surface, Text } from "hzero"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
+const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|bmp|svg)(?:$|\?)/i
+
+const detectFileType = ({ documentUrl, downloadFileName, fileTypeHint }) => {
+  if (fileTypeHint === "image" || fileTypeHint === "pdf") return fileTypeHint
+  const candidates = [documentUrl, downloadFileName, getMediaUrl(documentUrl)]
+  if (candidates.some((value) => IMAGE_EXT_RE.test(String(value || "")))) return "image"
+  return "pdf"
+}
+
 const PdfViewerModal = ({
   isOpen,
   onClose,
@@ -10,6 +19,8 @@ const PdfViewerModal = ({
   title = "Document",
   subtitle = "PDF Document",
   downloadFileName = "document.pdf",
+  /** Optional override when the URL has no extension (e.g. media:// refs). */
+  fileTypeHint,
 }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -21,15 +32,9 @@ const PdfViewerModal = ({
     if (documentUrl && isOpen) {
       setIsLoading(true)
       setError(false)
-
-      const url = String(documentUrl || "").toLowerCase()
-      if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
-        setFileType("image")
-      } else {
-        setFileType("pdf")
-      }
+      setFileType(detectFileType({ documentUrl, downloadFileName, fileTypeHint }))
     }
-  }, [documentUrl, isOpen])
+  }, [documentUrl, downloadFileName, fileTypeHint, isOpen])
 
   const handleDownload = () => {
     const link = document.createElement("a")
@@ -78,13 +83,33 @@ const PdfViewerModal = ({
           </HStack>
         </div>
 
-        <div style={{ flex: "1", backgroundColor: "var(--color-bg-primary)", border: "var(--border-2) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden", height: "calc(100% - 100px)" }}>
+        <div style={{ flex: "1", minHeight: 0, backgroundColor: "var(--color-bg-primary)", border: "var(--border-2) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden", height: "calc(100% - 100px)" }}>
           {fileType === "image" ? (
-            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                minHeight: 0,
+                boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "var(--spacing-4)",
+                overflow: "hidden",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
               <img
                 src={resolvedDocumentUrl}
                 alt={title}
-                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center",
+                }}
                 onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
