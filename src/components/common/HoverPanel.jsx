@@ -12,10 +12,22 @@ const canHoverFine = () =>
 
 const isNodeIn = (root, node) => Boolean(root && node && root.contains(node))
 
+const isHoverPanelContent = (node) =>
+  Boolean(node && typeof node.closest === "function" && node.closest(".hover-panel__content"))
+
 const hitTest = (root, x, y) => {
   if (!root) return false
   const el = document.elementFromPoint(x, y)
   return isNodeIn(root, el)
+}
+
+/** Nested peeks portal to document.body, so a parent must treat those nodes as its own chrome. */
+const isInsideHoverUi = (target, trigger) =>
+  isNodeIn(trigger, target) || isHoverPanelContent(target)
+
+const hitTestHoverUi = (trigger, panel, x, y) => {
+  if (hitTest(trigger, x, y) || hitTest(panel, x, y)) return true
+  return isHoverPanelContent(document.elementFromPoint(x, y))
 }
 
 const place = (trigger, panel, placement, align) => {
@@ -262,7 +274,7 @@ const HoverPanel = ({
     }
   }
 
-  const relatedInTree = (related) => isNodeIn(triggerRef.current, related) || isNodeIn(panelRef.current, related)
+  const relatedInTree = (related) => isInsideHoverUi(related, triggerRef.current)
 
   useEffect(() => {
     if (!open) return undefined
@@ -270,12 +282,11 @@ const HoverPanel = ({
       if (event.key === "Escape") forceClose()
     }
     const onPointerDown = (event) => {
-      const target = event.target
-      if (isNodeIn(triggerRef.current, target) || isNodeIn(panelRef.current, target)) return
+      if (isInsideHoverUi(event.target, triggerRef.current)) return
       forceClose()
     }
     const syncPointer = (event) => {
-      const over = hitTest(triggerRef.current, event.clientX, event.clientY) || hitTest(panelRef.current, event.clientX, event.clientY)
+      const over = hitTestHoverUi(triggerRef.current, panelRef.current, event.clientX, event.clientY)
       if (over) {
         pointerMode.current = true
         pointerInside.current = true
