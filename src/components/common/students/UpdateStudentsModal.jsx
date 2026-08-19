@@ -329,6 +329,14 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     () => uniqueNonEmptyValues(basicValidationIssues.filter((issue) => issue.field === "department").map((issue) => issue.value)),
     [basicValidationIssues]
   )
+  const duplicateRollValues = useMemo(
+    () => uniqueNonEmptyValues(basicValidationIssues.filter((issue) => issue.field === "rollNumber").map((issue) => issue.value)),
+    [basicValidationIssues]
+  )
+  const duplicateEmailValues = useMemo(
+    () => uniqueNonEmptyValues(basicValidationIssues.filter((issue) => issue.field === "email").map((issue) => issue.value)),
+    [basicValidationIssues]
+  )
   const progressPercent = useMemo(() => {
     if (!updateProgress.total) return 0
     return Math.max(0, Math.min(100, Math.round((updateProgress.processed / updateProgress.total) * 100)))
@@ -369,6 +377,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       return { backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", fontWeight: "var(--font-weight-medium)" }
     }
     if (["email", "guardianEmail", "secondaryEmail", "facultyAdvisorEmail"].includes(column) && rowIssues[column]) {
+      return { backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" }
+    }
+    if (column === "rollNumber" && rowIssues.rollNumber) {
       return { backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" }
     }
     return null
@@ -581,6 +592,14 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
           const degreeLookup = new Set(validDegrees.map((value) => value.toLowerCase()))
           const departmentLookup = new Set(validDepartments.map((value) => value.toLowerCase()))
+          const rollCounts = new Map()
+          const emailCounts = new Map()
+          results.data.forEach((student) => {
+            const roll = normalizeRollNumber(student.rollNumber)
+            if (roll) rollCounts.set(roll, (rollCounts.get(roll) || 0) + 1)
+            const email = normalizeEmail(student.email)
+            if (email) emailCounts.set(email, (emailCounts.get(email) || 0) + 1)
+          })
           const invalidRecords = []
           const invalidCellMap = {}
           const parsedData = results.data.map((student, index) => {
@@ -646,6 +665,30 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 rowInvalidMap[field] = issue.message
               }
             })
+
+            const normalizedRoll = normalizeRollNumber(studentData.rollNumber)
+            if (normalizedRoll && (rollCounts.get(normalizedRoll) || 0) > 1) {
+              const issue = {
+                row: index + 2,
+                field: "rollNumber",
+                value: studentData.rollNumber,
+                message: `Duplicate roll number "${studentData.rollNumber}" in this file`,
+              }
+              invalidRecords.push(issue)
+              rowInvalidMap.rollNumber = issue.message
+            }
+
+            const normalizedEmailValue = normalizeEmail(studentData.email)
+            if (normalizedEmailValue && (emailCounts.get(normalizedEmailValue) || 0) > 1) {
+              const issue = {
+                row: index + 2,
+                field: "email",
+                value: studentData.email,
+                message: `Duplicate email "${studentData.email}" in this file`,
+              }
+              invalidRecords.push(issue)
+              rowInvalidMap.email = issue.message
+            }
 
             if (Object.keys(rowInvalidMap).length > 0) {
               invalidCellMap[index] = rowInvalidMap
@@ -925,6 +968,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
+      return
+    }
+
+    if (activeTab === "basic" && Object.keys(basicInvalidCellMap).length > 0) {
+      setError("Fix highlighted issues (including duplicate roll numbers or emails) before confirming update.")
       return
     }
 
@@ -1355,6 +1403,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <Text as="p" size="xs" color="tertiary" className="mt-[var(--spacing-1)]">
                   <strong>Updatable fields:</strong> {availableFields.join(", ")}
                 </Text>
+                <Text as="p" size="xs" color="tertiary" className="mt-[var(--spacing-1)]">
+                  Roll numbers and emails must be unique in the file. Email cannot already belong to another user.
+                </Text>
               </Surface>
               <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
               <div className="flex flex-col items-center">
@@ -1475,6 +1526,22 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     tone="danger"
                     note={invalidDepartmentValues.length > 0 ? (
                       <span className="block max-h-24 overflow-auto">{invalidDepartmentValues.join(", ")}</span>
+                    ) : undefined}
+                  />
+                  <StatTile
+                    label="Duplicate Roll Numbers"
+                    value={duplicateRollValues.length}
+                    tone="danger"
+                    note={duplicateRollValues.length > 0 ? (
+                      <span className="block max-h-24 overflow-auto">{duplicateRollValues.join(", ")}</span>
+                    ) : undefined}
+                  />
+                  <StatTile
+                    label="Duplicate Emails"
+                    value={duplicateEmailValues.length}
+                    tone="danger"
+                    note={duplicateEmailValues.length > 0 ? (
+                      <span className="block max-h-24 overflow-auto">{duplicateEmailValues.join(", ")}</span>
                     ) : undefined}
                   />
                 </VStack>
