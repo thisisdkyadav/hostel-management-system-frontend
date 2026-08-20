@@ -757,7 +757,7 @@ export const GymkhanaProposalDetailsModal = ({
           ? "Write it as a case, not a checklist. The proposal on the right is what a reviewer will feel."
           : "The proposal as a reviewer should meet it — a programme, not a spreadsheet."
       }
-      width={1240}
+      size="full"
       fullHeight
       closeButtonVariant="button"
       onClose={onClose}

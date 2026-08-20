@@ -1539,7 +1539,7 @@ const MegaEventsPage = () => {
         }
         isOpen={isProposalOpen}
         onClose={() => setIsProposalOpen(false)}
-        width={1080}
+        size="full"
         closeButtonVariant="button"
         footer={(
           <HStack gap={2} justify="end" wrap>

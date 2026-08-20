@@ -100,7 +100,7 @@ export const GymkhanaProposalModal = ({
           ? "You are editing the proposal. Reviewers will read the dossier, not the fields."
           : undefined
     }
-    width={1080}
+    size="full"
     closeButtonVariant="button"
     onClose={onClose}
     footer={

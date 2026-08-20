@@ -65,6 +65,20 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
   const displayCapacity = draftActive ? draftCapacity : 0
   const slots = useMemo(() => buildSlots(students, displayCapacity), [students, displayCapacity])
 
+  const viewRoom = (
+    <Button
+      className="floor-map__view-room"
+      variant="primary"
+      size="sm"
+      onClick={() => {
+        onViewMore?.(room)
+        hover?.closeAll?.()
+      }}
+    >
+      View room
+    </Button>
+  )
+
   const confirm = async () => {
     if (!dirty || !hostelId) return
     setSaving(true)
@@ -149,6 +163,7 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
             )}
           </div>
         )}
+        {viewRoom}
       </header>
 
       {isGuest ? (
@@ -196,23 +211,13 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
         </p>
       )}
 
-      <footer className="floor-map__actions">
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            onViewMore?.(room)
-            hover?.closeAll?.()
-          }}
-        >
-          View room
-        </Button>
-        {dirty && (
+      {dirty && (
+        <footer className="floor-map__actions">
           <Button variant="primary" size="sm" loading={saving} onClick={confirm}>
             Confirm
           </Button>
-        )}
-      </footer>
+        </footer>
+      )}
     </div>
   )
 }

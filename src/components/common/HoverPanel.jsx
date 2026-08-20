@@ -50,8 +50,8 @@ const place = (trigger, panel, placement, align) => {
   let used = placement
 
   if (placement === "auto") {
-    const below = window.innerHeight - t.bottom
-    used = below < p.height + GAP && t.top > below ? "top" : "bottom"
+    const needed = p.height + GAP + VIEWPORT_PAD
+    used = t.top >= needed ? "top" : "bottom"
   } else if (placement === "right" && t.right + GAP + p.width > window.innerWidth - VIEWPORT_PAD && t.left > window.innerWidth - t.right) {
     used = "left"
   } else if (placement === "left" && t.left - GAP - p.width < VIEWPORT_PAD && window.innerWidth - t.right > t.left) {
@@ -100,7 +100,7 @@ export const dismissAllHoverPanels = () => {
 const HoverPanel = ({
   children,
   content,
-  placement = "bottom",
+  placement = "auto",
   align = "center",
   portal = true,
   closeDelay = 120,
