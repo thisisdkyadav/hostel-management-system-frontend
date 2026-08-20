@@ -72,6 +72,8 @@
   align-items: stretch;
   justify-content: space-between;
   gap: var(--spacing-1);
+  overflow: visible;
+  padding-inline-end: var(--spacing-2);
 }
 
 .occ-tile--sm.occ-tile--room {
@@ -101,10 +103,14 @@
 }
 
 .occ-tile__head .occ-tile__label {
+  flex: 0 0 auto;
   margin-left: auto;
   text-align: right;
-  min-width: 0;
+  min-width: min-content;
+  max-width: none;
   letter-spacing: 0;
+  overflow: visible;
+  text-overflow: unset;
 }
 
 .occ-tile--sm.occ-tile--room .occ-tile__head .occ-tile__label {
