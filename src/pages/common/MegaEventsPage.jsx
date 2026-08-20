@@ -1433,12 +1433,12 @@ const MegaEventsPage = () => {
                     <HStack gap={2} wrap style={{ marginTop: "var(--spacing-4)" }}>
                       {canCreateOrEditProposal && (
                         <Button size="sm" onClick={() => setIsProposalOpen(true)}>
-                          <FileText size={14} /> {proposalData ? "Open the brief" : "Write the brief"}
+                          <FileText size={14} /> {proposalData ? "Open proposal" : "Write proposal"}
                         </Button>
                       )}
                       {(proposalData || canReviewProposal) && (
                         <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(true)}>
-                          <History size={14} /> Review the brief
+                          <History size={14} /> Review proposal
                         </Button>
                       )}
                       {(expenseData || canCreateOrEditExpense || canReviewExpense) && (
@@ -1531,10 +1531,10 @@ const MegaEventsPage = () => {
       </Modal>
 
       <Modal
-        title={!proposalData ? `New brief${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}` : `Programme brief${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}`}
+        title={!proposalData ? `New proposal${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}` : `Event proposal${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}`}
         description={
           !proposalData
-            ? "Write it as if the Dean has two minutes. The brief is the case; the rest is the paper around it."
+            ? "Write it as if the Dean has two minutes. The proposal is the case; the rest is the paper around it."
             : undefined
         }
         isOpen={isProposalOpen}
@@ -1546,7 +1546,7 @@ const MegaEventsPage = () => {
             <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(false)}>Close</Button>
             {canCreateOrEditProposal && (
               <Button size="sm" onClick={handleSaveProposal} loading={submitting} disabled={!isProposalFormValid}>
-                {proposalData ? "Save the brief" : "Submit this brief"}
+                {proposalData ? "Save proposal" : "Submit proposal"}
               </Button>
             )}
             {canReviewProposal && (
@@ -1567,28 +1567,28 @@ const MegaEventsPage = () => {
               {(proposalData.status || "draft").replace(/_/g, " ")}
             </Alert>
           ) : (
-            <Alert type="info" title="A new brief">
+            <Alert type="info" title="A new proposal">
               You are writing the case for {selectedOccurrence?.title || "this occurrence"}. Name the programme first.
             </Alert>
           )}
 
           <HStack gap={3} align="center" justify="between" wrap>
             <Text as="div" size="sm" weight="semibold" color="heading">
-              Programme brief
+              Proposal
             </Text>
             <Button variant="primary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
               {canCreateOrEditProposal
                 ? detailsCompleteness.requiredFilled === 0
-                  ? "Write the brief"
+                  ? "Write the proposal"
                   : detailsCompleteness.complete
-                    ? "Refine the brief"
-                    : "Continue the brief"
-                : "Read the full brief"}
+                    ? "Refine the proposal"
+                    : "Continue the proposal"
+                : "View proposal"}
             </Button>
           </HStack>
 
           {!isDetailedProposalComplete && detailsCompleteness.requiredFilled > 0 && (
-            <Alert type="warning" title="The brief is still open">
+            <Alert type="warning" title="The proposal is still open">
               {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled} required{" "}
               {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled === 1 ? "line is" : "lines are"}{" "}
               still missing.
@@ -1602,7 +1602,7 @@ const MegaEventsPage = () => {
             action={
               detailsCompleteness.requiredFilled === 0 ? (
                 <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
-                  {canCreateOrEditProposal ? "Write the brief" : "Read the full brief"}
+                  {canCreateOrEditProposal ? "Write the proposal" : "View proposal"}
                 </Button>
               ) : null
             }

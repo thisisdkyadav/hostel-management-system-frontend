@@ -820,7 +820,7 @@ export const PROPOSAL_DETAIL_CHAPTERS = [
     sublabel: "How it unfolds",
     headline: "How the days unfold",
     prompt: "Enough shape that someone can picture the room, the hours, the arc.",
-    required: [{ path: "programmeSchedule.brief", label: "Brief schedule" }],
+    required: [{ path: "programmeSchedule.brief", label: "Schedule overview" }],
   },
   {
     id: "funds",

@@ -401,7 +401,7 @@ const PeopleChapter = ({ proposalForm, canEditProposalForm, handleProposalDetail
       <Field
         label="Guest names, designations and affiliations"
         htmlFor="gymkhana-guests-details-names"
-        help="One person per line. The brief will list them as voices in the room."
+        help="One person per line. The proposal will list them as voices in the room."
       >
         <Textarea
           id="gymkhana-guests-details-names"
@@ -428,7 +428,7 @@ const ScheduleChapter = ({
   uploadScheduleAnnexureDocument,
 }) => (
   <DetailSection title="Programme schedule" icon={Clock}>
-    <Field label="Brief schedule" htmlFor="gymkhana-programme-schedule-brief" required>
+    <Field label="Schedule overview" htmlFor="gymkhana-programme-schedule-brief" required>
       <Textarea
         id="gymkhana-programme-schedule-brief"
         value={proposalForm.proposalDetails.programmeSchedule.brief}
@@ -751,10 +751,10 @@ export const GymkhanaProposalDetailsModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      title={canEditProposalForm ? "Shape the programme" : "Programme brief"}
+      title={canEditProposalForm ? "Shape the programme" : "Proposal"}
       description={
         canEditProposalForm
-          ? "Write it as a case, not a checklist. The brief on the right is what a reviewer will feel."
+          ? "Write it as a case, not a checklist. The proposal on the right is what a reviewer will feel."
           : "The proposal as a reviewer should meet it — a programme, not a spreadsheet."
       }
       width={1240}
@@ -767,7 +767,7 @@ export const GymkhanaProposalDetailsModal = ({
             <HStack gap={3} align="center" justify="between" wrap>
               <Text as="span" size="xs" color="muted">
                 {completeness.complete
-                  ? "The brief is complete. Read it once more, then stand behind it."
+                  ? "The proposal is complete. Read it once more, then stand behind it."
                   : `${completeness.requiredFilled} of ${completeness.requiredTotal} required lines are in place.`}
               </Text>
               <Text
@@ -783,7 +783,7 @@ export const GymkhanaProposalDetailsModal = ({
               value={completeness.percent}
               size="sm"
               color={completeness.complete ? "success" : "primary"}
-              aria-label="Proposal brief completeness"
+              aria-label="Proposal completeness"
             />
             <Tabs
               variant="pills"
@@ -806,7 +806,7 @@ export const GymkhanaProposalDetailsModal = ({
               </Button>
               {isLast ? (
                 <Button size="sm" onClick={onClose}>
-                  {completeness.complete ? "Finish brief" : "Return to proposal"}
+                  {completeness.complete ? "Finish proposal" : "Return to proposal"}
                 </Button>
               ) : (
                 <Button size="sm" onClick={() => goRelative(1)}>
@@ -852,7 +852,7 @@ export const GymkhanaProposalDetailsModal = ({
                 color="muted"
                 style={{ letterSpacing: "0.12em", textTransform: "uppercase" }}
               >
-                Live brief
+                Live preview
               </Text>
               <ProposalDossier
                 details={proposalForm.proposalDetails}

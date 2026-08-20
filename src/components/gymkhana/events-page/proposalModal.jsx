@@ -74,19 +74,19 @@ export const GymkhanaProposalModal = ({
   }
 
   const detailsCompleteness = getProposalDetailsCompleteness(proposalForm.proposalDetails)
-  const isNewBrief = !proposalData?._id
-  const briefActionLabel = formEditable
+  const isNewProposal = !proposalData?._id
+  const proposalActionLabel = formEditable
     ? detailsCompleteness.requiredFilled === 0
-      ? "Write the brief"
+      ? "Write the proposal"
       : detailsCompleteness.complete
-        ? "Refine the brief"
-        : "Continue the brief"
-    : "Read the full brief"
-  const modalTitle = isNewBrief
-    ? `New brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+        ? "Refine the proposal"
+        : "Continue the proposal"
+    : "View proposal"
+  const modalTitle = isNewProposal
+    ? `New proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
     : formEditable
-      ? `Editing brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
-      : `Programme brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+      ? `Editing proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+      : `Event proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
 
   return (
     <>
@@ -94,10 +94,10 @@ export const GymkhanaProposalModal = ({
     isOpen={isOpen}
     title={modalTitle}
     description={
-      isNewBrief
-        ? "Write it as if the Dean has two minutes. The brief is the case; the rest is the paper around it."
+      isNewProposal
+        ? "Write it as if the Dean has two minutes. The proposal is the case; the rest is the paper around it."
         : formEditable
-          ? "You are inside the brief. Reviewers will read the dossier, not the fields."
+          ? "You are editing the proposal. Reviewers will read the dossier, not the fields."
           : undefined
     }
     width={1080}
@@ -123,14 +123,14 @@ export const GymkhanaProposalModal = ({
               <Button onClick={handleSaveClick} loading={submitting} disabled={!isProposalFormValid}>
                 {canAdminEditProposal
                   ? "Save (Admin Override)"
-                  : isNewBrief
-                    ? "Submit this brief"
-                    : "Save the brief"}
+                  : isNewProposal
+                    ? "Submit proposal"
+                    : "Save proposal"}
               </Button>
             </>
           ) : (
             <Button variant="secondary" onClick={() => setEditMode?.(true)}>
-              <Pencil size={16} /> Edit the brief
+              <Pencil size={16} /> Edit proposal
             </Button>
           )}
         </HStack>
@@ -149,11 +149,11 @@ export const GymkhanaProposalModal = ({
         <VStack gap={4} className="xl:col-span-2">
           <EventDetailSectionCard
             icon={FileText}
-            title="Programme brief"
+            title="Proposal"
             accentColor="var(--color-primary)"
             headerAction={
               <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
-                {briefActionLabel}
+                {proposalActionLabel}
               </Button>
             }
           >
@@ -208,19 +208,19 @@ export const GymkhanaProposalModal = ({
                 </div>
               )}
 
-              {isNewBrief && canCreateProposalForSelectedEvent && (
-                <Alert type="info" title="A new brief">
+              {isNewProposal && canCreateProposalForSelectedEvent && (
+                <Alert type="info" title="A new proposal">
                   You are writing the case for {proposalEvent?.title || "this event"}. Name the
                   programme first — spend and papers wait until the story stands.
                 </Alert>
               )}
 
               {!proposalData && !canCreateProposalForSelectedEvent && (
-                <Alert type="warning">The window to write this brief opens 60 days before the event.</Alert>
+                <Alert type="warning">The window to write this proposal opens 60 days before the event.</Alert>
               )}
 
               {!isDetailedProposalComplete && detailsCompleteness.requiredFilled > 0 && (
-                <Alert type="warning" title="The brief is still open">
+                <Alert type="warning" title="The proposal is still open">
                   {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled} required{" "}
                   {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled === 1
                     ? "line is"
@@ -236,7 +236,7 @@ export const GymkhanaProposalModal = ({
                 action={
                   detailsCompleteness.requiredFilled === 0 ? (
                     <Button variant="secondary" size="sm" onClick={onOpenProposalDetails}>
-                      {briefActionLabel}
+                      {proposalActionLabel}
                     </Button>
                   ) : null
                 }
@@ -382,7 +382,7 @@ export const GymkhanaProposalModal = ({
             <VStack gap={3}>
               <Surface bg="brand" padding={3} radius="card-sm">
                 <Text as="div" size="2xs" color="muted" style={{ letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                  {isNewBrief ? "Not yet submitted" : "In the corridor"}
+                  {isNewProposal ? "Not yet submitted" : "In the corridor"}
                 </Text>
                 <Text as="div" size="md" weight="semibold" color="heading" style={{ marginTop: "var(--spacing-1)" }}>
                   {proposalData?.status
@@ -392,7 +392,7 @@ export const GymkhanaProposalModal = ({
                 <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
                   {proposalData?.currentApprovalStage
                     ? `Waiting with ${proposalData.currentApprovalStage}`
-                    : "Submit when the brief can stand on its own"}
+                    : "Submit when the proposal is complete"}
                 </Text>
               </Surface>
               <EventDetailInfoRow
@@ -436,7 +436,7 @@ export const GymkhanaProposalModal = ({
               </VStack>
             ) : (
               <Text size="sm" color="muted" style={{ margin: 0 }}>
-                History appears after this brief is submitted.
+                History appears after this proposal is submitted.
               </Text>
             )}
           </EventDetailSectionCard>

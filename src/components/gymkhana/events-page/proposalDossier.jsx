@@ -226,7 +226,7 @@ export const ProposalDossier = ({
     return (
       <EmptyState
         icon={Sparkles}
-        title="Every campus moment starts as a brief"
+        title="Every campus moment starts as a proposal"
         message="Name the programme, tell us why it matters, and this page will come alive — not as a form dump, as a case someone would actually read."
         action={action}
       />
@@ -269,7 +269,7 @@ export const ProposalDossier = ({
           </VStack>
           <VStack gap={1} align="end" style={{ minWidth: "var(--spacing-16)" }}>
             <Text as="span" size="xs" color="muted">
-              Brief
+              Proposal
             </Text>
             <Text as="span" size="2xl" weight="bold" color="primary">
               {completeness.percent}%
@@ -278,7 +278,7 @@ export const ProposalDossier = ({
               value={completeness.percent}
               size="sm"
               color={completeness.complete ? "success" : "primary"}
-              aria-label="Proposal brief completeness"
+              aria-label="Proposal completeness"
             />
             <Text as="span" size="2xs" color={completeness.complete ? "success" : "muted"}>
               {completeness.complete
@@ -403,7 +403,7 @@ export const ProposalDossier = ({
               ))}
               {compact && guests.length > 4 ? (
                 <Text as="span" size="xs" color="muted">
-                  +{guests.length - 4} more in the full brief
+                  +{guests.length - 4} more in the full proposal
                 </Text>
               ) : null}
             </VStack>
@@ -544,7 +544,7 @@ export const ProposalLedger = ({
       <LedgerTile
         kicker="Coming in"
         value={formatINR(income)}
-        hint="Pulled from the brief's funding mix"
+        hint="Pulled from the proposal's funding mix"
         tone="success"
       />
       <LedgerTile
@@ -611,7 +611,7 @@ export const ProposalPapers = ({
         disabled={disabled}
         uploadedText="Signed proposal attached"
         viewerTitle="Proposal Document"
-        viewerSubtitle="The paper that travels with the brief"
+        viewerSubtitle="The paper that travels with the proposal"
         downloadFileName="proposal-document.pdf"
       />
     </Surface>

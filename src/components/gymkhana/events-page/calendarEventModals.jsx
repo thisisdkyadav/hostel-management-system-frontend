@@ -152,10 +152,10 @@ export const GymkhanaEventDetailsModal = ({
           (isAdminLevel && canApproveEventsCapability))
 
       const proposalSummary = !selectedEvent.gymkhanaEventId
-        ? "The brief opens after calendar approval, or earlier if Admin lets this calendar start writing."
+        ? "The proposal opens after calendar approval, or earlier if Admin lets this calendar start writing."
         : selectedEvent.proposalSubmitted
-          ? "The brief is in — under review, or already blessed."
-          : `The brief is due ${proposalDueText}.`
+          ? "The proposal is in — under review, or already blessed."
+          : `The proposal is due ${proposalDueText}.`
 
       const billsSummary = !selectedEvent.gymkhanaEventId
         ? "Available after calendar approval and event record generation."
@@ -266,7 +266,7 @@ export const GymkhanaEventDetailsModal = ({
                   >
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <Text size="xs" weight="semibold" color="heading" style={{ margin: 0 }}>
-                        The brief
+                        Proposal
                       </Text>
                       <Text size="xs" color="muted" style={{ margin: 0 }}>
                         {proposalSummary}
@@ -275,7 +275,7 @@ export const GymkhanaEventDetailsModal = ({
                     {canOpenProposal && (
                       <Button size="sm" variant="primary" onClick={() => openProposalModal(selectedEvent)}>
                         <FileText size={12} />{" "}
-                        {selectedEvent.proposalSubmitted ? "Open the brief" : "Write the brief"}
+                        {selectedEvent.proposalSubmitted ? "Open proposal" : "Write proposal"}
                       </Button>
                     )}
                   </div>

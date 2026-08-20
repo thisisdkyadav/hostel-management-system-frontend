@@ -12,7 +12,7 @@ export const GymkhanaPendingProposalsModal = ({
 }) => (
   <Modal
     isOpen={isOpen}
-    title="Briefs waiting for a yes"
+    title="Proposals waiting for a yes"
     description="These are programmes, not rows. Open one the way a reviewer would."
     width={720}
     onClose={onClose}
@@ -66,7 +66,7 @@ export const GymkhanaPendingProposalsModal = ({
                   await openPendingProposalReview(proposal)
                 }}
               >
-                Read the brief
+                Read the proposal
               </Button>
             </HStack>
           </Surface>
