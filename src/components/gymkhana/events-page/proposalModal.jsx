@@ -1,14 +1,14 @@
 import { useState } from "react"
-import { Alert, Badge, Button, Checkbox, Grid, HStack, Input, Modal, Select, Text, Textarea, VStack } from "hzero"
+import { Alert, Badge, Button, Grid, HStack, Modal, Select, Surface, Text, Textarea, VStack } from "hzero"
+import { ProposalDossier, ProposalLedger, ProposalPapers } from "@/components/gymkhana/events-page/proposalDossier"
+import { getProposalDetailsCompleteness } from "@/components/gymkhana/events-page/shared"
 import AuditTimeline from "@/components/gymkhana/AuditTimeline"
 import AuditTimelineModal from "@/components/gymkhana/AuditTimelineModal"
 import AdminEntityActions from "@/components/gymkhana/events-page/AdminEntityActions"
 import ReasonPromptModal from "@/components/gymkhana/events-page/ReasonPromptModal"
-import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import { formatINR, formatIndianDate } from "@/utils/formatters"
 import {
   Check,
-  CircleDollarSign,
   Clock3,
   FileText,
   History,
@@ -17,11 +17,8 @@ import {
 import {
   EventDetailInfoRow,
   EventDetailSectionCard,
-  FormField,
   SectionHeader,
   formLabelStyles,
-  infoBoxStyle,
-  sectionLabelStyle,
 } from "@/components/gymkhana/events-page/sharedPrimitives"
 
 export const GymkhanaProposalModal = ({
@@ -36,8 +33,6 @@ export const GymkhanaProposalModal = ({
   isProposalFormValid,
   canCreateProposalForSelectedEvent,
   isDetailedProposalComplete,
-  detailedProposalPreviewText,
-  detailedExternalGuestsText,
   computedTotalExpectedIncome,
   handleProposalFormChange,
   uploadProposalDocument,
@@ -78,11 +73,33 @@ export const GymkhanaProposalModal = ({
     else onSave()
   }
 
+  const detailsCompleteness = getProposalDetailsCompleteness(proposalForm.proposalDetails)
+  const isNewBrief = !proposalData?._id
+  const briefActionLabel = formEditable
+    ? detailsCompleteness.requiredFilled === 0
+      ? "Write the brief"
+      : detailsCompleteness.complete
+        ? "Refine the brief"
+        : "Continue the brief"
+    : "Read the full brief"
+  const modalTitle = isNewBrief
+    ? `New brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+    : formEditable
+      ? `Editing brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+      : `Programme brief${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`
+
   return (
     <>
   <Modal
     isOpen={isOpen}
-    title={`Event Proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`}
+    title={modalTitle}
+    description={
+      isNewBrief
+        ? "Write it as if the Dean has two minutes. The brief is the case; the rest is the paper around it."
+        : formEditable
+          ? "You are inside the brief. Reviewers will read the dossier, not the fields."
+          : undefined
+    }
     width={1080}
     closeButtonVariant="button"
     onClose={onClose}
@@ -106,14 +123,14 @@ export const GymkhanaProposalModal = ({
               <Button onClick={handleSaveClick} loading={submitting} disabled={!isProposalFormValid}>
                 {canAdminEditProposal
                   ? "Save (Admin Override)"
-                  : proposalData?._id
-                    ? "Save Proposal"
-                    : "Submit Proposal"}
+                  : isNewBrief
+                    ? "Submit this brief"
+                    : "Save the brief"}
               </Button>
             </>
           ) : (
             <Button variant="secondary" onClick={() => setEditMode?.(true)}>
-              <Pencil size={16} /> Edit
+              <Pencil size={16} /> Edit the brief
             </Button>
           )}
         </HStack>
@@ -132,10 +149,15 @@ export const GymkhanaProposalModal = ({
         <VStack gap={4} className="xl:col-span-2">
           <EventDetailSectionCard
             icon={FileText}
-            title="Proposal Details"
+            title="Programme brief"
             accentColor="var(--color-primary)"
+            headerAction={
+              <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
+                {briefActionLabel}
+              </Button>
+            }
           >
-            <VStack gap={2}>
+            <VStack gap={3}>
               {proposalEvent && (
                 <div
                   style={{
@@ -186,160 +208,75 @@ export const GymkhanaProposalModal = ({
                 </div>
               )}
 
-              {!proposalData && !canCreateProposalForSelectedEvent && (
-                <Alert type="warning">Proposal submission opens 60 days before event.</Alert>
-              )}
-
-              <HStack gap={3} align="center" justify="between" wrap>
-                <div>
-                  <Text as="div" size="sm" weight="semibold" color="heading">
-                    {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
-                  </Text>
-                  <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
-                    {proposalForm.proposalDetails.organisingUnit.unitType} ·{" "}
-                    {proposalForm.proposalDetails.programmeDetails.programmeType} ·{" "}
-                    {proposalForm.proposalDetails.programmeDetails.mode}
-                  </Text>
-                  <Text as="div" size="xs" color="muted">
-                    {proposalForm.proposalDetails.programmeDetails.datesAndDuration ||
-                      "Dates not added"}
-                  </Text>
-                </div>
-                <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
-                  {formEditable ? "Edit Details" : "View Details"}
-                </Button>
-              </HStack>
-
-              {!isDetailedProposalComplete && (
-                <Alert type="warning" title="Details incomplete">
-                  Complete mandatory proposal details before submitting.
+              {isNewBrief && canCreateProposalForSelectedEvent && (
+                <Alert type="info" title="A new brief">
+                  You are writing the case for {proposalEvent?.title || "this event"}. Name the
+                  programme first — spend and papers wait until the story stands.
                 </Alert>
               )}
 
-              {detailedProposalPreviewText && (
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>Proposal Preview</span>
-                  <Text as="div" size="sm" color="body" leading={1.5} style={{ marginTop: "var(--spacing-2)", whiteSpace: "pre-wrap" }}>
-                    {detailedProposalPreviewText.slice(0, 400)}
-                    {detailedProposalPreviewText.length > 400 ? "..." : ""}
-                  </Text>
-                </div>
+              {!proposalData && !canCreateProposalForSelectedEvent && (
+                <Alert type="warning">The window to write this brief opens 60 days before the event.</Alert>
               )}
 
-              {detailedExternalGuestsText && (
-                <div style={infoBoxStyle}>
-                  <span style={sectionLabelStyle}>External Guests</span>
-                  <Text as="div" size="sm" color="body" style={{ marginTop: "var(--spacing-1)", whiteSpace: "pre-wrap" }}>
-                    {detailedExternalGuestsText}
-                  </Text>
-                </div>
+              {!isDetailedProposalComplete && detailsCompleteness.requiredFilled > 0 && (
+                <Alert type="warning" title="The brief is still open">
+                  {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled} required{" "}
+                  {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled === 1
+                    ? "line is"
+                    : "lines are"}{" "}
+                  still missing. A reviewer should meet a programme, not a half-written form.
+                </Alert>
               )}
 
-              <SectionHeader>Financials</SectionHeader>
-              <Grid cols={3} gap={2}>
-                <FormField label="Expected Income" htmlFor="gymkhana-total-expected-income">
-                  <Input
-                    id="gymkhana-total-expected-income"
-                    type="number"
-                    min={0}
-                    value={String(computedTotalExpectedIncome)}
-                    placeholder="Auto"
-                    disabled
-                  />
-                </FormField>
-                <FormField label="Total Expenditure" htmlFor="gymkhana-total-expenditure">
-                  <Input
-                    id="gymkhana-total-expenditure"
-                    type="number"
-                    min={0}
-                    value={proposalForm.totalExpenditure}
-                    onChange={(event) =>
-                      handleProposalFormChange("totalExpenditure", event.target.value)
-                    }
-                    placeholder="Amount"
-                    disabled={!formEditable}
-                  />
-                </FormField>
-                <FormField label="Registration Fee" htmlFor="gymkhana-registration-fee-source">
-                  <Input
-                    id="gymkhana-registration-fee-source"
-                    type="number"
-                    min={0}
-                    value={String(
-                      toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee)
-                    )}
-                    placeholder="From source"
-                    disabled
-                  />
-                </FormField>
-              </Grid>
-
-              <Checkbox
-                checked={proposalForm.accommodationRequired}
-                onChange={(event) =>
-                  handleProposalFormChange("accommodationRequired", event.target.checked)
+              <ProposalDossier
+                details={proposalForm.proposalDetails}
+                variant="compact"
+                completeness={detailsCompleteness}
+                action={
+                  detailsCompleteness.requiredFilled === 0 ? (
+                    <Button variant="secondary" size="sm" onClick={onOpenProposalDetails}>
+                      {briefActionLabel}
+                    </Button>
+                  ) : null
                 }
-                label="Accommodation required"
-                disabled={!formEditable}
               />
 
-              <SectionHeader>Documents</SectionHeader>
-              <PdfUploadField
-                label="Proposal PDF"
-                value={proposalForm.proposalDocumentUrl}
-                onChange={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
-                onUpload={uploadProposalDocument}
-                disabled={!formEditable}
-                uploadedText="Proposal document uploaded"
-                viewerTitle="Proposal Document"
-                viewerSubtitle="Event proposal attachment"
-                downloadFileName="proposal-document.pdf"
+              <SectionHeader>The ledger</SectionHeader>
+              <ProposalLedger
+                idPrefix="gymkhana"
+                income={computedTotalExpectedIncome}
+                expenditure={proposalForm.totalExpenditure}
+                onExpenditureChange={(value) => handleProposalFormChange("totalExpenditure", value)}
+                registrationFee={toNumericValue(
+                  proposalForm.proposalDetails?.sourceOfFunds?.registrationFee
+                )}
+                accommodationRequired={proposalForm.accommodationRequired}
+                onAccommodationChange={(checked) =>
+                  handleProposalFormChange("accommodationRequired", checked)
+                }
+                deflection={proposalDeflection}
+                estimatedBudget={proposalEvent?.estimatedBudget}
+                editable={formEditable}
               />
 
-              <PdfUploadField
-                label="Chief Guest PDF"
-                value={proposalForm.chiefGuestDocumentUrl}
-                onChange={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
-                onUpload={uploadChiefGuestDocument}
+              <SectionHeader>The papers</SectionHeader>
+              <ProposalPapers
+                proposalUrl={proposalForm.proposalDocumentUrl}
+                onProposalUrl={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
+                onUploadProposal={uploadProposalDocument}
+                guestUrl={proposalForm.chiefGuestDocumentUrl}
+                onGuestUrl={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
+                onUploadGuest={uploadChiefGuestDocument}
                 disabled={!formEditable}
-                uploadedText="Chief guest document uploaded"
-                viewerTitle="Chief Guest Document"
-                viewerSubtitle="External guest attachment"
-                downloadFileName="chief-guest-document.pdf"
               />
             </VStack>
-          </EventDetailSectionCard>
-
-          <EventDetailSectionCard
-            icon={CircleDollarSign}
-            title="Budget Summary"
-            accentColor="var(--color-success)"
-          >
-            <HStack gap={3} align="center" justify="between" wrap>
-              <EventDetailInfoRow
-                label="Income"
-                value={formatINR(computedTotalExpectedIncome)}
-              />
-              <EventDetailInfoRow
-                label="Expenditure"
-                value={formatINR(proposalForm.totalExpenditure)}
-              />
-              <EventDetailInfoRow
-                label="Deflection"
-                value={formatINR(proposalDeflection)}
-                valueColor={
-                  proposalDeflection > 0
-                    ? "var(--color-danger)"
-                    : "var(--color-success)"
-                }
-              />
-            </HStack>
           </EventDetailSectionCard>
 
           {canCurrentUserReviewProposal && proposalData && (
             <EventDetailSectionCard
               icon={Check}
-              title="Review Actions"
+              title="Stand behind it"
               accentColor="var(--color-warning)"
             >
               <VStack gap={2}>
@@ -439,20 +376,27 @@ export const GymkhanaProposalModal = ({
         <VStack gap={3}>
           <EventDetailSectionCard
             icon={Clock3}
-            title="Proposal Snapshot"
+            title="Where this stands"
             accentColor="var(--color-info)"
           >
-            <VStack gap={2}>
+            <VStack gap={3}>
+              <Surface bg="brand" padding={3} radius="card-sm">
+                <Text as="div" size="2xs" color="muted" style={{ letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  {isNewBrief ? "Not yet submitted" : "In the corridor"}
+                </Text>
+                <Text as="div" size="md" weight="semibold" color="heading" style={{ marginTop: "var(--spacing-1)" }}>
+                  {proposalData?.status
+                    ? proposalData.status.replace(/_/g, " ")
+                    : "A draft in your hands"}
+                </Text>
+                <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
+                  {proposalData?.currentApprovalStage
+                    ? `Waiting with ${proposalData.currentApprovalStage}`
+                    : "Submit when the brief can stand on its own"}
+                </Text>
+              </Surface>
               <EventDetailInfoRow
-                label="Status"
-                value={proposalData?.status ? proposalData.status.replace(/_/g, " ") : "Draft"}
-              />
-              <EventDetailInfoRow
-                label="Current Stage"
-                value={proposalData?.currentApprovalStage || "Not submitted"}
-              />
-              <EventDetailInfoRow
-                label="Due Date"
+                label="Due"
                 value={
                   proposalEvent
                     ? formatIndianDate(getProposalDueDate(proposalEvent), "") ||
@@ -461,7 +405,7 @@ export const GymkhanaProposalModal = ({
                 }
               />
               <EventDetailInfoRow
-                label="Event Budget"
+                label="Calendar budget"
                 value={formatINR(proposalEvent?.estimatedBudget)}
               />
             </VStack>
@@ -492,7 +436,7 @@ export const GymkhanaProposalModal = ({
               </VStack>
             ) : (
               <Text size="sm" color="muted" style={{ margin: 0 }}>
-                Activity log appears after proposal submission.
+                History appears after this brief is submitted.
               </Text>
             )}
           </EventDetailSectionCard>

@@ -1,14 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { Alert, Badge, Button, Card, CardContent, Checkbox, DetailSection, EmptyState, ErrorState, Grid, Heading, HStack, Input, LoadingState, Modal, Select, Surface, Text, Textarea, useToast, VStack } from "hzero"
+import { Alert, Badge, Button, Card, CardContent, Checkbox, DetailSection, EmptyState, ErrorState, Grid, Heading, HStack, Input, LoadingState, Modal, Surface, Text, Textarea, useToast, VStack } from "hzero"
 import PageHeader from "@/components/common/PageHeader"
-import { CalendarDays, History, Plus, FileText, Receipt, Building2, Users, Target, DollarSign, ClipboardCheck, MapPin, Clock } from "lucide-react"
+import { CalendarDays, History, Plus, FileText, Receipt, DollarSign } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
 import { FormField, SectionHeader, sectionLabelStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
+import { GymkhanaProposalDetailsModal } from "@/components/gymkhana/events-page/proposalDetailsModal"
+import { ProposalDossier, ProposalLedger, ProposalPapers } from "@/components/gymkhana/events-page/proposalDossier"
+import {
+  getProposalDetailsCompleteness,
+  ORGANISING_UNIT_OPTIONS,
+  PROGRAMME_MODE_OPTIONS,
+  PROGRAMME_TYPE_OPTIONS,
+  REGISTRATION_CATEGORIES,
+} from "@/components/gymkhana/events-page/shared"
 
 const EXPENSE_STATUS_TO_APPROVER = {
   pending: "Student Affairs",
@@ -31,37 +40,6 @@ const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
   "Officer SA",
   "Associate Dean SA",
   "Dean SA",
-]
-
-const PROGRAMME_TYPE_OPTIONS = [
-  { value: "Workshop", label: "Workshop" },
-  { value: "Conference", label: "Conference" },
-  { value: "Outreach", label: "Outreach" },
-  { value: "Cultural", label: "Cultural" },
-  { value: "Technical", label: "Technical" },
-  { value: "Sports", label: "Sports" },
-  { value: "Other Event", label: "Other Event" },
-]
-
-const PROGRAMME_MODE_OPTIONS = [
-  { value: "Offline", label: "Offline" },
-  { value: "Online", label: "Online" },
-  { value: "Hybrid", label: "Hybrid" },
-]
-
-const ORGANISING_UNIT_OPTIONS = [
-  { value: "Department", label: "Department" },
-  { value: "Centre", label: "Centre" },
-  { value: "Office", label: "Office" },
-  { value: "Student Body", label: "Student Body" },
-]
-
-const REGISTRATION_CATEGORIES = [
-  { key: "instituteStudents", label: "Institute Students" },
-  { key: "instituteFacultyStaff", label: "Institute Faculty & Staff" },
-  { key: "guestsInvitees", label: "Guests / Invitees" },
-  { key: "externalParticipants", label: "External Participants" },
-  { key: "industryProfessionals", label: "Industry / Professionals" },
 ]
 
 const layoutStyles = {
@@ -770,16 +748,12 @@ const MegaEventsPage = () => {
     () => calculateTotalExpectedIncomeFromDetails(proposalForm.proposalDetails),
     [proposalForm.proposalDetails]
   )
-  const detailedProposalPreviewText = useMemo(
-    () => generateProposalTextFromDetails(proposalForm.proposalDetails),
-    [proposalForm.proposalDetails]
-  )
-  const detailedExternalGuestsText = useMemo(
-    () => generateExternalGuestsDetailsFromDetails(proposalForm.proposalDetails),
-    [proposalForm.proposalDetails]
-  )
   const isDetailedProposalComplete = useMemo(
     () => hasRequiredDetailedProposalFields(proposalForm.proposalDetails),
+    [proposalForm.proposalDetails]
+  )
+  const detailsCompleteness = useMemo(
+    () => getProposalDetailsCompleteness(proposalForm.proposalDetails),
     [proposalForm.proposalDetails]
   )
 
@@ -1459,12 +1433,12 @@ const MegaEventsPage = () => {
                     <HStack gap={2} wrap style={{ marginTop: "var(--spacing-4)" }}>
                       {canCreateOrEditProposal && (
                         <Button size="sm" onClick={() => setIsProposalOpen(true)}>
-                          <FileText size={14} /> {proposalData ? "Edit Proposal" : "Submit Proposal"}
+                          <FileText size={14} /> {proposalData ? "Open the brief" : "Write the brief"}
                         </Button>
                       )}
                       {(proposalData || canReviewProposal) && (
                         <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(true)}>
-                          <History size={14} /> Proposal Review
+                          <History size={14} /> Review the brief
                         </Button>
                       )}
                       {(expenseData || canCreateOrEditExpense || canReviewExpense) && (
@@ -1557,16 +1531,22 @@ const MegaEventsPage = () => {
       </Modal>
 
       <Modal
-        title="Mega Event Proposal"
+        title={!proposalData ? `New brief${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}` : `Programme brief${selectedOccurrence?.title ? `: ${selectedOccurrence.title}` : ""}`}
+        description={
+          !proposalData
+            ? "Write it as if the Dean has two minutes. The brief is the case; the rest is the paper around it."
+            : undefined
+        }
         isOpen={isProposalOpen}
         onClose={() => setIsProposalOpen(false)}
-        width={680}
+        width={1080}
+        closeButtonVariant="button"
         footer={(
           <HStack gap={2} justify="end" wrap>
             <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(false)}>Close</Button>
             {canCreateOrEditProposal && (
-              <Button size="sm" onClick={handleSaveProposal} loading={submitting}>
-                {proposalData ? "Update Proposal" : "Submit Proposal"}
+              <Button size="sm" onClick={handleSaveProposal} loading={submitting} disabled={!isProposalFormValid}>
+                {proposalData ? "Save the brief" : "Submit this brief"}
               </Button>
             )}
             {canReviewProposal && (
@@ -1581,118 +1561,80 @@ const MegaEventsPage = () => {
           </HStack>
         )}
       >
-        <VStack gap={3}>
-          {proposalData && (
-            <Alert type="info" title="Current proposal status">
+        <VStack gap={4}>
+          {proposalData ? (
+            <Alert type="info" title="Where this stands">
               {(proposalData.status || "draft").replace(/_/g, " ")}
+            </Alert>
+          ) : (
+            <Alert type="info" title="A new brief">
+              You are writing the case for {selectedOccurrence?.title || "this occurrence"}. Name the programme first.
             </Alert>
           )}
 
-          {/* Details card with action */}
           <HStack gap={3} align="center" justify="between" wrap>
-            <div>
-              <Text as="div" size="sm" weight="semibold" color="heading">
-                {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
-              </Text>
-              <Text as="div" size="xs" color="muted" style={{ marginTop: 2 }}>
-                {proposalForm.proposalDetails.organisingUnit.unitType} · {proposalForm.proposalDetails.programmeDetails.programmeType} · {proposalForm.proposalDetails.programmeDetails.mode}
-              </Text>
-              <Text as="div" size="xs" color="muted">
-                {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates not added"}
-              </Text>
-            </div>
-            <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
-              {canCreateOrEditProposal ? "Edit Details" : "View Details"}
+            <Text as="div" size="sm" weight="semibold" color="heading">
+              Programme brief
+            </Text>
+            <Button variant="primary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
+              {canCreateOrEditProposal
+                ? detailsCompleteness.requiredFilled === 0
+                  ? "Write the brief"
+                  : detailsCompleteness.complete
+                    ? "Refine the brief"
+                    : "Continue the brief"
+                : "Read the full brief"}
             </Button>
           </HStack>
 
-          {!isDetailedProposalComplete && (
-            <Alert type="warning" title="Details incomplete">
-              Complete mandatory fields before submitting.
+          {!isDetailedProposalComplete && detailsCompleteness.requiredFilled > 0 && (
+            <Alert type="warning" title="The brief is still open">
+              {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled} required{" "}
+              {detailsCompleteness.requiredTotal - detailsCompleteness.requiredFilled === 1 ? "line is" : "lines are"}{" "}
+              still missing.
             </Alert>
           )}
 
-          {detailedProposalPreviewText && (
-            <DetailSection title="Proposal Preview">
-              <Text as="div" size="sm" color="body" leading={1.5} style={{ whiteSpace: "pre-wrap" }}>
-                {detailedProposalPreviewText.slice(0, 400)}{detailedProposalPreviewText.length > 400 ? "..." : ""}
-              </Text>
-            </DetailSection>
-          )}
+          <ProposalDossier
+            details={proposalForm.proposalDetails}
+            variant="compact"
+            completeness={detailsCompleteness}
+            action={
+              detailsCompleteness.requiredFilled === 0 ? (
+                <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
+                  {canCreateOrEditProposal ? "Write the brief" : "Read the full brief"}
+                </Button>
+              ) : null
+            }
+          />
 
-          <SectionHeader>Financials</SectionHeader>
-          <Grid cols={3} gap={2}>
-            <FormField label="Expected Income" htmlFor="mega-total-expected-income">
-              <Input
-                id="mega-total-expected-income"
-                type="number"
-                min={0}
-                value={String(computedTotalExpectedIncome)}
-                placeholder="Auto"
-                disabled
-              />
-            </FormField>
-            <FormField label="Total Expenditure" htmlFor="mega-total-expenditure">
-              <Input
-                id="mega-total-expenditure"
-                type="number"
-                min={0}
-                value={proposalForm.totalExpenditure}
-                onChange={(event) => setProposalForm((prev) => ({ ...prev, totalExpenditure: event.target.value }))}
-                placeholder="Amount"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Registration Fee" htmlFor="mega-registration-fee-source">
-              <Input
-                id="mega-registration-fee-source"
-                type="number"
-                min={0}
-                value={String(toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee))}
-                placeholder="From source"
-                disabled
-              />
-            </FormField>
-          </Grid>
+          <SectionHeader>The ledger</SectionHeader>
+          <ProposalLedger
+            idPrefix="mega"
+            income={computedTotalExpectedIncome}
+            expenditure={proposalForm.totalExpenditure}
+            onExpenditureChange={(value) => setProposalForm((prev) => ({ ...prev, totalExpenditure: value }))}
+            registrationFee={toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee)}
+            accommodationRequired={proposalForm.accommodationRequired}
+            onAccommodationChange={(checked) => setProposalForm((prev) => ({ ...prev, accommodationRequired: checked }))}
+            estimatedBudget={proposalData?.eventBudgetAtSubmission}
+            editable={canCreateOrEditProposal}
+          />
 
-          <Checkbox
-            checked={proposalForm.accommodationRequired}
-            onChange={(event) => setProposalForm((prev) => ({ ...prev, accommodationRequired: event.target.checked }))}
-            label="Accommodation required"
+          <SectionHeader>The papers</SectionHeader>
+          <ProposalPapers
+            proposalUrl={proposalForm.proposalDocumentUrl}
+            onProposalUrl={(value) => setProposalForm((prev) => ({ ...prev, proposalDocumentUrl: value }))}
+            onUploadProposal={uploadProposalPdf}
+            guestUrl={proposalForm.chiefGuestDocumentUrl}
+            onGuestUrl={(value) => setProposalForm((prev) => ({ ...prev, chiefGuestDocumentUrl: value }))}
+            onUploadGuest={uploadChiefGuestPdf}
             disabled={!canCreateOrEditProposal}
           />
 
-          {detailedExternalGuestsText && (
-            <DetailSection title="External Guests">
-              <Text as="div" size="sm" color="body">
-                {detailedExternalGuestsText}
-              </Text>
-            </DetailSection>
-          )}
-
-          <SectionHeader>Documents</SectionHeader>
-          <Grid cols={2} gap={2}>
-            <PdfUploadField
-              label="Proposal PDF"
-              value={proposalForm.proposalDocumentUrl}
-              onChange={(value) => setProposalForm((prev) => ({ ...prev, proposalDocumentUrl: value }))}
-              onUpload={uploadProposalPdf}
-              disabled={!canCreateOrEditProposal}
-              viewerTitle="Proposal Document"
-            />
-            <PdfUploadField
-              label="Chief Guest PDF"
-              value={proposalForm.chiefGuestDocumentUrl}
-              onChange={(value) => setProposalForm((prev) => ({ ...prev, chiefGuestDocumentUrl: value }))}
-              onUpload={uploadChiefGuestPdf}
-              disabled={!canCreateOrEditProposal}
-              viewerTitle="Chief Guest Document"
-            />
-          </Grid>
-
           {canReviewProposal && (
             <>
-              <SectionHeader>Review</SectionHeader>
+              <SectionHeader>Stand behind it</SectionHeader>
               {requiresProposalStageSelection && (
                 <DetailSection title="Next Approval Stage(s)">
                   <Grid cols={3} gap={2}>
@@ -1714,14 +1656,14 @@ const MegaEventsPage = () => {
                   value={proposalComments}
                   onChange={(event) => setProposalComments(event.target.value)}
                   rows={2}
-                  placeholder="Review comments"
+                  placeholder="What you would say in the corridor"
                 />
               </FormField>
             </>
           )}
 
           {proposalData?._id && (
-            <DetailSection title="Approval History">
+            <DetailSection title="How it got here">
               <ApprovalHistory
                 key={`proposal-${selectedOccurrence?._id}-${proposalHistoryRefreshKey}`}
                 megaProposalOccurrenceId={selectedOccurrence?._id}
@@ -1731,434 +1673,19 @@ const MegaEventsPage = () => {
         </VStack>
       </Modal>
 
-      <Modal
-        title="Proposal Details Format"
+      <GymkhanaProposalDetailsModal
         isOpen={isProposalDetailsOpen}
         onClose={() => setIsProposalDetailsOpen(false)}
-        width={1200}
-        footer={(
-          <HStack gap={2} justify="end">
-            <Button size="sm" variant="secondary" onClick={() => setIsProposalDetailsOpen(false)}>
-              Close
-            </Button>
-          </HStack>
-        )}
-      >
-        <VStack gap={4}>
-          {/* Programme Title - Full Width Header */}
-          <Surface bg="brand" padding={4} radius="card-sm" border="var(--border-1) solid var(--color-primary)">
-            <FormField label="Programme Title" htmlFor="mega-proposal-programme-title" required>
-              <Input
-                id="mega-proposal-programme-title"
-                value={proposalForm.proposalDetails.programmeTitle}
-                onChange={(event) => handleProposalDetailsChange(["programmeTitle"], event.target.value)}
-                placeholder="Enter the full title of the programme"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </Surface>
-
-          {/* Two Column Layout */}
-          <Grid cols={2} gap={4}>
-            {/* Left Column */}
-            <VStack gap={4}>
-              {/* Programme Details Panel */}
-              <DetailSection title="Programme Details" icon={CalendarDays}>
-                <Grid cols={2} gap={2}>
-                  <FormField label="Programme Type" htmlFor="mega-proposal-programme-type" required>
-                    <Select
-                      id="mega-proposal-programme-type"
-                      options={PROGRAMME_TYPE_OPTIONS}
-                      value={proposalForm.proposalDetails.programmeDetails.programmeType}
-                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "programmeType"], event.target.value)}
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Programme Mode" htmlFor="mega-proposal-programme-mode" required>
-                    <Select
-                      id="mega-proposal-programme-mode"
-                      options={PROGRAMME_MODE_OPTIONS}
-                      value={proposalForm.proposalDetails.programmeDetails.mode}
-                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "mode"], event.target.value)}
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                </Grid>
-                <Grid cols={3} gap={2}>
-                  <FormField label="Dates & Duration" htmlFor="mega-proposal-dates-duration" required>
-                    <Input
-                      id="mega-proposal-dates-duration"
-                      value={proposalForm.proposalDetails.programmeDetails.datesAndDuration}
-                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "datesAndDuration"], event.target.value)}
-                      placeholder="e.g., 3-5 March, 3 days"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Venue" htmlFor="mega-proposal-venue" required>
-                    <Input
-                      id="mega-proposal-venue"
-                      value={proposalForm.proposalDetails.programmeDetails.venue}
-                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "venue"], event.target.value)}
-                      placeholder="Venue"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Expected Participants" htmlFor="mega-proposal-expected-participants" required>
-                    <Input
-                      id="mega-proposal-expected-participants"
-                      type="number"
-                      min={0}
-                      value={proposalForm.proposalDetails.programmeDetails.expectedParticipants}
-                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "expectedParticipants"], event.target.value)}
-                      placeholder="Count"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                </Grid>
-              </DetailSection>
-
-              {/* Background & Rationale Panel */}
-              <DetailSection title="Background & Rationale" icon={FileText} tone="primary">
-                <FormField label="Context and Relevance" htmlFor="mega-proposal-context-relevance" required>
-                  <Textarea
-                    id="mega-proposal-context-relevance"
-                    value={proposalForm.proposalDetails.backgroundAndRationale.contextRelevance}
-                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "contextRelevance"], event.target.value)}
-                    rows={2}
-                    placeholder="Describe the background context and relevance of this programme"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Expected Impact" htmlFor="mega-proposal-expected-impact" required>
-                  <Textarea
-                    id="mega-proposal-expected-impact"
-                    value={proposalForm.proposalDetails.backgroundAndRationale.expectedImpact}
-                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "expectedImpact"], event.target.value)}
-                    rows={2}
-                    placeholder="Expected institutional/societal impact"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Alignment with Objectives" htmlFor="mega-proposal-alignment-objectives" required>
-                  <Textarea
-                    id="mega-proposal-alignment-objectives"
-                    value={proposalForm.proposalDetails.backgroundAndRationale.alignmentWithObjectives}
-                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "alignmentWithObjectives"], event.target.value)}
-                    rows={2}
-                    placeholder="How does this align with institute objectives?"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-              </DetailSection>
-
-              {/* Objectives Panel */}
-              <DetailSection title="Programme Objectives" icon={Target}>
-                <FormField label="Primary Objective" htmlFor="mega-proposal-objective-1" required>
-                  <Input
-                    id="mega-proposal-objective-1"
-                    value={proposalForm.proposalDetails.objectives.objective1}
-                    onChange={(event) => handleProposalDetailsChange(["objectives", "objective1"], event.target.value)}
-                    placeholder="Main objective of the programme"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <Grid cols={2} gap={2}>
-                  <FormField label="Secondary Objective" htmlFor="mega-proposal-objective-2">
-                    <Input
-                      id="mega-proposal-objective-2"
-                      value={proposalForm.proposalDetails.objectives.objective2}
-                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective2"], event.target.value)}
-                      placeholder="Optional"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Tertiary Objective" htmlFor="mega-proposal-objective-3">
-                    <Input
-                      id="mega-proposal-objective-3"
-                      value={proposalForm.proposalDetails.objectives.objective3}
-                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective3"], event.target.value)}
-                      placeholder="Optional"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                </Grid>
-              </DetailSection>
-            </VStack>
-
-            {/* Right Column */}
-            <VStack gap={4}>
-              {/* Organising Unit Panel */}
-              <DetailSection title="Organising Unit" icon={Building2} tone="primary">
-                <FormField label="Unit Type" htmlFor="mega-proposal-organising-unit-type" required>
-                  <Select
-                    id="mega-proposal-organising-unit-type"
-                    options={ORGANISING_UNIT_OPTIONS}
-                    value={proposalForm.proposalDetails.organisingUnit.unitType}
-                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "unitType"], event.target.value)}
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Coordinator Name(s)" htmlFor="mega-proposal-coordinator-names" required>
-                  <Input
-                    id="mega-proposal-coordinator-names"
-                    value={proposalForm.proposalDetails.organisingUnit.coordinatorNames}
-                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "coordinatorNames"], event.target.value)}
-                    placeholder="Names of coordinators"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <Grid cols={2} gap={2}>
-                  <FormField label="Contact Mobile" htmlFor="mega-proposal-contact-mobile" required>
-                    <Input
-                      id="mega-proposal-contact-mobile"
-                      value={proposalForm.proposalDetails.organisingUnit.contactMobile}
-                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactMobile"], event.target.value)}
-                      placeholder="Mobile"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Contact Email" htmlFor="mega-proposal-contact-email" required>
-                    <Input
-                      id="mega-proposal-contact-email"
-                      type="email"
-                      value={proposalForm.proposalDetails.organisingUnit.contactEmail}
-                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactEmail"], event.target.value)}
-                      placeholder="Email"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                </Grid>
-              </DetailSection>
-
-              {/* Target Participants Panel */}
-              <DetailSection title="Target Participants" icon={Users}>
-                <FormField label="Institute Faculty / Staff / Students" htmlFor="mega-target-participants-institute">
-                  <Textarea
-                    id="mega-target-participants-institute"
-                    value={proposalForm.proposalDetails.targetParticipants.instituteFacultyStaffStudents}
-                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "instituteFacultyStaffStudents"], event.target.value)}
-                    rows={2}
-                    placeholder="Faculty, staff, students from the institute"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Guests / Invitees" htmlFor="mega-target-participants-guests">
-                  <Textarea
-                    id="mega-target-participants-guests"
-                    value={proposalForm.proposalDetails.targetParticipants.guestsInvitees}
-                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "guestsInvitees"], event.target.value)}
-                    rows={2}
-                    placeholder="Invited guests"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="External Visitors / Participants" htmlFor="mega-target-participants-external">
-                  <Textarea
-                    id="mega-target-participants-external"
-                    value={proposalForm.proposalDetails.targetParticipants.externalVisitorsParticipants}
-                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "externalVisitorsParticipants"], event.target.value)}
-                    rows={2}
-                    placeholder="External participants"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-              </DetailSection>
-
-              {/* Guest Details Panel */}
-              <DetailSection title="Guest & Speaker Details" icon={Users} tone="primary">
-                <Grid cols={2} gap={2}>
-                  <FormField label="No. of Speakers/Guests" htmlFor="mega-tentative-speakers-guests">
-                    <Input
-                      id="mega-tentative-speakers-guests"
-                      type="number"
-                      min={0}
-                      value={proposalForm.proposalDetails.guestsDetails.tentativeNumberOfSpeakersGuests}
-                      onChange={(event) => handleProposalDetailsChange(["guestsDetails", "tentativeNumberOfSpeakersGuests"], event.target.value)}
-                      placeholder="Count"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                  <FormField label="Registration Fee Source" htmlFor="mega-source-funds-registration-fee">
-                    <Input
-                      id="mega-source-funds-registration-fee"
-                      type="number"
-                      min={0}
-                      value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
-                      onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
-                      placeholder="₹"
-                      disabled={!canCreateOrEditProposal}
-                    />
-                  </FormField>
-                </Grid>
-                <FormField label="Guest Names, Designations & Affiliations" htmlFor="mega-guests-details-names">
-                  <Textarea
-                    id="mega-guests-details-names"
-                    value={proposalForm.proposalDetails.guestsDetails.guestsNamesDesignationAffiliations}
-                    onChange={(event) => handleProposalDetailsChange(["guestsDetails", "guestsNamesDesignationAffiliations"], event.target.value)}
-                    rows={3}
-                    placeholder="List guests with their designation and affiliation"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-              </DetailSection>
-            </VStack>
-          </Grid>
-
-          {/* Programme Schedule - Full Width */}
-          <DetailSection title="Programme Schedule" icon={Clock}>
-            <FormField label="Brief Schedule" htmlFor="mega-programme-schedule-brief" required>
-              <Textarea
-                id="mega-programme-schedule-brief"
-                value={proposalForm.proposalDetails.programmeSchedule.brief}
-                onChange={(event) => handleProposalDetailsChange(["programmeSchedule", "brief"], event.target.value)}
-                rows={3}
-                placeholder="Brief overview of the programme schedule"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <PdfUploadField
-              label="Detailed Schedule (PDF)"
-              value={proposalForm.proposalDetails.programmeSchedule.detailedScheduleAnnexureUrl}
-              onChange={(value) => handleProposalDetailsChange(["programmeSchedule", "detailedScheduleAnnexureUrl"], value)}
-              onUpload={uploadScheduleAnnexurePdf}
-              disabled={!canCreateOrEditProposal}
-              viewerTitle="Detailed Schedule Annexure"
-            />
-          </DetailSection>
-
-          {/* Source of Funds - Full Width */}
-          <DetailSection title="Source of Funds" icon={DollarSign} tone="primary">
-            <Grid cols={4} gap={2}>
-              <FormField label="Registration Fee" htmlFor="mega-source-funds-registration-fee-main">
-                <Input
-                  id="mega-source-funds-registration-fee-main"
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
-                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </FormField>
-              <FormField label="Gymkhana Fund" htmlFor="mega-source-funds-gymkhana">
-                <Input
-                  id="mega-source-funds-gymkhana"
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.sourceOfFunds.gymkhanaFund}
-                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "gymkhanaFund"], event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </FormField>
-              <FormField label="Institute Support" htmlFor="mega-source-funds-institute-support">
-                <Input
-                  id="mega-source-funds-institute-support"
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.sourceOfFunds.instituteSupport}
-                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "instituteSupport"], event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </FormField>
-              <FormField label="Sponsorship / Grant" htmlFor="mega-source-funds-sponsorship">
-                <Input
-                  id="mega-source-funds-sponsorship"
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.sourceOfFunds.sponsorshipGrant}
-                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "sponsorshipGrant"], event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </FormField>
-            </Grid>
-          </DetailSection>
-
-          {/* Registration Details - Full Width Table-style */}
-          <DetailSection title="Registration Details by Category" icon={ClipboardCheck}>
-            <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
-              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Category</Text>
-              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Registration Fee</Text>
-              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Accommodation</Text>
-              <Text as="span" size="xs" weight="semibold" color="muted" style={{ textTransform: "uppercase" }}>Remarks</Text>
-            </Grid>
-            {REGISTRATION_CATEGORIES.map((category) => (
-              <Grid cols="1.5fr 1fr 1fr 1.5fr" gap={2} align="center" style={{ padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }} key={category.key}>
-                <Text as="span" size="sm" weight="medium" color="primary">{category.label}</Text>
-                <Input
-                  id={`mega-registration-fee-${category.key}`}
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.registrationDetails[category.key].registrationFee}
-                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "registrationFee", event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-                <Input
-                  id={`mega-registration-accommodation-${category.key}`}
-                  type="number"
-                  min={0}
-                  value={proposalForm.proposalDetails.registrationDetails[category.key].accommodationCharges}
-                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "accommodationCharges", event.target.value)}
-                  placeholder="₹"
-                  disabled={!canCreateOrEditProposal}
-                />
-                <Input
-                  id={`mega-registration-remarks-${category.key}`}
-                  value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
-                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "remarks", event.target.value)}
-                  placeholder="Optional remarks"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </Grid>
-            ))}
-          </DetailSection>
-
-          {/* Approval Requested - Full Width */}
-          <DetailSection title="Approval Requested" icon={ClipboardCheck} tone="primary">
-            <Grid cols={2} gap={3}>
-              <Checkbox
-                checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
-                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "conductProgrammeAsProposed"], event.target.checked)}
-                label="Conduct of the programme as proposed"
-                disabled={!canCreateOrEditProposal}
-              />
-              <Checkbox
-                checked={proposalForm.proposalDetails.approvalRequested.chargingRegistrationFees}
-                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "chargingRegistrationFees"], event.target.checked)}
-                label="Charging registration fees for guests/external participants"
-                disabled={!canCreateOrEditProposal}
-              />
-              <Checkbox
-                checked={proposalForm.proposalDetails.approvalRequested.utilisationOfCollectedFees}
-                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "utilisationOfCollectedFees"], event.target.checked)}
-                label="Utilisation of collected fees for programme expenditure"
-                disabled={!canCreateOrEditProposal}
-              />
-              <Checkbox
-                checked={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport}
-                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupport"], event.target.checked)}
-                label="Additional institutional support"
-                disabled={!canCreateOrEditProposal}
-              />
-            </Grid>
-            {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
-              <FormField label="Additional Support Details" htmlFor="mega-additional-support-details">
-                <Textarea
-                  id="mega-additional-support-details"
-                  value={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupportDetails}
-                  onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupportDetails"], event.target.value)}
-                  rows={2}
-                  placeholder="Describe the additional institutional support required"
-                  disabled={!canCreateOrEditProposal}
-                />
-              </FormField>
-            )}
-          </DetailSection>
-        </VStack>
-      </Modal>
+        proposalForm={proposalForm}
+        canEditProposalForm={canCreateOrEditProposal}
+        handleProposalDetailsChange={handleProposalDetailsChange}
+        uploadScheduleAnnexureDocument={uploadScheduleAnnexurePdf}
+        handleProposalRegistrationDetailChange={handleProposalRegistrationDetailChange}
+        programmeTypeOptions={PROGRAMME_TYPE_OPTIONS}
+        programmeModeOptions={PROGRAMME_MODE_OPTIONS}
+        organisingUnitOptions={ORGANISING_UNIT_OPTIONS}
+        registrationCategories={REGISTRATION_CATEGORIES}
+      />
 
       <Modal
         title="Mega Event Expenses"

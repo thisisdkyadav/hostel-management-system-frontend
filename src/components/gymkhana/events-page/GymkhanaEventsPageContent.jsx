@@ -646,7 +646,7 @@ export default function GymkhanaEventsPageContent({
                 <HStack gap={2} align="center">
                   <Bell size={14} style={{ color: "var(--color-warning)" }} />
                   <Text as="span" size="sm" weight="medium" color="heading">
-                    {pendingProposalReminders.length} event(s) in proposal window
+                    {pendingProposalReminders.length} programme{pendingProposalReminders.length === 1 ? "" : "s"} waiting for a brief
                   </Text>
                 </HStack>
               </HStack>
@@ -699,11 +699,11 @@ export default function GymkhanaEventsPageContent({
             <HStack gap={2} align="center">
               <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
               <Text as="span" size="sm" color="body">
-                <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s)
+                <strong>{pendingProposalsForSelectedCalendar.length}</strong> brief{pendingProposalsForSelectedCalendar.length === 1 ? "" : "s"} waiting for a yes
               </Text>
             </HStack>
             <Button size="sm" variant="ghost" onClick={() => setShowPendingProposalModal(true)}>
-              View Proposals
+              Read them
             </Button>
           </div>
         )}

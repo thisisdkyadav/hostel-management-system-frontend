@@ -759,29 +759,125 @@ export const generateProposalTextFromDetails = (proposalDetails = {}) => {
   return lines.join("\n")
 }
 
-export const hasRequiredDetailedProposalFields = (proposalDetails = {}) => {
-  const details = proposalDetails || {}
-  const contactEmail = String(details?.organisingUnit?.contactEmail || "").trim()
-  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)
+const isPresentValue = (value) => String(value ?? "").trim().length > 0
 
-  return Boolean(
-    String(details?.programmeTitle || "").trim() &&
-      String(details?.organisingUnit?.unitType || "").trim() &&
-      String(details?.organisingUnit?.coordinatorNames || "").trim() &&
-      emailLooksValid &&
-      String(details?.organisingUnit?.contactMobile || "").trim() &&
-      String(details?.backgroundAndRationale?.contextRelevance || "").trim() &&
-      String(details?.backgroundAndRationale?.expectedImpact || "").trim() &&
-      String(details?.backgroundAndRationale?.alignmentWithObjectives || "").trim() &&
-      String(details?.objectives?.objective1 || "").trim() &&
-      String(details?.programmeDetails?.programmeType || "").trim() &&
-      String(details?.programmeDetails?.mode || "").trim() &&
-      String(details?.programmeDetails?.datesAndDuration || "").trim() &&
-      String(details?.programmeDetails?.venue || "").trim() &&
-      String(details?.programmeDetails?.expectedParticipants || "").trim() &&
-      String(details?.programmeSchedule?.brief || "").trim()
-  )
+export const isProposalContactEmailValid = (value) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim())
+
+const getProposalDetailValue = (details, path) =>
+  path.split(".").reduce((cursor, key) => cursor?.[key], details)
+
+export const PROPOSAL_DETAIL_CHAPTERS = [
+  {
+    id: "identity",
+    label: "Identity",
+    sublabel: "Name & setting",
+    headline: "Name the programme",
+    prompt:
+      "Pin it to campus: a title people will remember, who is hosting, and where it lives.",
+    required: [
+      { path: "programmeTitle", label: "Programme title" },
+      { path: "programmeDetails.programmeType", label: "Programme type" },
+      { path: "programmeDetails.mode", label: "Programme mode" },
+      { path: "programmeDetails.datesAndDuration", label: "Dates and duration" },
+      { path: "programmeDetails.venue", label: "Venue" },
+      { path: "programmeDetails.expectedParticipants", label: "Expected participants" },
+      { path: "organisingUnit.unitType", label: "Organising unit" },
+      { path: "organisingUnit.coordinatorNames", label: "Coordinator name(s)" },
+      { path: "organisingUnit.contactMobile", label: "Contact mobile" },
+      {
+        path: "organisingUnit.contactEmail",
+        label: "Contact email",
+        validate: isProposalContactEmailValid,
+      },
+    ],
+  },
+  {
+    id: "story",
+    label: "Story",
+    sublabel: "Why it matters",
+    headline: "Make the case",
+    prompt:
+      "Why this, why now. Write the case you'd make in a two-minute corridor conversation with the Dean.",
+    required: [
+      { path: "backgroundAndRationale.contextRelevance", label: "Context and relevance" },
+      { path: "backgroundAndRationale.expectedImpact", label: "Expected impact" },
+      { path: "backgroundAndRationale.alignmentWithObjectives", label: "Alignment with objectives" },
+      { path: "objectives.objective1", label: "Primary objective" },
+    ],
+  },
+  {
+    id: "people",
+    label: "People",
+    sublabel: "Who gathers",
+    headline: "Who walks in the room",
+    prompt: "Students, guests, voices from outside the campus — name the gathering.",
+    required: [],
+  },
+  {
+    id: "schedule",
+    label: "Schedule",
+    sublabel: "How it unfolds",
+    headline: "How the days unfold",
+    prompt: "Enough shape that someone can picture the room, the hours, the arc.",
+    required: [{ path: "programmeSchedule.brief", label: "Brief schedule" }],
+  },
+  {
+    id: "funds",
+    label: "Funds",
+    sublabel: "Where rupees come from",
+    headline: "Where the rupees come from",
+    prompt: "Sketch the mix of registration, gymkhana, institute, and sponsorship.",
+    required: [],
+  },
+  {
+    id: "mandate",
+    label: "Mandate",
+    sublabel: "What you ask",
+    headline: "What you are asking the institute to bless",
+    prompt: "The approvals this programme needs to actually happen.",
+    required: [],
+  },
+]
+
+export const getProposalDetailsCompleteness = (proposalDetails = {}) => {
+  const details = proposalDetails || {}
+  const chapters = PROPOSAL_DETAIL_CHAPTERS.map((chapter) => {
+    const required = (chapter.required || []).map((field) => {
+      const raw = getProposalDetailValue(details, field.path)
+      const filled = field.validate ? Boolean(field.validate(raw)) : isPresentValue(raw)
+      return { ...field, filled }
+    })
+    const requiredFilled = required.filter((field) => field.filled).length
+    const requiredTotal = required.length
+    return {
+      id: chapter.id,
+      label: chapter.label,
+      sublabel: chapter.sublabel,
+      headline: chapter.headline,
+      prompt: chapter.prompt,
+      required,
+      requiredFilled,
+      requiredTotal,
+      complete: requiredTotal === 0 || requiredFilled === requiredTotal,
+      missing: required.filter((field) => !field.filled).map((field) => field.label),
+    }
+  })
+
+  const requiredTotal = chapters.reduce((sum, chapter) => sum + chapter.requiredTotal, 0)
+  const requiredFilled = chapters.reduce((sum, chapter) => sum + chapter.requiredFilled, 0)
+
+  return {
+    chapters,
+    requiredFilled,
+    requiredTotal,
+    percent: requiredTotal === 0 ? 100 : Math.round((requiredFilled / requiredTotal) * 100),
+    complete: requiredFilled === requiredTotal,
+  }
 }
+
+export const hasRequiredDetailedProposalFields = (proposalDetails = {}) =>
+  getProposalDetailsCompleteness(proposalDetails).complete
 
 export const buildProposalDetailsPayload = (proposalDetails = {}) => {
   const details = proposalDetails || {}

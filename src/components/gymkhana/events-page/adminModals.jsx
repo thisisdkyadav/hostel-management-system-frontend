@@ -12,8 +12,9 @@ export const GymkhanaPendingProposalsModal = ({
 }) => (
   <Modal
     isOpen={isOpen}
-    title="Pending Proposals"
-    width={860}
+    title="Briefs waiting for a yes"
+    description="These are programmes, not rows. Open one the way a reviewer would."
+    width={720}
     onClose={onClose}
     footer={
       <Button size="sm" variant="secondary" onClick={onClose}>
@@ -21,72 +22,56 @@ export const GymkhanaPendingProposalsModal = ({
       </Button>
     }
   >
-    <VStack gap={2}>
+    <VStack gap={3}>
       <Text as="span" size="xs" color="warning" weight="medium">
-        {pendingProposalsForSelectedCalendar.length} pending in current calendar
+        {pendingProposalsForSelectedCalendar.length} in this calendar
       </Text>
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.Head>Event</Table.Head>
-            <Table.Head>Date</Table.Head>
-            <Table.Head>Expected Income</Table.Head>
-            <Table.Head>Total Expenditure</Table.Head>
-            <Table.Head>Deflection</Table.Head>
-            <Table.Head align="right">Action</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {pendingProposalsForSelectedCalendar.map((proposal) => (
-            <Table.Row key={proposal._id}>
-              <Table.Cell>
-                <VStack gap={1}>
-                  <Text as="span" weight="medium">
-                    {proposal.eventId?.title || "Unknown event"}
+      {pendingProposalsForSelectedCalendar.map((proposal) => {
+        const overBudget = Number(proposal.budgetDeflection || 0) > 0
+        return (
+          <Surface key={proposal._id} bg="secondary" padding={4} radius="card-sm">
+            <HStack gap={3} align="start" justify="between" wrap>
+              <VStack gap={1} style={{ minWidth: 0, flex: 1 }}>
+                <Text as="div" size="md" weight="semibold" color="heading">
+                  {proposal.proposalDetails?.programmeTitle ||
+                    proposal.eventId?.title ||
+                    "Untitled programme"}
+                </Text>
+                <Text as="div" size="xs" color="muted">
+                  {proposal.eventId?.title ? `${proposal.eventId.title} · ` : ""}
+                  {formatDateRange(
+                    proposal.eventId?.scheduledStartDate,
+                    proposal.eventId?.scheduledEndDate
+                  )}
+                </Text>
+                <Text as="div" size="xs" color="muted">
+                  Brought by {proposal.submittedBy?.name || "Unknown"}
+                </Text>
+                <HStack gap={3} wrap style={{ marginTop: "var(--spacing-2)" }}>
+                  <Text as="span" size="xs" color="muted">
+                    In {formatINR(proposal.totalExpectedIncome)}
                   </Text>
                   <Text as="span" size="xs" color="muted">
-                    By {proposal.submittedBy?.name || "Unknown"}
+                    Out {formatINR(proposal.totalExpenditure)}
                   </Text>
-                </VStack>
-              </Table.Cell>
-              <Table.Cell>
-                {formatDateRange(
-                  proposal.eventId?.scheduledStartDate,
-                  proposal.eventId?.scheduledEndDate
-                )}
-              </Table.Cell>
-              <Table.Cell>
-                {formatINR(proposal.totalExpectedIncome)}
-              </Table.Cell>
-              <Table.Cell>
-                {formatINR(proposal.totalExpenditure)}
-              </Table.Cell>
-              <Table.Cell
-                style={{
-                  color:
-                    Number(proposal.budgetDeflection || 0) > 0
-                      ? "var(--color-danger)"
-                      : "var(--color-success)",
+                  <Text as="span" size="xs" color={overBudget ? "danger" : "success"}>
+                    {overBudget ? "Over" : "Within"} calendar by {formatINR(proposal.budgetDeflection)}
+                  </Text>
+                </HStack>
+              </VStack>
+              <Button
+                size="sm"
+                onClick={async () => {
+                  onClose()
+                  await openPendingProposalReview(proposal)
                 }}
               >
-                {formatINR(proposal.budgetDeflection)}
-              </Table.Cell>
-              <Table.Cell align="right">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={async () => {
-                    onClose()
-                    await openPendingProposalReview(proposal)
-                  }}
-                >
-                  Review
-                </Button>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+                Read the brief
+              </Button>
+            </HStack>
+          </Surface>
+        )
+      })}
     </VStack>
   </Modal>
 )

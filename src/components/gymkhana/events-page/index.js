@@ -1,5 +1,6 @@
 export * from "@/components/gymkhana/events-page/calendarEventModals"
 export * from "@/components/gymkhana/events-page/proposalModal"
 export * from "@/components/gymkhana/events-page/proposalDetailsModal"
+export * from "@/components/gymkhana/events-page/proposalDossier"
 export * from "@/components/gymkhana/events-page/expenseModal"
 export * from "@/components/gymkhana/events-page/adminModals"
