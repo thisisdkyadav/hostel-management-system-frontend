@@ -14,11 +14,6 @@ export const bandLabel = (band) => {
   return `${start}–${start + 99}`
 }
 
-const numericKey = (value) => {
-  const digits = String(value ?? "").match(/\d+/)
-  return digits ? parseInt(digits[0], 10) : Number.POSITIVE_INFINITY
-}
-
 export const groupByBand = (items, getNumber) => {
   const groups = new Map()
   for (const item of items) {
@@ -32,14 +27,11 @@ export const groupByBand = (items, getNumber) => {
     .map(([band, grouped]) => ({
       band,
       label: bandLabel(band),
-      items: [...grouped].sort((a, b) => {
-        const na = numericKey(getNumber(a))
-        const nb = numericKey(getNumber(b))
-        if (na !== nb) return na - nb
-        return String(getNumber(a) ?? "").localeCompare(String(getNumber(b) ?? ""), undefined, {
+      items: [...grouped].sort((a, b) =>
+        String(getNumber(a) ?? "").localeCompare(String(getNumber(b) ?? ""), undefined, {
           numeric: true,
           sensitivity: "base",
         })
-      }),
+      ),
     }))
 }

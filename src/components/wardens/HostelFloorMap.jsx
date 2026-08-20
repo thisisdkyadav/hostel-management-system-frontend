@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Spinner, Text } from "hzero"
 import HoverPanel from "../common/HoverPanel"
 import OccupancyTile from "../common/OccupancyTile"
+import { isRoomActive } from "@/constants/roomStatus"
 import { hostelApi } from "../../service"
 import { groupByBand } from "../../utils/numberBand"
 import RoomPeekPanel from "./RoomPeekPanel"
@@ -9,17 +10,30 @@ import "./floor-map.css"
 
 const occupancyOf = (item) => item.occupancy ?? item.currentOccupancy ?? 0
 
-const isActiveRoom = (room) => (room.status || "Active") === "Active" && (room.capacity || 0) > 0
+const compareRoomNumber = (a, b) =>
+  String(a ?? "").localeCompare(String(b ?? ""), undefined, { numeric: true, sensitivity: "base" })
+
+const bedsOf = (room) => {
+  const cap = Number(room.capacity) || 0
+  if (cap > 0) return cap
+  const original = Number(room.originalCapacity) || 0
+  if (original > 0) return original
+  return isRoomActive(room.status) ? 0 : 1
+}
 
 const roomGroupsOf = (unit) =>
   [...(unit.rooms || [])]
-    .filter(isActiveRoom)
-    .sort((a, b) => String(a.roomNumber ?? "").localeCompare(String(b.roomNumber ?? ""), undefined, { numeric: true }))
-    .map((room) => ({
-      id: room.id || room._id,
-      used: occupancyOf(room),
-      total: room.capacity || 0,
-    }))
+    .sort((a, b) => compareRoomNumber(a.roomNumber, b.roomNumber))
+    .map((room) => {
+      const inactive = !isRoomActive(room.status)
+      return {
+        id: room.id || room._id,
+        used: occupancyOf(room),
+        total: inactive ? 1 : bedsOf(room),
+        inactive,
+      }
+    })
+    .filter((group) => group.total > 0)
 
 const LEGEND = [
   { tone: "empty", label: "Empty" },
@@ -59,7 +73,7 @@ const RoomCell = ({
     <OccupancyTile
       label={room.roomNumber}
       used={occupancyOf(room)}
-      total={room.capacity || 0}
+      total={isRoomActive(room.status) ? bedsOf(room) : 1}
       status={room.status}
       size={size}
     />
@@ -105,20 +119,22 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
 
   return (
     <div className="floor-map__rooms">
-      {rooms.map((room) => (
-        <RoomCell
-          key={room.id}
-          room={room}
-          hostelId={hostelId}
-          canEdit={canEdit}
-          onViewMore={onViewMore}
-          onSaved={onSaved}
-          size="sm"
-          placement="auto"
-          align="center"
-          openDelay={0}
-        />
-      ))}
+      {[...rooms]
+        .sort((a, b) => compareRoomNumber(a.roomNumber, b.roomNumber))
+        .map((room) => (
+          <RoomCell
+            key={room.id}
+            room={room}
+            hostelId={hostelId}
+            canEdit={canEdit}
+            onViewMore={onViewMore}
+            onSaved={onSaved}
+            size="sm"
+            placement="auto"
+            align="center"
+            openDelay={0}
+          />
+        ))}
     </div>
   )
 }

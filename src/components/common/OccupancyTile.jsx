@@ -1,7 +1,7 @@
 import "./OccupancyTile.css"
 
 const PIP_CAP = 8
-const GROUP_CAP = 6
+const RAIL_ROWS = 6
 
 const resolveTone = ({ used, total, status, disabled, tone }) => {
   if (tone) return tone
@@ -11,18 +11,29 @@ const resolveTone = ({ used, total, status, disabled, tone }) => {
   return "partial"
 }
 
-const PipRow = ({ used, total }) => (
+const PipRow = ({ used, total, variant }) => (
   <span className="occ-tile__pips" aria-hidden="true">
     {Array.from({ length: Math.max(0, total) }, (_, i) => (
-      <span key={i} className="occ-tile__pip" data-on={i < used ? "true" : "false"} />
+      <svg
+        key={i}
+        className="occ-tile__pip"
+        data-on={variant === "inactive" ? undefined : i < used ? "true" : "false"}
+        data-variant={variant || undefined}
+        viewBox="0 0 10 10"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="5" cy="5" r="4.5" />
+      </svg>
     ))}
   </span>
 )
 
 /**
  * Square occupancy tile. Generic on purpose: any labelled space with a
- * used/total count can render through this. Pass `groups` to split the pips
- * into labelled clusters (rooms in a unit, seats in a bay, and so on).
+ * used/total count can render through this. Pass `groups` for a left rail of
+ * pip rows (one cluster per row, six slots) with the label and count on the right.
  */
 const OccupancyTile = ({
   label,
@@ -39,8 +50,8 @@ const OccupancyTile = ({
 }) => {
   const resolved = resolveTone({ used, total, status, disabled, tone })
   const cluster = Array.isArray(groups) ? groups.filter((group) => group && group.total > 0) : []
-  const showGroups = cluster.length > 0 && cluster.length <= GROUP_CAP
-  const showPips = !showGroups && resolved !== "inactive" && total > 0 && total <= PIP_CAP
+  const showGroups = cluster.length > 0
+  const showPips = !showGroups && total > 0 && total <= PIP_CAP
   const count =
     resolved === "inactive"
       ? status && status !== "Active" && status !== "Inactive"
@@ -49,7 +60,10 @@ const OccupancyTile = ({
       : `${used}/${total}`
 
   const aria = showGroups
-    ? `${label}, ${cluster.map((group, index) => `group ${index + 1} ${group.used || 0} of ${group.total}`).join(", ")}`
+    ? `${label}, ${used} of ${total}, ${cluster
+        .slice(0, RAIL_ROWS)
+        .map((group, index) => `room ${index + 1} ${group.used || 0} of ${group.total}`)
+        .join(", ")}`
     : `${label}, ${resolved === "inactive" ? count : `${used} of ${total}`}`
 
   return (
@@ -64,19 +78,38 @@ const OccupancyTile = ({
       aria-label={aria}
       {...rest}
     >
-      <span className="occ-tile__label">{label}</span>
       {showGroups ? (
-        <span className="occ-tile__groups">
-          {cluster.map((group, index) => (
-            <span key={group.id || index} className="occ-tile__group">
-              <PipRow used={group.used || 0} total={group.total || 0} />
-            </span>
-          ))}
-        </span>
-      ) : showPips ? (
-        <PipRow used={used} total={total} />
+        <>
+          <span className="occ-tile__rail" aria-hidden="true">
+            {Array.from({ length: RAIL_ROWS }, (_, i) => {
+              const group = cluster[i]
+              return (
+                <span key={group?.id || `slot-${i}`} className="occ-tile__group">
+                  {group ? (
+                    <PipRow
+                      used={group.used || 0}
+                      total={group.total || 0}
+                      variant={group.inactive ? "inactive" : undefined}
+                    />
+                  ) : null}
+                </span>
+              )
+            })}
+          </span>
+          <span className="occ-tile__meta">
+            <span className="occ-tile__label">{label}</span>
+            <span className="occ-tile__count">{count}</span>
+          </span>
+        </>
       ) : (
-        <span className="occ-tile__count">{count}</span>
+        <>
+          <span className="occ-tile__label">{label}</span>
+          {showPips ? (
+            <PipRow used={used} total={total} variant={resolved === "inactive" ? "inactive" : undefined} />
+          ) : (
+            <span className="occ-tile__count">{count}</span>
+          )}
+        </>
       )}
     </button>
   )

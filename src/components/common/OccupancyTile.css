@@ -3,6 +3,15 @@
 
 .occ-tile {
   --occ-tile-size: var(--spacing-20);
+  --occ-pip: calc(var(--spacing-1-5) * 1.5);
+  --occ-pip-gap: calc(var(--border-1) * 1.5);
+  --occ-tile-pad: var(--spacing-1-5);
+  --occ-tile-height: calc(
+    (var(--occ-tile-pad) * 2) +
+    (var(--occ-pip) * 6) +
+    (var(--occ-pip-gap) * 5) +
+    (var(--border-1) * 2)
+  );
   --occ-accent: var(--color-border-primary);
   box-sizing: border-box;
   position: relative;
@@ -11,8 +20,8 @@
   align-items: center;
   justify-content: center;
   width: var(--occ-tile-size);
-  height: var(--occ-tile-size);
-  padding: var(--spacing-2) var(--spacing-1-5) var(--spacing-2);
+  height: var(--occ-tile-height);
+  padding: var(--occ-tile-pad);
   gap: var(--spacing-1-5);
   border: var(--border-1) solid var(--color-border-primary);
   border-radius: var(--radius-lg);
@@ -41,7 +50,6 @@
 
 .occ-tile--sm {
   --occ-tile-size: var(--spacing-16);
-  padding: var(--spacing-1-5) var(--spacing-1) var(--spacing-1-5);
   gap: var(--spacing-1);
 }
 
@@ -49,8 +57,13 @@
   --occ-tile-size: var(--spacing-24);
 }
 
-.occ-tile--lg.occ-tile--grouped {
-  gap: var(--spacing-2);
+.occ-tile--grouped {
+  --occ-rail-gap: var(--occ-pip-gap);
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--spacing-1-5);
+  line-height: 0;
 }
 
 .occ-tile__label {
@@ -83,31 +96,39 @@
   letter-spacing: 0.02em;
 }
 
-.occ-tile__groups {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.occ-tile__rail {
+  display: grid;
+  grid-template-rows: repeat(6, var(--occ-pip));
   align-items: center;
-  gap: var(--spacing-2);
-  width: 100%;
-  padding-inline: var(--spacing-1);
+  align-content: start;
+  justify-items: start;
+  gap: var(--occ-rail-gap);
+  flex: 0 0 auto;
+  line-height: 0;
+}
+
+.occ-tile__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: var(--spacing-0-5);
+  min-width: 0;
+  flex: 1 1 auto;
+  text-align: right;
+  line-height: var(--line-height-tight);
+}
+
+.occ-tile--lg.occ-tile--grouped .occ-tile__label {
+  font-size: var(--font-size-base);
 }
 
 .occ-tile__group {
   display: flex;
   align-items: center;
-  position: relative;
-}
-
-.occ-tile__group + .occ-tile__group::before {
-  content: "";
-  position: absolute;
-  left: calc(var(--spacing-1) * -1);
-  top: 15%;
-  bottom: 15%;
-  width: var(--border-1);
-  background: var(--color-border-primary);
-  opacity: 0.45;
+  min-width: 0;
+  min-height: 0;
+  line-height: 0;
 }
 
 .occ-tile__pips {
@@ -115,34 +136,33 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: var(--spacing-0-5);
+  gap: var(--occ-pip-gap);
   max-width: 80%;
+  line-height: 0;
 }
 
 .occ-tile__group .occ-tile__pips {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   max-width: none;
-}
-
-.occ-tile--sm .occ-tile__pips {
-  gap: var(--spacing-0-5);
+  gap: var(--occ-rail-gap);
 }
 
 .occ-tile__pip {
-  width: var(--spacing-1-5);
-  height: var(--spacing-1-5);
-  border-radius: var(--radius-full);
-  background: var(--color-bg-muted);
-  box-shadow: inset 0 0 0 var(--border-1) var(--color-border-primary);
-}
-
-.occ-tile--sm .occ-tile__pip {
-  width: var(--spacing-1);
-  height: var(--spacing-1);
+  display: block;
+  flex: none;
+  width: var(--occ-pip);
+  height: var(--occ-pip);
+  overflow: visible;
+  fill: color-mix(in srgb, var(--color-bg-muted) 35%, var(--color-text-disabled));
 }
 
 .occ-tile__pip[data-on="true"] {
-  background: var(--occ-accent);
-  box-shadow: none;
+  fill: var(--color-success);
+}
+
+.occ-tile__pip[data-variant="inactive"] {
+  fill: color-mix(in srgb, var(--color-danger-light) 55%, var(--color-bg-primary));
 }
 
 .occ-tile[data-tone="empty"] {
