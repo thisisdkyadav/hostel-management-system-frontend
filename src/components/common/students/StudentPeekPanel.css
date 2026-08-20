@@ -1,0 +1,113 @@
+.student-peek {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: max-content;
+  min-width: calc(var(--spacing-20) * 2.5);
+  max-width: calc(var(--spacing-20) * 5.5);
+}
+
+.student-peek__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-width: 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: var(--border-1) solid var(--color-border-light);
+}
+
+.student-peek__id {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5);
+  min-width: 0;
+}
+
+.student-peek__name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-peek__roll {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.student-peek__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin: 0;
+}
+
+.student-peek__row {
+  display: grid;
+  grid-template-columns: var(--spacing-16) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.student-peek__row dt {
+  margin: 0;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.student-peek__row dd {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-peek__row[data-wrap="true"] dd {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.student-peek__gender[data-gender="male"] {
+  color: var(--color-info);
+  font-weight: var(--font-weight-medium);
+}
+
+.student-peek__gender[data-gender="female"] {
+  color: var(--color-girls-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.student-peek__gender[data-gender="other"] {
+  color: var(--color-purple-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.student-peek__complaints[data-on="true"] {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-medium);
+}
+
+.student-peek__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-2);
+  border-top: var(--border-1) solid var(--color-border-light);
+}
+
+.student-table__name-hover,
+.student-table__name-hover > .hover-panel__trigger {
+  min-width: 0;
+  max-width: 100%;
+}

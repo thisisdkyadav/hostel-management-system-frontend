@@ -87,6 +87,7 @@ const StudentsPage = () => {
 
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [openModal, setOpenModal] = useState(null)
+  const [detailTab, setDetailTab] = useState("profile")
   const close = () => setOpenModal(null)
 
   const {
@@ -194,8 +195,9 @@ const StudentsPage = () => {
     }
   }
 
-  const viewStudentDetails = (student) => {
+  const viewStudentDetails = (student, tab = "profile") => {
     setSelectedStudent(student)
+    setDetailTab(typeof tab === "string" ? tab : "profile")
     setOpenModal("detail")
   }
 
@@ -297,6 +299,7 @@ const StudentsPage = () => {
             selectedStudent={selectedStudent}
             setShowStudentDetail={close}
             onUpdate={refreshStudents}
+            initialTab={detailTab}
           />
         )}
 

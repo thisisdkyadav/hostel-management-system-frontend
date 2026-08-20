@@ -20,7 +20,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Button, DetailSection, EmptyState, Grid, Heading, HStack, IconCircle, InfoRow, Input, Label, LoadingState, Modal, Select, Spinner, Surface, Table, Text, useConfirm, VStack } from "hzero"
-const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
+const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false, initialTab = "profile" }) => {
   const confirm = useConfirm()
   const { user } = useAuth()
   const { can } = useAuthz()
@@ -32,7 +32,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [activeTab, setActiveTab] = useState("profile")
+  const [activeTab, setActiveTab] = useState(initialTab || "profile")
 
   // Data for different tabs
   const [accessRecords, setAccessRecords] = useState([])
@@ -173,6 +173,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       setAvailableInventory([])
     }
   }
+
+  useEffect(() => {
+    setActiveTab(initialTab || "profile")
+  }, [initialTab, selectedStudent?.userId])
 
   useEffect(() => {
     if (selectedStudent?.userId && !isImport) {

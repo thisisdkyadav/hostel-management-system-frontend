@@ -271,6 +271,17 @@
   flex-direction: column;
 }
 
+.floor-map__people > .hover-panel {
+  display: block;
+  width: 100%;
+}
+
+.floor-map__people > .hover-panel > .hover-panel__trigger {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
 .floor-map__person {
   display: grid;
   grid-template-columns: var(--spacing-8) minmax(0, 1fr) auto;
@@ -281,7 +292,8 @@
   min-width: 0;
 }
 
-.floor-map__person + .floor-map__person {
+.floor-map__person + .floor-map__person,
+.floor-map__people > * + * .floor-map__person {
   border-top: var(--border-1) solid var(--color-border-light);
 }
 

@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import "./OccupancyTile.css"
 
 const PIP_CAP = 8
@@ -45,7 +46,8 @@ const PipRow = ({ used, total, variant }) => (
  * used/total count can render through this. Pass `groups` for a left rail of
  * pip rows (one cluster per row, six slots) with the label and count on the right.
  * Room tiles keep pips top-left and the label top-right; pass `faces` for
- * occupant portraits along the bottom.
+ * occupant portraits along the bottom. `wrapHead` / `wrapFace` let a parent
+ * attach hover peeks without nesting interactive content in a button.
  */
 const OccupancyTile = ({
   label,
@@ -55,6 +57,8 @@ const OccupancyTile = ({
   tone,
   groups,
   faces,
+  wrapHead,
+  wrapFace,
   size = "md",
   disabled = false,
   expanded = false,
@@ -82,23 +86,53 @@ const OccupancyTile = ({
         .map((group, index) => `room ${index + 1} ${group.used || 0} of ${group.total}`)
         .join(", ")}`
     : `${label}, ${resolved === "inactive" ? count : `${used} of ${total}`}${names ? `, ${names}` : ""}`
+  const split = Boolean(wrapHead || wrapFace)
+  const Tag = showGroups || !split ? "button" : "div"
+  const classes = [
+    "occ-tile",
+    `occ-tile--${size}`,
+    showGroups ? "occ-tile--grouped" : "occ-tile--room",
+    portraits.length ? "occ-tile--faces" : "",
+    split ? "occ-tile--split" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ")
+
+  const faceRow =
+    portraits.length > 0 ? (
+      <span className="occ-tile__faces">
+        {portraits.map((face, index) => {
+          const key = face.id || `${face.name}-${index}`
+          const node = (
+            <span
+              className="occ-tile__face"
+              title={face.name}
+              aria-label={face.name || "Student"}
+              tabIndex={wrapFace ? 0 : undefined}
+            >
+              {face.src ? (
+                <img src={face.src} alt="" />
+              ) : (
+                <span className="occ-tile__face-mark">{initialsOf(face.name)}</span>
+              )}
+            </span>
+          )
+          return (
+            <Fragment key={key}>{wrapFace ? wrapFace(face, node) : node}</Fragment>
+          )
+        })}
+      </span>
+    ) : null
 
   return (
-    <button
-      type="button"
-      className={[
-        "occ-tile",
-        `occ-tile--${size}`,
-        showGroups ? "occ-tile--grouped" : "occ-tile--room",
-        portraits.length ? "occ-tile--faces" : "",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+    <Tag
+      type={Tag === "button" ? "button" : undefined}
+      className={classes}
       data-tone={resolved}
-      disabled={disabled}
-      aria-expanded={expanded || undefined}
-      aria-label={aria}
+      disabled={Tag === "button" ? disabled : undefined}
+      aria-expanded={Tag === "button" ? expanded || undefined : undefined}
+      aria-label={split ? undefined : aria}
       {...rest}
     >
       {showGroups ? (
@@ -126,6 +160,9 @@ const OccupancyTile = ({
         </>
       ) : (
         <>
+          {wrapHead
+            ? wrapHead(<span className="occ-tile__room-hit" tabIndex={0} aria-label={aria} />)
+            : null}
           <span className="occ-tile__head">
             {showPips ? (
               <PipRow used={used} total={total} variant={resolved === "inactive" ? "inactive" : undefined} />
@@ -134,22 +171,10 @@ const OccupancyTile = ({
             )}
             <span className="occ-tile__label">{label}</span>
           </span>
-          {portraits.length > 0 ? (
-            <span className="occ-tile__faces" aria-hidden="true">
-              {portraits.map((face, index) => (
-                <span key={face.id || `${face.name}-${index}`} className="occ-tile__face" title={face.name}>
-                  {face.src ? (
-                    <img src={face.src} alt="" />
-                  ) : (
-                    <span className="occ-tile__face-mark">{initialsOf(face.name)}</span>
-                  )}
-                </span>
-              ))}
-            </span>
-          ) : null}
+          {faceRow}
         </>
       )}
-    </button>
+    </Tag>
   )
 }
 

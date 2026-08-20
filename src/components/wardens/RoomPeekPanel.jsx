@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react"
 import { Avatar, Button, useToast } from "hzero"
 import { isRoomActive } from "@/constants/roomStatus"
-import { useHoverPanel } from "../common/HoverPanel"
+import HoverPanel, { useHoverPanel } from "../common/HoverPanel"
 import { hostelApi } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import StudentPeekPanel from "../common/students/StudentPeekPanel"
 import "./floor-map.css"
 
 const CAPACITY_MIN = 1
@@ -172,22 +173,28 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
         <div className="floor-map__people">
           {slots.map((slot) =>
             slot.student ? (
-              <div
+              <HoverPanel
                 key={studentKey(slot.student)}
-                className="floor-map__person"
-                data-risk={slot.risk ? "true" : "false"}
-                title={slot.student.name}
+                placement="auto"
+                align="start"
+                content={<StudentPeekPanel student={slot.student} />}
               >
-                <span className="floor-map__person-avatar">
-                  <Avatar
-                    src={slot.student.profileImage ? getMediaUrl(slot.student.profileImage) : undefined}
-                    name={slot.student.name}
-                    size="small"
-                  />
-                </span>
-                <span className="floor-map__person-name">{slot.student.name}</span>
-                {slot.student.rollNumber && <span className="floor-map__person-roll">{slot.student.rollNumber}</span>}
-              </div>
+                <div
+                  className="floor-map__person"
+                  data-risk={slot.risk ? "true" : "false"}
+                  title={slot.student.name}
+                >
+                  <span className="floor-map__person-avatar">
+                    <Avatar
+                      src={slot.student.profileImage ? getMediaUrl(slot.student.profileImage) : undefined}
+                      name={slot.student.name}
+                      size="small"
+                    />
+                  </span>
+                  <span className="floor-map__person-name">{slot.student.name}</span>
+                  {slot.student.rollNumber && <span className="floor-map__person-roll">{slot.student.rollNumber}</span>}
+                </div>
+              </HoverPanel>
             ) : (
               <div key={`open-${slot.bed}`} className="floor-map__person" data-empty="true">
                 <span className="floor-map__person-dot" />

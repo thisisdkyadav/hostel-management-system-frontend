@@ -7,6 +7,7 @@ import { hostelApi } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { groupByBand } from "../../utils/numberBand"
 import RoomPeekPanel from "./RoomPeekPanel"
+import StudentPeekPanel from "../common/students/StudentPeekPanel"
 import "./floor-map.css"
 
 const occupancyOf = (item) => item.occupancy ?? item.currentOccupancy ?? 0
@@ -44,6 +45,7 @@ const facesOf = (room) =>
       id: student.allocationId || student.id,
       name: student.name,
       src: student.profileImage ? getMediaUrl(student.profileImage) : undefined,
+      student,
     }))
 
 const LEGEND = [
@@ -65,31 +67,44 @@ const RoomCell = ({
   align = "start",
   openDelay,
 }) => (
-  <HoverPanel
-    placement={placement}
-    align={align}
-    portal={portal}
-    openDelay={openDelay}
-    content={
-      <RoomPeekPanel
-        key={`${room.id}-${room.status}-${room.capacity}-${occupancyOf(room)}`}
-        room={room}
-        hostelId={hostelId}
-        canEdit={canEdit}
-        onViewMore={onViewMore}
-        onSaved={onSaved}
-      />
-    }
-  >
-    <OccupancyTile
-      label={room.roomNumber}
-      used={occupancyOf(room)}
-      total={isRoomActive(room.status) ? bedsOf(room) : 1}
-      status={room.status}
-      faces={facesOf(room)}
-      size={size}
-    />
-  </HoverPanel>
+  <OccupancyTile
+    label={room.roomNumber}
+    used={occupancyOf(room)}
+    total={isRoomActive(room.status) ? bedsOf(room) : 1}
+    status={room.status}
+    faces={facesOf(room)}
+    size={size}
+    wrapHead={(hit) => (
+      <HoverPanel
+        placement={placement}
+        align={align}
+        portal={portal}
+        openDelay={openDelay}
+        content={
+          <RoomPeekPanel
+            key={`${room.id}-${room.status}-${room.capacity}-${occupancyOf(room)}`}
+            room={room}
+            hostelId={hostelId}
+            canEdit={canEdit}
+            onViewMore={onViewMore}
+            onSaved={onSaved}
+          />
+        }
+      >
+        {hit}
+      </HoverPanel>
+    )}
+    wrapFace={(face, node) => (
+      <HoverPanel
+        placement="auto"
+        align="center"
+        portal={portal}
+        content={<StudentPeekPanel student={face.student} roomNumber={room.roomNumber} />}
+      >
+        {node}
+      </HoverPanel>
+    )}
+  />
 )
 
 const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {

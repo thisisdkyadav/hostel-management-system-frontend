@@ -1,5 +1,21 @@
-import { Badge, Button, Checkbox, HStack, Input, Modal, Select, Surface, Text, VStack } from "hzero"
+import { createElement } from "react"
+import {
+  Alert,
+  Badge,
+  Button,
+  Checkbox,
+  EmptyState,
+  Grid,
+  HStack,
+  Input,
+  Modal,
+  Select,
+  Surface,
+  Text,
+  VStack,
+} from "hzero"
 import { formatINR, formatIndianDate } from "@/utils/formatters"
+import { isProposalWindowOpen } from "@/components/gymkhana/events-page/shared"
 import {
   CalendarDays,
   CircleDollarSign,
@@ -8,19 +24,183 @@ import {
   History,
   Lock,
   NotebookText,
+  Pencil,
   Plus,
   Receipt,
   Unlock,
 } from "lucide-react"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import {
-  EventDetailInfoRow,
   EventDetailSectionCard,
   EventFormFields,
-  eventDetailMetaChipStyles,
   footerTabStyles,
   formLabelStyles,
 } from "@/components/gymkhana/events-page/sharedPrimitives"
+
+const kickerStyle = {
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+}
+
+const iconWellStyle = {
+  width: "var(--spacing-10)",
+  height: "var(--spacing-10)",
+  borderRadius: "var(--radius-lg)",
+  backgroundColor: "var(--color-primary-bg)",
+  color: "var(--color-primary)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+}
+
+const EventIconWell = ({ icon }) => (
+  <div style={iconWellStyle} aria-hidden="true">
+    {icon ? createElement(icon, { size: 18 }) : null}
+  </div>
+)
+
+const EventFact = ({ icon, label, value, hint = null }) => (
+  <Surface bg="secondary" padding={3} radius="card-sm">
+    <HStack gap={2} align="center">
+      {icon ? createElement(icon, {
+        size: 14,
+        style: { color: "var(--color-primary)", flexShrink: 0 },
+        "aria-hidden": true,
+      }) : null}
+      <Text as="span" size="2xs" weight="semibold" color="muted" style={kickerStyle}>
+        {label}
+      </Text>
+    </HStack>
+    <Text
+      as="div"
+      size="sm"
+      weight="semibold"
+      color={value ? "heading" : "muted"}
+      italic={!value}
+      style={{ marginTop: "var(--spacing-1-5)" }}
+    >
+      {value || "Not set"}
+    </Text>
+    {hint ? (
+      <Text as="div" size="xs" color="muted" style={{ marginTop: "var(--spacing-1)" }}>
+        {hint}
+      </Text>
+    ) : null}
+  </Surface>
+)
+
+const EventDoor = ({ icon, kicker, title, body, action = null }) => (
+  <Surface bg="secondary" padding={4} radius="card-sm">
+    <HStack gap={3} align="start">
+      <EventIconWell icon={icon} />
+      <VStack gap={1} style={{ minWidth: 0, flex: 1 }}>
+        <Text as="div" size="2xs" weight="semibold" color="muted" style={kickerStyle}>
+          {kicker}
+        </Text>
+        <Text as="div" size="md" weight="semibold" color="heading">
+          {title}
+        </Text>
+        <Text as="div" size="sm" color="muted" leading={1.55}>
+          {body}
+        </Text>
+        {action ? <div style={{ marginTop: "var(--spacing-2)" }}>{action}</div> : null}
+      </VStack>
+    </HStack>
+  </Surface>
+)
+
+const EVENT_STAGES = [
+  { id: "calendar", label: "Calendar" },
+  { id: "proposal", label: "Proposal" },
+  { id: "bills", label: "Bills" },
+  { id: "done", label: "Done" },
+]
+
+const eventStageIndex = (event) => {
+  if (!event?.gymkhanaEventId) return 0
+  if (event.eventStatus === "completed") return 3
+  if (event.eventStatus === "proposal_approved") return 2
+  return 1
+}
+
+const EventStageRail = ({ event }) => {
+  const current = eventStageIndex(event)
+  return (
+    <HStack gap={2} align="center" wrap>
+      {EVENT_STAGES.map((stage, index) => {
+        const reached = index <= current
+        return (
+          <HStack key={stage.id} gap={2} align="center" style={{ flex: index < EVENT_STAGES.length - 1 ? 1 : undefined, minWidth: 0 }}>
+            <Surface
+              bg={reached ? "brand" : "secondary"}
+              padding={2}
+              radius="full"
+              style={{ flexShrink: 0 }}
+            >
+              <Text as="span" size="xs" weight="semibold" color={reached ? "primary" : "muted"}>
+                {stage.label}
+              </Text>
+            </Surface>
+            {index < EVENT_STAGES.length - 1 ? (
+              <div
+                aria-hidden="true"
+                style={{
+                  flex: 1,
+                  minWidth: "var(--spacing-4)",
+                  height: "var(--border-1)",
+                  backgroundColor: reached && index < current
+                    ? "var(--color-primary)"
+                    : "var(--color-border-primary)",
+                }}
+              />
+            ) : null}
+          </HStack>
+        )
+      })}
+    </HStack>
+  )
+}
+
+const eventJourney = (event) => {
+  if (!event) {
+    return { kicker: "Event", line: "Open an event from the calendar to see it." }
+  }
+  if (event.eventStatus === "cancelled") {
+    return { kicker: "Cancelled", line: "This date is no longer happening." }
+  }
+  if (!event.gymkhanaEventId) {
+    return {
+      kicker: "On the calendar",
+      line: "The proposal opens after calendar approval, or earlier if Admin lets writing start.",
+    }
+  }
+  switch (event.eventStatus) {
+    case "proposal_approved":
+      return { kicker: "Proposal approved", line: "The case is closed. Bills are the last paper." }
+    case "proposal_submitted":
+      return { kicker: "Proposal in review", line: "The proposal is in — waiting for a yes." }
+    case "completed":
+      return { kicker: "Completed", line: "The programme has been run." }
+    case "proposal_pending":
+    case "upcoming":
+    default:
+      return {
+        kicker: "Waiting for the proposal",
+        line: "Dates are set. The proposal is the next page a reviewer should meet.",
+      }
+  }
+}
+
+const inclusiveDayCount = (startDate, endDate) => {
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null
+  const startUtc = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())
+  const endUtc = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate())
+  const days = Math.round((endUtc - startUtc) / 86400000) + 1
+  return days > 0 ? days : null
+}
 
 export const GymkhanaCalendarFooterTabs = ({
   years,
@@ -125,62 +305,81 @@ export const GymkhanaEventDetailsModal = ({
   categoryLabels,
   onEditEvent,
   onRequestAmendment,
-}) => (
-  <Modal
-    isOpen={isOpen}
-    title={selectedEvent?.title || "Event Details"}
-    width={640}
-    closeButtonVariant="button"
-    onClose={onClose}
-  >
-    {selectedEvent && isOpen && (() => {
-      const proposalDueDate = getProposalDueDate(selectedEvent)
-      const proposalDueText = proposalDueDate
-        ? formatIndianDate(proposalDueDate)
-        : "Not available"
-      const canOpenProposal =
-        canViewEventsCapability &&
-        selectedEvent.gymkhanaEventId &&
-        (selectedEvent.proposalSubmitted ||
-          ((isGS || isPresident) && canCreateEventsCapability))
-      const canManageBills =
-        canViewEventsCapability &&
-        selectedEvent.gymkhanaEventId &&
-        (selectedEvent.eventStatus === "proposal_approved" ||
-          selectedEvent.eventStatus === "completed") &&
-        ((isGS && canCreateEventsCapability) ||
-          (isAdminLevel && canApproveEventsCapability))
+}) => {
+  const journey = eventJourney(selectedEvent)
+  const proposalDueDate = selectedEvent ? getProposalDueDate(selectedEvent) : null
+  const proposalDueText = proposalDueDate ? formatIndianDate(proposalDueDate) : "Not available"
+  const dayCount = selectedEvent
+    ? inclusiveDayCount(selectedEvent.startDate, selectedEvent.endDate)
+    : null
+  const eventStatusLabel = selectedEvent?.eventStatus
+    ? selectedEvent.eventStatus.replace(/_/g, " ")
+    : "calendar event"
+  const canSeeWorkflow =
+    (isGymkhanaRole && canCreateEventsCapability) ||
+    (isAdminLevel && canApproveEventsCapability)
+  const canOpenProposal = Boolean(
+    selectedEvent &&
+      canViewEventsCapability &&
+      selectedEvent.gymkhanaEventId &&
+      (selectedEvent.proposalSubmitted || ((isGS || isPresident) && canCreateEventsCapability))
+  )
+  const canManageBills = Boolean(
+    selectedEvent &&
+      canViewEventsCapability &&
+      selectedEvent.gymkhanaEventId &&
+      (selectedEvent.eventStatus === "proposal_approved" ||
+        selectedEvent.eventStatus === "completed") &&
+      ((isGS && canCreateEventsCapability) || (isAdminLevel && canApproveEventsCapability))
+  )
+  const proposalWindowOpen = Boolean(
+    selectedEvent && isProposalWindowOpen(selectedEvent) && !selectedEvent.proposalSubmitted
+  )
 
-      const proposalSummary = !selectedEvent.gymkhanaEventId
-        ? "The proposal opens after calendar approval, or earlier if Admin lets this calendar start writing."
-        : selectedEvent.proposalSubmitted
-          ? "The proposal is in — under review, or already blessed."
-          : `The proposal is due ${proposalDueText}.`
+  const proposalSummary = !selectedEvent?.gymkhanaEventId
+    ? "The proposal opens after calendar approval, or earlier if Admin lets this calendar start writing."
+    : selectedEvent.proposalSubmitted
+      ? "The proposal is in — under review, or already approved."
+      : `The proposal window ${proposalWindowOpen ? "is open" : "opens"} ${proposalDueText}.`
 
-      const billsSummary = !selectedEvent.gymkhanaEventId
-        ? "Available after calendar approval and event record generation."
-        : selectedEvent.eventStatus !== "proposal_approved" &&
-            selectedEvent.eventStatus !== "completed"
-          ? "Bills open after final proposal approval."
-          : "Upload and review bill PDFs for this event."
+  const billsSummary = !selectedEvent?.gymkhanaEventId
+    ? "Bills wait until the calendar is approved and this event exists as a record."
+    : selectedEvent.eventStatus !== "proposal_approved" &&
+        selectedEvent.eventStatus !== "completed"
+      ? "Bills open after the proposal is approved."
+      : "Upload and review bill PDFs for this event."
 
-      const eventStatusLabel = selectedEvent.eventStatus
-        ? selectedEvent.eventStatus.replace(/_/g, " ")
-        : "calendar event"
-
-      return (
-        <VStack gap={4}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "var(--spacing-2)",
-              flexWrap: "wrap",
-              paddingBottom: "var(--spacing-3)",
-              borderBottom: "var(--border-1) solid var(--color-border-primary)",
-            }}
-          >
+  return (
+    <Modal
+      isOpen={isOpen}
+      title={selectedEvent?.title || "Event"}
+      description={selectedEvent ? journey.line : undefined}
+      size="full"
+      closeButtonVariant="button"
+      onClose={onClose}
+      footer={
+        canEditEvent || canRequestEventAmendment ? (
+          <HStack gap={2} align="center">
+            {canEditEvent ? (
+              <Button variant="secondary" onClick={() => onEditEvent?.(selectedEvent)}>
+                <Pencil size={16} /> Edit event
+              </Button>
+            ) : null}
+            {!canEditEvent && canRequestEventAmendment ? (
+              <Button variant="secondary" onClick={() => onRequestAmendment?.(selectedEvent)}>
+                Request amendment
+              </Button>
+            ) : null}
+          </HStack>
+        ) : null
+      }
+    >
+      {selectedEvent ? (
+        <div
+          className="grid grid-cols-1 xl:grid-cols-3"
+          style={{ gap: "var(--spacing-4)", alignItems: "start" }}
+        >
+          <VStack gap={4} className="xl:col-span-2">
             <HStack gap={2} align="center" wrap>
               <Badge style={getCategoryBadgeStyle(selectedEvent.category)}>
                 {categoryLabels[selectedEvent.category] || selectedEvent.category}
@@ -188,142 +387,158 @@ export const GymkhanaEventDetailsModal = ({
               <Badge variant={getEventStatusVariant(selectedEvent.eventStatus)}>
                 {eventStatusLabel}
               </Badge>
-              <span style={eventDetailMetaChipStyles}>
-                <CalendarDays size={12} />
-                {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
-              </span>
-                <span style={eventDetailMetaChipStyles}>
-                  <CircleDollarSign size={12} />
-                  {formatINR(selectedEvent.estimatedBudget)}
-                </span>
-              </HStack>
-            {(canEditEvent || canRequestEventAmendment) && (
-              <HStack gap={2} wrap>
-                {canEditEvent && (
-                  <Button size="sm" variant="secondary" onClick={() => onEditEvent?.(selectedEvent)}>
-                    Edit Event
-                  </Button>
-                )}
-                {!canEditEvent && canRequestEventAmendment && (
-                  <Button size="sm" variant="secondary" onClick={() => onRequestAmendment?.(selectedEvent)}>
-                    Request Amendment
-                  </Button>
-                )}
-              </HStack>
-            )}
-          </div>
+            </HStack>
 
-          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+            {selectedEvent.eventStatus === "cancelled" ? (
+              <Alert type="warning" title="Cancelled">
+                This date is no longer happening.
+              </Alert>
+            ) : (
+              <EventStageRail event={selectedEvent} />
+            )}
+
+            {canOpenProposal && proposalWindowOpen ? (
+              <Alert type="warning" title="The proposal is still waiting">
+                The window is open. A reviewer should meet a programme, not an empty date on the
+                calendar.
+              </Alert>
+            ) : null}
+
             <EventDetailSectionCard
-              icon={CalendarDays}
-              title="Schedule"
-              accentColor="var(--color-info)"
+              icon={NotebookText}
+              title="The programme"
+              accentColor="var(--color-primary)"
             >
-              <VStack gap={2}>
-                <EventDetailInfoRow
-                  label="Start"
-                  value={
-                    selectedEvent.startDate
-                      ? formatIndianDate(selectedEvent.startDate)
-                      : "TBD"
-                  }
+              {selectedEvent.description?.trim() ? (
+                <Text as="div" color="body" size="md" leading={1.65} style={{ whiteSpace: "pre-wrap" }}>
+                  {selectedEvent.description}
+                </Text>
+              ) : (
+                <EmptyState
+                  icon={NotebookText}
+                  title="No story yet"
+                  description="When this event is edited, say why the date exists — a reviewer should feel the programme from here."
+                  variant="block"
                 />
-                <EventDetailInfoRow
-                  label="End"
-                  value={
-                    selectedEvent.endDate
-                      ? formatIndianDate(selectedEvent.endDate)
-                      : "TBD"
-                  }
-                />
-                <EventDetailInfoRow label="Proposal Due" value={proposalDueText} />
-                <EventDetailInfoRow
-                  label="Budget"
-                  value={formatINR(selectedEvent.estimatedBudget)}
-                />
-              </VStack>
+              )}
             </EventDetailSectionCard>
 
-            {((isGymkhanaRole && canCreateEventsCapability) ||
-              (isAdminLevel && canApproveEventsCapability)) && (
+            <Grid cols={{ base: 1, sm: 3 }} gap={3}>
+              <EventFact
+                icon={CalendarDays}
+                label="When"
+                value={formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
+                hint={
+                  dayCount
+                    ? `${dayCount} day${dayCount === 1 ? "" : "s"} on the calendar`
+                    : null
+                }
+              />
+              <EventFact
+                icon={CircleDollarSign}
+                label="Calendar budget"
+                value={formatINR(selectedEvent.estimatedBudget)}
+              />
+              <EventFact
+                icon={FileText}
+                label="Proposal window"
+                value={proposalDueText}
+                hint={
+                  selectedEvent.proposalSubmitted
+                    ? "The proposal is already in"
+                    : proposalWindowOpen
+                      ? "Open now — write the proposal"
+                      : "Opens on this date"
+                }
+              />
+            </Grid>
+          </VStack>
+
+          <VStack gap={4}>
+            <EventDetailSectionCard
+              icon={Clock3}
+              title="Where it stands"
+              accentColor="var(--color-info)"
+            >
+              <Surface bg="brand" padding={3} radius="card-sm">
+                <Text as="div" size="2xs" color="muted" style={kickerStyle}>
+                  {journey.kicker}
+                </Text>
+                <Text
+                  as="div"
+                  size="md"
+                  weight="semibold"
+                  color="heading"
+                  style={{ marginTop: "var(--spacing-1)" }}
+                >
+                  {eventStatusLabel}
+                </Text>
+                <Text
+                  as="div"
+                  size="xs"
+                  color="muted"
+                  style={{ marginTop: "var(--spacing-1)" }}
+                >
+                  {journey.line}
+                </Text>
+              </Surface>
+            </EventDetailSectionCard>
+
+            {canSeeWorkflow ? (
               <EventDetailSectionCard
-                icon={Clock3}
-                title="Workflow"
+                icon={FileText}
+                title="Next paper"
                 accentColor="var(--color-primary)"
               >
-                <VStack gap={2}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "var(--spacing-2)",
-                      padding: "var(--spacing-2)",
-                      borderRadius: "var(--radius-sm)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <Text size="xs" weight="semibold" color="heading" style={{ margin: 0 }}>
-                        Proposal
-                      </Text>
-                      <Text size="xs" color="muted" style={{ margin: 0 }}>
-                        {proposalSummary}
-                      </Text>
-                    </div>
-                    {canOpenProposal && (
-                      <Button size="sm" variant="primary" onClick={() => openProposalModal(selectedEvent)}>
-                        <FileText size={12} />{" "}
-                        {selectedEvent.proposalSubmitted ? "Open proposal" : "Write proposal"}
-                      </Button>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "var(--spacing-2)",
-                      padding: "var(--spacing-2)",
-                      borderRadius: "var(--radius-sm)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <Text size="xs" weight="semibold" color="heading" style={{ margin: 0 }}>
-                        Bills
-                      </Text>
-                      <Text size="xs" color="muted" style={{ margin: 0 }}>
-                        {billsSummary}
-                      </Text>
-                    </div>
-                    {canManageBills && (
-                      <Button size="sm" variant="primary" onClick={() => openExpenseModal(selectedEvent)}>
-                        <Receipt size={12} /> Manage
-                      </Button>
-                    )}
-                  </div>
+                <VStack gap={3}>
+                  <EventDoor
+                    icon={FileText}
+                    kicker="Proposal"
+                    title={
+                      selectedEvent.proposalSubmitted
+                        ? "Open the proposal"
+                        : "Write the proposal"
+                    }
+                    body={proposalSummary}
+                    action={
+                      canOpenProposal ? (
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => openProposalModal(selectedEvent)}
+                        >
+                          <FileText size={14} />{" "}
+                          {selectedEvent.proposalSubmitted ? "Open proposal" : "Write proposal"}
+                        </Button>
+                      ) : null
+                    }
+                  />
+                  <EventDoor
+                    icon={Receipt}
+                    kicker="Bills"
+                    title={canManageBills ? "Manage bills" : "Bills later"}
+                    body={billsSummary}
+                    action={
+                      canManageBills ? (
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => openExpenseModal(selectedEvent)}
+                        >
+                          <Receipt size={14} /> Manage bills
+                        </Button>
+                      ) : null
+                    }
+                  />
                 </VStack>
               </EventDetailSectionCard>
-            )}
-          </div>
-
-          <EventDetailSectionCard
-            icon={NotebookText}
-            title="Description"
-            accentColor="var(--color-text-secondary)"
-          >
-            <Text as="div" color="body" size="sm" leading="1.6" style={{ whiteSpace: "pre-wrap" }}>
-              {selectedEvent.description || "No description provided."}
-            </Text>
-          </EventDetailSectionCard>
-        </VStack>
-      )
-    })()}
-  </Modal>
-)
+            ) : null}
+          </VStack>
+        </div>
+      ) : null}
+    </Modal>
+  )
+}
 
 export const GymkhanaEventEditorModal = ({
   isOpen,

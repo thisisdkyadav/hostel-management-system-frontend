@@ -137,8 +137,56 @@
   box-shadow: 0 0 0 var(--border-1) var(--color-bg-primary);
 }
 
-.occ-tile__face + .occ-tile__face {
+.occ-tile__face + .occ-tile__face,
+.occ-tile__faces .hover-panel + .hover-panel {
   margin-left: calc(var(--occ-face-overlap) * -1);
+}
+
+.occ-tile--split .occ-tile__head {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.occ-tile--split .occ-tile__faces {
+  position: relative;
+  z-index: 2;
+}
+
+.occ-tile--split > .hover-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+}
+
+.occ-tile--split > .hover-panel > .hover-panel__trigger {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.occ-tile__room-hit {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.occ-tile__faces .hover-panel {
+  display: block;
+  flex: none;
+  line-height: 0;
+  vertical-align: top;
+  cursor: pointer;
+}
+
+.occ-tile__face:focus {
+  outline: none;
+}
+
+.occ-tile__faces .hover-panel:hover .occ-tile__face,
+.occ-tile__faces .hover-panel:focus-within .occ-tile__face {
+  box-shadow: 0 0 0 var(--border-1) var(--color-border-focus);
 }
 
 .occ-tile__face img {
@@ -295,7 +343,8 @@
 }
 
 .occ-tile:hover,
-.occ-tile:focus-visible {
+.occ-tile:focus-visible,
+.occ-tile--split:focus-within {
   transform: translateY(calc(var(--spacing-0-5) * -1));
   box-shadow: var(--shadow-md);
   border-color: var(--color-border-hover);
@@ -325,6 +374,7 @@
 
   .occ-tile:hover,
   .occ-tile:focus-visible,
+  .occ-tile--split:focus-within,
   .occ-tile[aria-expanded="true"] {
     transform: none;
   }

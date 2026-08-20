@@ -1,4 +1,7 @@
+import { useMemo } from "react"
 import { Avatar, Badge, DataTable, Text, VStack } from "hzero"
+import HoverPanel from "../HoverPanel"
+import StudentPeekPanel from "./StudentPeekPanel"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 /**
@@ -11,66 +14,94 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
  * own header does that properly now that it takes controlled sort.
  */
 
-const columns = [
-  {
-    key: "name",
-    header: "Student",
-    render: (student) => (
-      <div className="flex items-center gap-[var(--spacing-3)] min-w-0">
-        <Avatar
-          src={student.profileImage ? getMediaUrl(student.profileImage) : undefined}
-          name={student.name}
-          size="small"
-        />
-        <VStack gap="none" className="min-w-0">
-          <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
-          <Text as="div" size="xs" color="muted" className="truncate max-w-[15rem]">{student.email}</Text>
-        </VStack>
-      </div>
-    ),
-  },
-  {
-    key: "rollNumber",
-    header: "Roll Number",
-    sortable: false,
-    render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.rollNumber}</Text>,
-  },
-  {
-    key: "hostel",
-    header: "Hostel",
-    className: "hidden md:table-cell",
-    render: (student) => <Badge variant="primary" soft size="small">{student.hostel}</Badge>,
-  },
-  {
-    key: "batch",
-    header: "Batch",
-    className: "hidden lg:table-cell",
-    sortable: false,
-    render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.batch || "—"}</Text>,
-  },
-  {
-    key: "room",
-    header: "Room",
-    className: "hidden sm:table-cell",
-    sortable: false,
-    render: (student) => <Text as="span" size="sm" color="tertiary" weight="medium">{student.displayRoom}</Text>,
-  },
-]
+const haltRowClick = (event) => {
+  event.stopPropagation()
+}
 
-const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => (
-  <DataTable
-    columns={columns}
-    data={currentStudents}
-    // No handler means nothing can act on a sort, so the headers should not
-    // offer one — UpdateAllocationModal shows a fixed preview list.
-    sortable={Boolean(handleSort)}
-    sortKey={sortField}
-    sortDir={sortDirection}
-    onSortChange={handleSort}
-    emptyMessage="Try changing your search or filter criteria"
-    onRowClick={viewStudentDetails}
-    loading={loading}
-  />
-)
+const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
+  const columns = useMemo(
+    () => [
+      {
+        key: "name",
+        header: "Student",
+        render: (student) => (
+          <div className="flex items-center gap-[var(--spacing-3)] min-w-0">
+            <Avatar
+              src={student.profileImage ? getMediaUrl(student.profileImage) : undefined}
+              name={student.name}
+              size="small"
+            />
+            <div className="min-w-0" onClick={haltRowClick} onPointerDown={haltRowClick}>
+              <HoverPanel
+                className="student-table__name-hover"
+                placement="auto"
+                align="start"
+                content={
+                  <StudentPeekPanel
+                    student={student}
+                    variant="directory"
+                    onViewId={
+                      viewStudentDetails && student.userId
+                        ? () => viewStudentDetails(student, "idcard")
+                        : undefined
+                    }
+                  />
+                }
+              >
+                <VStack gap="none" className="min-w-0 cursor-pointer">
+                  <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
+                  <Text as="div" size="xs" color="muted" className="truncate max-w-[15rem]">{student.email}</Text>
+                </VStack>
+              </HoverPanel>
+            </div>
+          </div>
+        ),
+      },
+      {
+        key: "rollNumber",
+        header: "Roll Number",
+        sortable: false,
+        render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.rollNumber}</Text>,
+      },
+      {
+        key: "hostel",
+        header: "Hostel",
+        className: "hidden md:table-cell",
+        render: (student) => <Badge variant="primary" soft size="small">{student.hostel}</Badge>,
+      },
+      {
+        key: "batch",
+        header: "Batch",
+        className: "hidden lg:table-cell",
+        sortable: false,
+        render: (student) => <Text as="span" size="sm" color="body" weight="medium">{student.batch || "—"}</Text>,
+      },
+      {
+        key: "room",
+        header: "Room",
+        className: "hidden sm:table-cell",
+        sortable: false,
+        render: (student) => <Text as="span" size="sm" color="tertiary" weight="medium">{student.displayRoom}</Text>,
+      },
+    ],
+    [viewStudentDetails]
+  )
+
+  return (
+    <DataTable
+      columns={columns}
+      data={currentStudents}
+      // No handler means nothing can act on a sort, so the headers should not
+      // offer one — UpdateAllocationModal shows a fixed preview list.
+      sortable={Boolean(handleSort)}
+      sortKey={sortField}
+      sortDir={sortDirection}
+      onSortChange={handleSort}
+      emptyMessage="Try changing your search or filter criteria"
+      onRowClick={viewStudentDetails}
+      loading={loading}
+    />
+  )
+}
 
 export default StudentTableView
