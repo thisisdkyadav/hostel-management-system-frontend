@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react"
-import { Check, Download, FileUp, GraduationCap, HeartPulse, House, Search, User, Users, X } from "lucide-react"
+import { Check, Download, FileSearch, FileUp, GraduationCap, HeartPulse, House, Search, User, Users, X } from "lucide-react"
 import Papa from "papaparse"
 import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -16,6 +16,7 @@ import StatusUpdateTab from "./update-students/StatusUpdateTab"
 import FamilyMembersTab from "./update-students/FamilyMembersTab"
 import DayScholarTab from "./update-students/DayScholarTab"
 import RollNumberCheckTab from "./update-students/RollNumberCheckTab"
+import ConsistencyCheckTab from "./update-students/ConsistencyCheckTab"
 import BatchAssignmentTab from "./update-students/BatchAssignmentTab"
 import { escapeCsvValue as escapeCSV } from "@/utils/csvExport"
 import GroupsAssignmentTab from "./update-students/GroupsAssignmentTab"
@@ -258,6 +259,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [selectedStatus, setSelectedStatus] = useState("Active")
   const [rollNumberCheckData, setRollNumberCheckData] = useState([])
   const [rollNumberCheckSummary, setRollNumberCheckSummary] = useState(null)
+  const [consistencyCheckData, setConsistencyCheckData] = useState([])
+  const [consistencyCheckSummary, setConsistencyCheckSummary] = useState(null)
   const [rollNumberCheckScopeType, setRollNumberCheckScopeType] = useState("system")
   const [selectedRollCheckGroup, setSelectedRollCheckGroup] = useState("")
   const [selectedRollCheckDegree, setSelectedRollCheckDegree] = useState("")
@@ -824,6 +827,38 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  const handleConsistencyCheckDataParsed = (data) => {
+    const parsedRows = (Array.isArray(data) ? data : [])
+      .map((item) => {
+        const row = {}
+        const rollNumber = normalizeRollNumber(item?.rollNumber)
+        const email = normalizeEmail(item?.email)
+        if (rollNumber) row.rollNumber = rollNumber
+        if (email) row.email = email
+
+        availableFields.forEach((field) => {
+          if (field === "email") return
+          const value = normalizeString(item?.[field])
+          if (value) row[field] = value
+        })
+
+        return row
+      })
+      .filter((row) => row.rollNumber || row.email)
+
+    if (parsedRows.length === 0) {
+      setError("Each row needs a rollNumber or an email")
+      setConsistencyCheckData([])
+      setConsistencyCheckSummary(null)
+      return
+    }
+
+    setError("")
+    setConsistencyCheckData(parsedRows)
+    setConsistencyCheckSummary(null)
+    setUploadStatus(`${parsedRows.length} rows ready to check against stored student records`)
+  }
+
   const handleRollNumberCheckScopeTypeChange = (nextScopeType) => {
     setRollNumberCheckScopeType(nextScopeType)
     setSelectedRollCheckGroup("")
@@ -991,6 +1026,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       return
     }
 
+    if (activeTab === "consistency" && consistencyCheckData.length === 0) {
+      setError("No student rows selected for consistency checking")
+      return
+    }
+
     if (activeTab === "rollCheck" && rollNumberCheckData.length === 0) {
       setError("No roll numbers selected for checking")
       return
@@ -1143,6 +1183,22 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         // Use the adminApi to update student statuses
         const rollNumbers = statusData.map((student) => student.rollNumber)
         isSuccess = await adminApi.bulkUpdateStudentsStatus(rollNumbers, selectedStatus)
+      } else if (activeTab === "consistency") {
+        const response = await studentApi.checkStudentDataConsistency(consistencyCheckData)
+        setConsistencyCheckSummary(response)
+        setError("")
+
+        const notInSystemCount = response?.notInSystemCount || 0
+        const identityCount = response?.identityMismatchCount || 0
+        const fieldCount = response?.fieldMismatchByRollCount || 0
+        if (notInSystemCount > 0 || identityCount > 0 || fieldCount > 0) {
+          toast.success(
+            `Check complete. ${notInSystemCount} not in the system, ${identityCount} roll/email mismatches, ${fieldCount} roll-number field mismatch rows.`
+          )
+        } else {
+          toast.success("Uploaded student details match the system.")
+        }
+        return
       } else if (activeTab === "rollCheck") {
         const response = await studentApi.checkMissingRollNumbers(
           rollNumberCheckData.map((student) => student.rollNumber),
@@ -1297,6 +1353,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setStatusData([])
     setRollNumberCheckData([])
     setRollNumberCheckSummary(null)
+    setConsistencyCheckData([])
+    setConsistencyCheckSummary(null)
     setRollNumberCheckScopeType("system")
     setSelectedRollCheckGroup("")
     setSelectedRollCheckDegree("")
@@ -1363,6 +1421,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     { id: "family", name: "Family Members", icon: <Users /> },
     { id: "status", name: "Status Update", icon: <GraduationCap /> },
     { id: "rollCheck", name: "Check Roll Numbers", icon: <Search /> },
+    { id: "consistency", name: "Data Consistency", icon: <FileSearch /> },
     { id: "dayScholar", name: "Day Scholar", icon: <House /> },
   ]
 
@@ -1654,6 +1713,17 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {/* Roll Number Check Tab */}
       {activeTab === "rollCheck" && <RollNumberCheckTab availableRollCheckBatches={availableRollCheckBatches} availableStudentGroups={availableStudentGroups} batchDegreeOptions={batchDegreeOptions} batchDepartmentOptions={batchDepartmentOptions} configLoading={configLoading} error={error} handleRollNumberCheckDataParsed={handleRollNumberCheckDataParsed} handleRollNumberCheckScopeTypeChange={handleRollNumberCheckScopeTypeChange} rollCheckBatchOptionsLoading={rollCheckBatchOptionsLoading} rollNumberCheckData={rollNumberCheckData} rollNumberCheckScopeType={rollNumberCheckScopeType} rollNumberCheckSummary={rollNumberCheckSummary} selectedRollCheckBatch={selectedRollCheckBatch} selectedRollCheckDegree={selectedRollCheckDegree} selectedRollCheckDepartment={selectedRollCheckDepartment} selectedRollCheckGroup={selectedRollCheckGroup} setError={setError} setRollNumberCheckSummary={setRollNumberCheckSummary} setSelectedRollCheckBatch={setSelectedRollCheckBatch} setSelectedRollCheckDegree={setSelectedRollCheckDegree} setSelectedRollCheckDepartment={setSelectedRollCheckDepartment} setSelectedRollCheckGroup={setSelectedRollCheckGroup} uploadStatus={uploadStatus} />}
 
+      {activeTab === "consistency" && (
+        <ConsistencyCheckTab
+          error={error}
+          rows={consistencyCheckData}
+          summary={consistencyCheckSummary}
+          uploadStatus={uploadStatus}
+          onDataParsed={handleConsistencyCheckDataParsed}
+          setError={setError}
+        />
+      )}
+
       {/* Day Scholar Tab */}
       {activeTab === "dayScholar" && (
         <DayScholarTab
@@ -1742,6 +1812,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   !selectedRollCheckBatch
                 ))
               )) ||
+              (activeTab === "consistency" && consistencyCheckData.length === 0) ||
               (activeTab === "dayScholar" && dayScholarData.length === 0) ||
               isLoading ||
               isUpdating
@@ -1749,10 +1820,16 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           >
             <Check />
             {isUpdating
-              ? (activeTab === "rollCheck" ? "Checking Roll Numbers..." : "Updating Students...")
+              ? (activeTab === "rollCheck"
+                ? "Checking Roll Numbers..."
+                : activeTab === "consistency"
+                  ? "Checking Consistency..."
+                  : "Updating Students...")
               : activeTab === "rollCheck"
                 ? "Check Roll Numbers"
-                : "Confirm Update"}
+                : activeTab === "consistency"
+                  ? "Check Consistency"
+                  : "Confirm Update"}
           </Button>
         )}
 

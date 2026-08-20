@@ -232,6 +232,15 @@ export const studentApi = {
   },
 
   /**
+   * Compare an uploaded student CSV against stored roll-number and email records
+   */
+  checkStudentDataConsistency: (students = []) => {
+    return apiClient
+      .post("/students/profiles-admin/profiles/check-consistency", { students })
+      .then(unwrapStandardResponse)
+  },
+
+  /**
    * Get current student dining allocation portal state
    */
   getDiningPortalState: () => {
