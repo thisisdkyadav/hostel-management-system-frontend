@@ -4,6 +4,7 @@ import HoverPanel from "../common/HoverPanel"
 import OccupancyTile from "../common/OccupancyTile"
 import { isRoomActive } from "@/constants/roomStatus"
 import { hostelApi } from "../../service"
+import { getMediaUrl } from "../../utils/mediaUtils"
 import { groupByBand } from "../../utils/numberBand"
 import RoomPeekPanel from "./RoomPeekPanel"
 import "./floor-map.css"
@@ -34,6 +35,16 @@ const roomGroupsOf = (unit) =>
       }
     })
     .filter((group) => group.total > 0)
+
+const facesOf = (room) =>
+  [...(room.students || [])]
+    .filter((student) => student && (student.name || student.profileImage))
+    .sort((a, b) => (Number(a.bedNumber) || 0) - (Number(b.bedNumber) || 0))
+    .map((student) => ({
+      id: student.allocationId || student.id,
+      name: student.name,
+      src: student.profileImage ? getMediaUrl(student.profileImage) : undefined,
+    }))
 
 const LEGEND = [
   { tone: "empty", label: "Empty" },
@@ -75,6 +86,7 @@ const RoomCell = ({
       used={occupancyOf(room)}
       total={isRoomActive(room.status) ? bedsOf(room) : 1}
       status={room.status}
+      faces={facesOf(room)}
       size={size}
     />
   </HoverPanel>

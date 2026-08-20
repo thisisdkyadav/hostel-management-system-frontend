@@ -507,25 +507,21 @@ export const GymkhanaExpenseModal = ({
             icon={History}
             title="Activity Log"
             accentColor="var(--color-text-secondary)"
-          >
-            {expenseData?._id ? (
-              <VStack gap={3}>
-                <AuditTimeline
-                  key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
-                  entityType="EventExpense"
-                  entityId={expenseData._id}
-                  compact
-                  editsOnly
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowHistoryDetails(true)}
-                  style={{ alignSelf: "flex-start" }}
-                >
+            headerAction={
+              expenseData?._id ? (
+                <Button variant="ghost" size="sm" onClick={() => setShowHistoryDetails(true)}>
                   <History size={14} /> View detailed history
                 </Button>
-              </VStack>
+              ) : null
+            }
+          >
+            {expenseData?._id ? (
+              <AuditTimeline
+                key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
+                entityType="EventExpense"
+                entityId={expenseData._id}
+                compact
+              />
             ) : (
               <Text size="sm" color="muted" style={{ margin: 0 }}>
                 Activity log appears after bill submission.

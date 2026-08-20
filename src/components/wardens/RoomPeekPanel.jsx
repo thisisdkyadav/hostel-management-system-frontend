@@ -198,7 +198,7 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
 
       <footer className="floor-map__actions">
         <Button
-          variant="ghost"
+          variant="primary"
           size="sm"
           onClick={() => {
             onViewMore?.(room)

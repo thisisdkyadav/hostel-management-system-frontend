@@ -158,8 +158,8 @@ const AuditTimeline = ({ entityType = null, entityId = null, compact = false, ed
         )
     }
 
-    // Compact mode: one summary line per entry (edits only by default) — full
-    // field-level detail lives in the detailed history popup.
+    // Compact mode: one summary line per entry — field diffs, reasons, and
+    // comments live in the detailed history popup.
     if (compact) {
         return (
             <VStack gap={2}>
