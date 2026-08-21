@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { registerSW } from "virtual:pwa-register"
+import apiClient from "@/service/core/apiClient"
 
 const useVersionCheck = ({
   checkInterval = 30 * 1000, // 30 seconds by default
@@ -65,17 +66,12 @@ const useVersionCheck = ({
 
     const checkVersion = async () => {
       try {
-        const response = await fetch(metaUrl, {
+        const data = await apiClient.get(metaUrl, {
+          baseUrl: "",
           cache: "no-store",
           headers: { "Cache-Control": "no-cache" },
         })
 
-        if (!response.ok) {
-          console.warn(`Failed to fetch ${metaUrl}: ${response.status}`)
-          return
-        }
-
-        const data = await response.json()
         if (!data.version) {
           isFirstVersionCheck.current = false
           return
@@ -97,7 +93,11 @@ const useVersionCheck = ({
         localStorage.setItem("app_version", data.version)
         setCurrentVersion(data.version)
       } catch (error) {
-        console.warn("Version check failed:", error)
+        if (error?.status) {
+          console.warn(`Failed to fetch ${metaUrl}: ${error.status}`)
+        } else {
+          console.warn("Version check failed:", error)
+        }
       }
     }
 

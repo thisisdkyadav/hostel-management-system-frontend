@@ -1,1263 +1,262 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { formatINR } from "@/utils/formatters"
+import { useCalendarPermissions } from "./calendar/useCalendarPermissions"
+import { useCalendarAccess } from "./calendar/useCalendarAccess"
+import { useCalendarData } from "./calendar/useCalendarData"
+import { useEventOverlapCheck } from "./calendar/useEventOverlapCheck"
+import { useCalendarEventForms } from "./calendar/useCalendarEventForms"
+import { useCalendarEventActions } from "./calendar/useCalendarEventActions"
+import { useCalendarApproval } from "./calendar/useCalendarApproval"
+import { useCalendarLifecycle } from "./calendar/useCalendarLifecycle"
+import { useCalendarSettings } from "./calendar/useCalendarSettings"
+import { useCalendarDisplayData } from "./calendar/useCalendarDisplayData"
+import { useState } from "react"
 import {
-  CALENDAR_STATUS_TO_APPROVER,
-  buildAvailableYearsForCreation,
-  buildBudgetCapsPayload,
-  buildEventTimelineSections,
-  buildNextApproversPayload,
-  createDefaultOverlapState,
-  createDefaultEventForm,
-  createEmptyNextApproverSelection,
-  createEmptyBudgetCaps,
-  formatDateKey,
   formatDateRange,
-  getCalendarCategoryDefinitions,
-  getBudgetSummary,
-  getCategoryBadgeStyle,
-  getCategoryColor,
-  getConfiguredBudgetCapsTotal,
-  getCategoryLabelsMap,
-  getCategoryOptions,
-  getCategoryOrder,
-  getDateConflicts,
   getDaysInMonth,
   getEventStatusVariant,
   getEventsForDate,
   getHolidaysForDate,
-  isProposalWindowOpen,
-  getNextApproverSelectionCount,
-  normalizeEvent,
-  normalizeEventId,
-  toBudgetCapsForm,
-  toFormModel,
-  toGymkhanaDisplayEvent,
-  buildEventPayload,
-  toCalendarEventPayload,
-  validateCategoryBudgetCaps,
-  POST_STUDENT_AFFAIRS_STAGE_OPTIONS,
 } from "@/components/gymkhana/events-page/shared"
-import { CalendarDays, FileText } from "lucide-react"
-import { Badge, Text } from "hzero"
 
 export const useGymkhanaCalendarPageState = ({ user, toast }) => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [years, setYears] = useState([])
-  const [selectedYear, setSelectedYear] = useState(null)
-  const [calendar, setCalendar] = useState(null)
-  const [events, setEvents] = useState([])
-  const [hasAttemptedCalendarLoad, setHasAttemptedCalendarLoad] = useState(false)
-  const [viewMode, setViewMode] = useState("list")
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all")
-  const [calendarMonth, setCalendarMonth] = useState(new Date())
-  const [calendarHolidays, setCalendarHolidays] = useState([])
-  const [selectedEvent, setSelectedEvent] = useState(null)
-  const [showEventModal, setShowEventModal] = useState(false)
-  const [showAddEventModal, setShowAddEventModal] = useState(false)
-  const [showAmendmentModal, setShowAmendmentModal] = useState(false)
-  const [showHistoryModal, setShowHistoryModal] = useState(false)
-  const [showApprovalModal, setShowApprovalModal] = useState(false)
-  const [showOverlapConfirmModal, setShowOverlapConfirmModal] = useState(false)
-  const [showOverlapDetailsModal, setShowOverlapDetailsModal] = useState(false)
-  const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
-  const [calendarSettingsForm, setCalendarSettingsForm] = useState(() => ({
-    allowProposalBeforeApproval: false,
-    overallBudget: "",
-    categoryDefinitions: getCalendarCategoryDefinitions(),
-    budgetCaps: createEmptyBudgetCaps(getCalendarCategoryDefinitions()),
-  }))
-  const [eventForm, setEventForm] = useState(() => createDefaultEventForm())
-  const [amendmentReason, setAmendmentReason] = useState("")
-  const [newAcademicYear, setNewAcademicYear] = useState("")
-  const [approvalComments, setApprovalComments] = useState("")
-  const [calendarNextApproversByStage, setCalendarNextApproversByStage] = useState(createEmptyNextApproverSelection)
-  const [postStudentAffairsApproverOptionsByStage, setPostStudentAffairsApproverOptionsByStage] = useState(() =>
-    POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
-      options[stage] = []
-      return options
-    }, {})
-  )
   const [submitting, setSubmitting] = useState(false)
-  const [dateOverlapInfo, setDateOverlapInfo] = useState(createDefaultOverlapState)
-  const [submitOverlapInfo, setSubmitOverlapInfo] = useState(null)
-
-  const overlapCheckRequestRef = useRef(0)
-  const calendarRequestRef = useRef(0)
-
-  const refreshPostStudentAffairsApproverOptions = async () => {
-    try {
-      const response = await gymkhanaEventsApi.getPostStudentAffairsApprovers()
-      const approversByStage = response?.approversByStage || {}
-
-      const nextOptions = POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
-        const stageApprovers = Array.isArray(approversByStage?.[stage])
-          ? approversByStage[stage]
-          : []
-
-        options[stage] = stageApprovers.map((approver) => ({
-          value: approver?.value || approver?.userId || approver?._id || "",
-          label:
-            approver?.label ||
-            (approver?.email
-              ? `${approver?.name || "User"} (${approver.email})`
-              : approver?.name || stage),
-        })).filter((option) => Boolean(option.value))
-        return options
-      }, {})
-
-      setPostStudentAffairsApproverOptionsByStage(nextOptions)
-    } catch {
-      setPostStudentAffairsApproverOptionsByStage(
-        POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
-          options[stage] = []
-          return options
-        }, {})
-      )
-    }
-  }
-
-  const isGymkhanaRole = user?.role === "Gymkhana"
-  const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
-  const isSuperAdmin = user?.role === "Super Admin"
-  const isGS = user?.subRole === "GS Gymkhana"
-  const isPresident = user?.subRole === "President Gymkhana"
-  const canViewEventsCapability = true
-  const canCreateEventsCapability = true
-  const canApproveEventsCapability = true
-  const maxApprovalAmount = null
-  const submittableCalendarStatuses = [
-    "draft",
-    "rejected",
-    "pending_president",
-    "pending_student_affairs",
-    "pending_officer",
-    "pending_associate_dean",
-    "pending_dean",
-    "approved",
-  ]
-
-  const canEditGS =
-    calendar &&
-    !calendar.isLocked &&
-    isGS &&
-    canCreateEventsCapability
-  const canEditPresident =
-    calendar &&
-    !calendar.isLocked &&
-    isPresident &&
-    canCreateEventsCapability
-  const canEdit = canEditGS || canEditPresident
-  const canSubmitCalendar = Boolean(
-    calendar &&
-      !calendar.isLocked &&
-      isPresident &&
-      canCreateEventsCapability &&
-      submittableCalendarStatuses.includes(calendar.status) &&
-      events.length > 0
-  )
-  const submitCalendarLabel = calendar?.status === "draft" ? "Submit for Approval" : "Resubmit for Approval"
-  const canApprove = Boolean(
-    calendar?.status &&
-      canApproveEventsCapability &&
-      user?.subRole &&
-      CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole &&
-      (!normalizeEventId(calendar?.currentApproverUser) ||
-        normalizeEventId(calendar?.currentApproverUser) === normalizeEventId(user?._id))
-  )
-  const requiresCalendarNextApprovalSelection = Boolean(
-    canApprove &&
-      user?.subRole === "Student Affairs" &&
-      calendar?.status === "pending_student_affairs"
-  )
-  const canManageCalendarLock = isAdminLevel && canApproveEventsCapability && Boolean(calendar?._id)
-  const canCreateCalendar = isAdminLevel && canCreateEventsCapability
-
-  const categoryDefinitions = useMemo(() => getCalendarCategoryDefinitions(calendar), [calendar])
-  const categoryOptions = useMemo(() => getCategoryOptions(categoryDefinitions), [categoryDefinitions])
-  const categoryLabels = useMemo(() => getCategoryLabelsMap(categoryDefinitions), [categoryDefinitions])
-  const categoryOrder = useMemo(() => getCategoryOrder(categoryDefinitions), [categoryDefinitions])
-
-  // A category's colour is its position in this calendar's list, so the two
-  // helpers that need that position get bound to it here — the components
-  // rendering a badge keep asking for one by category alone.
-  const badgeStyleForCategory = useCallback(
-    (category) => getCategoryBadgeStyle(category, categoryOrder),
-    [categoryOrder]
-  )
-
-  function buildCalendarSettingsForm(calendarData = null) {
-    const nextCategoryDefinitions = getCalendarCategoryDefinitions(calendarData)
-    return {
-      allowProposalBeforeApproval: Boolean(calendarData?.allowProposalBeforeApproval),
-      overallBudget:
-        calendarData?.overallBudget === null ||
-        calendarData?.overallBudget === undefined ||
-        calendarData?.overallBudget === ""
-          ? ""
-          : String(calendarData.overallBudget),
-      categoryDefinitions: nextCategoryDefinitions,
-      budgetCaps: toBudgetCapsForm(calendarData?.budgetCaps, nextCategoryDefinitions),
-    }
-  }
-
-  useEffect(() => {
-    if (!showSettingsModal) return
-    setCalendarSettingsForm(buildCalendarSettingsForm(calendar))
-  }, [calendar, showSettingsModal])
-
-  useEffect(() => {
-    if (!canApproveEventsCapability || !isAdminLevel) return
-    refreshPostStudentAffairsApproverOptions()
-  }, [canApproveEventsCapability, isAdminLevel])
-
-  const budgetSummary = useMemo(
-    () => getBudgetSummary(events, categoryDefinitions),
-    [events, categoryDefinitions]
-  )
-  const categoryFilterTabs = useMemo(
-    () => [
-      { label: "All", value: "all", count: events.length },
-      ...categoryOptions.map((category) => ({
-        label: category.label,
-        value: category.value,
-        count: budgetSummary.counts[category.value] || 0,
-      })),
-    ],
-    [categoryOptions, events.length, budgetSummary.counts]
-  )
-  const filteredEvents = useMemo(() => {
-    if (activeCategoryFilter === "all") return events
-    return events.filter((event) => event.category === activeCategoryFilter)
-  }, [events, activeCategoryFilter])
-  // The list reads as three sections by when an event happens. Built here so
-  // "now" is fixed once per change to the list rather than per render.
-  const eventTimelineSections = useMemo(() => buildEventTimelineSections(filteredEvents), [filteredEvents])
-  // Fixed percentage widths so the three timeline tables (this month / later /
-  // past) share the same column geometry regardless of cell content length.
-  const eventTableColumns = useMemo(
-    () => [
-      {
-        key: "title",
-        header: "Event",
-        width: "40%",
-        render: (event) => (
-          <Text as="span" weight="medium">{event.title}</Text>
-        ),
-      },
-      {
-        key: "category",
-        header: "Category",
-        width: "18%",
-        render: (event) => (
-          <Badge style={badgeStyleForCategory(event.category)}>
-            {categoryLabels[event.category] || event.category}
-          </Badge>
-        ),
-      },
-      {
-        key: "dateRange",
-        header: "Date Range",
-        width: "27%",
-        render: (event) => formatDateRange(event.startDate, event.endDate),
-      },
-      {
-        key: "estimatedBudget",
-        header: "Budget",
-        width: "15%",
-        align: "right",
-        render: (event) => formatINR(event.estimatedBudget),
-      },
-    ],
-    [categoryLabels, badgeStyleForCategory]
-  )
-  const holidaysByDate = useMemo(() => {
-    const map = new Map()
-    for (const holiday of calendarHolidays || []) {
-      const dateKey = formatDateKey(holiday?.date)
-      if (!dateKey) continue
-      if (!map.has(dateKey)) {
-        map.set(dateKey, [])
-      }
-      map.get(dateKey).push({
-        title: holiday?.title || "Holiday",
-        date: dateKey,
-      })
-    }
-    return map
-  }, [calendarHolidays])
-  const getBudgetStatSubtitle = (category) => {
-    const cap = calendar?.budgetCaps?.[category]
-    const capLabel = cap === null || cap === undefined ? "No cap" : `Cap ${formatINR(cap)}`
-    return `${budgetSummary.counts[category] || 0} event(s) · ${capLabel}`
-  }
-
-  const budgetStats = useMemo(
-    () => [
-      ...categoryDefinitions.map((definition) => ({
-        title: `${definition.label} Budget`,
-        value: formatINR(budgetSummary.byCategory[definition.key]),
-        subtitle: getBudgetStatSubtitle(definition.key),
-        icon: <CalendarDays size={16} />,
-        color: getCategoryColor(definition.key, categoryOrder),
-        tintBackground: true,
-      })),
-      {
-        title: "Total Budget",
-        value: formatINR(budgetSummary.total),
-        subtitle: `${events.length} event(s)`,
-        icon: <FileText size={16} />,
-        color: "var(--color-primary)",
-      },
-    ],
-    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps]
-  )
-  const dateConflicts = useMemo(() => getDateConflicts(events), [events])
-  const pendingProposalReminders = useMemo(
-    () =>
-      events.filter(
-        (event) =>
-          event.gymkhanaEventId &&
-          event.proposalCreationAllowed !== false &&
-          isProposalWindowOpen(event)
-      ),
-    [events]
-  )
-  const selectedCalendarEventIds = useMemo(() => {
-    const ids = new Set()
-    for (const event of events) {
-      const linkedEventId = normalizeEventId(event.gymkhanaEventId) || normalizeEventId(event._id)
-      if (linkedEventId) ids.add(linkedEventId)
-    }
-    return ids
-  }, [events])
-  const availableYearsForCreation = useMemo(() => buildAvailableYearsForCreation(years), [years])
-
-  const isDateRangeOrdered = useMemo(() => {
-    if (!eventForm.startDate || !eventForm.endDate) return true
-    return new Date(eventForm.endDate) >= new Date(eventForm.startDate)
-  }, [eventForm.startDate, eventForm.endDate])
-
-  const overlapCheckKey = useMemo(() => {
-    if (!calendar?._id || !eventForm.startDate || !eventForm.endDate || !isDateRangeOrdered) {
-      return null
-    }
-    return `${calendar._id}:${selectedEvent?._id || "new"}:${eventForm.startDate}:${eventForm.endDate}`
-  }, [calendar?._id, eventForm.startDate, eventForm.endDate, isDateRangeOrdered, selectedEvent?._id])
-
-  const overlapCheckCompletedForCurrentDates = Boolean(
-    overlapCheckKey && dateOverlapInfo.status === "checked" && dateOverlapInfo.checkedKey === overlapCheckKey
-  )
-
-  const overlapCheckInProgressForCurrentDates = Boolean(
-    overlapCheckKey && dateOverlapInfo.status === "pending" && dateOverlapInfo.checkingKey === overlapCheckKey
-  )
-
-  const isBaseEventFormValid = Boolean(
-    eventForm.title?.trim() &&
-      eventForm.category &&
-      eventForm.startDate &&
-      eventForm.endDate &&
-      isDateRangeOrdered
-  )
-
-  const canSaveEventInModal = isBaseEventFormValid && overlapCheckCompletedForCurrentDates && !submitting
-  const canSubmitAmendmentInModal = canSaveEventInModal && amendmentReason.length >= 10
-  const calendarStatusLabel = calendar?.status ? calendar.status.replace(/_/g, " ") : ""
-  const headerTitle = calendar?.academicYear
-    ? `Activity Calendar ${calendar.academicYear}`
-    : selectedYear
-      ? `Activity Calendar ${selectedYear}`
-      : "Events Calendar"
-  const headerSubtitle = loading
-    ? "Loading selected academic year..."
-    : calendarStatusLabel
-      ? `Status: ${calendarStatusLabel}`
-      : selectedYear
-        ? `No active calendar for ${selectedYear}`
-        : "No active calendar"
-
-  const fetchYears = async () => {
-    if (!canViewEventsCapability) {
-      setYears([])
-      setSelectedYear(null)
-      setCalendar(null)
-      setEvents([])
-      setCalendarSettingsForm(buildCalendarSettingsForm())
-      setHasAttemptedCalendarLoad(true)
-      setLoading(false)
-      return
-    }
-
-    try {
-      setHasAttemptedCalendarLoad(false)
-      const response = await gymkhanaEventsApi.getAcademicYears()
-      const yearsList = response.data?.years || response.years || []
-
-      setYears(yearsList)
-      setSelectedYear((previousYear) => {
-        if (previousYear && yearsList.some((year) => year.academicYear === previousYear)) {
-          return previousYear
-        }
-        return yearsList[0]?.academicYear || null
-      })
-
-      if (yearsList.length === 0) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-      }
-    } catch (err) {
-      setError(err.message || "Failed to load academic years")
-      setHasAttemptedCalendarLoad(true)
-    }
-  }
-
-  const fetchCalendar = async (year, { resetData = false, showLoader = resetData } = {}) => {
-    if (!canViewEventsCapability) {
-      setCalendar(null)
-      setEvents([])
-      setCalendarHolidays([])
-      setCalendarSettingsForm(buildCalendarSettingsForm())
-      setHasAttemptedCalendarLoad(true)
-      return
-    }
-
-    const requestId = ++calendarRequestRef.current
-    try {
-      if (showLoader) {
-        setLoading(true)
-      }
-      setError(null)
-      setHasAttemptedCalendarLoad(false)
-      if (resetData) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarHolidays([])
-      }
-      const response = await gymkhanaEventsApi.getCalendarByYear(year)
-      if (requestId !== calendarRequestRef.current) return
-      const calendarData = response.data?.calendar || response.calendar || null
-
-      if (!calendarData) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-        return
-      }
-
-      const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
-      const isProposalCreationAllowedForCalendar =
-        calendarData.status === "approved" || Boolean(calendarData.allowProposalBeforeApproval)
-      setCalendarSettingsForm(buildCalendarSettingsForm(calendarData))
-      let mergedEvents = normalizedEvents
-
-      try {
-        const firstPageResponse = await gymkhanaEventsApi.getEvents({
-          calendarId: calendarData._id,
-          limit: 100,
-          page: 1,
-        })
-        if (requestId !== calendarRequestRef.current) return
-        const firstPageData = firstPageResponse.data || firstPageResponse || {}
-        const firstPageEvents = firstPageData.events || []
-        const totalPages = firstPageData.pagination?.pages || 1
-
-        let gymkhanaEvents = [...firstPageEvents]
-        if (totalPages > 1) {
-          const remainingPageRequests = []
-          for (let page = 2; page <= totalPages; page += 1) {
-            remainingPageRequests.push(
-              gymkhanaEventsApi.getEvents({
-                calendarId: calendarData._id,
-                limit: 100,
-                page,
-              })
-            )
-          }
-
-          const remainingResponses = await Promise.all(remainingPageRequests)
-          if (requestId !== calendarRequestRef.current) return
-          for (const remainingResponse of remainingResponses) {
-            const responseData = remainingResponse.data || remainingResponse || {}
-            gymkhanaEvents = gymkhanaEvents.concat(responseData.events || [])
-          }
-        }
-
-        // GymkhanaEvent collection is the single source of truth for calendar events.
-        mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
-      } catch {
-        mergedEvents = normalizedEvents
-      }
-
-      mergedEvents = mergedEvents.map((event) => ({
-        ...event,
-        proposalCreationAllowed: isProposalCreationAllowedForCalendar,
-      }))
-
-      setCalendar({ ...calendarData, events: mergedEvents })
-      setEvents(mergedEvents)
-      setHasAttemptedCalendarLoad(true)
-    } catch (err) {
-      if (requestId !== calendarRequestRef.current) return
-      if (err.status === 404) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-      } else {
-        setError(err.message || "Failed to load calendar")
-      }
-    } finally {
-      if (showLoader && requestId === calendarRequestRef.current) {
-        setLoading(false)
-      }
-    }
-  }
-
-  useEffect(() => {
-    fetchYears()
-  }, [user?.role, user?.subRole])
-
-  useEffect(() => {
-    if (selectedYear) {
-      fetchCalendar(selectedYear, { resetData: true })
-    }
-  }, [selectedYear])
-
-  useEffect(() => {
-    if (!calendar?._id || viewMode !== "calendar") {
-      setCalendarHolidays([])
-      return
-    }
-
-    const loadCalendarMonthView = async () => {
-      try {
-        const monthStart = new Date(
-          calendarMonth.getFullYear(),
-          calendarMonth.getMonth(),
-          1
-        )
-        const monthEnd = new Date(
-          calendarMonth.getFullYear(),
-          calendarMonth.getMonth() + 1,
-          0
-        )
-
-        const response = await gymkhanaEventsApi.getCalendarView({
-          startDate: formatDateKey(monthStart),
-          endDate: formatDateKey(monthEnd),
-        })
-        const data = response.data || response || {}
-        setCalendarHolidays(Array.isArray(data.holidays) ? data.holidays : [])
-      } catch {
-        setCalendarHolidays([])
-      }
-    }
-
-    loadCalendarMonthView()
-  }, [calendar?._id, calendarMonth, viewMode])
-
-  const setCalendarNextApproverForStage = (stage, userId) => {
-    setCalendarNextApproversByStage((current) => ({
-      ...current,
-      [stage]: userId,
-    }))
-  }
-
-  const getEventsForCurrentDate = (date) => getEventsForDate(date, filteredEvents)
-  const getHolidaysForCurrentDate = (date) => getHolidaysForDate(date, holidaysByDate)
-
-  const resetDateOverlapInfo = () => {
-    overlapCheckRequestRef.current += 1
-    setDateOverlapInfo(createDefaultOverlapState())
-  }
-
-  const checkDateOverlap = async (candidateForm, eventId = null) => {
-    if (!calendar?._id || !candidateForm.startDate || !candidateForm.endDate) {
-      resetDateOverlapInfo()
-      return
-    }
-
-    if (new Date(candidateForm.endDate) < new Date(candidateForm.startDate)) {
-      resetDateOverlapInfo()
-      return
-    }
-
-    const normalizedEventId = normalizeEventId(eventId)
-    const checkKey = `${calendar._id}:${normalizedEventId || "new"}:${candidateForm.startDate}:${candidateForm.endDate}`
-    const requestId = overlapCheckRequestRef.current + 1
-    overlapCheckRequestRef.current = requestId
-
-    setDateOverlapInfo((previous) => ({
-      ...previous,
-      status: "pending",
-      checkingKey: checkKey,
-      errorMessage: "",
-    }))
-
-    try {
-      const overlapRequestPayload = {
-        startDate: candidateForm.startDate,
-        endDate: candidateForm.endDate,
-        ...(normalizedEventId ? { eventId: normalizedEventId } : {}),
-      }
-      const response = await gymkhanaEventsApi.checkDateOverlap(calendar._id, overlapRequestPayload)
-      if (requestId !== overlapCheckRequestRef.current) return
-      const data = response.data || response || {}
-      setDateOverlapInfo({
-        status: "checked",
-        hasOverlap: Boolean(data.hasOverlap),
-        overlaps: data.overlaps || [],
-        checkedKey: checkKey,
-        checkingKey: null,
-        errorMessage: "",
-      })
-    } catch {
-      if (requestId !== overlapCheckRequestRef.current) return
-      setDateOverlapInfo({
-        status: "error",
-        hasOverlap: false,
-        overlaps: [],
-        checkedKey: null,
-        checkingKey: null,
-        errorMessage: "Could not verify date overlap. Please retry.",
-      })
-    }
-  }
-
-  const retryDateOverlapCheck = () => {
-    checkDateOverlap(eventForm, selectedEvent?._id)
-  }
-
-  const handleEventFormChange = (field, value) => {
-    setEventForm((previous) => {
-      const next = { ...previous, [field]: value }
-      if (field === "startDate" || field === "endDate") {
-        checkDateOverlap(next, selectedEvent?._id)
-      }
-      return next
-    })
-  }
-
-  const handleEventClick = (event) => {
-    setSelectedEvent(event)
-    setShowEventModal(true)
-  }
-
-  const handleEditEvent = (event) => {
-    setShowEventModal(false)
-    setSelectedEvent(event)
-    resetDateOverlapInfo()
-    const formModel = toFormModel(event)
-    setEventForm(formModel)
-    setShowAddEventModal(true)
-    if (formModel.startDate && formModel.endDate) {
-      checkDateOverlap(formModel, event?._id)
-    }
-  }
-
-  const openAmendmentModal = (event = null) => {
-    setShowEventModal(false)
-    setSelectedEvent(event)
-    setAmendmentReason("")
-    resetDateOverlapInfo()
-
-    if (event) {
-      const formModel = toFormModel(event)
-      setEventForm(formModel)
-      if (formModel.startDate && formModel.endDate) {
-        checkDateOverlap(formModel, event?._id)
-      }
-    } else {
-      setEventForm(createDefaultEventForm(categoryDefinitions))
-    }
-
-    setShowAmendmentModal(true)
-  }
-
-  const handleEventRowClick = (event) => {
-    handleEventClick(event)
-  }
-
-  const handleAddEvent = () => {
-    if (!canCreateEventsCapability) {
-      toast.error("You do not have permission to create events")
-      return
-    }
-
-    setSelectedEvent(null)
-    resetDateOverlapInfo()
-    setEventForm(createDefaultEventForm(categoryDefinitions))
-    setShowAddEventModal(true)
-  }
-
-  const handleSaveEvent = async () => {
-    if (!canCreateEventsCapability) {
-      toast.error("You do not have permission to update events")
-      return
-    }
-
-    const payload = buildEventPayload(eventForm)
-
-    if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
-      toast.error("Title, category, start date and end date are required")
-      return
-    }
-
-    if (new Date(payload.endDate) < new Date(payload.startDate)) {
-      toast.error("End date cannot be before start date")
-      return
-    }
-
-    if (!overlapCheckCompletedForCurrentDates) {
-      toast.error("Please wait for date overlap check result before saving the event")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-
-      let updatedEvents = []
-      if (selectedEvent && events.find((event) => event._id === selectedEvent._id)) {
-        updatedEvents = events.map((event) =>
-          event._id === selectedEvent._id ? { ...event, ...payload } : event
-        )
-      } else {
-        updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
-      }
-
-      const budgetCapValidation = validateCategoryBudgetCaps(
-        updatedEvents,
-        calendar?.budgetCaps || {},
-        categoryDefinitions
-      )
-      if (!budgetCapValidation.isValid) {
-        toast.error(
-          `${budgetCapValidation.label} category budget would become ${formatINR(budgetCapValidation.total)} which exceeds the configured cap of ${formatINR(budgetCapValidation.cap)}. Reduce the budget or ask Admin to increase the limit.`
-        )
-        return
-      }
-
-      await gymkhanaEventsApi.updateCalendar(calendar._id, {
-        events: updatedEvents.map(toCalendarEventPayload),
-      })
-      toast.success("Event saved successfully")
-      setShowAddEventModal(false)
-      setSelectedEvent(null)
-      resetDateOverlapInfo()
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to save event")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleSubmitAmendment = async () => {
-    if (!canCreateEventsCapability) {
-      toast.error("You do not have permission to submit amendments")
-      return
-    }
-
-    const payload = buildEventPayload(eventForm)
-
-    if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
-      toast.error("Title, category, start date and end date are required")
-      return
-    }
-
-    if (new Date(payload.endDate) < new Date(payload.startDate)) {
-      toast.error("End date cannot be before start date")
-      return
-    }
-
-    if (!overlapCheckCompletedForCurrentDates) {
-      toast.error("Please wait for date overlap check result before submitting")
-      return
-    }
-
-    if (!amendmentReason || amendmentReason.length < 10) {
-      toast.error("Please provide a detailed reason (min 10 characters)")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.createAmendment({
-        calendarId: calendar._id,
-        type: selectedEvent ? "edit" : "new_event",
-        eventId: selectedEvent?._id,
-        proposedChanges: payload,
-        reason: amendmentReason,
-      })
-      toast.success("Amendment request submitted")
-      setShowAmendmentModal(false)
-      setSelectedEvent(null)
-      resetDateOverlapInfo()
-    } catch (err) {
-      toast.error(err.message || "Failed to submit amendment")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleSubmitCalendar = async () => {
-    if (!canCreateEventsCapability) {
-      toast.error("You do not have permission to submit calendar")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      const response = await gymkhanaEventsApi.submitCalendar(calendar._id, false)
-      const data = response.data || response || {}
-
-      if (data.requiresOverlapConfirmation) {
-        setSubmitOverlapInfo(data)
-        setShowOverlapConfirmModal(true)
-        setSubmitting(false)
-        return
-      }
-
-      toast.success("Calendar submitted for approval")
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to submit calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleConfirmSubmitWithOverlap = async () => {
-    if (!canCreateEventsCapability) {
-      toast.error("You do not have permission to submit calendar")
-      return
-    }
-
-    if (!calendar?._id) return
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.submitCalendar(calendar._id, true)
-      toast.success("Calendar submitted with overlap warning")
-      setShowOverlapConfirmModal(false)
-      setSubmitOverlapInfo(null)
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to submit calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleApprove = async () => {
-    if (!canApprove) {
-      toast.error("You do not have permission to approve calendar")
-      return
-    }
-
-    const nextApprovers = buildNextApproversPayload(calendarNextApproversByStage)
-    const normalizedApprovalComments = String(approvalComments || "").trim()
-
-    if (requiresCalendarNextApprovalSelection && getNextApproverSelectionCount(calendarNextApproversByStage) === 0) {
-      toast.error("Select at least one next recommender")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.approveCalendar(
-        calendar._id,
-        normalizedApprovalComments,
-        [],
-        requiresCalendarNextApprovalSelection ? nextApprovers : [],
-        false
-      )
-      toast.success(
-        requiresCalendarNextApprovalSelection
-          ? "Calendar recommended successfully"
-          : "Calendar approved successfully"
-      )
-      setCalendarNextApproversByStage(createEmptyNextApproverSelection())
-      setShowApprovalModal(false)
-      setApprovalComments("")
-      await fetchCalendar(selectedYear)
-      await fetchYears()
-    } catch (err) {
-      toast.error(err.message || "Failed to approve calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleDirectApprove = async () => {
-    if (!canApprove) {
-      toast.error("You do not have permission to approve calendar")
-      return
-    }
-
-    if (!calendar?._id) return
-
-    if (
-      requiresCalendarNextApprovalSelection &&
-      getNextApproverSelectionCount(calendarNextApproversByStage) > 0
-    ) {
-      toast.error("Clear all next recommenders before approving directly")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.approveCalendar(
-        calendar._id,
-        String(approvalComments || "").trim(),
-        [],
-        [],
-        true
-      )
-      toast.success("Calendar approved successfully")
-      setCalendarNextApproversByStage(createEmptyNextApproverSelection())
-      setShowApprovalModal(false)
-      setApprovalComments("")
-      await fetchCalendar(selectedYear)
-      await fetchYears()
-    } catch (err) {
-      toast.error(err.message || "Failed to approve calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleReject = async () => {
-    if (!canApprove) {
-      toast.error("You do not have permission to reject calendar")
-      return
-    }
-
-    const normalizedApprovalComments = String(approvalComments || "").trim()
-
-    if (normalizedApprovalComments.length < 10) {
-      toast.error("Please provide a rejection reason (min 10 characters)")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.rejectCalendar(calendar._id, normalizedApprovalComments)
-      toast.success("Calendar rejected")
-      setShowApprovalModal(false)
-      setApprovalComments("")
-      await fetchCalendar(selectedYear)
-      await fetchYears()
-    } catch (err) {
-      toast.error(err.message || "Failed to reject calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleCreateCalendar = async () => {
-    if (!canCreateCalendar) {
-      toast.error("You do not have permission to create calendar")
-      return
-    }
-
-    if (!newAcademicYear) {
-      toast.error("Please select an academic year")
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.createCalendar({ academicYear: newAcademicYear })
-      toast.success("Calendar created successfully")
-      setShowCreateCalendarModal(false)
-      setNewAcademicYear("")
-      await fetchYears()
-      setSelectedYear(newAcademicYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to create calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleLockCalendar = async () => {
-    if (!canManageCalendarLock) {
-      toast.error("You do not have permission to manage calendar lock")
-      return
-    }
-
-    if (!calendar?._id) return
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.lockCalendar(calendar._id)
-      toast.success("Calendar locked")
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to lock calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleUnlockCalendar = async () => {
-    if (!canManageCalendarLock) {
-      toast.error("You do not have permission to manage calendar lock")
-      return
-    }
-
-    if (!calendar?._id) return
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.unlockCalendar(calendar._id)
-      toast.success("Calendar unlocked")
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to unlock calendar")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleCalendarSettingsFieldChange = (field, value) => {
-    setCalendarSettingsForm((current) => ({
-      ...current,
-      [field]: value,
-    }))
-  }
-
-  const handleCalendarBudgetCapChange = (category, value) => {
-    setCalendarSettingsForm((current) => ({
-      ...current,
-      budgetCaps: {
-        ...current.budgetCaps,
-        [category]: value,
-      },
-    }))
-  }
-
-  const handleSaveCalendarSettings = async () => {
-    if (!canManageCalendarLock) {
-      toast.error("You do not have permission to manage calendar settings")
-      return
-    }
-
-    if (!calendar?._id) return
-
-    const nextBudgetCaps = buildBudgetCapsPayload(
-      calendarSettingsForm.budgetCaps,
-      calendarSettingsForm.categoryDefinitions
-    )
-    const budgetCapValidation = validateCategoryBudgetCaps(
-      events,
-      nextBudgetCaps,
-      calendarSettingsForm.categoryDefinitions
-    )
-    if (!budgetCapValidation.isValid) {
-      toast.error(
-        "Cannot set the " +
-          budgetCapValidation.label +
-          " cap below the current allocated budget of " +
-          formatINR(budgetCapValidation.total) +
-          ". Increase the cap or reduce events in that category first."
-      )
-      return
-    }
-
-    const rawOverallBudget = String(calendarSettingsForm.overallBudget ?? "").trim()
-    const nextOverallBudget = rawOverallBudget === "" ? null : Number(rawOverallBudget)
-
-    if (rawOverallBudget !== "" && (!Number.isFinite(nextOverallBudget) || nextOverallBudget < 0)) {
-      toast.error("Enter a valid overall calendar budget (0 or more), or leave it blank for no cap")
-      return
-    }
-
-    const configuredCategoryCapsTotal = getConfiguredBudgetCapsTotal(
-      nextBudgetCaps,
-      calendarSettingsForm.categoryDefinitions
-    )
-
-    if (nextOverallBudget !== null && configuredCategoryCapsTotal > nextOverallBudget) {
-      toast.error(
-        "Total configured category caps (" +
-          formatINR(configuredCategoryCapsTotal) +
-          ") exceed overall calendar budget (" +
-          formatINR(nextOverallBudget) +
-          "). Reduce category caps or increase overall budget."
-      )
-      return
-    }
-
-    try {
-      setSubmitting(true)
-      await gymkhanaEventsApi.updateCalendarSettings(calendar._id, {
-        allowProposalBeforeApproval: Boolean(calendarSettingsForm.allowProposalBeforeApproval),
-        overallBudget: nextOverallBudget,
-        budgetCaps: nextBudgetCaps,
-      })
-      toast.success("Calendar settings updated")
-      setShowSettingsModal(false)
-      await fetchCalendar(selectedYear)
-      await fetchYears()
-    } catch (err) {
-      toast.error(err.message || "Failed to update calendar settings")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const openApprovalModal = () => {
-    setApprovalComments("")
-    setCalendarNextApproversByStage(createEmptyNextApproverSelection())
-    setShowApprovalModal(true)
-  }
-
-  const closeEventModal = () => {
-    setShowEventModal(false)
-    setSelectedEvent(null)
-  }
-
-  const closeAddEventModal = () => {
-    setShowAddEventModal(false)
-    setSelectedEvent(null)
-    resetDateOverlapInfo()
-  }
-
-  const closeAmendmentModal = () => {
-    setShowAmendmentModal(false)
-    setSelectedEvent(null)
-    resetDateOverlapInfo()
-  }
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
+
+  const permissions = useCalendarPermissions({ user })
+
+  const data = useCalendarData({
+    user,
+    canViewEventsCapability: permissions.canViewEventsCapability,
+  })
+  const {
+    calendar,
+    events,
+    calendarSettingsForm,
+    setCalendarSettingsForm,
+  } = data
+
+  const access = useCalendarAccess({
+    user,
+    calendar,
+    events,
+    isGS: permissions.isGS,
+    isPresident: permissions.isPresident,
+    isAdminLevel: permissions.isAdminLevel,
+    canCreateEventsCapability: permissions.canCreateEventsCapability,
+    canApproveEventsCapability: permissions.canApproveEventsCapability,
+  })
+
+  const overlap = useEventOverlapCheck({ calendar })
+
+  const display = useCalendarDisplayData({
+    calendar,
+    events,
+    years: data.years,
+    selectedYear: data.selectedYear,
+    loading: data.loading,
+    activeCategoryFilter,
+    calendarHolidays: data.calendarHolidays,
+  })
+
+  const forms = useCalendarEventForms({
+    toast,
+    calendar,
+    categoryDefinitions: display.categoryDefinitions,
+    canCreateEventsCapability: permissions.canCreateEventsCapability,
+    submitting,
+    dateOverlapInfo: overlap.dateOverlapInfo,
+    resetDateOverlapInfo: overlap.resetDateOverlapInfo,
+    checkDateOverlap: overlap.checkDateOverlap,
+  })
+
+  const eventActions = useCalendarEventActions({
+    toast,
+    calendar,
+    events,
+    selectedYear: data.selectedYear,
+    categoryDefinitions: display.categoryDefinitions,
+    canCreateEventsCapability: permissions.canCreateEventsCapability,
+    eventForm: forms.eventForm,
+    selectedEvent: forms.selectedEvent,
+    amendmentReason: forms.amendmentReason,
+    overlapCheckCompletedForCurrentDates: forms.overlapCheckCompletedForCurrentDates,
+    fetchCalendar: data.fetchCalendar,
+    setSubmitting,
+    setShowAddEventModal: forms.setShowAddEventModal,
+    setShowAmendmentModal: forms.setShowAmendmentModal,
+    setSelectedEvent: forms.setSelectedEvent,
+    resetDateOverlapInfo: overlap.resetDateOverlapInfo,
+  })
+
+  const approval = useCalendarApproval({
+    toast,
+    calendar,
+    selectedYear: data.selectedYear,
+    isAdminLevel: permissions.isAdminLevel,
+    canApproveEventsCapability: permissions.canApproveEventsCapability,
+    canApprove: access.canApprove,
+    requiresCalendarNextApprovalSelection: access.requiresCalendarNextApprovalSelection,
+    fetchCalendar: data.fetchCalendar,
+    fetchYears: data.fetchYears,
+    setSubmitting,
+  })
+
+  const lifecycle = useCalendarLifecycle({
+    toast,
+    calendar,
+    selectedYear: data.selectedYear,
+    canCreateEventsCapability: permissions.canCreateEventsCapability,
+    canCreateCalendar: access.canCreateCalendar,
+    canManageCalendarLock: access.canManageCalendarLock,
+    fetchCalendar: data.fetchCalendar,
+    fetchYears: data.fetchYears,
+    setSelectedYear: data.setSelectedYear,
+    setSubmitting,
+  })
+
+  const settings = useCalendarSettings({
+    toast,
+    calendar,
+    events,
+    selectedYear: data.selectedYear,
+    canManageCalendarLock: access.canManageCalendarLock,
+    showSettingsModal,
+    setShowSettingsModal,
+    calendarSettingsForm,
+    setCalendarSettingsForm,
+    fetchCalendar: data.fetchCalendar,
+    fetchYears: data.fetchYears,
+    setSubmitting,
+  })
+
+  const getEventsForCurrentDate = (date) => getEventsForDate(date, display.filteredEvents)
+  const getHolidaysForCurrentDate = (date) => getHolidaysForDate(date, display.holidaysByDate)
 
   return {
     activeCategoryFilter,
-    amendmentReason,
-    approvalComments,
-    availableYearsForCreation,
-    budgetStats,
-    budgetSummary,
+    amendmentReason: forms.amendmentReason,
+    approvalComments: approval.approvalComments,
+    availableYearsForCreation: display.availableYearsForCreation,
+    budgetStats: display.budgetStats,
+    budgetSummary: display.budgetSummary,
     calendar,
     calendarSettingsForm,
-    calendarMonth,
-    calendarNextApproversByStage,
-    canApprove,
-    canApproveEventsCapability,
-    canCreateCalendar,
-    canCreateEventsCapability,
-    canEdit,
-    canManageCalendarLock,
-    canSaveEventInModal,
-    canSubmitAmendmentInModal,
-    canSubmitCalendar,
-    canViewEventsCapability,
-    categoryFilterTabs,
-    categoryDefinitions,
-    categoryLabels,
-    categoryOptions,
-    categoryOrder,
-    dateConflicts,
-    dateOverlapInfo,
-    error,
-    eventForm,
+    calendarMonth: data.calendarMonth,
+    calendarNextApproversByStage: approval.calendarNextApproversByStage,
+    canApprove: access.canApprove,
+    canApproveEventsCapability: permissions.canApproveEventsCapability,
+    canCreateCalendar: access.canCreateCalendar,
+    canCreateEventsCapability: permissions.canCreateEventsCapability,
+    canEdit: access.canEdit,
+    canManageCalendarLock: access.canManageCalendarLock,
+    canSaveEventInModal: forms.canSaveEventInModal,
+    canSubmitAmendmentInModal: forms.canSubmitAmendmentInModal,
+    canSubmitCalendar: access.canSubmitCalendar,
+    canViewEventsCapability: permissions.canViewEventsCapability,
+    categoryFilterTabs: display.categoryFilterTabs,
+    categoryDefinitions: display.categoryDefinitions,
+    categoryLabels: display.categoryLabels,
+    categoryOptions: display.categoryOptions,
+    categoryOrder: display.categoryOrder,
+    dateConflicts: display.dateConflicts,
+    dateOverlapInfo: overlap.dateOverlapInfo,
+    error: data.error,
+    eventForm: forms.eventForm,
     events,
-    eventTableColumns,
-    fetchCalendar,
-    fetchYears,
-    filteredEvents,
-    eventTimelineSections,
+    eventTableColumns: display.eventTableColumns,
+    fetchCalendar: data.fetchCalendar,
+    fetchYears: data.fetchYears,
+    filteredEvents: display.filteredEvents,
+    eventTimelineSections: display.eventTimelineSections,
     formatDateRange,
     getDaysInMonth,
-    getCategoryBadgeStyle: badgeStyleForCategory,
+    getCategoryBadgeStyle: display.badgeStyleForCategory,
     getEventStatusVariant,
     getEventsForDate: getEventsForCurrentDate,
     getHolidaysForDate: getHolidaysForCurrentDate,
-    handleAddEvent,
-    handleApprove,
-    handleDirectApprove,
-    handleConfirmSubmitWithOverlap,
-    handleCreateCalendar,
-    handleEditEvent,
-    handleEventClick,
-    handleEventFormChange,
-    handleEventRowClick,
-    handleCalendarBudgetCapChange,
-    handleCalendarSettingsFieldChange,
-    handleLockCalendar,
-    handleReject,
-    handleSaveCalendarSettings,
-    handleSaveEvent,
-    handleSubmitAmendment,
-    handleSubmitCalendar,
-    handleUnlockCalendar,
-    hasAttemptedCalendarLoad,
-    headerSubtitle,
-    headerTitle,
-    isAdminLevel,
-    isBaseEventFormValid,
-    isDateRangeOrdered,
-    isGS,
-    isGymkhanaRole,
-    isPresident,
-    isSuperAdmin,
-    loading,
-    maxApprovalAmount,
-    newAcademicYear,
-    openAmendmentModal,
-    openApprovalModal,
-    overlapCheckCompletedForCurrentDates,
-    overlapCheckInProgressForCurrentDates,
-    overlapCheckKey,
-    pendingProposalReminders,
-    requiresCalendarNextApprovalSelection,
-    resetDateOverlapInfo,
-    retryDateOverlapCheck,
-    selectedCalendarEventIds,
-    selectedEvent,
-    selectedYear,
+    handleAddEvent: forms.handleAddEvent,
+    handleApprove: approval.handleApprove,
+    handleDirectApprove: approval.handleDirectApprove,
+    handleConfirmSubmitWithOverlap: lifecycle.handleConfirmSubmitWithOverlap,
+    handleCreateCalendar: lifecycle.handleCreateCalendar,
+    handleEditEvent: forms.handleEditEvent,
+    handleEventClick: forms.handleEventClick,
+    handleEventFormChange: forms.handleEventFormChange,
+    handleEventRowClick: forms.handleEventRowClick,
+    handleCalendarBudgetCapChange: settings.handleCalendarBudgetCapChange,
+    handleCalendarSettingsFieldChange: settings.handleCalendarSettingsFieldChange,
+    handleLockCalendar: lifecycle.handleLockCalendar,
+    handleReject: approval.handleReject,
+    handleSaveCalendarSettings: settings.handleSaveCalendarSettings,
+    handleSaveEvent: eventActions.handleSaveEvent,
+    handleSubmitAmendment: eventActions.handleSubmitAmendment,
+    handleSubmitCalendar: lifecycle.handleSubmitCalendar,
+    handleUnlockCalendar: lifecycle.handleUnlockCalendar,
+    hasAttemptedCalendarLoad: data.hasAttemptedCalendarLoad,
+    headerSubtitle: display.headerSubtitle,
+    headerTitle: display.headerTitle,
+    isAdminLevel: permissions.isAdminLevel,
+    isBaseEventFormValid: forms.isBaseEventFormValid,
+    isDateRangeOrdered: forms.isDateRangeOrdered,
+    isGS: permissions.isGS,
+    isGymkhanaRole: permissions.isGymkhanaRole,
+    isPresident: permissions.isPresident,
+    isSuperAdmin: permissions.isSuperAdmin,
+    loading: data.loading,
+    maxApprovalAmount: permissions.maxApprovalAmount,
+    newAcademicYear: lifecycle.newAcademicYear,
+    openAmendmentModal: forms.openAmendmentModal,
+    openApprovalModal: approval.openApprovalModal,
+    overlapCheckCompletedForCurrentDates: forms.overlapCheckCompletedForCurrentDates,
+    overlapCheckInProgressForCurrentDates: forms.overlapCheckInProgressForCurrentDates,
+    overlapCheckKey: forms.overlapCheckKey,
+    pendingProposalReminders: display.pendingProposalReminders,
+    requiresCalendarNextApprovalSelection: access.requiresCalendarNextApprovalSelection,
+    resetDateOverlapInfo: overlap.resetDateOverlapInfo,
+    retryDateOverlapCheck: forms.retryDateOverlapCheck,
+    selectedCalendarEventIds: display.selectedCalendarEventIds,
+    selectedEvent: forms.selectedEvent,
+    selectedYear: data.selectedYear,
     setActiveCategoryFilter,
-    setAmendmentReason,
-    setApprovalComments,
-    setCalendarMonth,
-    setCalendarNextApproversByStage,
-    setCalendarNextApproverForStage,
-    setDateOverlapInfo,
-    setNewAcademicYear,
+    setAmendmentReason: forms.setAmendmentReason,
+    setApprovalComments: approval.setApprovalComments,
+    setCalendarMonth: data.setCalendarMonth,
+    setCalendarNextApproversByStage: approval.setCalendarNextApproversByStage,
+    setCalendarNextApproverForStage: approval.setCalendarNextApproverForStage,
+    setDateOverlapInfo: overlap.setDateOverlapInfo,
+    setNewAcademicYear: lifecycle.setNewAcademicYear,
     setSubmitting,
-    setSelectedEvent,
-    setSelectedYear,
-    setShowAddEventModal,
-    setShowApprovalModal,
-    setShowCreateCalendarModal,
-    setSubmitOverlapInfo,
-    setShowEventModal,
-    setShowHistoryModal,
-    setShowOverlapConfirmModal,
-    setShowOverlapDetailsModal,
+    setSelectedEvent: forms.setSelectedEvent,
+    setSelectedYear: data.setSelectedYear,
+    setShowAddEventModal: forms.setShowAddEventModal,
+    setShowApprovalModal: approval.setShowApprovalModal,
+    setShowCreateCalendarModal: lifecycle.setShowCreateCalendarModal,
+    setSubmitOverlapInfo: lifecycle.setSubmitOverlapInfo,
+    setShowEventModal: forms.setShowEventModal,
+    setShowHistoryModal: forms.setShowHistoryModal,
+    setShowOverlapConfirmModal: lifecycle.setShowOverlapConfirmModal,
+    setShowOverlapDetailsModal: forms.setShowOverlapDetailsModal,
     setShowSettingsModal,
-    showAddEventModal,
-    showAmendmentModal,
-    showApprovalModal,
-    showCreateCalendarModal,
-    showEventModal,
-    showHistoryModal,
-    showOverlapConfirmModal,
-    showOverlapDetailsModal,
+    showAddEventModal: forms.showAddEventModal,
+    showAmendmentModal: forms.showAmendmentModal,
+    showApprovalModal: approval.showApprovalModal,
+    showCreateCalendarModal: lifecycle.showCreateCalendarModal,
+    showEventModal: forms.showEventModal,
+    showHistoryModal: forms.showHistoryModal,
+    showOverlapConfirmModal: lifecycle.showOverlapConfirmModal,
+    showOverlapDetailsModal: forms.showOverlapDetailsModal,
     showSettingsModal,
-    submitCalendarLabel,
-    submitOverlapInfo,
-    postStudentAffairsApproverOptionsByStage,
+    submitCalendarLabel: access.submitCalendarLabel,
+    submitOverlapInfo: lifecycle.submitOverlapInfo,
+    postStudentAffairsApproverOptionsByStage: approval.postStudentAffairsApproverOptionsByStage,
     submitting,
-    viewMode,
-    years,
-    setViewMode,
-    closeAddEventModal,
-    closeAmendmentModal,
-    closeEventModal,
+    viewMode: data.viewMode,
+    years: data.years,
+    setViewMode: data.setViewMode,
+    closeAddEventModal: forms.closeAddEventModal,
+    closeAmendmentModal: forms.closeAmendmentModal,
+    closeEventModal: forms.closeEventModal,
   }
 }
+
+export default useGymkhanaCalendarPageState

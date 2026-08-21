@@ -2,19 +2,13 @@ import React, { useState } from "react"
 import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/fa"
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Button, DataTable, HStack, IconCircle, Surface, Text } from "hzero"
-import { getMediaUrl } from "../../../utils/mediaUtils"
-const StatusBadge = ({ status }) => {
-  const statusMap = {
-    Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
-    Approved: { bgColor: "var(--color-success-bg)", textColor: "var(--color-success-text)", label: "Approved" },
-    Rejected: { bgColor: "var(--color-danger-bg)", textColor: "var(--color-danger-text)", label: "Rejected" },
-    Completed: { bgColor: "var(--color-info-bg)", textColor: "var(--color-info-text)", label: "Completed" },
-  }
-  const { bgColor, textColor, label } = statusMap[status] || statusMap.Pending
-  return <Surface as="span" bg={bgColor} padding="var(--badge-padding-sm)" radius="full" color={textColor} size="xs" weight="medium">{label}</Surface>
-}
+import { Button, DataTable, defaultStatusMap, HStack, IconCircle, StatusBadge, StatusBadgeProvider, Surface, Text } from "hzero"
 
+import { getMediaUrl } from "../../../utils/mediaUtils"
+
+// Visitor vocabulary over the shared defaults: Completed stays
+// informational (primary aliases info in czero), matching the old badge.
+const visitorStatusMap = { ...defaultStatusMap, completed: "primary" }
 const AllocationBadge = ({ request }) => {
   const isAllocated = request.isAllocated
   return isAllocated ? (
@@ -114,7 +108,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
     {
       header: "Status",
       key: "status",
-      render: (request) => <StatusBadge status={request.status} />,
+      render: (request) => <StatusBadge status={request.status} showDot={false} />,
     },
     {
       header: ["Security", "Hostel Gate"].includes(userRole) ? "Check Status" : "Allocation",
@@ -162,7 +156,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
   }
 
   return (
-    <>
+    <StatusBadgeProvider map={visitorStatusMap} fallback="primary">
       <DataTable
         columns={columns}
         data={requests}
@@ -181,7 +175,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
           onRefresh={onRefresh}
         />
       )}
-    </>
+    </StatusBadgeProvider>
   )
 }
 

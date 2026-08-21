@@ -1,10 +1,10 @@
-import { EmptyState, Page, SearchInput, Tabs } from "hzero"
+import { EmptyState, Button, Page, SearchInput, Tabs } from "hzero"
 import { useState, useEffect } from "react"
-import { Search } from "lucide-react"
+import { Search, Plus, Archive } from "lucide-react"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
 import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
-import HostelsHeader from "../../components/headers/HostelsHeader"
+import PageHeader from "../../components/common/PageHeader"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
 import { adminApi } from "../../service"
@@ -54,10 +54,16 @@ const HostelsPage = () => {
     <>
       <Page>
         {/* Fixed Header */}
-        <HostelsHeader onAddHostel={() => setShowAddModal(true)}
-          onArchiveToggle={handleArchiveToggle}
-          fetchArchive={fetchArchive}
-        />
+        <PageHeader title="Hostel Management">
+          <Button variant="secondary" onClick={handleArchiveToggle}
+          >
+            <Archive size={18} /> {fetchArchive ? "Show All" : "Show Archived"}
+          </Button>
+          <Button variant="primary" onClick={() => setShowAddModal(true)}
+          >
+            <Plus size={18} /> Add Hostel
+          </Button>
+        </PageHeader>
 
 
         {/* Scrollable Content Area */}

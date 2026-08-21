@@ -33,9 +33,6 @@
   "src/components/common/MultiSelectDropdown.jsx": {
     "react-icons": 1
   },
-  "src/components/common/NotificationToast.jsx": {
-    "react-icons": 1
-  },
   "src/components/common/OfflineBanner.jsx": {
     "react-icons": 2
   },
@@ -43,17 +40,8 @@
     "js-hover": 4,
     "react-icons": 1
   },
-  "src/components/common/SearchBar.jsx": {
-    "react-icons": 1
-  },
   "src/components/common/SelectedUsersList.jsx": {
     "react-icons": 1
-  },
-  "src/components/common/SimpleDatePicker.jsx": {
-    "react-icons": 1
-  },
-  "src/components/common/StatCards.jsx": {
-    "hex-literal": 1
   },
   "src/components/common/ToggleButtonGroup.jsx": {
     "js-hover": 2
@@ -93,12 +81,8 @@
   "src/components/guard/EditStudentEntryModal.jsx": {
     "react-icons": 1
   },
-  "src/components/guard/EntryDetails.jsx": {
-    "react-icons": 1
-  },
   "src/components/guard/MaintenanceQRGenerator.jsx": {
     "hex-literal": 2,
-    "js-hover": 2,
     "native-dialog": 1,
     "react-icons": 1
   },
@@ -117,12 +101,7 @@
   },
   "src/components/guard/SecurityQRGenerator.jsx": {
     "hex-literal": 2,
-    "js-hover": 2,
     "native-dialog": 1,
-    "react-icons": 1
-  },
-  "src/components/guard/StudentEntryForm.jsx": {
-    "native-dialog": 2,
     "react-icons": 1
   },
   "src/components/guard/StudentEntryTable.jsx": {
@@ -132,9 +111,6 @@
   },
   "src/components/home/ModernHeader.jsx": {
     "react-icons": 1
-  },
-  "src/components/home/StatisticsGraphic.jsx": {
-    "hex-literal": 10
   },
   "src/components/IDCardUploadModal.jsx": {
     "react-icons": 1
@@ -253,22 +229,18 @@
   "src/components/sidebar/NewBadge.jsx": {
     "raw-font-size": 1
   },
-  "src/components/sidebar/ProfileCard.jsx": {
-    "react-icons": 1
-  },
   "src/components/sidebar/SidebarModeSwitcher.jsx": {
     "raw-font-size": 2
   },
   "src/components/sidebar/SidebarNavItem.jsx": {
     "raw-font-size": 1
   },
+  "src/components/sidebar/SidebarProfileCard.jsx": {
+    "react-icons": 1
+  },
   "src/components/sidebar/WorkspaceNav.jsx": {
     "js-hover": 2,
     "raw-font-size": 2
-  },
-  "src/components/SSOLoginButton.jsx": {
-    "palette-class": 5,
-    "react-icons": 1
   },
   "src/components/tasks/DetailedTaskStats.jsx": {
     "palette-class": 4
@@ -287,9 +259,6 @@
     "react-icons": 1
   },
   "src/components/visitor/requests/details/RoomAllocationForm.jsx": {
-    "react-icons": 1
-  },
-  "src/components/visitor/requests/details/StatusBadge.jsx": {
     "react-icons": 1
   },
   "src/components/visitor/requests/EditVisitorRequestModal.jsx": {
@@ -311,15 +280,7 @@
     "js-hover": 6,
     "react-icons": 1
   },
-  "src/components/wardens/BedSelectionComponent.jsx": {
-    "js-hover": 2,
-    "react-icons": 1
-  },
   "src/components/wardens/inventory/AvailableInventory.jsx": {
-    "js-hover": 2,
-    "react-icons": 1
-  },
-  "src/components/wardens/inventory/InventoryManagement.jsx": {
     "js-hover": 2,
     "react-icons": 1
   },
@@ -327,14 +288,8 @@
     "js-hover": 2,
     "react-icons": 1
   },
-  "src/components/wardens/RoomListView.jsx": {
-    "react-icons": 1
-  },
   "src/components/wardens/RoomStats.jsx": {
     "react-icons": 2
-  },
-  "src/components/wardens/UnitListView.jsx": {
-    "react-icons": 1
   },
   "src/components/wardens/UnitStats.jsx": {
     "react-icons": 2
@@ -381,9 +336,6 @@
     "react-icons": 2
   },
   "src/pages/common/VisitorRequestsPage.jsx": {
-    "react-icons": 1
-  },
-  "src/pages/dev/UIExamplesPage.jsx": {
     "react-icons": 1
   },
   "src/pages/guard/AddStudentEntryPage.jsx": {
@@ -444,8 +396,5 @@
   },
   "src/utils/adminUtils.js": {
     "palette-class": 12
-  },
-  "src/utils/securityUtils.js": {
-    "palette-class": 6
   }
 }

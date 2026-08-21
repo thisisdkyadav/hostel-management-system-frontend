@@ -35,7 +35,6 @@ const GymkhanaRoutes = lazy(() => import("./GymkhanaRoutes"))
 const AcademicsRoutes = lazy(() => import("./AcademicsRoutes"))
 const CatererRoutes = lazy(() => import("./CatererRoutes"))
 const DiningOfficeRoutes = lazy(() => import("./DiningOfficeRoutes"))
-const UIExamplesPage = lazy(() => import("../pages/dev/UIExamplesPage"))
 
 const AppRoutes = () => {
   return (
@@ -152,13 +151,6 @@ const AppRoutes = () => {
       <Route path="/dining-office/*" element={
         <Suspense fallback={<LoadingPage message="Loading Dining Office..." />}>
           <DiningOfficeRoutes />
-        </Suspense>
-      } />
-
-      {/* Dev/Debug Routes */}
-      <Route path="/ui-examples" element={
-        <Suspense fallback={<LoadingPage message="Loading UI Examples..." />}>
-          <UIExamplesPage />
         </Suspense>
       } />
 

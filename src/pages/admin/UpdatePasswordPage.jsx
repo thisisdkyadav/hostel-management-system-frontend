@@ -6,8 +6,9 @@ import RemovePasswordsByRoleModal from "../../components/admin/password/RemovePa
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
-import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
-import { Card, useConfirm } from "hzero"
+import PageHeader from "../../components/common/PageHeader"
+import { Button, Card, useConfirm } from "hzero"
+import { Upload, Trash2 } from "lucide-react"
 
 const styles = {
   pageContainer: {
@@ -233,9 +234,14 @@ const UpdatePasswordPage = () => {
 
   return (
     <div style={styles.pageContainer}>
-      <UpdatePasswordHeader onBulkUpdate={() => setShowBulkModal(true)}
-        onRemoveByRole={() => setShowRemoveByRoleModal(true)}
-      />
+      <PageHeader title="Update User Password">
+        <Button variant="danger" onClick={() => setShowRemoveByRoleModal(true)}>
+          <Trash2 size={18} /> Remove by Role
+        </Button>
+        <Button variant="primary" onClick={() => setShowBulkModal(true)}>
+          <Upload size={18} /> Bulk Update
+        </Button>
+      </PageHeader>
 
       <div style={styles.contentContainer}>
 

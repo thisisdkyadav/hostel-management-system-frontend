@@ -4,12 +4,4 @@
  */
 
 export { apiClient, buildUrl, buildUrlWithQueryString, request } from "./apiClient"
-export { 
-  ApiError, 
-  NetworkError, 
-  ValidationError, 
-  AuthError, 
-  ForbiddenError, 
-  NotFoundError,
-  handleError 
-} from "./errors"
+export { ApiError, NetworkError } from "./errors"

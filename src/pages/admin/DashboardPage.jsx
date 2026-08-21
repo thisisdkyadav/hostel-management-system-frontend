@@ -9,7 +9,7 @@ import { dashboardApi } from "../../service"
 import gymkhanaEventsApi from "../../service/modules/gymkhanaEvents.api"
 import porApi from "../../service/modules/por.api"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
-import DashboardHeader from "../../components/headers/DashboardHeader"
+import PageHeader from "../../components/common/PageHeader"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 // hzero is the only component source now; the @/components/ui shim is gone
 // that re-exports it verbatim.
@@ -642,9 +642,9 @@ const DashboardPage = () => {
 
   return (
     <Page>
-      <DashboardHeader>
+      <PageHeader title="Admin Dashboard">
         <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
-      </DashboardHeader>
+      </PageHeader>
 
       <Page.Body padded={false} className="p-[var(--spacing-4)]">
         <VStack gap={4}>

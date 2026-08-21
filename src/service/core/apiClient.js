@@ -6,7 +6,8 @@
  * - Consistent configuration
  */
 
-import { API_BACKENDS, getApiBaseUrl, fetchOptions } from "../../constants/appConstants"
+import { fetchOptions } from "../../constants/appConstants"
+import { API_BACKENDS, getApiBaseUrl } from "../../config/apiConfig"
 import { ApiError, NetworkError } from "./errors"
 
 /**
@@ -222,6 +223,42 @@ export const createApiClient = (clientConfig = {}) => {
     },
 
     /**
+     * Download raw binary content (blobs, array buffers, files)
+     * @param {string} endpoint - API endpoint or absolute URL
+     * @param {Object} options - Request options (headers, baseUrl, backend)
+     * @returns {Promise<Response>} Raw response for the caller to consume
+     */
+    download: async (endpoint, options = {}) => {
+      const { backend: _backend, baseUrl: _baseUrl, ...fetchOpts } = options
+      const resolvedBaseUrl = resolveBaseUrl(options, clientConfig)
+      const url = `${resolvedBaseUrl}${endpoint}`
+
+      try {
+        const response = await fetch(url, {
+          ...fetchOptions,
+          ...fetchOpts,
+        })
+
+        if (!response.ok) {
+          const { message, errors } = await parseErrorResponse(response)
+          throw new ApiError(message, response.status, response, errors)
+        }
+
+        return response
+      } catch (error) {
+        if (error instanceof ApiError) {
+          throw error
+        }
+
+        if (error instanceof TypeError && error.message.includes("fetch")) {
+          throw new NetworkError("Network error. Please check your connection.")
+        }
+
+        throw new ApiError(error.message || "Download failed")
+      }
+    },
+
+    /**
      * POST request with FormData (for file uploads)
      * @param {string} endpoint - API endpoint
      * @param {FormData} formData - Form data to send
@@ -261,5 +298,5 @@ export const apiClient = createApiClient()
 export const goApiClient = createApiClient({ backend: API_BACKENDS.GO })
 
 // Export utilities for custom use cases
-export { buildUrl, buildUrlWithQueryString, request }
+export { buildUrl, buildUrlWithQueryString, request, parseErrorResponse }
 export default apiClient

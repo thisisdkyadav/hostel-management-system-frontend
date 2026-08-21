@@ -134,6 +134,7 @@ const files = execSync("git ls-files 'src/**/*.js' 'src/**/*.jsx' 'src/*.js' 'sr
   .trim()
   .split("\n")
   .filter(Boolean)
+  .filter((f) => existsSync(`${root}${f}`))
 
 /** file -> rule id -> { count, hits: [{ line, text }] } */
 const found = new Map()

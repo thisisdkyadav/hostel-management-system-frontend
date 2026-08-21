@@ -11,7 +11,7 @@ import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolida
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
 import CertificateTemplateForm from "../../components/admin/settings/CertificateTemplateForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
-import SettingsHeader from "../../components/headers/SettingsHeader"
+import PageHeader from "../../components/common/PageHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import { Card, HStack, Page, SearchInput, Spinner, useConfirm, useToast, VStack } from "hzero"
 
@@ -802,7 +802,7 @@ const SettingsPage = () => {
 
   return (
     <Page>
-      <SettingsHeader />
+      <PageHeader title="Application Settings" />
 
       <Page.Body>
 

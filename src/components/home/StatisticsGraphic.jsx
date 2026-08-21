@@ -13,6 +13,8 @@ import {
 import { Text } from "hzero"
 
 
+const tint = (color, pct) => `color-mix(in srgb, ${color} ${pct}%, transparent)`
+
 const StatisticsGraphic = () => {
   const [activeCard, setActiveCard] = useState(null)
 
@@ -20,55 +22,55 @@ const StatisticsGraphic = () => {
   const features = [
     {
       icon: <DoorOpen size={20} />,
-      color: "#3B82F6", // Blue
+      color: "var(--color-info)",
       label: "Room Management",
       description: "Allocate and manage hostel rooms efficiently",
     },
     {
       icon: <Users size={20} />,
-      color: "#8B5CF6", // Purple
+      color: "var(--color-primary)",
       label: "Student Management",
       description: "Track student information and history",
     },
     {
       icon: <FileWarning size={20} />,
-      color: "#EF4444", // Red
+      color: "var(--color-danger)",
       label: "Complaints",
       description: "Process and resolve student issues quickly",
     },
     {
       icon: <ClipboardCheck size={20} />,
-      color: "#10B981", // Green
+      color: "var(--color-success)",
       label: "Approvals",
       description: "Streamline student request approvals",
     },
     {
       icon: <Shield size={20} />,
-      color: "#F59E0B", // Amber
+      color: "var(--color-warning)",
       label: "Security",
       description: "Ensure campus safety and security",
     },
     {
       icon: <Wrench size={20} />,
-      color: "#6B7280", // Gray
+      color: "var(--color-text-muted)",
       label: "Maintenance",
       description: "Manage repair tasks and requests",
     },
     {
       icon: <Bell size={20} />,
-      color: "#F97316", // Orange
+      color: "var(--color-warning)",
       label: "Notifications",
       description: "Real-time alerts for all residents",
     },
     {
       icon: <LayoutDashboard size={20} />,
-      color: "#9333EA", // Indigo
+      color: "var(--color-primary)",
       label: "Dashboard",
       description: "Monitor all hostel activities",
     },
     {
       icon: <UserCheck size={20} />,
-      color: "#14B8A6", // Teal
+      color: "var(--color-success)",
       label: "Visitor Management",
       description: "Track and manage campus visitors",
     },
@@ -82,27 +84,27 @@ const StatisticsGraphic = () => {
             key={index}
             className="stats-feature-card"
             style={{
-              backgroundColor: `${feature.color}06`,
+              backgroundColor: tint(feature.color, 2),
               borderBottom: `3px solid ${feature.color}`,
-              boxShadow: `0 4px 12px -2px ${feature.color}15`,
+              boxShadow: `0 4px 12px -2px ${tint(feature.color, 8)}`,
             }}
             onMouseEnter={() => setActiveCard(index)}
             onMouseLeave={() => setActiveCard(null)}
           >
             {/* Background Pattern */}
-            <div className="stats-feature-card-bg" style={{ backgroundColor: `${feature.color}08` }}>
+            <div className="stats-feature-card-bg" style={{ backgroundColor: tint(feature.color, 3) }}>
               <div
                 className="stats-feature-card-shape-1"
                 style={{
-                  backgroundColor: `${feature.color}25`,
-                  boxShadow: `0 0 20px 0 ${feature.color}20`,
+                  backgroundColor: tint(feature.color, 15),
+                  boxShadow: `0 0 20px 0 ${tint(feature.color, 12)}`,
                 }}
               />
               <div
                 className="stats-feature-card-shape-2"
                 style={{
-                  backgroundColor: `${feature.color}20`,
-                  boxShadow: `0 0 15px 0 ${feature.color}18`,
+                  backgroundColor: tint(feature.color, 12),
+                  boxShadow: `0 0 15px 0 ${tint(feature.color, 9)}`,
                 }}
               />
               <div
@@ -116,10 +118,10 @@ const StatisticsGraphic = () => {
               className={`stats-feature-icon ${activeCard === index ? "active" : ""}`}
               style={{
                 color: feature.color,
-                backgroundColor: `${feature.color}20`,
+                backgroundColor: tint(feature.color, 12),
                 boxShadow: activeCard === index
-                  ? `0 10px 20px -4px ${feature.color}35, 0 4px 8px -2px ${feature.color}20`
-                  : `0 4px 12px -2px ${feature.color}15`,
+                  ? `0 10px 20px -4px ${tint(feature.color, 21)}, 0 4px 8px -2px ${tint(feature.color, 12)}`
+                  : `0 4px 12px -2px ${tint(feature.color, 8)}`,
               }}
             >
               {feature.icon}
@@ -132,7 +134,7 @@ const StatisticsGraphic = () => {
             </div>
 
             {/* Label */}
-            <Text as="div" color={activeCard === index ? feature.color : "#4B5563"} className={`stats-feature-label ${activeCard === index ? "active" : ""}`}>
+            <Text as="div" color={activeCard === index ? feature.color : "var(--color-text-secondary)"} className={`stats-feature-label ${activeCard === index ? "active" : ""}`}>
               {feature.label}
             </Text>
 
@@ -140,7 +142,7 @@ const StatisticsGraphic = () => {
             <div
               className="stats-feature-overlay"
               style={{
-                backgroundColor: `${feature.color}ee`,
+                backgroundColor: tint(feature.color, 93),
                 transform: activeCard === index ? "scale(1)" : "scale(0.97)",
               }}
             >
@@ -152,7 +154,7 @@ const StatisticsGraphic = () => {
               <div
                 className="stats-feature-glow"
                 style={{
-                  boxShadow: `inset 0 0 0 2px ${feature.color}50, 0 0 20px ${feature.color}20`,
+                  boxShadow: `inset 0 0 0 2px ${tint(feature.color, 31)}, 0 0 20px ${tint(feature.color, 12)}`,
                 }}
               />
             )}

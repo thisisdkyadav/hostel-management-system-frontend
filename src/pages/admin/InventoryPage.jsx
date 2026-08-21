@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import ItemTypes from "../../components/admin/inventory/ItemTypes"
 import HostelAllocation from "../../components/admin/inventory/HostelAllocation"
 import InventoryReports from "../../components/admin/inventory/InventoryReports"
-import InventoryHeader from "../../components/headers/InventoryHeader"
+import PageHeader from "../../components/common/PageHeader"
 import { Page } from "hzero"
 
 const InventoryPage = () => {
@@ -10,7 +10,7 @@ const InventoryPage = () => {
 
   return (
     <Page>
-      <InventoryHeader />
+      <PageHeader title="Inventory Management" />
 
       <Page.Body>
 

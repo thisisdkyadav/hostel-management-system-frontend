@@ -5,7 +5,7 @@ import { FaBuilding } from "react-icons/fa"
 import InsuranceProviders from "../../components/admin/others/InsuranceProviders"
 import HostelLogins from "../../components/admin/others/HostelLogins"
 import Undertakings from "../../components/admin/others/Undertakings"
-import OthersHeader from "../../components/headers/OthersHeader"
+import PageHeader from "../../components/common/PageHeader"
 
 // this page is for the admin to manage the others like Insurance Providers, Hostel Logins, etc.
 const OTHERS_TABS = [
@@ -19,7 +19,7 @@ const OthersPage = () => {
 
   return (
     <Page>
-      <OthersHeader />
+      <PageHeader title="Others Management" />
 
       <Page.Body>
 

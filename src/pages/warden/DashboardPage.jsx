@@ -7,7 +7,7 @@ import { FaUser, FaUsers } from "react-icons/fa"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
-import DashboardHeader from "../../components/headers/DashboardHeader"
+import PageHeader from "../../components/common/PageHeader"
 
 const DashboardPage = () => {
   const { profile, isAssociateWardenOrSupervisor } = useWarden()
@@ -165,11 +165,11 @@ const DashboardPage = () => {
 
   return (
     <Page>
-      <DashboardHeader title={getDashboardTitle()}>
+      <PageHeader title={getDashboardTitle()}>
         {loading ? renderHeaderShimmer() : error ? (
           <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
         ) : renderHeaderStats()}
-      </DashboardHeader>
+      </PageHeader>
 
       {/* Main Content */}
       <Page.Body padded={false} className="px-[var(--spacing-6)] py-[var(--spacing-6)]">

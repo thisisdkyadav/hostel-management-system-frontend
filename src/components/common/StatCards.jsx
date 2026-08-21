@@ -15,20 +15,12 @@ const ShimmerBar = ({ width, height, style }) => (
 )
 
 export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false, loading = false }) => {
-  // Get the actual color value for dynamic opacity backgrounds
-  const getColorValue = (cssVar) => {
-    if (cssVar.startsWith('var(')) return null
-    return cssVar
-  }
-
-  const colorValue = getColorValue(color) || getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1360AB'
-
   // Background style with optional tint
   const cardStyle = tintBackground
     ? {
         boxShadow: 'var(--shadow-xs)',
-        backgroundColor: `${colorValue}18`, // ~9% opacity tint
-        borderColor: `${colorValue}35`, // ~21% opacity border
+        backgroundColor: `color-mix(in srgb, ${color} 9%, transparent)`,
+        borderColor: `color-mix(in srgb, ${color} 21%, transparent)`,
       }
     : { boxShadow: 'var(--shadow-xs)' }
 
@@ -39,10 +31,10 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
     >
       <div className="flex justify-between items-start mb-1.5">
         <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">{title}</span>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110" style={{ backgroundColor: `${colorValue}15`, }} >
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110" style={{ backgroundColor: `color-mix(in srgb, ${color} 8%, transparent)`, }} >
           {React.isValidElement(icon)
             ? React.cloneElement(icon, {
-                style: { color: colorValue },
+                style: { color },
                 className: "text-base",
               })
             : null}
@@ -52,7 +44,7 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
         {loading ? (
           <ShimmerBar width="3.5rem" height={24} style={{ marginBottom: 2 }} />
         ) : (
-          <Heading as="h3" color={colorValue} className="text-xl md:text-2xl font-bold leading-none">
+          <Heading as="h3" color={color} className="text-xl md:text-2xl font-bold leading-none">
             {value}
           </Heading>
         )}

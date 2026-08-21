@@ -38,7 +38,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #eff6ff;
+          background-color: var(--color-primary-bg);
           position: relative;
           overflow: hidden;
         }
@@ -76,13 +76,13 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
         }
 
         .geo-square--1 {
-          border-color: #93c5fd;
+          border-color: var(--color-info);
           animation: spin-right 8s linear infinite;
         }
 
         .geo-square--2 {
           inset: -15px;
-          border-color: #bfdbfe;
+          border-color: var(--color-primary-bg-hover);
           opacity: 0.6;
           animation: spin-left 12s linear infinite;
         }
@@ -91,12 +91,12 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           position: relative;
           width: 80px;
           height: 80px;
-          background: white;
+          background: var(--color-bg-primary);
           border-radius: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15);
+          box-shadow: 0 10px 25px -5px color-mix(in srgb, var(--color-info) 15%, transparent);
           z-index: 20;
           animation: breathe 3s ease-in-out infinite;
         }
@@ -105,7 +105,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           font-family: system-ui, -apple-system, sans-serif;
           font-weight: 800;
           font-size: 1.5rem;
-          color: #2563eb;
+          color: var(--color-primary);
         }
 
         @keyframes spin-right {
@@ -137,7 +137,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           align-items: center;
           justify-content: center;
           gap: 4px;
-          color: #64748b;
+          color: var(--color-text-muted);
           font-family: system-ui, -apple-system, sans-serif;
           font-weight: 500;
           font-size: 0.875rem;
@@ -154,7 +154,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
         .typing-dots span {
           width: 3px;
           height: 3px;
-          background-color: #64748b;
+          background-color: var(--color-text-muted);
           border-radius: 50%;
           animation: dot-bounce 1.4s infinite ease-in-out both;
         }
@@ -172,7 +172,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
         .progress-track {
           width: 100%;
           height: 4px;
-          background-color: #dbeafe; /* blue-100 */
+          background-color: var(--color-primary-bg);
           border-radius: 100px;
           overflow: hidden;
           position: relative;
@@ -184,7 +184,7 @@ const LoadingPage = ({ message = 'Loading...', fullScreen = true }) => {
           left: 0;
           height: 100%;
           width: 40%; /* Length of the loop */
-          background: linear-gradient(90deg, transparent, #3b82f6, transparent); /* Fade in/out edges */
+          background: linear-gradient(90deg, transparent, var(--color-info), transparent);
           animation: progress-slide 1.5s ease-in-out infinite;
           border-radius: 100px;
         }

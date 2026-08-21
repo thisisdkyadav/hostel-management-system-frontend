@@ -1,4 +1,4 @@
-import { API_BACKENDS, getApiBaseUrl } from "../constants/appConstants"
+import { API_BACKENDS, getApiBaseUrl } from "../config/apiConfig"
 
 const MEDIA_REF_PREFIX = "media://"
 

@@ -1,11 +1,12 @@
-import { Page, SearchInput, Tabs } from "hzero"
+import { Button, Page, SearchInput, Tabs } from "hzero"
 import { useState, useEffect } from "react"
+import { Plus, Radio } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
 import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"
 import AddFaceScannerModal from "../../components/admin/faceScanner/AddFaceScannerModal"
 import LiveScanMonitorModal from "../../components/admin/faceScanner/LiveScanMonitorModal"
-import FaceScannersHeader from "../../components/headers/FaceScannersHeader"
+import PageHeader from "../../components/common/PageHeader"
 import { faceScannerApi } from "../../service"
 
 const SCANNER_FILTER_TABS = [
@@ -64,10 +65,14 @@ const FaceScannersPage = () => {
         <>
             <Page>
                 {/* Fixed Header */}
-                <FaceScannersHeader
-                    onAddScanner={() => setShowAddModal(true)}
-                    onOpenLiveMonitor={() => setShowLiveMonitor(true)}
-                />
+                <PageHeader title="Face Scanners">
+                    <Button variant="secondary" onClick={() => setShowLiveMonitor(true)}>
+                        <Radio size={18} /> Live Monitor
+                    </Button>
+                    <Button variant="primary" onClick={() => setShowAddModal(true)}>
+                        <Plus size={18} /> Add Scanner
+                    </Button>
+                </PageHeader>
 
                 {/* Scrollable Content Area */}
                 <Page.Body>

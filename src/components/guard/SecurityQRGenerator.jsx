@@ -83,7 +83,19 @@ const SecurityQRGenerator = () => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+    <div className="qr-card" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <style>{`
+        .qr-card {
+          box-shadow: var(--shadow-sm);
+          transition: box-shadow var(--transition-fast);
+        }
+        .qr-card:hover {
+          box-shadow: var(--shadow-md);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .qr-card { transition: none; }
+        }
+      `}</style>
       <HStack gap="none" align="center" style={{ marginBottom: 'var(--spacing-4)' }}>
         <Text as="div" color="brand" style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />

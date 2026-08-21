@@ -3,10 +3,9 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Banknote, CreditCard, Eye, FileSearch, FileText, Wallet } from "lucide-react"
-import { Badge, Button, DetailSection, EmptyState, Grid, InfoRow, LoadingState, Modal, Text, useConfirm, useToast, VStack } from "hzero"
+import { Badge, Button, DetailSection, EmptyState, Grid, HStack, InfoRow, LoadingState, Modal, StatusBadge, Text, useConfirm, useToast, VStack } from "hzero"
 
 // Import smaller components
-import StatusBadge from "./details/StatusBadge"
 import VisitInformation from "./details/VisitInformation"
 import AccommodationDetails from "./details/AccommodationDetails"
 import VisitReason from "./details/VisitReason"
@@ -330,7 +329,21 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     <Modal title="Visitor request details" onClose={onClose} width={650}>
       <VStack gap={6}>
         {/* Status Badge */}
-        {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
+        {["Admin", "Student"].includes(user.role) && (
+          <VStack gap={2}>
+            <HStack align="center" justify="between">
+              <HStack align="center" gap={2}>
+                <StatusBadge status={request.status} showDot={false}>{`Status: ${request.status?.charAt(0).toUpperCase()}${request.status?.slice(1)}`}</StatusBadge>
+              </HStack>
+              <Text size="sm">Request ID: #{request._id?.substring(0, 8)}</Text>
+            </HStack>
+            {request.status === "Rejected" && request.rejectionReason && (
+              <Text size="sm">
+                <Text as="span" weight="medium">Reason for rejection:</Text> {request.rejectionReason}
+              </Text>
+            )}
+          </VStack>
+        )}
 
         {/* student details */}
         <StudentDetails studentName={request.studentName} studentEmail={request.studentEmail} studentProfileImage={request.studentProfileImage} />

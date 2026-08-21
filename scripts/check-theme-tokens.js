@@ -35,6 +35,7 @@ const files = execSync("git ls-files 'src/**/*.css' 'src/*.css' 'src/**/*.js' 's
 })
   .trim()
   .split("\n")
+  .filter((f) => existsSync(`${root}${f}`))
 
 // A token the app defines itself counts, wherever it does so — a CSS rule, or
 // a JS style object setting a custom property.

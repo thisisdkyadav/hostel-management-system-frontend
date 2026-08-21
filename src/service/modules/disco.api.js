@@ -4,25 +4,6 @@
  */
 
 import apiClient from "../core/apiClient"
-import { ApiError, NetworkError } from "../core/errors"
-import { baseUrl, fetchOptions } from "../../constants/appConstants"
-
-const parseErrorResponse = async (response) => {
-  try {
-    const errorData = await response.json()
-    if (typeof errorData?.message === "string" && errorData.message.trim()) {
-      return errorData.message
-    }
-
-    if (typeof errorData?.error === "string" && errorData.error.trim()) {
-      return errorData.error
-    }
-
-    return `Request failed with status ${response.status}`
-  } catch {
-    return `Request failed with status ${response.status}`
-  }
-}
 
 const getFileNameFromDisposition = (contentDisposition = "", fallback = "disciplinary-case-export.zip") => {
   if (!contentDisposition) return fallback
@@ -178,37 +159,15 @@ export const discoApi = {
    * @param {string} caseId
    */
   downloadProcessCaseBundle: async (caseId) => {
-    const url = `${baseUrl}/disco/process/cases/${caseId}/export`
+    const response = await apiClient.download(`/disco/process/cases/${caseId}/export`)
 
-    try {
-      const response = await fetch(url, {
-        ...fetchOptions,
-        method: "GET",
-      })
+    const blob = await response.blob()
+    const fileName = getFileNameFromDisposition(
+      response.headers.get("content-disposition"),
+      `disciplinary-case-${String(caseId || "").slice(-6) || "export"}.zip`
+    )
 
-      if (!response.ok) {
-        const errorMessage = await parseErrorResponse(response)
-        throw new ApiError(errorMessage, response.status, response)
-      }
-
-      const blob = await response.blob()
-      const fileName = getFileNameFromDisposition(
-        response.headers.get("content-disposition"),
-        `disciplinary-case-${String(caseId || "").slice(-6) || "export"}.zip`
-      )
-
-      return { blob, fileName }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
-      }
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new NetworkError("Network error. Please check your connection.")
-      }
-
-      throw new ApiError(error.message || "Failed to download disciplinary case bundle")
-    }
+    return { blob, fileName }
   },
 }
 

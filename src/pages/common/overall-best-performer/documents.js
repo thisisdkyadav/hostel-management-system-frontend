@@ -1,6 +1,6 @@
 import { Activity } from "lucide-react"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
-import { uploadApi } from "@/service"
+import { uploadApi, apiClient } from "@/service"
 import { Select } from "hzero"
 
 export const formatExportDateTime = (value) => {
@@ -154,13 +154,10 @@ export const collectApplicationPdfDocuments = (application = null) => {
 }
 
 export const fetchPdfBytes = async (document) => {
-  const response = await fetch(getMediaDownloadUrl(document.url), {
+  const response = await apiClient.download(getMediaDownloadUrl(document.url), {
+    baseUrl: "",
     credentials: "include",
   })
-
-  if (!response.ok) {
-    throw new Error(`Failed to download ${document.label || "supporting PDF"}`)
-  }
 
   return response.arrayBuffer()
 }

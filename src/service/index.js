@@ -10,15 +10,7 @@
 
 // Core utilities
 export { apiClient, buildUrl, buildUrlWithQueryString } from "./core/apiClient"
-export { 
-  ApiError, 
-  NetworkError, 
-  ValidationError, 
-  AuthError, 
-  ForbiddenError, 
-  NotFoundError,
-  handleError 
-} from "./core/errors"
+export { ApiError, NetworkError } from "./core/errors"
 
 // API Modules
 export { authApi } from "./modules/auth.api"

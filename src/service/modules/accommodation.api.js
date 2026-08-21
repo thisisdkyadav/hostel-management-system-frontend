@@ -5,7 +5,7 @@
  */
 
 import apiClient from "../core/apiClient"
-import { API_BACKENDS, getApiBaseUrl } from "@/constants/appConstants"
+import { API_BACKENDS, getApiBaseUrl } from "@/config/apiConfig"
 
 /**
  * Direct URL to the invoice PDF. It is a plain authenticated GET, so it drops

@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { studentApi, electionsApi } from "../../service"
 import { AlertCircle, QrCode } from "lucide-react"
 import OfflineBanner from "../../components/common/OfflineBanner"
-import StudentProfile from "../../components/student/StudentProfile"
+import StudentProfileSummary from "../../components/student/StudentProfileSummary"
 import RoomInfoCard from "../../components/student/RoomInfoCard"
 import InsuranceInfoCard from "../../components/student/InsuranceInfoCard"
 import ComplaintsSummary from "../../components/student/ComplaintsSummary"
@@ -658,7 +658,7 @@ const DashboardPage = () => {
       <UndertakingsBanner />
 
       <section style={{ marginBottom: 'var(--spacing-6)' }}>
-        <StudentProfile profile={dashboardData.profile} />
+        <StudentProfileSummary profile={dashboardData.profile} />
       </section>
 
       <section style={{ marginBottom: 'var(--spacing-6)' }}>
