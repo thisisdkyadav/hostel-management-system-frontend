@@ -66,6 +66,7 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       setIsUploading(true)
       const formData = new FormData()
       formData.append("file", file)
+      if (studentId) formData.append("studentId", studentId)
 
       const response = await uploadApi.uploadCertificate(formData)
       setFormData((prev) => ({ ...prev, certificateUrl: resolveUploadedFileRef(response) }))
