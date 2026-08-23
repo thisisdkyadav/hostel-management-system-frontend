@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, EmptyState, ErrorState, Grid, LoadingState, Modal, Surface, Table, Text, useToast } from "hzero"
+import { Badge, Button, EmptyState, ErrorState, Grid, Input, LoadingState, Modal, Surface, Table, Text, useToast } from "hzero"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
@@ -7,7 +7,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
 import { useSocket } from "@/contexts/SocketProvider"
-import { electionsApi } from "@/service"
+import { electionsApi, emailApi } from "@/service"
 import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspace"
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
 import {
@@ -139,6 +139,9 @@ const ElectionsPage = () => {
   const [sendTestEmailRollNumbers, setSendTestEmailRollNumbers] = useState([])
   const [manualTestEmailRollNumber, setManualTestEmailRollNumber] = useState("")
   const [showTestEmailRecipientsModal, setShowTestEmailRecipientsModal] = useState(false)
+  const [showSmtpTestModal, setShowSmtpTestModal] = useState(false)
+  const [smtpTestEmail, setSmtpTestEmail] = useState("")
+  const [smtpTestResult, setSmtpTestResult] = useState(null)
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [showResultsExportModal, setShowResultsExportModal] = useState(false)
   const [resultsExportVariant, setResultsExportVariant] = useState("flat")
@@ -952,6 +955,26 @@ const ElectionsPage = () => {
     // the test-recipients query fetches itself once the modal flag enables it
   }
 
+  const runSmtpAccountTest = async () => {
+    const receiver = String(smtpTestEmail || "").trim()
+    if (!receiver) {
+      toast.error("Enter a receiver email first")
+      return
+    }
+
+    try {
+      setBusyKey("smtp-test")
+      setSmtpTestResult(null)
+      const response = await emailApi.testAllAccounts(receiver)
+      setSmtpTestResult(response?.data || null)
+      toast.success(response?.message || "SMTP account test complete")
+    } catch (err) {
+      toast.error(formatApiErrorMessage(err, "SMTP account test failed"))
+    } finally {
+      setBusyKey("")
+    }
+  }
+
   const exportTestEmailRecipientsCsv = () => {
     const sentRecipients = testEmailRecipientsData?.sentRecipients || []
     const notSentRecipients = testEmailRecipientsData?.notSentRecipients || []
@@ -1126,6 +1149,11 @@ const ElectionsPage = () => {
               setShowSendTestEmailsConfirm(true)
             }}
             onOpenTestEmailRecipients={openTestEmailRecipientsModal}
+            onTestSmtpAccounts={() => {
+              setSmtpTestEmail("")
+              setSmtpTestResult(null)
+              setShowSmtpTestModal(true)
+            }}
             socketConnected={isSocketConnected}
             onOpenCloneElection={openCloneElection}
             canCloneElection={canCloneElection}
@@ -1609,6 +1637,87 @@ const ElectionsPage = () => {
                   </Table>
                 </Surface>
               </Grid>
+            </Grid>
+          </Modal>
+
+          <Modal
+            isOpen={showSmtpTestModal}
+            onClose={() => {
+              if (busyKey === "smtp-test") return
+              setShowSmtpTestModal(false)
+              setSmtpTestResult(null)
+            }}
+            title="Test SMTP Accounts"
+            description="Sends one diagnostic email per configured SMTP account so you can confirm every credential works before real dispatch."
+            width={620}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    setShowSmtpTestModal(false)
+                    setSmtpTestResult(null)
+                  }}
+                  disabled={busyKey === "smtp-test"}
+                >
+                  Close
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={runSmtpAccountTest}
+                  loading={busyKey === "smtp-test"}
+                  disabled={!String(smtpTestEmail || "").trim()}
+                >
+                  Send via All Accounts
+                </Button>
+              </>
+            }
+          >
+            <Grid cols={1} gap={4}>
+              <Text as="div" color="muted" size="sm">
+                The receiver gets one email copy per working account. Accounts that fail are
+                listed with their error, so broken credentials can't hide in round-robin rotation.
+              </Text>
+              <Input
+                type="email"
+                label="Receiver email"
+                placeholder="you@example.com"
+                value={smtpTestEmail}
+                onChange={(event) => setSmtpTestEmail(String(event.target.value || ""))}
+                disabled={busyKey === "smtp-test"}
+              />
+              {smtpTestResult ? (
+                <Grid cols={1} gap={2}>
+                  {Array.isArray(smtpTestResult.accounts) && smtpTestResult.accounts.length > 0 ? (
+                    smtpTestResult.accounts.map((account) => (
+                      <Surface
+                        key={account.smtpUser}
+                        bg={account.success ? "secondary" : "secondary"}
+                        padding={3}
+                        radius="card-sm"
+                        border
+                      >
+                        <Grid cols={1} gap="4px">
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                            <Text as="div" weight="medium">{account.smtpUser}</Text>
+                            <Badge variant={account.success ? "success" : "danger"}>
+                              {account.success ? `Delivered · ${account.durationMs}ms` : "Failed"}
+                            </Badge>
+                          </div>
+                          {!account.success && account.error ? (
+                            <Text as="div" size="xs" style={{ color: "var(--color-danger-text)", wordBreak: "break-word" }}>
+                              {account.error}
+                            </Text>
+                          ) : null}
+                        </Grid>
+                      </Surface>
+                    ))
+                  ) : (
+                    <Text as="div" color="muted">No SMTP accounts reported.</Text>
+                  )}
+                </Grid>
+              ) : null}
             </Grid>
           </Modal>
 

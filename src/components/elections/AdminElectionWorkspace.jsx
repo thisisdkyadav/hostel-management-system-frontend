@@ -71,6 +71,7 @@ const AdminElectionWorkspace = ({
   onOpenVotingEmailRecipients,
   onSendTestEmails,
   onOpenTestEmailRecipients,
+  onTestSmtpAccounts,
   socketConnected,
   onOpenCloneElection,
   canCloneElection,
@@ -636,6 +637,15 @@ const AdminElectionWorkspace = ({
             >
               Send Test Email
             </Button>
+            {onTestSmtpAccounts ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={onTestSmtpAccounts}
+              >
+                Test SMTP Accounts
+              </Button>
+            ) : null}
           </HStack>
 
           <div style={infoGridStyle}>
