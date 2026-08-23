@@ -5,6 +5,7 @@ import {
   toCalendarEventPayload,
   validateCategoryBudgetCaps,
 } from "@/components/gymkhana/events-page/shared"
+import { queryKeys, useOptimisticMutation } from "@/lib/query"
 
 export const useCalendarEventActions = ({
   toast,
@@ -24,6 +25,25 @@ export const useCalendarEventActions = ({
   setSelectedEvent,
   resetDateOverlapInfo,
 }) => {
+  // Optimistically swap the cached event list so the calendar reflects the
+  // save instantly; the settle invalidation then reconciles with the server.
+  const saveEventMutation = useOptimisticMutation({
+    queryKey: queryKeys.gymkhana.calendar(selectedYear),
+    mutationFn: async ({ updatedEvents }) => {
+      await gymkhanaEventsApi.updateCalendar(calendar._id, {
+        events: updatedEvents.map(toCalendarEventPayload),
+      })
+    },
+    updateFn: (previous, { updatedEvents }) =>
+      previous && Array.isArray(previous.events)
+        ? { ...previous, events: updatedEvents }
+        : undefined,
+    onError: (err) => {
+      toast.error(err.message || "Failed to save event")
+    },
+    onSettled: () => setSubmitting(false),
+  })
+
   const handleSaveEvent = async () => {
     if (!canCreateEventsCapability) {
       toast.error("You do not have permission to update events")
@@ -47,42 +67,37 @@ export const useCalendarEventActions = ({
       return
     }
 
+    let updatedEvents = []
+    if (selectedEvent && events.find((event) => event._id === selectedEvent._id)) {
+      updatedEvents = events.map((event) =>
+        event._id === selectedEvent._id ? { ...event, ...payload } : event
+      )
+    } else {
+      updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
+    }
+
+    const budgetCapValidation = validateCategoryBudgetCaps(
+      updatedEvents,
+      calendar?.budgetCaps || {},
+      categoryDefinitions
+    )
+    if (!budgetCapValidation.isValid) {
+      toast.error(
+        `${budgetCapValidation.label} category budget would become ${formatINR(budgetCapValidation.total)} which exceeds the configured cap of ${formatINR(budgetCapValidation.cap)}. Reduce the budget or ask Admin to increase the limit.`
+      )
+      return
+    }
+
     try {
       setSubmitting(true)
-
-      let updatedEvents = []
-      if (selectedEvent && events.find((event) => event._id === selectedEvent._id)) {
-        updatedEvents = events.map((event) =>
-          event._id === selectedEvent._id ? { ...event, ...payload } : event
-        )
-      } else {
-        updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
-      }
-
-      const budgetCapValidation = validateCategoryBudgetCaps(
-        updatedEvents,
-        calendar?.budgetCaps || {},
-        categoryDefinitions
-      )
-      if (!budgetCapValidation.isValid) {
-        toast.error(
-          `${budgetCapValidation.label} category budget would become ${formatINR(budgetCapValidation.total)} which exceeds the configured cap of ${formatINR(budgetCapValidation.cap)}. Reduce the budget or ask Admin to increase the limit.`
-        )
-        return
-      }
-
-      await gymkhanaEventsApi.updateCalendar(calendar._id, {
-        events: updatedEvents.map(toCalendarEventPayload),
-      })
+      await saveEventMutation.mutateAsync({ updatedEvents })
       toast.success("Event saved successfully")
       setShowAddEventModal(false)
       setSelectedEvent(null)
       resetDateOverlapInfo()
-      await fetchCalendar(selectedYear)
-    } catch (err) {
-      toast.error(err.message || "Failed to save event")
-    } finally {
-      setSubmitting(false)
+      await fetchCalendar()
+    } catch {
+      // error already surfaced by the mutation's onError
     }
   }
 

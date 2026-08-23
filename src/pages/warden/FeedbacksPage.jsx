@@ -1,11 +1,13 @@
 import { Pagination, SearchInput, Tabs, Text } from "hzero"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { HiAnnotation } from "react-icons/hi"
 import NoResults from "../../components/common/NoResults"
 import FeedbackStats from "../../components/FeedbackStats"
 import FeedbackCard from "../../components/FeedbackCard"
 import { useAuth } from "../../contexts/AuthProvider"
 import { feedbackApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 import FeedbackFormModal from "../../components/student/feedback/FeedbackFormModal"
 import FeedbackHeader from "../../components/headers/FeedbackHeader"
 import PageFooter from "../../components/common/PageFooter"
@@ -21,77 +23,73 @@ const FeedbacksPage = () => {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("Pending")
   const [searchTerm, setSearchTerm] = useState("")
-  const [feedbacks, setFeedbacks] = useState([])
-  const [feedbackStats, setFeedbackStats] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalFeedbacks, setTotalFeedbacks] = useState(0)
 
-  const fetchFeedbacks = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const params = {
-        page: currentPage,
-        limit: FEEDBACKS_PAGE_SIZE,
-      }
+  const filters = useMemo(
+    () => ({
+      page: currentPage,
+      limit: FEEDBACKS_PAGE_SIZE,
+      ...(activeTab !== "all" && { status: activeTab }),
+      ...(searchTerm.trim().length > 0 && { search: searchTerm.trim() }),
+    }),
+    [activeTab, currentPage, searchTerm],
+  )
 
-      if (activeTab !== "all") {
-        params.status = activeTab
-      }
+  const listQuery = useQuery({
+    queryKey: queryKeys.feedback.list(filters),
+    queryFn: () => feedbackApi.getFeedbacks(filters),
+    enabled: Boolean(user),
+  })
 
-      const trimmedSearch = searchTerm.trim()
-      if (trimmedSearch.length > 0) {
-        params.search = trimmedSearch
-      }
-
-      const response = await feedbackApi.getFeedbacks(params)
-      const apiPagination = response?.pagination || {}
-      const nextTotalPages = apiPagination.totalPages || 0
-
-      if (nextTotalPages > 0 && currentPage > nextTotalPages) {
-        setCurrentPage(nextTotalPages)
-        return
-      }
-
-      setFeedbacks(response.feedbacks || [])
-      setFeedbackStats(response.stats || null)
-      setTotalFeedbacks(apiPagination.total || 0)
-      setTotalPages(Math.max(nextTotalPages, 1))
-    } catch (error) {
-      console.error("Error fetching feedbacks:", error)
-      setFeedbacks([])
-      setFeedbackStats(null)
-      setTotalFeedbacks(0)
-      setTotalPages(1)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [activeTab, currentPage, searchTerm])
-
-  const handleAddFeedback = async (feedback) => {
-    try {
-      const response = await feedbackApi.submitFeedback(feedback)
-      if (response.success) {
-        await fetchFeedbacks()
-        return true
-      } else {
-        alert("Failed to submit feedback")
-        return false
-      }
-    } catch (error) {
-      console.error("Error submitting feedback:", error)
-      alert("An error occurred while submitting feedback")
-      return false
-    }
+  // If the current page falls outside the result set (e.g. items were removed
+  // from the last page), snap back to the last available page and refetch.
+  const fetchedTotalPages = listQuery.data?.pagination?.totalPages || 0
+  if (fetchedTotalPages > 0 && currentPage > fetchedTotalPages) {
+    setCurrentPage(fetchedTotalPages)
   }
 
   useEffect(() => {
-    if (user) {
-      fetchFeedbacks()
+    if (listQuery.error) {
+      console.error("Error fetching feedbacks:", listQuery.error)
     }
-  }, [fetchFeedbacks, user])
+  }, [listQuery.error])
+
+  const feedbacks = listQuery.data?.feedbacks || []
+  const feedbackStats = listQuery.data?.stats || null
+  const apiPagination = listQuery.data?.pagination || {}
+  const totalFeedbacks = apiPagination.total || 0
+  const totalPages = Math.max(apiPagination.totalPages || 0, 1)
+  const isLoading = listQuery.isPending
+
+  const queryClient = useQueryClient()
+  const refreshFeedbackQueries = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.feedback.all })
+  }, [queryClient])
+
+  const submitFeedbackMutation = useMutation({
+    mutationFn: (feedback) => feedbackApi.submitFeedback(feedback),
+    onSuccess: async (response) => {
+      if (response.success) {
+        await refreshFeedbackQueries()
+      } else {
+        alert("Failed to submit feedback")
+      }
+    },
+    onError: (error) => {
+      console.error("Error submitting feedback:", error)
+      alert("An error occurred while submitting feedback")
+    },
+  })
+
+  const handleAddFeedback = async (feedback) => {
+    try {
+      const response = await submitFeedbackMutation.mutateAsync(feedback)
+      return Boolean(response?.success)
+    } catch {
+      return false
+    }
+  }
 
   const handlePaginate = (pageNumber) => {
     setCurrentPage(pageNumber)
@@ -146,7 +144,7 @@ const FeedbacksPage = () => {
           ) : (
             <>
               <div style={styles.grid} className="feedbacks-grid">
-                {feedbacks.map((feedback) => (["Student"].includes(user?.role) ? <FeedbackCard key={feedback._id} feedback={feedback} refresh={fetchFeedbacks} isStudentView={true} /> : <FeedbackCard key={feedback._id} feedback={feedback} refresh={fetchFeedbacks} />))}
+                {feedbacks.map((feedback) => (["Student"].includes(user?.role) ? <FeedbackCard key={feedback._id} feedback={feedback} refresh={refreshFeedbackQueries} isStudentView={true} /> : <FeedbackCard key={feedback._id} feedback={feedback} refresh={refreshFeedbackQueries} />))}
               </div>
 
               {feedbacks.length === 0 && <NoResults icon={<HiAnnotation style={styles.noResultsIcon} />} message="No feedbacks found" suggestion="Try changing your search or filter criteria" />}

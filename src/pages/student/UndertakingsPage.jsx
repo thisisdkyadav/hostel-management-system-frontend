@@ -1,68 +1,91 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AlertTriangle, Check, Clock, FileSignature } from "lucide-react"
 import { undertakingApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
 import { Button, EmptyState, ErrorState, Heading, LoadingState, Spinner, Surface, Tabs, Text, useToast } from "hzero"
+
+const LISTS_ERROR_MESSAGE = "Failed to load undertakings. Please try again later."
+const DETAILS_ERROR_MESSAGE = "Failed to load undertaking details. Please try again."
+
 const UndertakingsPage = () => {
   const { toast } = useToast()
-  const [pendingUndertakings, setPendingUndertakings] = useState([])
-  const [acceptedUndertakings, setAcceptedUndertakings] = useState([])
-  const [selectedUndertaking, setSelectedUndertaking] = useState(null)
-  const [showDetailModal, setShowDetailModal] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const queryClient = useQueryClient()
+  const [selectedUndertakingId, setSelectedUndertakingId] = useState(null)
   const [activeTab, setActiveTab] = useState("pending")
 
-  // Fetch undertakings on component mount
-  useEffect(() => {
-    fetchUndertakings()
-  }, [])
-
-  // Function to fetch both pending and accepted undertakings
-  const fetchUndertakings = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
+  // Fetch both pending and accepted undertakings in parallel
+  const listsQuery = useQuery({
+    queryKey: queryKeys.undertakings.studentLists(),
+    queryFn: async () => {
       // Fetch both types of undertakings in parallel
       const [pendingResponse, acceptedResponse] = await Promise.all([undertakingApi.getPendingUndertakings(), undertakingApi.getAcceptedUndertakings()])
 
-      setPendingUndertakings(pendingResponse.pendingUndertakings || [])
-      setAcceptedUndertakings(acceptedResponse.acceptedUndertakings || [])
-    } catch (err) {
-      console.error("Error fetching undertakings:", err)
-      setError("Failed to load undertakings. Please try again later.")
-    } finally {
-      setLoading(false)
+      return {
+        pendingUndertakings: pendingResponse.pendingUndertakings || [],
+        acceptedUndertakings: acceptedResponse.acceptedUndertakings || [],
+      }
+    },
+  })
+
+  const pendingUndertakings = listsQuery.data?.pendingUndertakings || []
+  const acceptedUndertakings = listsQuery.data?.acceptedUndertakings || []
+  const loading = listsQuery.isFetching
+
+  useEffect(() => {
+    if (listsQuery.isError) {
+      console.error("Error fetching undertakings:", listsQuery.error)
     }
-  }
+  }, [listsQuery.isError, listsQuery.error])
+
+  // Fetch details for the selected undertaking
+  const detailQuery = useQuery({
+    queryKey: queryKeys.undertakings.detail(selectedUndertakingId),
+    queryFn: () => undertakingApi.getUndertakingDetails(selectedUndertakingId),
+    enabled: Boolean(selectedUndertakingId),
+  })
+
+  const selectedUndertaking = detailQuery.data?.undertaking || null
+
+  useEffect(() => {
+    if (detailQuery.isError) {
+      console.error("Error fetching undertaking details:", detailQuery.error)
+      toast.error(DETAILS_ERROR_MESSAGE)
+    }
+  }, [detailQuery.isError, detailQuery.error, toast])
 
   // Function to view undertaking details
-  const handleViewUndertaking = async (undertakingId) => {
-    try {
-      setLoading(true)
-      const response = await undertakingApi.getUndertakingDetails(undertakingId)
-      setSelectedUndertaking(response.undertaking)
-      setShowDetailModal(true)
-    } catch (err) {
-      console.error("Error fetching undertaking details:", err)
-      toast.error("Failed to load undertaking details. Please try again.")
-    } finally {
-      setLoading(false)
+  const handleViewUndertaking = (undertakingId) => {
+    // An errored query stays errored while its observer stays mounted, so
+    // re-clicking the same item must explicitly retry the request
+    if (selectedUndertakingId === undertakingId && detailQuery.isError) {
+      detailQuery.refetch()
+      return
     }
+    setSelectedUndertakingId(undertakingId)
+  }
+
+  const handleCloseDetailModal = () => {
+    setSelectedUndertakingId(null)
   }
 
   // Function to accept an undertaking
-  const handleAcceptUndertaking = async (undertakingId) => {
-    try {
-      await undertakingApi.acceptUndertaking(undertakingId)
+  const acceptUndertakingMutation = useMutation({
+    mutationFn: (undertakingId) => undertakingApi.acceptUndertaking(undertakingId),
+    onSuccess: async () => {
       toast.success("Undertaking accepted successfully!")
-      setShowDetailModal(false)
-      fetchUndertakings() // Refresh the lists
-    } catch (err) {
+      setSelectedUndertakingId(null)
+      await queryClient.invalidateQueries({ queryKey: queryKeys.undertakings.studentLists() })
+    },
+    onError: (err) => {
       console.error("Error accepting undertaking:", err)
       toast.error("Failed to accept undertaking. Please try again.")
-    }
+    },
+  })
+
+  const handleAcceptUndertaking = (undertakingId) => {
+    acceptUndertakingMutation.mutate(undertakingId)
   }
 
   // Function to check if deadline is approaching (within 3 days)
@@ -91,8 +114,8 @@ const UndertakingsPage = () => {
     return <LoadingState message="Loading undertakings..." />
   }
 
-  if (error) {
-    return <ErrorState message={error} />
+  if (listsQuery.isError) {
+    return <ErrorState message={LISTS_ERROR_MESSAGE} />
   }
 
   return (
@@ -200,10 +223,9 @@ const UndertakingsPage = () => {
       )}
 
       {/* Undertaking Detail Modal */}
-      {selectedUndertaking && <UndertakingDetailModal show={showDetailModal} undertaking={selectedUndertaking} onClose={() => setShowDetailModal(false)} onAccept={handleAcceptUndertaking} />}
+      {selectedUndertaking && <UndertakingDetailModal show onClose={() => handleCloseDetailModal()} undertaking={selectedUndertaking} onAccept={handleAcceptUndertaking} />}
     </Surface>
   )
 }
 
 export default UndertakingsPage
-

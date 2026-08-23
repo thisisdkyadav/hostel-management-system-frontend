@@ -1,5 +1,6 @@
 import { Page, Pagination, SearchInput, Tabs, Text } from "hzero"
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import NoResults from "../../components/common/NoResults"
 import LostAndFoundStats from "../../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../../components/lostAndFound/LostAndFoundCard"
@@ -7,6 +8,7 @@ import AddLostItemModal from "../../components/lostAndFound/AddLostItemModal"
 import LostAndFoundHeader from "../../components/headers/LostAndFoundHeader"
 import PageFooter from "../../components/common/PageFooter"
 import { lostAndFoundApi } from "../../service"
+import { queryKeys } from "@/lib/query"
 import { useAuth } from "../../contexts/AuthProvider"
 import { MdInventory } from "react-icons/md"
 
@@ -24,57 +26,72 @@ const DEFAULT_PAGINATION = {
   hasMore: false,
 }
 
+const LOST_ITEMS_LIMIT = DEFAULT_PAGINATION.limit
+
 const LostAndFoundPage = () => {
   const { user } = useAuth()
+  const queryClient = useQueryClient()
   const canViewLostAndFound = true
   const canCreateLostAndFound = true
 
   const [activeTab, setActiveTab] = useState("Active")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
-  const [lostItems, setLostItems] = useState([])
-  const [stats, setStats] = useState(null)
-  const [pagination, setPagination] = useState(DEFAULT_PAGINATION)
   const [currentPage, setCurrentPage] = useState(1)
-  const [loading, setLoading] = useState(false)
 
-  const fetchLostItems = useCallback(async (page = currentPage) => {
-    if (!canViewLostAndFound) return
+  const filters = {
+    page: currentPage,
+    limit: LOST_ITEMS_LIMIT,
+    status: activeTab,
+    search: searchTerm.trim(),
+  }
 
-    setLoading(true)
-    try {
-      const response = await lostAndFoundApi.getAllLostItems({
-        page,
-        limit: DEFAULT_PAGINATION.limit,
-        status: activeTab,
-        search: searchTerm.trim(),
-      })
-
-      const apiPagination = response?.pagination || DEFAULT_PAGINATION
-      const totalPages = apiPagination.totalPages || 0
-
-      if (totalPages > 0 && page > totalPages) {
-        setCurrentPage(totalPages)
-        return
+  const lostItemsQuery = useQuery({
+    queryKey: queryKeys.lostAndFound.list(filters),
+    queryFn: async () => {
+      try {
+        return await lostAndFoundApi.getAllLostItems({
+          page: filters.page,
+          limit: filters.limit,
+          status: filters.status,
+          search: filters.search,
+        })
+      } catch (error) {
+        console.error("Error fetching lost items:", error)
+        throw error
       }
+    },
+    enabled: canViewLostAndFound,
+    // Keep the previous page's items visible while a refetch is in flight.
+    placeholderData: (previousData) => previousData,
+  })
 
-      setLostItems(response?.lostAndFoundItems || [])
-      setStats(response?.stats || null)
-      setPagination(apiPagination)
-    } catch (error) {
-      console.error("Error fetching lost items:", error)
-      setLostItems([])
-      setStats(null)
-      setPagination(DEFAULT_PAGINATION)
-    } finally {
-      setLoading(false)
-    }
-  }, [activeTab, canViewLostAndFound, currentPage, searchTerm])
+  // If the result set shrinks (e.g. after filtering or deleting the last item
+  // on a page), snap back to the last available page and refetch.
+  const fetchedTotalPages = lostItemsQuery.data?.pagination?.totalPages || 0
+  if (fetchedTotalPages > 0 && currentPage > fetchedTotalPages) {
+    setCurrentPage(fetchedTotalPages)
+  }
 
-  useEffect(() => {
-    if (!canViewLostAndFound) return
-    fetchLostItems(currentPage)
-  }, [canViewLostAndFound, currentPage, fetchLostItems])
+  const lostItems = lostItemsQuery.data?.lostAndFoundItems || []
+  const stats = lostItemsQuery.data?.stats || null
+  const pagination =
+    lostItemsQuery.data?.pagination || DEFAULT_PAGINATION
+  const loading = lostItemsQuery.isFetching
+
+  if (!canViewLostAndFound) {
+    return null
+  }
+
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: queryKeys.lostAndFound.all,
+    })
+  }
+
+  const handleItemAdded = async () => {
+    await handleRefresh()
+  }
 
   const handleTabChange = (nextTab) => {
     setCurrentPage(1)
@@ -110,7 +127,7 @@ const LostAndFoundPage = () => {
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {lostItems.map((item) => (
-              <LostAndFoundCard key={item._id} item={item} refresh={() => fetchLostItems(currentPage)} />
+              <LostAndFoundCard key={item._id} item={item} refresh={handleRefresh} />
             ))}
           </div>
 
@@ -143,7 +160,7 @@ const LostAndFoundPage = () => {
         />
       </Page>
 
-      <AddLostItemModal show={showAddModal} onClose={() => setShowAddModal(false)} onItemAdded={() => fetchLostItems(currentPage)} />
+      <AddLostItemModal show={showAddModal} onClose={() => setShowAddModal(false)} onItemAdded={handleItemAdded} />
     </>
   )
 }

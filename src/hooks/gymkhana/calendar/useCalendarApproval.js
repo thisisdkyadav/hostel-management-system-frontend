@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import {
   POST_STUDENT_AFFAIRS_STAGE_OPTIONS,
@@ -6,12 +7,38 @@ import {
   createEmptyNextApproverSelection,
   getNextApproverSelectionCount,
 } from "@/components/gymkhana/events-page/shared"
+import { queryKeys } from "@/lib/query/queryKeys"
 
 const buildEmptyApproverOptions = () =>
   POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
     options[stage] = []
     return options
   }, {})
+
+const fetchPostStudentAffairsApprovers = async () => {
+  try {
+    const response = await gymkhanaEventsApi.getPostStudentAffairsApprovers()
+    const approversByStage = response?.approversByStage || {}
+
+    return POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
+      const stageApprovers = Array.isArray(approversByStage?.[stage])
+        ? approversByStage[stage]
+        : []
+
+      options[stage] = stageApprovers.map((approver) => ({
+        value: approver?.value || approver?.userId || approver?._id || "",
+        label:
+          approver?.label ||
+          (approver?.email
+            ? `${approver?.name || "User"} (${approver.email})`
+            : approver?.name || stage),
+      })).filter((option) => Boolean(option.value))
+      return options
+    }, {})
+  } catch {
+    return buildEmptyApproverOptions()
+  }
+}
 
 export const useCalendarApproval = ({
   toast,
@@ -30,40 +57,14 @@ export const useCalendarApproval = ({
   const [calendarNextApproversByStage, setCalendarNextApproversByStage] = useState(
     createEmptyNextApproverSelection
   )
-  const [postStudentAffairsApproverOptionsByStage, setPostStudentAffairsApproverOptionsByStage] =
-    useState(buildEmptyApproverOptions)
 
-  const refreshPostStudentAffairsApproverOptions = async () => {
-    try {
-      const response = await gymkhanaEventsApi.getPostStudentAffairsApprovers()
-      const approversByStage = response?.approversByStage || {}
-
-      const nextOptions = POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
-        const stageApprovers = Array.isArray(approversByStage?.[stage])
-          ? approversByStage[stage]
-          : []
-
-        options[stage] = stageApprovers.map((approver) => ({
-          value: approver?.value || approver?.userId || approver?._id || "",
-          label:
-            approver?.label ||
-            (approver?.email
-              ? `${approver?.name || "User"} (${approver.email})`
-              : approver?.name || stage),
-        })).filter((option) => Boolean(option.value))
-        return options
-      }, {})
-
-      setPostStudentAffairsApproverOptionsByStage(nextOptions)
-    } catch {
-      setPostStudentAffairsApproverOptionsByStage(buildEmptyApproverOptions())
-    }
-  }
-
-  useEffect(() => {
-    if (!canApproveEventsCapability || !isAdminLevel) return
-    refreshPostStudentAffairsApproverOptions()
-  }, [canApproveEventsCapability, isAdminLevel])
+  const approverOptionsQuery = useQuery({
+    queryKey: queryKeys.gymkhana.postStudentAffairsApproverOptions(),
+    queryFn: fetchPostStudentAffairsApprovers,
+    enabled: Boolean(canApproveEventsCapability && isAdminLevel),
+  })
+  const postStudentAffairsApproverOptionsByStage =
+    approverOptionsQuery.data ?? buildEmptyApproverOptions()
 
   const setCalendarNextApproverForStage = (stage, userId) => {
     setCalendarNextApproversByStage((current) => ({

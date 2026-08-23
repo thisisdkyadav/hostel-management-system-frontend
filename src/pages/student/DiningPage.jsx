@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Avatar, Button, Card, ConfirmDialog, EmptyState, Field, Grid, Heading, HStack, InfoRow, Input, Label, LoadingState, Modal, Page, StatusBadge, Surface, Table, Text, Textarea, VStack } from "hzero"
 import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
+import { queryKeys, useOptimisticMutation } from "@/lib/query"
 import CapacityBar from "@/components/dining/CapacityBar"
 import {
   formatDate,
@@ -317,18 +319,45 @@ const StudentBillingCard = ({ billingPeriod }) => {
 /* ------------------------------------------------------------------ */
 
 const DiningPage = () => {
-  const [portalState, setPortalState] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
-  const [selectingCatererId, setSelectingCatererId] = useState("")
+  const queryClient = useQueryClient()
   const [pendingCaterer, setPendingCaterer] = useState(null)
   const [showAllocationModal, setShowAllocationModal] = useState(false)
   const [showRebateModal, setShowRebateModal] = useState(false)
-  const [rebates, setRebates] = useState([])
-  const [billing, setBilling] = useState([])
-  const [rebateSubmitting, setRebateSubmitting] = useState(false)
-  const [error, setError] = useState("")
+  const [mutationError, setMutationError] = useState("")
+  const [dismissedQueryError, setDismissedQueryError] = useState(null)
   const [successMessage, setSuccessMessage] = useState("")
+
+  const portalStateQuery = useQuery({
+    queryKey: queryKeys.dining.portalState(),
+    queryFn: () => studentApi.getDiningPortalState(),
+    refetchInterval: REFRESH_INTERVAL_MS,
+  })
+
+  const rebatesQuery = useQuery({
+    queryKey: queryKeys.dining.rebates(),
+    queryFn: () => studentApi.getDiningRebates(),
+  })
+
+  // Billing is supplementary — a failed load just hides the billing card.
+  const billingQuery = useQuery({
+    queryKey: queryKeys.dining.billing(),
+    queryFn: () => studentApi.getDiningBilling(),
+    retry: false,
+  })
+
+  const portalState = portalStateQuery.data || null
+  const rebates = Array.isArray(rebatesQuery.data?.rebates) ? rebatesQuery.data.rebates : []
+  const billing = Array.isArray(billingQuery.data?.billingPeriods) ? billingQuery.data.billingPeriods : []
+  const refreshing = portalStateQuery.isRefetching
+
+  // Close the selection modal whenever the selection-window state changes
+  // (the old fetch flow did this as a side-effect after each refresh).
+  const canSelectNow = Boolean(portalStateQuery.data?.canSelect)
+  const [lastCanSelect, setLastCanSelect] = useState(canSelectNow)
+  if (canSelectNow !== lastCanSelect) {
+    setLastCanSelect(canSelectNow)
+    setShowAllocationModal(false)
+  }
 
   const currentPeriod = portalState?.currentPeriod || null
   const activeAllocationPeriod = portalState?.activeAllocationPeriod || portalState?.period || null
@@ -396,100 +425,100 @@ const DiningPage = () => {
     }
   }, [activeAllocationPeriod, activeUnselected, canSelect, currentAllocation, currentPeriod, portalState, selectedUpcomingPeriod, upcomingAllocationPeriod])
 
-  const fetchPortalState = async ({ silent = false } = {}) => {
-    try {
-      if (silent) setRefreshing(true)
-      else setLoading(true)
-      const response = await studentApi.getDiningPortalState()
-      setPortalState(response || null)
-      setError("")
-      if (!response?.canSelect) setShowAllocationModal(false)
-    } catch (fetchError) {
-      setError(getErrorMessage(fetchError, "Unable to load dining allocation details."))
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-    }
+  const queryError = portalStateQuery.isError
+    ? getErrorMessage(portalStateQuery.error, "Unable to load dining allocation details.")
+    : rebatesQuery.isError
+      ? getErrorMessage(rebatesQuery.error, "Unable to load dining rebate requests.")
+      : ""
+  const error = mutationError || (queryError && queryError !== dismissedQueryError ? queryError : "")
+
+  const dismissError = () => {
+    if (mutationError) setMutationError("")
+    else setDismissedQueryError(queryError)
   }
 
-  const fetchRebates = async () => {
-    try {
-      const response = await studentApi.getDiningRebates()
-      setRebates(Array.isArray(response?.rebates) ? response.rebates : [])
-    } catch (rebateError) {
-      setError(getErrorMessage(rebateError, "Unable to load dining rebate requests."))
-    }
-  }
-
-  const fetchBilling = async () => {
-    try {
-      const response = await studentApi.getDiningBilling()
-      setBilling(Array.isArray(response?.billingPeriods) ? response.billingPeriods : [])
-    } catch (billingError) {
-      // Billing is supplementary — don't block the dining page on it.
-      console.error("Error fetching dining billing:", billingError)
-    }
-  }
-
-  useEffect(() => {
-    fetchPortalState()
-    fetchRebates()
-    fetchBilling()
-    const intervalId = window.setInterval(() => fetchPortalState({ silent: true }), REFRESH_INTERVAL_MS)
-    return () => window.clearInterval(intervalId)
-  }, [])
-
-  const performSelect = async (capacity) => {
-    const catererName = capacity.caterer?.name || "this caterer"
-    setSelectingCatererId(capacity.catererId)
-    setSuccessMessage("")
-    setError("")
-    try {
-      const response = await studentApi.selectDiningCaterer(capacity.catererId)
-      setPortalState(response || null)
+  const selectCaterer = useOptimisticMutation({
+    queryKey: queryKeys.dining.portalState(),
+    // Optimistically mark the caterer as selected in the active allocation
+    // period; on error the snapshot restore replaces the old silent refetch,
+    // and on settle the invalidation converges with the server response.
+    updateFn: (previous, variables) => {
+      if (!previous || typeof previous !== "object") return undefined
+      const allocation = {
+        catererId: variables.catererId,
+        caterer: variables.caterer,
+        selectedAt: new Date().toISOString(),
+      }
+      let next = previous
+      const patchPeriod = (key) => {
+        const period = next[key]
+        if (period && !period.selectedAllocation) {
+          next = { ...next, [key]: { ...period, selectedAllocation: allocation } }
+        }
+      }
+      patchPeriod("activeAllocationPeriod")
+      patchPeriod("period")
+      return next === previous ? undefined : next
+    },
+    mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId),
+    onSuccess: (response, variables) => {
+      if (response) queryClient.setQueryData(queryKeys.dining.portalState(), response)
       setShowAllocationModal(false)
-      setSuccessMessage(`${catererName} selected successfully.`)
-    } catch (selectError) {
-      setError(getErrorMessage(selectError, "Unable to select caterer. Please try another option."))
-      await fetchPortalState({ silent: true })
-    } finally {
-      setSelectingCatererId("")
-    }
-  }
+      setSuccessMessage(`${variables.catererName} selected successfully.`)
+    },
+    onError: (selectError) => {
+      setMutationError(getErrorMessage(selectError, "Unable to select caterer. Please try another option."))
+    },
+  })
+  const selectingCatererId = selectCaterer.isPending ? selectCaterer.variables?.catererId : ""
 
-  const handleRequestRebate = async (payload) => {
-    setRebateSubmitting(true)
-    setSuccessMessage("")
-    setError("")
-    try {
-      const response = await studentApi.requestDiningRebate(payload)
-      await fetchRebates()
-      await fetchBilling()
-      await fetchPortalState({ silent: true })
+  const requestRebate = useMutation({
+    mutationFn: (payload) => studentApi.requestDiningRebate(payload),
+    onSuccess: async (response) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.dining.rebates() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.dining.billing() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.dining.portalState() }),
+      ])
       setShowRebateModal(false)
       const hasPending = Array.isArray(response?.rebates) && response.rebates.some((rebate) => rebate.status === "pending")
       setSuccessMessage(hasPending ? "Long-term rebate request submitted for approval." : "Short-term rebate approved successfully.")
-    } catch (rebateError) {
-      setError(getErrorMessage(rebateError, "Unable to submit rebate request."))
-    } finally {
-      setRebateSubmitting(false)
-    }
+    },
+    onError: (rebateError) => {
+      setMutationError(getErrorMessage(rebateError, "Unable to submit rebate request."))
+    },
+  })
+
+  const performSelect = (capacity) => {
+    setSuccessMessage("")
+    setMutationError("")
+    selectCaterer.mutate({
+      catererId: capacity.catererId,
+      caterer: capacity.caterer,
+      catererName: capacity.caterer?.name || "this caterer",
+    })
   }
 
-  if (loading) {
+  const handleRequestRebate = async (payload) => {
+    setSuccessMessage("")
+    setMutationError("")
+    await requestRebate.mutateAsync(payload)
+  }
+
+  if (portalStateQuery.isLoading) {
     return <LoadingState message="Loading dining allocation..." />
   }
 
   return (
     <Page>
       <PageHeader title="Dining">
-        <Button variant="secondary" onClick={() => fetchPortalState({ silent: true })} disabled={refreshing}>
+        <Button variant="secondary" onClick={() => portalStateQuery.refetch()} disabled={refreshing}>
           <RefreshCw size={18} /> {refreshing ? "Refreshing..." : "Refresh"}
         </Button>
       </PageHeader>
 
       <Page.Body>
-        {error && <div className="mb-[var(--spacing-4)]"><Alert type="error" icon dismissible onDismiss={() => setError("")}>{error}</Alert></div>}
+        {error && <div className="mb-[var(--spacing-4)]"><Alert type="error" icon dismissible onDismiss={dismissError}>{error}</Alert></div>}
         {successMessage && <div className="mb-[var(--spacing-4)]"><Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert></div>}
 
         <VStack gap="large">
@@ -615,7 +644,7 @@ const DiningPage = () => {
           isOpen={showRebateModal}
           onClose={() => setShowRebateModal(false)}
           onSubmit={handleRequestRebate}
-          isSubmitting={rebateSubmitting}
+          isSubmitting={requestRebate.isPending}
         />
       )}
 

@@ -1,5 +1,6 @@
 import { Page, Pagination, Surface, Tabs, Text } from "hzero"
-import React, { useState, useEffect, useMemo, useCallback } from "react"
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FaBell } from "react-icons/fa"
 import NotificationStats from "../../components/notifications/NotificationStats"
 import NotificationTable from "../../components/notifications/NotificationTable"
@@ -8,6 +9,7 @@ import CreateNotificationModal from "../../components/notifications/CreateNotifi
 import NoResults from "../../components/common/NoResults"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 import { useAuth } from "../../contexts/AuthProvider"
 import PageFooter from "../../components/common/PageFooter"
 
@@ -17,32 +19,106 @@ const NOTIFICATION_FILTER_TABS = [
   { label: "Expired", value: "expired" },
 ]
 
+const DEFAULT_FILTERS = {
+  expiryStatus: "all",
+  hostelId: "all",
+  degree: "all",
+  department: "all",
+  gender: "all",
+  searchTerm: "",
+  page: 1,
+  limit: 10,
+}
+
+const buildListQueryString = (filters) => {
+  const queryParams = new URLSearchParams({
+    page: filters.page,
+    limit: filters.limit,
+  })
+
+  if (filters.expiryStatus !== "all") {
+    queryParams.append("expiryStatus", filters.expiryStatus)
+  }
+
+  if (filters.hostelId !== "all") {
+    queryParams.append("hostelId", filters.hostelId)
+  }
+
+  if (filters.degree !== "all") {
+    queryParams.append("degree", filters.degree)
+  }
+
+  if (filters.department !== "all") {
+    queryParams.append("department", filters.department)
+  }
+
+  if (filters.gender !== "all") {
+    queryParams.append("gender", filters.gender)
+  }
+
+  if (filters.searchTerm) {
+    queryParams.append("search", filters.searchTerm)
+  }
+
+  return queryParams.toString()
+}
+
+const EMPTY_STATS = {
+  total: 0,
+  active: 0,
+  expired: 0,
+}
+
 const NotificationCenterPage = () => {
   const { user } = useAuth()
 
-  const [notifications, setNotifications] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [stats, setStats] = useState({
-    total: 0,
-    active: 0,
-    expired: 0,
+
+  const [filters, setFilters] = useState(DEFAULT_FILTERS)
+
+  const listQuery = useQuery({
+    queryKey: queryKeys.notifications.list(filters),
+    queryFn: async () => {
+      const response = await notificationApi.getNotifications(buildListQueryString(filters))
+
+      // Clamp the page if the current page no longer exists (e.g. after
+      // filtering or deletion shrinks the result set).
+      const nextTotalPages = response.meta?.totalPages || 0
+      if (nextTotalPages > 0 && filters.page > nextTotalPages) {
+        setFilters((prev) => ({ ...prev, page: nextTotalPages }))
+      }
+
+      return response
+    },
   })
 
-  const [filters, setFilters] = useState({
-    expiryStatus: "all",
-    hostelId: "all",
-    degree: "all",
-    department: "all",
-    gender: "all",
-    searchTerm: "",
-    page: 1,
-    limit: 10,
+  const statsQuery = useQuery({
+    queryKey: queryKeys.notifications.stats(),
+    queryFn: () => notificationApi.getNotificationStats(),
   })
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
+
+  const wasErrorRef = useRef(false)
+  useEffect(() => {
+    if (listQuery.isError && !wasErrorRef.current) {
+      console.error(listQuery.error)
+      alert("An error occurred while fetching notifications. Please try again later.")
+    }
+    wasErrorRef.current = listQuery.isError
+  }, [listQuery.isError, listQuery.error])
+  useEffect(() => {
+    if (statsQuery.error) {
+      console.error(statsQuery.error)
+    }
+  }, [statsQuery.error])
+
+  const notifications = listQuery.data?.data || []
+  const totalCount = listQuery.data?.meta?.totalCount || 0
+  const totalPages = Math.max(listQuery.data?.meta?.totalPages || 0, 1)
+  const loading = listQuery.isFetching
+  const error = listQuery.isError ? "Failed to load notifications" : null
+
+  const stats = statsQuery.data?.data || EMPTY_STATS
 
   const statusTabs = useMemo(() => {
     const statusCounts = {
@@ -57,75 +133,10 @@ const NotificationCenterPage = () => {
     }))
   }, [stats])
 
-  const fetchNotifications = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      const queryParams = new URLSearchParams({
-        page: filters.page,
-        limit: filters.limit,
-      })
-
-      if (filters.expiryStatus !== "all") {
-        queryParams.append("expiryStatus", filters.expiryStatus)
-      }
-
-      if (filters.hostelId !== "all") {
-        queryParams.append("hostelId", filters.hostelId)
-      }
-
-      if (filters.degree !== "all") {
-        queryParams.append("degree", filters.degree)
-      }
-
-      if (filters.department !== "all") {
-        queryParams.append("department", filters.department)
-      }
-
-      if (filters.gender !== "all") {
-        queryParams.append("gender", filters.gender)
-      }
-
-      if (filters.searchTerm) {
-        queryParams.append("search", filters.searchTerm)
-      }
-
-      const response = await notificationApi.getNotifications(queryParams.toString())
-      const nextTotalPages = response.meta?.totalPages || 0
-
-      if (nextTotalPages > 0 && filters.page > nextTotalPages) {
-        setFilters((prev) => ({ ...prev, page: nextTotalPages }))
-        return
-      }
-
-      setNotifications(response.data || [])
-      setTotalCount(response.meta?.totalCount || 0)
-      setTotalPages(Math.max(nextTotalPages, 1))
-
-      const statsResponse = await notificationApi.getNotificationStats()
-      setStats(
-        statsResponse.data || {
-          total: 0,
-          active: 0,
-          expired: 0,
-        }
-      )
-    } catch (err) {
-      setError("Failed to load notifications")
-      setNotifications([])
-      setTotalCount(0)
-      setTotalPages(1)
-      console.error(err)
-      alert("An error occurred while fetching notifications. Please try again later.")
-    } finally {
-      setLoading(false)
-    }
-  }, [filters])
-
-  useEffect(() => {
-    fetchNotifications()
-  }, [fetchNotifications])
+  const queryClient = useQueryClient()
+  const refreshNotifications = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+  }, [queryClient])
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -137,13 +148,7 @@ const NotificationCenterPage = () => {
 
   const resetFilters = () => {
     setFilters({
-      expiryStatus: "all",
-      hostelId: "all",
-      degree: "all",
-      department: "all",
-      gender: "all",
-      searchTerm: "",
-      page: 1,
+      ...DEFAULT_FILTERS,
       limit: filters.limit,
     })
   }
@@ -194,7 +199,7 @@ const NotificationCenterPage = () => {
             </div>
           ) : (
             <>
-              <NotificationTable notifications={notifications} onRefresh={fetchNotifications} />
+              <NotificationTable notifications={notifications} onRefresh={refreshNotifications} />
 
               {notifications.length === 0 && (
                 <NoResults
@@ -227,7 +232,7 @@ const NotificationCenterPage = () => {
         ]}
       />
 
-      <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
+      <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={refreshNotifications} />
     </Page>
   )
 }

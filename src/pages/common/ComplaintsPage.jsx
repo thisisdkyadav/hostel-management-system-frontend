@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSearchParams } from "react-router-dom"
+import { queryKeys } from "../../lib/query"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { adminApi, complaintApi } from "../../service"
@@ -79,12 +81,77 @@ const ComplaintsPage = () => {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [viewMode, setViewMode] = useState("list")
   const [showCraftComplaint, setShowCraftComplaint] = useState(false)
-  const [complaints, setComplaints] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalComplaints, setTotalComplaints] = useState(0)
-  const [statsData, setStatsData] = useState(null)
-  const [statsLoading, setStatsLoading] = useState(true)
+
+  // Debounced copy of the URL-derived filters: the list request waits 500ms
+  // after a filter change (search-as-you-type) before hitting the API.
+  const [debouncedFilters, setDebouncedFilters] = useState(filters)
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setDebouncedFilters(filters)
+    }, 500)
+    return () => clearTimeout(delay)
+  }, [filters])
+  const isFilterChangePending = filters !== debouncedFilters
+
+  const listQuery = useQuery({
+    queryKey: queryKeys.complaints.list(debouncedFilters),
+    queryFn: async () => {
+      const queryParams = new URLSearchParams()
+      if (debouncedFilters.status !== "all") queryParams.append("status", debouncedFilters.status)
+      if (debouncedFilters.category !== "all") queryParams.append("category", debouncedFilters.category)
+      if (debouncedFilters.hostelId !== "all") queryParams.append("hostelId", debouncedFilters.hostelId)
+      if (debouncedFilters.searchTerm) queryParams.append("search", debouncedFilters.searchTerm)
+      if (debouncedFilters.feedbackRating !== "all") queryParams.append("feedbackRating", debouncedFilters.feedbackRating)
+      if (debouncedFilters.satisfactionStatus !== "all") queryParams.append("satisfactionStatus", debouncedFilters.satisfactionStatus)
+      if (debouncedFilters.resolvedToday) queryParams.append("resolvedToday", "true")
+      if (debouncedFilters.overdue) queryParams.append("overdue", "true")
+      queryParams.append("page", debouncedFilters.page)
+      queryParams.append("limit", debouncedFilters.limit)
+
+      return adminApi.getAllComplaints(queryParams.toString())
+    },
+    enabled: canViewComplaints,
+  })
+
+  useEffect(() => {
+    if (listQuery.error) {
+      console.error("Error fetching complaints:", listQuery.error)
+    }
+  }, [listQuery.error])
+
+  const complaints = listQuery.data?.data?.items || []
+  const totalComplaints = listQuery.data?.data?.pagination?.total || 0
+  const totalPages = listQuery.data?.data?.pagination?.totalPages || 1
+  const loading = isFilterChangePending || listQuery.isFetching
+
+  const statsQuery = useQuery({
+    queryKey: queryKeys.complaints.stats(filters.hostelId),
+    queryFn: () => {
+      const queryParams = {}
+
+      // Only add hostelId to stats query if a specific hostel is selected
+      if (filters.hostelId !== "all") {
+        queryParams.hostelId = filters.hostelId
+      }
+
+      return complaintApi.getStats(queryParams)
+    },
+    enabled: canViewComplaints,
+  })
+
+  useEffect(() => {
+    if (statsQuery.error) {
+      console.error("Error fetching complaint stats:", statsQuery.error)
+    }
+  }, [statsQuery.error])
+
+  const statsData = statsQuery.data?.data || statsQuery.data || null
+  const statsLoading = statsQuery.isFetching
+
+  const queryClient = useQueryClient()
+  const refreshComplaintQueries = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.complaints.all })
+  }, [queryClient])
 
   const complaintFilterTabs = useMemo(() => {
     const statusCounts = {
@@ -196,71 +263,6 @@ const ComplaintsPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const fetchComplaints = async () => {
-    if (!canViewComplaints) return
-    try {
-      setLoading(true)
-      const queryParams = new URLSearchParams()
-      if (filters.status !== "all") queryParams.append("status", filters.status)
-      if (filters.category !== "all") queryParams.append("category", filters.category)
-      if (filters.hostelId !== "all") queryParams.append("hostelId", filters.hostelId)
-      if (filters.searchTerm) queryParams.append("search", filters.searchTerm)
-      if (filters.feedbackRating !== "all") queryParams.append("feedbackRating", filters.feedbackRating)
-      if (filters.satisfactionStatus !== "all") queryParams.append("satisfactionStatus", filters.satisfactionStatus)
-      if (filters.resolvedToday) queryParams.append("resolvedToday", "true")
-      if (filters.overdue) queryParams.append("overdue", "true")
-      queryParams.append("page", filters.page)
-      queryParams.append("limit", filters.limit)
-
-      const response = await adminApi.getAllComplaints(queryParams.toString())
-      setComplaints(response.data?.items || [])
-      setTotalComplaints(response.data?.pagination?.total || 0)
-      setTotalPages(response.data?.pagination?.totalPages || 1)
-    } catch (error) {
-      console.error("Error fetching complaints:", error)
-      setComplaints([])
-      setTotalComplaints(0)
-      setTotalPages(1)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fetchComplaintStats = async () => {
-    if (!canViewComplaints) return
-    try {
-      setStatsLoading(true)
-      const queryParams = {}
-
-      // Only add hostelId to stats query if a specific hostel is selected
-      if (filters.hostelId !== "all") {
-        queryParams.hostelId = filters.hostelId
-      }
-
-      const response = await complaintApi.getStats(queryParams)
-      setStatsData(response.data || response)
-    } catch (error) {
-      console.error("Error fetching complaint stats:", error)
-      setStatsData(null)
-    } finally {
-      setStatsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (!canViewComplaints) return
-    setLoading(true)
-    const delay = setTimeout(() => {
-      fetchComplaints()
-    }, 500)
-    return () => clearTimeout(delay)
-  }, [canViewComplaints, filters])
-
-  useEffect(() => {
-    if (!canViewComplaints) return
-    fetchComplaintStats()
-  }, [canViewComplaints, filters.hostelId])
-
   if (!canViewComplaints) {
     return (
       <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
@@ -305,9 +307,9 @@ const ComplaintsPage = () => {
         ]}
       />
 
-      {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />}
+      {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={refreshComplaintQueries} />}
 
-      {showCraftComplaint && canCreateComplaint && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={fetchComplaints} />}
+      {showCraftComplaint && canCreateComplaint && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={refreshComplaintQueries} />}
     </Page>
   )
 }

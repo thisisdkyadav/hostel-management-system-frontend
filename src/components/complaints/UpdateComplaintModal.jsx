@@ -3,10 +3,12 @@ import { Pencil } from "lucide-react"
 import { Button, Modal, Select, Text } from "hzero"
 import { complaintApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+import { patchItemById, queryKeys, useOptimisticMutation } from "../../lib/query"
 import {
   COMPLAINT_CATEGORIES,
   WHO_CAN_CHANGE_COMPLAINT_CATEGORY,
 } from "../../constants/complaintConstants"
+
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
   const { user } = useAuth()
@@ -15,46 +17,64 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
   const [status, setStatus] = useState(complaint?.status || "")
   const [category, setCategory] = useState(complaint?.category || "")
   const [resolutionNotes, setResolutionNotes] = useState(complaint?.resolutionNotes || "")
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
 
   const statusOptions = ["Pending", "In Progress", "Resolved", "Forwarded to IDO", "Rejected"]
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError("")
-
-    try {
-      // Update status if changed
-      if (status !== complaint.status) {
-        await complaintApi.updateStatus(complaint.id, status)
+  // Optimistically paint the new status/notes into every cached complaints
+  // list behind the modal; the server response then wins via invalidation.
+  const updateComplaint = useOptimisticMutation({
+    queryKey: queryKeys.complaints.all,
+    mutationFn: async ({ changes }) => {
+      if (changes.status !== undefined) {
+        await complaintApi.updateStatus(complaint.id, changes.status)
       }
 
-      // Update category if allowed and changed
-      if (canChangeCategory && category && category !== complaint.category) {
-        await complaintApi.updateCategory(complaint.id, category)
+      if (canChangeCategory && changes.category !== undefined) {
+        await complaintApi.updateCategory(complaint.id, changes.category)
       }
 
-      // Update resolution notes if changed
-      if (resolutionNotes !== complaint.resolutionNotes) {
-        await complaintApi.updateComplaintResolutionNotes(complaint.id, resolutionNotes)
+      if (changes.resolutionNotes !== undefined) {
+        await complaintApi.updateComplaintResolutionNotes(complaint.id, changes.resolutionNotes)
       }
-
-      onUpdate({
-        ...complaint,
-        status,
-        ...(canChangeCategory ? { category } : {}),
-        resolutionNotes,
-        lastUpdated: new Date().toISOString(),
-      })
-      onClose()
-    } catch (err) {
+    },
+    updateFn: (previous, { complaintId, changes }) =>
+      patchItemById(
+        (item) => item?._id ?? item?.id,
+        () => ({ ...changes, lastUpdated: new Date().toISOString() })
+      )(previous, { id: complaintId }),
+    onError: (err) => {
       setError(err?.message || "Failed to update complaint. Please try again.")
       console.error("Error updating complaint:", err)
-    } finally {
-      setIsSubmitting(false)
+    },
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setError("")
+
+    const changes = {}
+    if (status !== complaint.status) changes.status = status
+    if (canChangeCategory && category && category !== complaint.category) {
+      changes.category = category
     }
+    if (resolutionNotes !== complaint.resolutionNotes) {
+      changes.resolutionNotes = resolutionNotes
+    }
+
+    updateComplaint.mutate(
+      { complaintId: complaint._id ?? complaint.id, changes },
+      {
+        onSuccess: () => {
+          onUpdate({
+            ...complaint,
+            ...changes,
+            lastUpdated: new Date().toISOString(),
+          })
+          onClose()
+        },
+      }
+    )
   }
 
   const MODAL_WIDTH = 600;
@@ -123,9 +143,9 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
           <Button type="button" onClick={onClose} variant="outline" >
             Cancel
           </Button>
-          <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}
+          <Button type="submit" variant="primary" loading={updateComplaint.isPending} disabled={updateComplaint.isPending}
           >
-            {!isSubmitting && <Pencil size="1em" />} {isSubmitting ? 'Updating...' : 'Update Complaint'}
+            {!updateComplaint.isPending && <Pencil size="1em" />} {updateComplaint.isPending ? 'Updating...' : 'Update Complaint'}
           </Button>
         </div>
       </form>

@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FaUserFriends } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { visitorApi } from "../../service"
@@ -9,20 +10,18 @@ import ManageVisitorProfilesModal from "../../components/visitor/requests/Manage
 import { Button, EmptyState, ErrorState, Heading, LoadingState, Pagination, Surface, Text, VStack } from "hzero"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 import PageFooter from "../../components/common/PageFooter"
+import { queryKeys } from "../../lib/query/queryKeys"
 
 const REQUESTS_PAGE_SIZE = 10
 
 const VisitorRequestsPage = () => {
   const { user } = useAuth()
+  const queryClient = useQueryClient()
   const canViewVisitors = true
   const canCreateVisitorRequests = ["Student"].includes(user?.role) && true
   const canAllocateVisitors =
     ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
     true
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [visitorRequests, setVisitorRequests] = useState([])
-  const [visitorProfiles, setVisitorProfiles] = useState([])
   const [showAddProfileModal, setShowAddProfileModal] = useState(false)
   const [showAddRequestModal, setShowAddRequestModal] = useState(false)
   const [showManageProfilesModal, setShowManageProfilesModal] = useState(false)
@@ -30,32 +29,14 @@ const VisitorRequestsPage = () => {
   const [statusFilter, setStatusFilter] = useState("all")
   const [allocationFilter, setAllocationFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalRequests, setTotalRequests] = useState(0)
-  const fetchVisitorProfiles = useCallback(async () => {
-    if (user?.role !== "Student" || !canCreateVisitorRequests) {
-      setVisitorProfiles([])
-      return
-    }
 
-    try {
-      const profiles = await visitorApi.getVisitorProfiles()
-      setVisitorProfiles(profiles.data || [])
-    } catch (err) {
-      console.error("Error fetching visitor profiles:", err)
-      setVisitorProfiles([])
-    }
-  }, [canCreateVisitorRequests, user?.role])
-
-  const fetchVisitorData = useCallback(async () => {
-    if (!canViewVisitors) {
-      setLoading(false)
-      return
-    }
-    try {
-      setLoading(true)
-      setError(null)
-
+  const requestsQuery = useQuery({
+    queryKey: queryKeys.visitors.list({
+      page: currentPage,
+      status: statusFilter,
+      allocation: canAllocateVisitors ? allocationFilter : "all",
+    }),
+    queryFn: async () => {
       const requestParams = {
         page: currentPage,
         limit: REQUESTS_PAGE_SIZE,
@@ -69,47 +50,52 @@ const VisitorRequestsPage = () => {
         requestParams.allocation = allocationFilter
       }
 
-      const requests = await visitorApi.getVisitorRequestsSummary(requestParams)
-      const apiPagination = requests.pagination || {}
-      const nextTotalPages = apiPagination.totalPages || 0
+      return visitorApi.getVisitorRequestsSummary(requestParams)
+    },
+    enabled: canViewVisitors,
+  })
 
-      if (nextTotalPages > 0 && currentPage > nextTotalPages) {
-        setCurrentPage(nextTotalPages)
-        return
+  const profilesEnabled = canCreateVisitorRequests && user?.role === "Student"
+  const profilesQuery = useQuery({
+    queryKey: queryKeys.visitors.profiles(),
+    queryFn: async () => {
+      try {
+        const profiles = await visitorApi.getVisitorProfiles()
+        return profiles.data || []
+      } catch (err) {
+        console.error("Error fetching visitor profiles:", err)
+        return []
       }
+    },
+    enabled: profilesEnabled,
+  })
 
-      setVisitorRequests(requests.data || [])
-      setTotalRequests(apiPagination.total || 0)
-      setTotalPages(Math.max(nextTotalPages, 1))
-    } catch (err) {
-      console.error("Error fetching visitor data:", err)
-      setError("Failed to load visitor requests. Please try again later.")
-      setVisitorRequests([])
-      setTotalRequests(0)
-      setTotalPages(1)
-    } finally {
-      setLoading(false)
-    }
-  }, [
-    allocationFilter,
-    canAllocateVisitors,
-    canViewVisitors,
-    currentPage,
-    statusFilter,
-  ])
+  const apiPagination = requestsQuery.data?.pagination || {}
+  const nextTotalPages = apiPagination.totalPages || 0
+  if (nextTotalPages > 0 && currentPage > nextTotalPages) {
+    setCurrentPage(nextTotalPages)
+  }
 
-  useEffect(() => {
-    fetchVisitorData()
-  }, [fetchVisitorData])
+  const visitorRequests = requestsQuery.data?.data || []
+  const totalRequests = requestsQuery.isError ? 0 : apiPagination.total || 0
+  const totalPages = requestsQuery.isError ? 1 : Math.max(nextTotalPages, 1)
+  const loading = canViewVisitors && requestsQuery.fetchStatus === "fetching" && !requestsQuery.data
+  const error =
+    requestsQuery.isError && requestsQuery.fetchStatus === "idle"
+      ? "Failed to load visitor requests. Please try again later."
+      : null
+  const visitorProfiles = profilesQuery.data || []
 
-  useEffect(() => {
-    fetchVisitorProfiles()
-  }, [fetchVisitorProfiles])
+  const refreshVisitorQueries = () =>
+    queryClient.invalidateQueries({ queryKey: queryKeys.visitors.all })
+
+  const refreshProfiles = () =>
+    queryClient.invalidateQueries({ queryKey: queryKeys.visitors.profiles() })
 
   const handleAddProfile = async (profileData) => {
     try {
       await visitorApi.addVisitorProfile(profileData)
-      await fetchVisitorProfiles()
+      await queryClient.invalidateQueries({ queryKey: queryKeys.visitors.profiles() })
       setShowAddProfileModal(false)
       return true
     } catch (err) {
@@ -124,7 +110,7 @@ const VisitorRequestsPage = () => {
         ...requestData,
         studentId: user._id,
       })
-      fetchVisitorData()
+      refreshVisitorQueries()
       setShowAddRequestModal(false)
       return true
     } catch (err) {
@@ -151,7 +137,7 @@ const VisitorRequestsPage = () => {
   }
 
   if (error) {
-    return <ErrorState message={error} onRetry={fetchVisitorData} />
+    return <ErrorState message={error} onRetry={refreshVisitorQueries} />
   }
 
   if (!canViewVisitors) {
@@ -228,14 +214,14 @@ const VisitorRequestsPage = () => {
             <Text color="muted" size="base">No requests found matching your filters.</Text>
           </Surface>
         ) : (
-          <VisitorRequestTable requests={visitorRequests} onRefresh={fetchVisitorData} />
+          <VisitorRequestTable requests={visitorRequests} onRefresh={refreshVisitorQueries} />
         )}
 
         {showAddProfileModal && canCreateVisitorRequests && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
 
         {showAddRequestModal && canCreateVisitorRequests && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
-        {showManageProfilesModal && canCreateVisitorRequests && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorProfiles} />}
+        {showManageProfilesModal && canCreateVisitorRequests && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={refreshProfiles} />}
       </div>
 
       <PageFooter

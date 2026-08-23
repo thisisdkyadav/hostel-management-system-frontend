@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState } from "react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import { formatINR } from "@/utils/formatters"
 import {
@@ -22,10 +22,15 @@ export const useCalendarSettings = ({
   fetchYears,
   setSubmitting,
 }) => {
-  useEffect(() => {
-    if (!showSettingsModal) return
+  // Re-seed the form from the calendar each time the modal opens or the
+  // calendar changes underneath it. Adjusted during render so a stale form
+  // can never paint.
+  const [lastSyncKey, setLastSyncKey] = useState(null)
+  const syncKey = showSettingsModal ? `${calendar?._id ?? "none"}:${calendar?.updatedAt ?? ""}` : null
+  if (showSettingsModal && syncKey !== lastSyncKey) {
+    setLastSyncKey(syncKey)
     setCalendarSettingsForm(buildCalendarSettingsForm(calendar))
-  }, [calendar, showSettingsModal])
+  }
 
   const handleCalendarSettingsFieldChange = (field, value) => {
     setCalendarSettingsForm((current) => ({

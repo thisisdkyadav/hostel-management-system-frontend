@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react"
+import { useMemo, useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import {
   formatDateKey,
@@ -7,6 +8,7 @@ import {
   toBudgetCapsForm,
   toGymkhanaDisplayEvent,
 } from "@/components/gymkhana/events-page/shared"
+import { queryKeys } from "@/lib/query/queryKeys"
 
 export const buildCalendarSettingsForm = (calendarData = null) => {
   const nextCategoryDefinitions = getCalendarCategoryDefinitions(calendarData)
@@ -23,213 +25,172 @@ export const buildCalendarSettingsForm = (calendarData = null) => {
   }
 }
 
+const extractResponseData = (response) => response?.data || response || {}
+
+const fetchYearsList = async () => {
+  const response = await gymkhanaEventsApi.getAcademicYears()
+  return response.data?.years || response.years || []
+}
+
+const fetchCalendarBundle = async (year) => {
+  const response = await gymkhanaEventsApi.getCalendarByYear(year)
+  const calendarData = response.data?.calendar || response.calendar || null
+  if (!calendarData) return null
+
+  const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
+
+  // GymkhanaEvent collection is the single source of truth for calendar events;
+  // fall back to the embedded events when the collection isn't reachable.
+  let mergedEvents = normalizedEvents
+  try {
+    const firstPageResponse = await gymkhanaEventsApi.getEvents({
+      calendarId: calendarData._id,
+      limit: 100,
+      page: 1,
+    })
+    const firstPageData = extractResponseData(firstPageResponse)
+    const totalPages = firstPageData.pagination?.pages || 1
+
+    let gymkhanaEvents = [...(firstPageData.events || [])]
+    if (totalPages > 1) {
+      const remainingResponses = await Promise.all(
+        Array.from({ length: totalPages - 1 }, (_, index) =>
+          gymkhanaEventsApi.getEvents({
+            calendarId: calendarData._id,
+            limit: 100,
+            page: index + 2,
+          })
+        )
+      )
+      for (const remainingResponse of remainingResponses) {
+        gymkhanaEvents = gymkhanaEvents.concat(extractResponseData(remainingResponse).events || [])
+      }
+    }
+    mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
+  } catch {
+    mergedEvents = normalizedEvents
+  }
+
+  return { calendarData, events: mergedEvents }
+}
+
 export const useCalendarData = ({ user, canViewEventsCapability }) => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [years, setYears] = useState([])
-  const [selectedYear, setSelectedYear] = useState(null)
-  const [calendar, setCalendar] = useState(null)
-  const [events, setEvents] = useState([])
-  const [hasAttemptedCalendarLoad, setHasAttemptedCalendarLoad] = useState(false)
-  const [calendarHolidays, setCalendarHolidays] = useState([])
+  const queryClient = useQueryClient()
+  // Explicit user pick; null means "follow the newest known year".
+  const [yearPick, setYearPick] = useState(null)
   const [viewMode, setViewMode] = useState("list")
   const [calendarMonth, setCalendarMonth] = useState(new Date())
   const [calendarSettingsForm, setCalendarSettingsForm] = useState(() =>
     buildCalendarSettingsForm()
   )
+  const [settingsSource, setSettingsSource] = useState(undefined)
 
-  const calendarRequestRef = useRef(0)
+  const userKey = `${user?.role}|${user?.subRole}`
 
-  const fetchYears = async () => {
-    if (!canViewEventsCapability) {
-      setYears([])
-      setSelectedYear(null)
-      setCalendar(null)
-      setEvents([])
-      setCalendarSettingsForm(buildCalendarSettingsForm())
-      setHasAttemptedCalendarLoad(true)
-      setLoading(false)
-      return
-    }
+  const yearsQuery = useQuery({
+    queryKey: [...queryKeys.gymkhana.years(), userKey],
+    queryFn: fetchYearsList,
+    enabled: canViewEventsCapability,
+  })
 
-    try {
-      setHasAttemptedCalendarLoad(false)
-      const response = await gymkhanaEventsApi.getAcademicYears()
-      const yearsList = response.data?.years || response.years || []
+  const years = useMemo(
+    () => (canViewEventsCapability ? yearsQuery.data || [] : []),
+    [canViewEventsCapability, yearsQuery.data]
+  )
 
-      setYears(yearsList)
-      setSelectedYear((previousYear) => {
-        if (previousYear && yearsList.some((year) => year.academicYear === previousYear)) {
-          return previousYear
-        }
-        return yearsList[0]?.academicYear || null
-      })
+  // Derived selection: keep the explicit pick while it still exists,
+  // otherwise fall back to the newest known year (old loader behaviour).
+  const selectedYear =
+    yearPick !== null && years.some((year) => year.academicYear === yearPick)
+      ? yearPick
+      : years[0]?.academicYear || null
 
-      if (yearsList.length === 0) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-      }
-    } catch (err) {
-      setError(err.message || "Failed to load academic years")
-      setHasAttemptedCalendarLoad(true)
-    }
-  }
+  const calendarQuery = useQuery({
+    queryKey: queryKeys.gymkhana.calendar(selectedYear),
+    queryFn: () => fetchCalendarBundle(selectedYear),
+    enabled: Boolean(canViewEventsCapability && selectedYear),
+  })
 
-  const fetchCalendar = async (year, { resetData = false, showLoader = resetData } = {}) => {
-    if (!canViewEventsCapability) {
-      setCalendar(null)
-      setEvents([])
-      setCalendarHolidays([])
-      setCalendarSettingsForm(buildCalendarSettingsForm())
-      setHasAttemptedCalendarLoad(true)
-      return
-    }
+  const calendarBundle = calendarQuery.data ?? null
 
-    const requestId = ++calendarRequestRef.current
-    try {
-      if (showLoader) {
-        setLoading(true)
-      }
-      setError(null)
-      setHasAttemptedCalendarLoad(false)
-      if (resetData) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarHolidays([])
-      }
-      const response = await gymkhanaEventsApi.getCalendarByYear(year)
-      if (requestId !== calendarRequestRef.current) return
-      const calendarData = response.data?.calendar || response.calendar || null
-
-      if (!calendarData) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-        return
-      }
-
-      const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
-      const isProposalCreationAllowedForCalendar =
-        calendarData.status === "approved" || Boolean(calendarData.allowProposalBeforeApproval)
-      setCalendarSettingsForm(buildCalendarSettingsForm(calendarData))
-      let mergedEvents = normalizedEvents
-
-      try {
-        const firstPageResponse = await gymkhanaEventsApi.getEvents({
-          calendarId: calendarData._id,
-          limit: 100,
-          page: 1,
-        })
-        if (requestId !== calendarRequestRef.current) return
-        const firstPageData = firstPageResponse.data || firstPageResponse || {}
-        const firstPageEvents = firstPageData.events || []
-        const totalPages = firstPageData.pagination?.pages || 1
-
-        let gymkhanaEvents = [...firstPageEvents]
-        if (totalPages > 1) {
-          const remainingPageRequests = []
-          for (let page = 2; page <= totalPages; page += 1) {
-            remainingPageRequests.push(
-              gymkhanaEventsApi.getEvents({
-                calendarId: calendarData._id,
-                limit: 100,
-                page,
-              })
-            )
-          }
-
-          const remainingResponses = await Promise.all(remainingPageRequests)
-          if (requestId !== calendarRequestRef.current) return
-          for (const remainingResponse of remainingResponses) {
-            const responseData = remainingResponse.data || remainingResponse || {}
-            gymkhanaEvents = gymkhanaEvents.concat(responseData.events || [])
-          }
-        }
-
-        // GymkhanaEvent collection is the single source of truth for calendar events.
-        mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
-      } catch {
-        mergedEvents = normalizedEvents
-      }
-
-      mergedEvents = mergedEvents.map((event) => ({
+  const calendar = useMemo(() => {
+    if (!calendarBundle) return null
+    const isProposalCreationAllowedForCalendar =
+      calendarBundle.calendarData.status === "approved" ||
+      Boolean(calendarBundle.calendarData.allowProposalBeforeApproval)
+    return {
+      ...calendarBundle.calendarData,
+      events: calendarBundle.events.map((event) => ({
         ...event,
         proposalCreationAllowed: isProposalCreationAllowedForCalendar,
-      }))
-
-      setCalendar({ ...calendarData, events: mergedEvents })
-      setEvents(mergedEvents)
-      setHasAttemptedCalendarLoad(true)
-    } catch (err) {
-      if (requestId !== calendarRequestRef.current) return
-      if (err.status === 404) {
-        setCalendar(null)
-        setEvents([])
-        setCalendarSettingsForm(buildCalendarSettingsForm())
-        setHasAttemptedCalendarLoad(true)
-      } else {
-        setError(err.message || "Failed to load calendar")
-      }
-    } finally {
-      if (showLoader && requestId === calendarRequestRef.current) {
-        setLoading(false)
-      }
+      })),
     }
+  }, [calendarBundle])
+
+  const events = useMemo(() => calendar?.events || [], [calendar])
+
+  // Mirror the loaded calendar into the settings form, resetting when there is
+  // no calendar. Adjusted during render (not in an effect) so the form can
+  // never render from a stale source bundle.
+  if (settingsSource !== calendarBundle) {
+    setSettingsSource(calendarBundle)
+    setCalendarSettingsForm(
+      calendarBundle
+        ? buildCalendarSettingsForm(calendarBundle.calendarData)
+        : buildCalendarSettingsForm()
+    )
   }
 
-  useEffect(() => {
-    fetchYears()
-  }, [user?.role, user?.subRole])
+  // Invalidate the whole domain — post-mutation callers used fetchYears +
+  // fetchCalendar back-to-back, which is exactly what this expresses.
+  const refetchDomain = (options = {}) =>
+    queryClient.invalidateQueries({ queryKey: queryKeys.gymkhana.all, ...options })
 
-  useEffect(() => {
-    if (selectedYear) {
-      fetchCalendar(selectedYear, { resetData: true })
+  // Month-view holidays are only relevant in calendar mode.
+  const monthRange = useMemo(() => {
+    const monthStart = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1)
+    const monthEnd = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0)
+    return {
+      key: [formatDateKey(monthStart), formatDateKey(monthEnd)],
+      range: { startDate: formatDateKey(monthStart), endDate: formatDateKey(monthEnd) },
     }
-  }, [selectedYear])
+  }, [calendarMonth])
 
-  useEffect(() => {
-    if (!calendar?._id || viewMode !== "calendar") {
-      setCalendarHolidays([])
-      return
-    }
+  const holidaysQuery = useQuery({
+    queryKey: queryKeys.gymkhana.monthView(...monthRange.key),
+    queryFn: async () => {
+      const response = await gymkhanaEventsApi.getCalendarView(monthRange.range)
+      const data = extractResponseData(response)
+      return Array.isArray(data.holidays) ? data.holidays : []
+    },
+    enabled: Boolean(calendar?._id && viewMode === "calendar"),
+  })
+  const calendarHolidays = viewMode === "calendar" ? holidaysQuery.data || [] : []
 
-    const loadCalendarMonthView = async () => {
-      try {
-        const monthStart = new Date(
-          calendarMonth.getFullYear(),
-          calendarMonth.getMonth(),
-          1
-        )
-        const monthEnd = new Date(
-          calendarMonth.getFullYear(),
-          calendarMonth.getMonth() + 1,
-          0
-        )
+  const yearsSettled = yearsQuery.isSuccess || yearsQuery.isError
+  const calendarSettled = calendarQuery.isSuccess || calendarQuery.isError
+  const loading = canViewEventsCapability && calendarQuery.fetchStatus === "fetching"
+  const hasAttemptedCalendarLoad =
+    !canViewEventsCapability ||
+    (yearsSettled && (!selectedYear || calendarSettled))
 
-        const response = await gymkhanaEventsApi.getCalendarView({
-          startDate: formatDateKey(monthStart),
-          endDate: formatDateKey(monthEnd),
-        })
-        const data = response.data || response || {}
-        setCalendarHolidays(Array.isArray(data.holidays) ? data.holidays : [])
-      } catch {
-        setCalendarHolidays([])
-      }
-    }
+  const calendarLoadFailed =
+    calendarQuery.error instanceof Object &&
+    calendarQuery.error.status !== 404 &&
+    typeof calendarQuery.error.message === "string"
 
-    loadCalendarMonthView()
-  }, [calendar?._id, calendarMonth, viewMode])
+  const error = canViewEventsCapability
+    ? yearsQuery.error?.message ||
+      (calendarLoadFailed ? calendarQuery.error.message : null)
+    : null
 
   return {
     loading,
-    setLoading,
+    setLoading: () => {},
     error,
     years,
     selectedYear,
-    setSelectedYear,
+    setSelectedYear: setYearPick,
     calendar,
     events,
     hasAttemptedCalendarLoad,
@@ -240,8 +201,8 @@ export const useCalendarData = ({ user, canViewEventsCapability }) => {
     setCalendarMonth,
     calendarSettingsForm,
     setCalendarSettingsForm,
-    fetchYears,
-    fetchCalendar,
+    fetchYears: () => refetchDomain(),
+    fetchCalendar: () => refetchDomain(),
   }
 }
 

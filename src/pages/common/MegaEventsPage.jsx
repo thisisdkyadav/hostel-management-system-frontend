@@ -6,6 +6,7 @@ import { CalendarDays, History, Plus, FileText, Receipt, DollarSign } from "luci
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
+import { useMegaEventsData } from "./mega-events/useMegaEventsData"
 import { FormField, SectionHeader, sectionLabelStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
@@ -646,18 +647,9 @@ const MegaEventsPage = () => {
   const canApproveEventsCapability = true
   const maxApprovalAmount = null
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  const [series, setSeries] = useState([])
   const [selectedSeriesId, setSelectedSeriesId] = useState("")
-  const [selectedSeries, setSelectedSeries] = useState(null)
-  const [occurrences, setOccurrences] = useState([])
-  const [latestOccurrence, setLatestOccurrence] = useState(null)
   const [selectedOccurrenceId, setSelectedOccurrenceId] = useState("")
 
-  const [proposalData, setProposalData] = useState(null)
-  const [expenseData, setExpenseData] = useState(null)
   const [proposalHistoryRefreshKey, setProposalHistoryRefreshKey] = useState(0)
   const [expenseHistoryRefreshKey, setExpenseHistoryRefreshKey] = useState(0)
 
@@ -677,6 +669,68 @@ const MegaEventsPage = () => {
   const [expenseNextApprovalStages, setExpenseNextApprovalStages] = useState([])
 
   const [submitting, setSubmitting] = useState(false)
+
+  // Bundle fingerprint: reseeding triggers only when the selected occurrence
+  // changes or its server data actually lands/changes. updatedAt bumps on every
+  // server-side mutation (save/approve/reject/revision), so post-mutation
+  // refreshes reseed forms/comments/stages like the old loadProposalAndExpense,
+  // while refetches of unchanged data leave in-progress edits alone.
+  const occurrenceBundleKey = `${selectedOccurrenceId}|${proposalData?._id || "no-proposal"}|${proposalData?.updatedAt || ""}|${expenseData?._id || "no-expense"}|${expenseData?.updatedAt || ""}`
+
+  const {
+    series,
+    isLoadingCore,
+    coreError,
+    selectedSeries,
+    rawOccurrences,
+    proposalData,
+    expenseData,
+    refreshSeries,
+    refreshSeriesDetail,
+    refreshOccurrenceBundle,
+  } = useMegaEventsData({
+    canViewEventsCapability,
+    selectedSeriesId,
+    selectedOccurrenceId,
+  })
+
+  // Series detail arrives unsorted; the page owns its ordering convention.
+  const occurrences = useMemo(
+    () => sortOccurrencesByDateDesc(rawOccurrences),
+    [rawOccurrences]
+  )
+  const latestOccurrence = occurrences[0] || null
+
+  // Default the series pick once per loaded list; keep a valid selection.
+  const [lastSeries, setLastSeries] = useState(null)
+  if (canViewEventsCapability && lastSeries !== series) {
+    setLastSeries(series)
+    setSelectedSeriesId((current) =>
+      current && series.some((item) => item._id === current)
+        ? current
+        : series[0]?._id || ""
+    )
+  }
+
+  // When a series' detail lands, default to its latest occurrence.
+  const [lastSeriesDetailKey, setLastSeriesDetailKey] = useState(null)
+  if (selectedSeriesId && lastSeriesDetailKey !== selectedSeriesId) {
+    setLastSeriesDetailKey(selectedSeriesId)
+    setSelectedOccurrenceId(latestOccurrence?._id || "")
+  }
+
+  // Seed the proposal/expense forms whenever a fresh bundle lands for the
+  // selected occurrence (old loader behaviour).
+  const [lastBundleKey, setLastBundleKey] = useState(null)
+  if (lastBundleKey !== occurrenceBundleKey) {
+    setLastBundleKey(occurrenceBundleKey)
+    setProposalForm(proposalData ? toProposalForm(proposalData) : createDefaultProposalForm())
+    setExpenseForm(expenseData ? toExpenseForm(expenseData) : createDefaultExpenseForm())
+    setProposalComments("")
+    setExpenseComments("")
+    setProposalNextApprovalStages([])
+    setExpenseNextApprovalStages([])
+  }
 
   const selectedOccurrence = useMemo(
     () => occurrences.find((entry) => entry._id === selectedOccurrenceId) || latestOccurrence,
@@ -772,106 +826,6 @@ const MegaEventsPage = () => {
     )
     return validBills && Boolean(expenseForm.eventReportDocumentUrl?.trim())
   }, [expenseForm.bills, expenseForm.eventReportDocumentUrl])
-
-  const loadSeries = async () => {
-    if (!canViewEventsCapability) {
-      setLoading(false)
-      setError("")
-      setSeries([])
-      setSelectedSeriesId("")
-      return
-    }
-
-    try {
-      setLoading(true)
-      setError("")
-      const response = await gymkhanaEventsApi.getMegaSeries()
-      const loadedSeries = response.data?.series || response.series || []
-      setSeries(loadedSeries)
-
-      const nextSelectedId = selectedSeriesId && loadedSeries.some((item) => item._id === selectedSeriesId)
-        ? selectedSeriesId
-        : loadedSeries[0]?._id || ""
-      setSelectedSeriesId(nextSelectedId)
-    } catch (err) {
-      setError(err.message || "Failed to load mega event series")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadSeriesDetails = async (seriesId) => {
-    if (!canViewEventsCapability) return
-
-    if (!seriesId) {
-      setSelectedSeries(null)
-      setOccurrences([])
-      setLatestOccurrence(null)
-      setSelectedOccurrenceId("")
-      return
-    }
-
-    try {
-      const response = await gymkhanaEventsApi.getMegaSeriesById(seriesId)
-      const seriesData = response.data?.series || response.series || null
-      const responseOccurrences = response.data?.occurrences || response.occurrences || []
-      const orderedOccurrences = sortOccurrencesByDateDesc(responseOccurrences)
-      setSelectedSeries(seriesData)
-      setOccurrences(orderedOccurrences)
-
-      const latest = orderedOccurrences[0] || null
-      setLatestOccurrence(latest)
-      setSelectedOccurrenceId(latest?._id || "")
-    } catch (err) {
-      setError(err.message || "Failed to load mega event details")
-    }
-  }
-
-  const loadProposalAndExpense = async (occurrence) => {
-    if (!canViewEventsCapability) return
-
-    if (!occurrence?._id) {
-      setProposalData(null)
-      setExpenseData(null)
-      return
-    }
-
-    try {
-      const [proposalResponse, expenseResponse] = await Promise.all([
-        gymkhanaEventsApi.getMegaOccurrenceProposal(occurrence._id).catch(() => null),
-        gymkhanaEventsApi.getMegaOccurrenceExpense(occurrence._id).catch(() => null),
-      ])
-
-      const loadedProposal = proposalResponse?.data?.proposal || proposalResponse?.proposal || null
-      const loadedExpense = expenseResponse?.data?.expense || expenseResponse?.expense || null
-      setProposalData(loadedProposal)
-      setExpenseData(loadedExpense)
-      setProposalForm(loadedProposal ? toProposalForm(loadedProposal) : createDefaultProposalForm())
-      setExpenseForm(loadedExpense ? toExpenseForm(loadedExpense) : createDefaultExpenseForm())
-      setProposalComments("")
-      setExpenseComments("")
-      setProposalNextApprovalStages([])
-      setExpenseNextApprovalStages([])
-    } catch {
-      setProposalData(null)
-      setExpenseData(null)
-    }
-  }
-
-  useEffect(() => {
-    loadSeries()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    loadSeriesDetails(selectedSeriesId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSeriesId])
-
-  useEffect(() => {
-    loadProposalAndExpense(selectedOccurrence)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedOccurrence?._id])
 
   // Deep links from approval emails: ?series=<id>&occurrence=<id>&review=proposal|expense
   const [searchParams] = useSearchParams()
@@ -974,7 +928,7 @@ const MegaEventsPage = () => {
       toast.success("Mega event series created")
       setIsCreateSeriesOpen(false)
       setSeriesForm(createDefaultSeriesForm())
-      await loadSeries()
+      await refreshSeries()
     } catch (err) {
       toast.error(err.message || "Failed to create mega event series")
     } finally {
@@ -1008,8 +962,8 @@ const MegaEventsPage = () => {
       toast.success("Occurrence created")
       setIsCreateOccurrenceOpen(false)
       setOccurrenceForm(createDefaultOccurrenceForm())
-      await loadSeriesDetails(selectedSeries._id)
-      await loadSeries()
+      await refreshSeriesDetail()
+      await refreshSeries()
     } catch (err) {
       toast.error(err.message || "Failed to create occurrence")
     } finally {
@@ -1039,8 +993,8 @@ const MegaEventsPage = () => {
         await gymkhanaEventsApi.createMegaOccurrenceProposal(selectedOccurrence._id, payload)
       }
       toast.success("Proposal saved")
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to save proposal")
     } finally {
@@ -1073,8 +1027,8 @@ const MegaEventsPage = () => {
       )
       toast.success("Proposal decision saved")
       setProposalHistoryRefreshKey((value) => value + 1)
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to approve proposal")
     } finally {
@@ -1099,8 +1053,8 @@ const MegaEventsPage = () => {
       await gymkhanaEventsApi.rejectMegaOccurrenceProposal(selectedOccurrence._id, normalizedProposalComments)
       toast.success("Proposal rejected")
       setProposalHistoryRefreshKey((value) => value + 1)
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to reject proposal")
     } finally {
@@ -1128,8 +1082,8 @@ const MegaEventsPage = () => {
       )
       toast.success("Revision requested")
       setProposalHistoryRefreshKey((value) => value + 1)
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to request revision")
     } finally {
@@ -1169,8 +1123,8 @@ const MegaEventsPage = () => {
         await gymkhanaEventsApi.submitMegaOccurrenceExpense(selectedOccurrence._id, payload)
       }
       toast.success("Expense saved")
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to save expense")
     } finally {
@@ -1203,8 +1157,8 @@ const MegaEventsPage = () => {
       )
       toast.success("Expense decision saved")
       setExpenseHistoryRefreshKey((value) => value + 1)
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to approve expense")
     } finally {
@@ -1229,8 +1183,8 @@ const MegaEventsPage = () => {
       await gymkhanaEventsApi.rejectMegaOccurrenceExpense(selectedOccurrence._id, normalizedExpenseComments)
       toast.success("Expense rejected")
       setExpenseHistoryRefreshKey((value) => value + 1)
-      await loadProposalAndExpense(selectedOccurrence)
-      await loadSeriesDetails(selectedSeriesId)
+      await refreshOccurrenceBundle()
+      await refreshSeriesDetail()
     } catch (err) {
       toast.error(err.message || "Failed to reject expense")
     } finally {
@@ -1277,10 +1231,10 @@ const MegaEventsPage = () => {
       </PageHeader>
 
       <div style={{ flex: 1, overflow: "hidden", padding: "var(--spacing-6)" }}>
-        {loading ? (
+        {isLoadingCore ? (
           <LoadingState message="Loading mega events..." />
-        ) : error ? (
-          <ErrorState message={error} onRetry={loadSeries} />
+        ) : coreError ? (
+          <ErrorState message={coreError.message || "Failed to load mega event series"} onRetry={refreshSeries} />
         ) : series.length === 0 ? (
           <Card>
             <CardContent>

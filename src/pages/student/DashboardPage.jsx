@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useAuth } from "../../contexts/AuthProvider"
 import { studentApi, electionsApi } from "../../service"
+import { queryKeys } from "@/lib/query"
 import { AlertCircle, QrCode } from "lucide-react"
 import OfflineBanner from "../../components/common/OfflineBanner"
 import StudentProfileSummary from "../../components/student/StudentProfileSummary"
@@ -18,7 +20,6 @@ import UndertakingsBanner from "../../components/student/UndertakingsBanner"
 import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPopup"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
-const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
 const normalizeDashboardData = (payload) => {
   if (!payload || typeof payload !== "object") return null
@@ -83,98 +84,71 @@ const DashboardPage = () => {
   const { user, isOnline } = useAuth()
   const { isPwaMobile } = usePwaMobile()
   const navigate = useNavigate()
-  const [dashboardData, setDashboardData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [isOfflineData, setIsOfflineData] = useState(false)
+  const queryClient = useQueryClient()
   const [showQRModal, setShowQRModal] = useState(false)
   const [showBirthday, setShowBirthday] = useState(false)
   const [showFeedbackPopup, setShowFeedbackPopup] = useState(false)
   const [currentFeedbackComplaint, setCurrentFeedbackComplaint] = useState(null)
   const [feedbackComplaintIndex, setFeedbackComplaintIndex] = useState(0)
-  const [activeVotingElection, setActiveVotingElection] = useState(null)
-  const [showVotingPopup, setShowVotingPopup] = useState(false)
-  const [hasCheckedVotingStatus, setHasCheckedVotingStatus] = useState(false)
+  // Dashboard aggregate: always fetch fresh while online; fall back to the
+  // localStorage snapshot written on last success when offline or on failure.
+  const dashboardQuery = useQuery({
+    queryKey: queryKeys.studentDashboard.data(),
+    queryFn: async () => {
+      const response = await studentApi.getStudentDashboard()
+      const data = normalizeDashboardData(response)
 
-  const fetchDashboardData = async () => {
-    try {
-      setLoading(true)
-
-      if (isOnline) {
-        try {
-          const response = await studentApi.getStudentDashboard()
-          const data = normalizeDashboardData(response)
-
-          if (!data) {
-            throw new Error("Student dashboard response is missing profile data")
-          }
-
-          // Store in cache with timestamp
-          localStorage.setItem(
-            DASHBOARD_CACHE_KEY,
-            JSON.stringify({
-              data,
-              timestamp: new Date().toISOString(),
-            })
-          )
-
-          setDashboardData(data)
-          setIsOfflineData(false)
-          setError(null)
-        } catch (err) {
-          console.error("Error fetching dashboard data:", err)
-          const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
-
-          if (cachedData) {
-            const parsedCache = JSON.parse(cachedData)
-            const data = normalizeDashboardData(parsedCache?.data)
-
-            if (data) {
-              setDashboardData(data)
-              setIsOfflineData(true)
-              setError(null)
-            } else {
-              localStorage.removeItem(DASHBOARD_CACHE_KEY)
-              setError("Failed to load dashboard data")
-            }
-          } else {
-            setError("Failed to load dashboard data")
-          }
-        }
-      } else {
-        const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
-
-        if (cachedData) {
-          const parsedCache = JSON.parse(cachedData)
-          const data = normalizeDashboardData(parsedCache?.data)
-
-          if (data) {
-            setDashboardData(data)
-            setIsOfflineData(true)
-            setError(null)
-          } else {
-            localStorage.removeItem(DASHBOARD_CACHE_KEY)
-            setError("You are offline and no cached data is available")
-          }
-        } else {
-          setError("You are offline and no cached data is available")
-        }
+      if (!data) {
+        throw new Error("Student dashboard response is missing profile data")
       }
-    } catch (err) {
-      console.error("Error in dashboard data handling:", err)
-      setError("Failed to load dashboard data")
-    } finally {
-      setLoading(false)
-    }
-  }
 
-  // Check if cache is expired
-  const isCacheExpired = (timestamp) => {
-    if (!timestamp) return true
-    const cachedTime = new Date(timestamp).getTime()
-    const currentTime = new Date().getTime()
-    return currentTime - cachedTime > CACHE_EXPIRY_TIME
-  }
+      localStorage.setItem(
+        DASHBOARD_CACHE_KEY,
+        JSON.stringify({
+          data,
+          timestamp: new Date().toISOString(),
+        })
+      )
+
+      return data
+    },
+    enabled: isOnline,
+  })
+
+  // Cached fallback (mirrors the previous manual cache behaviour): used when
+  // the query failed or the device is offline.
+  const cachedDashboardData = useMemo(() => {
+    if (dashboardQuery.data || !(dashboardQuery.isError || !isOnline)) return null
+
+    try {
+      const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+
+      if (!cachedData) return null
+
+      const parsedCache = JSON.parse(cachedData)
+      const data = normalizeDashboardData(parsedCache?.data)
+
+      if (!data) {
+        localStorage.removeItem(DASHBOARD_CACHE_KEY)
+      }
+
+      return data
+    } catch (e) {
+      console.error("Failed to parse cached dashboard data:", e)
+      localStorage.removeItem(DASHBOARD_CACHE_KEY)
+      return null
+    }
+  }, [dashboardQuery.data, dashboardQuery.isError, isOnline])
+
+  const dashboardData = dashboardQuery.data ?? cachedDashboardData
+  const loading = dashboardQuery.isLoading
+  const isOfflineData = Boolean(dashboardData) && (!isOnline || dashboardQuery.isError)
+  const error = useMemo(() => {
+    if (dashboardData) return null
+    if (!isOnline) return "You are offline and no cached data is available"
+    if (dashboardQuery.isError) return "Failed to load dashboard data"
+    return null
+  }, [dashboardData, dashboardQuery.isError, isOnline])
 
   // Helper to compare month and day of DOB with today
   const isBirthdayToday = (dobValue) => {
@@ -221,94 +195,36 @@ const DashboardPage = () => {
     return isBD
   }
 
-  useEffect(() => {
-    // New behavior:
-    // - When online: always fetch fresh data (do not use cache as primary source)
-    // - When offline: use cached data if available, otherwise show an error
-    const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+  const votingEnabled = user?.role === "Student" && isOnline
 
-    if (isOnline) {
-      // Always fetch fresh data when online
-      fetchDashboardData()
-    } else {
-      // Offline: try to use cached data
-      if (cachedData) {
-        try {
-          const parsedCache = JSON.parse(cachedData)
-          const data = normalizeDashboardData(parsedCache?.data)
+  const votingQuery = useQuery({
+    queryKey: queryKeys.studentDashboard.activeVotingElection(),
+    queryFn: () => electionsApi.getStudentCurrent(),
+    enabled: votingEnabled,
+  })
 
-          if (data) {
-            setDashboardData(data)
-            setIsOfflineData(true)
-            setError(null)
-          } else {
-            localStorage.removeItem(DASHBOARD_CACHE_KEY)
-            setError("You are offline and no cached data is available")
-          }
-        } catch (e) {
-          console.error("Failed to parse cached dashboard data:", e)
-          setError("You are offline and no cached data is available")
-        }
-      } else {
-        setError("You are offline and no cached data is available")
-      }
+  const activeVotingElection = useMemo(() => {
+    if (!votingEnabled) return null
 
-      setLoading(false)
-    }
-  }, [isOnline])
+    const elections = votingQuery.data?.data?.elections || []
+    return elections.find((election) => election?.mode === "voting") || null
+  }, [votingEnabled, votingQuery.data])
+
+  const hasActiveVotingElection = Boolean(activeVotingElection)
+  // Voting status is "checked" as soon as it is not applicable or the query settled
+  const hasCheckedVotingStatus = !votingEnabled || !votingQuery.isPending
 
   useEffect(() => {
-    if (user?.role !== "Student") {
-      setActiveVotingElection(null)
-      setShowVotingPopup(false)
-      setHasCheckedVotingStatus(true)
-      return
+    if (votingQuery.isError) {
+      console.error("Error checking active student voting:", votingQuery.error)
     }
+  }, [votingQuery.isError, votingQuery.error])
 
-    if (!isOnline) {
-      setActiveVotingElection(null)
-      setShowVotingPopup(false)
-      setHasCheckedVotingStatus(true)
-      return
-    }
-
-    let isActive = true
-
-    const loadActiveVotingElection = async () => {
-      try {
-        setHasCheckedVotingStatus(false)
-        const response = await electionsApi.getStudentCurrent()
-        if (!isActive) return
-
-        const elections = response?.data?.elections || []
-        const votingElection = elections.find((election) => election?.mode === "voting") || null
-
-        setActiveVotingElection(votingElection)
-        setShowVotingPopup(Boolean(votingElection))
-
-        if (votingElection) {
-          setShowBirthday(false)
-          setShowFeedbackPopup(false)
-          setCurrentFeedbackComplaint(null)
-        }
-      } catch (err) {
-        if (!isActive) return
-        console.error("Error checking active student voting:", err)
-        setActiveVotingElection(null)
-        setShowVotingPopup(false)
-      } finally {
-        if (isActive) {
-          setHasCheckedVotingStatus(true)
-        }
-      }
-    }
-
-    loadActiveVotingElection()
-
-    return () => {
-      isActive = false
-    }
-  }, [isOnline, user?.role])
+  // Dismissal is tracked per election so a newly announced election re-prompts,
+  // and voting always takes priority over the birthday / feedback overlays
+  const [dismissedVotingKey, setDismissedVotingKey] = useState(null)
+  const activeVotingKey = activeVotingElection ? activeVotingElection.title || "current" : null
+  const showVotingPopup = hasActiveVotingElection && activeVotingKey !== dismissedVotingKey
 
   // Birthday display: check when dashboardData/profile becomes available
   useEffect(() => {
@@ -421,15 +337,15 @@ const DashboardPage = () => {
     setCurrentFeedbackComplaint(null)
 
     // Refresh dashboard data to update the complaints list
-    fetchDashboardData()
+    queryClient.invalidateQueries({ queryKey: queryKeys.studentDashboard.all })
   }
 
   const handleVotingPopupClose = () => {
-    setShowVotingPopup(false)
+    setDismissedVotingKey(activeVotingKey)
   }
 
   const handleVotingPopupNavigate = () => {
-    setShowVotingPopup(false)
+    setDismissedVotingKey(activeVotingKey)
     navigate("/student/elections")
   }
 
@@ -624,7 +540,7 @@ const DashboardPage = () => {
           <AlertCircle size={48} className="mx-auto" style={{ marginBottom: 'var(--spacing-4)' }} color="var(--color-danger)" />
           <Heading as="h2" size="xl" color="secondary" style={{ marginBottom: 'var(--spacing-2)' }} className="font-semibold">Unable to Load Dashboard</Heading>
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>{error}</Text>
-          <Button onClick={fetchDashboardData} variant="primary" size="md">
+          <Button onClick={() => dashboardQuery.refetch()} variant="primary" size="md">
             Try Again
           </Button>
         </Surface>
@@ -641,7 +557,7 @@ const DashboardPage = () => {
           <Text color="muted" style={{ marginBottom: 'var(--spacing-6)' }}>
             Student dashboard data is unavailable or malformed.
           </Text>
-          <Button onClick={fetchDashboardData} variant="primary" size="md">
+          <Button onClick={() => dashboardQuery.refetch()} variant="primary" size="md">
             Try Again
           </Button>
         </Surface>
@@ -721,10 +637,10 @@ const DashboardPage = () => {
       ) : null}
 
       {/* Birthday overlay (appears once per user per year) */}
-      {showBirthday && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={handleBirthdayClose} />}
+      {showBirthday && !hasActiveVotingElection && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={handleBirthdayClose} />}
 
       {/* Feedback popup for resolved complaints without feedback */}
-      {showFeedbackPopup && currentFeedbackComplaint && <ComplaintFeedbackPopup complaint={currentFeedbackComplaint} onClose={handleFeedbackDismiss} onFeedbackSubmitted={handleFeedbackSubmitted} />}
+      {showFeedbackPopup && currentFeedbackComplaint && !hasActiveVotingElection && <ComplaintFeedbackPopup complaint={currentFeedbackComplaint} onClose={handleFeedbackDismiss} onFeedbackSubmitted={handleFeedbackSubmitted} />}
     </div>
   )
 }

@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../contexts/AuthProvider"
 import { idCardApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 import { Camera, Info } from "lucide-react"
 import { Button } from "hzero"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
@@ -8,30 +10,24 @@ import { getMediaUrl } from "../../utils/mediaUtils"
 
 const IDCardPage = () => {
   const { user } = useAuth()
-  const [idCardData, setIdCardData] = useState({ front: null, back: null })
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [uploadedSides, setUploadedSides] = useState({})
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentSide, setCurrentSide] = useState(null)
 
-  useEffect(() => {
-    const fetchIDCard = async () => {
+  const { data, isLoading: loading, isError, error } = useQuery({
+    queryKey: queryKeys.idCard.mine(user?._id),
+    queryFn: async () => {
       try {
-        setLoading(true)
-        const data = await idCardApi.getIDcard(user._id)
-        setIdCardData(data)
+        return await idCardApi.getIDcard(user._id)
       } catch (err) {
         console.error("Error fetching ID card:", err)
-        setError("Failed to load ID card data")
-      } finally {
-        setLoading(false)
+        throw new Error("Failed to load ID card data")
       }
-    }
+    },
+    enabled: Boolean(user?._id),
+  })
 
-    if (user?._id) {
-      fetchIDCard()
-    }
-  }, [user])
+  const idCardData = { front: null, back: null, ...data, ...uploadedSides }
 
   const handleUploadClick = (side) => {
     setCurrentSide(side)
@@ -39,7 +35,7 @@ const IDCardPage = () => {
   }
 
   const handleImageUpload = (side, imageUrl) => {
-    setIdCardData((prev) => ({
+    setUploadedSides((prev) => ({
       ...prev,
       [side]: imageUrl,
     }))
@@ -237,11 +233,11 @@ const IDCardPage = () => {
         <p style={styles.subtitle}>Upload and manage your ID card images for verification purposes.</p>
       </div>
 
-      {error && (
+      {isError && (
         <div style={styles.errorBox}>
           <div style={styles.errorContent}>
             <Info style={styles.errorIcon} size={20} />
-            <p style={styles.errorText}>{error}</p>
+            <p style={styles.errorText}>{error?.message ?? "Failed to load ID card data"}</p>
           </div>
         </div>
       )}

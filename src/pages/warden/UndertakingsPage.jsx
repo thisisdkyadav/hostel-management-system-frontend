@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
 import { Button, SearchInput } from "hzero"
 import NoResults from "../../components/common/NoResults"
 import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
 import { adminApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
@@ -25,31 +27,29 @@ const UndertakingsPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [showAddModal, setShowAddModal] = useState(false)
-  const [undertakings, setUndertakings] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   const isAdmin = user?.role === "Admin"
 
-  const filteredUndertakings = filterUndertakings(undertakings, filterStatus, searchTerm)
+  const undertakingsQuery = useQuery({
+    queryKey: queryKeys.undertakings.wardenList(),
+    queryFn: () => adminApi.getUndertakings(),
+  })
 
-  const fetchUndertakings = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await adminApi.getUndertakings()
-      setUndertakings(response.undertakings || [])
-    } catch (error) {
-      console.error("Error fetching undertakings:", error)
-      setError("Failed to fetch undertakings. Please try again.")
-    } finally {
-      setLoading(false)
-    }
-  }
+  const undertakings = undertakingsQuery.data?.undertakings || []
+  const loading = undertakingsQuery.isPending
+  const error = undertakingsQuery.isError ? "Failed to fetch undertakings. Please try again." : null
 
   useEffect(() => {
-    fetchUndertakings()
-  }, [])
+    if (undertakingsQuery.isError) {
+      console.error("Error fetching undertakings:", undertakingsQuery.error)
+    }
+  }, [undertakingsQuery.isError, undertakingsQuery.error])
+
+  const refreshUndertakings = () => {
+    undertakingsQuery.refetch()
+  }
+
+  const filteredUndertakings = filterUndertakings(undertakings, filterStatus, searchTerm)
 
   const styles = {
     container: { padding: "var(--spacing-6) var(--spacing-4)", flex: 1 },
@@ -91,12 +91,12 @@ const UndertakingsPage = () => {
       ) : (
         <div style={styles.grid} className="undertakings-grid">
           {filteredUndertakings.map((undertaking) => (
-            <UndertakingCard key={undertaking.id} undertaking={undertaking} onUpdate={fetchUndertakings} onDelete={fetchUndertakings} isReadOnly={!isAdmin} />
+            <UndertakingCard key={undertaking.id} undertaking={undertaking} onUpdate={refreshUndertakings} onDelete={refreshUndertakings} isReadOnly={!isAdmin} />
           ))}
         </div>
       )}
 
-      {isAdmin && <AddUndertakingModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchUndertakings} />}
+      {isAdmin && <AddUndertakingModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={refreshUndertakings} />}
 
       <style>{`
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

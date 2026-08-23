@@ -7,7 +7,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
 import { useSocket } from "@/contexts/SocketProvider"
-import { adminApi, electionsApi, studentApi } from "@/service"
+import { electionsApi } from "@/service"
 import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspace"
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
 import {
@@ -26,6 +26,7 @@ import { nominationTabs, nominationTemplateHeaders, phaseOptions, postCategoryOp
 import { buildD15Timeline, buildResultsDraftMap, formatApiErrorMessage, formatDateTime, formatElectionOptionLabel, formatStageLabel, formatVotePercentage, fromDateTimeLocal, sortByActivity, splitListInput, summarizeScope } from "./elections/helpers"
 import { buildElectionFormFromDetail, buildNominationDraftFromPost, buildNominationPayload, createBlankElectionForm, createBlankNominationForm, createBlankPost, createBlankSupporterEntry, hydrateSupporterEntries, serializeElectionFormForApi } from "./elections/form"
 import { createEmptyWizardErrors, validateElectionWizard, validateNominationForm } from "./elections/validation"
+import { useElectionsData } from "./elections/useElectionsData"
 
 
 
@@ -109,26 +110,17 @@ const ElectionsPage = () => {
     String(user?.subRole || "").trim().toLowerCase().replace(/\s+/g, " ") === "election officer"
   const isAdminLikeView = isAdminView || isGymkhanaElectionOfficerView
 
-  const [batchOptions, setBatchOptions] = useState([])
-  const [groupOptions, setGroupOptions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  const [adminElections, setAdminElections] = useState([])
   const [selectedAdminElectionId, setSelectedAdminElectionId] = useState("")
-  const [selectedAdminElection, setSelectedAdminElection] = useState(null)
   const [adminViewTab, setAdminViewTab] = useState(isGymkhanaElectionOfficerView ? "nominations" : "posts")
   const [nominationTab, setNominationTab] = useState("all")
   const [historyModalOpen, setHistoryModalOpen] = useState(false)
   const [showMockHistoryElections, setShowMockHistoryElections] = useState(false)
 
-  const [studentElections, setStudentElections] = useState([])
   const [selectedStudentElectionId, setSelectedStudentElectionId] = useState("")
 
   const [wizardOpen, setWizardOpen] = useState(false)
   const [wizardMode, setWizardMode] = useState("create")
   const [wizardForm, setWizardForm] = useState(createBlankElectionForm())
-  const [savingElection, setSavingElection] = useState(false)
 
   const [reviewNomination, setReviewNomination] = useState(null)
   const [nominationFormDrafts, setNominationFormDrafts] = useState({})
@@ -138,26 +130,55 @@ const ElectionsPage = () => {
   const [resultsDrafts, setResultsDrafts] = useState({})
   const [resultsEditorPostId, setResultsEditorPostId] = useState("")
   const [busyKey, setBusyKey] = useState("")
-  const [liveVotingStats, setLiveVotingStats] = useState(null)
-  const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
   const [sendVotingEmailMode, setSendVotingEmailMode] = useState("reuse_existing")
   const [sendVotingEmailReminder, setSendVotingEmailReminder] = useState(false)
   const [sendVotingEmailRollNumbers, setSendVotingEmailRollNumbers] = useState([])
   const [showVotingEmailRecipientsModal, setShowVotingEmailRecipientsModal] = useState(false)
-  const [loadingVotingEmailRecipients, setLoadingVotingEmailRecipients] = useState(false)
-  const [votingEmailRecipientsData, setVotingEmailRecipientsData] = useState(null)
   const [showSendTestEmailsConfirm, setShowSendTestEmailsConfirm] = useState(false)
   const [sendTestEmailRollNumbers, setSendTestEmailRollNumbers] = useState([])
   const [manualTestEmailRollNumber, setManualTestEmailRollNumber] = useState("")
   const [showTestEmailRecipientsModal, setShowTestEmailRecipientsModal] = useState(false)
-  const [loadingTestEmailRecipients, setLoadingTestEmailRecipients] = useState(false)
-  const [testEmailRecipientsData, setTestEmailRecipientsData] = useState(null)
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [showResultsExportModal, setShowResultsExportModal] = useState(false)
   const [resultsExportVariant, setResultsExportVariant] = useState("flat")
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
+
+  const {
+    batchOptions,
+    groupOptions,
+    adminElections,
+    selectedAdminElection,
+    liveVotingStats,
+    loadingVotingStats,
+    votingEmailRecipientsData,
+    loadingVotingEmailRecipients,
+    testEmailRecipientsData,
+    loadingTestEmailRecipients,
+    studentElections,
+    isLoadingCore,
+    coreError,
+    refetchAdminDetail,
+    refetchLiveVotingStats,
+    setLiveVotingStatsCache,
+    refreshAdminElections,
+    refreshStudentPortal,
+    retryCore,
+    saveElectionMutation,
+  } = useElectionsData({
+    isAdminView,
+    isAdminLikeView,
+    isStudentView,
+    selectedAdminElectionId,
+    showVotingEmailRecipientsModal,
+    showTestEmailRecipientsModal,
+    liveStatsPollTabActive: isAdminView && adminViewTab === "voting",
+  })
+
+  const savingElection = saveElectionMutation.isPending
+  const loading = isLoadingCore
+  const error = coreError ? formatApiErrorMessage(coreError, "Failed to load elections") : ""
 
   const normalizedHostels = useMemo(
     () =>
@@ -230,127 +251,38 @@ const ElectionsPage = () => {
   const canCloneElection = Boolean(selectedAdminElection && !cloneElectionDisabledReason)
   const isAdminElectionLiveVotingStage = selectedAdminElection?.currentStage === "voting"
 
-  const loadBatchOptions = async () => {
-    try {
-      const batches = await studentApi.getBatchList()
-      setBatchOptions(Array.isArray(batches) ? batches : [])
-    } catch {
-      setBatchOptions([])
+  useEffect(() => {
+    if (isAdminView && (!hostelList || hostelList.length === 0)) {
+      fetchHostelList?.()
     }
-  }
+  }, [fetchHostelList, hostelList, isAdminView])
 
-  const loadGroupOptions = async () => {
-    if (!isAdminView) {
-      setGroupOptions([])
-      return
-    }
-
-    try {
-      const response = await adminApi.getStudentGroups()
-      setGroupOptions(Array.isArray(response?.value) ? response.value : [])
-    } catch {
-      setGroupOptions([])
-    }
-  }
-
-  const loadAdminElections = async (preserveSelection = true) => {
-    const response = await electionsApi.listAdminElections()
-    const elections = response?.data?.elections || []
-    const nonMockElections = elections.filter((item) => !Boolean(item?.mockSettings?.enabled))
-    setAdminElections(elections)
-
+  // Default the admin selection once per loaded list; preserve an existing
+  // valid pick across background refetches (old loader behaviour).
+  const [lastAdminElections, setLastAdminElections] = useState(null)
+  if (isAdminLikeView && lastAdminElections !== adminElections) {
+    setLastAdminElections(adminElections)
+    const nonMockElections = adminElections.filter((item) => !Boolean(item?.mockSettings?.enabled))
     setSelectedAdminElectionId((current) => {
-      if (preserveSelection && current && elections.some((item) => item.id === current)) {
-        return current
-      }
+      if (current && adminElections.some((item) => item.id === current)) return current
       return sortByActivity(nonMockElections) || nonMockElections[0]?.id || ""
     })
   }
 
-  const loadAdminDetail = async (electionId) => {
-    if (!electionId) {
-      setSelectedAdminElection(null)
-      return
-    }
-    const response = await electionsApi.getElectionDetail(electionId)
-    setSelectedAdminElection(response?.data || null)
-  }
-
-  const loadVotingLiveStats = async (electionId, { silent = false } = {}) => {
-    if (!electionId) {
-      setLiveVotingStats(null)
-      setLoadingVotingStats(false)
-      return
-    }
-
-    try {
-      setLoadingVotingStats(true)
-      const response = await electionsApi.getVotingLiveStats(electionId)
-      setLiveVotingStats(response?.data || null)
-    } catch (err) {
-      setLiveVotingStats(null)
-      if (!silent) {
-        toast.error(formatApiErrorMessage(err, "Failed to load live voting data"))
-      }
-    } finally {
-      setLoadingVotingStats(false)
-    }
-  }
-
-  const loadVotingEmailRecipients = async (electionId, { silent = false } = {}) => {
-    if (!electionId) {
-      setVotingEmailRecipientsData(null)
-      setLoadingVotingEmailRecipients(false)
-      return
-    }
-
-    try {
-      setLoadingVotingEmailRecipients(true)
-      const response = await electionsApi.getVotingEmailRecipients(electionId)
-      setVotingEmailRecipientsData(response?.data || null)
-    } catch (err) {
-      if (!silent) {
-        toast.error(formatApiErrorMessage(err, "Failed to load voting email recipients"))
-      }
-    } finally {
-      setLoadingVotingEmailRecipients(false)
-    }
-  }
-
-  const loadTestEmailRecipients = async (electionId, { silent = false } = {}) => {
-    if (!electionId) {
-      setTestEmailRecipientsData(null)
-      setLoadingTestEmailRecipients(false)
-      return
-    }
-
-    try {
-      setLoadingTestEmailRecipients(true)
-      const response = await electionsApi.getTestEmailRecipients(electionId)
-      setTestEmailRecipientsData(response?.data || null)
-    } catch (err) {
-      if (!silent) {
-        toast.error(formatApiErrorMessage(err, "Failed to load test email recipients"))
-      }
-    } finally {
-      setLoadingTestEmailRecipients(false)
-    }
-  }
-
-  const loadStudentPortal = async () => {
-    const electionsResponse = await electionsApi.getStudentCurrent()
-    const nextElections = electionsResponse?.data?.elections || []
-
-    setStudentElections(nextElections)
+  // Seed the student portal selection plus nomination drafts / vote selections
+  // whenever fresh student election data lands.
+  const [lastStudentElections, setLastStudentElections] = useState(null)
+  if (isStudentView && lastStudentElections !== studentElections) {
+    setLastStudentElections(studentElections)
 
     setSelectedStudentElectionId((current) => {
-      if (current && nextElections.some((item) => item.id === current)) return current
-      return sortByActivity(nextElections) || nextElections[0]?.id || ""
+      if (current && studentElections.some((item) => item.id === current)) return current
+      return sortByActivity(studentElections) || studentElections[0]?.id || ""
     })
 
     const nextDrafts = {}
     const nextVoteSelections = {}
-    nextElections.forEach((election) => {
+    studentElections.forEach((election) => {
       ;(election.posts || []).forEach((post) => {
         nextDrafts[`${election.id}:${post.id}`] = buildNominationDraftFromPost(post)
         nextVoteSelections[`${election.id}:${post.id}`] = post.votedCandidateNominationId || ""
@@ -359,51 +291,6 @@ const ElectionsPage = () => {
     setNominationFormDrafts(nextDrafts)
     setVoteSelections(nextVoteSelections)
   }
-
-  const loadPage = async () => {
-    try {
-      setLoading(true)
-      setError("")
-      if (isAdminView) {
-        await loadBatchOptions()
-        await loadGroupOptions()
-      }
-
-      if (isAdminLikeView) {
-        await loadAdminElections(false)
-      }
-
-      if (isStudentView) {
-        await loadStudentPortal()
-      }
-    } catch (err) {
-      setError(formatApiErrorMessage(err, "Failed to load elections"))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadPage()
-  }, [isAdminLikeView, isStudentView])
-
-  useEffect(() => {
-    if (isAdminView && (!hostelList || hostelList.length === 0)) {
-      fetchHostelList?.()
-    }
-  }, [fetchHostelList, hostelList, isAdminView])
-
-  useEffect(() => {
-    if (!isAdminLikeView) return
-    if (!selectedAdminElectionId) {
-      setSelectedAdminElection(null)
-      return
-    }
-
-    loadAdminDetail(selectedAdminElectionId).catch((err) => {
-      toast.error(formatApiErrorMessage(err, "Failed to load election details"))
-    })
-  }, [isAdminLikeView, selectedAdminElectionId, toast])
 
   useEffect(() => {
     if (!isGymkhanaElectionOfficerView) return
@@ -423,19 +310,12 @@ const ElectionsPage = () => {
   useEffect(() => {
     if (!isAdminView) return
 
-    if (!selectedAdminElection?.votingControlWindowOpen) {
-      setLiveVotingStats(null)
-      setLoadingVotingStats(false)
-      if (adminViewTab === "voting") {
-        setAdminViewTab("posts")
-      }
-      return
+    // The data layer owns stats fetching/clearing; this effect only keeps the
+    // tab honest when the voting window closes.
+    if (!selectedAdminElection?.votingControlWindowOpen && adminViewTab === "voting") {
+      setAdminViewTab("posts")
     }
-
-    if (selectedAdminElectionId) {
-      loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
-    }
-  }, [adminViewTab, isAdminView, selectedAdminElection?.votingControlWindowOpen, selectedAdminElectionId])
+  }, [adminViewTab, isAdminView, selectedAdminElection?.votingControlWindowOpen])
 
   useEffect(() => {
     if (!isAdminView) return
@@ -451,12 +331,12 @@ const ElectionsPage = () => {
 
     const cleanupVotingUpdate = onSocketEvent?.("election:voting-live:update", (payload) => {
       if (String(payload?.electionId || "") !== String(selectedAdminElectionId)) return
-      setLiveVotingStats(payload?.stats || null)
+      setLiveVotingStatsCache(() => payload?.stats || null)
     })
 
     const cleanupDispatchUpdate = onSocketEvent?.("election:voting-live:dispatch", (payload) => {
       if (String(payload?.electionId || "") !== String(selectedAdminElectionId)) return
-      setLiveVotingStats((current) => ({
+      setLiveVotingStatsCache((current) => ({
         electionId: String(payload?.electionId || selectedAdminElectionId),
         generatedAt: current?.generatedAt || null,
         overview: current?.overview || {},
@@ -470,60 +350,6 @@ const ElectionsPage = () => {
       cleanupDispatchUpdate?.()
     }
   }, [isAdminView, onSocketEvent, selectedAdminElectionId])
-
-  useEffect(() => {
-    if (!isAdminView || adminViewTab !== "voting" || !selectedAdminElectionId) return undefined
-
-    const dispatchStatus = String(liveVotingStats?.dispatch?.status || "")
-    if (!["queued", "running"].includes(dispatchStatus)) return undefined
-
-    const intervalId = window.setInterval(() => {
-      loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
-    }, 3000)
-
-    return () => window.clearInterval(intervalId)
-  }, [
-    adminViewTab,
-    isAdminView,
-    liveVotingStats?.dispatch?.status,
-    loadVotingLiveStats,
-    selectedAdminElectionId,
-  ])
-
-  useEffect(() => {
-    if (!showVotingEmailRecipientsModal || !selectedAdminElectionId) return undefined
-
-    const dispatchStatus = String(liveVotingStats?.dispatch?.status || "")
-    if (!["queued", "running"].includes(dispatchStatus)) return undefined
-
-    const intervalId = window.setInterval(() => {
-      loadVotingEmailRecipients(selectedAdminElectionId, { silent: true }).catch(() => {})
-    }, 3000)
-
-    return () => window.clearInterval(intervalId)
-  }, [
-    liveVotingStats?.dispatch?.status,
-    selectedAdminElectionId,
-    showVotingEmailRecipientsModal,
-  ])
-
-  useEffect(() => {
-    if (!showTestEmailRecipientsModal || !selectedAdminElectionId) return undefined
-
-    const dispatchStatus = String(selectedAdminElection?.testEmailDispatch?.status || "")
-    if (!["queued", "running"].includes(dispatchStatus)) return undefined
-
-    const intervalId = window.setInterval(() => {
-      loadTestEmailRecipients(selectedAdminElectionId, { silent: true }).catch(() => {})
-      loadAdminDetail(selectedAdminElectionId).catch(() => {})
-    }, 3000)
-
-    return () => window.clearInterval(intervalId)
-  }, [
-    selectedAdminElection?.testEmailDispatch?.status,
-    selectedAdminElectionId,
-    showTestEmailRecipientsModal,
-  ])
 
   const openCreateWizard = () => {
     setWizardMode("create")
@@ -546,26 +372,26 @@ const ElectionsPage = () => {
 
   const saveElection = async () => {
     try {
-      setSavingElection(true)
       const payload = serializeElectionFormForApi(wizardForm)
-      const response =
-        wizardMode === "edit" && selectedAdminElectionId
-          ? await electionsApi.updateElection(selectedAdminElectionId, payload)
-          : await electionsApi.createElection(payload)
+      const response = await saveElectionMutation.mutateAsync({
+        mode: wizardMode,
+        id: selectedAdminElectionId,
+        payload,
+      })
 
       toast.success(response?.message || "Election saved")
       setWizardOpen(false)
-      await loadAdminElections(false)
+      await refreshAdminElections()
       if (response?.data?.id) {
         setSelectedAdminElectionId(response.data.id)
-      }
-      if (selectedAdminElectionId || response?.data?.id) {
-        await loadAdminDetail(response?.data?.id || selectedAdminElectionId)
+        // Selecting the new/edited id re-keys the detail query, which fetches
+        // on its own; for an edit of the current selection force the refresh.
+        if (response.data.id === selectedAdminElectionId) {
+          await refetchAdminDetail()
+        }
       }
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to save election"))
-    } finally {
-      setSavingElection(false)
     }
   }
 
@@ -579,7 +405,7 @@ const ElectionsPage = () => {
         notes,
       })
       toast.success(response?.message || "Nomination updated")
-      await loadAdminDetail(selectedAdminElectionId)
+      await refetchAdminDetail()
       setReviewNomination(null)
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to review nomination"))
@@ -740,7 +566,7 @@ const ElectionsPage = () => {
       )
       toast.success(response?.message || "Nomination saved")
       setNominationContext(null)
-      await loadStudentPortal()
+      await refreshStudentPortal()
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to save nomination"))
     } finally {
@@ -753,7 +579,7 @@ const ElectionsPage = () => {
       setBusyKey(`withdraw:${electionId}:${nominationId}`)
       const response = await electionsApi.withdrawNomination(electionId, nominationId)
       toast.success(response?.message || "Nomination withdrawn")
-      await loadStudentPortal()
+      await refreshStudentPortal()
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to withdraw nomination"))
     } finally {
@@ -776,7 +602,7 @@ const ElectionsPage = () => {
       setBusyKey(`vote:${electionId}`)
       const response = await electionsApi.submitStudentVotes(electionId, { votes })
       toast.success(response?.message || "Vote submitted successfully")
-      await loadStudentPortal()
+      await refreshStudentPortal()
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to submit vote"))
     } finally {
@@ -820,7 +646,7 @@ const ElectionsPage = () => {
       }
       const response = await electionsApi.publishResults(selectedAdminElectionId, payload)
       toast.success(response?.message || "Results published")
-      await loadAdminDetail(selectedAdminElectionId)
+      await refetchAdminDetail()
       setResultsEditorPostId("")
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to publish results"))
@@ -1022,7 +848,7 @@ const ElectionsPage = () => {
         reminder: sendVotingEmailReminder,
         targetRollNumbers: sendVotingEmailRollNumbers,
       })
-      setLiveVotingStats((current) =>
+      setLiveVotingStatsCache((current) =>
         current
           ? {
               ...current,
@@ -1040,8 +866,8 @@ const ElectionsPage = () => {
       setSendVotingEmailReminder(false)
 
       window.setTimeout(() => {
-        loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
-        loadAdminDetail(selectedAdminElectionId).catch(() => {})
+        refetchLiveVotingStats().catch(() => {})
+        refetchAdminDetail().catch(() => {})
       }, 1500)
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to send voting emails"))
@@ -1054,7 +880,7 @@ const ElectionsPage = () => {
     if (!selectedAdminElectionId) return
 
     setShowVotingEmailRecipientsModal(true)
-    await loadVotingEmailRecipients(selectedAdminElectionId)
+    // the recipients query fetches itself once the modal flag enables it
   }
 
   const exportVotingEmailRecipientsCsv = () => {
@@ -1110,7 +936,7 @@ const ElectionsPage = () => {
       setManualTestEmailRollNumber("")
 
       window.setTimeout(() => {
-        loadAdminDetail(selectedAdminElectionId).catch(() => {})
+        refetchAdminDetail().catch(() => {})
       }, 1500)
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to send test emails"))
@@ -1123,7 +949,7 @@ const ElectionsPage = () => {
     if (!selectedAdminElectionId) return
 
     setShowTestEmailRecipientsModal(true)
-    await loadTestEmailRecipients(selectedAdminElectionId)
+    // the test-recipients query fetches itself once the modal flag enables it
   }
 
   const exportTestEmailRecipientsCsv = () => {
@@ -1161,10 +987,9 @@ const ElectionsPage = () => {
       })
       toast.success(response?.message || "Election copied")
       setCloneElectionOpen(false)
-      await loadAdminElections(false)
+      await refreshAdminElections()
       if (response?.data?.id) {
-        setSelectedAdminElectionId(response.data.id)
-        await loadAdminDetail(response.data.id)
+        setSelectedAdminElectionId(String(response.data.id))
       }
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to copy election"))
@@ -1178,7 +1003,7 @@ const ElectionsPage = () => {
   }
 
   if (error) {
-    return <ErrorState title="Unable to load elections" message={error} onRetry={loadPage} />
+    return <ErrorState title="Unable to load elections" message={error} onRetry={retryCore} />
   }
 
   return (

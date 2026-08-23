@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "react-router-dom"
 import { Button, DataTable, StatusBadge, Text } from "hzero"
 import { BookOpen, Plus } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { accommodationApi } from "@/service"
+import { queryKeys } from "@/lib/query"
 import { getStatusTone, getStudentStatusLabel } from "@/constants/accommodationStatus"
 import { shortId, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationRequestWizard from "../../components/accommodation/AccommodationRequestWizard"
@@ -11,8 +13,6 @@ import AccommodationRequestDetail from "../../components/accommodation/Accommoda
 import AccommodationGuidelinesModal from "../../components/accommodation/AccommodationGuidelinesModal"
 
 const AccommodationPage = () => {
-  const [requests, setRequests] = useState([])
-  const [loading, setLoading] = useState(true)
   const [wizardOpen, setWizardOpen] = useState(false)
   const [resubmitTarget, setResubmitTarget] = useState(null)
   const [selected, setSelected] = useState(null)
@@ -20,21 +20,13 @@ const AccommodationPage = () => {
   const [searchParams] = useSearchParams()
   const handledRequestParamRef = useRef(null)
 
-  const fetchRequests = useCallback(async () => {
-    setLoading(true)
-    try {
-      const res = await accommodationApi.listRequests({ limit: 100 })
-      setRequests(res?.data?.items || [])
-    } catch {
-      setRequests([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const { data: requests, isLoading: loading, refetch } = useQuery({
+    queryKey: queryKeys.accommodationRequests.list({ limit: 100 }),
+    queryFn: () => accommodationApi.listRequests({ limit: 100 }),
+    select: (res) => res?.data?.items || [],
+  })
 
-  useEffect(() => {
-    fetchRequests()
-  }, [fetchRequests])
+  const refreshRequests = () => refetch()
 
   const openNew = () => {
     setResubmitTarget(null)
@@ -71,7 +63,7 @@ const AccommodationPage = () => {
   }
 
   const refreshSelected = async () => {
-    await fetchRequests()
+    await refetch()
     if (selected) {
       try {
         const res = await accommodationApi.getRequest(selected._id || selected.id)
@@ -125,7 +117,7 @@ const AccommodationPage = () => {
         open={wizardOpen}
         existingRequest={resubmitTarget}
         onClose={() => setWizardOpen(false)}
-        onSubmitted={fetchRequests}
+        onSubmitted={refreshRequests}
       />
 
       <AccommodationRequestDetail

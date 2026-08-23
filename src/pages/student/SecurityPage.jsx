@@ -1,58 +1,70 @@
-import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
 import AccessHistory from "../../components/AccessHistory"
 import OfflineBanner from "../../components/common/OfflineBanner"
 import { useAuth } from "../../contexts/AuthProvider"
 import { securityApi } from "../../service"
+import { queryKeys } from "../../lib/query"
 
 const SECURITY_CACHE_KEY = "student_security_data"
 
+const readCachedSecurityData = () => {
+  try {
+    const cachedData = localStorage.getItem(SECURITY_CACHE_KEY)
+    if (!cachedData) return null
+    const { data } = JSON.parse(cachedData)
+    return data ?? null
+  } catch {
+    return null
+  }
+}
+
+// Cache fallbacks are wrapped so the page can tell served-from-cache data apart
+// from a fresh successful response without mirroring anything into useState.
+const wrapFromCache = (data) => ({ __fromCache: true, data })
+
+const isFromCache = (value) => Boolean(value && typeof value === "object" && value.__fromCache === true)
+
 const SecurityPage = () => {
   const { isOnline } = useAuth()
-  const [isOfflineData, setIsOfflineData] = useState(false)
-  const [accessData, setAccessData] = useState(null)
 
-  useEffect(() => {
-    const fetchSecurityData = async () => {
-      try {
-        if (isOnline) {
-          try {
-            const response = await securityApi.getStudentEntries()
+  const { data } = useQuery({
+    queryKey: queryKeys.securityEntries.student(),
+    queryFn: async () => {
+      if (isOnline) {
+        try {
+          const response = await securityApi.getStudentEntries()
 
-            localStorage.setItem(
-              SECURITY_CACHE_KEY,
-              JSON.stringify({
-                data: response,
-                timestamp: new Date().toISOString(),
-              })
-            )
+          localStorage.setItem(
+            SECURITY_CACHE_KEY,
+            JSON.stringify({
+              data: response,
+              timestamp: new Date().toISOString(),
+            })
+          )
 
-            setAccessData(response)
-            setIsOfflineData(false)
-          } catch (err) {
-            console.error("Error fetching security data:", err)
-            const cachedData = localStorage.getItem(SECURITY_CACHE_KEY)
-            if (cachedData) {
-              const { data } = JSON.parse(cachedData)
-              setAccessData(data)
-              setIsOfflineData(true)
-            }
-          }
-        } else {
-          const cachedData = localStorage.getItem(SECURITY_CACHE_KEY)
+          return response
+        } catch (err) {
+          console.error("Error fetching security data:", err)
+          const cachedData = readCachedSecurityData()
           if (cachedData) {
-            const { data } = JSON.parse(cachedData)
-            setAccessData(data)
-            setIsOfflineData(true)
+            return wrapFromCache(cachedData)
           }
+          throw err
         }
-      } catch (err) {
-        console.error("Error in security data handling:", err)
       }
-    }
 
-    fetchSecurityData()
-  }, [isOnline])
+      const cachedData = readCachedSecurityData()
+      if (cachedData) {
+        return wrapFromCache(cachedData)
+      }
+      throw new Error("Offline and no cached security data available")
+    },
+    retry: false,
+  })
+
+  const isOfflineData = isFromCache(data)
+  const accessData = isOfflineData ? data.data : (data ?? null)
 
   const styles = {
     container: {
