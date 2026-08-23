@@ -966,8 +966,13 @@ const ElectionsPage = () => {
       setBusyKey("smtp-test")
       setSmtpTestResult(null)
       const response = await emailApi.testAllAccounts(receiver)
-      setSmtpTestResult(response?.data || null)
-      toast.success(response?.message || "SMTP account test complete")
+      // sendRawResponse emits the bare data payload on success (no envelope).
+      setSmtpTestResult(response || null)
+      toast.success(
+        response && typeof response === "object" && "totalAccounts" in response
+          ? `SMTP test complete: ${response.workingAccounts}/${response.totalAccounts} account(s) delivered`
+          : "SMTP account test complete"
+      )
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "SMTP account test failed"))
     } finally {
