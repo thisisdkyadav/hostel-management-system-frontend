@@ -59,7 +59,7 @@ export const useCalendarApproval = ({
   )
 
   const approverOptionsQuery = useQuery({
-    queryKey: queryKeys.gymkhana.postStudentAffairsApproverOptions(),
+    queryKey: queryKeys.gymkhana.postStudentAffairsApprovers(),
     queryFn: fetchPostStudentAffairsApprovers,
     enabled: Boolean(canApproveEventsCapability && isAdminLevel),
   })
