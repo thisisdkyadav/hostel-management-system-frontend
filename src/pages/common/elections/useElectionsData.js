@@ -6,6 +6,9 @@ import { queryKeys } from "@/lib/query"
 const isDispatchInFlight = (dispatch) =>
   ["queued", "running"].includes(String(dispatch?.status || ""))
 
+// Stable identities for "query not loaded yet" fallbacks.
+const EMPTY_ARRAY = []
+
 /**
  * Data layer for ElectionsPage. Owns every query and mutation the page needs.
  * Query functions unwrap the API envelope so cached values match the exact
@@ -244,10 +247,13 @@ export const useElectionsData = ({
   }, [isAdminLikeView, isStudentView, selectedAdminElectionId])
 
   return {
-    // data (same names/shapes the page consumed from useState)
-    batchOptions: batchListQuery.data || [],
-    groupOptions: studentGroupsQuery.data || [],
-    adminElections: adminElectionsQuery.data || [],
+    // data (same names/shapes the page consumed from useState).
+    // Module-level constants keep identities STABLE while a query has no
+    // data yet — a fresh `[]` literal per render breaks the page's
+    // render-phase "seed once per dataset" guards and loops re-renders.
+    batchOptions: batchListQuery.data || EMPTY_ARRAY,
+    groupOptions: studentGroupsQuery.data || EMPTY_ARRAY,
+    adminElections: adminElectionsQuery.data || EMPTY_ARRAY,
     selectedAdminElection,
     liveVotingStats,
     loadingVotingStats,
@@ -255,7 +261,7 @@ export const useElectionsData = ({
     loadingVotingEmailRecipients,
     testEmailRecipientsData,
     loadingTestEmailRecipients,
-    studentElections: studentCurrentQuery.data || [],
+    studentElections: studentCurrentQuery.data || EMPTY_ARRAY,
 
     // page-level Loading/Error state
     isLoadingCore:
