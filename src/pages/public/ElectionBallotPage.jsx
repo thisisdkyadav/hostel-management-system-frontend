@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Alert, Button, Card, Grid, Heading, HStack, Spinner, Text } from "hzero"
 import { electionsApi } from "@/service"
@@ -70,6 +70,7 @@ const ElectionBallotPage = () => {
   const [successMessage, setSuccessMessage] = useState("")
   const [ballot, setBallot] = useState(null)
   const [selections, setSelections] = useState({})
+  const submitInFlightRef = useRef(false)
 
   useEffect(() => {
     const load = async () => {
@@ -107,6 +108,12 @@ const ElectionBallotPage = () => {
   )
 
   const submitBallot = async () => {
+    // Synchronous guard: two clicks in the same tick both pass the async
+    // `submitting` state check, but the backend unique index would then turn
+    // the second request into a confusing "already submitted" error.
+    if (submitInFlightRef.current) return
+    submitInFlightRef.current = true
+
     try {
       setSubmitting(true)
       setError("")
@@ -121,8 +128,13 @@ const ElectionBallotPage = () => {
       const refreshed = await electionsApi.getBallotByToken(token)
       setBallot(refreshed?.data || null)
     } catch (err) {
-      setError(err?.message || "Unable to submit your vote")
+      // Never clobber a confirmed success with an error (e.g. the refresh
+      // call failing after the vote itself was recorded).
+      if (!successMessage) {
+        setError(err?.message || "Unable to submit your vote")
+      }
     } finally {
+      submitInFlightRef.current = false
       setSubmitting(false)
     }
   }
