@@ -99,13 +99,6 @@
   font-weight: var(--font-weight-medium);
 }
 
-.student-peek__actions {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: var(--spacing-2);
-  border-top: var(--border-1) solid var(--color-border-light);
-}
-
 .student-table__name-hover,
 .student-table__name-hover > .hover-panel__trigger {
   min-width: 0;

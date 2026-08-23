@@ -9,6 +9,7 @@ import ImportStudentModal from "../../components/common/students/ImportStudentMo
 import UpdateStudentsModal from "../../components/common/students/UpdateStudentsModal"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
 import StudentExportModal from "../../components/common/students/StudentExportModal"
+import { dismissAllHoverPanels } from "../../components/common/HoverPanel"
 import StudentTableView from "../../components/common/students/StudentTableView"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -87,7 +88,6 @@ const StudentsPage = () => {
 
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [openModal, setOpenModal] = useState(null)
-  const [detailTab, setDetailTab] = useState("profile")
   const close = () => setOpenModal(null)
 
   const {
@@ -195,9 +195,9 @@ const StudentsPage = () => {
     }
   }
 
-  const viewStudentDetails = (student, tab = "profile") => {
+  const viewStudentDetails = (student) => {
+    dismissAllHoverPanels()
     setSelectedStudent(student)
-    setDetailTab(typeof tab === "string" ? tab : "profile")
     setOpenModal("detail")
   }
 
@@ -299,7 +299,6 @@ const StudentsPage = () => {
             selectedStudent={selectedStudent}
             setShowStudentDetail={close}
             onUpdate={refreshStudents}
-            initialTab={detailTab}
           />
         )}
 

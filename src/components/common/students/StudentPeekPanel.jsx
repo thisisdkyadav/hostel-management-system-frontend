@@ -1,5 +1,4 @@
-import { Avatar, Button } from "hzero"
-import { useHoverPanel } from "../HoverPanel"
+import { Avatar } from "hzero"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import "./StudentPeekPanel.css"
 
@@ -26,10 +25,9 @@ const genderTone = (gender) => {
 
 /**
  * Compact student hover card. `room` is the floor-map occupant peek;
- * `directory` is the students-table peek (stay path, gender, complaints, View ID).
+ * `directory` is the students-table peek (stay path, gender, complaints).
  */
-const StudentPeekPanel = ({ student, roomNumber, variant = "room", location, onViewId }) => {
-  const hover = useHoverPanel()
+const StudentPeekPanel = ({ student, roomNumber, variant = "room", location }) => {
   if (!student) return null
 
   const stay = stayOf(student, location)
@@ -95,20 +93,6 @@ const StudentPeekPanel = ({ student, roomNumber, variant = "room", location, onV
             </div>
           ))}
         </dl>
-      ) : null}
-      {onViewId ? (
-        <footer className="student-peek__actions">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              onViewId()
-              hover?.closeAll?.()
-            }}
-          >
-            View ID
-          </Button>
-        </footer>
       ) : null}
     </div>
   )

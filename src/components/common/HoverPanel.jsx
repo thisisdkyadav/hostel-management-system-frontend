@@ -30,6 +30,15 @@ const hitTestHoverUi = (trigger, panel, x, y) => {
   return isHoverPanelContent(document.elementFromPoint(x, y))
 }
 
+const hostBox = (trigger, fallback) => {
+  if (typeof trigger.closest !== "function") return fallback
+  const host =
+    trigger.closest(".hover-panel__content") ||
+    trigger.closest(".hz-table-wrapper") ||
+    trigger.closest("table")
+  return host ? host.getBoundingClientRect() : fallback
+}
+
 const place = (trigger, panel, placement, align) => {
   const t = trigger.getBoundingClientRect()
   const p = panel.getBoundingClientRect()
@@ -52,6 +61,23 @@ const place = (trigger, panel, placement, align) => {
   if (placement === "auto") {
     const needed = p.height + GAP + VIEWPORT_PAD
     used = t.top >= needed ? "top" : "bottom"
+  } else if (placement === "outside" || placement === "outside-left" || placement === "outside-right") {
+    if (placement === "outside") {
+      const h = hostBox(trigger, t)
+      const need = p.width + GAP + VIEWPORT_PAD
+      const spaceLeft = h.left
+      const spaceRight = window.innerWidth - h.right
+      const leftFits = spaceLeft >= need
+      const rightFits = spaceRight >= need
+      used =
+        leftFits !== rightFits
+          ? leftFits
+            ? "outside-left"
+            : "outside-right"
+          : spaceLeft >= spaceRight
+            ? "outside-left"
+            : "outside-right"
+    }
   } else if (placement === "right" && t.right + GAP + p.width > window.innerWidth - VIEWPORT_PAD && t.left > window.innerWidth - t.right) {
     used = "left"
   } else if (placement === "left" && t.left - GAP - p.width < VIEWPORT_PAD && window.innerWidth - t.right > t.left) {
@@ -63,6 +89,18 @@ const place = (trigger, panel, placement, align) => {
       top = t.top - p.height - GAP
       left = alignX()
       break
+    case "outside-left": {
+      const h = hostBox(trigger, t)
+      top = alignY()
+      left = h.left - p.width - GAP
+      break
+    }
+    case "outside-right": {
+      const h = hostBox(trigger, t)
+      top = alignY()
+      left = h.right + GAP
+      break
+    }
     case "left":
       top = alignY()
       left = t.left - p.width - GAP

@@ -175,7 +175,7 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
             slot.student ? (
               <HoverPanel
                 key={studentKey(slot.student)}
-                placement="auto"
+                placement="outside"
                 align="start"
                 content={<StudentPeekPanel student={slot.student} />}
               >

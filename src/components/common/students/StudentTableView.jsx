@@ -14,10 +14,6 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
  * own header does that properly now that it takes controlled sort.
  */
 
-const haltRowClick = (event) => {
-  event.stopPropagation()
-}
-
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
   const columns = useMemo(
     () => [
@@ -31,29 +27,17 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
               name={student.name}
               size="small"
             />
-            <div className="min-w-0" onClick={haltRowClick} onPointerDown={haltRowClick}>
-              <HoverPanel
-                className="student-table__name-hover"
-                placement="auto"
-                align="start"
-                content={
-                  <StudentPeekPanel
-                    student={student}
-                    variant="directory"
-                    onViewId={
-                      viewStudentDetails && student.userId
-                        ? () => viewStudentDetails(student, "idcard")
-                        : undefined
-                    }
-                  />
-                }
-              >
-                <VStack gap="none" className="min-w-0 cursor-pointer">
-                  <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
-                  <Text as="div" size="xs" color="muted" className="truncate max-w-[15rem]">{student.email}</Text>
-                </VStack>
-              </HoverPanel>
-            </div>
+            <HoverPanel
+              className="student-table__name-hover"
+              placement="outside-left"
+              align="start"
+              content={<StudentPeekPanel student={student} variant="directory" />}
+            >
+              <VStack gap="none" className="min-w-0">
+                <Text as="div" size="sm" weight="medium" color="primary">{student.name}</Text>
+                <Text as="div" size="xs" color="muted" className="truncate max-w-[15rem]">{student.email}</Text>
+              </VStack>
+            </HoverPanel>
           </div>
         ),
       },
@@ -84,7 +68,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
         render: (student) => <Text as="span" size="sm" color="tertiary" weight="medium">{student.displayRoom}</Text>,
       },
     ],
-    [viewStudentDetails]
+    []
   )
 
   return (
