@@ -458,11 +458,11 @@ const DiningPage = () => {
       }
       patchPeriod("activeAllocationPeriod")
       patchPeriod("period")
-      return next === previous ? undefined : next
+      if (next === previous) return undefined
+      return { ...next, canSelect: false }
     },
     mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId),
-    onSuccess: (response, variables) => {
-      if (response) queryClient.setQueryData(queryKeys.dining.portalState(), response)
+    onSuccess: (_response, variables) => {
       setShowAllocationModal(false)
       setSuccessMessage(`${variables.catererName} selected successfully.`)
     },
