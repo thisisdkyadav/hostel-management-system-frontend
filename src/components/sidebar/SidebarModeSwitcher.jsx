@@ -4,8 +4,8 @@ import { SIDEBAR_MODE_OPTIONS } from "./sidebarModes"
 import NewBadge from "./NewBadge"
 
 /**
- * Compact mode pill in the sidebar header. Shows the current mode (V1/V2/V3)
- * and opens a small menu describing all three layouts.
+ * Compact mode pill in the sidebar header. Shows the current mode (V1–V4)
+ * and opens a small menu describing each layout.
  */
 const SidebarModeSwitcher = ({ mode, onChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -58,7 +58,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
       {isMenuOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-1.5 w-52 p-1.5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] z-50 animate-fadeIn"
+          className="absolute right-0 top-full mt-1.5 w-56 p-1.5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] z-50 animate-fadeIn"
           style={{ boxShadow: "var(--shadow-dropdown)" }}
         >
           {SIDEBAR_MODE_OPTIONS.map((option) => {

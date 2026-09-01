@@ -4,10 +4,12 @@
  * v1 — "All tabs": one grouped, filterable list (no category switching)
  * v2 — "Categories": bottom category bar + pinned Home (default)
  * v3 — "Workspace": quick jump + pinned + recents + collapsible categories
+ * v4 — "Icon rail": v2 categories/pins, with the bar + profile in a left rail
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
 export const SIDEBAR_MODE_WORKSPACE = "v3"
+export const SIDEBAR_MODE_RAIL = "v4"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_CATEGORIES
@@ -33,6 +35,12 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V3",
     name: "Workspace",
     description: "Pinned, recents and Ctrl+K quick jump",
+  },
+  {
+    id: SIDEBAR_MODE_RAIL,
+    label: "V4",
+    name: "Icon rail",
+    description: "Category icons on the left; profile and theme sit with them",
   },
 ]
 

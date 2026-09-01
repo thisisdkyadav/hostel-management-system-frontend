@@ -11,6 +11,7 @@ import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
 import NewBadge from "./sidebar/NewBadge"
 import CategoryBar from "./sidebar/CategoryBar"
+import IconRail from "./sidebar/IconRail"
 import { getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
@@ -19,6 +20,7 @@ import {
   SIDEBAR_MODE_FLAT,
   SIDEBAR_MODE_CATEGORIES,
   SIDEBAR_MODE_WORKSPACE,
+  SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STORAGE_KEY,
   readStoredSidebarMode,
 } from "./sidebar/sidebarModes"
@@ -76,9 +78,10 @@ const Sidebar = ({ navItems }) => {
 
   const isAdmin = user?.role === "Admin"
   const isRestrictedCsoAdmin = isAdmin && isCsoAdminSubRole(user)
-  // The V1/V2/V3 layouts only apply to the full admin nav; everyone else gets the plain list
+  // The V1–V4 layouts only apply to the full admin nav; everyone else gets the plain list
   const isAdminNav = isAdmin && !isRestrictedCsoAdmin
-  const isCategorizedMode = isAdminNav && sidebarMode === SIDEBAR_MODE_CATEGORIES
+  const isRailMode = isAdminNav && sidebarMode === SIDEBAR_MODE_RAIL
+  const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode)
 
   const mainNavItems = useMemo(
     () => (Array.isArray(navItems) ? navItems.filter((item) => item.section === "main") : []),
@@ -94,7 +97,7 @@ const Sidebar = ({ navItems }) => {
     .map((item) => item.path)
     .join("|")
 
-  // Set data-admin-category on <html> so non-sidebar surfaces can tint by category (V2 only)
+  // Set data-admin-category on <html> so non-sidebar surfaces can tint by category (V2 / V4)
   useEffect(() => {
     if (isCategorizedMode) {
       document.documentElement.setAttribute("data-admin-category", activeAdminCategory)
@@ -350,54 +353,77 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <Surface shadow="sm" className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] w-[280px] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
-        <div className="flex flex-col h-full">
-          {/* Logo, mode switcher and collapse toggle */}
-          <Surface bg={headerTint} className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
-            <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
-              <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
-                <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70">
-                  {headerTitle}
-                </Text>
-              </div>
-
-              <HStack align="center" gap="var(--spacing-1-5)" className="shrink-0">
-                {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
-                <span className="relative inline-flex">
-                  <NewBadge />
-                  <button
-                    type="button"
-                    onClick={() => setIsDark((prev) => !prev)}
-                    title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-                    aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
-                  >
-                    {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                  </button>
-                </span>
-              </HStack>
-            </div>
-          </Surface>
-
-          {/* Main navigation (layout depends on role + mode) */}
-          {renderNavBody()}
-
-          {/* Active hostel switcher (warden roles only) */}
-          <HostelSwitcher />
-
-          {/* Profile and logout */}
-          <Surface bg={headerTint} className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3">
-            <ProfileCard
+      <Surface shadow="sm" className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
+        <div className={`flex h-full ${isRailMode ? "flex-row" : "flex-col"}`}>
+          {isRailMode && (
+            <IconRail
+              activeCategory={activeAdminCategory}
+              onCategoryChange={handleCategoryChange}
+              isDark={isDark}
+              onToggleTheme={() => setIsDark((prev) => !prev)}
+              onLogoClick={() => navigate("/")}
               user={user}
               profileItem={profileItem}
               logoutItem={logoutItem}
-              isActive={active === "Profile"}
+              isProfileActive={active === "Profile"}
               onNavigate={handleNavigation}
             />
-          </Surface>
+          )}
 
-          {/* V2 category bar */}
-          {isCategorizedMode && <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} />}
+          <div className="flex flex-col h-full min-w-0 flex-1">
+            {/* Title, mode switcher, and (in V1–V3) the theme toggle */}
+            <Surface bg={headerTint} className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
+              <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
+                <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
+                  <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70">
+                    {headerTitle}
+                  </Text>
+                </div>
+
+                <HStack align="center" gap="var(--spacing-1-5)" className="shrink-0">
+                  {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
+                  {!isRailMode && (
+                    <span className="relative inline-flex">
+                      <NewBadge />
+                      <button
+                        type="button"
+                        onClick={() => setIsDark((prev) => !prev)}
+                        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                        aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+                      >
+                        {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                      </button>
+                    </span>
+                  )}
+                </HStack>
+              </div>
+            </Surface>
+
+            {/* Main navigation (layout depends on role + mode) */}
+            {renderNavBody()}
+
+            {/* Active hostel switcher (warden roles only) */}
+            <HostelSwitcher />
+
+            {/* Profile and logout — V4 keeps these on the left rail */}
+            {!isRailMode && (
+              <Surface bg={headerTint} className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3">
+                <ProfileCard
+                  user={user}
+                  profileItem={profileItem}
+                  logoutItem={logoutItem}
+                  isActive={active === "Profile"}
+                  onNavigate={handleNavigation}
+                />
+              </Surface>
+            )}
+
+            {/* V2 category bar — V4 uses the left rail instead */}
+            {isCategorizedMode && !isRailMode && (
+              <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} />
+            )}
+          </div>
         </div>
       </Surface>
     </>
