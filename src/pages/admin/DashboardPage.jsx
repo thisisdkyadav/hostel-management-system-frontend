@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
   Activity, Award, CalendarCheck, CalendarClock, ClipboardList, CornerDownLeft,
-  FileText, GraduationCap, Receipt, TriangleAlert, Trophy, User, Users,
+  FileText, GraduationCap, Hourglass, Receipt, Star, TriangleAlert, Trophy, User, Users,
 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
@@ -31,6 +31,27 @@ const APPROVAL_TODO_ITEMS = [
   { key: "expenses", label: "Event bills", icon: Receipt, tone: "warning", to: "/admin/gymkhana-events" },
   { key: "por", label: "POR requests", icon: Award, tone: "purple", to: "/admin/por" },
 ]
+
+// Route/icon map for the in-process strip. Backend may send extra keys later;
+// unknown keys still render with these defaults.
+const IN_PROCESS_ITEMS = {
+  por: { to: "/admin/por", icon: Award, tone: "purple" },
+  proposals: { to: "/admin/gymkhana-events", icon: FileText, tone: "primary" },
+}
+
+const ratingTone = (avg) => (avg >= 4 ? "success" : avg >= 3 ? "warning" : "danger")
+
+const RATING_PERIODS = [
+  { value: "1M", label: "1M" },
+  { value: "1Y", label: "1Y" },
+  { value: "all", label: "All time" },
+]
+
+const RATING_EMPTY = {
+  "1M": "Nobody has been rated in the last month.",
+  "1Y": "Nobody has been rated in the last year.",
+  all: "Ratings appear here once students rate resolved complaints.",
+}
 
 const COHORTS = [
   { value: "hostler", label: "Hostlers" },
@@ -436,16 +457,27 @@ const FeedSkeleton = () => (
   </VStack>
 )
 
-const Feed = ({ title, icon, accent, count, to, loading, children }) => (
+const PeriodToggle = ({ value, onChange }) => (
+  <ToggleButtonGroup
+    options={RATING_PERIODS}
+    value={value}
+    onChange={onChange}
+    size="small"
+    hideLabelsOnMobile={false}
+  />
+)
+
+const Feed = ({ title, icon, accent, count, to, loading, actions, children }) => (
   <Panel
     bordered={false}
     title={title}
     icon={icon}
     accent={accent}
     count={loading ? undefined : count}
+    actions={actions}
     link={to ? <Panel.Link as={Link} to={to}>Open</Panel.Link> : undefined}
   >
-    <Panel.Body scroll>
+    <Panel.Body>
       {loading ? <FeedSkeleton /> : <VStack gap="var(--spacing-1-5)">{children}</VStack>}
     </Panel.Body>
   </Panel>
@@ -535,6 +567,98 @@ const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvals
                 tone="purple"
                 label={event.title}
                 value={<Badge variant={variant} size="small">{label}</Badge>}
+              />
+            )
+          })
+        )}
+      </Feed>
+    </Panel.Columns>
+  )
+}
+
+const ResolverRows = ({ people, emptyTitle, emptyMessage }) => {
+  if (!people.length) {
+    return <EmptyState size="sm" icon={Star} title={emptyTitle} message={emptyMessage} />
+  }
+
+  return (
+    <>
+      {people.map((person) => (
+        <StatRow
+          key={person.id}
+          dot
+          tone={ratingTone(person.avgRating)}
+          label={person.name}
+          value={
+            <Badge variant={ratingTone(person.avgRating)} size="small" icon={<Star />}>
+              {Number(person.avgRating).toFixed(1)} · {person.ratingCount}
+            </Badge>
+          }
+        />
+      ))}
+    </>
+  )
+}
+
+const InsightCenter = ({ loading, error, dashboardData }) => {
+  const [bestPeriod, setBestPeriod] = useState("1M")
+  const [leastPeriod, setLeastPeriod] = useState("1M")
+  const bestResolvers = dashboardData?.ratings?.[bestPeriod]?.bestResolvers || []
+  const leastRated = dashboardData?.ratings?.[leastPeriod]?.leastRated || []
+  const inProcess = dashboardData?.inProcess || []
+  const inProcessTotal = inProcess.reduce((sum, item) => sum + (item.count || 0), 0)
+
+  if (error) return <ErrorState message={error} />
+
+  return (
+    <Panel.Columns>
+      <Feed
+        title="Top resolvers"
+        icon={Trophy}
+        accent="success"
+        count={bestResolvers.length}
+        to="/admin/complaints"
+        loading={loading}
+        actions={!loading && <PeriodToggle value={bestPeriod} onChange={setBestPeriod} />}
+      >
+        <ResolverRows
+          people={bestResolvers}
+          emptyTitle="No rated resolvers"
+          emptyMessage={RATING_EMPTY[bestPeriod] || RATING_EMPTY.all}
+        />
+      </Feed>
+
+      <Feed
+        title="Lowest"
+        icon={Star}
+        accent="warning"
+        count={leastRated.length}
+        to="/admin/complaints"
+        loading={loading}
+        actions={!loading && <PeriodToggle value={leastPeriod} onChange={setLeastPeriod} />}
+      >
+        <ResolverRows
+          people={leastRated}
+          emptyTitle="No ratings in this window"
+          emptyMessage={RATING_EMPTY[leastPeriod] || RATING_EMPTY.all}
+        />
+      </Feed>
+
+      <Feed title="In process" icon={Hourglass} accent="info" count={inProcessTotal} loading={loading}>
+        {inProcess.length === 0 ? (
+          <EmptyState size="sm" icon={Hourglass} title="Nothing in process" message="" />
+        ) : (
+          inProcess.map((item) => {
+            const meta = IN_PROCESS_ITEMS[item.key] || { icon: ClipboardList, tone: "info" }
+            return (
+              <StatRow
+                key={item.key}
+                as={meta.to ? Link : undefined}
+                to={meta.to}
+                icon={meta.icon}
+                tone={meta.tone}
+                label={item.label}
+                value={item.count || 0}
               />
             )
           })
@@ -688,13 +812,21 @@ const DashboardPage = () => {
             </Panel>
           </Grid>
 
-          <Panel padded={false} height="md">
+          <Panel padded={false}>
             <ActionCenter
               loading={loading}
               error={error}
               dashboardData={dashboardData}
               approvalCounts={approvalCounts}
               approvalsLoading={approvalsLoading}
+            />
+          </Panel>
+
+          <Panel padded={false}>
+            <InsightCenter
+              loading={loading}
+              error={error}
+              dashboardData={dashboardData}
             />
           </Panel>
         </VStack>
