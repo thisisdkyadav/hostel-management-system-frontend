@@ -67,7 +67,7 @@ const useVersionCheck = ({
     const checkVersion = async () => {
       try {
         const data = await apiClient.get(metaUrl, {
-          baseUrl: "",
+          baseUrl: window.location.origin,
           cache: "no-store",
           headers: { "Cache-Control": "no-cache" },
         })
