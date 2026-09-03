@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Camera, Save, Trash2 } from "lucide-react"
-import { Alert, Avatar, Button, Checkbox, EmptyState, Field, HStack, Input, Modal, Select, useConfirm, useToast, VStack } from "hzero"
+import { Alert, Avatar, Button, Checkbox, EmptyState, Field, Heading, HStack, Input, Modal, Select, useConfirm, useToast, VStack } from "hzero"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -21,11 +21,13 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
 const initialValues = (fields, staff, config) => {
   const source = staff ? (config.toValues ? config.toValues(staff) : staff) : {}
   return Object.fromEntries(
-    fields.map((field) => {
-      const current = source[field.name]
-      if (field.type === "checkboxes") return [field.name, Array.isArray(current) ? current : []]
-      return [field.name, current ?? ""]
-    })
+    fields
+      .filter((field) => field.type !== "heading")
+      .map((field) => {
+        const current = source[field.name]
+        if (field.type === "checkboxes") return [field.name, Array.isArray(current) ? current : []]
+        return [field.name, current ?? ""]
+      })
   )
 }
 
@@ -135,6 +137,8 @@ const StaffFormModal = ({ config, mode, staff, ctx, onClose, onSaved }) => {
   }
 
   const renderField = (field) => {
+    if (field.type === "heading") return null
+
     if (field.type === "image") {
       return (
         <ProfileImageField
@@ -190,15 +194,19 @@ const StaffFormModal = ({ config, mode, staff, ctx, onClose, onSaved }) => {
   }
 
   return (
-    <Modal isOpen title={mode === "create" ? `Add ${noun}` : `Edit ${noun}`} onClose={onClose} width={500}>
+    <Modal isOpen title={mode === "create" ? `Add ${noun}` : `Edit ${noun}`} onClose={onClose} width={560}>
       <form onSubmit={submit}>
         <VStack gap="large">
           {error && <Alert type="error">{error}</Alert>}
 
           {fields.map((field) => (
-            <Field key={field.name} label={field.label} htmlFor={field.name} required={field.required} help={field.help}>
-              {renderField(field)}
-            </Field>
+            field.type === "heading" ? (
+              <Heading key={field.name} as="h4" size="sm" weight="medium" color="heading">{field.label}</Heading>
+            ) : (
+              <Field key={field.name} label={field.label} htmlFor={field.name} required={field.required} help={field.help}>
+                {renderField(field)}
+              </Field>
+            )
           ))}
 
           <HStack

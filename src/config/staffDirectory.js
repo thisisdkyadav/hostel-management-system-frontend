@@ -237,18 +237,44 @@ export const STAFF_TYPES = {
     api: { list: adminApi.getAllAssociateWardens, create: adminApi.addAssociateWarden, update: adminApi.updateAssociateWarden, remove: adminApi.deleteAssociateWarden },
   }),
 
-  hostelSupervisor: hostelRole({
-    key: "hostelSupervisor",
-    title: "Hostel supervisor",
-    plural: "Hostel supervisors",
-    api: { list: adminApi.getAllHostelSupervisors, create: adminApi.addHostelSupervisor, update: adminApi.updateHostelSupervisor, remove: adminApi.deleteHostelSupervisor },
-    extraFields: [
-      { name: "extensionNumber", label: "Extension Number", type: "text", icon: Hash, placeholder: "e.g. 2345", help: "Optional" },
-    ],
-    extraCard: (s) => [
-      { icon: Hash, value: s.extensionNumber ? `Ext ${s.extensionNumber}` : null, label: "Extension" },
-    ],
-  }),
+  hostelSupervisor: {
+    ...hostelRole({
+      key: "hostelSupervisor",
+      title: "Hostel supervisor",
+      plural: "Hostel supervisors",
+      api: { list: adminApi.getAllHostelSupervisors, create: adminApi.addHostelSupervisor, update: adminApi.updateHostelSupervisor, remove: adminApi.deleteHostelSupervisor },
+      extraCard: (s) => [
+        { icon: Hash, value: s.extensionNumber ? `Ext ${s.extensionNumber}` : "Not provided", label: "Extension" },
+      ],
+    }),
+    fields: {
+      create: [
+        ...CREDENTIAL_FIELDS,
+        PASSWORD_FIELD,
+        { type: "heading", name: "contactHeading", label: "Contact" },
+        { name: "phone", label: "Phone Number", type: "tel", icon: Phone, placeholder: "10-digit phone number", help: "Optional" },
+        { name: "extensionNumber", label: "Extension Number", type: "text", icon: Hash, placeholder: "e.g. 2345", help: "Optional" },
+        { name: "category", label: "Category", type: "text", icon: Tag, placeholder: "e.g. Senior, Junior" },
+        { name: "joinDate", label: "Join date", type: "date", icon: Calendar },
+      ],
+      edit: [
+        { name: "profileImage", label: "Profile photo", type: "image" },
+        CREDENTIAL_FIELDS[0],
+        { type: "heading", name: "contactHeading", label: "Contact" },
+        { name: "phone", label: "Phone Number", type: "tel", icon: Phone, placeholder: "10-digit phone number", help: "Optional" },
+        { name: "extensionNumber", label: "Extension Number", type: "text", icon: Hash, placeholder: "e.g. 2345", help: "Optional" },
+        { name: "category", label: "Category", type: "text", icon: Tag, placeholder: "e.g. Senior, Junior" },
+        {
+          name: "hostelIds",
+          label: "Hostel assignments",
+          type: "checkboxes",
+          options: (ctx) => (ctx.hostelList || []).map((h) => ({ value: h._id, label: h.name })),
+          empty: "No hostels configured yet.",
+        },
+        { name: "joinDate", label: "Join date", type: "date", icon: Calendar },
+      ],
+    },
+  },
 
   gymkhana: subRoleRole({
     key: "gymkhana",
