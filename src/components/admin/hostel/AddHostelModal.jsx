@@ -9,6 +9,9 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
     name: "",
     gender: "Boys",
     type: "unit-based",
+    email: "",
+    phone: "",
+    extensionNumber: "",
   })
 
   const handleChange = (e) => {
@@ -19,7 +22,29 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const response = await adminApi.addHostel(formData)
+    const email = formData.email.trim()
+    const phone = formData.phone.trim()
+    const extensionNumber = formData.extensionNumber.trim()
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Please enter a valid email address.")
+      return
+    }
+    if (phone && !/^\d{10}$/.test(phone.replace(/\D/g, ""))) {
+      toast.error("Phone number must be 10 digits.")
+      return
+    }
+    if (extensionNumber && !/^\d{2,8}$/.test(extensionNumber)) {
+      toast.error("Extension number must be 2 to 8 digits.")
+      return
+    }
+
+    const response = await adminApi.addHostel({
+      ...formData,
+      email,
+      phone: phone.replace(/\D/g, ""),
+      extensionNumber,
+    })
     if (!response?.success) {
       toast.error("Failed to add hostel. Please try again.")
       return
@@ -36,6 +61,9 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
       name: "",
       gender: "Boys",
       type: "unit-based",
+      email: "",
+      phone: "",
+      extensionNumber: "",
     })
   }
 
@@ -63,6 +91,20 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
                 <Select name="type" value={formData.type} onChange={handleChange} options={[{ value: "unit-based", label: "Unit-based" }, { value: "room-only", label: "Room-only" }]} required />
               </Field>
             </Grid>
+
+            <Grid cols={{ base: 1, sm: 2 }} gap={4}>
+              <Field label="Email" htmlFor="email" help="Optional">
+                <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="hostel@iiti.ac.in" />
+              </Field>
+
+              <Field label="Phone Number" htmlFor="phone" help="Optional">
+                <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="10-digit phone number" />
+              </Field>
+            </Grid>
+
+            <Field label="Extension Number" htmlFor="extensionNumber" help="Optional">
+              <Input type="text" name="extensionNumber" value={formData.extensionNumber} onChange={handleChange} placeholder="e.g. 2345" />
+            </Field>
           </VStack>
 
           <div style={{ paddingTop: 'var(--spacing-2)' }}>

@@ -1,5 +1,5 @@
 import {
-  Award, Bolt, Brush, Building2, Calendar, GraduationCap, Hammer, Lock, Mail,
+  Award, Bolt, Brush, Building2, Calendar, GraduationCap, Hammer, Hash, Lock, Mail,
   MoreHorizontal, Phone, Shield, ShieldCheck, Tag, User, UserCheck, UserCog,
   Users, Wifi, Wrench,
 } from "lucide-react"
@@ -80,7 +80,7 @@ const PASSWORD_FIELD = {
  * Three roles, one shape: a person attached to one or more hostels. They differ
  * only in wording and endpoint, so they are generated rather than written out.
  */
-const hostelRole = ({ key, title, plural, api }) => ({
+const hostelRole = ({ key, title, plural, api, extraFields = [], extraCard = () => [] }) => ({
   title,
   plural,
   icon: UserCog,
@@ -89,7 +89,7 @@ const hostelRole = ({ key, title, plural, api }) => ({
   gridCols: { base: 1, md: 2, lg: 3 },
 
   filters: ASSIGNMENT_FILTERS((s) => s.hostelIds?.length > 0),
-  search: (s, ctx) => [s.name, s.email, s.phone, s.category, hostelNames(s.hostelIds, ctx)],
+  search: (s, ctx) => [s.name, s.email, s.phone, s.extensionNumber, s.category, hostelNames(s.hostelIds, ctx)],
 
   stats: (list) => [
     { title: `Total ${plural}`, value: list.length, subtitle: `${plural} on record`, icon: Users, color: "var(--color-primary)" },
@@ -105,6 +105,7 @@ const hostelRole = ({ key, title, plural, api }) => ({
     fields: [
       { icon: Mail, value: s.email, label: "Email" },
       { icon: Phone, value: s.phone || "Not provided", label: "Phone" },
+      ...extraCard(s),
       { icon: Building2, value: hostelNames(s.hostelIds, ctx) || "Not assigned", label: "Hostels" },
     ],
   }),
@@ -114,6 +115,7 @@ const hostelRole = ({ key, title, plural, api }) => ({
       ...CREDENTIAL_FIELDS,
       PASSWORD_FIELD,
       { name: "phone", label: "Phone", type: "tel", icon: Phone, placeholder: "+91 98765 43210" },
+      ...extraFields,
       { name: "category", label: "Category", type: "text", icon: Tag, placeholder: "e.g. Senior, Junior" },
       { name: "joinDate", label: "Join date", type: "date", icon: Calendar },
     ],
@@ -121,6 +123,7 @@ const hostelRole = ({ key, title, plural, api }) => ({
       { name: "profileImage", label: "Profile photo", type: "image" },
       CREDENTIAL_FIELDS[0],
       { name: "phone", label: "Phone", type: "tel", icon: Phone, placeholder: "+91 98765 43210" },
+      ...extraFields,
       { name: "category", label: "Category", type: "text", icon: Tag, placeholder: "e.g. Senior, Junior" },
       {
         name: "hostelIds",
@@ -239,6 +242,12 @@ export const STAFF_TYPES = {
     title: "Hostel supervisor",
     plural: "Hostel supervisors",
     api: { list: adminApi.getAllHostelSupervisors, create: adminApi.addHostelSupervisor, update: adminApi.updateHostelSupervisor, remove: adminApi.deleteHostelSupervisor },
+    extraFields: [
+      { name: "extensionNumber", label: "Extension Number", type: "text", icon: Hash, placeholder: "e.g. 2345", help: "Optional" },
+    ],
+    extraCard: (s) => [
+      { icon: Hash, value: s.extensionNumber ? `Ext ${s.extensionNumber}` : null, label: "Extension" },
+    ],
   }),
 
   gymkhana: subRoleRole({

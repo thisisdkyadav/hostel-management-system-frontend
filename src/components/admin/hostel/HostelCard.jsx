@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } from "lucide-react"
+import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList, Mail, Phone, Hash } from "lucide-react"
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
@@ -50,6 +50,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const radius = 15.9155
   const circumference = 2 * Math.PI * radius
   const strokeDasharray = `${hostel.occupancyRate}, 100`
+  const hasContact = Boolean(hostel.email || hostel.phone || hostel.extensionNumber)
 
   return (
     <>
@@ -70,46 +71,71 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         </CardHeader>
 
         {/* Stats and Occupancy Ring */}
-        <CardBody style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-5)' }}>
-          {/* Stats List */}
-          <VStack gap="xsmall">
-            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <DoorClosed size={16} style={{ color: 'var(--color-text-muted)' }} />
-              <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
-            </HStack>
-            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <Users size={16} style={{ color: 'var(--color-text-muted)' }} />
-              <span>{hostel.activeRoomsCapacity} Capacity</span>
-            </HStack>
-            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <DoorOpen size={16} style={{ color: 'var(--color-text-muted)' }} />
-              <span>{hostel.vacantRooms} Vacant Rooms</span>
-            </HStack>
-            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <Wrench size={16} style={{ color: 'var(--color-text-muted)' }} />
-              <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
-            </HStack>
-          </VStack>
+        <CardBody>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: hasContact ? 'var(--spacing-4)' : 'var(--spacing-5)' }}>
+            {/* Stats List */}
+            <VStack gap="xsmall">
+              <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                <DoorClosed size={16} style={{ color: 'var(--color-text-muted)' }} />
+                <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
+              </HStack>
+              <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                <Users size={16} style={{ color: 'var(--color-text-muted)' }} />
+                <span>{hostel.activeRoomsCapacity} Capacity</span>
+              </HStack>
+              <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                <DoorOpen size={16} style={{ color: 'var(--color-text-muted)' }} />
+                <span>{hostel.vacantRooms} Vacant Rooms</span>
+              </HStack>
+              <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                <Wrench size={16} style={{ color: 'var(--color-text-muted)' }} />
+                <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
+              </HStack>
+            </VStack>
 
-          {/* Occupancy Ring */}
-          <VStack gap="var(--spacing-1-5)" align="center">
-            <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
-              <svg
-                style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
-                viewBox="0 0 36 36"
-              >
-                {/* Background circle */}
-                <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="4" />
-                {/* Progress circle — gender colored */}
-                <circle cx="18" cy="18" r={radius} fill="none" stroke={ringColor} strokeWidth="4" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
-              </svg>
-              {/* Center: number only */}
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Text as="span" size="md" weight="bold" color="primary">{hostel.occupancyRate}%</Text>
+            {/* Occupancy Ring */}
+            <VStack gap="var(--spacing-1-5)" align="center">
+              <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
+                <svg
+                  style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
+                  viewBox="0 0 36 36"
+                >
+                  {/* Background circle */}
+                  <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="4" />
+                  {/* Progress circle — gender colored */}
+                  <circle cx="18" cy="18" r={radius} fill="none" stroke={ringColor} strokeWidth="4" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
+                </svg>
+                {/* Center: number only */}
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text as="span" size="md" weight="bold" color="primary">{hostel.occupancyRate}%</Text>
+                </div>
               </div>
-            </div>
-            <Text as="span" size="xs" color="muted" weight="medium">Occupancy</Text>
-          </VStack>
+              <Text as="span" size="xs" color="muted" weight="medium">Occupancy</Text>
+            </VStack>
+          </div>
+
+          {hasContact && (
+            <VStack gap="xsmall" style={{ marginBottom: 'var(--spacing-5)' }}>
+              {hostel.email && (
+                <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                  <Mail size={16} style={{ color: 'var(--color-text-muted)' }} />
+                  <a href={`mailto:${hostel.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{hostel.email}</a>
+                </HStack>
+              )}
+              {hostel.phone && (
+                <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                  <Phone size={16} style={{ color: 'var(--color-text-muted)' }} />
+                  <a href={`tel:${hostel.phone}`} style={{ color: 'inherit', textDecoration: 'none' }}>{hostel.phone}</a>
+                </HStack>
+              )}
+              {hostel.extensionNumber && (
+                <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+                  <Hash size={16} style={{ color: 'var(--color-text-muted)' }} />
+                  <span>Ext {hostel.extensionNumber}</span>
+                </HStack>
+              )}
+            </VStack>
+          )}
         </CardBody>
 
         {/* Action Buttons */}

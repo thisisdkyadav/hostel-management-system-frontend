@@ -9,6 +9,9 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
+    email: "",
+    phone: "",
+    extensionNumber: "",
   })
 
   const [isArchived, setIsArchived] = useState(hostel.isArchived)
@@ -22,6 +25,9 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
       setFormData({
         name: hostel.name || "",
         gender: hostel.gender || "",
+        email: hostel.email || "",
+        phone: hostel.phone || "",
+        extensionNumber: hostel.extensionNumber || "",
       })
     }
   }, [hostel])
@@ -45,6 +51,18 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
       newErrors.gender = "Gender is required"
     }
 
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = "Please enter a valid email address"
+    }
+
+    if (formData.phone.trim() && !/^\d{10}$/.test(formData.phone.replace(/\D/g, ""))) {
+      newErrors.phone = "Phone number must be 10 digits"
+    }
+
+    if (formData.extensionNumber.trim() && !/^\d{2,8}$/.test(formData.extensionNumber.trim())) {
+      newErrors.extensionNumber = "Extension number must be 2 to 8 digits"
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -61,6 +79,9 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
         ...hostel,
         name: formData.name,
         gender: formData.gender,
+        email: formData.email.trim(),
+        phone: formData.phone.replace(/\D/g, ""),
+        extensionNumber: formData.extensionNumber.trim(),
       })
 
       onClose()
@@ -107,6 +128,18 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
 
             <Field label="Gender" htmlFor="gender" required>
               <Select name="gender" value={formData.gender} onChange={handleChange} icon={<User size={16} />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
+            </Field>
+
+            <Field label="Email" htmlFor="email" help="Optional">
+              <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="hostel@iiti.ac.in" error={errors.email} />
+            </Field>
+
+            <Field label="Phone Number" htmlFor="phone" help="Optional">
+              <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="10-digit phone number" error={errors.phone} />
+            </Field>
+
+            <Field label="Extension Number" htmlFor="extensionNumber" help="Optional">
+              <Input type="text" name="extensionNumber" value={formData.extensionNumber} onChange={handleChange} placeholder="e.g. 2345" error={errors.extensionNumber} />
             </Field>
 
             <Button type="button" onClick={handleArchiveToggle} variant="secondary" fullWidth>

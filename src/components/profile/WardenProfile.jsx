@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { FiMail, FiPhone, FiHome, FiCalendar, FiMapPin, FiUser, FiBriefcase } from "react-icons/fi"
+import { FiMail, FiPhone, FiHome, FiCalendar, FiMapPin, FiUser, FiBriefcase, FiHash } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
@@ -25,6 +25,7 @@ const WardenProfile = () => {
           name: profile.userId.name,
           email: profile.userId.email,
           phone: profile.userId.phone,
+          extensionNumber: profile.extensionNumber,
           hostel: profile.hostelId.name,
           joiningDate: profile.joinDate ? new Date(profile.joinDate).toLocaleDateString() : "Not available",
           status: profile.status,
@@ -65,6 +66,9 @@ const WardenProfile = () => {
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={wardenData.email} icon={FiMail} />
             <ProfileInfo label="Phone Number" value={wardenData.phone} icon={FiPhone} />
+            {roleDisplay === "Hostel Supervisor" && wardenData.extensionNumber ? (
+              <ProfileInfo label="Extension Number" value={wardenData.extensionNumber} icon={FiHash} />
+            ) : null}
           </ProfileCard>
         </div>
 
