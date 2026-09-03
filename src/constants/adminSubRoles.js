@@ -10,3 +10,16 @@ export const ADMIN_SUBROLE_OPTIONS = [
 ]
 
 export const HCU_SUBROLE = "HCU"
+
+/** Subroles shown on the Admin HCU users management page. */
+export const HCU_MANAGED_SUBROLES = [
+  "HCU",
+  "Chief Warden Office",
+  "Accountant",
+  "Chief Warden",
+]
+
+export const HCU_MANAGED_SUBROLE_OPTIONS = HCU_MANAGED_SUBROLES.map((value) => ({
+  value,
+  label: value,
+}))

@@ -107,7 +107,7 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
   }
 
   return (
-    <Modal title="Upload Profile Picture" onClose={onClose} width={600}>
+    <Modal isOpen={isOpen !== false} title="Upload Profile Picture" onClose={onClose} width={600}>
       <div className="space-y-5">
         {error && (
           <div className="bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-light)] text-[var(--color-danger)] px-4 py-3 rounded-lg flex items-start">

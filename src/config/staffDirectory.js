@@ -1,5 +1,5 @@
 import {
-  Award, Bolt, Brush, Building2, Calendar, GraduationCap, Hammer, Hash, Lock, Mail,
+  Award, Bolt, Brush, Building2, Calendar, Hammer, Hash, Lock, Mail,
   MoreHorizontal, Phone, Shield, ShieldCheck, Tag, User, UserCheck, UserCog,
   Users, Wifi, Wrench,
 } from "lucide-react"
@@ -8,7 +8,7 @@ import {
   ACADEMICS_SUBROLE_OPTIONS,
   GYMKHANA_SUBROLE_OPTIONS,
 } from "../constants/adminConstants"
-import { HCU_SUBROLE } from "../constants/adminSubRoles"
+import { HCU_MANAGED_SUBROLES, HCU_MANAGED_SUBROLE_OPTIONS } from "../constants/adminSubRoles"
 import StaffAttendanceModal from "../components/admin/staff/StaffAttendanceModal"
 
 /**
@@ -419,31 +419,43 @@ export const STAFF_TYPES = {
 
   hcu: {
     key: "hcu",
-    title: "HCU staff",
-    plural: "HCU staff",
-    icon: GraduationCap,
-    searchPlaceholder: "Search HCU staff by name or email",
-    // Admins live behind the super-admin endpoints; the list is narrowed to
-    // the one sub-role this screen administers.
+    title: "HCU user",
+    plural: "HCU users",
+    icon: ShieldCheck,
+    searchPlaceholder: "Search HCU users by name, email or sub-role",
     api: {
-      list: async () => ((await superAdminApi.getAllAdmins()) || []).filter((a) => a?.subRole === HCU_SUBROLE),
-      create: (payload) => superAdminApi.createAdmin({ ...payload, subRole: HCU_SUBROLE }),
+      list: async () => ((await superAdminApi.getAllAdmins()) || []).filter((a) => HCU_MANAGED_SUBROLES.includes(a?.subRole)),
+      create: superAdminApi.createAdmin,
       update: superAdminApi.updateAdmin,
       remove: superAdminApi.deleteAdmin,
     },
     gridCols: { base: 1, md: 2, lg: 3 },
 
-    filters: [],
-    search: (s) => [s.name, s.email, s.phone],
+    filters: [
+      { value: "all", label: "All" },
+      ...HCU_MANAGED_SUBROLE_OPTIONS.map((role) => ({
+        value: role.value,
+        label: role.label,
+        match: (s) => s.subRole === role.value,
+      })),
+    ],
+    search: (s) => [s.name, s.email, s.phone, s.subRole],
 
     stats: (list) => [
-      { title: "Total HCU staff", value: list.length, subtitle: "Health Centre Unit", icon: Users, color: "var(--color-primary)" },
-      { title: "With phone", value: list.filter((s) => s.phone).length, subtitle: "Reachable", icon: Phone, color: "var(--color-success)" },
+      { title: "Total users", value: list.length, subtitle: "HCU managed accounts", icon: Users, color: "var(--color-primary)" },
+      ...HCU_MANAGED_SUBROLE_OPTIONS.map((role) => ({
+        title: role.label,
+        value: list.filter((s) => s.subRole === role.value).length,
+        subtitle: "By sub-role",
+        icon: ShieldCheck,
+        color: "var(--color-primary)",
+      })),
     ],
 
     card: (s) => ({
-      subtitle: "Health Centre Unit",
-      status: { variant: "primary", label: "HCU" },
+      subtitle: s.subRole || "No sub-role assigned",
+      image: s.profileImage,
+      status: s.subRole ? { variant: "primary", label: s.subRole } : { variant: "default", label: "No sub-role" },
       fields: [
         { icon: Mail, value: s.email, label: "Email" },
         { icon: Phone, value: s.phone || "Not provided", label: "Phone" },
@@ -451,8 +463,18 @@ export const STAFF_TYPES = {
     }),
 
     fields: {
-      create: [...CREDENTIAL_FIELDS, { ...PASSWORD_FIELD, required: true }, { name: "phone", label: "Phone", type: "tel", icon: Phone }],
-      edit: [CREDENTIAL_FIELDS[0], { name: "phone", label: "Phone", type: "tel", icon: Phone }],
+      create: [
+        ...CREDENTIAL_FIELDS,
+        { ...PASSWORD_FIELD, required: true },
+        { name: "subRole", label: "Sub role", type: "select", icon: ShieldCheck, required: true, options: HCU_MANAGED_SUBROLE_OPTIONS, placeholder: "Select a sub role" },
+        { name: "phone", label: "Phone", type: "tel", icon: Phone, placeholder: "+91 98765 43210" },
+      ],
+      edit: [
+        { name: "profileImage", label: "Profile photo", type: "image" },
+        CREDENTIAL_FIELDS[0],
+        { name: "subRole", label: "Sub role", type: "select", icon: ShieldCheck, required: true, options: HCU_MANAGED_SUBROLE_OPTIONS, placeholder: "Select a sub role" },
+        { name: "phone", label: "Phone", type: "tel", icon: Phone, placeholder: "+91 98765 43210" },
+      ],
     },
   },
 }
