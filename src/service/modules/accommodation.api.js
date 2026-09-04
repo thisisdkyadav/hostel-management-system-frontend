@@ -69,8 +69,9 @@ export const accommodationApi = {
 
   // ---- Chief Warden Office ----
   /**
-   * Sets per-guest price + GST, allots the hostel, and requests payment.
-   * body: { hostelId, remarks?, guestCharges: [{ guestIndex, price, gstPercentage }] }
+   * Sets per-guest price + GST, allots a hostel per visitor, and requests payment.
+   * body: { guestAllotments: [{ guestIndex, hostelId }], remarks?, guestCharges: [...] }
+   * Legacy: hostelId allots every guest to one hostel.
    */
   issuePaymentRequest: (requestId, body = {}) =>
     apiClient.post(`/accommodation/requests/${requestId}/payment-request`, body),

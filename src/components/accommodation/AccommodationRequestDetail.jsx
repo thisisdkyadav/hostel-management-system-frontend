@@ -391,17 +391,29 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
             </SectionCard>
 
             <SectionCard icon={Users} title={`Guests (${request.guests?.length || 0})`} accentColor="var(--color-info)">
-              <GuestList guests={request.guests || []} />
+              <GuestList guests={request.guests || []} hostelByIndex={request.hostelNameByGuestIndex || {}} />
             </SectionCard>
 
             {showAccommodation && (
               <SectionCard icon={Building2} title="Your accommodation" accentColor="var(--color-success)">
                 <VStack gap={2}>
-                  <InfoRow label="Hostel" value={request.allottedHostelName || "—"} strong />
+                  {(request.guests || []).map((g, i) => (
+                    <InfoRow
+                      key={i}
+                      label={g.name || `Guest ${i + 1}`}
+                      value={request.hostelNameByGuestIndex?.[i] || request.allottedHostelName || "—"}
+                    />
+                  ))}
                   {assignedRooms.length > 0 ? (
                     assignedRooms.map((r, i) => {
                       const roomLabel = `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`
-                      return <InfoRow key={i} label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`} value={`Room ${roomLabel}`} />
+                      return (
+                        <InfoRow
+                          key={`room-${i}`}
+                          label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}
+                          value={`${r.hostelName ? `${r.hostelName} · ` : ""}Room ${roomLabel}`}
+                        />
+                      )
                     })
                   ) : (
                     <Text size="xs" color="muted">Room numbers will appear once the hostel supervisor assigns them.</Text>

@@ -25,9 +25,9 @@ const lanesFor = (user) => {
   const l = (status, label, match) => ({ status, label, match })
   if (user?.role === "Hostel Supervisor") {
     return [
-      // Rooms only after payment is verified (pay-later waits for payment first).
-      l("__assign", "Assign rooms", (r) => [S.PAYMENT_VERIFIED, S.HOSTEL_ALLOTTED].includes(r.status)),
-      l(S.ROOMS_ASSIGNED, "Assigned"),
+      // Only visitors allotted to this supervisor's hostel; rooms after payment.
+      l("__assign", "Assign rooms", (r) => r.supervisorRoomsPending && [S.PAYMENT_VERIFIED, S.HOSTEL_ALLOTTED].includes(r.status)),
+      l("__assigned", "Assigned", (r) => !r.supervisorRoomsPending && [S.PAYMENT_VERIFIED, S.HOSTEL_ALLOTTED, S.ROOMS_ASSIGNED].includes(r.status)),
       l(S.CHECKED_IN, "Checked in"),
     ]
   }
@@ -61,7 +61,7 @@ const lanesFor = (user) => {
 }
 
 const subtitleFor = (user) => {
-  if (user?.role === "Hostel Supervisor") return "Assign rooms to allotted guest bookings."
+  if (user?.role === "Hostel Supervisor") return "Assign rooms to visitors allotted to your hostel."
   if (user?.subRole === "Chief Warden") return "Review and approve guest accommodation requests."
   if (user?.subRole === "Chief Warden Office") {
     return "Check capacity, set amount, allot hostels, and review postponement/extension requests."

@@ -215,25 +215,30 @@ export const ChargesRows = ({ quote = {} }) => {
   )
 }
 
-export const GuestList = ({ guests = [] }) => (
-  <VStack gap={2}>
-    {guests.map((g, i) => {
-      const meta = [
-        g.gender,
-        g.age === 0 || g.age ? `Age ${g.age}` : null,
-        g.relation || null,
-      ].filter(Boolean).join(" · ")
-      return (
-        <HStack gap={2} align="center" key={i}>
-          <Avatar name={g.name || "?"} alt={g.name || ""} size="xsmall" />
-          <Text as="span" size="sm" color="body">
-            {g.name}{meta ? <Text as="span" color="muted"> · {meta}</Text> : null}
-          </Text>
-        </HStack>
-      )
-    })}
-  </VStack>
-)
+export const GuestList = ({ guests = [], hostelByIndex = {}, indexes } = {}) => {
+  const shown = Array.isArray(indexes) ? indexes : guests.map((_, i) => i)
+  return (
+    <VStack gap={2}>
+      {shown.map((i) => {
+        const g = guests[i] || {}
+        const meta = [
+          g.gender,
+          g.age === 0 || g.age ? `Age ${g.age}` : null,
+          g.relation || null,
+          hostelByIndex[i] || null,
+        ].filter(Boolean).join(" · ")
+        return (
+          <HStack gap={2} align="center" key={i}>
+            <Avatar name={g.name || "?"} alt={g.name || ""} size="xsmall" />
+            <Text as="span" size="sm" color="body">
+              {g.name}{meta ? <Text as="span" color="muted"> · {meta}</Text> : null}
+            </Text>
+          </HStack>
+        )
+      })}
+    </VStack>
+  )
+}
 
 // ---- Journey timeline ----------------------------------------------------
 

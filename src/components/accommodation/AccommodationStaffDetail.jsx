@@ -67,7 +67,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [cancelReason, setCancelReason] = useState("")
   const [cancelling, setCancelling] = useState(false)
   const [hostels, setHostels] = useState([])
-  const [hostelChoice, setHostelChoice] = useState("")
+  const [guestHostels, setGuestHostels] = useState([])
   const [roomRows, setRoomRows] = useState([])
   const [guestChoices, setGuestChoices] = useState([])
   const [reassigning, setReassigning] = useState(false)
@@ -80,7 +80,18 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const isSupervisor = user?.role === "Hostel Supervisor"
 
   const assignedRooms = request?.assignedRooms || []
-  const isRoomsAssigned = [ACCOMMODATION_STATUS.ROOMS_ASSIGNED, ACCOMMODATION_STATUS.CHECKED_IN, ACCOMMODATION_STATUS.CHECKED_OUT].includes(status)
+  const allGuestIndexes = (request?.guests || []).map((_, i) => i)
+  const myGuestIndexes =
+    isSupervisor && Array.isArray(request?.supervisorGuestIndexes)
+      ? request.supervisorGuestIndexes
+      : allGuestIndexes
+  const hostelNameByGuestIndex = request?.hostelNameByGuestIndex || {}
+  const myAssignedRooms = assignedRooms.filter((r) =>
+    (r.guestIndexes || []).some((i) => myGuestIndexes.includes(i))
+  )
+  const myGuestsAssigned =
+    myGuestIndexes.length > 0 &&
+    myGuestIndexes.every((i) => assignedRooms.some((r) => (r.guestIndexes || []).includes(i)))
 
   const payment = request?.payment || {}
   const extension = describeExtension(request?.stay)
@@ -117,9 +128,16 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     ACCOMMODATION_STATUS.HOSTEL_ALLOTTED, // legacy in-flight requests
   ].includes(status)
   // Show the assignment form when the booking is ready, or when reassigning.
-  const showAssign = isSupervisor && (readyToAssign || (reassigning && status === ACCOMMODATION_STATUS.ROOMS_ASSIGNED))
-  const showAssignedSummary = isSupervisor && isRoomsAssigned && assignedRooms.length > 0 && !showAssign
-  const canReassign = isSupervisor && status === ACCOMMODATION_STATUS.ROOMS_ASSIGNED
+  const showAssign =
+    isSupervisor &&
+    myGuestIndexes.length > 0 &&
+    (readyToAssign || reassigning) &&
+    (!myGuestsAssigned || reassigning)
+  const showAssignedSummary = isSupervisor && myAssignedRooms.length > 0 && !showAssign
+  const canReassign =
+    isSupervisor &&
+    myGuestsAssigned &&
+    [ACCOMMODATION_STATUS.PAYMENT_VERIFIED, ACCOMMODATION_STATUS.ROOMS_ASSIGNED].includes(status)
   // Money that never went through the portal (cash/DD at the counter, a bank
   // reconciliation) — available to accounts once an amount has been set.
   // Custom / counter payment — button opens the form (not always visible).
@@ -206,12 +224,17 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
       (request.guests || []).map((g, i) => {
         const existing = request.quote?.guestCharges?.find((c) => Number(c.guestIndex) === i)
         return {
-          price: existing?.price != null && existing.price > 0 ? String(existing.price) : "",
+          price: existing?.price != null && Number.isFinite(Number(existing.price)) ? String(existing.price) : "",
           gstPercentage: existing?.gstPercentage != null ? String(existing.gstPercentage) : "0",
         }
       })
     )
-    setHostelChoice("")
+    setGuestHostels(
+      (request.guests || []).map((_, i) => {
+        const row = (request.guestAllotments || []).find((a) => Number(a.guestIndex) === i)
+        return row?.hostelId ? String(row.hostelId) : ""
+      })
+    )
     // Prefill room choices from any existing assignment (used when reassigning).
     const count = request.persons || (request.guests?.length || 0)
     const prefill = Array.from({ length: count }, () => "")
@@ -258,18 +281,23 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     return accommodationApi.capacityDecision(requestId, { action: capacity.action, reason: capacity.reason.trim() })
   })
   const submitIssuePayment = run(() => {
-    if (!hostelChoice) throw new Error("Pick the hostel the guests will stay in.")
+    if (guestHostels.some((h) => !h) || guestHostels.length !== (request.guests?.length || 0)) {
+      throw new Error("Pick a hostel for every visitor.")
+    }
     if (!guestCharges.length || guestCharges.length !== (request.guests?.length || 0)) {
       throw new Error("Set price and GST for every guest.")
     }
     for (let i = 0; i < guestCharges.length; i++) {
-      const price = Number(guestCharges[i].price)
+      const raw = guestCharges[i].price
+      const price = Number(raw)
       const gst = Number(guestCharges[i].gstPercentage)
-      if (!(price > 0)) throw new Error(`Enter a price for ${request.guests[i]?.name || `guest ${i + 1}`}.`)
+      if (raw === "" || raw == null || !Number.isFinite(price) || price < 0) {
+        throw new Error(`Enter a price (0 or more) for ${request.guests[i]?.name || `guest ${i + 1}`}.`)
+      }
       if (!Number.isFinite(gst) || gst < 0) throw new Error(`Enter a valid GST % for ${request.guests[i]?.name || `guest ${i + 1}`}.`)
     }
     return accommodationApi.issuePaymentRequest(requestId, {
-      hostelId: hostelChoice,
+      guestAllotments: guestHostels.map((hostelId, i) => ({ guestIndex: i, hostelId })),
       remarks: payRemarks.trim() || undefined,
       guestCharges: guestCharges.map((c, i) => ({
         guestIndex: i,
@@ -290,7 +318,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   }, 0)
   const chargesReady =
     guestCharges.length === (request?.guests?.length || 0) &&
-    guestCharges.every((c) => Number(c.price) > 0 && Number.isFinite(Number(c.gstPercentage)) && Number(c.gstPercentage) >= 0)
+    guestCharges.every((c) => {
+      const price = Number(c.price)
+      const gst = Number(c.gstPercentage)
+      return String(c.price).trim() !== "" && Number.isFinite(price) && price >= 0 && Number.isFinite(gst) && gst >= 0
+    })
   const submitVerify = run(() => {
     if (verify.action === "reject" && !verify.note.trim()) throw new Error("Add a reason for rejecting the payment.")
     const verifyingMain = payment.status === PAYMENT_STATUS.SUBMITTED
@@ -362,78 +394,58 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     return accommodationApi.adminCancel(requestId, { reason: cancelReason.trim() })
   })
   const submitAssign = run(() => {
-    if (guestChoices.some((c) => !c)) throw new Error("Assign every guest to a room.")
+    if (myGuestIndexes.some((i) => !guestChoices[i])) throw new Error("Assign every visitor to a room.")
     const byRoom = {}
-    guestChoices.forEach((roomId, idx) => { (byRoom[roomId] ||= []).push(idx) })
+    myGuestIndexes.forEach((idx) => { (byRoom[guestChoices[idx]] ||= []).push(idx) })
     const rooms = Object.entries(byRoom).map(([roomId, guestIndexes]) => ({ roomId, guestIndexes }))
     return accommodationApi.assignRooms(requestId, { rooms })
   })
 
-  const roomOptions = roomRows.map((r) => ({
-    value: r.roomId,
-    label: `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber} (${r.available} free)`,
-  }))
-
-  // Rooms are booked whole. A large party may need several rooms — same rule as
-  // the backend allotment check (ceil(persons / largestRoom)).
-  const roomsNeededFor = (persons, largestRoom) => {
-    const party = Math.max(1, Number(persons) || 0)
-    const capacity = Math.max(1, Number(largestRoom) || 1)
-    return Math.ceil(party / capacity)
-  }
-  const hostelFits = (h) => {
-    const need = roomsNeededFor(request.persons, h.largestRoom)
-    return (h.availableRooms ?? 0) >= need && (h.available ?? 0) >= (request.persons || 1)
-  }
-  const hostelCapacityLabel = (h) => {
-    const need = roomsNeededFor(request.persons, h.largestRoom)
-    const rooms = `${h.availableRooms ?? 0} of ${h.roomCount ?? 0} rooms free`
-    const needHint = need > 1 ? ` · needs ${need}` : ""
-    return `${rooms}${needHint} · ${h.available ?? 0} beds`
+  const roomLabel = (r) => `${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber}`
+  const roomsForGuest = (guestIndex) => {
+    const hid = guestHostels[guestIndex] || (request.guestAllotments || []).find((a) => Number(a.guestIndex) === guestIndex)?.hostelId
+    const rows = hid
+      ? roomRows.filter((r) => !r.hostelId || String(r.hostelId) === String(hid))
+      : roomRows
+    return rows.map((r) => ({
+      value: r.roomId,
+      label: `${r.hostelName ? `${r.hostelName} · ` : ""}${roomLabel(r)} (${r.available} free)`,
+    }))
   }
 
-  // Free guest rooms per hostel for these dates — read-only during the capacity
-  // screening, selectable when the payment request allots the hostel.
-  const hostelCapacity = (selectable) => {
+  const hostelOptions = hostels
+    .filter((h) => (h.available ?? 0) > 0 || (h.availableRooms ?? 0) > 0)
+    .map((h) => ({ value: String(h.hostelId), label: h.name }))
+  const hostelsReady = guestHostels.length === (request.guests?.length || 0) && guestHostels.every(Boolean)
+
+  const hostelAvailabilityList = () => {
     if (hostels.length === 0) {
       return <EmptyState variant="inline" message="No hostels with free guest rooms are set up yet." />
     }
-    if (!selectable) {
-      return (
-        <VStack gap={2}>
-          {hostels.map((h) => (
-            <InfoRow
-              key={h.hostelId}
-              label={h.name}
-              value={
-                <Badge variant={hostelFits(h) ? "success" : "danger"} size="small">
-                  {hostelCapacityLabel(h)}
-                </Badge>
-              }
-            />
-          ))}
-        </VStack>
-      )
-    }
     return (
-      <RadioGroup name="hostel" value={hostelChoice} onChange={(e) => setHostelChoice(e.target.value)}>
-        {hostels.map((h) => {
-          const ok = hostelFits(h)
-          return (
-            <RadioGroupItem
-              key={h.hostelId}
-              value={h.hostelId}
-              disabled={!ok}
-              label={h.name}
-              description={
-                <Badge variant={ok ? "success" : "danger"} size="small">
-                  {hostelCapacityLabel(h)}
-                </Badge>
-              }
-            />
-          )
-        })}
-      </RadioGroup>
+      <VStack gap={2}>
+        {hostels.map((h) => (
+          <Surface key={h.hostelId} padding={3} radius="md" border="1px solid var(--color-border-primary)">
+            <HStack justify="between" align="start" wrap gap={2}>
+              <Text size="sm" weight="semibold">{h.name}</Text>
+              <Badge variant={(h.availableRooms ?? 0) > 0 ? "success" : "danger"} size="small">
+                {`${h.availableRooms ?? 0} of ${h.roomCount ?? 0} rooms free · ${h.available ?? 0} beds`}
+              </Badge>
+            </HStack>
+            {(h.rooms || []).length > 0 ? (
+              <HStack gap={1} wrap style={{ marginTop: "var(--spacing-2)" }}>
+                {(h.rooms || []).map((r) => (
+                  <Badge key={r.roomId} size="small">
+                    {roomLabel(r)} · {r.beds} bed{Number(r.beds) === 1 ? "" : "s"}
+                  </Badge>
+                ))}
+              </HStack>
+            ) : (
+              <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-2)" }}>No empty rooms.</Text>
+            )}
+          </Surface>
+        ))}
+      </VStack>
     )
   }
 
@@ -477,8 +489,12 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               <InfoRow label="Room preference" value={request.roomPreference || "—"} />
             </DetailSection>
 
-            <DetailSection title={`Guests (${request.guests?.length || 0})`} icon={Users}>
-              <GuestList guests={request.guests || []} />
+            <DetailSection title={`Guests (${isSupervisor ? myGuestIndexes.length : request.guests?.length || 0})`} icon={Users}>
+              <GuestList
+                guests={request.guests || []}
+                hostelByIndex={hostelNameByGuestIndex}
+                indexes={isSupervisor ? myGuestIndexes : undefined}
+              />
             </DetailSection>
 
             <DetailSection title="Charges" icon={Receipt}>
@@ -497,7 +513,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               </DetailSection>
             )}
 
-            {Boolean(payment.amount) && (
+            {paymentStepPassed && (
               <DetailSection title="Payments" icon={CreditCard}>
                 <VStack gap={3}>
                   <Surface bg="tertiary" padding="var(--spacing-3)" radius="md">
@@ -696,11 +712,11 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <Button type="button" variant="ghost" size="sm" onClick={() => setReassigning(true)}>Reassign</Button>
                 ) : undefined}
               >
-                {assignedRooms.map((r, i) => (
+                {myAssignedRooms.map((r, i) => (
                   <InfoRow
                     key={i}
                     label={r.guests.join(", ") || `${r.guestIndexes.length} guest(s)`}
-                    value={`Room ${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`}
+                    value={`${r.hostelName ? `${r.hostelName} · ` : ""}Room ${r.unitNumber ? `${r.unitNumber}-` : ""}${r.roomNumber || "—"}`}
                   />
                 ))}
               </DetailSection>
@@ -709,10 +725,10 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             {showCapacity && (
               <DetailSection title={`Capacity check · ${request.persons} bed(s) needed`} icon={Building2} tone="primary">
                 <Text size="sm" color="muted">
-                  Free guest beds for {fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}. Approving sends
-                  the request on for recommendation and approval; the hostel itself is chosen later, when you request payment.
+                  Free guest rooms for {fmtDate(request.stay?.fromDate)} → {fmtDate(request.stay?.toDate)}. Approving sends
+                  the request on for recommendation and approval; each visitor is allotted a hostel later, when you request payment.
                 </Text>
-                {hostelCapacity(false)}
+                {hostelAvailabilityList()}
                 <RadioGroup name="capacity" value={capacity.action} onChange={(e) => setCapacity((c) => ({ ...c, action: e.target.value }))}>
                   <RadioGroupItem value="approve" label="Capacity available" description="Sends the request onward for approval." />
                   <RadioGroupItem value="request_modification" label="Request modification" description="Returns it to the student, e.g. to shift the dates." />
@@ -809,7 +825,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             {showIssuePayment && (
               <DetailSection title="Request payment & allot hostel" icon={CreditCard} tone="primary">
                 <Text size="sm" color="muted">
-                  Set price and GST for each guest (presets from Accommodation settings, or type a custom value). Total is calculated from your selections — not auto-estimated.
+                  Set price and GST for each guest (presets from Accommodation settings, type a custom value, or 0 to waive that person). Total is calculated from your selections — not auto-estimated.
                 </Text>
 
                 {(request.guests || []).map((g, i) => {
@@ -817,7 +833,8 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   const priceNum = Number(line.price) || 0
                   const gstNum = Number(line.gstPercentage) || 0
                   const lineTotal = priceNum + (priceNum * gstNum) / 100
-                  const pricePresetValue = priceOptions.some((p) => String(p) === String(line.price)) ? String(line.price) : null
+                  const priceChoices = [...priceOptions.filter((p) => Number(p) !== 0), 0]
+                  const pricePresetValue = priceChoices.some((p) => String(p) === String(line.price)) ? String(line.price) : null
                   const gstPresetValue = gstOptions.some((p) => String(p) === String(line.gstPercentage))
                     ? String(line.gstPercentage)
                     : null
@@ -829,23 +846,24 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                           {[g.gender, g.age === 0 || g.age ? `Age ${g.age}` : null, g.relation].filter(Boolean).join(" · ") || "—"}
                         </Text>
                       </div>
-                      <Field label="Price per person" required>
-                        {priceOptions.length > 0 && (
-                          <div style={{ marginBottom: "var(--spacing-2)" }}>
-                            <ToggleButtonGroup
-                              size="small"
-                              options={priceOptions.map((p) => ({ value: String(p), label: money(p) }))}
-                              value={pricePresetValue}
-                              onChange={(val) => setGuestCharge(i, { price: String(val) })}
-                            />
-                          </div>
-                        )}
+                      <Field label="Price per person" required help="0 waives the charge for this guest.">
+                        <div style={{ marginBottom: "var(--spacing-2)" }}>
+                          <ToggleButtonGroup
+                            size="small"
+                            options={priceChoices.map((p) => ({
+                              value: String(p),
+                              label: Number(p) === 0 ? "₹0" : money(p),
+                            }))}
+                            value={pricePresetValue}
+                            onChange={(val) => setGuestCharge(i, { price: String(val) })}
+                          />
+                        </div>
                         <Input
                           type="number"
                           min={0}
                           step="0.01"
                           value={line.price}
-                          placeholder={priceOptions.length ? "Or enter manually" : "Enter amount"}
+                          placeholder={priceOptions.length ? "Or enter manually" : "Enter amount (0 allowed)"}
                           onChange={(e) => setGuestCharge(i, { price: e.target.value })}
                         />
                       </Field>
@@ -884,18 +902,29 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     placeholder="e.g. different rate for child, discount applied"
                   />
                 </Field>
-                <Field label={`Hostel · ${request.persons} bed(s) needed`} required>
-                  {hostelCapacity(true)}
-                </Field>
+                <Text size="sm" weight="semibold">Available rooms</Text>
+                {hostelAvailabilityList()}
+
+                <Text size="sm" weight="semibold">Hostel for each visitor</Text>
+                {(request.guests || []).map((g, i) => (
+                  <Field key={i} label={g.name || `Guest ${i + 1}`} required>
+                    <Select
+                      placeholder="Select hostel"
+                      options={hostelOptions}
+                      value={guestHostels[i] || ""}
+                      onChange={(e) => setGuestHostels((prev) => prev.map((h, idx) => (idx === i ? e.target.value : h)))}
+                    />
+                  </Field>
+                ))}
                 <Text size="xs" color="muted">
-                  This is the only hostel selection — the supervisor picks rooms inside it. The payment QR comes from Accommodation settings automatically.
+                  Visitors can go to different hostels. Each hostel supervisor then assigns rooms only for the visitors allotted to them. The payment QR comes from Accommodation settings automatically.
                 </Text>
                 <Button
                   onClick={submitIssuePayment}
                   loading={busy}
-                  disabled={busy || !hostelChoice || !chargesReady}
+                  disabled={busy || !hostelsReady || !chargesReady}
                 >
-                  Send payment request
+                  {guestChargeTotal === 0 && chargesReady && hostelsReady ? "Allot hostel — no charge" : "Send payment request"}
                 </Button>
               </DetailSection>
             )}
@@ -1091,18 +1120,37 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <Button type="button" variant="ghost" size="sm" onClick={() => setReassigning(false)}>Cancel</Button>
                 ) : undefined}
               >
-                {roomOptions.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
-                {(request.guests || []).map((g, i) => (
-                  <Grid cols={2} gap={2} align="center" key={i}>
-                    <Text as="span" size="sm">
-                      {g.name}
-                      {(g.age === 0 || g.age) ? ` · Age ${g.age}` : ""}
-                      {g.gender ? ` · ${g.gender}` : ""}
-                    </Text>
-                    <Select placeholder="Select room" options={roomOptions} value={guestChoices[i] || ""} onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))} />
-                  </Grid>
-                ))}
-                <Button onClick={submitAssign} loading={busy} disabled={busy || roomOptions.length === 0}>{reassigning ? "Update assignment" : "Assign rooms"}</Button>
+                {roomRows.length === 0 && <EmptyState variant="inline" message="No guest rooms are free for these dates." />}
+                <Text size="sm" color="muted">
+                  Assign a room to each visitor allotted to your hostel. Several visitors may share a room if it has enough beds.
+                </Text>
+                {myGuestIndexes.map((i) => {
+                  const g = request.guests?.[i] || {}
+                  const options = roomsForGuest(i)
+                  return (
+                    <Grid cols={2} gap={2} align="center" key={i}>
+                      <Text as="span" size="sm">
+                        {g.name}
+                        {(g.age === 0 || g.age) ? ` · Age ${g.age}` : ""}
+                        {g.gender ? ` · ${g.gender}` : ""}
+                        {hostelNameByGuestIndex[i] ? ` · ${hostelNameByGuestIndex[i]}` : ""}
+                      </Text>
+                      <Select
+                        placeholder="Select room"
+                        options={options}
+                        value={guestChoices[i] || ""}
+                        onChange={(e) => setGuestChoices((prev) => prev.map((c, idx) => (idx === i ? e.target.value : c)))}
+                      />
+                    </Grid>
+                  )
+                })}
+                <Button
+                  onClick={submitAssign}
+                  loading={busy}
+                  disabled={busy || roomRows.length === 0 || myGuestIndexes.some((i) => !guestChoices[i])}
+                >
+                  {reassigning ? "Update assignment" : "Assign rooms"}
+                </Button>
               </DetailSection>
             )}
           </VStack>
