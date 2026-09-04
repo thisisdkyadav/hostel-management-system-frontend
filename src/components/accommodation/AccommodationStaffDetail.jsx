@@ -424,27 +424,21 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     }
     return (
       <VStack gap={2}>
-        {hostels.map((h) => (
-          <Surface key={h.hostelId} padding={3} radius="md" border="1px solid var(--color-border-primary)">
-            <HStack justify="between" align="start" wrap gap={2}>
-              <Text size="sm" weight="semibold">{h.name}</Text>
-              <Badge variant={(h.availableRooms ?? 0) > 0 ? "success" : "danger"} size="small">
-                {`${h.availableRooms ?? 0} of ${h.roomCount ?? 0} rooms free · ${h.available ?? 0} beds`}
-              </Badge>
-            </HStack>
-            {(h.rooms || []).length > 0 ? (
-              <HStack gap={1} wrap style={{ marginTop: "var(--spacing-2)" }}>
-                {(h.rooms || []).map((r) => (
-                  <Badge key={r.roomId} size="small">
-                    {roomLabel(r)} · {r.beds} bed{Number(r.beds) === 1 ? "" : "s"}
-                  </Badge>
-                ))}
-              </HStack>
-            ) : (
-              <Text size="xs" color="muted" style={{ marginTop: "var(--spacing-2)" }}>No empty rooms.</Text>
-            )}
-          </Surface>
-        ))}
+        {hostels.map((h) => {
+          const rooms = h.availableRooms ?? 0
+          const seats = h.available ?? 0
+          return (
+            <InfoRow
+              key={h.hostelId}
+              label={h.name}
+              value={
+                <Badge variant={rooms > 0 ? "success" : "danger"} size="small">
+                  {`${rooms} room${rooms === 1 ? "" : "s"} · ${seats} seat${seats === 1 ? "" : "s"}`}
+                </Badge>
+              }
+            />
+          )
+        })}
       </VStack>
     )
   }
