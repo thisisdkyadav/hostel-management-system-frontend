@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
@@ -22,6 +22,8 @@ import {
   SIDEBAR_MODE_WORKSPACE,
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STORAGE_KEY,
+  hasSeenV4Intro,
+  markV4IntroSeen,
   readStoredSidebarMode,
 } from "./sidebar/sidebarModes"
 import { authApi } from "../service"
@@ -65,7 +67,12 @@ const Sidebar = ({ navItems }) => {
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const [sidebarMode, setSidebarMode] = useState(readStoredSidebarMode)
+  const [showV4Intro, setShowV4Intro] = useState(() => !hasSeenV4Intro())
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
+  const dismissV4Intro = useCallback(() => {
+    markV4IntroSeen()
+    setShowV4Intro(false)
+  }, [])
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
   // Theme is ephemeral: always boots to light, toggled for the session only.
   const [isDark, setIsDark] = useState(false)
@@ -372,7 +379,7 @@ const Sidebar = ({ navItems }) => {
 
           <div className="flex flex-col h-full min-w-0 flex-1">
             {/* Title, mode switcher, and (in V1–V3) the theme toggle */}
-            <Surface bg={headerTint} className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
+            <Surface bg={headerTint} className={`relative z-20 border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
               <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
                 <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
                   <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70">
@@ -381,7 +388,17 @@ const Sidebar = ({ navItems }) => {
                 </div>
 
                 <HStack align="center" gap="var(--spacing-1-5)" className="shrink-0">
-                  {isAdminNav && <SidebarModeSwitcher mode={sidebarMode} onChange={setSidebarMode} />}
+                  {isAdminNav && (
+                    <SidebarModeSwitcher
+                      mode={sidebarMode}
+                      onChange={(nextMode) => {
+                        setSidebarMode(nextMode)
+                        dismissV4Intro()
+                      }}
+                      showIntro={showV4Intro && !isMobile}
+                      onDismissIntro={dismissV4Intro}
+                    />
+                  )}
                   {!isRailMode && (
                     <span className="relative inline-flex">
                       <NewBadge />

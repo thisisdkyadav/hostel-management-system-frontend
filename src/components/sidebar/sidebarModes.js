@@ -12,10 +12,21 @@ export const SIDEBAR_MODE_WORKSPACE = "v3"
 export const SIDEBAR_MODE_RAIL = "v4"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
-export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_CATEGORIES
+export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
+export const SIDEBAR_V4_INTRO_KEY = "admin_sidebar_v4_intro_v1"
 
 /** Pre-mode boolean toggle ("true" meant the old flat nav). Read once for migration. */
 export const LEGACY_SIDEBAR_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
+
+export const hasSeenV4Intro = () => {
+  if (typeof window === "undefined") return true
+  return window.localStorage.getItem(SIDEBAR_V4_INTRO_KEY) === "1"
+}
+
+export const markV4IntroSeen = () => {
+  if (typeof window === "undefined") return
+  window.localStorage.setItem(SIDEBAR_V4_INTRO_KEY, "1")
+}
 
 export const SIDEBAR_MODE_OPTIONS = [
   {
@@ -49,6 +60,9 @@ export const isValidSidebarMode = (value) => SIDEBAR_MODE_OPTIONS.some((option) 
 /** Resolve the persisted mode, migrating the old boolean toggle the first time. */
 export const readStoredSidebarMode = () => {
   if (typeof window === "undefined") return SIDEBAR_DEFAULT_MODE
+
+  // One-time rollout: ignore a stored V1–V3 preference until the intro is dismissed.
+  if (!hasSeenV4Intro()) return SIDEBAR_MODE_RAIL
 
   const storedMode = window.localStorage.getItem(SIDEBAR_MODE_STORAGE_KEY)
   if (isValidSidebarMode(storedMode)) return storedMode

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
+import { Button, Text } from "hzero"
 import { SIDEBAR_MODE_OPTIONS } from "./sidebarModes"
 import NewBadge from "./NewBadge"
 
@@ -7,14 +8,15 @@ import NewBadge from "./NewBadge"
  * Compact mode pill in the sidebar header. Shows the current mode (V1–V4)
  * and opens a small menu describing each layout.
  */
-const SidebarModeSwitcher = ({ mode, onChange }) => {
+const SidebarModeSwitcher = ({ mode, onChange, showIntro = false, onDismissIntro }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const containerRef = useRef(null)
 
   const currentOption = SIDEBAR_MODE_OPTIONS.find((option) => option.id === mode) || SIDEBAR_MODE_OPTIONS[0]
+  const showIntroCard = showIntro && !isMenuOpen
 
   useEffect(() => {
-    if (!isMenuOpen) return
+    if (!isMenuOpen && !showIntro) return
 
     const handlePointerDown = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -22,7 +24,12 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
       }
     }
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") setIsMenuOpen(false)
+      if (event.key !== "Escape") return
+      if (isMenuOpen) {
+        setIsMenuOpen(false)
+        return
+      }
+      if (showIntro) onDismissIntro?.()
     }
 
     document.addEventListener("mousedown", handlePointerDown)
@@ -31,7 +38,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
       document.removeEventListener("mousedown", handlePointerDown)
       document.removeEventListener("keydown", handleKeyDown)
     }
-  }, [isMenuOpen])
+  }, [isMenuOpen, showIntro, onDismissIntro])
 
   return (
     <div className="relative" ref={containerRef}>
@@ -43,10 +50,11 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
         aria-label={`Sidebar layout: ${currentOption.name}`}
         aria-haspopup="menu"
         aria-expanded={isMenuOpen}
+        aria-describedby={showIntroCard ? "sidebar-v4-intro" : undefined}
         className={`
           h-8 px-2 rounded-lg flex items-center gap-1 text-[10px] font-bold tracking-wider
           transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
-          ${isMenuOpen
+          ${isMenuOpen || showIntro
             ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
             : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"}
         `}
@@ -54,6 +62,31 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
         {currentOption.label}
         <ChevronDown size={12} strokeWidth={2.5} className={`transition-transform duration-200 ${isMenuOpen ? "rotate-180" : ""}`} />
       </button>
+
+      {showIntroCard && (
+        <div
+          id="sidebar-v4-intro"
+          role="status"
+          className="absolute right-0 top-full mt-2 w-56 p-3 rounded-[var(--radius-xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] z-50 animate-fadeIn"
+          style={{ boxShadow: "var(--shadow-dropdown)" }}
+        >
+          <span
+            aria-hidden="true"
+            className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-[var(--color-bg-primary)] border-l border-t border-[var(--color-border-primary)]"
+          />
+          <Text as="p" weight="semibold" className="text-sm text-[var(--color-text-primary)]">
+            New sidebar
+          </Text>
+          <Text as="p" className="mt-1 text-xs text-[var(--color-text-muted)] leading-snug">
+            This is the new layout. Click here and choose V2 if you want the old one.
+          </Text>
+          <div className="mt-2.5 flex justify-end">
+            <Button type="button" size="sm" onClick={onDismissIntro}>
+              Got it
+            </Button>
+          </div>
+        </div>
+      )}
 
       {isMenuOpen && (
         <div
