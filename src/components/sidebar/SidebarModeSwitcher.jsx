@@ -67,21 +67,21 @@ const SidebarModeSwitcher = ({ mode, onChange, showIntro = false, onDismissIntro
         <div
           id="sidebar-v4-intro"
           role="status"
-          className="absolute right-0 top-full mt-2 w-56 p-3 rounded-[var(--radius-xl)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] z-50 animate-fadeIn"
-          style={{ boxShadow: "var(--shadow-dropdown)" }}
+          className="absolute right-0 top-full mt-2 w-56 p-3 rounded-[var(--radius-xl)] bg-[var(--color-primary)] text-[var(--color-white)] z-50 animate-fadeIn"
+          style={{ boxShadow: "var(--shadow-lg)" }}
         >
           <span
             aria-hidden="true"
-            className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-[var(--color-bg-primary)] border-l border-t border-[var(--color-border-primary)]"
+            className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-[var(--color-primary)]"
           />
-          <Text as="p" weight="semibold" className="text-sm text-[var(--color-text-primary)]">
+          <Text as="p" weight="semibold" className="text-sm">
             New sidebar
           </Text>
-          <Text as="p" className="mt-1 text-xs text-[var(--color-text-muted)] leading-snug">
+          <Text as="p" className="mt-1 text-xs leading-snug opacity-90">
             This is the new layout. Click here and choose V2 if you want the old one.
           </Text>
           <div className="mt-2.5 flex justify-end">
-            <Button type="button" size="sm" onClick={onDismissIntro}>
+            <Button type="button" size="sm" variant="white" onClick={onDismissIntro}>
               Got it
             </Button>
           </div>
