@@ -166,7 +166,7 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
   )
 }
 
-const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => (
+const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved, layout }) => (
   <HoverPanel
     placement="auto"
     align="start"
@@ -186,6 +186,7 @@ const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => (
       total={unit.capacity || 0}
       groups={roomGroupsOf(unit)}
       size="lg"
+      layout={layout}
     />
   </HoverPanel>
 )
@@ -198,6 +199,7 @@ const HostelFloorMap = ({
   canEdit = false,
   onViewRoom,
   onUpdated,
+  unitLayout,
 }) => {
   const items = mode === "units" ? units : rooms
   const groups = groupByBand(items, (item) => (mode === "units" ? item.unitNumber : item.roomNumber))
@@ -240,6 +242,7 @@ const HostelFloorMap = ({
                     canEdit={canEdit}
                     onViewMore={onViewRoom}
                     onSaved={onUpdated}
+                    layout={unitLayout}
                   />
                 ))
               : group.items.map((room) => (

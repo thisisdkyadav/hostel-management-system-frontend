@@ -13,6 +13,7 @@ const DiningBillingPage = lazy(() => import("../pages/admin/DiningBillingPage"))
 const DiningBillingDetailPage = lazy(() => import("../pages/admin/DiningBillingDetailPage"))
 const DiningOfficeStaffPage = lazy(() => import("../pages/admin/DiningOfficeStaffPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
+const HostelExplorerPage = lazy(() => import("../pages/admin/HostelExplorerPage"))
 const AdminAdminManagement = lazy(() => import("../pages/admin/AdminManagementPage"))
 const AdminWarden = lazy(() => import("../pages/admin/WardensPage"))
 const AdminAssociateWardens = lazy(() => import("../pages/admin/AssociateWardensPage"))
@@ -73,6 +74,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/DiningBillingDetailPage"),
   () => import("../pages/admin/DiningOfficeStaffPage"),
   () => import("../pages/admin/HostelsPage"),
+  () => import("../pages/admin/HostelExplorerPage"),
   () => import("../pages/admin/AdminManagementPage"),
   () => import("../pages/admin/WardensPage"),
   () => import("../pages/admin/AssociateWardensPage"),
@@ -148,6 +150,7 @@ const AdminRoutes = () => {
                 <Route path="fs" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} />
                 <Route path="face-scanners" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} />
                 <Route path="hostels" element={guardRoute("route.admin.hostels", <AdminHostels />)} />
+                <Route path="hostel-explorer" element={guardRoute("route.admin.hostels", <HostelExplorerPage />)} />
                 <Route path="hostels/:hostelName" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
                 <Route path="hostels/:hostelName/units/:unitNumber" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
                 <Route path="caterers" element={guardRoute("route.admin.caterers", <CaterersPage />)} />

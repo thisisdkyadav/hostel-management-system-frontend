@@ -44,7 +44,8 @@ import {
   BriefcaseBusiness,
   UtensilsCrossed,
   BadgeCheck,
-  Wallet
+  Wallet,
+  Map,
 } from "lucide-react"
 
 // ============================================
@@ -151,6 +152,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },

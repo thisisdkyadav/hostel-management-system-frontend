@@ -105,4 +105,10 @@ export const queryKeys = {
     detail: (id) => [...queryKeys.notifications.all, "detail", id],
     stats: (filters) => [...queryKeys.notifications.all, "stats", filters ?? {}],
   },
+  hostels: {
+    all: ["hostels"],
+    list: () => [...queryKeys.hostels.all, "list"],
+    units: (hostelId) => [...queryKeys.hostels.all, "units", hostelId ?? null],
+    rooms: (hostelId) => [...queryKeys.hostels.all, "rooms", hostelId ?? null],
+  },
 }

@@ -3,6 +3,7 @@ import "./OccupancyTile.css"
 
 const PIP_CAP = 8
 const RAIL_ROWS = 6
+const SPLIT_LEFT = 3
 const FACE_CAP = 3
 
 const resolveTone = ({ used, total, status, disabled, tone }) => {
@@ -45,6 +46,8 @@ const PipRow = ({ used, total, variant }) => (
  * Square occupancy tile. Generic on purpose: any labelled space with a
  * used/total count can render through this. Pass `groups` for a left rail of
  * pip rows (one cluster per row, six slots) with the label and count on the right.
+ * `layout="split-bottom"` centers the label and splits room pips across the
+ * bottom (first three left, the rest right).
  * Room tiles keep pips top-left and the label top-right; pass `faces` for
  * occupant portraits along the bottom. `wrapHead` / `wrapFace` let a parent
  * attach hover peeks without nesting interactive content in a button.
@@ -60,6 +63,7 @@ const OccupancyTile = ({
   wrapHead,
   wrapFace,
   size = "md",
+  layout = "rail",
   disabled = false,
   expanded = false,
   className = "",
@@ -87,17 +91,31 @@ const OccupancyTile = ({
         .join(", ")}`
     : `${label}, ${resolved === "inactive" ? count : `${used} of ${total}`}${names ? `, ${names}` : ""}`
   const split = Boolean(wrapHead || wrapFace)
+  const splitBottom = layout === "split-bottom" && showGroups
   const Tag = showGroups || !split ? "button" : "div"
   const classes = [
     "occ-tile",
     `occ-tile--${size}`,
     showGroups ? "occ-tile--grouped" : "occ-tile--room",
+    splitBottom ? "occ-tile--split-bottom" : "",
     portraits.length ? "occ-tile--faces" : "",
     split ? "occ-tile--split" : "",
     className,
   ]
     .filter(Boolean)
     .join(" ")
+
+  const renderGroup = (group, index) => (
+    <span key={group?.id || `slot-${index}`} className="occ-tile__group">
+      {group ? (
+        <PipRow
+          used={group.used || 0}
+          total={group.total || 0}
+          variant={group.inactive ? "inactive" : undefined}
+        />
+      ) : null}
+    </span>
+  )
 
   const faceRow =
     portraits.length > 0 ? (
@@ -136,28 +154,33 @@ const OccupancyTile = ({
       {...rest}
     >
       {showGroups ? (
-        <>
-          <span className="occ-tile__rail" aria-hidden="true">
-            {Array.from({ length: RAIL_ROWS }, (_, i) => {
-              const group = cluster[i]
-              return (
-                <span key={group?.id || `slot-${i}`} className="occ-tile__group">
-                  {group ? (
-                    <PipRow
-                      used={group.used || 0}
-                      total={group.total || 0}
-                      variant={group.inactive ? "inactive" : undefined}
-                    />
-                  ) : null}
-                </span>
-              )
-            })}
-          </span>
-          <span className="occ-tile__meta">
-            <span className="occ-tile__label">{label}</span>
-            <span className="occ-tile__count">{count}</span>
-          </span>
-        </>
+        splitBottom ? (
+          <>
+            <span className="occ-tile__meta">
+              <span className="occ-tile__label">{label}</span>
+              <span className="occ-tile__count">{count}</span>
+            </span>
+            <span className="occ-tile__deck" aria-hidden="true">
+              <span className="occ-tile__deck-col">
+                {cluster.slice(0, SPLIT_LEFT).map((group, index) => renderGroup(group, index))}
+              </span>
+              <span className="occ-tile__deck-rule" />
+              <span className="occ-tile__deck-col occ-tile__deck-col--end">
+                {cluster.slice(SPLIT_LEFT, RAIL_ROWS).map((group, index) => renderGroup(group, index + SPLIT_LEFT))}
+              </span>
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="occ-tile__rail" aria-hidden="true">
+              {Array.from({ length: RAIL_ROWS }, (_, i) => renderGroup(cluster[i], i))}
+            </span>
+            <span className="occ-tile__meta">
+              <span className="occ-tile__label">{label}</span>
+              <span className="occ-tile__count">{count}</span>
+            </span>
+          </>
+        )
       ) : (
         <>
           {wrapHead

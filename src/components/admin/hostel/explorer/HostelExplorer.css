@@ -1,0 +1,198 @@
+/* Compact hostel picker for the explorer. Unit and room tiles stay on OccupancyTile. */
+
+.hostel-explorer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.hostel-explorer__chrome {
+  flex: 0 0 auto;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.hostel-explorer__hostels {
+  flex: 0 0 auto;
+  background: var(--color-bg-primary);
+  border-bottom: var(--border-1) solid var(--color-border-primary);
+  padding: var(--spacing-2) var(--page-gutter-x);
+}
+
+@media (min-width: 640px) {
+  .hostel-explorer__hostels {
+    padding-inline: var(--page-gutter-x-sm);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hostel-explorer__hostels {
+    padding-inline: var(--page-gutter-x-lg);
+  }
+}
+
+.hostel-explorer__hostels-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.hostel-explorer__row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-2);
+  overflow-x: auto;
+  padding-block: var(--spacing-0-5);
+}
+
+.hostel-explorer__row > * {
+  flex: 0 0 auto;
+}
+
+.hostel-explorer__map {
+  min-height: 0;
+}
+
+.hostel-explorer .occ-tile--lg.occ-tile--grouped {
+  --occ-tile-size: calc(var(--spacing-24) * 0.75);
+}
+
+.hostel-explorer-tile {
+  --tile-accent: var(--color-primary);
+  --hostel-occ: 0%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--spacing-1);
+  width: calc(var(--spacing-20) * 1.2);
+  min-height: 0;
+  padding: var(--spacing-1-5) var(--spacing-2);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition:
+    transform var(--transition-fast) var(--ease-out),
+    box-shadow var(--transition-fast) var(--ease-out),
+    border-color var(--transition-fast) var(--ease-out),
+    background-color var(--transition-fast) var(--ease-out);
+}
+
+.hostel-explorer-tile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18%;
+  right: 18%;
+  height: var(--border-2);
+  border-radius: 0 0 var(--radius-full) var(--radius-full);
+  background: var(--tile-accent);
+}
+
+.hostel-explorer-tile[data-gender="Boys"] {
+  --tile-accent: var(--color-boys-text);
+}
+
+.hostel-explorer-tile[data-gender="Girls"] {
+  --tile-accent: var(--color-girls-text);
+}
+
+.hostel-explorer-tile[data-tone="empty"] {
+  --tile-accent: var(--color-text-disabled);
+}
+
+.hostel-explorer-tile[data-tone="partial"] {
+  background: var(--color-info-bg-light);
+  border-color: var(--color-info-border);
+}
+
+.hostel-explorer-tile[data-tone="full"] {
+  background: var(--color-success-bg-light);
+  border-color: var(--color-success-border);
+}
+
+.hostel-explorer-tile__name {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hostel-explorer-tile__meta {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.hostel-explorer-tile__occ {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5);
+}
+
+.hostel-explorer-tile__bar {
+  display: block;
+  width: 100%;
+  height: var(--spacing-0-5);
+  border-radius: var(--radius-full);
+  background: var(--occupancy-ring-bg);
+  overflow: hidden;
+}
+
+.hostel-explorer-tile__bar-fill {
+  display: block;
+  height: 100%;
+  width: var(--hostel-occ);
+  border-radius: var(--radius-full);
+  background: var(--tile-accent);
+}
+
+.hostel-explorer-tile__count {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.hostel-explorer-tile:hover,
+.hostel-explorer-tile:focus-visible {
+  transform: translateY(calc(var(--spacing-0-5) * -1));
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-hover);
+  outline: none;
+}
+
+.hostel-explorer-tile:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.hostel-explorer-tile[aria-pressed="true"] {
+  border-color: var(--tile-accent);
+  box-shadow: var(--shadow-focus-primary);
+  transform: translateY(calc(var(--spacing-0-5) * -1));
+  background: var(--color-bg-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hostel-explorer-tile {
+    transition: none;
+  }
+
+  .hostel-explorer-tile:hover,
+  .hostel-explorer-tile:focus-visible,
+  .hostel-explorer-tile[aria-pressed="true"] {
+    transform: none;
+  }
+}
