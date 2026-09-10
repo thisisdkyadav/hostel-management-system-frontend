@@ -49,6 +49,13 @@ const parseErrorResponse = async (response) => {
   }
 }
 
+const isAbsoluteHttpUrl = (value) => /^https?:\/\//i.test(String(value || ""))
+
+const joinRequestUrl = (baseUrl, endpoint) => {
+  if (isAbsoluteHttpUrl(endpoint)) return endpoint
+  return `${baseUrl || ""}${endpoint}`
+}
+
 /**
  * Build URL with query parameters
  * @param {string} endpoint - API endpoint
@@ -56,7 +63,7 @@ const parseErrorResponse = async (response) => {
  * @returns {string} Complete URL with query string
  */
 const buildUrl = (endpoint, params = {}, resolvedBaseUrl = getApiBaseUrl()) => {
-  const url = new URL(`${resolvedBaseUrl}${endpoint}`)
+  const url = new URL(joinRequestUrl(resolvedBaseUrl, endpoint))
   
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -74,15 +81,16 @@ const buildUrl = (endpoint, params = {}, resolvedBaseUrl = getApiBaseUrl()) => {
  * @returns {string} Complete URL
  */
 const buildUrlWithQueryString = (endpoint, queryString = "", resolvedBaseUrl = getApiBaseUrl()) => {
+  const url = joinRequestUrl(resolvedBaseUrl, endpoint)
   if (queryString) {
-    return `${resolvedBaseUrl}${endpoint}?${queryString}`
+    return `${url}?${queryString}`
   }
-  return `${resolvedBaseUrl}${endpoint}`
+  return url
 }
 
 const resolveBaseUrl = (options = {}, clientConfig = {}) => {
-  if (options.baseUrl) return options.baseUrl
-  if (clientConfig.baseUrl) return clientConfig.baseUrl
+  if (options.baseUrl != null) return options.baseUrl
+  if (clientConfig.baseUrl != null) return clientConfig.baseUrl
 
   const backend = options.backend || clientConfig.backend || API_BACKENDS.NODE
   return getApiBaseUrl(backend)
@@ -109,7 +117,7 @@ const request = async (endpoint, options = {}, clientConfig = {}) => {
   } else if (params) {
     url = buildUrl(endpoint, params, resolvedBaseUrl)
   } else {
-    url = `${resolvedBaseUrl}${endpoint}`
+    url = joinRequestUrl(resolvedBaseUrl, endpoint)
   }
 
   // Merge options with defaults
@@ -231,7 +239,7 @@ export const createApiClient = (clientConfig = {}) => {
     download: async (endpoint, options = {}) => {
       const { backend: _backend, baseUrl: _baseUrl, ...fetchOpts } = options
       const resolvedBaseUrl = resolveBaseUrl(options, clientConfig)
-      const url = `${resolvedBaseUrl}${endpoint}`
+      const url = joinRequestUrl(resolvedBaseUrl, endpoint)
 
       try {
         const response = await fetch(url, {
@@ -267,7 +275,7 @@ export const createApiClient = (clientConfig = {}) => {
      */
     upload: async (endpoint, formData, options = {}) => {
       const resolvedBaseUrl = resolveBaseUrl(options, clientConfig)
-      const url = `${resolvedBaseUrl}${endpoint}`
+      const url = joinRequestUrl(resolvedBaseUrl, endpoint)
       const { backend: _backend, baseUrl: _baseUrl, ...fetchOptionsForUpload } = options
       
       try {

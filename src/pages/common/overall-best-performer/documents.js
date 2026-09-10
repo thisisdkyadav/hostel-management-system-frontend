@@ -1,5 +1,5 @@
 import { Activity } from "lucide-react"
-import { getMediaDownloadUrl } from "@/utils/mediaUtils"
+import { getMediaDownloadEndpoint } from "@/utils/mediaUtils"
 import { uploadApi, apiClient } from "@/service"
 import { Select } from "hzero"
 
@@ -154,8 +154,7 @@ export const collectApplicationPdfDocuments = (application = null) => {
 }
 
 export const fetchPdfBytes = async (document) => {
-  const response = await apiClient.download(getMediaDownloadUrl(document.url), {
-    baseUrl: "",
+  const response = await apiClient.download(getMediaDownloadEndpoint(document.url), {
     credentials: "include",
   })
 

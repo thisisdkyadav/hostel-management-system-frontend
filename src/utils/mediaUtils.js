@@ -2,9 +2,13 @@ import { API_BACKENDS, getApiBaseUrl } from "../config/apiConfig"
 
 const MEDIA_REF_PREFIX = "media://"
 
+const buildMediaResolvePath = (mediaPath, disposition = "inline") => {
+  return `/media/resolve?ref=${encodeURIComponent(mediaPath)}&disposition=${encodeURIComponent(disposition)}&redirect=1`
+}
+
 const buildResolvedMediaUrl = (mediaPath, disposition = "inline") => {
   const nodeBaseUrl = getApiBaseUrl(API_BACKENDS.NODE)
-  return `${nodeBaseUrl}/media/resolve?ref=${encodeURIComponent(mediaPath)}&disposition=${encodeURIComponent(disposition)}&redirect=1`
+  return `${nodeBaseUrl}${buildMediaResolvePath(mediaPath, disposition)}`
 }
 
 export const getMediaUrl = (mediaPath) => {
@@ -35,4 +39,19 @@ export const getMediaDownloadUrl = (mediaPath) => {
   }
 
   return `${import.meta.env.VITE_MEDIA_URL}${normalizedPath}`
+}
+
+export const getMediaDownloadEndpoint = (mediaPath) => {
+  const normalizedPath = String(mediaPath || "").trim()
+  if (!normalizedPath) return ""
+
+  if (normalizedPath.startsWith("http")) {
+    return normalizedPath
+  }
+
+  if (normalizedPath.startsWith(MEDIA_REF_PREFIX)) {
+    return buildMediaResolvePath(normalizedPath, "attachment")
+  }
+
+  return getMediaDownloadUrl(normalizedPath)
 }
