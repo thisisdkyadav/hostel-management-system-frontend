@@ -40,18 +40,3 @@ export const getMediaDownloadUrl = (mediaPath) => {
 
   return `${import.meta.env.VITE_MEDIA_URL}${normalizedPath}`
 }
-
-export const getMediaDownloadEndpoint = (mediaPath) => {
-  const normalizedPath = String(mediaPath || "").trim()
-  if (!normalizedPath) return ""
-
-  if (normalizedPath.startsWith("http")) {
-    return normalizedPath
-  }
-
-  if (normalizedPath.startsWith(MEDIA_REF_PREFIX)) {
-    return buildMediaResolvePath(normalizedPath, "attachment")
-  }
-
-  return getMediaDownloadUrl(normalizedPath)
-}

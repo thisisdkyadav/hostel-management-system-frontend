@@ -1,5 +1,5 @@
 import { Activity } from "lucide-react"
-import { getMediaDownloadEndpoint } from "@/utils/mediaUtils"
+import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { uploadApi, apiClient } from "@/service"
 import { Select } from "hzero"
 
@@ -153,8 +153,18 @@ export const collectApplicationPdfDocuments = (application = null) => {
   return [...uniqueByUrl.values()]
 }
 
+const MEDIA_REF_PREFIX = "media://"
+
+const resolvePdfDownloadEndpoint = (mediaPath) => {
+  const normalizedPath = String(mediaPath || "").trim()
+  if (normalizedPath.startsWith(MEDIA_REF_PREFIX)) {
+    return `/media/resolve?ref=${encodeURIComponent(normalizedPath)}&disposition=attachment&redirect=1`
+  }
+  return getMediaDownloadUrl(normalizedPath)
+}
+
 export const fetchPdfBytes = async (document) => {
-  const response = await apiClient.download(getMediaDownloadEndpoint(document.url), {
+  const response = await apiClient.download(resolvePdfDownloadEndpoint(document.url), {
     credentials: "include",
   })
 
