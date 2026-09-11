@@ -15,45 +15,66 @@ const panelColorFor = (categoryId) => {
 
 /**
  * Selected tile opens into the main panel as one tinted surface.
- * viewBox is the w-10 tile + 8px gutter + --radius-xl shoulders (12px).
+ * Tile height sits halfway between the original 2.5rem chip and the
+ * fully-flush 2.5rem + radius-xl strip. viewBox adds radius-xl shoulders
+ * and the 8px gutter.
  */
-const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 48 64 A 12 12 0 0 0 36 52 L 12 52 A 12 12 0 0 1 0 40 Z"
+const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 48 70 A 12 12 0 0 0 36 58 L 12 58 A 12 12 0 0 1 0 46 Z"
 
-const RailActiveJoin = ({ panelColor, fadeTo }) => {
+const TAB_SIZE = "calc(2.5rem + var(--radius-xl) / 2)"
+const TAB_EASE = "450ms cubic-bezier(0.22, 1, 0.36, 1)"
+
+const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
   const uid = useId().replace(/:/g, "")
-  const gradId = `rail-tab-${uid}`
-  const fill = fadeTo ? `url(#${gradId})` : panelColor
+  const fadeId = `rail-tab-fade-${uid}`
 
   return (
-    <svg
+    <div
       aria-hidden
-      viewBox="0 0 48 64"
-      preserveAspectRatio="none"
-      className="absolute pointer-events-none"
+      className="absolute left-0 right-0 z-0 pointer-events-none motion-reduce:!transition-none"
       style={{
-        left: "var(--spacing-2)",
-        width: "calc(100% - var(--spacing-2))",
-        top: "calc(-1 * var(--radius-xl))",
-        height: "calc(100% + 2 * var(--radius-xl))",
+        top: "var(--radius-xl)",
+        height: TAB_SIZE,
+        transform: `translateY(calc(${index} * ${TAB_SIZE}))`,
+        transition: `transform ${TAB_EASE}`,
       }}
     >
-      {fadeTo && (
+      <svg
+        viewBox="0 0 48 70"
+        preserveAspectRatio="none"
+        className="absolute"
+        style={{
+          left: "var(--spacing-2)",
+          width: "calc(100% - var(--spacing-2))",
+          top: "calc(-1 * var(--radius-xl))",
+          height: "calc(100% + 2 * var(--radius-xl))",
+        }}
+      >
         <defs>
-          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor={panelColor} />
-            <stop offset="82%" stopColor={panelColor} />
-            <stop offset="100%" stopColor={fadeTo} />
+          <linearGradient id={fadeId} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="82%" stopColor="var(--color-bg-primary)" stopOpacity="0" />
+            <stop offset="100%" stopColor="var(--color-bg-primary)" stopOpacity="1" />
           </linearGradient>
         </defs>
-      )}
-      <path d={TAB_PATH} fill={fill} />
-    </svg>
+        <path
+          d={TAB_PATH}
+          fill={panelColor}
+          className="motion-reduce:!transition-none"
+          style={{ transition: `fill ${TAB_EASE}` }}
+        />
+        <path
+          d={TAB_PATH}
+          fill={`url(#${fadeId})`}
+          className="motion-reduce:!transition-none"
+          style={{ opacity: fadeTo ? 1 : 0, transition: `opacity ${TAB_EASE}` }}
+        />
+      </svg>
+    </div>
   )
 }
 
-const RailButton = ({ label, pressed, onClick, accent, panelColor, fadeTo, children }) => {
+const RailButton = ({ label, pressed, onClick, accent, children }) => {
   const isCategory = !!accent
-  const isActiveTab = isCategory && pressed
 
   const button = (
     <button
@@ -64,20 +85,18 @@ const RailButton = ({ label, pressed, onClick, accent, panelColor, fadeTo, child
       onMouseDown={isCategory ? (event) => event.preventDefault() : undefined}
       onClick={onClick}
       className={`
-        w-10 h-10 flex items-center justify-center shrink-0
+        relative z-10 flex items-center justify-center shrink-0
         transition-all duration-200 motion-reduce:transition-none
         outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
         ${isCategory
-          ? `relative z-10 rounded-[var(--radius-xl)] ${isActiveTab
-            ? ""
-            : "bg-[var(--color-bg-primary)] hover:scale-105 active:scale-95 motion-reduce:hover:scale-100"}`
+          ? "w-full rounded-[var(--radius-xl)]"
           : pressed
-            ? "rounded-[var(--radius-xl)]"
-            : "rounded-[var(--radius-xl)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"}
+            ? "w-10 h-10 rounded-[var(--radius-xl)]"
+            : "w-10 h-10 rounded-[var(--radius-xl)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"}
       `}
       style={
         isCategory
-          ? { color: accent }
+          ? { color: accent, height: TAB_SIZE }
           : pressed
             ? { backgroundColor: "var(--color-bg-hover)", color: "var(--color-text-primary)" }
             : undefined
@@ -87,14 +106,7 @@ const RailButton = ({ label, pressed, onClick, accent, panelColor, fadeTo, child
     </button>
   )
 
-  if (!isCategory) return button
-
-  return (
-    <div className={`relative w-full h-10 flex justify-center overflow-visible ${isActiveTab ? "z-10" : ""}`}>
-      {isActiveTab && <RailActiveJoin panelColor={panelColor} fadeTo={fadeTo} />}
-      {button}
-    </div>
-  )
+  return button
 }
 
 const RailAvatar = ({ user, isActive }) => {
@@ -153,10 +165,18 @@ const IconRail = ({
         </button>
       </div>
 
-      <nav aria-label="Categories" className="relative z-10 flex-1 min-h-0 w-full flex flex-col items-center gap-[var(--radius-xl)] py-[var(--radius-xl)]">
+      <nav aria-label="Categories" className="relative z-10 flex-1 min-h-0 w-full flex flex-col items-center py-[var(--radius-xl)]">
+        <RailActiveJoin
+          index={Math.max(0, ADMIN_NAV_CATEGORIES.findIndex((category) => category.id === activeCategory))}
+          panelColor={
+            activeCategory === ADMIN_NAV_CATEGORY_HOME
+              ? getCategoryTint(ADMIN_NAV_CATEGORY_HOSTELS)
+              : panelColorFor(activeCategory)
+          }
+          fadeTo={activeCategory === ADMIN_NAV_CATEGORY_HOME ? "var(--color-bg-primary)" : undefined}
+        />
         {ADMIN_NAV_CATEGORIES.map((category) => {
           const isActiveCategory = activeCategory === category.id
-          const isHome = category.id === ADMIN_NAV_CATEGORY_HOME
           const accent = `var(${category.colorVar})`
           return (
             <RailButton
@@ -164,8 +184,6 @@ const IconRail = ({
               label={category.name}
               pressed={isActiveCategory}
               accent={accent}
-              panelColor={isHome ? getCategoryTint(ADMIN_NAV_CATEGORY_HOSTELS) : panelColorFor(category.id)}
-              fadeTo={isHome ? "var(--color-bg-primary)" : undefined}
               onClick={() => onCategoryChange(category.id)}
             >
               <category.icon size={18} strokeWidth={isActiveCategory ? 2.2 : 1.8} />

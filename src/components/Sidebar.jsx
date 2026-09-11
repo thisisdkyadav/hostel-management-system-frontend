@@ -304,8 +304,11 @@ const Sidebar = ({ navItems }) => {
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
     <div
-      className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3"
-      style={tintBg ? { backgroundColor: tintBg } : undefined}
+      className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3 motion-reduce:!transition-none"
+      style={{
+        backgroundColor: tintBg || undefined,
+        transition: "background-color 450ms cubic-bezier(0.22, 1, 0.36, 1)",
+      }}
     >
       <ul className="space-y-1">
         {items.map((item) => (
@@ -411,10 +414,10 @@ const Sidebar = ({ navItems }) => {
 
           <div className="flex flex-col h-full min-w-0 flex-1">
             {/* Title, mode switcher, and (in V1–V3) the theme toggle */}
-            <Surface bg={headerTint} className={`relative z-20 border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
+            <Surface bg={headerTint} className={`relative z-20 border-b border-[var(--color-border-primary)] transition-[background-color,color] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
               <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
                 <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
-                  <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-all duration-300 group-hover:opacity-70">
+                  <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-[color,opacity] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:opacity-70">
                     {headerTitle}
                   </Text>
                 </div>
