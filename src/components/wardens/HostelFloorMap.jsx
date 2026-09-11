@@ -223,15 +223,6 @@ const HostelFloorMap = ({
 
       {groups.map((group) => (
         <section key={group.band} className="floor-map__band">
-          <header className="floor-map__band-head">
-            <Text as="h3" size="sm" weight="semibold" color="primary">
-              {group.label}
-            </Text>
-            <Text size="xs" color="muted">
-              {group.items.length} {noun}
-              {group.items.length === 1 ? "" : "s"}
-            </Text>
-          </header>
           <div className="floor-map__grid">
             {mode === "units"
               ? group.items.map((unit) => (
