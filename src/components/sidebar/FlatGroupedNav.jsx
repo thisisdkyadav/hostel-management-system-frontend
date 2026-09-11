@@ -4,19 +4,30 @@ import { HStack, SearchInput } from "hzero"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 
-const matchesQuery = (item, query) => item.name.toLowerCase().includes(query)
+const matchesQuery = (item, query) =>
+  item.name.toLowerCase().includes(query) ||
+  (item.pinnedName && item.pinnedName.toLowerCase().includes(query))
+const navItemKey = (item) => item.path || item.name
+const isNavItemActive = (item, pathname) => {
+  if (item.path && pathname === item.path) return true
+  if (item.pathPattern && new RegExp(item.pathPattern).test(pathname)) return true
+  return false
+}
 
 /**
  * V1 "All tabs" layout: every admin tab in one scrollable list with sticky
  * category headers, a Pinned group on top, and a quick text filter.
  */
-const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePin }) => {
+const FlatGroupedNav = ({ items, pinnedPaths, activePath, onNavigate, onTogglePin }) => {
   const [filterQuery, setFilterQuery] = useState("")
   const normalizedQuery = filterQuery.trim().toLowerCase()
 
   const groups = useMemo(() => {
     const pinnedSet = new Set(pinnedPaths)
-    const pinnedItems = items.filter((item) => item.path && pinnedSet.has(item.path))
+    const pinnedItems = [
+      ...items.filter((item) => item.alwaysPinned && item.path),
+      ...items.filter((item) => item.path && pinnedSet.has(item.path) && !item.alwaysPinned),
+    ]
 
     const categoryGroups = ADMIN_NAV_CATEGORIES
       .filter((category) => category.id !== ADMIN_NAV_CATEGORY_HOME)
@@ -42,7 +53,7 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePi
 
   const firstMatch = normalizedQuery ? visibleGroups[0]?.items[0] : null
 
-  const activeItem = items.find((item) => item.name === activeName)
+  const activeItem = items.find((item) => isNavItemActive(item, activePath))
   const activeCategoryId = activeItem ? (activeItem.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) : null
 
   return (
@@ -84,11 +95,13 @@ const FlatGroupedNav = ({ items, pinnedPaths, activeName, onNavigate, onTogglePi
             <ul className="space-y-1">
               {group.items.map((item) => (
                 <SidebarNavItem
-                  key={`${group.id}-${item.name}`}
+                  key={`${group.id}-${navItemKey(item)}`}
                   item={item}
-                  isActive={activeName === item.name}
+                  isActive={isNavItemActive(item, activePath)}
                   showPinControl={!!item.path}
-                  isPinned={!!item.path && pinnedPaths.includes(item.path)}
+                  isPinned={!!item.path && (item.alwaysPinned || pinnedPaths.includes(item.path))}
+                  pinLocked={Boolean(item.alwaysPinned)}
+                  label={group.id === "pinned" && item.pinnedName ? item.pinnedName : undefined}
                   onNavigate={onNavigate}
                   onTogglePin={onTogglePin}
                 />

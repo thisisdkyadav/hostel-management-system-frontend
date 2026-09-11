@@ -144,7 +144,11 @@ const AdminRoutes = () => {
               </>
             ) : (
               <>
-                <Route index element={guardRoute("route.admin.dashboard", <AdminDashboard />)} />
+                <Route index element={guardRoute("route.admin.dashboard", <AdminDashboard section="home" />)} />
+                <Route path="dashboard/hostels" element={guardRoute("route.admin.dashboard", <AdminDashboard section="hostels" />)} />
+                <Route path="dashboard/student-affairs" element={guardRoute("route.admin.dashboard", <AdminDashboard section="student-affairs" />)} />
+                <Route path="dashboard/staff" element={guardRoute("route.admin.dashboard", <AdminDashboard section="staff" />)} />
+                <Route path="dashboard/dining" element={guardRoute("route.admin.dashboard", <AdminDashboard section="dining" />)} />
                 <Route path="live-checkinout" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} />
                 <Route path="lc" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} />
                 <Route path="fs" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} />

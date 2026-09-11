@@ -9,10 +9,16 @@ import { Pin } from "lucide-react"
  * `accent` (a CSS var string like "var(--color-cat-hostels)") opts the row into
  * category-colored selected/hover states; without it the row uses app primary.
  */
-const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, onTogglePin, accent }) => {
+const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = false, label, onNavigate, onTogglePin, accent }) => {
   const [hovered, setHovered] = useState(false)
   const useAccent = !!accent
   const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
+  const displayName = label || item.name
+  const pinTitle = pinLocked
+    ? "Always pinned"
+    : isPinned
+      ? "Unpin from Home"
+      : "Pin to Home"
 
   // Accent path is driven by inline styles (dynamic per-category color); the
   // default path stays on Tailwind classes/tokens.
@@ -71,7 +77,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, 
 
         <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
           <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
-            {item.name}
+            {displayName}
           </span>
           {item.isNew && (
             <span
@@ -89,13 +95,16 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, 
       {showPinControl && (
         <button
           type="button"
+          disabled={pinLocked}
           onClick={(event) => {
             event.stopPropagation()
+            if (pinLocked) return
             onTogglePin(item)
           }}
           className={`
             absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center
             transition-all duration-200 outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
+            ${pinLocked ? "cursor-default" : ""}
             ${isPinned
               ? isActive
                 ? "opacity-100 text-white bg-white/20"
@@ -105,8 +114,8 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, onNavigate, 
                 : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"
             }
           `}
-          title={isPinned ? "Unpin from Home" : "Pin to Home"}
-          aria-label={isPinned ? `Unpin ${item.name} from Home` : `Pin ${item.name} to Home`}
+          title={pinTitle}
+          aria-label={pinLocked ? `${displayName} is always pinned` : isPinned ? `Unpin ${displayName} from Home` : `Pin ${displayName} to Home`}
         >
           <Pin size={13} strokeWidth={2} className={isPinned ? "fill-current" : ""} />
         </button>

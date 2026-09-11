@@ -4,6 +4,13 @@ import { HStack, SearchInput, Text } from "hzero"
 import { ADMIN_NAV_CATEGORIES, ADMIN_NAV_CATEGORY_HOME, ADMIN_NAV_CATEGORY_HOSTELS } from "../../constants/navigationConfig"
 import SidebarNavItem from "./SidebarNavItem"
 
+const navItemKey = (item) => item.path || item.name
+const isNavItemActive = (item, pathname) => {
+  if (item.path && pathname === item.path) return true
+  if (item.pathPattern && new RegExp(item.pathPattern).test(pathname)) return true
+  return false
+}
+
 const EXPANDED_CATEGORIES_STORAGE_KEY = "admin_sidebar_v3_expanded_v1"
 const MAX_RECENT_ITEMS = 4
 
@@ -30,11 +37,11 @@ const SectionLabel = ({ icon: Icon, children }) => (
  * V3 "Workspace" layout: quick jump (Ctrl+K or /), Pinned, Recent, and
  * collapsible category sections with persisted expand state.
  */
-const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate, onTogglePin }) => {
+const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activePath, onNavigate, onTogglePin }) => {
   const [query, setQuery] = useState("")
   const inputRef = useRef(null)
 
-  const activeItem = items.find((item) => item.name === activeName)
+  const activeItem = items.find((item) => isNavItemActive(item, activePath))
   const activeCategory = activeItem ? getItemCategory(activeItem) : null
 
   const [expandedCategories, setExpandedCategories] = useState(() => {
@@ -86,15 +93,18 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
   }, [])
 
   const pinnedSet = useMemo(() => new Set(pinnedPaths), [pinnedPaths])
-  const pinnedItems = useMemo(() => items.filter((item) => item.path && pinnedSet.has(item.path)), [items, pinnedSet])
+  const pinnedItems = useMemo(() => [
+    ...items.filter((item) => item.alwaysPinned && item.path),
+    ...items.filter((item) => item.path && pinnedSet.has(item.path) && !item.alwaysPinned),
+  ], [items, pinnedSet])
 
   const recentItems = useMemo(() => {
     const itemsByPath = new Map(items.filter((item) => item.path).map((item) => [item.path, item]))
     return recentPaths
-      .filter((path) => itemsByPath.has(path) && !pinnedSet.has(path) && itemsByPath.get(path).name !== activeName)
+      .filter((path) => itemsByPath.has(path) && !pinnedSet.has(path) && path !== activePath)
       .map((path) => itemsByPath.get(path))
       .slice(0, MAX_RECENT_ITEMS)
-  }, [items, recentPaths, pinnedSet, activeName])
+  }, [items, recentPaths, pinnedSet, activePath])
 
   const categoryGroups = useMemo(
     () =>
@@ -106,15 +116,22 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
   )
 
   const normalizedQuery = query.trim().toLowerCase()
-  const searchResults = normalizedQuery ? items.filter((item) => item.name.toLowerCase().includes(normalizedQuery)) : null
+  const searchResults = normalizedQuery
+    ? items.filter((item) =>
+        item.name.toLowerCase().includes(normalizedQuery) ||
+        (item.pinnedName && item.pinnedName.toLowerCase().includes(normalizedQuery))
+      )
+    : null
 
-  const renderItem = (item, keyPrefix, accent) => (
+  const renderItem = (item, keyPrefix, accent, { usePinnedLabel = false } = {}) => (
     <SidebarNavItem
-      key={`${keyPrefix}-${item.name}`}
+      key={`${keyPrefix}-${navItemKey(item)}`}
       item={item}
-      isActive={activeName === item.name}
+      isActive={isNavItemActive(item, activePath)}
       showPinControl={!!item.path}
-      isPinned={!!item.path && pinnedSet.has(item.path)}
+      isPinned={!!item.path && (item.alwaysPinned || pinnedSet.has(item.path))}
+      pinLocked={Boolean(item.alwaysPinned)}
+      label={usePinnedLabel && item.pinnedName ? item.pinnedName : undefined}
       accent={accent}
       onNavigate={(navItem) => {
         setQuery("")
@@ -153,7 +170,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
         {searchResults ? (
           <>
             <SectionLabel icon={Search}>Results</SectionLabel>
-            <ul className="space-y-1">{searchResults.map((item) => renderItem(item, "search"))}</ul>
+            <ul className="space-y-1">{searchResults.map((item) => renderItem(item, "search", undefined, { usePinnedLabel: true }))}</ul>
             {searchResults.length === 0 && (
               <div className="mt-1 px-4 py-3 rounded-xl text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-light)]">
                 No tabs match "{query.trim()}"
@@ -165,7 +182,7 @@ const WorkspaceNav = ({ items, pinnedPaths, recentPaths, activeName, onNavigate,
             {pinnedItems.length > 0 && (
               <>
                 <SectionLabel icon={Pin}>Pinned</SectionLabel>
-                <ul className="space-y-1">{pinnedItems.map((item) => renderItem(item, "pinned"))}</ul>
+                <ul className="space-y-1">{pinnedItems.map((item) => renderItem(item, "pinned", undefined, { usePinnedLabel: true }))}</ul>
               </>
             )}
 

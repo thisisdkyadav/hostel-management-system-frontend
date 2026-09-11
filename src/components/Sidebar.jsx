@@ -32,8 +32,18 @@ import {
   ADMIN_NAV_CATEGORY_HOME,
   ADMIN_NAV_CATEGORY_HOSTELS,
   ADMIN_NAV_CATEGORY_DINING,
+  ADMIN_DASHBOARD_PATHS,
+  getAdminDashboardSectionByPath,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
+
+const navItemKey = (item) => item.path || item.name
+
+const isNavItemActive = (item, pathname) => {
+  if (item.path && pathname === item.path) return true
+  if (item.pathPattern && new RegExp(item.pathPattern).test(pathname)) return true
+  return false
+}
 import { HStack, Surface, Text } from "hzero"
 
 const ADMIN_DEFAULT_PINNED_PATHS = [
@@ -116,24 +126,27 @@ const Sidebar = ({ navItems }) => {
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
-      if (location.pathname === item.path) return true
-      if (item.pathPattern && new RegExp(item.pathPattern).test(location.pathname)) return true
+      if (isNavItemActive(item, location.pathname)) return true
       if (location.pathname === "/" && item.path === "/Dashboard") return true
-
       return false
     })
 
     if (currentItem) {
-      setActive(currentItem.name)
+      setActive(navItemKey(currentItem))
+    }
+
+    const dashboardSection = getAdminDashboardSectionByPath(location.pathname)
+    if (dashboardSection) {
+      setActiveAdminCategory(dashboardSection.category)
     }
   }, [location.pathname, navItems])
 
   // Track recent visits so the Workspace (V3) layout can surface them
   useEffect(() => {
-    if (!isAdminNav || !active) return
-    const currentItem = mainNavItems.find((item) => item.name === active)
+    if (!isAdminNav) return
+    const currentItem = mainNavItems.find((item) => isNavItemActive(item, location.pathname))
     if (currentItem?.path) recordVisit(currentItem.path)
-  }, [isAdminNav, active, mainNavItems, recordVisit])
+  }, [isAdminNav, location.pathname, mainNavItems, recordVisit])
 
   useEffect(() => {
     if (!isAdminNav || typeof window === "undefined") return
@@ -151,23 +164,29 @@ const Sidebar = ({ navItems }) => {
 
     const adminMainNavItems = mainNavItems.filter((item) => item.path)
     const validPaths = new Set(adminMainNavItems.map((item) => item.path))
+    const alwaysPinnedPaths = adminMainNavItems.filter((item) => item.alwaysPinned).map((item) => item.path)
     const fallbackPins = ADMIN_DEFAULT_PINNED_PATHS.filter((path) => validPaths.has(path))
-    const safeFallbackPins = fallbackPins.length > 0 ? fallbackPins : validPaths.has("/admin") ? ["/admin"] : []
+    const safeFallbackPins = fallbackPins.length > 0 ? fallbackPins : validPaths.has(ADMIN_DASHBOARD_PATHS.home) ? [ADMIN_DASHBOARD_PATHS.home] : []
     const hasPersistedPinnedTabs = Array.isArray(user?.pinnedTabs)
     const userPinnedTabs = hasPersistedPinnedTabs ? user.pinnedTabs.filter((path) => typeof path === "string" && validPaths.has(path)) : []
     const sanitizedUserPinnedTabs = [...new Set(userPinnedTabs)]
-    const nextPinnedPaths = hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins
+    const nextPinnedPaths = [...new Set([
+      ...alwaysPinnedPaths,
+      ...(hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins),
+    ])]
 
     const migrationPathsToAdd = ADMIN_PINNED_TAB_MIGRATIONS
       .filter((migration) => validPaths.has(migration.path) && !window.localStorage.getItem(migration.storageKey))
       .map((migration) => migration.path)
 
-    const migratedPinnedPaths = [...new Set([...nextPinnedPaths, ...migrationPathsToAdd])]
+    const migratedPinnedPaths = [...new Set([...alwaysPinnedPaths, ...nextPinnedPaths, ...migrationPathsToAdd])]
 
     setPinnedAdminPaths(migratedPinnedPaths)
-    setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
+    const dashboardSection = getAdminDashboardSectionByPath(window.location.pathname)
+    setActiveAdminCategory(dashboardSection?.category || ADMIN_NAV_CATEGORY_HOME)
 
-    if (migrationPathsToAdd.length > 0) {
+    const missingAlwaysPinned = alwaysPinnedPaths.some((path) => !sanitizedUserPinnedTabs.includes(path))
+    if (migrationPathsToAdd.length > 0 || (hasPersistedPinnedTabs && missingAlwaysPinned)) {
       ADMIN_PINNED_TAB_MIGRATIONS.forEach((migration) => {
         if (migrationPathsToAdd.includes(migration.path)) {
           window.localStorage.setItem(migration.storageKey, "true")
@@ -223,7 +242,7 @@ const Sidebar = ({ navItems }) => {
     if (item.action) {
       item.action()
     } else if (item.path) {
-      setActive(item.name)
+      setActive(navItemKey(item))
       navigate(item.path)
     }
 
@@ -232,20 +251,26 @@ const Sidebar = ({ navItems }) => {
     }
   }
 
+  const alwaysPinnedPaths = mainNavItems.filter((item) => item.alwaysPinned && item.path).map((item) => item.path)
+
   const togglePinnedItem = async (item) => {
-    if (!isAdminNav || !item?.path || !adminMainPathSet.has(item.path)) return
+    if (!isAdminNav || !item?.path || !adminMainPathSet.has(item.path) || item.alwaysPinned) return
 
     const previousPinnedPaths = pinnedAdminPaths
-    const nextPinnedPaths = previousPinnedPaths.includes(item.path)
+    const toggledPaths = previousPinnedPaths.includes(item.path)
       ? previousPinnedPaths.filter((path) => path !== item.path)
       : [...previousPinnedPaths, item.path]
+    const nextPinnedPaths = [...new Set([...alwaysPinnedPaths, ...toggledPaths])]
 
     setPinnedAdminPaths(nextPinnedPaths)
 
     try {
       const response = await authApi.updatePinnedTabs(nextPinnedPaths)
       if (Array.isArray(response?.pinnedTabs)) {
-        const sanitizedPinnedTabs = [...new Set(response.pinnedTabs.filter((path) => typeof path === "string" && adminMainPathSet.has(path)))]
+        const sanitizedPinnedTabs = [...new Set([
+          ...alwaysPinnedPaths,
+          ...response.pinnedTabs.filter((path) => typeof path === "string" && adminMainPathSet.has(path)),
+        ])]
         setPinnedAdminPaths(sanitizedPinnedTabs)
       }
     } catch (error) {
@@ -259,12 +284,14 @@ const Sidebar = ({ navItems }) => {
 
     const firstItem =
       categoryId === ADMIN_NAV_CATEGORY_HOME
-        ? mainNavItems.find((item) => item.path && pinnedAdminPaths.includes(item.path))
+        ? mainNavItems.find((item) => item.path === ADMIN_DASHBOARD_PATHS.home)
+          || mainNavItems.find((item) => item.alwaysPinned)
+          || mainNavItems.find((item) => item.path && pinnedAdminPaths.includes(item.path))
         : mainNavItems.find((item) => item.path && (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === categoryId)
 
     if (!firstItem?.path) return
 
-    setActive(firstItem.name)
+    setActive(navItemKey(firstItem))
     navigate(firstItem.path)
   }
 
@@ -283,11 +310,13 @@ const Sidebar = ({ navItems }) => {
       <ul className="space-y-1">
         {items.map((item) => (
           <SidebarNavItem
-            key={item.name}
+            key={navItemKey(item)}
             item={item}
-            isActive={active === item.name}
+            isActive={isNavItemActive(item, location.pathname) || active === navItemKey(item)}
             showPinControl={withPins && !!item.path}
-            isPinned={!!item.path && pinnedAdminPaths.includes(item.path)}
+            isPinned={!!item.path && (item.alwaysPinned || pinnedAdminPaths.includes(item.path))}
+            pinLocked={Boolean(item.alwaysPinned)}
+            label={item.pinnedName && activeAdminCategory === ADMIN_NAV_CATEGORY_HOME ? item.pinnedName : undefined}
             accent={accent}
             onNavigate={handleNavigation}
             onTogglePin={togglePinnedItem}
@@ -311,8 +340,8 @@ const Sidebar = ({ navItems }) => {
       return (
         <FlatGroupedNav
           items={mainNavItems}
-          pinnedPaths={pinnedAdminPaths}
-          activeName={active}
+          pinnedPaths={[...new Set([...alwaysPinnedPaths, ...pinnedAdminPaths])]}
+          activePath={location.pathname}
           onNavigate={handleNavigation}
           onTogglePin={togglePinnedItem}
         />
@@ -323,9 +352,9 @@ const Sidebar = ({ navItems }) => {
       return (
         <WorkspaceNav
           items={mainNavItems}
-          pinnedPaths={pinnedAdminPaths}
+          pinnedPaths={[...new Set([...alwaysPinnedPaths, ...pinnedAdminPaths])]}
           recentPaths={recentPaths}
-          activeName={active}
+          activePath={location.pathname}
           onNavigate={handleNavigation}
           onTogglePin={togglePinnedItem}
         />
@@ -334,7 +363,10 @@ const Sidebar = ({ navItems }) => {
 
     const categoryItems =
       activeAdminCategory === ADMIN_NAV_CATEGORY_HOME
-        ? mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path))
+        ? [
+            ...mainNavItems.filter((item) => item.alwaysPinned && item.path),
+            ...mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path) && !item.alwaysPinned),
+          ]
         : mainNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
 
     const activeCategoryConfig = ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
@@ -372,7 +404,7 @@ const Sidebar = ({ navItems }) => {
               user={user}
               profileItem={profileItem}
               logoutItem={logoutItem}
-              isProfileActive={active === "Profile"}
+              isProfileActive={profileItem ? location.pathname === profileItem.path : false}
               onNavigate={handleNavigation}
             />
           )}
@@ -430,7 +462,7 @@ const Sidebar = ({ navItems }) => {
                   user={user}
                   profileItem={profileItem}
                   logoutItem={logoutItem}
-                  isActive={active === "Profile"}
+                  isActive={profileItem ? location.pathname === profileItem.path : false}
                   onNavigate={handleNavigation}
                 />
               </Surface>

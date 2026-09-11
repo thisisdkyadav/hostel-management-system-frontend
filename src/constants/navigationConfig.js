@@ -135,6 +135,21 @@ export const ADMIN_NAV_CATEGORIES = [
   { id: ADMIN_NAV_CATEGORY_DINING, name: "Dining", icon: UtensilsCrossed, colorVar: "--color-cat-dining" },
 ]
 
+export const ADMIN_DASHBOARD_SECTIONS = [
+  { id: "home", path: "/admin", category: ADMIN_NAV_CATEGORY_HOME, title: "Admin Dashboard", alwaysPinned: true },
+  { id: "hostels", path: "/admin/dashboard/hostels", category: ADMIN_NAV_CATEGORY_HOSTELS, title: "Hostels Dashboard", pinnedName: "Hostels Dashboard" },
+  { id: "student-affairs", path: "/admin/dashboard/student-affairs", category: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS, title: "Student Affairs Dashboard", pinnedName: "Student Affairs Dashboard" },
+  { id: "staff", path: "/admin/dashboard/staff", category: ADMIN_NAV_CATEGORY_STAFF, title: "Staff Dashboard", pinnedName: "Staff Dashboard" },
+  { id: "dining", path: "/admin/dashboard/dining", category: ADMIN_NAV_CATEGORY_DINING, title: "Dining Dashboard", pinnedName: "Dining Dashboard" },
+]
+
+export const ADMIN_DASHBOARD_PATHS = Object.fromEntries(
+  ADMIN_DASHBOARD_SECTIONS.map((section) => [section.id, section.path])
+)
+
+export const getAdminDashboardSectionByPath = (pathname) =>
+  ADMIN_DASHBOARD_SECTIONS.find((section) => section.path === pathname) || null
+
 // ============================================
 // ADMIN NAVIGATION
 // ============================================
@@ -150,7 +165,16 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    ...ADMIN_DASHBOARD_SECTIONS.map((section) => ({
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      section: "main",
+      path: section.path,
+      routeKey: "route.admin.dashboard",
+      adminCategory: section.category,
+      alwaysPinned: Boolean(section.alwaysPinned),
+      pinnedName: section.pinnedName,
+    })),
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
