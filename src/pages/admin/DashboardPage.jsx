@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
-  Activity, Award, BriefcaseBusiness, CalendarCheck, CalendarClock, ClipboardCheck, ClipboardList, CornerDownLeft,
-  FileText, GraduationCap, Hourglass, Receipt, Star, TriangleAlert, Trophy, User, Users, UtensilsCrossed, Wallet,
+  Activity, Award, BadgeCheck, BedDouble, BriefcaseBusiness, CalendarCheck, CalendarClock, CalendarOff, CheckSquare,
+  ClipboardCheck, ClipboardList, CornerDownLeft, FileText, GraduationCap, Hourglass, ListTodo, MessageCircle, Receipt,
+  Scan, Search, Shield, ShieldCheck, Star, TriangleAlert, Trophy, User, UserCog, Users, UtensilsCrossed, Wallet, Wrench,
 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
@@ -39,6 +40,9 @@ const APPROVAL_TODO_ITEMS = [
 const IN_PROCESS_ITEMS = {
   por: { to: "/admin/por", icon: Award, tone: "purple" },
   proposals: { to: "/admin/gymkhana-events", icon: FileText, tone: "primary" },
+  calendars: { to: "/admin/gymkhana-events", icon: CalendarCheck, tone: "info" },
+  megaProposals: { to: "/admin/mega-events", icon: Trophy, tone: "teal" },
+  expenses: { to: "/admin/gymkhana-events", icon: Receipt, tone: "warning" },
 }
 
 const ratingTone = (avg) => (avg >= 4 ? "success" : avg >= 3 ? "warning" : "danger")
@@ -485,6 +489,23 @@ const Feed = ({ title, icon, accent, count, to, loading, actions, children }) =>
   </Panel>
 )
 
+const CountFeed = ({ title, icon, accent, count, to, loading, rows }) => (
+  <Feed title={title} icon={icon} accent={accent} count={loading ? undefined : count} to={to} loading={loading}>
+    {(rows || []).map((row) => (
+      <StatRow
+        key={row.label}
+        as={row.to ? Link : undefined}
+        to={row.to}
+        dot
+        tone={row.tone || "info"}
+        emphasis={Boolean(row.emphasis)}
+        label={row.label}
+        value={row.value}
+      />
+    ))}
+  </Feed>
+)
+
 const UpcomingJoinsFeed = ({ loading, leaves }) => (
   <Feed title="Upcoming joins" icon={CalendarCheck} accent="info" count={leaves.length} to="/admin/leaves" loading={loading}>
     {leaves.length === 0 ? (
@@ -700,11 +721,51 @@ const ResolverRows = ({ people, emptyTitle, emptyMessage }) => {
   )
 }
 
-const InsightCenter = ({ loading, error, dashboardData, showInProcess = true }) => {
+const TopResolversFeed = ({ loading, dashboardData }) => {
   const [bestPeriod, setBestPeriod] = useState("1M")
-  const [leastPeriod, setLeastPeriod] = useState("1M")
   const bestResolvers = dashboardData?.ratings?.[bestPeriod]?.bestResolvers || []
+  return (
+    <Feed
+      title="Top resolvers"
+      icon={Trophy}
+      accent="success"
+      count={bestResolvers.length}
+      to="/admin/complaints"
+      loading={loading}
+      actions={!loading && <PeriodToggle value={bestPeriod} onChange={setBestPeriod} />}
+    >
+      <ResolverRows
+        people={bestResolvers}
+        emptyTitle="No rated resolvers"
+        emptyMessage={RATING_EMPTY[bestPeriod] || RATING_EMPTY.all}
+      />
+    </Feed>
+  )
+}
+
+const LowestRatedFeed = ({ loading, dashboardData }) => {
+  const [leastPeriod, setLeastPeriod] = useState("1M")
   const leastRated = dashboardData?.ratings?.[leastPeriod]?.leastRated || []
+  return (
+    <Feed
+      title="Lowest"
+      icon={Star}
+      accent="warning"
+      count={leastRated.length}
+      to="/admin/complaints"
+      loading={loading}
+      actions={!loading && <PeriodToggle value={leastPeriod} onChange={setLeastPeriod} />}
+    >
+      <ResolverRows
+        people={leastRated}
+        emptyTitle="No ratings in this window"
+        emptyMessage={RATING_EMPTY[leastPeriod] || RATING_EMPTY.all}
+      />
+    </Feed>
+  )
+}
+
+const InsightCenter = ({ loading, error, dashboardData, showInProcess = true }) => {
   const inProcess = dashboardData?.inProcess || []
   const inProcessTotal = inProcess.reduce((sum, item) => sum + (item.count || 0), 0)
 
@@ -712,38 +773,8 @@ const InsightCenter = ({ loading, error, dashboardData, showInProcess = true }) 
 
   return (
     <Panel.Columns>
-      <Feed
-        title="Top resolvers"
-        icon={Trophy}
-        accent="success"
-        count={bestResolvers.length}
-        to="/admin/complaints"
-        loading={loading}
-        actions={!loading && <PeriodToggle value={bestPeriod} onChange={setBestPeriod} />}
-      >
-        <ResolverRows
-          people={bestResolvers}
-          emptyTitle="No rated resolvers"
-          emptyMessage={RATING_EMPTY[bestPeriod] || RATING_EMPTY.all}
-        />
-      </Feed>
-
-      <Feed
-        title="Lowest"
-        icon={Star}
-        accent="warning"
-        count={leastRated.length}
-        to="/admin/complaints"
-        loading={loading}
-        actions={!loading && <PeriodToggle value={leastPeriod} onChange={setLeastPeriod} />}
-      >
-        <ResolverRows
-          people={leastRated}
-          emptyTitle="No ratings in this window"
-          emptyMessage={RATING_EMPTY[leastPeriod] || RATING_EMPTY.all}
-        />
-      </Feed>
-
+      <TopResolversFeed loading={loading} dashboardData={dashboardData} />
+      <LowestRatedFeed loading={loading} dashboardData={dashboardData} />
       {showInProcess && <InProcessFeed loading={loading} inProcess={inProcess} inProcessTotal={inProcessTotal} />}
     </Panel.Columns>
   )
@@ -756,9 +787,26 @@ const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, 
   const inProcess = dashboardData?.inProcess || []
   const staff = dashboardData?.staff || []
   const dining = dashboardData?.dining
+  const ops = dashboardData?.ops || {}
   const approvalTotal = APPROVAL_TODO_ITEMS.reduce((sum, item) => sum + (approvalCounts[item.key] || 0), 0)
   const complaintsOpen = (complaints.pending || 0) + (complaints.inProgress || 0) + (complaints.forwardedToIDO || 0)
   const inProcessTotal = inProcess.reduce((sum, item) => sum + (item.count || 0), 0)
+  const coverage = ops.coverage || {}
+  const lost = ops.lostAndFound || {}
+  const visitors = ops.visitors || {}
+  const feedbacks = ops.feedbacks || {}
+  const tasks = ops.tasks || {}
+  const inventory = ops.inventory || {}
+  const disciplinary = ops.disciplinary || {}
+  const elections = ops.elections || {}
+  const gymkhana = ops.gymkhana || {}
+  const megaEvents = ops.megaEvents || {}
+  const expenditure = ops.expenditure || {}
+  const attendance = ops.attendance || {}
+  const awards = ops.awards || {}
+  const scanners = ops.scanners || {}
+  const leaveOps = ops.leaves || {}
+  const trades = ops.maintenanceTrades || []
 
   if (section === "hostels") {
     return (
@@ -767,12 +815,69 @@ const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, 
           {error ? <ErrorState message={error} /> : (
             <Panel.Columns>
               <ComplaintsFeed loading={loading} complaints={complaints} complaintsOpen={complaintsOpen} />
-              <UpcomingEventsFeed loading={loading} events={events} />
+              <CountFeed
+                title="Lost and found"
+                icon={Search}
+                accent="info"
+                count={lost.active || 0}
+                to="/admin/lost-and-found"
+                loading={loading}
+                rows={[
+                  { label: "Unclaimed", value: lost.active || 0, tone: "warning", to: "/admin/lost-and-found", emphasis: (lost.active || 0) > 0 },
+                  { label: "Claimed", value: lost.claimed || 0, tone: "success", to: "/admin/lost-and-found" },
+                  { label: "All items", value: lost.total || 0, tone: "info", to: "/admin/lost-and-found" },
+                ]}
+              />
+              <CountFeed
+                title="Visitor stays"
+                icon={BedDouble}
+                accent="purple"
+                count={(visitors.pending || 0) + (visitors.payment || 0)}
+                to="/admin/visitors"
+                loading={loading}
+                rows={[
+                  { label: "Awaiting review", value: visitors.pending || 0, tone: "warning", to: "/admin/visitors", emphasis: (visitors.pending || 0) > 0 },
+                  { label: "Payment in progress", value: visitors.payment || 0, tone: "info", to: "/admin/visitors" },
+                  { label: "In stay now", value: visitors.inStay || 0, tone: "success", to: "/admin/visitors" },
+                ]}
+              />
+              <CountFeed
+                title="Feedbacks"
+                icon={MessageCircle}
+                accent="warning"
+                count={feedbacks.pending || 0}
+                to="/admin/feedbacks"
+                loading={loading}
+                rows={[
+                  { label: "Unread", value: feedbacks.pending || 0, tone: "warning", to: "/admin/feedbacks", emphasis: (feedbacks.pending || 0) > 0 },
+                  { label: "Seen", value: feedbacks.seen || 0, tone: "success", to: "/admin/feedbacks" },
+                  { label: "All", value: feedbacks.total || 0, tone: "info", to: "/admin/feedbacks" },
+                ]}
+              />
             </Panel.Columns>
           )}
         </Panel>
         <Panel padded={false}>
-          <InsightCenter loading={loading} error={error} dashboardData={dashboardData} showInProcess={false} />
+          {error ? <ErrorState message={error} /> : (
+            <Panel.Columns>
+              <TopResolversFeed loading={loading} dashboardData={dashboardData} />
+              <LowestRatedFeed loading={loading} dashboardData={dashboardData} />
+              <UpcomingEventsFeed loading={loading} events={events} />
+              <CountFeed
+                title="Tasks & stock"
+                icon={ListTodo}
+                accent="danger"
+                count={tasks.overdue || 0}
+                to="/admin/task-management"
+                loading={loading}
+                rows={[
+                  { label: "Open", value: tasks.open || 0, tone: "info", to: "/admin/task-management" },
+                  { label: "Overdue", value: tasks.overdue || 0, tone: "danger", to: "/admin/task-management", emphasis: (tasks.overdue || 0) > 0 },
+                  { label: "Empty stock", value: inventory.empty || 0, tone: "warning", to: "/admin/inventory", emphasis: (inventory.empty || 0) > 0 },
+                ]}
+              />
+            </Panel.Columns>
+          )}
         </Panel>
       </>
     )
@@ -780,27 +885,201 @@ const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, 
 
   if (section === "student-affairs") {
     return (
-      <Panel padded={false}>
-        {error ? <ErrorState message={error} /> : (
-          <Panel.Columns>
-            <TodoFeed approvalsLoading={approvalsLoading} approvalCounts={approvalCounts} approvalTotal={approvalTotal} />
-            <InProcessFeed loading={loading} inProcess={inProcess} inProcessTotal={inProcessTotal} />
-          </Panel.Columns>
-        )}
-      </Panel>
+      <>
+        <Panel padded={false}>
+          {error ? <ErrorState message={error} /> : (
+            <Panel.Columns>
+              <TodoFeed approvalsLoading={approvalsLoading} approvalCounts={approvalCounts} approvalTotal={approvalTotal} />
+              <InProcessFeed loading={loading} inProcess={inProcess} inProcessTotal={inProcessTotal} />
+              <CountFeed
+                title="Disciplinary"
+                icon={ShieldCheck}
+                accent="danger"
+                count={disciplinary.underProcess || 0}
+                to="/admin/disciplinary-process"
+                loading={loading}
+                rows={[
+                  { label: "Under process", value: disciplinary.underProcess || 0, tone: "warning", to: "/admin/disciplinary-process", emphasis: (disciplinary.underProcess || 0) > 0 },
+                  { label: "Action taken", value: disciplinary.finalized || 0, tone: "success", to: "/admin/disciplinary-process" },
+                  { label: "Rejected", value: disciplinary.rejected || 0, tone: "danger", to: "/admin/disciplinary-process" },
+                ]}
+              />
+              <CountFeed
+                title="Elections"
+                icon={BadgeCheck}
+                accent="purple"
+                count={elections.published || 0}
+                to="/admin/elections"
+                loading={loading}
+                rows={[
+                  { label: "Published", value: elections.published || 0, tone: "success", to: "/admin/elections" },
+                  { label: "Draft", value: elections.draft || 0, tone: "info", to: "/admin/elections" },
+                  { label: "Nominations pending", value: elections.nominationsPending || 0, tone: "warning", to: "/admin/elections", emphasis: (elections.nominationsPending || 0) > 0 },
+                ]}
+              />
+            </Panel.Columns>
+          )}
+        </Panel>
+        <Panel padded={false}>
+          {error ? <ErrorState message={error} /> : (
+            <Panel.Columns>
+              <CountFeed
+                title="Gymkhana events"
+                icon={CalendarClock}
+                accent="info"
+                count={gymkhana.overdueProposals || 0}
+                to="/admin/gymkhana-events"
+                loading={loading}
+                rows={[
+                  { label: "Live / upcoming", value: gymkhana.upcoming || 0, tone: "info", to: "/admin/gymkhana-events" },
+                  { label: "This week", value: gymkhana.thisWeek || 0, tone: "success", to: "/admin/gymkhana-events" },
+                  { label: "Proposal not in", value: gymkhana.proposalPending || 0, tone: "warning", to: "/admin/gymkhana-events" },
+                  { label: "Proposal overdue", value: gymkhana.overdueProposals || 0, tone: "danger", to: "/admin/gymkhana-events", emphasis: (gymkhana.overdueProposals || 0) > 0 },
+                ]}
+              />
+              <CountFeed
+                title="Mega events"
+                icon={Trophy}
+                accent="teal"
+                count={megaEvents.pending || 0}
+                to="/admin/mega-events"
+                loading={loading}
+                rows={[
+                  { label: "Proposal open", value: megaEvents.pending || 0, tone: "warning", to: "/admin/mega-events", emphasis: (megaEvents.pending || 0) > 0 },
+                ]}
+              />
+              <CountFeed
+                title="Expenditure"
+                icon={Wallet}
+                accent="warning"
+                count={expenditure.open || 0}
+                to="/admin/expenditure"
+                loading={loading}
+                rows={[
+                  { label: "Open cycles", value: expenditure.open || 0, tone: "warning", to: "/admin/expenditure" },
+                  { label: "Closed cycles", value: expenditure.closed || 0, tone: "info", to: "/admin/expenditure" },
+                ]}
+              />
+              <CountFeed
+                title="Attendance & awards"
+                icon={CheckSquare}
+                accent="success"
+                count={(attendance.open || 0) + (awards.submitted || 0)}
+                to="/admin/attendance"
+                loading={loading}
+                rows={[
+                  { label: "Open attendance", value: attendance.open || 0, tone: "info", to: "/admin/attendance" },
+                  { label: "Closed attendance", value: attendance.closed || 0, tone: "success", to: "/admin/attendance" },
+                  { label: "Award applications", value: awards.submitted || 0, tone: "warning", to: "/admin/overall-best-performer", emphasis: (awards.submitted || 0) > 0 },
+                  { label: "Award approved", value: awards.approved || 0, tone: "success", to: "/admin/overall-best-performer" },
+                ]}
+              />
+            </Panel.Columns>
+          )}
+        </Panel>
+      </>
     )
   }
 
   if (section === "staff") {
     return (
-      <Panel padded={false}>
-        {error ? <ErrorState message={error} /> : (
-          <Panel.Columns>
-            <UpcomingJoinsFeed loading={loading} leaves={leaves} />
-            <StaffRosterFeed loading={loading} staff={staff} />
-          </Panel.Columns>
-        )}
-      </Panel>
+      <>
+        <Panel padded={false}>
+          {error ? <ErrorState message={error} /> : (
+            <Panel.Columns>
+              <UpcomingJoinsFeed loading={loading} leaves={leaves} />
+              <CountFeed
+                title="Leave requests"
+                icon={CalendarOff}
+                accent="warning"
+                count={leaveOps.pending || 0}
+                to="/admin/leaves"
+                loading={loading}
+                rows={[
+                  { label: "Pending approval", value: leaveOps.pending || 0, tone: "warning", to: "/admin/leaves", emphasis: (leaveOps.pending || 0) > 0 },
+                  { label: "On leave now", value: leaves.length, tone: "info", to: "/admin/leaves" },
+                ]}
+              />
+              <CountFeed
+                title="Hostel coverage"
+                icon={UserCog}
+                accent="danger"
+                count={(coverage.withoutWarden || 0) + (coverage.withoutSupervisor || 0)}
+                to="/admin/wardens"
+                loading={loading}
+                rows={[
+                  { label: "No warden", value: coverage.withoutWarden || 0, tone: "danger", to: "/admin/wardens", emphasis: (coverage.withoutWarden || 0) > 0 },
+                  { label: "No associate warden", value: coverage.withoutAssociate || 0, tone: "warning", to: "/admin/associate-wardens" },
+                  { label: "No supervisor", value: coverage.withoutSupervisor || 0, tone: "warning", to: "/admin/hostel-supervisors", emphasis: (coverage.withoutSupervisor || 0) > 0 },
+                  { label: "No security", value: coverage.withoutSecurity || 0, tone: "danger", to: "/admin/security", emphasis: (coverage.withoutSecurity || 0) > 0 },
+                ]}
+              />
+              <CountFeed
+                title="Unassigned"
+                icon={Users}
+                accent="warning"
+                count={(coverage.unassignedWardens || 0) + (coverage.unassignedAssociates || 0) + (coverage.unassignedSupervisors || 0)}
+                to="/admin/wardens"
+                loading={loading}
+                rows={[
+                  { label: "Wardens", value: coverage.unassignedWardens || 0, tone: "warning", to: "/admin/wardens", emphasis: (coverage.unassignedWardens || 0) > 0 },
+                  { label: "Associate wardens", value: coverage.unassignedAssociates || 0, tone: "info", to: "/admin/associate-wardens" },
+                  { label: "Supervisors", value: coverage.unassignedSupervisors || 0, tone: "info", to: "/admin/hostel-supervisors" },
+                  { label: "No hostel gate", value: coverage.withoutGate || 0, tone: "warning", to: "/admin/security" },
+                ]}
+              />
+            </Panel.Columns>
+          )}
+        </Panel>
+        <Panel padded={false}>
+          {error ? <ErrorState message={error} /> : (
+            <Panel.Columns>
+              <StaffRosterFeed loading={loading} staff={staff} />
+              <CountFeed
+                title="Maintenance trades"
+                icon={Wrench}
+                accent="info"
+                count={trades.reduce((sum, item) => sum + (item.count || 0), 0)}
+                to="/admin/maintenance"
+                loading={loading}
+                rows={trades.map((item) => ({
+                  label: item.label,
+                  value: item.count || 0,
+                  tone: item.count ? "info" : "warning",
+                  to: "/admin/maintenance",
+                }))}
+              />
+              <CountFeed
+                title="Face scanners"
+                icon={Scan}
+                accent="purple"
+                count={scanners.inactive || 0}
+                to="/admin/face-scanners"
+                loading={loading}
+                rows={[
+                  { label: "Active", value: scanners.active || 0, tone: "success", to: "/admin/face-scanners" },
+                  { label: "Inactive", value: scanners.inactive || 0, tone: "danger", to: "/admin/face-scanners", emphasis: (scanners.inactive || 0) > 0 },
+                  { label: "Hostel gate", value: scanners.hostelGate || 0, tone: "info", to: "/admin/face-scanners" },
+                  { label: "Dining", value: scanners.dining || 0, tone: "info", to: "/admin/face-scanners" },
+                ]}
+              />
+              <CountFeed
+                title="Access posts"
+                icon={Shield}
+                accent="info"
+                count={coverage.withoutGate || 0}
+                to="/admin/security"
+                loading={loading}
+                rows={[
+                  { label: "Hostels", value: coverage.totalHostels || 0, tone: "info", to: "/admin/hostels" },
+                  { label: "No security", value: coverage.withoutSecurity || 0, tone: "danger", to: "/admin/security", emphasis: (coverage.withoutSecurity || 0) > 0 },
+                  { label: "No hostel gate", value: coverage.withoutGate || 0, tone: "warning", to: "/admin/security", emphasis: (coverage.withoutGate || 0) > 0 },
+                ]}
+              />
+            </Panel.Columns>
+          )}
+        </Panel>
+      </>
     )
   }
 
