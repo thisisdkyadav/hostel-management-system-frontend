@@ -12,7 +12,6 @@
     (var(--occ-pip-gap) * 5) +
     (var(--border-1) * 2)
   );
-  --occ-accent: var(--color-border-primary);
   box-sizing: border-box;
   position: relative;
   display: inline-flex;
@@ -35,17 +34,6 @@
     box-shadow var(--transition-fast) var(--ease-out),
     border-color var(--transition-fast) var(--ease-out),
     background-color var(--transition-fast) var(--ease-out);
-}
-
-.occ-tile::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 18%;
-  right: 18%;
-  height: var(--border-2, 2px);
-  border-radius: 0 0 var(--radius-full) var(--radius-full);
-  background: var(--occ-accent);
 }
 
 .occ-tile--sm {
@@ -365,23 +353,19 @@
 
 .occ-tile[data-tone="empty"] {
   background: var(--color-bg-secondary);
-  --occ-accent: var(--color-text-disabled);
 }
 
 .occ-tile[data-tone="partial"] {
   background: var(--color-info-bg-light);
   border-color: var(--color-info-border);
-  --occ-accent: var(--color-info);
 }
 
 .occ-tile[data-tone="full"] {
   background: var(--color-success-bg-light);
   border-color: var(--color-success-border);
-  --occ-accent: var(--color-success);
 }
 
 .occ-tile[data-tone="inactive"] {
-  --occ-accent: var(--color-text-disabled);
   background: repeating-linear-gradient(
     -45deg,
     var(--color-bg-muted),
