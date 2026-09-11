@@ -241,29 +241,9 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
           </Surface>
         )}
 
-        <HStack gap={2} wrap>
-          <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !payReady}>
-            {awaitingChoice ? "Pay now — submit proof" : "Submit payment proof"}
-          </Button>
-          {awaitingChoice && (
-            <Button
-              variant="outline"
-              disabled={busy}
-              onClick={async () => {
-                if (await confirm({
-                  message:
-                    "Pay later? Rooms will be allocated only after payment. You can pay when the guest arrives.",
-                  confirmText: "Pay later",
-                  cancelText: "Go back",
-                })) {
-                  act(() => accommodationApi.deferPayment(requestId))
-                }
-              }}
-            >
-              Pay later
-            </Button>
-          )}
-        </HStack>
+        <Button onClick={() => act(() => accommodationApi.submitPayment(requestId, pay))} loading={busy} disabled={busy || !payReady}>
+          {awaitingChoice ? "Pay now — submit proof" : "Submit payment proof"}
+        </Button>
         <Text size="xs" color="muted">All three fields are required before the accounts office can verify your payment.</Text>
       </VStack>
     </SectionCard>
@@ -314,39 +294,20 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
           viewerSubtitle="Payment proof"
           downloadFileName="payment-screenshot.png"
         />
-        <HStack gap={2} wrap>
-          <Button
-            onClick={() =>
-              act(() =>
-                accommodationApi.submitPayment(requestId, {
-                  ...pay,
-                  additionalPaymentId: openAdditional._id,
-                })
-              )
-            }
-            loading={busy}
-            disabled={busy || !payReady}
-          >
-            Submit payment proof
-          </Button>
-          {openAdditional.status === PAYMENT_STATUS.PENDING && (
-            <Button
-              variant="outline"
-              disabled={busy}
-              onClick={async () => {
-                if (await confirm({
-                  message: "Pay this additional charge later?",
-                  confirmText: "Pay later",
-                  cancelText: "Go back",
-                })) {
-                  act(() => accommodationApi.deferPayment(requestId))
-                }
-              }}
-            >
-              Pay later
-            </Button>
-          )}
-        </HStack>
+        <Button
+          onClick={() =>
+            act(() =>
+              accommodationApi.submitPayment(requestId, {
+                ...pay,
+                additionalPaymentId: openAdditional._id,
+              })
+            )
+          }
+          loading={busy}
+          disabled={busy || !payReady}
+        >
+          Submit payment proof
+        </Button>
       </VStack>
     </SectionCard>
   ) : null
