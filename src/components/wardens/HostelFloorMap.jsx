@@ -4,8 +4,10 @@ import HoverPanel from "../common/HoverPanel"
 import OccupancyTile from "../common/OccupancyTile"
 import { isRoomActive } from "@/constants/roomStatus"
 import { hostelApi } from "../../service"
+import { getMediaUrl } from "../../utils/mediaUtils"
 import { groupByBand } from "../../utils/numberBand"
 import RoomPeekPanel from "./RoomPeekPanel"
+import StudentPeekPanel from "../common/students/StudentPeekPanel"
 import "./floor-map.css"
 
 const occupancyOf = (item) => item.occupancy ?? item.currentOccupancy ?? 0
@@ -35,6 +37,17 @@ const roomGroupsOf = (unit) =>
     })
     .filter((group) => group.total > 0)
 
+const facesOf = (room) =>
+  [...(room.students || [])]
+    .filter((student) => student && (student.name || student.profileImage))
+    .sort((a, b) => (Number(a.bedNumber) || 0) - (Number(b.bedNumber) || 0))
+    .map((student) => ({
+      id: student.allocationId || student.id,
+      name: student.name,
+      src: student.profileImage ? getMediaUrl(student.profileImage) : undefined,
+      student,
+    }))
+
 const LEGEND = [
   { tone: "empty", label: "Empty" },
   { tone: "partial", label: "Partial" },
@@ -52,7 +65,7 @@ const RoomCell = ({
   size = "md",
   placement = "auto",
   align = "start",
-  openDelay,
+  layout = "compact",
 }) => (
   <OccupancyTile
     label={room.roomNumber}
@@ -60,12 +73,14 @@ const RoomCell = ({
     total={isRoomActive(room.status) ? bedsOf(room) : 1}
     status={room.status}
     size={size}
+    layout={layout}
+    faces={layout === "peek" ? facesOf(room) : undefined}
     wrapHead={(hit) => (
       <HoverPanel
         placement={placement}
         align={align}
         portal={portal}
-        openDelay={openDelay}
+        openDelay={0}
         content={
           <RoomPeekPanel
             key={`${room.id}-${room.status}-${room.capacity}-${occupancyOf(room)}`}
@@ -80,6 +95,21 @@ const RoomCell = ({
         {hit}
       </HoverPanel>
     )}
+    wrapFace={
+      layout === "peek"
+        ? (face, node) => (
+            <HoverPanel
+              placement="auto"
+              align="center"
+              portal={portal}
+              openDelay={0}
+              content={<StudentPeekPanel student={face.student} roomNumber={room.roomNumber} />}
+            >
+              {node}
+            </HoverPanel>
+          )
+        : undefined
+    }
   />
 )
 
@@ -132,10 +162,10 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
             canEdit={canEdit}
             onViewMore={onViewMore}
             onSaved={onSaved}
-            size="sm"
+            size="md"
+            layout="peek"
             placement="auto"
             align="center"
-            openDelay={0}
           />
         ))}
     </div>
@@ -146,6 +176,7 @@ const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved, layout }) => (
   <HoverPanel
     placement="auto"
     align="start"
+    openDelay={0}
     content={
       <UnitRoomsPanel
         unit={unit}
