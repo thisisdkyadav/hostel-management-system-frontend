@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Building2 } from "lucide-react"
 import { EmptyState, ErrorState, LoadingState, Page, Text } from "hzero"
+import HostelExplorerGuide from "../../components/admin/hostel/explorer/HostelExplorerGuide"
 import HostelExplorerTile from "../../components/admin/hostel/explorer/HostelExplorerTile"
 import "../../components/admin/hostel/explorer/HostelExplorer.css"
 import { dismissAllHoverPanels } from "../../components/common/HoverPanel"
@@ -36,12 +37,10 @@ const HostelExplorerPage = () => {
   const hostels = hostelsQuery.data || []
 
   useEffect(() => {
-    if (!hostels.length) return
-    setSelectedId((current) => {
-      if (current && hostels.some((hostel) => hostelIdOf(hostel) === current)) return current
-      return hostelIdOf(hostels[0])
-    })
-  }, [hostels])
+    if (!selectedId) return
+    if (hostels.some((hostel) => hostelIdOf(hostel) === selectedId)) return
+    setSelectedId(null)
+  }, [hostels, selectedId])
 
   const selectedHostel = hostels.find((hostel) => hostelIdOf(hostel) === selectedId) || null
   const hostelId = hostelIdOf(selectedHostel)
@@ -98,12 +97,11 @@ const HostelExplorerPage = () => {
             <Text as="h2" size="sm" weight="semibold" color="primary">
               Hostels
             </Text>
-            {selectedHostel && (
-              <Text size="xs" color="muted">
-                Showing {selectedHostel.name}
-                {isRoomOnly ? " rooms" : " units"}
-              </Text>
-            )}
+            <Text size="xs" color="muted">
+              {selectedHostel
+                ? `Showing ${selectedHostel.name}${isRoomOnly ? " rooms" : " units"}`
+                : "Hover a hostel to view its map"}
+            </Text>
           </div>
           {hostelsQuery.isError ? (
             <ErrorState message="Could not load hostels." onRetry={() => hostelsQuery.refetch()} />
@@ -130,7 +128,9 @@ const HostelExplorerPage = () => {
       </div>
 
       <Page.Body className="hostel-explorer__map">
-        {!selectedHostel ? null : mapQuery.isError ? (
+        {!selectedHostel ? (
+          hostels.length > 0 ? <HostelExplorerGuide /> : null
+        ) : mapQuery.isError ? (
           <ErrorState message="Could not load this hostel map." onRetry={() => mapQuery.refetch()} />
         ) : mapQuery.isPending ? (
           <LoadingState
