@@ -4,7 +4,9 @@ import {
   Heart, History, Mail, MapPin, Maximize, Maximize2, MessageSquare, Package, Phone, Plus,
   ShieldCheck, Trash, Undo, UserCheck, UserX, Users, X
 } from "lucide-react"
-import { studentApi } from "../../../service"
+import { useQueryClient } from "@tanstack/react-query"
+import { queryKeys } from "../../../lib/query"
+import { fetchStudentDetails as loadStudentDetails, userIdOf } from "../../../lib/query/hostelMap"
 import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"
 import { feedbackApi } from "../../../service"
@@ -22,6 +24,7 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Button, DetailSection, EmptyState, Grid, Heading, HStack, IconCircle, InfoRow, Input, Label, LoadingState, Modal, Select, Spinner, Surface, Table, Text, useConfirm, VStack } from "hzero"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false, initialTab = "profile" }) => {
   const confirm = useConfirm()
+  const queryClient = useQueryClient()
   const { user } = useAuth()
   const { can } = useAuthz()
   const canAssignInventory = true
@@ -80,10 +83,21 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   ]
 
   const fetchStudentDetails = async () => {
-    try {
+    const userId = userIdOf(selectedStudent) || selectedStudent?.userId
+    if (!userId) return
+    const cached = queryClient.getQueryData(queryKeys.students.details(userId))
+    if (cached) {
+      setStudentDetails(cached)
+      setLoading(false)
+    } else {
       setLoading(true)
-      const response = await studentApi.getStudentDetails(selectedStudent.userId)
-      setStudentDetails(response.data)
+    }
+    try {
+      const data = await queryClient.fetchQuery({
+        queryKey: queryKeys.students.details(userId),
+        queryFn: () => loadStudentDetails(userId),
+      })
+      if (data) setStudentDetails(data)
     } catch (error) {
       console.error("Error fetching student details:", error)
     } finally {

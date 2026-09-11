@@ -110,5 +110,10 @@ export const queryKeys = {
     list: () => [...queryKeys.hostels.all, "list"],
     units: (hostelId) => [...queryKeys.hostels.all, "units", hostelId ?? null],
     rooms: (hostelId) => [...queryKeys.hostels.all, "rooms", hostelId ?? null],
+    unitRooms: (unitId) => [...queryKeys.hostels.all, "unit-rooms", unitId ?? null],
+  },
+  students: {
+    all: ["students"],
+    details: (userId) => [...queryKeys.students.all, "details", userId ?? null],
   },
 }

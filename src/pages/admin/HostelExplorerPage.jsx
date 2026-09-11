@@ -10,16 +10,17 @@ import HostelFloorMap from "../../components/wardens/HostelFloorMap"
 import RoomDetailModal from "../../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import { useAuth } from "../../contexts/AuthProvider"
-import { adminApi, hostelApi } from "../../service"
+import { adminApi } from "../../service"
 import { queryKeys } from "../../lib/query"
-
-const asList = (value) => {
-  if (Array.isArray(value)) return value
-  if (Array.isArray(value?.data)) return value.data
-  return []
-}
-
-const hostelIdOf = (hostel) => hostel?.id || hostel?._id || null
+import {
+  asList,
+  fetchHostelRooms,
+  fetchHostelUnits,
+  hostelIdOf,
+  prefetchHostelMap,
+  prefetchHostelPeek,
+  seedUnitRooms,
+} from "../../lib/query/hostelMap"
 
 const HostelExplorerPage = () => {
   const { user } = useAuth()
@@ -37,10 +38,13 @@ const HostelExplorerPage = () => {
   const hostels = hostelsQuery.data || []
 
   useEffect(() => {
-    if (!selectedId) return
-    if (hostels.some((hostel) => hostelIdOf(hostel) === selectedId)) return
-    setSelectedId(null)
-  }, [hostels, selectedId])
+    const list = hostelsQuery.data
+    if (!list?.length) return undefined
+    list.forEach((hostel) => {
+      prefetchHostelMap(queryClient, hostel).catch(() => {})
+    })
+    return undefined
+  }, [hostelsQuery.data, queryClient])
 
   const selectedHostel = hostels.find((hostel) => hostelIdOf(hostel) === selectedId) || null
   const hostelId = hostelIdOf(selectedHostel)
@@ -48,21 +52,24 @@ const HostelExplorerPage = () => {
 
   const mapQuery = useQuery({
     queryKey: isRoomOnly ? queryKeys.hostels.rooms(hostelId) : queryKeys.hostels.units(hostelId),
-    queryFn: async () => {
-      if (isRoomOnly) {
-        return asList(await hostelApi.getRooms({ hostelId }))
-      }
-      return asList(await hostelApi.getUnits(hostelId))
-    },
+    queryFn: () => (isRoomOnly ? fetchHostelRooms(hostelId) : fetchHostelUnits(hostelId)),
     enabled: Boolean(hostelId),
   })
 
   const items = mapQuery.data || []
   const canEdit = user?.role === "Admin"
 
+  useEffect(() => {
+    const list = mapQuery.data
+    if (!list?.length || isRoomOnly) return
+    seedUnitRooms(queryClient, list)
+  }, [mapQuery.data, isRoomOnly, queryClient])
+
   const selectHostel = (hostel) => {
     const nextId = hostelIdOf(hostel)
-    if (!nextId || nextId === selectedId) return
+    if (!nextId) return
+    prefetchHostelPeek(queryClient, hostel).catch(() => {})
+    if (nextId === selectedId) return
     dismissAllHoverPanels()
     setSelectedId(nextId)
   }

@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Spinner, Text } from "hzero"
-import HoverPanel from "../common/HoverPanel"
+import HoverPanel, { dismissAllHoverPanels } from "../common/HoverPanel"
 import OccupancyTile from "../common/OccupancyTile"
 import { isRoomActive } from "@/constants/roomStatus"
-import { hostelApi } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { groupByBand } from "../../utils/numberBand"
+import { queryKeys } from "../../lib/query"
+import {
+  fetchUnitRooms,
+  prefetchRoomPeek,
+  prefetchRoomsStudents,
+  prefetchUnitPeek,
+  seedUnitRooms,
+  unitIdOf,
+} from "../../lib/query/hostelMap"
 import RoomPeekPanel from "./RoomPeekPanel"
-import StudentPeekPanel from "../common/students/StudentPeekPanel"
+import StudentDetailModal from "../common/students/StudentDetailModal"
 import "./floor-map.css"
 
 const occupancyOf = (item) => item.occupancy ?? item.currentOccupancy ?? 0
@@ -60,7 +69,9 @@ const RoomCell = ({
   hostelId,
   canEdit,
   onViewMore,
+  onViewStudent,
   onSaved,
+  onPrefetch,
   portal = true,
   size = "md",
   placement = "auto",
@@ -75,6 +86,7 @@ const RoomCell = ({
     size={size}
     layout={layout}
     faces={layout === "peek" ? facesOf(room) : undefined}
+    onPointerEnter={() => onPrefetch?.(room)}
     wrapHead={(hit) => (
       <HoverPanel
         placement={placement}
@@ -88,6 +100,7 @@ const RoomCell = ({
             hostelId={hostelId}
             canEdit={canEdit}
             onViewMore={onViewMore}
+            onViewStudent={onViewStudent}
             onSaved={onSaved}
           />
         }
@@ -95,46 +108,27 @@ const RoomCell = ({
         {hit}
       </HoverPanel>
     )}
-    wrapFace={
-      layout === "peek"
-        ? (face, node) => (
-            <HoverPanel
-              placement="auto"
-              align="center"
-              portal={portal}
-              openDelay={0}
-              content={<StudentPeekPanel student={face.student} roomNumber={room.roomNumber} />}
-            >
-              {node}
-            </HoverPanel>
-          )
-        : undefined
-    }
   />
 )
 
-const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
-  const provided = Array.isArray(unit.rooms) ? unit.rooms : null
-  const [fetched, setFetched] = useState(null)
-  const rooms = provided ?? fetched
+const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onViewStudent, onSaved, onPrefetchRoom }) => {
+  const unitId = unitIdOf(unit)
+  const nested = Array.isArray(unit.rooms) ? unit.rooms : undefined
+  const roomsQuery = useQuery({
+    queryKey: queryKeys.hostels.unitRooms(unitId),
+    queryFn: () => fetchUnitRooms(unitId),
+    enabled: Boolean(unitId),
+    placeholderData: nested,
+  })
+  const rooms = roomsQuery.data ?? nested ?? null
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (provided !== null || !unit.id) return undefined
-    let cancelled = false
-    hostelApi
-      .getRoomsByUnit(unit.id)
-      .then((response) => {
-        if (!cancelled) setFetched(response?.data || [])
-      })
-      .catch(() => {
-        if (!cancelled) setFetched([])
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [provided, unit.id])
+    if (!rooms?.length) return
+    prefetchRoomsStudents(queryClient, rooms)
+  }, [rooms, queryClient])
 
-  if (rooms === null) {
+  if (rooms == null) {
     return (
       <div className="floor-map__rooms" style={{ justifyContent: "center", minHeight: "var(--spacing-16)" }}>
         <Spinner size="sm" />
@@ -161,7 +155,9 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
             hostelId={hostelId}
             canEdit={canEdit}
             onViewMore={onViewMore}
+            onViewStudent={onViewStudent}
             onSaved={onSaved}
+            onPrefetch={onPrefetchRoom}
             size="md"
             layout="peek"
             placement="auto"
@@ -172,7 +168,7 @@ const UnitRoomsPanel = ({ unit, hostelId, canEdit, onViewMore, onSaved }) => {
   )
 }
 
-const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved, layout }) => (
+const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onViewStudent, onSaved, onPrefetch, onPrefetchRoom, layout }) => (
   <HoverPanel
     placement="auto"
     align="start"
@@ -183,7 +179,9 @@ const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved, layout }) => (
         hostelId={hostelId}
         canEdit={canEdit}
         onViewMore={onViewMore}
+        onViewStudent={onViewStudent}
         onSaved={onSaved}
+        onPrefetchRoom={onPrefetchRoom}
       />
     }
   >
@@ -194,6 +192,7 @@ const UnitCell = ({ unit, hostelId, canEdit, onViewMore, onSaved, layout }) => (
       groups={roomGroupsOf(unit)}
       size="lg"
       layout={layout}
+      onPointerEnter={() => onPrefetch?.(unit)}
     />
   </HoverPanel>
 )
@@ -208,11 +207,26 @@ const HostelFloorMap = ({
   onUpdated,
   unitLayout,
 }) => {
+  const queryClient = useQueryClient()
+  const [viewingStudent, setViewingStudent] = useState(null)
   const items = mode === "units" ? units : rooms
   const groups = groupByBand(items, (item) => (mode === "units" ? item.unitNumber : item.roomNumber))
   const noun = mode === "units" ? "unit" : "room"
 
+  useEffect(() => {
+    if (mode !== "units" || !units.length) return
+    seedUnitRooms(queryClient, units)
+  }, [mode, units, queryClient])
+
+  const handleViewStudent = (student) => {
+    const id = student?.id || student?._id
+    if (!id) return
+    dismissAllHoverPanels()
+    setViewingStudent({ id, userId: student.userId })
+  }
+
   return (
+    <>
     <div className="floor-map">
       <div className="floor-map__hint">
         <Text size="sm" color="muted">
@@ -239,7 +253,10 @@ const HostelFloorMap = ({
                     hostelId={hostelId}
                     canEdit={canEdit}
                     onViewMore={onViewRoom}
+                    onViewStudent={handleViewStudent}
                     onSaved={onUpdated}
+                    onPrefetch={(unit) => prefetchUnitPeek(queryClient, unit)}
+                    onPrefetchRoom={(room) => prefetchRoomPeek(queryClient, room)}
                     layout={unitLayout}
                   />
                 ))
@@ -250,13 +267,26 @@ const HostelFloorMap = ({
                     hostelId={hostelId}
                     canEdit={canEdit}
                     onViewMore={onViewRoom}
+                    onViewStudent={handleViewStudent}
                     onSaved={onUpdated}
+                    onPrefetch={(item) => prefetchRoomPeek(queryClient, item)}
                   />
                 ))}
           </div>
         </section>
       ))}
     </div>
+      {viewingStudent ? (
+        <StudentDetailModal
+          selectedStudent={{ _id: viewingStudent.id, userId: viewingStudent.userId }}
+          setShowStudentDetail={() => setViewingStudent(null)}
+          onUpdate={() => {
+            setViewingStudent(null)
+            onUpdated?.()
+          }}
+        />
+      ) : null}
+    </>
   )
 }
 
