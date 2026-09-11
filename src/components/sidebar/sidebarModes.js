@@ -13,20 +13,12 @@ export const SIDEBAR_MODE_RAIL = "v4"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
-export const SIDEBAR_V4_INTRO_KEY = "admin_sidebar_v4_intro_v1"
+
+/** Force V4 on every load through the end of 31 December 2026 (local time). */
+export const V4_FORCE_UNTIL = new Date(2027, 0, 1)
 
 /** Pre-mode boolean toggle ("true" meant the old flat nav). Read once for migration. */
 export const LEGACY_SIDEBAR_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
-
-export const hasSeenV4Intro = () => {
-  if (typeof window === "undefined") return true
-  return window.localStorage.getItem(SIDEBAR_V4_INTRO_KEY) === "1"
-}
-
-export const markV4IntroSeen = () => {
-  if (typeof window === "undefined") return
-  window.localStorage.setItem(SIDEBAR_V4_INTRO_KEY, "1")
-}
 
 export const SIDEBAR_MODE_OPTIONS = [
   {
@@ -57,23 +49,35 @@ export const SIDEBAR_MODE_OPTIONS = [
 
 export const isValidSidebarMode = (value) => SIDEBAR_MODE_OPTIONS.some((option) => option.id === value)
 
-/** Resolve the persisted mode, migrating the old boolean toggle the first time. */
-export const readStoredSidebarMode = () => {
-  if (typeof window === "undefined") return SIDEBAR_DEFAULT_MODE
+export const isV4ForceActive = (now = new Date()) => now < V4_FORCE_UNTIL
 
-  // One-time rollout: ignore a stored V1–V3 preference until the intro is dismissed.
-  if (!hasSeenV4Intro()) return SIDEBAR_MODE_RAIL
+const readLegacyMigratedMode = () => {
+  if (typeof window === "undefined") return null
+  const legacyValue = window.localStorage.getItem(LEGACY_SIDEBAR_TOGGLE_KEY)
+  if (legacyValue === null) return null
+  const migratedMode = legacyValue === "true" ? SIDEBAR_MODE_FLAT : SIDEBAR_DEFAULT_MODE
+  window.localStorage.setItem(SIDEBAR_MODE_STORAGE_KEY, migratedMode)
+  window.localStorage.removeItem(LEGACY_SIDEBAR_TOGGLE_KEY)
+  return migratedMode
+}
 
+export const readLocalSidebarMode = () => {
+  if (typeof window === "undefined") return null
   const storedMode = window.localStorage.getItem(SIDEBAR_MODE_STORAGE_KEY)
   if (isValidSidebarMode(storedMode)) return storedMode
+  return readLegacyMigratedMode()
+}
 
-  const legacyValue = window.localStorage.getItem(LEGACY_SIDEBAR_TOGGLE_KEY)
-  if (legacyValue !== null) {
-    const migratedMode = legacyValue === "true" ? SIDEBAR_MODE_FLAT : SIDEBAR_DEFAULT_MODE
-    window.localStorage.setItem(SIDEBAR_MODE_STORAGE_KEY, migratedMode)
-    window.localStorage.removeItem(LEGACY_SIDEBAR_TOGGLE_KEY)
-    return migratedMode
-  }
-
+/**
+ * Resolve which layout to show.
+ * During the V4 force window, always V4.
+ * After that: database preference, then localStorage, then V4 for new users.
+ */
+export const resolveSidebarMode = ({ dbMode, storedMode } = {}) => {
+  if (isV4ForceActive()) return SIDEBAR_MODE_RAIL
+  if (isValidSidebarMode(dbMode)) return dbMode
+  if (isValidSidebarMode(storedMode)) return storedMode
   return SIDEBAR_DEFAULT_MODE
 }
+
+export const readStoredSidebarMode = () => resolveSidebarMode({ storedMode: readLocalSidebarMode() })

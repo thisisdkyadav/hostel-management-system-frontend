@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
@@ -22,9 +22,10 @@ import {
   SIDEBAR_MODE_WORKSPACE,
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STORAGE_KEY,
-  hasSeenV4Intro,
-  markV4IntroSeen,
-  readStoredSidebarMode,
+  isValidSidebarMode,
+  isV4ForceActive,
+  readLocalSidebarMode,
+  resolveSidebarMode,
 } from "./sidebar/sidebarModes"
 import { authApi } from "../service"
 import {
@@ -76,13 +77,8 @@ const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
-  const [sidebarMode, setSidebarMode] = useState(readStoredSidebarMode)
-  const [showV4Intro, setShowV4Intro] = useState(() => !hasSeenV4Intro())
+  const [pickedSidebarMode, setPickedSidebarMode] = useState(null)
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
-  const dismissV4Intro = useCallback(() => {
-    markV4IntroSeen()
-    setShowV4Intro(false)
-  }, [])
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
   // Theme is ephemeral: always boots to light, toggled for the session only.
   const [isDark, setIsDark] = useState(false)
@@ -97,6 +93,22 @@ const Sidebar = ({ navItems }) => {
   const isRestrictedCsoAdmin = isAdmin && isCsoAdminSubRole(user)
   // The V1–V4 layouts only apply to the full admin nav; everyone else gets the plain list
   const isAdminNav = isAdmin && !isRestrictedCsoAdmin
+  const persistSidebarMode = useCallback((mode) => {
+    if (!isValidSidebarMode(mode) || typeof window === "undefined") return
+    window.localStorage.setItem(SIDEBAR_MODE_STORAGE_KEY, mode)
+    authApi.updateSidebarMode(mode).catch((error) => {
+      console.error("Failed to save sidebar mode:", error)
+    })
+  }, [])
+  const handleSidebarModeChange = useCallback((nextMode) => {
+    setPickedSidebarMode(nextMode)
+    persistSidebarMode(nextMode)
+  }, [persistSidebarMode])
+  const v4ForceSavedRef = useRef(false)
+  const sidebarMode = pickedSidebarMode ?? resolveSidebarMode({
+    dbMode: user?.sidebarMode,
+    storedMode: readLocalSidebarMode(),
+  })
   const isRailMode = isAdminNav && sidebarMode === SIDEBAR_MODE_RAIL
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode)
 
@@ -152,6 +164,13 @@ const Sidebar = ({ navItems }) => {
     if (!isAdminNav || typeof window === "undefined") return
     window.localStorage.setItem(SIDEBAR_MODE_STORAGE_KEY, sidebarMode)
   }, [isAdminNav, sidebarMode])
+
+  useEffect(() => {
+    if (!isAdminNav || !isV4ForceActive() || !user?._id) return
+    if (user.sidebarMode === SIDEBAR_MODE_RAIL || v4ForceSavedRef.current) return
+    v4ForceSavedRef.current = true
+    persistSidebarMode(SIDEBAR_MODE_RAIL)
+  }, [isAdminNav, persistSidebarMode, user?._id, user?.sidebarMode])
 
   useEffect(() => {
     if (!isAdminNav) {
@@ -426,12 +445,7 @@ const Sidebar = ({ navItems }) => {
                   {isAdminNav && (
                     <SidebarModeSwitcher
                       mode={sidebarMode}
-                      onChange={(nextMode) => {
-                        setSidebarMode(nextMode)
-                        dismissV4Intro()
-                      }}
-                      showIntro={showV4Intro && !isMobile}
-                      onDismissIntro={dismissV4Intro}
+                      onChange={handleSidebarModeChange}
                     />
                   )}
                   {!isRailMode && (

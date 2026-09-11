@@ -82,6 +82,14 @@ export const authApi = {
   },
 
   /**
+   * Persist admin sidebar layout (v1–v4) for the current user.
+   * @param {string} sidebarMode
+   */
+  updateSidebarMode: (sidebarMode) => {
+    return goApiClient.patch("/auth/user/sidebar-mode", { sidebarMode }).then(unwrapStandardResponse)
+  },
+
+  /**
    * Logout from a specific device
    * @param {string} sessionId - Session ID to logout from
    */
