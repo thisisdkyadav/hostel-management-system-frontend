@@ -21,20 +21,26 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
       : "Pin to Home"
 
   // Accent path is driven by inline styles (dynamic per-category color); the
-  // default path stays on Tailwind classes/tokens.
-  let buttonStyle
+  // default path stays on Tailwind classes/tokens. Every row keeps a 2px border
+  // so a New outline does not shift layout.
+  const newBorderColor = item.isNew
+    ? (isActive
+      ? "color-mix(in srgb, var(--color-success) 75%, white)"
+      : "var(--color-success)")
+    : "transparent"
+  let buttonStyle = { borderColor: newBorderColor }
   let iconColor
   if (useAccent) {
     if (isActive) {
       // --color-on-accent, not --color-white: this reads against the button's own
       // accent fill, so it must not follow the theme.
-      buttonStyle = { backgroundColor: accent, color: "var(--color-on-accent)", boxShadow: `0 2px 8px ${tint(30)}` }
+      buttonStyle = { backgroundColor: accent, color: "var(--color-on-accent)", boxShadow: `0 2px 8px ${tint(30)}`, borderColor: newBorderColor }
       iconColor = "var(--color-on-accent)"
     } else if (hovered) {
-      buttonStyle = { backgroundColor: tint(20), color: accent }
+      buttonStyle = { backgroundColor: tint(20), color: accent, borderColor: newBorderColor }
       iconColor = accent
     } else {
-      buttonStyle = { backgroundColor: "transparent", color: "var(--color-text-body)" }
+      buttonStyle = { backgroundColor: "transparent", color: "var(--color-text-body)", borderColor: newBorderColor }
       iconColor = "var(--color-text-muted)"
     }
   }
@@ -47,9 +53,9 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
         onMouseEnter={useAccent ? () => setHovered(true) : undefined}
         onMouseLeave={useAccent ? () => setHovered(false) : undefined}
         aria-current={isActive ? "page" : undefined}
-        style={useAccent ? buttonStyle : undefined}
+        style={buttonStyle}
         className={`
-          w-full flex items-center px-3 py-2.5 text-left rounded-xl cursor-pointer transition duration-200 active:scale-[0.99]
+          w-full flex items-center px-3 py-2.5 text-left rounded-xl border-2 border-transparent cursor-pointer transition duration-200 active:scale-[0.99]
           outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
           ${useAccent
             ? ""

@@ -35,6 +35,7 @@ import {
   ADMIN_NAV_CATEGORY_DINING,
   ADMIN_DASHBOARD_PATHS,
   getAdminDashboardSectionByPath,
+  isAutoPinNavItem,
   isCsoAdminSubRole,
 } from "../constants/navigationConfig"
 
@@ -50,6 +51,7 @@ import { HStack, Surface, Text } from "hzero"
 const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin",
   "/admin/hostels",
+  "/admin/hostel-explorer",
   "/admin/students",
   "/admin/sheet",
   "/admin/complaints",
@@ -57,6 +59,19 @@ const ADMIN_DEFAULT_PINNED_PATHS = [
   "/admin/caterers",
   "/admin/dining-periods",
 ]
+
+const autoPinDismissKey = (path) => `admin_sidebar_autopin_dismiss:${path}`
+
+const isAutoPinDismissed = (path) => {
+  if (typeof window === "undefined" || !path) return false
+  return Boolean(window.localStorage.getItem(autoPinDismissKey(path)))
+}
+
+const setAutoPinDismissed = (path, dismissed) => {
+  if (typeof window === "undefined" || !path) return
+  if (dismissed) window.localStorage.setItem(autoPinDismissKey(path), "true")
+  else window.localStorage.removeItem(autoPinDismissKey(path))
+}
 
 const ADMIN_PINNED_TAB_MIGRATIONS = [
   {
@@ -197,15 +212,19 @@ const Sidebar = ({ navItems }) => {
     const migrationPathsToAdd = ADMIN_PINNED_TAB_MIGRATIONS
       .filter((migration) => validPaths.has(migration.path) && !window.localStorage.getItem(migration.storageKey))
       .map((migration) => migration.path)
+    const autoPinPaths = adminMainNavItems
+      .filter((item) => isAutoPinNavItem(item) && validPaths.has(item.path) && !isAutoPinDismissed(item.path))
+      .map((item) => item.path)
+    const addedAutoPins = autoPinPaths.filter((path) => !nextPinnedPaths.includes(path))
 
-    const migratedPinnedPaths = [...new Set([...alwaysPinnedPaths, ...nextPinnedPaths, ...migrationPathsToAdd])]
+    const migratedPinnedPaths = [...new Set([...alwaysPinnedPaths, ...nextPinnedPaths, ...migrationPathsToAdd, ...autoPinPaths])]
 
     setPinnedAdminPaths(migratedPinnedPaths)
     const dashboardSection = getAdminDashboardSectionByPath(window.location.pathname)
     setActiveAdminCategory(dashboardSection?.category || ADMIN_NAV_CATEGORY_HOME)
 
     const missingAlwaysPinned = alwaysPinnedPaths.some((path) => !sanitizedUserPinnedTabs.includes(path))
-    if (migrationPathsToAdd.length > 0 || (hasPersistedPinnedTabs && missingAlwaysPinned)) {
+    if (migrationPathsToAdd.length > 0 || addedAutoPins.length > 0 || (hasPersistedPinnedTabs && missingAlwaysPinned)) {
       ADMIN_PINNED_TAB_MIGRATIONS.forEach((migration) => {
         if (migrationPathsToAdd.includes(migration.path)) {
           window.localStorage.setItem(migration.storageKey, "true")
@@ -276,12 +295,16 @@ const Sidebar = ({ navItems }) => {
     if (!isAdminNav || !item?.path || !adminMainPathSet.has(item.path) || item.alwaysPinned) return
 
     const previousPinnedPaths = pinnedAdminPaths
-    const toggledPaths = previousPinnedPaths.includes(item.path)
+    const isUnpinning = previousPinnedPaths.includes(item.path)
+    const toggledPaths = isUnpinning
       ? previousPinnedPaths.filter((path) => path !== item.path)
       : [...previousPinnedPaths, item.path]
     const nextPinnedPaths = [...new Set([...alwaysPinnedPaths, ...toggledPaths])]
+    const tracksAutoPin = isAutoPinNavItem(item)
+    const previousDismissed = tracksAutoPin ? isAutoPinDismissed(item.path) : false
 
     setPinnedAdminPaths(nextPinnedPaths)
+    if (tracksAutoPin) setAutoPinDismissed(item.path, isUnpinning)
 
     try {
       const response = await authApi.updatePinnedTabs(nextPinnedPaths)
@@ -295,6 +318,7 @@ const Sidebar = ({ navItems }) => {
     } catch (error) {
       console.error("Failed to save pinned tabs:", error)
       setPinnedAdminPaths(previousPinnedPaths)
+      if (tracksAutoPin) setAutoPinDismissed(item.path, previousDismissed)
     }
   }
 

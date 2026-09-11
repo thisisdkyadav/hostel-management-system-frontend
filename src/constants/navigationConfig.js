@@ -150,6 +150,14 @@ export const ADMIN_DASHBOARD_PATHS = Object.fromEntries(
 export const getAdminDashboardSectionByPath = (pathname) =>
   ADMIN_DASHBOARD_SECTIONS.find((section) => section.path === pathname) || null
 
+/**
+ * New sidebar items (`isNew`) get a badge and outline. They are auto-pinned
+ * for admins until the user unpins them, unless `autoPin` is explicitly false.
+ * `autoPin: true` without `isNew` pins without the tag.
+ */
+export const isAutoPinNavItem = (item) =>
+  Boolean(item?.path) && item.autoPin !== false && (item.autoPin === true || item.isNew === true)
+
 // ============================================
 // ADMIN NAVIGATION
 // ============================================
@@ -176,7 +184,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
       pinnedName: section.pinnedName,
     })),
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
-    { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
     { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },

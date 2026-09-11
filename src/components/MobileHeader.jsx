@@ -132,7 +132,11 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
                   type="button"
                   role="menuitem"
                   onClick={() => selectItem(item)}
-                  className="w-full flex items-center px-2.5 py-2.5 rounded-lg text-sm font-medium text-left transition-colors duration-200 text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"
+                  className={`
+                    w-full flex items-center px-2.5 py-2.5 rounded-lg text-sm font-medium text-left transition-colors duration-200
+                    text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]
+                    ${item.isNew ? "border-2 border-[var(--color-success)]" : "border-2 border-transparent"}
+                  `}
                 >
                   <item.icon size={16} strokeWidth={2} className="mr-3 shrink-0 text-[var(--color-text-muted)]" />
                   <span className="flex-1 truncate">{item.name}</span>
