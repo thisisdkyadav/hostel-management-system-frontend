@@ -7,6 +7,18 @@
 @import "hzero/styles.css";
 @import "tailwindcss";
 
+/* Home / Hostels accents are aliased to --color-primary in hzero. The
+   categorized admin theme remaps primary, which would recolor those two
+   rail icons. Pin them to the brand blue so they stay put. */
+:root {
+  --color-cat-home: #1360AB;
+  --color-cat-hostels: #1360AB;
+}
+[data-theme="dark"] {
+  --color-cat-home: #5B9FE8;
+  --color-cat-hostels: #5B9FE8;
+}
+
 @import "./styles/homepage.css";
 @import "./styles/contactmodal.css";
 
