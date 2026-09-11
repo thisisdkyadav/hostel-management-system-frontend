@@ -55,49 +55,30 @@
 }
 
 .occ-tile--room {
-  --occ-face: var(--spacing-5);
-  --occ-face-overlap: var(--spacing-1-5);
-  --occ-faces-width: calc(
-    var(--occ-face) + (var(--occ-face) - var(--occ-face-overlap)) * 2
-  );
   --occ-tile-pad: var(--spacing-1);
-  display: grid;
-  grid-template-columns: var(--occ-faces-width) var(--occ-pip);
-  grid-template-rows: var(--spacing-4) var(--occ-face);
-  column-gap: var(--spacing-1);
-  row-gap: var(--spacing-1);
-  align-items: stretch;
-  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
   width: calc(
     (var(--occ-tile-pad) * 2) +
     (var(--border-1) * 2) +
-    var(--occ-faces-width) +
-    var(--spacing-1) +
-    var(--occ-pip)
+    (var(--occ-pip) * 4) +
+    (var(--occ-pip-gap) * 3)
   );
   height: calc(
     (var(--occ-tile-pad) * 2) +
     (var(--border-1) * 2) +
     var(--spacing-4) +
     var(--spacing-1) +
-    var(--occ-face)
+    var(--occ-pip)
   );
-  overflow: visible;
-}
-
-.occ-tile--sm.occ-tile--room {
-  --occ-face: var(--spacing-4-5);
-}
-
-.occ-tile--lg.occ-tile--room {
-  --occ-face: var(--spacing-6);
 }
 
 .occ-tile--room .occ-tile__label {
-  grid-column: 1;
-  grid-row: 1;
-  min-width: 0;
-  max-width: 100%;
+  width: 100%;
+  text-align: center;
   font-size: var(--font-size-xs);
   letter-spacing: 0;
 }
@@ -106,70 +87,21 @@
   font-size: var(--font-size-2xs);
 }
 
-.occ-tile--room .occ-tile__faces {
-  grid-column: 1;
-  grid-row: 2;
-  height: var(--occ-face);
-  min-height: var(--occ-face);
-}
-
 .occ-tile--room .occ-tile__pips,
 .occ-tile--room .occ-tile__count {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: center;
-  align-self: stretch;
   max-width: none;
-  height: 100%;
   gap: var(--occ-pip-gap);
 }
 
-.occ-tile__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-1);
-  min-width: 0;
-  width: 100%;
-}
-
-.occ-tile__faces {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  line-height: 0;
-}
-
-.occ-tile__face {
-  display: block;
-  flex: none;
-  width: var(--occ-face);
-  height: var(--occ-face);
-  overflow: hidden;
-  border-radius: var(--radius-full);
-  background: var(--color-bg-muted);
-  color: var(--color-text-muted);
-  box-shadow: 0 0 0 var(--border-1) var(--color-bg-primary);
-}
-
-.occ-tile__face + .occ-tile__face,
-.occ-tile__faces .hover-panel + .hover-panel {
-  margin-left: calc(var(--occ-face-overlap) * -1);
-}
-
-.occ-tile--split .occ-tile__head,
-.occ-tile--split .occ-tile__label {
+.occ-tile--split .occ-tile__label,
+.occ-tile--split .occ-tile__pips,
+.occ-tile--split .occ-tile__count {
   position: relative;
   z-index: 1;
   pointer-events: none;
-}
-
-.occ-tile--split .occ-tile__faces {
-  position: relative;
-  z-index: 2;
 }
 
 .occ-tile--split > .hover-panel {
@@ -189,41 +121,6 @@
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.occ-tile__faces .hover-panel {
-  display: block;
-  flex: none;
-  line-height: 0;
-  vertical-align: top;
-  cursor: pointer;
-}
-
-.occ-tile__face:focus {
-  outline: none;
-}
-
-.occ-tile__faces .hover-panel:hover .occ-tile__face,
-.occ-tile__faces .hover-panel:focus-within .occ-tile__face {
-  box-shadow: 0 0 0 var(--border-1) var(--color-border-focus);
-}
-
-.occ-tile__face img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.occ-tile__face-mark {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-2xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 1;
 }
 
 .occ-tile__label {

@@ -4,10 +4,8 @@ import HoverPanel from "../common/HoverPanel"
 import OccupancyTile from "../common/OccupancyTile"
 import { isRoomActive } from "@/constants/roomStatus"
 import { hostelApi } from "../../service"
-import { getMediaUrl } from "../../utils/mediaUtils"
 import { groupByBand } from "../../utils/numberBand"
 import RoomPeekPanel from "./RoomPeekPanel"
-import StudentPeekPanel from "../common/students/StudentPeekPanel"
 import "./floor-map.css"
 
 const occupancyOf = (item) => item.occupancy ?? item.currentOccupancy ?? 0
@@ -37,17 +35,6 @@ const roomGroupsOf = (unit) =>
     })
     .filter((group) => group.total > 0)
 
-const facesOf = (room) =>
-  [...(room.students || [])]
-    .filter((student) => student && (student.name || student.profileImage))
-    .sort((a, b) => (Number(a.bedNumber) || 0) - (Number(b.bedNumber) || 0))
-    .map((student) => ({
-      id: student.allocationId || student.id,
-      name: student.name,
-      src: student.profileImage ? getMediaUrl(student.profileImage) : undefined,
-      student,
-    }))
-
 const LEGEND = [
   { tone: "empty", label: "Empty" },
   { tone: "partial", label: "Partial" },
@@ -72,7 +59,6 @@ const RoomCell = ({
     used={occupancyOf(room)}
     total={isRoomActive(room.status) ? bedsOf(room) : 1}
     status={room.status}
-    faces={facesOf(room)}
     size={size}
     wrapHead={(hit) => (
       <HoverPanel
@@ -92,16 +78,6 @@ const RoomCell = ({
         }
       >
         {hit}
-      </HoverPanel>
-    )}
-    wrapFace={(face, node) => (
-      <HoverPanel
-        placement="auto"
-        align="center"
-        portal={portal}
-        content={<StudentPeekPanel student={face.student} roomNumber={room.roomNumber} />}
-      >
-        {node}
       </HoverPanel>
     )}
   />
