@@ -7,6 +7,8 @@ import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
 import { HStack } from "hzero"
+import { isNavItemNew } from "../constants/navigationConfig"
+import { NewTag } from "./sidebar/NewBadge"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isDark, onToggleTheme }) => {
   const navigate = useNavigate()
@@ -126,27 +128,23 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
             )}
 
             <div className="py-1.5 px-1.5">
-              {menuItems.map((item) => (
+              {menuItems.map((item) => {
+                const isNew = isNavItemNew(item)
+                return (
                 <button
                   key={item.name}
                   type="button"
                   role="menuitem"
                   onClick={() => selectItem(item)}
-                  className={`
-                    w-full flex items-center px-2.5 py-2.5 rounded-lg text-sm font-medium text-left transition-colors duration-200
-                    text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]
-                    ${item.isNew ? "border-2 border-[var(--color-success)]" : "border-2 border-transparent"}
-                  `}
+                  style={isNew ? { borderColor: "var(--color-success)", backgroundColor: "color-mix(in srgb, var(--color-success) 8%, transparent)" } : undefined}
+                  className="w-full flex items-center px-2.5 py-2.5 rounded-lg border-2 border-transparent text-sm font-medium text-left transition-colors duration-200 text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"
                 >
-                  <item.icon size={16} strokeWidth={2} className="mr-3 shrink-0 text-[var(--color-text-muted)]" />
+                  <item.icon size={16} strokeWidth={2} className={`mr-3 shrink-0 ${isNew ? "text-[var(--color-success)]" : "text-[var(--color-text-muted)]"}`} />
                   <span className="flex-1 truncate">{item.name}</span>
-                  {item.isNew && (
-                    <span className="px-1.5 py-0.5 text-[0.55rem] font-semibold uppercase tracking-wider rounded-md bg-[var(--color-success)]/10 text-[var(--color-success)]">
-                      New
-                    </span>
-                  )}
+                  {isNew && <NewTag />}
                 </button>
-              ))}
+                )
+              })}
             </div>
 
             {logoutItem && (

@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Pin } from "lucide-react"
+import { isNavItemNew } from "../../constants/navigationConfig"
+import { NewTag } from "./NewBadge"
 
 /**
  * Single sidebar navigation row.
@@ -20,15 +22,17 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
       ? "Unpin from Home"
       : "Pin to Home"
 
-  // Accent path is driven by inline styles (dynamic per-category color); the
-  // default path stays on Tailwind classes/tokens. Every row keeps a 2px border
-  // so a New outline does not shift layout.
-  const newBorderColor = item.isNew
+  const isNew = isNavItemNew(item)
+  // Every row keeps a 2px border so a New outline does not shift layout.
+  const newBorderColor = isNew
     ? (isActive
-      ? "color-mix(in srgb, var(--color-success) 75%, white)"
+      ? "color-mix(in srgb, var(--color-success) 80%, white)"
       : "var(--color-success)")
     : "transparent"
-  let buttonStyle = { borderColor: newBorderColor }
+  const newWash = isNew && !isActive
+    ? "color-mix(in srgb, var(--color-success) 10%, transparent)"
+    : undefined
+  let buttonStyle = { borderColor: newBorderColor, backgroundColor: newWash }
   let iconColor
   if (useAccent) {
     if (isActive) {
@@ -40,8 +44,8 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
       buttonStyle = { backgroundColor: tint(20), color: accent, borderColor: newBorderColor }
       iconColor = accent
     } else {
-      buttonStyle = { backgroundColor: "transparent", color: "var(--color-text-body)", borderColor: newBorderColor }
-      iconColor = "var(--color-text-muted)"
+      buttonStyle = { backgroundColor: newWash || "transparent", color: "var(--color-text-body)", borderColor: newBorderColor }
+      iconColor = isNew ? "var(--color-success)" : "var(--color-text-muted)"
     }
   }
 
@@ -69,7 +73,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
             size={18}
             strokeWidth={1.9}
             style={useAccent ? { color: iconColor } : undefined}
-            className={`transition-colors duration-200 ${useAccent ? "" : isActive ? "text-white" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`}
+            className={`transition-colors duration-200 ${useAccent ? "" : isActive ? "text-white" : isNew ? "text-[var(--color-success)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`}
           />
 
           {item?.badge > 0 && (
@@ -85,16 +89,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
           <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
             {displayName}
           </span>
-          {item.isNew && (
-            <span
-              className={`
-                px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide rounded-md shrink-0
-                ${isActive ? "bg-white/25 text-white" : "bg-[var(--color-success)]/10 text-[var(--color-success)]"}
-              `}
-            >
-              New
-            </span>
-          )}
+          {isNew && <NewTag />}
         </span>
       </button>
 

@@ -90,6 +90,14 @@ export const authApi = {
   },
 
   /**
+   * Persist color scheme (light | dark) for the current user.
+   * @param {string} theme
+   */
+  updateTheme: (theme) => {
+    return goApiClient.patch("/auth/user/theme", { theme }).then(unwrapStandardResponse)
+  },
+
+  /**
    * Logout from a specific device
    * @param {string} sessionId - Session ID to logout from
    */

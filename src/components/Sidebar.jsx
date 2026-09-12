@@ -5,11 +5,12 @@ import { useAuth } from "../contexts/AuthProvider"
 import { Moon, Sun } from "lucide-react"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
+import useColorScheme from "../hooks/useColorScheme"
+import useAdminCategoryCounts from "../hooks/useAdminCategoryCounts"
 import HostelSwitcher from "./sidebar/HostelSwitcher"
 import SidebarNavItem from "./sidebar/SidebarNavItem"
 import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
-import NewBadge from "./sidebar/NewBadge"
 import CategoryBar from "./sidebar/CategoryBar"
 import IconRail from "./sidebar/IconRail"
 import { getCategoryTint } from "./sidebar/categoryStyles"
@@ -37,6 +38,7 @@ import {
   getAdminDashboardSectionByPath,
   isAutoPinNavItem,
   isCsoAdminSubRole,
+  isNavItemNew,
 } from "../constants/navigationConfig"
 
 const navItemKey = (item) => item.path || item.name
@@ -73,6 +75,16 @@ const setAutoPinDismissed = (path, dismissed) => {
   else window.localStorage.removeItem(autoPinDismissKey(path))
 }
 
+const insertAfterHostels = (paths, extras) => {
+  const result = [...paths]
+  for (const path of extras) {
+    if (!path || result.includes(path)) continue
+    const hostelsIdx = result.indexOf("/admin/hostels")
+    result.splice((hostelsIdx >= 0 ? hostelsIdx : 0) + 1, 0, path)
+  }
+  return result
+}
+
 const ADMIN_PINNED_TAB_MIGRATIONS = [
   {
     storageKey: "admin_sidebar_pin_overall_best_performer_v1",
@@ -95,11 +107,10 @@ const Sidebar = ({ navItems }) => {
   const [pickedSidebarMode, setPickedSidebarMode] = useState(null)
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
-  // Theme is ephemeral: always boots to light, toggled for the session only.
-  const [isDark, setIsDark] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
+  const { isDark, toggleTheme } = useColorScheme(user)
   const { isPwaMobile } = usePwaMobile()
   const { layoutPreference } = useLayoutPreference()
   const { recentPaths, recordVisit } = useRecentPaths()
@@ -135,6 +146,14 @@ const Sidebar = ({ navItems }) => {
     () => (Array.isArray(navItems) ? navItems.filter((item) => item.section === "bottom") : []),
     [navItems]
   )
+  const newCategoryIds = useMemo(() => {
+    const ids = new Set()
+    for (const item of mainNavItems) {
+      if (isNavItemNew(item) && item.adminCategory) ids.add(item.adminCategory)
+    }
+    return ids
+  }, [mainNavItems])
+  const categoryCounts = useAdminCategoryCounts(isAdminNav)
 
   const adminMainPathsSignature = mainNavItems
     .filter((item) => item.path)
@@ -217,7 +236,10 @@ const Sidebar = ({ navItems }) => {
       .map((item) => item.path)
     const addedAutoPins = autoPinPaths.filter((path) => !nextPinnedPaths.includes(path))
 
-    const migratedPinnedPaths = [...new Set([...alwaysPinnedPaths, ...nextPinnedPaths, ...migrationPathsToAdd, ...autoPinPaths])]
+    const migratedPinnedPaths = insertAfterHostels(
+      [...new Set([...alwaysPinnedPaths, ...nextPinnedPaths, ...migrationPathsToAdd])],
+      autoPinPaths
+    )
 
     setPinnedAdminPaths(migratedPinnedPaths)
     const dashboardSection = getAdminDashboardSectionByPath(window.location.pathname)
@@ -251,16 +273,6 @@ const Sidebar = ({ navItems }) => {
 
     return () => window.removeEventListener("resize", handleResize)
   }, [])
-
-  // Apply the chosen theme to <html>; defaults to light on every load.
-  useEffect(() => {
-    const root = document.documentElement
-    if (isDark) {
-      root.setAttribute("data-theme", "dark")
-    } else {
-      root.removeAttribute("data-theme")
-    }
-  }, [isDark])
 
   // Skip sidebar rendering for student PWA in mobile mode with bottombar preference.
   // All hooks must run before this point (Rules of Hooks).
@@ -433,7 +445,7 @@ const Sidebar = ({ navItems }) => {
         bottomNavItems={bottomNavItems}
         handleNavigation={handleNavigation}
         isDark={isDark}
-        onToggleTheme={() => setIsDark((prev) => !prev)}
+        onToggleTheme={toggleTheme}
       />
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
@@ -445,13 +457,15 @@ const Sidebar = ({ navItems }) => {
               activeCategory={activeAdminCategory}
               onCategoryChange={handleCategoryChange}
               isDark={isDark}
-              onToggleTheme={() => setIsDark((prev) => !prev)}
+              onToggleTheme={toggleTheme}
               onLogoClick={() => navigate("/")}
               user={user}
               profileItem={profileItem}
               logoutItem={logoutItem}
               isProfileActive={profileItem ? location.pathname === profileItem.path : false}
               onNavigate={handleNavigation}
+              newCategoryIds={newCategoryIds}
+              categoryCounts={categoryCounts}
             />
           )}
 
@@ -473,18 +487,15 @@ const Sidebar = ({ navItems }) => {
                     />
                   )}
                   {!isRailMode && (
-                    <span className="relative inline-flex">
-                      <NewBadge />
-                      <button
-                        type="button"
-                        onClick={() => setIsDark((prev) => !prev)}
-                        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-                        aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
-                      >
-                        {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                      </button>
-                    </span>
+                    <button
+                      type="button"
+                      onClick={toggleTheme}
+                      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40"
+                    >
+                      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
                   )}
                 </HStack>
               </div>
@@ -511,7 +522,12 @@ const Sidebar = ({ navItems }) => {
 
             {/* V2 category bar — V4 uses the left rail instead */}
             {isCategorizedMode && !isRailMode && (
-              <CategoryBar activeCategory={activeAdminCategory} onCategoryChange={handleCategoryChange} />
+              <CategoryBar
+                activeCategory={activeAdminCategory}
+                onCategoryChange={handleCategoryChange}
+                newCategoryIds={newCategoryIds}
+                categoryCounts={categoryCounts}
+              />
             )}
           </div>
         </div>

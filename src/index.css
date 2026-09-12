@@ -22,6 +22,42 @@
 @import "./styles/homepage.css";
 @import "./styles/contactmodal.css";
 
+@keyframes sidebarNewSheen {
+  0%,
+  58% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  68% {
+    opacity: 0.65;
+  }
+  82%,
+  100% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
+
+.sidebar-new-tag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    color-mix(in srgb, var(--color-on-accent) 55%, transparent) 50%,
+    transparent 65%
+  );
+  animation: sidebarNewSheen 3.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-new-tag::after {
+    animation: none;
+  }
+}
+
 body {
   font-family: "Google Sans", "Roboto", sans-serif;
 }

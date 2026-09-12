@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
 import { SIDEBAR_MODE_OPTIONS } from "./sidebarModes"
-import NewBadge from "./NewBadge"
 
 /**
  * Compact mode pill in the sidebar header. Shows the current mode (V1–V4)
@@ -35,7 +34,6 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
 
   return (
     <div className="relative" ref={containerRef}>
-      <NewBadge />
       <button
         type="button"
         onClick={() => setIsMenuOpen((prev) => !prev)}

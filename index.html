@@ -8,6 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <title>Student Management System - IIT Indore</title>
+  <script>
+    try {
+      if (localStorage.getItem("hms_theme") === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark")
+      }
+    } catch (error) { }
+  </script>
 </head>
 
 <body>

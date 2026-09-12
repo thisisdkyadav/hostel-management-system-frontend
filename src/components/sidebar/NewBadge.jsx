@@ -1,11 +1,13 @@
 /**
- * Tiny "NEW" tag for highlighting recently-added sidebar controls.
- * Render inside a `relative` parent — it pins to the parent's top-right corner.
+ * Inline "New" chip for sidebar rows. A slow sheen reads as live without
+ * animating the whole row. Corner stickers for chrome used to live here;
+ * those controls are no longer new.
  */
-const NewBadge = () => (
-  <span className="pointer-events-none absolute -top-1.5 -right-1 z-10 px-1 py-px rounded text-[0.5rem] font-bold uppercase leading-none tracking-wide bg-[var(--color-success)] text-white shadow-sm">
+const NewTag = () => (
+  <span className="sidebar-new-tag relative isolate overflow-hidden px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-md shrink-0 bg-[var(--color-success)] text-white">
     New
   </span>
 )
 
-export default NewBadge
+export { NewTag }
+export default NewTag

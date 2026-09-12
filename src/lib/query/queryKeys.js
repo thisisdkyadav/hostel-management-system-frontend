@@ -51,6 +51,10 @@ export const queryKeys = {
     list: (filters) => [...queryKeys.feedback.all, "list", filters ?? {}],
     stats: (filters) => [...queryKeys.feedback.all, "stats", filters ?? {}],
   },
+  adminDashboard: {
+    all: ["admin-dashboard"],
+    data: () => [...queryKeys.adminDashboard.all, "data"],
+  },
   studentDashboard: {
     all: ["student-dashboard"],
     data: () => [...queryKeys.studentDashboard.all, "data"],

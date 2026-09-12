@@ -4,8 +4,8 @@ import { useSocket } from "@/contexts/SocketProvider"
 import { queryKeys } from "./queryKeys"
 
 const SOCKET_EVENT_TO_INVALIDATIONS = {
-  "visitor-update": () => [queryKeys.visitors.all],
-  "complaint-update": () => [queryKeys.complaints.all],
+  "visitor-update": () => [queryKeys.visitors.all, queryKeys.adminDashboard.all],
+  "complaint-update": () => [queryKeys.complaints.all, queryKeys.adminDashboard.all],
   notification: () => [queryKeys.notifications.all],
 }
 

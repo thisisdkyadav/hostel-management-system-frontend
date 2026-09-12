@@ -7,6 +7,7 @@ import {
 } from "../../constants/navigationConfig"
 import { getCategoryTint } from "./categoryStyles"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import CategoryCountBadge from "./CategoryCountBadge"
 
 const panelColorFor = (categoryId) => {
   const tint = getCategoryTint(categoryId)
@@ -73,14 +74,19 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
   )
 }
 
-const RailButton = ({ label, pressed, onClick, accent, children }) => {
+const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, children }) => {
   const isCategory = !!accent
+  const accessibleLabel = [
+    label,
+    count > 0 ? `${count > 99 ? "99+" : count} needing attention` : null,
+    hasNew && !count ? "new" : null,
+  ].filter(Boolean).join(", ")
 
   const button = (
     <button
       type="button"
-      title={label}
-      aria-label={label}
+      title={accessibleLabel}
+      aria-label={accessibleLabel}
       aria-pressed={pressed}
       onMouseDown={isCategory ? (event) => event.preventDefault() : undefined}
       onClick={onClick}
@@ -103,6 +109,13 @@ const RailButton = ({ label, pressed, onClick, accent, children }) => {
       }
     >
       {children}
+      <CategoryCountBadge count={count} />
+      {hasNew && !count && (
+        <span
+          aria-hidden
+          className="absolute top-1.5 right-1 w-1.5 h-1.5 rounded-full bg-[var(--color-success)] pointer-events-none ring-2 ring-[var(--color-bg-primary)]"
+        />
+      )}
     </button>
   )
 
@@ -148,6 +161,8 @@ const IconRail = ({
   logoutItem,
   isProfileActive,
   onNavigate,
+  newCategoryIds,
+  categoryCounts,
 }) => {
   return (
     <div className="relative w-14 shrink-0 h-full flex flex-col items-center">
@@ -184,6 +199,8 @@ const IconRail = ({
               label={category.name}
               pressed={isActiveCategory}
               accent={accent}
+              hasNew={Boolean(newCategoryIds?.has(category.id))}
+              count={categoryCounts?.[category.id] || 0}
               onClick={() => onCategoryChange(category.id)}
             >
               <category.icon size={18} strokeWidth={isActiveCategory ? 2.2 : 1.8} />
