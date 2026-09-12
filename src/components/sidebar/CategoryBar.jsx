@@ -40,17 +40,22 @@ const CategoryBar = ({ activeCategory, onCategoryChange, newCategoryIds, categor
                   : { borderColor: "var(--color-border-primary)", color: accent }
               }
             >
-              <category.icon size={17} strokeWidth={isActiveCategory ? 2.2 : 1.8} />
-              <CategoryCountBadge
-                count={count}
-                ringClass={isActiveCategory ? "ring-2 ring-[var(--color-on-accent)]" : "ring-2 ring-[var(--color-bg-primary)]"}
-              />
-              {hasNew && !count && (
-                <span
-                  aria-hidden
-                  className={`absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[var(--color-success)] pointer-events-none ring-2 ${isActiveCategory ? "ring-[var(--color-on-accent)]" : "ring-[var(--color-bg-primary)]"}`}
-                />
-              )}
+              <span className="relative inline-flex items-center justify-center">
+                <category.icon size={17} strokeWidth={isActiveCategory ? 2.2 : 1.8} />
+                <CategoryCountBadge count={count} />
+                {hasNew && !count && (
+                  <span
+                    aria-hidden
+                    className="absolute top-0 right-0 z-10 pointer-events-none rounded-full bg-[var(--color-success)]"
+                    style={{
+                      width: "var(--spacing-1-5)",
+                      height: "var(--spacing-1-5)",
+                      transform: "translate(42%, -42%)",
+                      boxShadow: `0 0 0 var(--spacing-0-5) ${isActiveCategory ? "var(--color-on-accent)" : "var(--color-bg-primary)"}`,
+                    }}
+                  />
+                )}
+              </span>
             </button>
           )
         })}

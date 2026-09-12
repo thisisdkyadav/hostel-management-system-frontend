@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Pin } from "lucide-react"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "./NewBadge"
+import CategoryCountBadge from "./CategoryCountBadge"
 
 /**
  * Single sidebar navigation row.
@@ -77,11 +78,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
           />
 
           {item?.badge > 0 && (
-            <span
-              className={`absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-[var(--color-danger)] text-white text-xs font-semibold flex items-center justify-center shadow-md ${item.badge > 99 ? "min-w-6" : ""}`}
-            >
-              {item.badge > 99 ? "99+" : item.badge}
-            </span>
+            <CategoryCountBadge count={item.badge} />
           )}
         </span>
 

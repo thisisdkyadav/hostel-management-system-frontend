@@ -153,7 +153,15 @@ const Sidebar = ({ navItems }) => {
     }
     return ids
   }, [mainNavItems])
-  const categoryCounts = useAdminCategoryCounts(isAdminNav)
+  const { categoryCounts, itemCounts } = useAdminCategoryCounts(isAdminNav)
+  const countedNavItems = useMemo(
+    () => mainNavItems.map((item) => {
+      const count = itemCounts[item.path]
+      if (!count) return item
+      return { ...item, badge: count }
+    }),
+    [itemCounts, mainNavItems]
+  )
 
   const adminMainPathsSignature = mainNavItems
     .filter((item) => item.path)
@@ -392,12 +400,12 @@ const Sidebar = ({ navItems }) => {
   )
 
   const renderNavBody = () => {
-    if (!isAdminNav) return renderPlainList(mainNavItems)
+    if (!isAdminNav) return renderPlainList(countedNavItems)
 
     if (sidebarMode === SIDEBAR_MODE_FLAT) {
       return (
         <FlatGroupedNav
-          items={mainNavItems}
+          items={countedNavItems}
           pinnedPaths={[...new Set([...alwaysPinnedPaths, ...pinnedAdminPaths])]}
           activePath={location.pathname}
           onNavigate={handleNavigation}
@@ -409,7 +417,7 @@ const Sidebar = ({ navItems }) => {
     if (sidebarMode === SIDEBAR_MODE_WORKSPACE) {
       return (
         <WorkspaceNav
-          items={mainNavItems}
+          items={countedNavItems}
           pinnedPaths={[...new Set([...alwaysPinnedPaths, ...pinnedAdminPaths])]}
           recentPaths={recentPaths}
           activePath={location.pathname}
@@ -422,10 +430,10 @@ const Sidebar = ({ navItems }) => {
     const categoryItems =
       activeAdminCategory === ADMIN_NAV_CATEGORY_HOME
         ? [
-            ...mainNavItems.filter((item) => item.alwaysPinned && item.path),
-            ...mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path) && !item.alwaysPinned),
+            ...countedNavItems.filter((item) => item.alwaysPinned && item.path),
+            ...countedNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path) && !item.alwaysPinned),
           ]
-        : mainNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
+        : countedNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
 
     const activeCategoryConfig = ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
     const categoryAccent = `var(${activeCategoryConfig?.colorVar || "--color-primary"})`

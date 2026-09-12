@@ -108,14 +108,22 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
             : undefined
       }
     >
-      {children}
-      <CategoryCountBadge count={count} />
-      {hasNew && !count && (
-        <span
-          aria-hidden
-          className="absolute top-1.5 right-1 w-1.5 h-1.5 rounded-full bg-[var(--color-success)] pointer-events-none ring-2 ring-[var(--color-bg-primary)]"
-        />
-      )}
+      <span className="relative inline-flex items-center justify-center">
+        {children}
+        <CategoryCountBadge count={count} />
+        {hasNew && !count && (
+          <span
+            aria-hidden
+            className="absolute top-0 right-0 z-10 pointer-events-none rounded-full bg-[var(--color-success)]"
+            style={{
+              width: "var(--spacing-1-5)",
+              height: "var(--spacing-1-5)",
+              transform: "translate(42%, -42%)",
+              boxShadow: "0 0 0 var(--spacing-0-5) var(--color-bg-primary)",
+            }}
+          />
+        )}
+      </span>
     </button>
   )
 

@@ -54,6 +54,7 @@ export const queryKeys = {
   adminDashboard: {
     all: ["admin-dashboard"],
     data: () => [...queryKeys.adminDashboard.all, "data"],
+    approvals: (userId, subRole) => [...queryKeys.adminDashboard.all, "approvals", userId ?? null, subRole ?? null],
   },
   studentDashboard: {
     all: ["student-dashboard"],
