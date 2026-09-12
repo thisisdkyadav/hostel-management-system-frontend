@@ -1,0 +1,63 @@
+/* Slight density and colour polish for the admin dashboard only. */
+
+.admin-dashboard {
+  --statrow-padding: var(--spacing-2) var(--spacing-3);
+  --statrow-gap: var(--spacing-2-5);
+}
+
+.admin-dashboard .hz-panel-columns > .hz-panel {
+  padding: var(--spacing-3-5) var(--spacing-4);
+}
+
+.admin-dashboard .hz-panel-warning .hz-panel-count {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.admin-dashboard .hz-panel-danger .hz-panel-count {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+.admin-dashboard .hz-panel-success .hz-panel-count {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.admin-dashboard .hz-panel-info .hz-panel-count {
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+}
+
+.admin-dashboard .hz-panel-purple .hz-panel-count {
+  background-color: var(--color-purple-bg);
+  color: var(--color-purple-text);
+}
+
+.admin-dashboard .hz-panel-teal .hz-panel-count {
+  background-color: var(--color-teal-bg);
+  color: var(--color-teal-text);
+}
+
+.admin-dashboard .hz-statrow-neutral .hz-statrow-value {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.admin-dashboard .occupancy-pct--success { color: var(--color-success-text); }
+.admin-dashboard .occupancy-pct--warning {
+  color: var(--color-warning-text);
+  font-weight: var(--font-weight-semibold);
+}
+.admin-dashboard .occupancy-pct--danger {
+  color: var(--color-danger-text);
+  font-weight: var(--font-weight-bold);
+}
+
+.admin-dashboard .occupancy-excluded {
+  opacity: 0.45;
+}
+
+.admin-dashboard .admin-dashboard-feed {
+  gap: var(--spacing-2);
+}

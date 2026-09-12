@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import {
   Activity, Award, BadgeCheck, BedDouble, BriefcaseBusiness, CalendarCheck, CalendarClock, CalendarOff, CheckSquare,
@@ -17,6 +17,7 @@ import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupCont
 import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
 import { formatCurrency } from "../../components/dining/diningBillingHelpers"
 import { ADMIN_DASHBOARD_SECTIONS } from "../../constants/navigationConfig"
+import "./DashboardPage.css"
 
 // Maps an admin SA sub-role to the status that means "pending my approval"
 // across activity calendars, event proposals/expenses, and POR requests.
@@ -148,7 +149,7 @@ const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
   }
 
   return (
-    <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+    <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)] flex-wrap justify-end">
       <StatPill icon={Users} label="Total" value={total.total}>
         <StatPill.Chip>B {total.boys}</StatPill.Chip>
         <StatPill.Chip>G {total.girls}</StatPill.Chip>
@@ -291,7 +292,7 @@ const DegreeTable = ({ data, unit, cohort }) => {
                     onChange={() => toggle(item.key)}
                     aria-label={`Include ${item.degree} in the total`}
                   />
-                  <Text as="span" size="sm" weight="medium" color={isIncluded ? "secondary" : "muted"}>
+                  <Text as="span" size="sm" weight="medium" color={isIncluded ? "secondary" : "muted"} className={isIncluded ? undefined : "occupancy-excluded"}>
                     {item.degree}
                   </Text>
                 </HStack>
@@ -339,21 +340,29 @@ const DegreeTable = ({ data, unit, cohort }) => {
 
 const occupancyTone = (percent) => (percent >= 95 ? "danger" : percent >= 80 ? "warning" : "success")
 
+const occupancyPercent = (hostel) =>
+  hostel.totalCapacity > 0 ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100) : 0
+
 const hostelKey = (hostel, index) => hostel._id ?? hostel.name ?? String(index)
 
 const OccupancyTable = ({ hostels }) => {
   const { excluded, toggle, toggleAll } = useExclusions()
 
+  const ranked = useMemo(
+    () => [...hostels].sort((a, b) => occupancyPercent(b) - occupancyPercent(a)),
+    [hostels]
+  )
+
   if (!hostels.length) {
     return <EmptyState size="sm" icon={ClipboardList} title="No hostels" message="Add a hostel to see occupancy." />
   }
 
-  const keys = hostels.map(hostelKey)
+  const keys = ranked.map(hostelKey)
   const includedCount = keys.filter((key) => !excluded.has(key)).length
-  const allIncluded = includedCount === hostels.length
+  const allIncluded = includedCount === ranked.length
   const partial = includedCount > 0 && !allIncluded
   const sumOf = (field) =>
-    hostels.reduce((sum, hostel, index) => (excluded.has(keys[index]) ? sum : sum + (hostel[field] || 0)), 0)
+    ranked.reduce((sum, hostel, index) => (excluded.has(keys[index]) ? sum : sum + (hostel[field] || 0)), 0)
 
   return (
     <Table sticky dense bordered striped columns={["40%", "15%", "15%", "15%", "15%"]}>
@@ -377,17 +386,16 @@ const OccupancyTable = ({ hostels }) => {
       </Table.Header>
 
       <Table.Body>
-        {hostels.map((hostel, index) => {
+        {ranked.map((hostel, index) => {
           const key = keys[index]
           const isIncluded = !excluded.has(key)
-          const percent = hostel.totalCapacity > 0
-            ? Math.round((hostel.currentOccupancy / hostel.totalCapacity) * 100)
-            : 0
+          const percent = occupancyPercent(hostel)
+          const tone = occupancyTone(percent)
 
           return (
             <Table.Row key={key}>
               <Table.Cell>
-                <HStack align="center" gap={2}>
+                <HStack align="center" gap={2} className={isIncluded ? undefined : "occupancy-excluded"}>
                   <Checkbox
                     checked={isIncluded}
                     onChange={() => toggle(key)}
@@ -409,15 +417,20 @@ const OccupancyTable = ({ hostels }) => {
                       {hostel.name}
                     </Text>
                     <HStack align="center" gap="var(--spacing-1-5)">
-                      <span style={{ width: "var(--spacing-20)" }}>
+                      <span style={{ width: "var(--spacing-24)" }}>
                         <Progress
                           value={percent}
                           size="sm"
-                          color={occupancyTone(percent)}
+                          color={tone}
                           aria-label={`${hostel.name} occupancy`}
                         />
                       </span>
-                      <Text as="span" size="2xs" color="muted" leading="var(--line-height-none)" className="tabular-nums">
+                      <Text
+                        as="span"
+                        size="2xs"
+                        leading="var(--line-height-none)"
+                        className={`tabular-nums occupancy-pct occupancy-pct--${tone}`}
+                      >
                         {percent}%
                       </Text>
                     </HStack>
@@ -427,7 +440,9 @@ const OccupancyTable = ({ hostels }) => {
               <Table.Cell align="center" numeric className="text-[var(--color-text-muted)] font-medium">{hostel.totalRooms}</Table.Cell>
               <Table.Cell align="center" numeric className="text-[var(--color-text-muted)] font-medium">{hostel.totalCapacity}</Table.Cell>
               <Table.Cell align="center" numeric className="text-[var(--color-info)] font-bold">{hostel.currentOccupancy}</Table.Cell>
-              <Table.Cell align="center" numeric className="text-[var(--color-success)] font-bold">{hostel.vacantCapacity}</Table.Cell>
+              <Table.Cell align="center" numeric className={`font-bold ${percent >= 95 ? "text-[var(--color-danger-text)]" : "text-[var(--color-success)]"}`}>
+                {hostel.vacantCapacity}
+              </Table.Cell>
             </Table.Row>
           )
         })}
@@ -438,7 +453,7 @@ const OccupancyTable = ({ hostels }) => {
           <Table.Cell>
             <HStack align="center" gap="var(--spacing-1-5)">
               Total
-              {partial && <Badge variant="primary" size="small">{includedCount} of {hostels.length}</Badge>}
+              {partial && <Badge variant="primary" size="small">{includedCount} of {ranked.length}</Badge>}
             </HStack>
           </Table.Cell>
           <Table.Cell align="center" numeric>{sumOf("totalRooms")}</Table.Cell>
@@ -484,24 +499,32 @@ const Feed = ({ title, icon, accent, count, to, loading, actions, children }) =>
     link={to ? <Panel.Link as={Link} to={to}>Open</Panel.Link> : undefined}
   >
     <Panel.Body>
-      {loading ? <FeedSkeleton /> : <VStack gap="var(--spacing-1-5)">{children}</VStack>}
+      {loading ? <FeedSkeleton /> : <VStack gap="var(--spacing-2)" className="admin-dashboard-feed">{children}</VStack>}
     </Panel.Body>
   </Panel>
 )
 
+const MetricRow = ({ label, value, tone = "info", to, emphasis, icon, edge }) => {
+  const empty = typeof value === "number" && value === 0
+  return (
+    <StatRow
+      as={to ? Link : undefined}
+      to={to}
+      dot={!icon}
+      icon={icon}
+      edge={edge}
+      tone={empty ? "neutral" : tone}
+      emphasis={!empty && Boolean(emphasis)}
+      label={label}
+      value={value}
+    />
+  )
+}
+
 const CountFeed = ({ title, icon, accent, count, to, loading, rows }) => (
   <Feed title={title} icon={icon} accent={accent} count={loading ? undefined : count} to={to} loading={loading}>
     {(rows || []).map((row) => (
-      <StatRow
-        key={row.label}
-        as={row.to ? Link : undefined}
-        to={row.to}
-        dot
-        tone={row.tone || "info"}
-        emphasis={Boolean(row.emphasis)}
-        label={row.label}
-        value={row.value}
-      />
+      <MetricRow key={row.label} {...row} />
     ))}
   </Feed>
 )
@@ -516,6 +539,8 @@ const UpcomingJoinsFeed = ({ loading, leaves }) => (
         return (
           <StatRow
             key={leave._id}
+            as={Link}
+            to="/admin/leaves"
             dot
             tone={tone}
             label={leave?.userId?.name || leave?.userId?.email || "Unknown"}
@@ -539,6 +564,7 @@ const TodoFeed = ({ approvalsLoading, approvalCounts, approvalTotal }) => (
           to={item.to}
           icon={item.icon}
           tone={item.tone}
+          emphasis
           label={item.label}
           value={approvalCounts[item.key]}
         />
@@ -558,10 +584,9 @@ const ComplaintsFeed = ({ loading, complaints, complaintsOpen }) => {
   return (
     <Feed title="Complaints" icon={FileText} accent="warning" count={complaintsOpen} to="/admin/complaints" loading={loading}>
       {complaintRows.map((row) => (
-        <StatRow key={row.label} as={Link} to={row.to} dot tone={row.tone} label={row.label} value={row.value} />
+        <MetricRow key={row.label} {...row} />
       ))}
-      <StatRow
-        as={Link}
+      <MetricRow
         to={buildComplaintDashboardLink({ overdue: true })}
         icon={TriangleAlert}
         tone="danger"
@@ -583,6 +608,8 @@ const UpcomingEventsFeed = ({ loading, events }) => (
         return (
           <StatRow
             key={event.id}
+            as={Link}
+            to="/admin/events"
             edge
             tone="purple"
             label={event.title}
@@ -602,12 +629,12 @@ const InProcessFeed = ({ loading, inProcess, inProcessTotal }) => (
       inProcess.map((item) => {
         const meta = IN_PROCESS_ITEMS[item.key] || { icon: ClipboardList, tone: "info" }
         return (
-          <StatRow
+          <MetricRow
             key={item.key}
-            as={meta.to ? Link : undefined}
             to={meta.to}
             icon={meta.icon}
             tone={meta.tone}
+            emphasis={(item.count || 0) > 0}
             label={item.label}
             value={item.count || 0}
           />
@@ -625,11 +652,9 @@ const StaffRosterFeed = ({ loading, staff }) => {
         <EmptyState size="sm" icon={BriefcaseBusiness} title="No staff records" message="" />
       ) : (
         staff.map((item) => (
-          <StatRow
+          <MetricRow
             key={item.key}
-            as={item.to ? Link : undefined}
             to={item.to}
-            dot
             tone="purple"
             label={item.label}
             value={item.count || 0}
@@ -646,10 +671,10 @@ const DiningTodayFeed = ({ loading, dining }) => {
   return (
     <Feed title="Today's meal" icon={UtensilsCrossed} accent="success" count={today.allocated || 0} to="/admin/dining-periods" loading={loading}>
       <StatRow dot tone="info" label="Meal slot" value={meal} />
-      <StatRow as={Link} to="/admin/dining-periods" dot tone="primary" label="Allocated" value={today.allocated || 0} />
-      <StatRow dot tone="success" label="Verified" value={today.verified || 0} />
-      <StatRow dot tone="warning" label="Pending" value={today.pending || 0} />
-      <StatRow as={Link} to="/admin/dining-rebates" dot tone="info" label="On rebate" value={today.onRebate || 0} />
+      <MetricRow to="/admin/dining-periods" tone="primary" label="Allocated" value={today.allocated || 0} />
+      <MetricRow tone="success" label="Verified" value={today.verified || 0} />
+      <MetricRow tone="warning" emphasis={(today.pending || 0) > 0} label="Pending" value={today.pending || 0} />
+      <MetricRow to="/admin/dining-rebates" tone="info" label="On rebate" value={today.onRebate || 0} />
     </Feed>
   )
 }
@@ -659,9 +684,9 @@ const DiningRebatesFeed = ({ loading, dining }) => {
   const pending = rebates.pending || 0
   return (
     <Feed title="Rebates" icon={ClipboardCheck} accent="warning" count={pending} to="/admin/dining-rebates" loading={loading}>
-      <StatRow as={Link} to="/admin/dining-rebates" dot tone="warning" label="Pending approval" value={pending} />
-      <StatRow dot tone="success" label="Approved today" value={rebates.approvedToday || 0} />
-      <StatRow dot tone="info" label="Upcoming approved" value={rebates.upcoming || 0} />
+      <MetricRow to="/admin/dining-rebates" tone="warning" emphasis={pending > 0} label="Pending approval" value={pending} />
+      <MetricRow tone="success" label="Approved today" value={rebates.approvedToday || 0} />
+      <MetricRow tone="info" label="Upcoming approved" value={rebates.upcoming || 0} />
     </Feed>
   )
 }
@@ -673,7 +698,7 @@ const DiningBillingFeed = ({ loading, dining }) => {
       <StatRow as={Link} to="/admin/dining-billing" dot tone="primary" label="Allocated" value={formatCurrency(billing.totalAllocated)} />
       <StatRow dot tone="warning" label="Charged" value={formatCurrency(billing.totalCharged)} />
       <StatRow dot tone="success" label="Outstanding" value={formatCurrency(billing.totalOutstanding)} />
-      <StatRow dot tone="danger" label="In dues" value={billing.duesCount || 0} />
+      <MetricRow to="/admin/dining-billing" tone="danger" emphasis={(billing.duesCount || 0) > 0} label="In dues" value={billing.duesCount || 0} />
     </Feed>
   )
 }
@@ -707,6 +732,8 @@ const ResolverRows = ({ people, emptyTitle, emptyMessage }) => {
       {people.map((person) => (
         <StatRow
           key={person.id}
+          as={Link}
+          to="/admin/complaints"
           dot
           tone={ratingTone(person.avgRating)}
           label={person.name}
@@ -1218,9 +1245,9 @@ const DashboardPage = ({ section = "home" }) => {
         <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
       </PageHeader>
 
-      <Page.Body padded={false} className="p-[var(--spacing-4)]">
-        <VStack gap={4}>
-          <Grid cols={{ base: 1, lg: 2 }} gap={4}>
+      <Page.Body padded={false} className="admin-dashboard p-[var(--spacing-5)]">
+        <VStack gap={5}>
+          <Grid cols={{ base: 1, lg: 2 }} gap={5}>
             <Panel
               title="Student distribution"
               height="lg"
