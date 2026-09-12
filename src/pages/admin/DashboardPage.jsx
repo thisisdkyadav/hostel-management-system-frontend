@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, Fragment } from "react"
 import { Link } from "react-router-dom"
 import {
   Activity, Award, BadgeCheck, BedDouble, BriefcaseBusiness, CalendarCheck, CalendarClock, CalendarOff, CheckSquare,
   ClipboardCheck, ClipboardList, CornerDownLeft, FileText, GraduationCap, Hourglass, ListTodo, MessageCircle, Receipt,
-  Scan, Search, Shield, ShieldCheck, Star, TriangleAlert, Trophy, User, UserCog, Users, UtensilsCrossed, Wallet, Wrench,
+  Scan, Search, Shield, ShieldCheck, Star, TriangleAlert, Trophy, UserCog, Users, UtensilsCrossed, Wallet, Wrench,
 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
@@ -14,7 +14,7 @@ import PageHeader from "../../components/common/PageHeader"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 // hzero is the only component source now; the @/components/ui shim is gone
 // that re-exports it verbatim.
-import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
+import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
 import { formatCurrency } from "../../components/dining/diningBillingHelpers"
 import { ADMIN_DASHBOARD_SECTIONS } from "../../constants/navigationConfig"
 import "./DashboardPage.css"
@@ -123,15 +123,50 @@ const ONLINE_ROLES = [
   { role: "Admin", roleLabel: "Admins", short: "A" },
 ]
 
+const formatCount = (value) => Number(value || 0).toLocaleString()
+
+const SplitCounts = ({ children }) => {
+  const items = (Array.isArray(children) ? children : [children]).filter(Boolean)
+  return (
+    <span className="admin-dashboard-kpi-split">
+      {items.map((item, index) => (
+        <Fragment key={item.key || index}>
+          {index > 0 ? <span className="admin-dashboard-kpi-bar" aria-hidden /> : null}
+          {item}
+        </Fragment>
+      ))}
+    </span>
+  )
+}
+
+const GenderSplit = ({ boys, girls }) => (
+  <SplitCounts>
+    <span className="admin-dashboard-kpi-b">{formatCount(boys)}</span>
+    <span className="admin-dashboard-kpi-g">{formatCount(girls)}</span>
+  </SplitCounts>
+)
+
+const HeaderKpi = ({ label, value, live, children }) => (
+  <div className={`admin-dashboard-kpi${live ? " admin-dashboard-kpi--live" : ""}`}>
+    <div className="admin-dashboard-kpi-top">
+      <span className="admin-dashboard-kpi-value">
+        {live ? <span className="admin-dashboard-kpi-live" aria-hidden /> : null}
+        {formatCount(value)}
+      </span>
+      <span className="admin-dashboard-kpi-label">{label}</span>
+    </div>
+    {children}
+  </div>
+)
+
 const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
   if (loading) {
     return (
-      <HStack gap="var(--spacing-2-5)">
-        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
-        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
-        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
-        <Skeleton variant="rounded" height="var(--spacing-9)" width="var(--spacing-24)" />
-      </HStack>
+      <div className="admin-dashboard-kpis">
+        {[0, 1, 2, 3].map((i) => (
+          <Skeleton key={i} variant="rounded" height="var(--spacing-10)" width="var(--spacing-16)" />
+        ))}
+      </div>
     )
   }
 
@@ -147,38 +182,37 @@ const HeaderFigures = ({ loading, error, dashboardData, onlineStats }) => {
     girls: (hostler.girls || 0) + (dayScholar.girls || 0),
     total: (hostler.total || 0) + (dayScholar.total || 0),
   }
+  const online = onlineStats?.totalOnline || 0
 
   return (
-    <HStack align="center" gap="var(--spacing-2-5)" className="border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)] flex-wrap justify-end">
-      <StatPill icon={Users} label="Total" value={total.total}>
-        <StatPill.Chip>B {total.boys}</StatPill.Chip>
-        <StatPill.Chip>G {total.girls}</StatPill.Chip>
-      </StatPill>
-
-      <StatPill icon={User} label="Hostlers" value={hostler.total || 0}>
-        <StatPill.Chip>B {hostler.boys || 0}</StatPill.Chip>
-        <StatPill.Chip>G {hostler.girls || 0}</StatPill.Chip>
-      </StatPill>
-
-      <StatPill icon={User} label="Day-sch." value={dayScholar.total || 0}>
-        <StatPill.Chip>B {dayScholar.boys || 0}</StatPill.Chip>
-        <StatPill.Chip>G {dayScholar.girls || 0}</StatPill.Chip>
-      </StatPill>
-
-      <StatPill icon={Activity} label="Online now" value={onlineStats?.totalOnline || 0} tone="success" live>
-        {ONLINE_ROLES.map(({ role, roleLabel, short }) => (
-          <Popover
-            key={role}
-            trigger="hover"
-            placement="bottom"
-            align="end"
-            content={<OnlineUsersPopupContent role={role} roleLabel={roleLabel} />}
-          >
-            <StatPill.Chip>{short} {onlineStats?.byRole?.[role] || 0}</StatPill.Chip>
-          </Popover>
-        ))}
-      </StatPill>
-    </HStack>
+    <div className="admin-dashboard-kpis">
+      <HeaderKpi label="Students" value={total.total}>
+        <GenderSplit boys={total.boys} girls={total.girls} />
+      </HeaderKpi>
+      <HeaderKpi label="Hostlers" value={hostler.total || 0}>
+        <GenderSplit boys={hostler.boys || 0} girls={hostler.girls || 0} />
+      </HeaderKpi>
+      <HeaderKpi label="Day scholars" value={dayScholar.total || 0}>
+        <GenderSplit boys={dayScholar.boys || 0} girls={dayScholar.girls || 0} />
+      </HeaderKpi>
+      <HeaderKpi label="Online" value={online} live={online > 0}>
+        <SplitCounts>
+          {ONLINE_ROLES.map(({ role, roleLabel, short }) => (
+            <Popover
+              key={role}
+              trigger="hover"
+              placement="bottom"
+              align="end"
+              content={<OnlineUsersPopupContent role={role} roleLabel={roleLabel} />}
+            >
+              <button type="button" className="admin-dashboard-kpi-role">
+                {short} {onlineStats?.byRole?.[role] || 0}
+              </button>
+            </Popover>
+          ))}
+        </SplitCounts>
+      </HeaderKpi>
+    </div>
   )
 }
 
@@ -1299,7 +1333,7 @@ const DashboardPage = ({ section = "home" }) => {
 
   return (
     <Page>
-      <PageHeader title={sectionMeta.title}>
+      <PageHeader title={sectionMeta.title} className="admin-dashboard-header">
         <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
       </PageHeader>
 

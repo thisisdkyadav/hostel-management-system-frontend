@@ -1,12 +1,124 @@
 /* Slight density and colour polish for the admin dashboard only. */
 
+.admin-dashboard-header > div {
+  height: auto;
+  min-height: var(--spacing-16);
+  padding-block: var(--spacing-2);
+  padding-inline: var(--spacing-5);
+}
+
+.admin-dashboard-kpis {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.admin-dashboard-kpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-1);
+  padding: 0 var(--spacing-4);
+  border-left: var(--border-1) solid var(--color-border-primary);
+}
+
+.admin-dashboard-kpi:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.admin-dashboard-kpi:last-child {
+  padding-right: 0;
+}
+
+.admin-dashboard-kpi-top {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-2);
+}
+
+.admin-dashboard-kpi-value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1;
+  color: var(--color-text-heading);
+}
+
+.admin-dashboard-kpi-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.admin-dashboard-kpi-split {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  font-size: var(--font-size-2xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.admin-dashboard-kpi-bar {
+  width: var(--border-1);
+  height: 0.75em;
+  background: var(--color-border-primary);
+}
+
+.admin-dashboard-kpi-b { color: var(--color-info-text); }
+.admin-dashboard-kpi-g { color: var(--color-girls-text); }
+
+.admin-dashboard-kpi-live {
+  width: var(--spacing-1-5);
+  height: var(--spacing-1-5);
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  box-shadow: 0 0 0 3px var(--color-success-bg);
+}
+
+.admin-dashboard-kpi--live .admin-dashboard-kpi-value {
+  color: var(--color-success-text);
+}
+
+.admin-dashboard-kpi-role {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.admin-dashboard-kpi-role:hover,
+.admin-dashboard-kpi-role:focus-visible {
+  color: var(--color-text-heading);
+}
+
 .admin-dashboard {
   --statrow-padding: var(--spacing-2) var(--spacing-3);
   --statrow-gap: var(--spacing-2-5);
 }
 
+.admin-dashboard .hz-panel-columns {
+  gap: var(--spacing-1);
+}
+
 .admin-dashboard .hz-panel-columns > .hz-panel {
-  padding: var(--spacing-3-5) var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.admin-dashboard .hz-panel-title {
+  font-weight: var(--font-weight-semibold);
 }
 
 .admin-dashboard .hz-panel-warning .hz-panel-count {
@@ -44,6 +156,15 @@
   font-weight: var(--font-weight-medium);
 }
 
+.admin-dashboard .hz-table-head {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.admin-dashboard .hz-table-foot .hz-table-cell {
+  font-weight: var(--font-weight-semibold);
+}
+
 .admin-dashboard .occupancy-pct--success { color: var(--color-success-text); }
 .admin-dashboard .occupancy-pct--warning {
   color: var(--color-warning-text);
@@ -59,7 +180,7 @@
 }
 
 .admin-dashboard .admin-dashboard-feed {
-  gap: var(--spacing-2);
+  gap: var(--spacing-1-5);
 }
 
 .activity-today-value {
