@@ -62,18 +62,6 @@
   gap: var(--spacing-2);
 }
 
-.admin-dashboard-top {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-5);
-}
-
-@media (min-width: 1024px) {
-  .admin-dashboard-top {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr) minmax(220px, 0.68fr);
-  }
-}
-
 .activity-today-value {
   display: inline-flex;
   align-items: baseline;

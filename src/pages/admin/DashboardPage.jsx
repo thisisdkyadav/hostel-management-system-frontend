@@ -14,7 +14,7 @@ import PageHeader from "../../components/common/PageHeader"
 import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 // hzero is the only component source now; the @/components/ui shim is gone
 // that re-exports it verbatim.
-import { Badge, Checkbox, EmptyState, ErrorState, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
+import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatPill, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
 import { formatCurrency } from "../../components/dining/diningBillingHelpers"
 import { ADMIN_DASHBOARD_SECTIONS } from "../../constants/navigationConfig"
 import "./DashboardPage.css"
@@ -539,6 +539,12 @@ const TodoRows = ({ approvalCounts, approvalTotal }) => (
   )
 )
 
+const TodoFeed = ({ approvalsLoading, approvalCounts, approvalTotal }) => (
+  <Feed title="To-do" icon={ClipboardList} accent="success" count={approvalTotal} loading={approvalsLoading}>
+    <TodoRows approvalCounts={approvalCounts} approvalTotal={approvalTotal} />
+  </Feed>
+)
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Action centre — four operational feeds sharing one surface
 // ─────────────────────────────────────────────────────────────────────────────
@@ -755,17 +761,17 @@ const DiningBillingFeed = ({ loading, dining }) => {
   )
 }
 
-const ActionCenter = ({ loading, error, dashboardData }) => {
-  const leaves = dashboardData?.leaves?.data?.leaves || []
+const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvalsLoading }) => {
   const events = dashboardData?.events || []
   const complaints = dashboardData?.complaints || {}
   const complaintsOpen = (complaints.pending || 0) + (complaints.inProgress || 0) + (complaints.forwardedToIDO || 0)
+  const approvalTotal = todoTotal(approvalCounts)
 
   if (error) return <ErrorState message={error} />
 
   return (
     <Panel.Columns>
-      <UpcomingJoinsFeed loading={loading} leaves={leaves} />
+      <TodoFeed approvalsLoading={approvalsLoading} approvalCounts={approvalCounts} approvalTotal={approvalTotal} />
       <ActivityFeed loading={loading} dashboardData={dashboardData} />
       <ComplaintsFeed loading={loading} complaints={complaints} complaintsOpen={complaintsOpen} />
       <UpcomingEventsFeed loading={loading} events={events} />
@@ -846,11 +852,13 @@ const LowestRatedFeed = ({ loading, dashboardData }) => {
 const InsightCenter = ({ loading, error, dashboardData, showInProcess = true }) => {
   const inProcess = dashboardData?.inProcess || []
   const inProcessTotal = inProcess.reduce((sum, item) => sum + (item.count || 0), 0)
+  const leaves = dashboardData?.leaves?.data?.leaves || []
 
   if (error) return <ErrorState message={error} />
 
   return (
     <Panel.Columns>
+      <UpcomingJoinsFeed loading={loading} leaves={leaves} />
       <TopResolversFeed loading={loading} dashboardData={dashboardData} />
       <LowestRatedFeed loading={loading} dashboardData={dashboardData} />
       {showInProcess && <InProcessFeed loading={loading} inProcess={inProcess} inProcessTotal={inProcessTotal} />}
@@ -858,7 +866,7 @@ const InsightCenter = ({ loading, error, dashboardData, showInProcess = true }) 
   )
 }
 
-const SectionLower = ({ section, loading, error, dashboardData }) => {
+const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, approvalsLoading }) => {
   const leaves = dashboardData?.leaves?.data?.leaves || []
   const events = dashboardData?.events || []
   const complaints = dashboardData?.complaints || {}
@@ -1181,6 +1189,8 @@ const SectionLower = ({ section, loading, error, dashboardData }) => {
           loading={loading}
           error={error}
           dashboardData={dashboardData}
+          approvalCounts={approvalCounts}
+          approvalsLoading={approvalsLoading}
         />
       </Panel>
       <Panel padded={false}>
@@ -1286,7 +1296,6 @@ const DashboardPage = ({ section = "home" }) => {
   }, [user?._id, user?.subRole])
 
   const hostels = dashboardData?.hostels || []
-  const approvalTotal = todoTotal(approvalCounts)
 
   return (
     <Page>
@@ -1296,7 +1305,7 @@ const DashboardPage = ({ section = "home" }) => {
 
       <Page.Body padded={false} className="admin-dashboard p-[var(--spacing-5)]">
         <VStack gap={5}>
-          <div className="admin-dashboard-top">
+          <Grid cols={{ base: 1, lg: 2 }} gap={5}>
             <Panel
               title="Student distribution"
               height="lg"
@@ -1334,35 +1343,15 @@ const DashboardPage = ({ section = "home" }) => {
                 )}
               </Panel.Body>
             </Panel>
-
-            <Panel
-              title="To-do"
-              icon={ClipboardList}
-              accent="success"
-              height="lg"
-              count={approvalsLoading ? undefined : approvalTotal}
-            >
-              <Panel.Body>
-                {approvalsLoading ? (
-                  <VStack gap="var(--spacing-2)">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <Skeleton key={i} variant="rounded" height="var(--spacing-10)" />
-                    ))}
-                  </VStack>
-                ) : (
-                  <VStack gap="var(--spacing-2)" className="admin-dashboard-feed">
-                    <TodoRows approvalCounts={approvalCounts} approvalTotal={approvalTotal} />
-                  </VStack>
-                )}
-              </Panel.Body>
-            </Panel>
-          </div>
+          </Grid>
 
           <SectionLower
             section={section}
             loading={loading}
             error={error}
             dashboardData={dashboardData}
+            approvalCounts={approvalCounts}
+            approvalsLoading={approvalsLoading}
           />
         </VStack>
       </Page.Body>
