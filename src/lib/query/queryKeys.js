@@ -55,6 +55,7 @@ export const queryKeys = {
     all: ["admin-dashboard"],
     data: () => [...queryKeys.adminDashboard.all, "data"],
     approvals: (userId, subRole) => [...queryKeys.adminDashboard.all, "approvals", userId ?? null, subRole ?? null],
+    awardWindow: () => [...queryKeys.adminDashboard.all, "award-window"],
   },
   studentDashboard: {
     all: ["student-dashboard"],

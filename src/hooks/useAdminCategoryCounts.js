@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../contexts/AuthProvider"
 import { dashboardApi } from "../service"
 import gymkhanaEventsApi from "../service/modules/gymkhanaEvents.api"
+import overallBestPerformerApi from "../service/modules/overallBestPerformer.api"
 import porApi from "../service/modules/por.api"
 import { queryKeys } from "../lib/query/queryKeys"
 
@@ -28,6 +29,24 @@ const isPendingForUser = (item, userId) => {
   if (!single && multi.length === 0) return true
   if (single && String(single) === userId) return true
   return userId ? multi.includes(userId) : false
+}
+
+export const pickLatestAwardOccurrence = (occurrences) => {
+  if (!Array.isArray(occurrences) || occurrences.length === 0) return null
+  return [...occurrences].sort((left, right) => {
+    const yearDelta = (Number(right.awardYear) || 0) - (Number(left.awardYear) || 0)
+    if (yearDelta) return yearDelta
+    return new Date(right.applyEndAt || 0).getTime() - new Date(left.applyEndAt || 0).getTime()
+  })[0]
+}
+
+export const isBestPerformerCountVisible = (applyEndAt, now = new Date()) => {
+  if (!applyEndAt) return false
+  const applyEnd = new Date(applyEndAt)
+  if (Number.isNaN(applyEnd.getTime())) return false
+  const visibleUntil = new Date(applyEnd)
+  visibleUntil.setMonth(visibleUntil.getMonth() + 1)
+  return now < visibleUntil
 }
 
 const addCount = (itemCounts, categoryCounts, category, path, value) => {
@@ -76,7 +95,7 @@ export const fetchAdminApprovalCounts = async (user) => {
   return next
 }
 
-export const deriveAdminSidebarCounts = (dashboardData, approvals = EMPTY_APPROVALS) => {
+export const deriveAdminSidebarCounts = (dashboardData, approvals = EMPTY_APPROVALS, awardApplyEndAt = null) => {
   if (!dashboardData || typeof dashboardData !== "object") return EMPTY_COUNTS
 
   const complaints = dashboardData.complaints || {}
@@ -97,32 +116,23 @@ export const deriveAdminSidebarCounts = (dashboardData, approvals = EMPTY_APPROV
   addCount(itemCounts, categoryCounts, "student-affairs", "/admin/mega-events", approvals.megaProposals)
   addCount(itemCounts, categoryCounts, "student-affairs", "/admin/por", approvals.por)
   addCount(itemCounts, categoryCounts, "student-affairs", "/admin/elections", ops.elections?.nominationsPending)
-  addCount(itemCounts, categoryCounts, "student-affairs", "/admin/overall-best-performer", ops.awards?.submitted)
-
-  addCount(itemCounts, categoryCounts, "staff", "/admin/wardens",
-    asCount(ops.coverage?.withoutWarden) + asCount(ops.coverage?.unassignedWardens))
-  addCount(itemCounts, categoryCounts, "staff", "/admin/associate-wardens",
-    asCount(ops.coverage?.withoutAssociate) + asCount(ops.coverage?.unassignedAssociates))
-  addCount(itemCounts, categoryCounts, "staff", "/admin/hostel-supervisors",
-    asCount(ops.coverage?.withoutSupervisor) + asCount(ops.coverage?.unassignedSupervisors))
-  addCount(itemCounts, categoryCounts, "staff", "/admin/security",
-    asCount(ops.coverage?.withoutSecurity) + asCount(ops.coverage?.withoutGate))
-  addCount(itemCounts, categoryCounts, "staff", "/admin/face-scanners", ops.scanners?.inactive)
+  if (isBestPerformerCountVisible(awardApplyEndAt)) {
+    addCount(itemCounts, categoryCounts, "student-affairs", "/admin/overall-best-performer", ops.awards?.submitted)
+  }
 
   addCount(itemCounts, categoryCounts, "dining", "/admin/dining-rebates", dining.rebates?.pending)
 
   const allAttention = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0)
   if (categoryCounts.hostels) itemCounts["/admin/dashboard/hostels"] = categoryCounts.hostels
   if (categoryCounts["student-affairs"]) itemCounts["/admin/dashboard/student-affairs"] = categoryCounts["student-affairs"]
-  if (categoryCounts.staff) itemCounts["/admin/dashboard/staff"] = categoryCounts.staff
   if (categoryCounts.dining) itemCounts["/admin/dashboard/dining"] = categoryCounts.dining
   if (allAttention) itemCounts["/admin"] = allAttention
 
   return { categoryCounts, itemCounts }
 }
 
-export const deriveAdminCategoryCounts = (dashboardData, approvals) =>
-  deriveAdminSidebarCounts(dashboardData, approvals).categoryCounts
+export const deriveAdminCategoryCounts = (dashboardData, approvals, awardApplyEndAt) =>
+  deriveAdminSidebarCounts(dashboardData, approvals, awardApplyEndAt).categoryCounts
 
 const useAdminCategoryCounts = (enabled) => {
   const { user } = useAuth()
@@ -146,7 +156,19 @@ const useAdminCategoryCounts = (enabled) => {
     refetchInterval: 120_000,
   })
 
-  return deriveAdminSidebarCounts(dashboardQuery.data, approvalQuery.data)
+  const awardQuery = useQuery({
+    queryKey: queryKeys.adminDashboard.awardWindow(),
+    queryFn: async () => {
+      const response = await overallBestPerformerApi.getOccurrenceSelector()
+      const data = unwrap(response)
+      return pickLatestAwardOccurrence(data.occurrences)?.applyEndAt || null
+    },
+    enabled,
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  })
+
+  return deriveAdminSidebarCounts(dashboardQuery.data, approvalQuery.data, awardQuery.data)
 }
 
 export default useAdminCategoryCounts
