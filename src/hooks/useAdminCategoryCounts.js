@@ -122,12 +122,6 @@ export const deriveAdminSidebarCounts = (dashboardData, approvals = EMPTY_APPROV
 
   addCount(itemCounts, categoryCounts, "dining", "/admin/dining-rebates", dining.rebates?.pending)
 
-  const allAttention = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0)
-  if (categoryCounts.hostels) itemCounts["/admin/dashboard/hostels"] = categoryCounts.hostels
-  if (categoryCounts["student-affairs"]) itemCounts["/admin/dashboard/student-affairs"] = categoryCounts["student-affairs"]
-  if (categoryCounts.dining) itemCounts["/admin/dashboard/dining"] = categoryCounts.dining
-  if (allAttention) itemCounts["/admin"] = allAttention
-
   return { categoryCounts, itemCounts }
 }
 
