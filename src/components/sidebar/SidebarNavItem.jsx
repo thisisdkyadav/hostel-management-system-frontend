@@ -1,19 +1,29 @@
-import { useState } from "react"
 import { Pin } from "lucide-react"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "./NewBadge"
 import CategoryCountBadge from "./CategoryCountBadge"
+import { SIDEBAR_MOTION_CURVE } from "./motion"
 
 /**
  * Single sidebar navigation row.
  * The row itself is a real <button> (keyboard focusable); the pin control is a
  * sibling button overlaid on the right so we never nest interactive elements.
  *
- * `accent` (a CSS var string like "var(--color-cat-hostels)") opts the row into
- * category-colored selected/hover states; without it the row uses app primary.
+ * `accent` opts the row into category-colored selected/hover states.
+ * `sharedFill` means a sliding pill behind the list owns the selected fill.
  */
-const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = false, label, onNavigate, onTogglePin, accent }) => {
-  const [hovered, setHovered] = useState(false)
+const SidebarNavItem = ({
+  item,
+  isActive,
+  showPinControl,
+  isPinned,
+  pinLocked = false,
+  label,
+  onNavigate,
+  onTogglePin,
+  accent,
+  sharedFill = false,
+}) => {
   const useAccent = !!accent
   const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
   const displayName = label || item.name
@@ -24,7 +34,6 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
       : "Pin to Home"
 
   const isNew = isNavItemNew(item)
-  // Every row keeps a 2px border so a New outline does not shift layout.
   const newBorderColor = isNew
     ? (isActive
       ? "color-mix(in srgb, var(--color-success) 80%, white)"
@@ -33,19 +42,39 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
   const newWash = isNew && !isActive
     ? "color-mix(in srgb, var(--color-success) 10%, transparent)"
     : undefined
-  let buttonStyle = { borderColor: newBorderColor, backgroundColor: newWash }
+
+  let buttonStyle = {
+    "--nav-accent": accent || "var(--color-primary)",
+    borderColor: newBorderColor,
+    backgroundColor: newWash,
+  }
   let iconColor
-  if (useAccent) {
+
+  if (sharedFill) {
+    buttonStyle = {
+      ...buttonStyle,
+      backgroundColor: isActive ? "transparent" : (newWash || "transparent"),
+      color: isActive ? "var(--color-on-accent)" : "var(--color-text-body)",
+      transition: isActive
+        ? `color 200ms 150ms ${SIDEBAR_MOTION_CURVE}`
+        : `color 140ms ${SIDEBAR_MOTION_CURVE}, background-color 200ms ${SIDEBAR_MOTION_CURVE}`,
+    }
+    iconColor = "inherit"
+  } else if (useAccent) {
     if (isActive) {
-      // --color-on-accent, not --color-white: this reads against the button's own
-      // accent fill, so it must not follow the theme.
-      buttonStyle = { backgroundColor: accent, color: "var(--color-on-accent)", boxShadow: `0 2px 8px ${tint(30)}`, borderColor: newBorderColor }
+      buttonStyle = {
+        ...buttonStyle,
+        backgroundColor: accent,
+        color: "var(--color-on-accent)",
+        boxShadow: `0 2px 8px ${tint(30)}`,
+      }
       iconColor = "var(--color-on-accent)"
-    } else if (hovered) {
-      buttonStyle = { backgroundColor: tint(20), color: accent, borderColor: newBorderColor }
-      iconColor = accent
     } else {
-      buttonStyle = { backgroundColor: newWash || "transparent", color: "var(--color-text-body)", borderColor: newBorderColor }
+      buttonStyle = {
+        ...buttonStyle,
+        backgroundColor: newWash || "transparent",
+        color: "var(--color-text-body)",
+      }
       iconColor = isNew ? "var(--color-success)" : "var(--color-text-muted)"
     }
   }
@@ -55,26 +84,32 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
       <button
         type="button"
         onClick={() => onNavigate(item)}
-        onMouseEnter={useAccent ? () => setHovered(true) : undefined}
-        onMouseLeave={useAccent ? () => setHovered(false) : undefined}
         aria-current={isActive ? "page" : undefined}
+        data-sidebar-active={isActive ? "true" : undefined}
         style={buttonStyle}
         className={`
-          w-full flex items-center px-3 py-2.5 text-left rounded-xl border-2 border-transparent cursor-pointer transition duration-200 active:scale-[0.99]
+          w-full flex items-center px-3 py-2.5 text-left rounded-xl border-2 border-transparent cursor-pointer
           outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
-          ${useAccent
-            ? ""
-            : isActive
-              ? "bg-[var(--color-primary)] text-white shadow-md shadow-[var(--color-primary)]/20"
-              : "text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"}
+          motion-reduce:transition-none
+          ${sharedFill
+            ? isActive
+              ? ""
+              : "hover:text-[var(--nav-accent)] hover:bg-[color-mix(in_srgb,var(--nav-accent)_16%,transparent)]"
+            : useAccent
+              ? isActive
+                ? ""
+                : "hover:text-[var(--nav-accent)] hover:bg-[color-mix(in_srgb,var(--nav-accent)_16%,transparent)]"
+              : isActive
+                ? "bg-[var(--color-primary)] text-white shadow-md shadow-[var(--color-primary)]/20"
+                : "text-[var(--color-text-body)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"}
         `}
       >
         <span className="relative flex justify-center items-center shrink-0 mr-3">
           <item.icon
             size={18}
-            strokeWidth={1.9}
-            style={useAccent ? { color: iconColor } : undefined}
-            className={`transition-colors duration-200 ${useAccent ? "" : isActive ? "text-white" : isNew ? "text-[var(--color-success)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`}
+            strokeWidth={isActive ? 2.05 : 1.9}
+            style={iconColor ? { color: iconColor } : undefined}
+            className={`motion-reduce:transition-none ${sharedFill || useAccent ? "" : isActive ? "text-white" : isNew ? "text-[var(--color-success)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`}
           />
 
           {item?.badge > 0 && (
@@ -83,7 +118,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
         </span>
 
         <span className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
-          <span className={`text-sm truncate transition-colors duration-200 ${isActive ? "font-semibold" : "font-medium"}`}>
+          <span className={`text-sm truncate ${isActive ? "font-semibold" : "font-medium"}`}>
             {displayName}
           </span>
           {isNew && <NewTag />}
@@ -100,8 +135,8 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
             onTogglePin(item)
           }}
           className={`
-            absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center
-            transition-all duration-200 outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
+            absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center z-10
+            transition-all duration-200 motion-reduce:transition-none outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
             ${pinLocked ? "cursor-default" : ""}
             ${isPinned
               ? isActive
@@ -109,8 +144,7 @@ const SidebarNavItem = ({ item, isActive, showPinControl, isPinned, pinLocked = 
                 : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
               : isActive
                 ? "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
-                : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"
-            }
+                : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
           `}
           title={pinTitle}
           aria-label={pinLocked ? `${displayName} is always pinned` : isPinned ? `Unpin ${displayName} from Home` : `Pin ${displayName} to Home`}

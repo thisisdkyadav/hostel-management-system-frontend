@@ -8,6 +8,7 @@ import {
 import { getCategoryTint } from "./categoryStyles"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import CategoryCountBadge from "./CategoryCountBadge"
+import { SIDEBAR_MOTION } from "./motion"
 
 const panelColorFor = (categoryId) => {
   const tint = getCategoryTint(categoryId)
@@ -23,7 +24,6 @@ const panelColorFor = (categoryId) => {
 const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 48 70 A 12 12 0 0 0 36 58 L 12 58 A 12 12 0 0 1 0 46 Z"
 
 const TAB_SIZE = "calc(2.5rem + var(--radius-xl) / 2)"
-const TAB_EASE = "450ms cubic-bezier(0.22, 1, 0.36, 1)"
 
 const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
   const uid = useId().replace(/:/g, "")
@@ -37,7 +37,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
         top: "var(--radius-xl)",
         height: TAB_SIZE,
         transform: `translateY(calc(${index} * ${TAB_SIZE}))`,
-        transition: `transform ${TAB_EASE}`,
+        transition: `transform ${SIDEBAR_MOTION}`,
       }}
     >
       <svg
@@ -61,13 +61,13 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
           d={TAB_PATH}
           fill={panelColor}
           className="motion-reduce:!transition-none"
-          style={{ transition: `fill ${TAB_EASE}` }}
+          style={{ transition: `fill ${SIDEBAR_MOTION}` }}
         />
         <path
           d={TAB_PATH}
           fill={`url(#${fadeId})`}
           className="motion-reduce:!transition-none"
-          style={{ opacity: fadeTo ? 1 : 0, transition: `opacity ${TAB_EASE}` }}
+          style={{ opacity: fadeTo ? 1 : 0, transition: `opacity ${SIDEBAR_MOTION}` }}
         />
       </svg>
     </div>

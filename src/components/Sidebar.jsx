@@ -8,7 +8,7 @@ import useLayoutPreference from "../hooks/useLayoutPreference"
 import useColorScheme from "../hooks/useColorScheme"
 import useAdminCategoryCounts from "../hooks/useAdminCategoryCounts"
 import HostelSwitcher from "./sidebar/HostelSwitcher"
-import SidebarNavItem from "./sidebar/SidebarNavItem"
+import SidebarTabList from "./sidebar/SidebarTabList"
 import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
 import CategoryBar from "./sidebar/CategoryBar"
@@ -366,37 +366,25 @@ const Sidebar = ({ navItems }) => {
   const headerTitleColor = activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)"
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
-    <div
-      className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3 motion-reduce:!transition-none"
-      style={{
-        backgroundColor: tintBg || undefined,
-        transition: "background-color 450ms cubic-bezier(0.22, 1, 0.36, 1)",
-      }}
-    >
-      <ul className="space-y-1">
-        {items.map((item) => (
-          <SidebarNavItem
-            key={navItemKey(item)}
-            item={item}
-            isActive={isNavItemActive(item, location.pathname) || active === navItemKey(item)}
-            showPinControl={withPins && !!item.path}
-            isPinned={!!item.path && (item.alwaysPinned || pinnedAdminPaths.includes(item.path))}
-            pinLocked={Boolean(item.alwaysPinned)}
-            label={item.pinnedName && activeAdminCategory === ADMIN_NAV_CATEGORY_HOME ? item.pinnedName : undefined}
-            accent={accent}
-            onNavigate={handleNavigation}
-            onTogglePin={togglePinnedItem}
-          />
-        ))}
-      </ul>
-      {withPins && items.length === 0 && (
-        <div className="mt-3 px-4 py-3 rounded-xl text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-light)]">
-          {activeAdminCategory === ADMIN_NAV_CATEGORY_DINING
-            ? "Coming Soon"
-            : "No tabs here yet. Pin tabs from other categories to show them in Home."}
-        </div>
-      )}
-    </div>
+    <SidebarTabList
+      items={items}
+      isItemActive={(item) => isNavItemActive(item, location.pathname) || active === navItemKey(item)}
+      showPinControl={withPins}
+      isPinned={(item) => !!item.path && (item.alwaysPinned || pinnedAdminPaths.includes(item.path))}
+      pinLocked={(item) => Boolean(item.alwaysPinned)}
+      labelFor={(item) => (item.pinnedName && activeAdminCategory === ADMIN_NAV_CATEGORY_HOME ? item.pinnedName : undefined)}
+      accent={accent}
+      tintBg={tintBg}
+      listKey={withPins ? activeAdminCategory : "plain"}
+      activeSignal={`${location.pathname}:${active}`}
+      emptyMessage={
+        activeAdminCategory === ADMIN_NAV_CATEGORY_DINING
+          ? "Coming Soon"
+          : "No tabs here yet. Pin tabs from other categories to show them in Home."
+      }
+      onNavigate={handleNavigation}
+      onTogglePin={togglePinnedItem}
+    />
   )
 
   const renderNavBody = () => {
