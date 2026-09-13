@@ -27,7 +27,7 @@ const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 50 0 L
 
 const TAB_SIZE = "calc(2.5rem + var(--radius-xl) / 2)"
 
-const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
+const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
   const uid = useId().replace(/:/g, "")
   const fadeId = `rail-tab-fade-${uid}`
 
@@ -45,7 +45,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
       <svg
         viewBox="0 0 50 70"
         preserveAspectRatio="none"
-        className="absolute"
+        className={`absolute ${elevated ? "v5-rail-active-join" : ""}`}
         style={{
           left: "var(--spacing-2)",
           width: "calc(100% - var(--spacing-2) + 2 * var(--spacing-px))",
@@ -199,6 +199,7 @@ const IconRail = ({
       <nav aria-label="Categories" className="relative z-10 flex-1 min-h-0 w-full flex flex-col items-center py-[var(--radius-xl)]">
         <RailActiveJoin
           index={Math.max(0, ADMIN_NAV_CATEGORIES.findIndex((category) => category.id === activeCategory))}
+          elevated={Boolean(stagePanelColor)}
           panelColor={
             stagePanelColor
               || (activeCategory === ADMIN_NAV_CATEGORY_HOME
