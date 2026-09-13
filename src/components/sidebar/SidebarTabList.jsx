@@ -18,8 +18,8 @@ const joinPath = ({ buttonWidth, edgeWidth, totalWidth, height, radius }) => {
   const R = radius
   const y0 = R
   const y1 = R + height
-  // The quarter-circle finishes at E, the actual panel edge, with a vertical
-  // tangent. W is only solid overdraw beyond that tangent to hide raster seams.
+  // The quarter-circle finishes at E with a vertical tangent. W is only solid
+  // overdraw beyond that tangent to hide raster seams.
   const Bs = E - R
   return [
     `M 0 ${y0 + R}`,
@@ -59,16 +59,19 @@ const measureActive = (wrap) => {
   const wrapRect = wrap.getBoundingClientRect()
   const activeRect = active.getBoundingClientRect()
   const radius = readTokenPx(wrap, "--radius-xl", 12)
+  const edgeOverlap = readTokenPx(wrap, "--spacing-px", 1)
   const bleed = readTokenPx(wrap, "--spacing-px", 1) * 2
   const top = activeRect.top - wrapRect.top
   const left = activeRect.left - wrapRect.left
   const height = activeRect.height
   const width = activeRect.width
-  const edgeWidth = Math.max(width, wrapRect.right - activeRect.left)
+  // Put the vertical tangent one CSS pixel past the measured panel edge. At
+  // fractional browser zoom levels the panel edge can land between device
+  // pixels, so finishing exactly on it can make the curve look slightly short.
+  const edgeWidth = Math.max(width, wrapRect.right - activeRect.left + edgeOverlap)
   if (width <= 0 || height <= 0 || edgeWidth <= 0) return null
-  // Finish the curve at the true edge, then carry solid fill two CSS pixels
-  // farther right. This preserves the 90-degree tangent while preventing a
-  // one-pixel flash of the dark panel during movement.
+  // Carry solid fill two CSS pixels farther right than the tangent to prevent
+  // a one-pixel flash of the dark panel during movement.
   const totalWidth = edgeWidth + bleed
   return {
     top,
