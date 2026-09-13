@@ -184,13 +184,13 @@ const SidebarTabList = ({
         key={listKey}
         ref={wrapRef}
         className="relative flex-1 min-h-0 w-full m-0 p-0 sidebar-list-in"
-        style={{ clipPath: `inset(0 -${pill?.bleed || 2}px 0 0)` }}
       >
         {pill && (
           <svg
             aria-hidden
             viewBox={`0 0 ${pill.totalWidth} ${svgHeight}`}
             preserveAspectRatio="none"
+            shapeRendering="geometricPrecision"
             className="absolute z-0 pointer-events-none motion-reduce:!transition-none"
             style={{
               top: 0,
