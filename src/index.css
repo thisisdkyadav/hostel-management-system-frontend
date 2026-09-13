@@ -13,10 +13,82 @@
 :root {
   --color-cat-home: #1360AB;
   --color-cat-hostels: #1360AB;
+  --color-v5-ink: var(--v5-ink-pin);
+  /* Pinned page/ink contributions for the selected-fill mixing effect. The
+     v5 panel forces data-theme="dark" on its subtree while the join nose
+     and the page canvas live outside it, so reading var(--color-bg-page)
+     directly resolves to two different colors and the tab-to-page curve
+     splits at the seam. These pins keep pill, nose, and page identical. */
+  --v5-page-pin: #F0F4F9;
+  --v5-ink-pin: #0A1628;
+  /* Light-theme section hues, pinned so the dark panel theme cannot remap them.
+     Full primary per section: brand blue, amber, sky, emerald. */
+  --v5-panel-home: #1360AB;
+  --v5-panel-hostels: #1360AB;
+  --v5-panel-student-affairs: #D97706;
+  --v5-panel-staff: #0284C7;
+  --v5-panel-dining: #059669;
+  --v5-panel-fill: var(--v5-panel-home);
+  --v5-selected-fill: color-mix(in srgb, #1360AB 8%, var(--v5-page-pin));
 }
 [data-theme="dark"] {
   --color-cat-home: #5B9FE8;
   --color-cat-hostels: #5B9FE8;
+}
+
+/* User dark mode: keep the pinned mixing colors on the dark page so the
+   pill inside the forced-dark panel still matches the nose + canvas. */
+html[data-admin-sidebar="v5"][data-theme="dark"] {
+  --v5-page-pin: #0D0D0D;
+  --v5-ink-pin: #F5F5F5;
+}
+
+html[data-admin-sidebar="v5"][data-admin-category="home"] {
+  --v5-panel-fill: var(--v5-panel-home);
+  --v5-selected-fill: color-mix(in srgb, #1360AB 8%, var(--v5-page-pin));
+}
+html[data-admin-sidebar="v5"][data-admin-category="hostels"] {
+  --v5-panel-fill: var(--v5-panel-hostels);
+  --v5-selected-fill: color-mix(in srgb, #1360AB 8%, var(--v5-page-pin));
+}
+html[data-admin-sidebar="v5"][data-admin-category="student-affairs"] {
+  --v5-panel-fill: var(--v5-panel-student-affairs);
+  --v5-selected-fill: color-mix(in srgb, #D97706 8%, var(--v5-page-pin));
+}
+html[data-admin-sidebar="v5"][data-admin-category="staff"] {
+  --v5-panel-fill: var(--v5-panel-staff);
+  --v5-selected-fill: color-mix(in srgb, #0284C7 8%, var(--v5-page-pin));
+}
+html[data-admin-sidebar="v5"][data-admin-category="dining"] {
+  --v5-panel-fill: var(--v5-panel-dining);
+  --v5-selected-fill: color-mix(in srgb, #059669 8%, var(--v5-page-pin));
+}
+
+html[data-admin-sidebar="v5"] .layout-content {
+  background-color: var(--v5-selected-fill);
+  transition: background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v5-panel {
+  --color-text-body: var(--color-on-accent);
+  --color-text-primary: var(--color-on-accent);
+  --color-text-heading: var(--color-on-accent);
+  --color-text-secondary: color-mix(in srgb, var(--color-on-accent) 92%, transparent);
+  --color-text-muted: color-mix(in srgb, var(--color-on-accent) 82%, transparent);
+}
+
+html[data-admin-sidebar="v5"] .v5-sidebar-edge {
+  overflow: visible;
+}
+
+/* V5 tab-to-page join: the pill-to-nose seam must be pixel-continuous, so
+   the list scroller takes no scrollbar layout space in v5. Scrolling via
+   wheel, touch, and keyboard still works. */
+html[data-admin-sidebar="v5"] .sidebar-scrollbar {
+  scrollbar-width: none;
+}
+html[data-admin-sidebar="v5"] .sidebar-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @import "./styles/homepage.css";

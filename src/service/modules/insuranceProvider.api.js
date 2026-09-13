@@ -47,6 +47,15 @@ export const insuranceProviderApi = {
   updateBulkStudentInsurance: (data) => {
     return apiClient.post(`${ROUTE}/insurance-providers/bulk-student-update`, data)
   },
+
+  /**
+   * Attach one insurance PDF to the student named in the file.
+   * Field name must be `document`. Filename format: `{id}_{rollNumber}.pdf`.
+   * @param {FormData} fileData
+   */
+  uploadStudentInsurancePdf: (fileData) => {
+    return apiClient.upload(`${ROUTE}/insurance-providers/student-document`, fileData)
+  },
 }
 
 export default insuranceProviderApi

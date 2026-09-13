@@ -5,11 +5,13 @@
  * v2 — "Categories": bottom category bar + pinned Home (default)
  * v3 — "Workspace": quick jump + pinned + recents + collapsible categories
  * v4 — "Icon rail": v2 categories/pins, with the bar + profile in a left rail
+ * v5 — "Stage": v4 rail, dark chrome; selected tab is light and matches the page
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
 export const SIDEBAR_MODE_WORKSPACE = "v3"
 export const SIDEBAR_MODE_RAIL = "v4"
+export const SIDEBAR_MODE_STAGE = "v5"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -44,6 +46,12 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V4",
     name: "Icon rail",
     description: "Category icons on the left; profile and theme sit with them",
+  },
+  {
+    id: SIDEBAR_MODE_STAGE,
+    label: "V5",
+    name: "Stage",
+    description: "Testing: light rail, dark section panel, light selected tab into the page",
   },
 ]
 

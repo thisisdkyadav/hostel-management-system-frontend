@@ -41,7 +41,7 @@ const buildSlots = (students, capacity) => {
   return slots
 }
 
-const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved }) => {
+const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onViewStudent, onSaved }) => {
   const { toast } = useToast()
   const hover = useHoverPanel()
   const isActive = isRoomActive(room.status)
@@ -79,6 +79,12 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
       View room
     </Button>
   )
+
+  const openStudent = (student) => {
+    if (!(student?.id || student?._id)) return
+    onViewStudent?.(student)
+    hover?.closeAll?.()
+  }
 
   const confirm = async () => {
     if (!dirty || !hostelId) return
@@ -177,12 +183,28 @@ const RoomPeekPanel = ({ room, hostelId, canEdit = false, onViewMore, onSaved })
                 key={studentKey(slot.student)}
                 placement="outside"
                 align="start"
-                content={<StudentPeekPanel student={slot.student} />}
+                openDelay={0}
+                content={
+                  <StudentPeekPanel
+                    student={slot.student}
+                    roomNumber={room.roomNumber}
+                    onOpen={openStudent}
+                  />
+                }
               >
                 <div
                   className="floor-map__person"
                   data-risk={slot.risk ? "true" : "false"}
                   title={slot.student.name}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudent(slot.student)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault()
+                      openStudent(slot.student)
+                    }
+                  }}
                 >
                   <span className="floor-map__person-avatar">
                     <Avatar

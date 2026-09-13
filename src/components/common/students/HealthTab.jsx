@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Button, Field, Grid, HStack, Input, Label, Select, Spinner, Surface, Table, Text } from "hzero"
-import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
+import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings, FileText } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
+import PdfViewerModal from "../pdf/PdfViewerModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 const HealthTab = ({ userId }) => {
   const { user } = useAuth()
@@ -19,6 +20,7 @@ const HealthTab = ({ userId }) => {
   const [selectedClaim, setSelectedClaim] = useState(null)
   const [isNewClaim, setIsNewClaim] = useState(false)
   const [editHealthData, setEditHealthData] = useState(false)
+  const [showInsurancePdf, setShowInsurancePdf] = useState(false)
   const [healthFormData, setHealthFormData] = useState({
     bloodGroup: "",
     insuranceProvider: "",
@@ -78,15 +80,10 @@ const HealthTab = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       fetchInsuranceProviders()
-    }
-  }, [userId])
-
-  useEffect(() => {
-    if (userId && insuranceProviders.length > 0) {
       fetchHealthData()
       fetchInsuranceClaims()
     }
-  }, [userId, insuranceProviders])
+  }, [userId])
 
   // Update selected provider when form data changes
   useEffect(() => {
@@ -280,6 +277,16 @@ const HealthTab = ({ userId }) => {
                 <Text size="sm" color="muted">Insurance Number</Text>
                 <Text weight="medium" color="body">{healthData?.insurance?.insuranceNumber || "Not specified"}</Text>
               </div>
+              <div>
+                <Text size="sm" color="muted">Insurance Document</Text>
+                {healthData?.insurance?.documentRef ? (
+                  <Button onClick={() => setShowInsurancePdf(true)} variant="secondary" size="sm" style={{ marginTop: "var(--spacing-1)" }}>
+                    <FileText size={14} /> {healthData.insurance.documentName || "View PDF"}
+                  </Button>
+                ) : (
+                  <Text weight="medium" color="body">Not uploaded</Text>
+                )}
+              </div>
 
               {selectedProvider && (
                 <>
@@ -359,6 +366,15 @@ const HealthTab = ({ userId }) => {
       </div>
 
       {showClaimModal && <InsuranceClaimModal claim={selectedClaim} onClose={() => setShowClaimModal(false)} onSave={handleSaveClaim} onDelete={handleDeleteClaim} insuranceProviders={insuranceProviders} isNew={isNewClaim} />}
+      <PdfViewerModal
+        isOpen={showInsurancePdf}
+        onClose={() => setShowInsurancePdf(false)}
+        documentUrl={healthData?.insurance?.documentRef}
+        title="Insurance Document"
+        subtitle={healthData?.insurance?.documentName || "Student insurance PDF"}
+        downloadFileName={healthData?.insurance?.documentName || "insurance.pdf"}
+        fileTypeHint="pdf"
+      />
     </Surface>
   )
 }

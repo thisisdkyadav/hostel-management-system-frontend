@@ -23,6 +23,7 @@ const SidebarNavItem = ({
   onTogglePin,
   accent,
   sharedFill = false,
+  lightFill = false,
 }) => {
   const useAccent = !!accent
   const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
@@ -51,10 +52,11 @@ const SidebarNavItem = ({
   let iconColor
 
   if (sharedFill) {
+    const activeInk = lightFill ? "var(--color-v5-ink)" : "var(--color-on-accent)"
     buttonStyle = {
       ...buttonStyle,
       backgroundColor: isActive ? "transparent" : (newWash || "transparent"),
-      color: isActive ? "var(--color-on-accent)" : "var(--color-text-body)",
+      color: isActive ? activeInk : "var(--color-text-body)",
       transition: isActive
         ? `color 200ms 150ms ${SIDEBAR_MOTION_CURVE}`
         : `color 140ms ${SIDEBAR_MOTION_CURVE}, background-color 200ms ${SIDEBAR_MOTION_CURVE}`,
@@ -94,7 +96,9 @@ const SidebarNavItem = ({
           ${sharedFill
             ? isActive
               ? ""
-              : "hover:text-[var(--nav-accent)] hover:bg-[color-mix(in_srgb,var(--nav-accent)_16%,transparent)]"
+              : lightFill
+                ? "hover:bg-[color-mix(in_srgb,var(--color-on-accent)_12%,transparent)]"
+                : "hover:text-[var(--nav-accent)] hover:bg-[color-mix(in_srgb,var(--nav-accent)_16%,transparent)]"
             : useAccent
               ? isActive
                 ? ""
@@ -140,10 +144,14 @@ const SidebarNavItem = ({
             ${pinLocked ? "cursor-default" : ""}
             ${isPinned
               ? isActive
-                ? "opacity-100 text-white bg-white/20"
+                ? lightFill
+                  ? "opacity-100 text-[var(--color-v5-ink)] bg-black/8"
+                  : "opacity-100 text-white bg-white/20"
                 : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
               : isActive
-                ? "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
+                ? lightFill
+                  ? "opacity-0 group-hover:opacity-100 text-[var(--color-v5-ink)]/70 hover:bg-black/8"
+                  : "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
                 : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
           `}
           title={pinTitle}

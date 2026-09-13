@@ -6,3 +6,6 @@ export const getCategoryTint = (categoryId) => {
   if (!category || categoryId === "home") return "transparent"
   return `color-mix(in srgb, var(${category.colorVar}) 14%, var(--color-bg-primary))`
 }
+
+/** V5 panel fill. Same token on the rail join and the list so they stay one surface. */
+export const getCategoryDarkTint = () => "var(--v5-panel-fill)"

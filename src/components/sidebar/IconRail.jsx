@@ -19,9 +19,11 @@ const panelColorFor = (categoryId) => {
  * Selected tile opens into the main panel as one tinted surface.
  * Tile height sits halfway between the original 2.5rem chip and the
  * fully-flush 2.5rem + radius-xl strip. viewBox adds radius-xl shoulders
- * and the 8px gutter.
+ * and the 8px gutter. The quarter-circle reaches x=48 with a vertical tangent;
+ * the final two units are solid overdraw into the panel so antialiasing cannot
+ * reveal the rail background at the join.
  */
-const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 48 70 A 12 12 0 0 0 36 58 L 12 58 A 12 12 0 0 1 0 46 Z"
+const TAB_PATH = "M 0 24 A 12 12 0 0 1 12 12 L 36 12 A 12 12 0 0 0 48 0 L 50 0 L 50 70 L 48 70 A 12 12 0 0 0 36 58 L 12 58 A 12 12 0 0 1 0 46 Z"
 
 const TAB_SIZE = "calc(2.5rem + var(--radius-xl) / 2)"
 
@@ -41,12 +43,12 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
       }}
     >
       <svg
-        viewBox="0 0 48 70"
+        viewBox="0 0 50 70"
         preserveAspectRatio="none"
         className="absolute"
         style={{
           left: "var(--spacing-2)",
-          width: "calc(100% - var(--spacing-2))",
+          width: "calc(100% - var(--spacing-2) + 2 * var(--spacing-px))",
           top: "calc(-1 * var(--radius-xl))",
           height: "calc(100% + 2 * var(--radius-xl))",
         }}
@@ -74,7 +76,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index }) => {
   )
 }
 
-const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, children }) => {
+const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, onFill = false, children }) => {
   const isCategory = !!accent
   const accessibleLabel = [
     label,
@@ -102,7 +104,10 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       `}
       style={
         isCategory
-          ? { color: accent, height: TAB_SIZE }
+          ? {
+              color: pressed && onFill ? "var(--color-on-accent)" : accent,
+              height: TAB_SIZE,
+            }
           : pressed
             ? { backgroundColor: "var(--color-bg-hover)", color: "var(--color-text-primary)" }
             : undefined
@@ -171,10 +176,13 @@ const IconRail = ({
   onNavigate,
   newCategoryIds,
   categoryCounts,
+  stagePanelColor,
 }) => {
   return (
     <div className="relative w-14 shrink-0 h-full flex flex-col items-center">
-      <span aria-hidden className="absolute inset-y-0 right-0 w-px bg-[var(--color-border-primary)] pointer-events-none" />
+      {!stagePanelColor && (
+        <span aria-hidden className="absolute inset-y-0 right-0 w-px bg-[var(--color-border-primary)] pointer-events-none" />
+      )}
 
       <div className="relative z-10 h-16 shrink-0 flex items-center justify-center">
         <button
@@ -192,11 +200,12 @@ const IconRail = ({
         <RailActiveJoin
           index={Math.max(0, ADMIN_NAV_CATEGORIES.findIndex((category) => category.id === activeCategory))}
           panelColor={
-            activeCategory === ADMIN_NAV_CATEGORY_HOME
-              ? getCategoryTint(ADMIN_NAV_CATEGORY_HOSTELS)
-              : panelColorFor(activeCategory)
+            stagePanelColor
+              || (activeCategory === ADMIN_NAV_CATEGORY_HOME
+                ? getCategoryTint(ADMIN_NAV_CATEGORY_HOSTELS)
+                : panelColorFor(activeCategory))
           }
-          fadeTo={activeCategory === ADMIN_NAV_CATEGORY_HOME ? "var(--color-bg-primary)" : undefined}
+          fadeTo={!stagePanelColor && activeCategory === ADMIN_NAV_CATEGORY_HOME ? "var(--color-bg-primary)" : undefined}
         />
         {ADMIN_NAV_CATEGORIES.map((category) => {
           const isActiveCategory = activeCategory === category.id
@@ -207,6 +216,7 @@ const IconRail = ({
               label={category.name}
               pressed={isActiveCategory}
               accent={accent}
+              onFill={Boolean(stagePanelColor)}
               hasNew={Boolean(newCategoryIds?.has(category.id))}
               count={categoryCounts?.[category.id] || 0}
               onClick={() => onCategoryChange(category.id)}

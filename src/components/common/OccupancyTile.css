@@ -183,7 +183,8 @@
 
 .occ-tile--split .occ-tile__faces {
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .occ-tile--split > .hover-panel {

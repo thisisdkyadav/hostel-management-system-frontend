@@ -13,7 +13,7 @@ import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
 import CategoryBar from "./sidebar/CategoryBar"
 import IconRail from "./sidebar/IconRail"
-import { getCategoryTint } from "./sidebar/categoryStyles"
+import { getCategoryDarkTint, getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
 import useRecentPaths from "./sidebar/useRecentPaths"
@@ -22,6 +22,7 @@ import {
   SIDEBAR_MODE_CATEGORIES,
   SIDEBAR_MODE_WORKSPACE,
   SIDEBAR_MODE_RAIL,
+  SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_STORAGE_KEY,
   isValidSidebarMode,
   isV4ForceActive,
@@ -135,7 +136,8 @@ const Sidebar = ({ navItems }) => {
     dbMode: user?.sidebarMode,
     storedMode: readLocalSidebarMode(),
   })
-  const isRailMode = isAdminNav && sidebarMode === SIDEBAR_MODE_RAIL
+  const isRailMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE)
+  const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode)
 
   const mainNavItems = useMemo(
@@ -168,15 +170,24 @@ const Sidebar = ({ navItems }) => {
     .map((item) => item.path)
     .join("|")
 
-  // Set data-admin-category on <html> so non-sidebar surfaces can tint by category (V2 / V4)
+  // Category + V5 stage flags on <html> so the page canvas can match the selected tab.
   useEffect(() => {
+    const root = document.documentElement
     if (isCategorizedMode) {
-      document.documentElement.setAttribute("data-admin-category", activeAdminCategory)
+      root.setAttribute("data-admin-category", activeAdminCategory)
     } else {
-      document.documentElement.removeAttribute("data-admin-category")
+      root.removeAttribute("data-admin-category")
     }
-    return () => document.documentElement.removeAttribute("data-admin-category")
-  }, [activeAdminCategory, isCategorizedMode])
+    if (isV5Mode) {
+      root.setAttribute("data-admin-sidebar", "v5")
+    } else {
+      root.removeAttribute("data-admin-sidebar")
+    }
+    return () => {
+      root.removeAttribute("data-admin-category")
+      root.removeAttribute("data-admin-sidebar")
+    }
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -358,12 +369,17 @@ const Sidebar = ({ navItems }) => {
     navigate(firstItem.path)
   }
 
-  const headerTint = isCategorizedMode ? getCategoryTint(activeAdminCategory) : undefined
+  const headerTint = isV5Mode
+    ? getCategoryDarkTint(activeAdminCategory)
+    : (isCategorizedMode ? getCategoryTint(activeAdminCategory) : undefined)
+  const v5PanelFill = isV5Mode ? getCategoryDarkTint(activeAdminCategory) : undefined
   const activeCategoryConfig = isCategorizedMode
     ? ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
     : null
   const headerTitle = activeCategoryConfig?.name || "SMS"
-  const headerTitleColor = activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)"
+  const headerTitleColor = isV5Mode
+    ? "var(--color-on-accent)"
+    : (activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)")
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
     <SidebarTabList
@@ -375,6 +391,7 @@ const Sidebar = ({ navItems }) => {
       labelFor={(item) => (item.pinnedName && activeAdminCategory === ADMIN_NAV_CATEGORY_HOME ? item.pinnedName : undefined)}
       accent={accent}
       tintBg={tintBg}
+      lightFill={isV5Mode}
       listKey={withPins ? activeAdminCategory : "plain"}
       activeSignal={`${location.pathname}:${active}`}
       emptyMessage={
@@ -429,7 +446,7 @@ const Sidebar = ({ navItems }) => {
     return renderPlainList(categoryItems, {
       withPins: true,
       accent: categoryAccent,
-      tintBg: getCategoryTint(activeAdminCategory),
+      tintBg: isV5Mode ? undefined : getCategoryTint(activeAdminCategory),
     })
   }
 
@@ -446,8 +463,11 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <Surface shadow="sm" className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
-        <div className={`flex h-full ${isRailMode ? "flex-row" : "flex-col"}`}>
+      <div className={`fixed md:relative z-30 ${isV5Mode ? "v5-sidebar-edge overflow-visible" : ""} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      {/* V5 has no edge stroke; its selected SVG is measured and painted inside
+          the full-width list wrapper. */}
+      <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
+        <div className={`flex h-full ${isV5Mode ? "overflow-visible" : ""} ${isRailMode ? "flex-row" : "flex-col"}`}>
           {isRailMode && (
             <IconRail
               activeCategory={activeAdminCategory}
@@ -462,10 +482,18 @@ const Sidebar = ({ navItems }) => {
               onNavigate={handleNavigation}
               newCategoryIds={newCategoryIds}
               categoryCounts={categoryCounts}
+              stagePanelColor={v5PanelFill}
             />
           )}
 
-          <div className="flex flex-col h-full min-w-0 flex-1">
+          <div
+            data-theme={isV5Mode ? "dark" : undefined}
+            className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
+            style={{
+              backgroundColor: v5PanelFill,
+              transition: "background-color 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
             {/* Title, mode switcher, and (in V1–V3) the theme toggle */}
             <Surface bg={headerTint} className={`relative z-20 border-b border-[var(--color-border-primary)] transition-[background-color,color] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
               <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
@@ -528,6 +556,7 @@ const Sidebar = ({ navItems }) => {
           </div>
         </div>
       </Surface>
+      </div>
     </>
   )
 }

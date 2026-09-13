@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { Button, Grid, Heading, SearchInput, Spinner, Surface, VStack } from "hzero"
+import { Button, Grid, Heading, HStack, SearchInput, Spinner, Surface, VStack } from "hzero"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
+import BulkInsurancePdfUploadModal from "./BulkInsurancePdfUploadModal"
 import { insuranceProviderApi } from "../../../service"
-import { Building2, Plus } from "lucide-react"
+import { Building2, FileUp, Plus } from "lucide-react"
 
 const filterInsuranceProviders = (providers, filterStatus, searchTerm) => {
   return providers
@@ -30,6 +31,7 @@ const InsuranceProviders = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showPdfUploadModal, setShowPdfUploadModal] = useState(false)
   const [providers, setProviders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -56,12 +58,18 @@ const InsuranceProviders = () => {
 
   return (
     <div>
-      <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
+      <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)', gap: 'var(--spacing-3)', flexWrap: 'wrap' }}>
         <Heading as="h2" size="xl" weight="semibold" color="body">Insurance Providers</Heading>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <Plus size="1em" />
-          Add Provider
-        </Button>
+        <HStack gap={2}>
+          <Button onClick={() => setShowPdfUploadModal(true)} variant="secondary" size="md">
+            <FileUp size="1em" />
+            Upload Insurance PDFs
+          </Button>
+          <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+            <Plus size="1em" />
+            Add Provider
+          </Button>
+        </HStack>
       </header>
 
       <VStack gap={4} align="start" justify="between" style={{ marginTop: 'var(--spacing-6)' }} className="sm:flex-row sm:items-center sm:space-y-0">
@@ -88,6 +96,9 @@ const InsuranceProviders = () => {
       )}
 
       <AddInsuranceProviderModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchInsuranceProviders} />
+      {showPdfUploadModal && (
+        <BulkInsurancePdfUploadModal isOpen={showPdfUploadModal} onClose={() => setShowPdfUploadModal(false)} />
+      )}
     </div>
   )
 }

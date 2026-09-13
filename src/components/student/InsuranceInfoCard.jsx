@@ -1,7 +1,8 @@
-import React from "react"
-import { CalendarDays, Hash, ShieldPlus } from "lucide-react"
+import { useState } from "react"
+import { CalendarDays, FileText, Hash, ShieldPlus } from "lucide-react"
 import { formatDateTime } from "../../utils/dateUtils"
-import { Card, Heading, HStack, Surface, Text, VStack } from "hzero"
+import { Button, Card, Heading, HStack, Surface, Text, VStack } from "hzero"
+import PdfViewerModal from "../common/pdf/PdfViewerModal"
 
 const getValidity = (endDate) => {
   if (!endDate) return null
@@ -15,6 +16,8 @@ const getValidity = (endDate) => {
 }
 
 const InsuranceInfoCard = ({ insurance }) => {
+  const [showPdf, setShowPdf] = useState(false)
+
   if (!insurance) return null
 
   const provider = insurance.provider
@@ -51,7 +54,26 @@ const InsuranceInfoCard = ({ insurance }) => {
             <span>{periodLabel}</span>
           </HStack>
         )}
+        {insurance.documentRef && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowPdf(true)}
+            style={{ marginTop: "var(--spacing-2)", alignSelf: "flex-start" }}
+          >
+            <FileText size={14} /> View insurance PDF
+          </Button>
+        )}
       </VStack>
+      <PdfViewerModal
+        isOpen={showPdf}
+        onClose={() => setShowPdf(false)}
+        documentUrl={insurance.documentRef}
+        title="Insurance Document"
+        subtitle={insurance.documentName || "Student insurance PDF"}
+        downloadFileName={insurance.documentName || "insurance.pdf"}
+        fileTypeHint="pdf"
+      />
     </Card>
   )
 }

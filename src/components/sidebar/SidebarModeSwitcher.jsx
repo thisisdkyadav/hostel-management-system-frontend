@@ -3,7 +3,7 @@ import { Check, ChevronDown } from "lucide-react"
 import { SIDEBAR_MODE_OPTIONS } from "./sidebarModes"
 
 /**
- * Compact mode pill in the sidebar header. Shows the current mode (V1–V4)
+ * Compact mode pill in the sidebar header. Shows the current mode (V1–V5)
  * and opens a small menu describing each layout.
  */
 const SidebarModeSwitcher = ({ mode, onChange }) => {

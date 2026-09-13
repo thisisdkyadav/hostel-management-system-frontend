@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { FiMail, FiPhone, FiHome, FiBook, FiBookmark, FiUser, FiHash, FiMapPin, FiEdit2, FiCalendar } from "react-icons/fi"
+import { FiMail, FiPhone, FiHome, FiBook, FiBookmark, FiUser, FiHash, FiMapPin, FiEdit2, FiCalendar, FiFileText } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
 import { Button, EmptyState, ErrorState, LoadingState } from "hzero"
+import PdfViewerModal from "../common/pdf/PdfViewerModal"
 import { studentApi, studentProfileApi } from "../../service"
 import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
@@ -58,6 +59,7 @@ const StudentProfile = ({ user }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [showInsurancePdf, setShowInsurancePdf] = useState(false)
   const currentUserId = user?._id || user?.id
 
   const fetchStudentData = async () => {
@@ -177,11 +179,31 @@ const StudentProfile = ({ user }) => {
             <ProfileInfo label="Insurance Number" value={healthDetails?.insurance?.insuranceNumber} icon={FiUser} />
             <ProfileInfo label="Insurance Provider" value={insuranceProvider?.name} icon={FiUser} />
             {insurancePeriodLabel && <ProfileInfo label="Insurance Period" value={insurancePeriodLabel} icon={FiUser} />}
+            {healthDetails?.insurance?.documentRef && (
+              <ProfileInfo
+                label="Insurance Document"
+                value={
+                  <Button variant="secondary" size="sm" onClick={() => setShowInsurancePdf(true)}>
+                    <FiFileText /> View PDF
+                  </Button>
+                }
+                icon={FiFileText}
+              />
+            )}
           </ProfileCard>
         </div>
       </div>
 
       {isEditModalOpen && <StudentEditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onUpdate={handleProfileUpdate} userId={studentData.userId || currentUserId} currentData={studentData} />}
+      <PdfViewerModal
+        isOpen={showInsurancePdf}
+        onClose={() => setShowInsurancePdf(false)}
+        documentUrl={healthDetails?.insurance?.documentRef}
+        title="Insurance Document"
+        subtitle={healthDetails?.insurance?.documentName || "Student insurance PDF"}
+        downloadFileName={healthDetails?.insurance?.documentName || "insurance.pdf"}
+        fileTypeHint="pdf"
+      />
     </div>
   )
 }
