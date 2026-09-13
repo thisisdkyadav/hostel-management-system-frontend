@@ -59,13 +59,13 @@ const measureActive = (wrap) => {
   const wrapRect = wrap.getBoundingClientRect()
   const activeRect = active.getBoundingClientRect()
   const radius = readTokenPx(wrap, "--radius-xl", 12)
-  const edgeOverlap = readTokenPx(wrap, "--spacing-px", 1)
+  const edgeOverlap = 0.5
   const bleed = readTokenPx(wrap, "--spacing-px", 1) * 2
   const top = activeRect.top - wrapRect.top
   const left = activeRect.left - wrapRect.left
   const height = activeRect.height
   const width = activeRect.width
-  // Put the vertical tangent one CSS pixel past the measured panel edge. At
+  // Put the vertical tangent half a CSS pixel past the measured panel edge. At
   // fractional browser zoom levels the panel edge can land between device
   // pixels, so finishing exactly on it can make the curve look slightly short.
   const edgeWidth = Math.max(width, wrapRect.right - activeRect.left + edgeOverlap)
