@@ -77,14 +77,17 @@ html[data-admin-sidebar="v5"] .layout-content {
   --color-text-muted: color-mix(in srgb, var(--color-on-accent) 82%, transparent);
   position: relative;
   z-index: 1;
-  box-shadow: -8px 0 18px -12px rgb(10 22 40 / 62%);
+  box-shadow: -10px 0 22px -12px rgb(10 22 40 / 78%);
 }
 
 /* The panel shadow sits behind this join, so the selected rail icon and the
    panel read as one raised surface with a single curved outer silhouette. */
 .v5-rail-active-join {
   overflow: visible;
-  filter: drop-shadow(-5px 0 5px rgb(10 22 40 / 28%));
+}
+
+.v5-rail-active-shadow {
+  filter: drop-shadow(-7px 0 7px rgb(10 22 40 / 42%));
 }
 
 html[data-admin-sidebar="v5"] .v5-sidebar-edge {

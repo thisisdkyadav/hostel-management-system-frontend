@@ -30,6 +30,7 @@ const TAB_SIZE = "calc(2.5rem + var(--radius-xl) / 2)"
 const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
   const uid = useId().replace(/:/g, "")
   const fadeId = `rail-tab-fade-${uid}`
+  const shadowClipId = `rail-tab-shadow-clip-${uid}`
 
   return (
     <div
@@ -58,7 +59,17 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
             <stop offset="82%" stopColor="var(--color-bg-primary)" stopOpacity="0" />
             <stop offset="100%" stopColor="var(--color-bg-primary)" stopOpacity="1" />
           </linearGradient>
+          {elevated && (
+            <clipPath id={shadowClipId} clipPathUnits="userSpaceOnUse">
+              <rect x="-32" y="-24" width="80" height="118" />
+            </clipPath>
+          )}
         </defs>
+        {elevated && (
+          <g clipPath={`url(#${shadowClipId})`}>
+            <path d={TAB_PATH} fill={panelColor} className="v5-rail-active-shadow" />
+          </g>
+        )}
         <path
           d={TAB_PATH}
           fill={panelColor}
