@@ -24,8 +24,10 @@ import {
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_STORAGE_KEY,
+  enforceSidebarStableVersion,
+  isSidebarModeAtLeastStable,
+  isSidebarStableVersionActive,
   isValidSidebarMode,
-  isV4ForceActive,
   readLocalSidebarMode,
   resolveSidebarMode,
 } from "./sidebar/sidebarModes"
@@ -118,7 +120,7 @@ const Sidebar = ({ navItems }) => {
 
   const isAdmin = user?.role === "Admin"
   const isRestrictedCsoAdmin = isAdmin && isCsoAdminSubRole(user)
-  // The V1–V4 layouts only apply to the full admin nav; everyone else gets the plain list
+  // Versioned sidebar layouts only apply to the full admin nav; everyone else gets the plain list
   const isAdminNav = isAdmin && !isRestrictedCsoAdmin
   const persistSidebarMode = useCallback((mode) => {
     if (!isValidSidebarMode(mode) || typeof window === "undefined") return
@@ -128,10 +130,11 @@ const Sidebar = ({ navItems }) => {
     })
   }, [])
   const handleSidebarModeChange = useCallback((nextMode) => {
-    setPickedSidebarMode(nextMode)
-    persistSidebarMode(nextMode)
+    const allowedMode = enforceSidebarStableVersion(nextMode)
+    setPickedSidebarMode(allowedMode)
+    persistSidebarMode(allowedMode)
   }, [persistSidebarMode])
-  const v4ForceSavedRef = useRef(false)
+  const stableModeSavedRef = useRef(false)
   const sidebarMode = pickedSidebarMode ?? resolveSidebarMode({
     dbMode: user?.sidebarMode,
     storedMode: readLocalSidebarMode(),
@@ -219,10 +222,10 @@ const Sidebar = ({ navItems }) => {
   }, [isAdminNav, sidebarMode])
 
   useEffect(() => {
-    if (!isAdminNav || !isV4ForceActive() || !user?._id) return
-    if (user.sidebarMode === SIDEBAR_MODE_RAIL || v4ForceSavedRef.current) return
-    v4ForceSavedRef.current = true
-    persistSidebarMode(SIDEBAR_MODE_RAIL)
+    if (!isAdminNav || !isSidebarStableVersionActive() || !user?._id) return
+    if (isSidebarModeAtLeastStable(user.sidebarMode) || stableModeSavedRef.current) return
+    stableModeSavedRef.current = true
+    persistSidebarMode(enforceSidebarStableVersion(user.sidebarMode))
   }, [isAdminNav, persistSidebarMode, user?._id, user?.sidebarMode])
 
   useEffect(() => {

@@ -16,8 +16,13 @@ export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
 
-/** Force V4 on every load through the end of 31 December 2026 (local time). */
-export const V4_FORCE_UNTIL = new Date(2027, 0, 1)
+/**
+ * Temporary rollout floor. Until this local-time cutoff, preferences older
+ * than the stable version are upgraded while that version and newer remain
+ * untouched. Change these two values for future sidebar rollouts.
+ */
+export const SIDEBAR_STABLE_VERSION = 4
+export const SIDEBAR_STABLE_UNTIL = new Date(2027, 0, 1)
 
 /** Pre-mode boolean toggle ("true" meant the old flat nav). Read once for migration. */
 export const LEGACY_SIDEBAR_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
@@ -57,7 +62,23 @@ export const SIDEBAR_MODE_OPTIONS = [
 
 export const isValidSidebarMode = (value) => SIDEBAR_MODE_OPTIONS.some((option) => option.id === value)
 
-export const isV4ForceActive = (now = new Date()) => now < V4_FORCE_UNTIL
+export const sidebarModeVersion = (mode) => {
+  const match = /^v(\d+)$/.exec(mode || "")
+  return match ? Number(match[1]) : null
+}
+
+export const isSidebarStableVersionActive = (now = new Date()) => now < SIDEBAR_STABLE_UNTIL
+
+export const isSidebarModeAtLeastStable = (mode) => {
+  const version = sidebarModeVersion(mode)
+  return isValidSidebarMode(mode) && version !== null && version >= SIDEBAR_STABLE_VERSION
+}
+
+export const enforceSidebarStableVersion = (mode, now = new Date()) => {
+  if (!isSidebarStableVersionActive(now) || isSidebarModeAtLeastStable(mode)) return mode
+  const stableMode = `v${SIDEBAR_STABLE_VERSION}`
+  return isValidSidebarMode(stableMode) ? stableMode : SIDEBAR_DEFAULT_MODE
+}
 
 const readLegacyMigratedMode = () => {
   if (typeof window === "undefined") return null
@@ -78,14 +99,16 @@ export const readLocalSidebarMode = () => {
 
 /**
  * Resolve which layout to show.
- * During the V4 force window, always V4.
- * After that: database preference, then localStorage, then V4 for new users.
+ * During the rollout window, raise older preferences to the stable version.
+ * The stable version and every newer preference pass through unchanged.
  */
-export const resolveSidebarMode = ({ dbMode, storedMode } = {}) => {
-  if (isV4ForceActive()) return SIDEBAR_MODE_RAIL
-  if (isValidSidebarMode(dbMode)) return dbMode
-  if (isValidSidebarMode(storedMode)) return storedMode
-  return SIDEBAR_DEFAULT_MODE
-}
+export const resolveSidebarMode = ({ dbMode, storedMode, now } = {}) => enforceSidebarStableVersion(
+  isValidSidebarMode(dbMode)
+    ? dbMode
+    : isValidSidebarMode(storedMode)
+      ? storedMode
+      : SIDEBAR_DEFAULT_MODE,
+  now
+)
 
 export const readStoredSidebarMode = () => resolveSidebarMode({ storedMode: readLocalSidebarMode() })
