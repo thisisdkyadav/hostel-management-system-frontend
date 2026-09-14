@@ -149,14 +149,14 @@ const SidebarNavItem = ({
                   ? "opacity-100 text-[var(--color-v5-ink)] bg-black/8"
                   : "opacity-100 text-white bg-white/20"
                 : lightFill
-                  ? "opacity-100 text-white/90 bg-white/15 hover:bg-white/20"
+                  ? "opacity-100 text-[var(--v5-panel-ink)] bg-white/15 hover:bg-white/20"
                   : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
               : isActive
                 ? lightFill
                   ? "opacity-0 group-hover:opacity-100 text-[var(--color-v5-ink)]/70 hover:bg-black/8"
                   : "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
                 : lightFill
-                  ? "opacity-0 group-hover:opacity-100 text-white/70 hover:text-white hover:bg-white/15"
+                  ? "opacity-0 group-hover:opacity-100 text-[var(--v5-panel-ink)] hover:bg-white/15"
                   : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
           `}
           title={pinTitle}
