@@ -670,13 +670,6 @@ const MegaEventsPage = () => {
 
   const [submitting, setSubmitting] = useState(false)
 
-  // Bundle fingerprint: reseeding triggers only when the selected occurrence
-  // changes or its server data actually lands/changes. updatedAt bumps on every
-  // server-side mutation (save/approve/reject/revision), so post-mutation
-  // refreshes reseed forms/comments/stages like the old loadProposalAndExpense,
-  // while refetches of unchanged data leave in-progress edits alone.
-  const occurrenceBundleKey = `${selectedOccurrenceId}|${proposalData?._id || "no-proposal"}|${proposalData?.updatedAt || ""}|${expenseData?._id || "no-expense"}|${expenseData?.updatedAt || ""}`
-
   const {
     series,
     isLoadingCore,
@@ -693,6 +686,13 @@ const MegaEventsPage = () => {
     selectedSeriesId,
     selectedOccurrenceId,
   })
+
+  // Bundle fingerprint: reseeding triggers only when the selected occurrence
+  // changes or its server data actually lands/changes. updatedAt bumps on every
+  // server-side mutation (save/approve/reject/revision), so post-mutation
+  // refreshes reseed forms/comments/stages like the old loadProposalAndExpense,
+  // while refetches of unchanged data leave in-progress edits alone.
+  const occurrenceBundleKey = `${selectedOccurrenceId}|${proposalData?._id || "no-proposal"}|${proposalData?.updatedAt || ""}|${expenseData?._id || "no-expense"}|${expenseData?.updatedAt || ""}`
 
   // Series detail arrives unsorted; the page owns its ordering convention.
   const occurrences = useMemo(
