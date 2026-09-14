@@ -712,10 +712,13 @@ const MegaEventsPage = () => {
     )
   }
 
-  // When a series' detail lands, default to its latest occurrence.
+  // When a series' detail lands or its latest occurrence changes, select it.
+  // Including the occurrence ID lets the empty loading state settle first
+  // without preventing the fetched detail from updating the selection.
+  const seriesDetailSelectionKey = `${selectedSeriesId}|${latestOccurrence?._id || "no-occurrence"}`
   const [lastSeriesDetailKey, setLastSeriesDetailKey] = useState(null)
-  if (selectedSeriesId && lastSeriesDetailKey !== selectedSeriesId) {
-    setLastSeriesDetailKey(selectedSeriesId)
+  if (selectedSeriesId && lastSeriesDetailKey !== seriesDetailSelectionKey) {
+    setLastSeriesDetailKey(seriesDetailSelectionKey)
     setSelectedOccurrenceId(latestOccurrence?._id || "")
   }
 

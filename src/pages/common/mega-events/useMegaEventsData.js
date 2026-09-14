@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import { queryKeys } from "@/lib/query"
 
+const EMPTY_LIST = []
+
 /**
  * Data layer for MegaEventsPage. Owns the series list, series detail
  * (raw, unsorted occurrences), and the per-occurrence proposal/expense
@@ -77,12 +79,12 @@ export const useMegaEventsData = ({
   )
 
   return {
-    series: seriesQuery.data || [],
+    series: seriesQuery.data ?? EMPTY_LIST,
     isLoadingCore: canViewEventsCapability && seriesQuery.isLoading,
     coreError: seriesQuery.error || seriesDetailQuery.error || null,
 
     selectedSeries,
-    rawOccurrences: seriesDetailQuery.data?.occurrences || [],
+    rawOccurrences: seriesDetailQuery.data?.occurrences ?? EMPTY_LIST,
     proposalData: occurrenceBundleQuery.data?.proposal ?? null,
     expenseData: occurrenceBundleQuery.data?.expense ?? null,
 
