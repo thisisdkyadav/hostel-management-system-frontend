@@ -57,6 +57,7 @@ const SidebarNavItem = ({
       ...buttonStyle,
       backgroundColor: isActive ? "transparent" : (newWash || "transparent"),
       color: isActive ? activeInk : "var(--color-text-body)",
+      height: lightFill ? "calc(2.5rem + var(--radius-xl) / 2)" : undefined,
       transition: isActive
         ? `color 200ms 150ms ${SIDEBAR_MOTION_CURVE}`
         : `color 140ms ${SIDEBAR_MOTION_CURVE}, background-color 200ms ${SIDEBAR_MOTION_CURVE}`,
@@ -147,12 +148,16 @@ const SidebarNavItem = ({
                 ? lightFill
                   ? "opacity-100 text-[var(--color-v5-ink)] bg-black/8"
                   : "opacity-100 text-white bg-white/20"
-                : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
+                : lightFill
+                  ? "opacity-100 text-white/90 bg-white/15 hover:bg-white/20"
+                  : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
               : isActive
                 ? lightFill
                   ? "opacity-0 group-hover:opacity-100 text-[var(--color-v5-ink)]/70 hover:bg-black/8"
                   : "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
-                : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
+                : lightFill
+                  ? "opacity-0 group-hover:opacity-100 text-white/70 hover:text-white hover:bg-white/15"
+                  : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
           `}
           title={pinTitle}
           aria-label={pinLocked ? `${displayName} is always pinned` : isPinned ? `Unpin ${displayName} from Home` : `Pin ${displayName} to Home`}

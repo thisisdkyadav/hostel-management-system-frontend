@@ -378,7 +378,7 @@ const Sidebar = ({ navItems }) => {
     : null
   const headerTitle = activeCategoryConfig?.name || "SMS"
   const headerTitleColor = isV5Mode
-    ? "var(--color-on-accent)"
+    ? "var(--v5-panel-ink)"
     : (activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)")
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
@@ -463,7 +463,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative z-30 ${isV5Mode ? "v5-sidebar-edge overflow-visible" : ""} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
       {/* V5 has no edge stroke; its selected SVG is measured and painted inside
           the full-width list wrapper. */}
       <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
@@ -495,7 +495,7 @@ const Sidebar = ({ navItems }) => {
             }}
           >
             {/* Title, mode switcher, and (in V1–V3) the theme toggle */}
-            <Surface bg={headerTint} className={`relative z-20 border-b border-[var(--color-border-primary)] transition-[background-color,color] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
+            <Surface bg={headerTint} className={`relative ${isV5Mode ? "border-b-0" : "z-20 border-b border-[var(--color-border-primary)]"} transition-[background-color,color] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isMobile ? "hidden" : ""} h-16 shrink-0`}>
               <div className="h-full flex items-center justify-between px-5 transition-all duration-200">
                 <div className="cursor-pointer flex items-center group min-w-0" onClick={() => navigate("/")}>
                   <Text as="span" color={headerTitleColor} className="font-semibold text-lg tracking-tight truncate transition-[color,opacity] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:opacity-70">

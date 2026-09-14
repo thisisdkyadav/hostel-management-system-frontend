@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react"
+import { useId, useLayoutEffect, useRef, useState } from "react"
 import SidebarNavItem from "./SidebarNavItem"
 import { SIDEBAR_MOTION } from "./motion"
 
@@ -47,6 +47,7 @@ const samePill = (a, b) => {
     && a.edgeWidth === b.edgeWidth
     && a.totalWidth === b.totalWidth
     && a.bleed === b.bleed
+    && a.edgeOverlap === b.edgeOverlap
     && a.path === b.path
     && a.radius === b.radius
   )
@@ -82,6 +83,7 @@ const measureActive = (wrap) => {
     edgeWidth,
     totalWidth,
     bleed,
+    edgeOverlap,
     radius,
     path: joinPath({ buttonWidth: width, edgeWidth, totalWidth, height, radius }),
   }
@@ -103,6 +105,8 @@ const SidebarTabList = ({
   onNavigate,
   onTogglePin,
 }) => {
+  const uid = useId().replace(/:/g, "")
+  const pageShadowClipId = `sidebar-page-shadow-clip-${uid}`
   const wrapRef = useRef(null)
   const [pill, setPill] = useState(null)
   const [animate, setAnimate] = useState(false)
@@ -152,7 +156,7 @@ const SidebarTabList = ({
   const list = (
     <ul
       data-sidebar-list-scroller={lightFill ? "true" : undefined}
-      className={`relative z-10 space-y-1 ${lightFill ? "h-full min-h-0 m-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3" : ""}`}
+      className={`relative space-y-1 ${lightFill ? "z-30 h-full min-h-0 m-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar px-4 py-3" : "z-10"}`}
     >
       {items.map((item) => (
         <SidebarNavItem
@@ -191,7 +195,7 @@ const SidebarTabList = ({
             viewBox={`0 0 ${pill.totalWidth} ${svgHeight}`}
             preserveAspectRatio="none"
             shapeRendering="geometricPrecision"
-            className="absolute z-0 pointer-events-none motion-reduce:!transition-none"
+            className="absolute z-20 pointer-events-none motion-reduce:!transition-none"
             style={{
               top: 0,
               left: pill.left,
@@ -202,6 +206,19 @@ const SidebarTabList = ({
               transition: animate ? `transform ${SIDEBAR_MOTION}, height ${SIDEBAR_MOTION}` : "none",
             }}
           >
+            <defs>
+              <clipPath id={pageShadowClipId} clipPathUnits="userSpaceOnUse">
+                <rect
+                  x="-32"
+                  y="-24"
+                  width={pill.edgeWidth - pill.edgeOverlap + 32}
+                  height={svgHeight + 48}
+                />
+              </clipPath>
+            </defs>
+            <g clipPath={`url(#${pageShadowClipId})`}>
+              <path d={pill.path} fill={fill} className="v5-page-active-shadow" />
+            </g>
             <path
               d={pill.path}
               fill={fill}

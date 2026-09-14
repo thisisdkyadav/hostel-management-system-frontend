@@ -31,7 +31,7 @@ const PageHeader = ({
 
   return (
     <header
-      className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`}
+      className={`page-header sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`}
       style={{ boxShadow: 'var(--shadow-sm)' }}
     >
       <div className="px-3 py-2 sm:px-4 sm:py-0 md:px-6 lg:px-8 sm:h-16 flex items-center">
@@ -68,4 +68,3 @@ PageHeader.propTypes = {
 }
 
 export default PageHeader
-

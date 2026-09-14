@@ -33,7 +33,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
   }, [isMenuOpen])
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative z-50" ref={containerRef}>
       <button
         type="button"
         onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -41,7 +41,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
         aria-label={`Sidebar layout: ${currentOption.name}`}
         aria-haspopup="menu"
         aria-expanded={isMenuOpen}
-        className={`
+        className={`sidebar-mode-button
           h-8 px-2 rounded-lg flex items-center gap-1 text-[10px] font-bold tracking-wider
           transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
           ${isMenuOpen
