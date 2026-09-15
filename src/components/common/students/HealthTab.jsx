@@ -197,6 +197,15 @@ const HealthTab = ({ userId }) => {
             Health Information
           </h3>
           <HStack gap={2}>
+            <Button
+              onClick={() => setShowInsurancePdf(true)}
+              variant="secondary"
+              size="sm"
+              disabled={!healthData?.insurance?.documentRef}
+              title={healthData?.insurance?.documentRef ? "View insurance card" : "No insurance card uploaded"}
+            >
+              <FileText size={14} /> View Insurance Card
+            </Button>
             {user.role === "Admin" && (
               <Link to="/admin/others" style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                 <Settings size={14} style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
@@ -278,14 +287,8 @@ const HealthTab = ({ userId }) => {
                 <Text weight="medium" color="body">{healthData?.insurance?.insuranceNumber || "Not specified"}</Text>
               </div>
               <div>
-                <Text size="sm" color="muted">Insurance Document</Text>
-                {healthData?.insurance?.documentRef ? (
-                  <Button onClick={() => setShowInsurancePdf(true)} variant="secondary" size="sm" style={{ marginTop: "var(--spacing-1)" }}>
-                    <FileText size={14} /> {healthData.insurance.documentName || "View PDF"}
-                  </Button>
-                ) : (
-                  <Text weight="medium" color="body">Not uploaded</Text>
-                )}
+                <Text size="sm" color="muted">Insurance Card</Text>
+                <Text weight="medium" color="body">{healthData?.insurance?.documentRef ? "Uploaded" : "Not uploaded"}</Text>
               </div>
 
               {selectedProvider && (
@@ -370,9 +373,9 @@ const HealthTab = ({ userId }) => {
         isOpen={showInsurancePdf}
         onClose={() => setShowInsurancePdf(false)}
         documentUrl={healthData?.insurance?.documentRef}
-        title="Insurance Document"
-        subtitle={healthData?.insurance?.documentName || "Student insurance PDF"}
-        downloadFileName={healthData?.insurance?.documentName || "insurance.pdf"}
+        title="Insurance Card"
+        subtitle={healthData?.insurance?.documentName || "Student insurance card"}
+        downloadFileName={healthData?.insurance?.documentName || "insurance-card.pdf"}
         fileTypeHint="pdf"
       />
     </Surface>
