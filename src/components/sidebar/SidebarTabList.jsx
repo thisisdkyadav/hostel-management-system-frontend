@@ -147,7 +147,7 @@ const SidebarTabList = ({
     writePill(measureActive(wrapRef.current))
   }, [activeSignal, accent, lightFill])
 
-  const fill = lightFill ? "var(--v5-selected-fill)" : (accent || "var(--color-primary)")
+  const fill = lightFill ? "var(--v5-page-left)" : (accent || "var(--color-primary)")
   const svgHeight = pill ? pill.height + 2 * pill.radius : 0
   const motion = animate
     ? `transform ${SIDEBAR_MOTION}, width ${SIDEBAR_MOTION}, height ${SIDEBAR_MOTION}, background-color ${SIDEBAR_MOTION}`

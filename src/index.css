@@ -20,15 +20,19 @@
      directly resolves to two different colors and the tab-to-page curve
      splits at the seam. These pins keep pill, nose, and page identical. */
   --v5-page-pin: #F0F4F9;
+  /* Gradient endpoints: pure white at the tab/page seam, easing into the
+     5% category tint at the far right. Tab fill reads this token so the
+     selected pill and the page's left edge are identical by construction. */
+  --v5-page-left: #FFFFFF;
   --v5-selected-ink: #1360AB;
-  --v5-panel-ink: #FFFFFF;
-  /* Stage panel hues stay pinned while the panel forces a dark component theme.
-     Blue is softened for the larger sidebar surface. */
-  --v5-panel-home: #2B73B9;
-  --v5-panel-hostels: #2B73B9;
-  --v5-panel-student-affairs: #D97706;
-  --v5-panel-staff: #0284C7;
-  --v5-panel-dining: #059669;
+  --v5-panel-ink: #0A1628;
+  /* Stage panel: light category tints so the three layers read separately —
+     white icon rail | tinted sidebar | near-page canvas. */
+  --v5-panel-home: color-mix(in srgb, #1360AB 22%, white);
+  --v5-panel-hostels: color-mix(in srgb, #1360AB 22%, white);
+  --v5-panel-student-affairs: color-mix(in srgb, #D97706 24%, white);
+  --v5-panel-staff: color-mix(in srgb, #0284C7 22%, white);
+  --v5-panel-dining: color-mix(in srgb, #059669 22%, white);
   --v5-panel-fill: var(--v5-panel-home);
   --v5-selected-fill: color-mix(in srgb, #1360AB 5%, var(--v5-page-pin));
 }
@@ -38,9 +42,17 @@
 }
 
 /* User dark mode: keep the pinned mixing colors on the dark page so the
-   pill inside the forced-dark panel still matches the nose + canvas. */
+   pill inside the panel still matches the nose + canvas. Panel tints go
+   dark-muted so rail (#1A1A1A) | panel | page (#0D0D0D) stay separated. */
 html[data-admin-sidebar="v5"][data-theme="dark"] {
   --v5-page-pin: #0D0D0D;
+  --v5-page-left: #0D0D0D;
+  --v5-panel-ink: #F5F5F5;
+  --v5-panel-home: color-mix(in srgb, #5B9FE8 30%, #1A1A1A);
+  --v5-panel-hostels: color-mix(in srgb, #5B9FE8 30%, #1A1A1A);
+  --v5-panel-student-affairs: color-mix(in srgb, #FBBF24 30%, #1A1A1A);
+  --v5-panel-staff: color-mix(in srgb, #38BDF8 30%, #1A1A1A);
+  --v5-panel-dining: color-mix(in srgb, #34D399 30%, #1A1A1A);
 }
 
 html[data-admin-sidebar="v5"][data-admin-category="home"] {
@@ -84,7 +96,7 @@ html[data-admin-sidebar="v5"][data-theme="dark"][data-admin-category="dining"] {
 }
 
 html[data-admin-sidebar="v5"] .layout-content {
-  background-color: var(--v5-selected-fill);
+  background-color: var(--v5-page-left);
   transition: background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -95,7 +107,13 @@ html[data-admin-sidebar="v5"] .layout-content {
   --color-text-secondary: color-mix(in srgb, var(--v5-panel-ink) 92%, transparent);
   --color-text-muted: color-mix(in srgb, var(--v5-panel-ink) 82%, transparent);
   position: relative;
-  box-shadow: -10px 0 22px -12px rgb(10 22 40 / 78%);
+  /* The panel sits above the icon rail and casts this shadow left onto the
+     rail — same on-top recipe as the page over the sidebar. */
+  box-shadow: -10px 0 14px -6px rgb(10 22 40 / 22%);
+}
+
+html[data-admin-sidebar="v5"][data-theme="dark"] .v5-panel {
+  box-shadow: -10px 0 14px -6px rgb(0 0 0 / 50%);
 }
 
 /* The page sits above the main sidebar. Keeping this shade inside the sidebar
@@ -106,13 +124,22 @@ html[data-admin-sidebar="v5"] .layout-content {
   z-index: 10;
   inset-block: 0;
   right: 0;
-  width: 18px;
+  width: 12px;
   pointer-events: none;
   background: linear-gradient(
     to right,
     transparent,
-    rgb(10 22 40 / 10%) 58%,
-    rgb(10 22 40 / 24%)
+    rgb(10 22 40 / 6%) 60%,
+    rgb(10 22 40 / 12%)
+  );
+}
+
+html[data-admin-sidebar="v5"][data-theme="dark"] .v5-panel::after {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(0 0 0 / 14%) 60%,
+    rgb(0 0 0 / 26%)
   );
 }
 
@@ -130,13 +157,21 @@ html[data-admin-sidebar="v5"] .sidebar-list-in {
 }
 
 .v5-rail-active-shadow {
-  filter: drop-shadow(-7px 0 7px rgb(10 22 40 / 42%));
+  filter: drop-shadow(-3px 0 5px rgb(10 22 40 / 14%));
+}
+
+html[data-admin-sidebar="v5"][data-theme="dark"] .v5-rail-active-shadow {
+  filter: drop-shadow(-3px 0 5px rgb(0 0 0 / 35%));
 }
 
 /* Continue the page elevation around the selected tab. The SVG clips this
    shadow at the panel edge, and its final fill paints above the shadow copy. */
 .v5-page-active-shadow {
-  filter: drop-shadow(-5px 0 6px rgb(10 22 40 / 25%));
+  filter: drop-shadow(-3px 0 5px rgb(10 22 40 / 14%));
+}
+
+html[data-admin-sidebar="v5"][data-theme="dark"] .v5-page-active-shadow {
+  filter: drop-shadow(-3px 0 5px rgb(0 0 0 / 35%));
 }
 
 @media (min-width: 768px) {
@@ -160,8 +195,8 @@ html[data-admin-sidebar="v5"] .sidebar-list-in {
   html[data-admin-sidebar="v5"] .sidebar-mode-button,
   html[data-admin-sidebar="v5"] .sidebar-mode-button:hover {
     background-color: #FFFFFF;
-    color: var(--v5-panel-fill);
-    box-shadow: 0 1px 4px rgb(10 22 40 / 18%);
+    color: var(--v5-selected-ink);
+    box-shadow: 0 1px 2px rgb(10 22 40 / 10%);
   }
 
   html[data-admin-sidebar="v5"] .layout-content::before {
@@ -173,7 +208,11 @@ html[data-admin-sidebar="v5"] .sidebar-list-in {
     bottom: 0;
     left: 0;
     pointer-events: none;
-    background-color: var(--v5-selected-fill);
+    background: linear-gradient(
+      to right,
+      var(--v5-page-left) 0%,
+      var(--v5-selected-fill) 100%
+    );
     transition: background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 

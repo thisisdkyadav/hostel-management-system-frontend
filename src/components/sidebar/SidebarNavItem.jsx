@@ -98,7 +98,7 @@ const SidebarNavItem = ({
             ? isActive
               ? ""
               : lightFill
-                ? "hover:bg-[color-mix(in_srgb,var(--color-on-accent)_12%,transparent)]"
+                ? "hover:bg-[color-mix(in_srgb,var(--v5-panel-ink)_8%,transparent)]"
                 : "hover:text-[var(--nav-accent)] hover:bg-[color-mix(in_srgb,var(--nav-accent)_16%,transparent)]"
             : useAccent
               ? isActive
@@ -146,17 +146,17 @@ const SidebarNavItem = ({
             ${isPinned
               ? isActive
                 ? lightFill
-                  ? "opacity-100 text-[var(--color-v5-ink)] bg-black/8"
+                  ? "opacity-100 text-[var(--color-v5-ink)] bg-[color-mix(in_srgb,var(--v5-panel-ink)_12%,transparent)]"
                   : "opacity-100 text-white bg-white/20"
                 : lightFill
-                  ? "opacity-100 text-[var(--v5-panel-ink)] bg-white/15 hover:bg-white/20"
+                  ? "opacity-100 text-[var(--v5-panel-ink)] bg-[color-mix(in_srgb,var(--v5-panel-ink)_12%,transparent)] hover:bg-[color-mix(in_srgb,var(--v5-panel-ink)_18%,transparent)]"
                   : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
               : isActive
                 ? lightFill
-                  ? "opacity-0 group-hover:opacity-100 text-[var(--color-v5-ink)]/70 hover:bg-black/8"
+                  ? "opacity-0 group-hover:opacity-100 text-[var(--color-v5-ink)]/70 hover:bg-[color-mix(in_srgb,var(--v5-panel-ink)_10%,transparent)]"
                   : "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
                 : lightFill
-                  ? "opacity-0 group-hover:opacity-100 text-[var(--v5-panel-ink)] hover:bg-white/15"
+                  ? "opacity-0 group-hover:opacity-100 text-[var(--v5-panel-ink)]/70 hover:bg-[color-mix(in_srgb,var(--v5-panel-ink)_10%,transparent)]"
                   : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"}
           `}
           title={pinTitle}

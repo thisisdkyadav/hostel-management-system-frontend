@@ -490,7 +490,6 @@ const Sidebar = ({ navItems }) => {
           )}
 
           <div
-            data-theme={isV5Mode ? "dark" : undefined}
             className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
             style={{
               backgroundColor: v5PanelFill,

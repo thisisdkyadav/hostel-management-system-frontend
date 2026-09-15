@@ -116,7 +116,7 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       style={
         isCategory
           ? {
-              color: pressed && onFill ? "var(--v5-panel-ink)" : accent,
+              color: pressed && onFill ? "var(--v5-selected-ink)" : accent,
               height: TAB_SIZE,
             }
           : pressed
