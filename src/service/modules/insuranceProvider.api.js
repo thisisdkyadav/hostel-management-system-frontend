@@ -51,10 +51,28 @@ export const insuranceProviderApi = {
   /**
    * Attach one insurance PDF to the student named in the file.
    * Field name must be `document`. Filename format: `{id}_{rollNumber}.pdf`.
+   *
+   * Tries the admin route first (what production already calls), then the
+   * /upload alias, so a mixed frontend/backend deploy still works.
    * @param {FormData} fileData
    */
-  uploadStudentInsurancePdf: (fileData) => {
-    return apiClient.upload(`${ROUTE}/insurance-providers/student-document`, fileData)
+  uploadStudentInsurancePdf: async (fileData) => {
+    const paths = [
+      `${ROUTE}/insurance-providers/student-document`,
+      "/upload/insurance-pdf",
+    ]
+    let lastError = null
+    for (const path of paths) {
+      try {
+        return await apiClient.upload(path, fileData)
+      } catch (error) {
+        lastError = error
+        const missingRoute =
+          error?.status === 404 || /route\s+.+\s+not found/i.test(String(error?.message || ""))
+        if (!missingRoute) throw error
+      }
+    }
+    throw lastError
   },
 }
 

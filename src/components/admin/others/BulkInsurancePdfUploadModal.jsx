@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react"
-import { Alert, Button, FileInput, Heading, HStack, Modal, Progress, Spinner, Surface, Text, VStack } from "hzero"
+import { Alert, Button, FileInput, Heading, HStack, Modal, Progress, Spinner, Surface, Text, VStack, useToast } from "hzero"
 import { Check, CircleAlert, FileText, Upload, X } from "lucide-react"
 import { insuranceProviderApi } from "../../../service"
 import {
@@ -71,6 +71,7 @@ const buildItems = (fileList) => {
 }
 
 const BulkInsurancePdfUploadModal = ({ isOpen, onClose }) => {
+  const { toast } = useToast()
   const fileInputRef = useRef(null)
   const [items, setItems] = useState([])
   const [isUploading, setIsUploading] = useState(false)
@@ -122,6 +123,9 @@ const BulkInsurancePdfUploadModal = ({ isOpen, onClose }) => {
 
     setIsUploading(true)
     setProcessedCount(0)
+    let firstError = ""
+    let successCount = 0
+    let failCount = 0
 
     for (const current of queue) {
       setItems((prev) => prev.map((item) => (
@@ -132,6 +136,7 @@ const BulkInsurancePdfUploadModal = ({ isOpen, onClose }) => {
         const formData = new FormData()
         formData.append("document", current.file, current.fileName)
         const result = await insuranceProviderApi.uploadStudentInsurancePdf(formData)
+        successCount += 1
         setItems((prev) => prev.map((item) => (
           item.id === current.id
             ? {
@@ -143,12 +148,15 @@ const BulkInsurancePdfUploadModal = ({ isOpen, onClose }) => {
             : item
         )))
       } catch (error) {
+        const message = error.message || "Failed to attach PDF"
+        failCount += 1
+        if (!firstError) firstError = `${current.fileName}: ${message}`
         setItems((prev) => prev.map((item) => (
           item.id === current.id
             ? {
                 ...item,
                 status: STATUS.ERROR,
-                error: error.message || "Failed to attach PDF",
+                error: message,
               }
             : item
         )))
@@ -158,9 +166,23 @@ const BulkInsurancePdfUploadModal = ({ isOpen, onClose }) => {
     }
 
     setIsUploading(false)
+    if (failCount > 0 && successCount === 0) {
+      toast.error(firstError || "Insurance PDF upload failed")
+    } else if (failCount > 0) {
+      toast.error(`${successCount} attached, ${failCount} failed`)
+    } else if (successCount > 0) {
+      toast.success(`${successCount} insurance PDF${successCount === 1 ? "" : "s"} attached`)
+    }
   }
 
-  const handleUpload = () => uploadReadyItems(items)
+  const handleUpload = () => {
+    const queue = items.filter((item) => item.status === STATUS.READY)
+    if (queue.length === 0) {
+      toast.error("No valid PDFs to upload. File names must be {id}_{rollNumber}.pdf")
+      return
+    }
+    uploadReadyItems(items)
+  }
 
   const retryFailed = () => {
     const next = items.map((item) => (
