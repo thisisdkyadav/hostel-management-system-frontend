@@ -181,9 +181,11 @@ export const MetaBar = ({ request, actions, studentFacing = false }) => {
 
 // ---- Charges + guest list (compose inside SectionCard) -------------------
 
-export const ChargesRows = ({ quote = {} }) => {
+export const ChargesRows = ({ quote = {}, additionalPayments = [] }) => {
   const lines = Array.isArray(quote.guestCharges) ? quote.guestCharges : []
-  const hasCharges = lines.length > 0 || Number(quote.total) > 0
+  const extras = Array.isArray(additionalPayments) ? additionalPayments : []
+  const extraTotal = extras.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
+  const hasCharges = lines.length > 0 || Number(quote.total) > 0 || extras.length > 0
   if (!hasCharges) {
     return (
       <Text size="sm" color="muted">
@@ -207,10 +209,19 @@ export const ChargesRows = ({ quote = {} }) => {
             <InfoRow label={`GST (${quote.gstPercentage || 0}%)`} value={money(quote.gstAmount)} />
           </>
         )}
+      {extras.map((p) => (
+        <InfoRow
+          key={p._id || p.label}
+          label={`${p.label || "Additional"} · ${p.status || ""}`}
+          value={money(p.amount)}
+        />
+      ))}
       <Divider spacing="none" />
       <InfoRow label="Subtotal" value={money(quote.subtotal)} />
       <InfoRow label="GST" value={money(quote.gstAmount)} />
-      <InfoRow label="Total" value={money(quote.total)} strong />
+      <InfoRow label="Stay total" value={money(quote.total)} />
+      {extras.length > 0 && <InfoRow label="Extra payments" value={money(extraTotal)} />}
+      <InfoRow label="Total" value={money((Number(quote.total) || 0) + extraTotal)} strong />
     </VStack>
   )
 }

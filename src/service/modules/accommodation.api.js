@@ -55,6 +55,13 @@ export const accommodationApi = {
   decideScheduleChange: (requestId, changeId, body) =>
     apiClient.post(`/accommodation/requests/${requestId}/schedule-change/${changeId}/decision`, body),
 
+  /**
+   * CWO edit stay / guests / charges.
+   * body: { stay?, guests?, roomPreference?, permanentAddress?, applicantPhone?,
+   *         facultyAdvisorEmail?, guestCharges?, extraAmount?, extraLabel?, remarks? }
+   */
+  officeEdit: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/office-edit`, body),
+
   // ---- Chief Warden Office (capacity screening) ----
   /** body: { action: "approve" | "request_modification" | "reject", reason? } */
   capacityDecision: (requestId, body) =>

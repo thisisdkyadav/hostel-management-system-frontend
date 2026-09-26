@@ -553,7 +553,17 @@ const AccommodationRequestDetail = ({ open, request, onClose, onChanged, onResub
             {request.invoice?.number && (
               <SectionCard icon={FileText} title={`Invoice ${request.invoice.number}`} accentColor="var(--color-success)">
                 <VStack gap={3}>
-                  <InfoRow label="Total" value={`${money(payment.amount || request.quote?.total)}${request.invoice.gstApplicable ? " (incl. GST)" : ""}`} strong />
+                  <InfoRow
+                    label="Total"
+                    value={`${money(request.settledPaymentTotal ?? payment.amount ?? request.quote?.total)}${request.invoice.gstApplicable ? " (incl. GST)" : ""}`}
+                    strong
+                  />
+                  {(request.settledPayments || []).filter((p) => p.utr).length > 0 && (
+                    <InfoRow
+                      label="Transaction ID"
+                      value={(request.settledPayments || []).map((p) => p.utr).filter(Boolean).join(" · ")}
+                    />
+                  )}
                   <InfoRow label="Issued" value={fmtDate(request.invoice.generatedAt)} />
                   <HStack gap={2} wrap>
                     <Button size="sm" variant="secondary" onClick={() => setShowInvoice(true)}>

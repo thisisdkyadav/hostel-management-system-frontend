@@ -31,6 +31,7 @@ import {
   describeExtension,
 } from "@/constants/accommodationStatus"
 import { MetaBar, PersonCard, GuestList, ChargesRows, JourneyTimeline, money, fmtDate } from "./AccommodationKit"
+import AccommodationOfficeEdit from "./AccommodationOfficeEdit"
 import StudentDetailModal from "../common/students/StudentDetailModal"
 import PdfViewerModal from "../common/pdf/PdfViewerModal"
 
@@ -71,6 +72,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [roomRows, setRoomRows] = useState([])
   const [guestChoices, setGuestChoices] = useState([])
   const [reassigning, setReassigning] = useState(false)
+  const [showOfficeEdit, setShowOfficeEdit] = useState(false)
 
   const status = request?.status
   const isAdmin = user?.role === "Admin"
@@ -148,6 +150,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const canAdminCancel =
     (isChiefWarden || isCWOffice) &&
     ![ACCOMMODATION_STATUS.INVOICED, ACCOMMODATION_STATUS.REJECTED, ACCOMMODATION_STATUS.CANCELLED].includes(status)
+  const canOfficeEdit =
+    isCWOffice &&
+    ![ACCOMMODATION_STATUS.REJECTED, ACCOMMODATION_STATUS.CANCELLED].includes(status)
   const hasAction =
     showCapacity ||
     showBypassFa ||
@@ -157,7 +162,8 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     showVerify ||
     showAssign ||
     canSettle ||
-    canAdminCancel
+    canAdminCancel ||
+    canOfficeEdit
   const needsHostelPick = showCapacity || showIssuePayment
   const payEditUtrValid = !payEdit.utr || /^\d{12}$/.test(payEdit.utr)
   // After verify only — during verify, UTR/date are edited in the verify panel.
@@ -198,6 +204,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     if (!open || !request) return
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setError("")
+    setShowOfficeEdit(false)
     setReassigning(false)
     setDecision({ action: "approve", reason: "" })
     setCapacity({ action: "approve", reason: "" })
@@ -469,7 +476,25 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
         <Grid cols={{ base: 1, lg: 2 }} gap={4} align="start">
           {/* Left: details */}
           <VStack gap={4}>
-            <DetailSection title="Stay details" icon={BedDouble}>
+            <DetailSection
+              title="Stay details"
+              icon={BedDouble}
+              actions={
+                canOfficeEdit ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      loadAllotment()
+                      setShowOfficeEdit(true)
+                    }}
+                  >
+                    Edit
+                  </Button>
+                ) : undefined
+              }
+            >
               <InfoRow label="Check-in" value={`${fmtDate(request.stay?.fromDate)} · ${request.stay?.checkInTime || "11:00"}`} />
               <InfoRow label="Check-out" value={`${fmtDate(request.stay?.toDate)} · ${request.stay?.checkOutTime || "11:00"}`} />
               <InfoRow label="Nights" value={request.nights || 0} />
@@ -492,7 +517,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
             </DetailSection>
 
             <DetailSection title="Charges" icon={Receipt}>
-              <ChargesRows quote={request.quote} />
+              <ChargesRows quote={request.quote} additionalPayments={request.additionalPayments} />
             </DetailSection>
 
             {(request.scheduleChanges || []).length > 0 && (
@@ -668,7 +693,16 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                 }
               >
                 <InfoRow label="Issued" value={fmtDate(request.invoice.generatedAt)} />
-                <InfoRow label="Total" value={money(payment.amount || request.quote?.total)} />
+                <InfoRow
+                  label="Total"
+                  value={money(request.settledPaymentTotal ?? payment.amount ?? request.quote?.total)}
+                />
+                {(request.settledPayments || []).filter((p) => p.utr).length > 0 && (
+                  <InfoRow
+                    label="Transaction ID"
+                    value={(request.settledPayments || []).map((p) => p.utr).filter(Boolean).join(" · ")}
+                  />
+                )}
                 <Button
                   type="button"
                   size="sm"
@@ -1079,6 +1113,24 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
               </DetailSection>
             )}
 
+            {canOfficeEdit && (
+              <DetailSection title="Edit booking" icon={CalendarRange}>
+                <Text size="sm" color="muted">
+                  Change stay dates, guests, or contact details. If the student has already paid, the original bill stays locked and an extra payment is requested instead.
+                </Text>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    loadAllotment()
+                    setShowOfficeEdit(true)
+                  }}
+                >
+                  Edit request
+                </Button>
+              </DetailSection>
+            )}
+
             {canAdminCancel && (
               <DetailSection title="Cancel this booking" icon={Ban} tone="danger">
                 {!cancelling ? (
@@ -1158,6 +1210,15 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
           onUpdate={() => setShowStudentProfile(false)}
         />
       )}
+
+      <AccommodationOfficeEdit
+        open={showOfficeEdit}
+        request={request}
+        onClose={() => setShowOfficeEdit(false)}
+        onSaved={onChanged}
+        priceOptions={priceOptions}
+        gstOptions={gstOptions}
+      />
 
       <PdfViewerModal
         isOpen={showInvoice}
