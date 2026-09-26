@@ -14,5 +14,6 @@ export const COMPLAINT_CATEGORIES = [
   "Civil",
   "Cleanliness",
   "Internet",
+  "Carpenter",
   "Other",
 ]
