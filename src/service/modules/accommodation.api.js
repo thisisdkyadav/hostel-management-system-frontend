@@ -88,6 +88,21 @@ export const accommodationApi = {
     apiClient.get(`/accommodation/requests/${requestId}/allotment-availability`),
 
   // ---- Accountant ----
+  /**
+   * Excel of invoiced payments whose GST invoice was generated in [from, to].
+   * from/to: YYYY-MM-DD
+   */
+  exportInvoices: async ({ from, to } = {}) => {
+    const params = new URLSearchParams()
+    if (from) params.set("from", from)
+    if (to) params.set("to", to)
+    const response = await apiClient.download(`/accommodation/invoices/export?${params.toString()}`)
+    const blob = await response.blob()
+    const disposition = response.headers.get("content-disposition") || ""
+    const match = /filename="([^"]+)"/.exec(disposition)
+    return { blob, fileName: match?.[1] || `accommodation-invoices-${from || "from"}-to-${to || "to"}.xls` }
+  },
+
   /** body: { action: "verify" | "reject", note?, utr?, paidAt? } — on a portal-submitted payment */
   verifyPayment: (requestId, body) => apiClient.post(`/accommodation/requests/${requestId}/payment-verify`, body),
 

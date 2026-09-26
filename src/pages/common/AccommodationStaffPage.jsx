@@ -1,13 +1,24 @@
 import { useState, useEffect, useCallback, useMemo, createElement } from "react"
-import { DataTable, StatCards, StatusBadge, Tabs, Text } from "hzero"
+import { Button, DataTable, Field, HStack, Input, StatCards, StatusBadge, Tabs, Text, useToast } from "hzero"
 import { FaClipboardList, FaInbox, FaRegCheckCircle, FaDoorOpen } from "react-icons/fa"
 import { MdOutlineWatchLater } from "react-icons/md"
+import { Download } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider"
 import { accommodationApi } from "@/service"
 import { ACCOMMODATION_STATUS, getStatusTone } from "@/constants/accommodationStatus"
 import { money, shortId, ApplicantCell, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationStaffDetail from "../../components/accommodation/AccommodationStaffDetail"
+
+const toYmd = (d) => {
+  const dt = d instanceof Date ? d : new Date(d)
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`
+}
+
+const monthStartYmd = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`
+}
 
 const LANE_PALETTE = [
   { color: "var(--color-warning)", icon: FaInbox },
@@ -74,13 +85,18 @@ const laneMatcher = (lane) => lane.match || ((r) => r.status === lane.status)
 
 const AccommodationStaffPage = () => {
   const { user } = useAuth()
+  const { toast } = useToast()
   const lanes = useMemo(() => lanesFor(user), [user])
   const subtitle = useMemo(() => subtitleFor(user), [user])
+  const isAccountant = user?.role === "Admin" && user?.subRole === "Accountant"
 
   const [allRequests, setAllRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState(ALL)
   const [selected, setSelected] = useState(null)
+  const [exportFrom, setExportFrom] = useState(monthStartYmd)
+  const [exportTo, setExportTo] = useState(() => toYmd(new Date()))
+  const [exporting, setExporting] = useState(false)
 
   const fetchRequests = useCallback(async () => {
     setLoading(true)
@@ -147,6 +163,33 @@ const AccommodationStaffPage = () => {
     setSelected(null)
   }
 
+  const exportInvoices = async () => {
+    if (!exportFrom || !exportTo) {
+      toast.error("Choose a start and end date.")
+      return
+    }
+    if (exportFrom > exportTo) {
+      toast.error("Start date must be on or before the end date.")
+      return
+    }
+    setExporting(true)
+    try {
+      const { blob, fileName } = await accommodationApi.exportInvoices({ from: exportFrom, to: exportTo })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      toast.error(err?.message || "Could not export invoices.")
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const columns = [
     { key: "applicant", header: "Applicant", render: (r) => <ApplicantCell request={r} /> },
     { key: "stay", header: "Stay", render: (r) => <StayCell request={r} /> },
@@ -158,7 +201,21 @@ const AccommodationStaffPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <PageHeader title="Guest Accommodation" subtitle={subtitle} />
+      <PageHeader title="Guest Accommodation" subtitle={subtitle}>
+        {isAccountant && (
+          <HStack gap={2} align="end" wrap>
+            <Field label="From">
+              <Input type="date" value={exportFrom} onChange={(e) => setExportFrom(e.target.value)} />
+            </Field>
+            <Field label="To">
+              <Input type="date" value={exportTo} onChange={(e) => setExportTo(e.target.value)} />
+            </Field>
+            <Button size="sm" onClick={exportInvoices} loading={exporting} disabled={exporting}>
+              <Download size={14} /> Export invoices
+            </Button>
+          </HStack>
+        )}
+      </PageHeader>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
         <div style={{ marginBottom: "var(--spacing-5)" }}>
