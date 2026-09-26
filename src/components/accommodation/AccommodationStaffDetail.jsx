@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { Alert, Badge, Button, DetailSection, EmptyState, Field, Grid, HStack, InfoRow, Input, Modal, RadioGroup, RadioGroupItem, Select, Surface, Text, Textarea, ToggleButtonGroup, VStack } from "hzero"
+import { Alert, Badge, Button, DetailSection, EmptyState, Field, Grid, HStack, InfoRow, Input, Modal, RadioGroup, RadioGroupItem, Select, Surface, Text, Textarea, ToggleButtonGroup, VStack, useConfirm } from "hzero"
 import {
   BadgeCheck,
   Ban,
@@ -73,6 +73,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
   const [guestChoices, setGuestChoices] = useState([])
   const [reassigning, setReassigning] = useState(false)
   const [showOfficeEdit, setShowOfficeEdit] = useState(false)
+  const confirm = useConfirm()
 
   const status = request?.status
   const isAdmin = user?.role === "Admin"
@@ -278,16 +279,77 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     }
   }
 
+  const runConfirmed = (fn, warning) => async () => {
+    const opts = typeof warning === "function" ? warning() : warning
+    const ok = await confirm(opts)
+    if (!ok) return
+    return run(fn)()
+  }
+
+  const paidLocked = [PAYMENT_STATUS.SUBMITTED, PAYMENT_STATUS.VERIFIED].includes(payment.status)
+  const openOfficeEdit = async () => {
+    const ok = await confirm(
+      paidLocked
+        ? {
+            title: "Edit this booking?",
+            message:
+              "The original payment stays locked. Changing dates does not change what was already paid. If you add an extra amount on the next screen, a second payment request is emailed to the student.",
+            confirmText: "Continue",
+          }
+        : paymentStepPassed
+          ? {
+              title: "Edit this booking?",
+              message:
+                "The student has not paid yet. If you change the amount, the current payment request is replaced and they are emailed the new total.",
+              confirmText: "Continue",
+            }
+          : {
+              title: "Edit this booking?",
+              message:
+                "Stay dates and guest details can be changed now. Charges are set when you send the payment request — editing here does not bill the student yet.",
+              confirmText: "Continue",
+            }
+    )
+    if (!ok) return
+    loadAllotment()
+    setShowOfficeEdit(true)
+  }
+
   const submitDecision = run(() => {
     if (decision.action !== "approve" && !decision.reason.trim()) throw new Error("Add a reason for the student.")
     return accommodationApi.decision(requestId, { action: decision.action, reason: decision.reason.trim() })
   })
-  const submitBypassFa = run(() => accommodationApi.bypassFacultyAdvisor(requestId))
-  const submitCapacity = run(() => {
-    if (capacity.action !== "approve" && !capacity.reason.trim()) throw new Error("Add a reason for the student.")
-    return accommodationApi.capacityDecision(requestId, { action: capacity.action, reason: capacity.reason.trim() })
-  })
-  const submitIssuePayment = run(() => {
+  const submitBypassFa = runConfirmed(
+    () => accommodationApi.bypassFacultyAdvisor(requestId),
+    {
+      title: "Skip faculty advisor?",
+      message: "The request goes straight to Chief Warden approval. The faculty advisor is not asked to recommend.",
+      confirmText: "Skip advisor",
+    }
+  )
+  const submitCapacity = runConfirmed(
+    () => {
+      if (capacity.action !== "approve" && !capacity.reason.trim()) throw new Error("Add a reason for the student.")
+      return accommodationApi.capacityDecision(requestId, { action: capacity.action, reason: capacity.reason.trim() })
+    },
+    () =>
+      capacity.action === "approve"
+        ? {
+            title: "Approve capacity?",
+            message: "This sends the request forward for faculty advisor / Chief Warden review. Guest beds are not reserved yet.",
+            confirmText: "Approve",
+          }
+        : {
+            title: capacity.action === "reject" ? "Reject this request?" : "Return to the student?",
+            message:
+              capacity.action === "reject"
+                ? "The request is closed. The student is emailed your reason and cannot continue this booking."
+                : "The student is emailed your reason and must resubmit before the booking can proceed.",
+            confirmText: capacity.action === "reject" ? "Reject" : "Return",
+            isDestructive: capacity.action === "reject",
+          }
+  )
+  const submitIssuePayment = runConfirmed(() => {
     if (guestHostels.some((h) => !h) || guestHostels.length !== (request.guests?.length || 0)) {
       throw new Error("Pick a hostel for every visitor.")
     }
@@ -312,6 +374,24 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
         gstPercentage: Number(c.gstPercentage),
       })),
     })
+  }, () => {
+    const total = guestCharges.reduce((sum, c) => {
+      const price = Number(c.price) || 0
+      const gst = Number(c.gstPercentage) || 0
+      return sum + price + (price * gst) / 100
+    }, 0)
+    return total === 0
+      ? {
+          title: "Allot with no charge?",
+          message:
+            "No payment request is sent. Hostels are allotted now and the supervisor can assign rooms. This cannot be undone except by cancelling the booking.",
+          confirmText: "Allot hostel",
+        }
+      : {
+          title: "Send payment request?",
+          message: `The student will be emailed to pay ${money(total)}. Beds are reserved at the selected hostels. After they pay, this amount cannot be edited — only an extra payment can be added.`,
+          confirmText: "Send payment request",
+        }
   })
 
   const setGuestCharge = (index, patch) => {
@@ -347,24 +427,56 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
       ...(addl ? { additionalPaymentId: addl._id } : {}),
     })
   })
-  const submitScheduleDecision = run(() => {
-    if (!pendingSchedule) throw new Error("No pending date-change request.")
-    if (schedDecision.action === "reject" && !schedDecision.note.trim()) {
-      throw new Error("Add a reason for rejecting.")
+  const submitScheduleDecision = runConfirmed(
+    () => {
+      if (!pendingSchedule) throw new Error("No pending date-change request.")
+      if (schedDecision.action === "reject" && !schedDecision.note.trim()) {
+        throw new Error("Add a reason for rejecting.")
+      }
+      const extra = Number(schedDecision.extraAmount)
+      if (schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== "" && (Number.isNaN(extra) || extra < 0)) {
+        throw new Error("Extra amount is invalid.")
+      }
+      return accommodationApi.decideScheduleChange(requestId, pendingSchedule._id, {
+        action: schedDecision.action,
+        note: schedDecision.note.trim() || undefined,
+        extraAmount:
+          schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== ""
+            ? Number(schedDecision.extraAmount)
+            : 0,
+      })
+    },
+    () => {
+      if (schedDecision.action !== "approve") {
+        return {
+          title: "Reject this date change?",
+          message: "Current stay dates are kept. The student is emailed your reason.",
+          confirmText: "Reject",
+          isDestructive: true,
+        }
+      }
+      const extra = Number(schedDecision.extraAmount) || 0
+      if (extra > 0 && paidLocked) {
+        return {
+          title: "Approve and request extra payment?",
+          message: `Stay dates will change. Because the original bill is already paid, a second payment request of ${money(extra)} is emailed to the student.`,
+          confirmText: "Approve & request payment",
+        }
+      }
+      if (extra > 0) {
+        return {
+          title: "Approve and update the open bill?",
+          message: `Stay dates will change and ${money(extra)} is added to the unpaid bill. The student pays the new total once.`,
+          confirmText: "Approve & update bill",
+        }
+      }
+      return {
+        title: "Approve new stay dates?",
+        message: "The booking dates change. No extra payment is requested.",
+        confirmText: "Approve",
+      }
     }
-    const extra = Number(schedDecision.extraAmount)
-    if (schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== "" && (Number.isNaN(extra) || extra < 0)) {
-      throw new Error("Extra amount is invalid.")
-    }
-    return accommodationApi.decideScheduleChange(requestId, pendingSchedule._id, {
-      action: schedDecision.action,
-      note: schedDecision.note.trim() || undefined,
-      extraAmount:
-        schedDecision.action === "approve" && paymentStepPassed && schedDecision.extraAmount !== ""
-          ? Number(schedDecision.extraAmount)
-          : 0,
-    })
-  })
+  )
   const startEditPayment = (key, source) => {
     setEditingPaymentKey(key)
     setPayEdit({
@@ -396,10 +508,19 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
     })
     setShowSettleForm(false)
   })
-  const submitAdminCancel = run(() => {
-    if (!cancelReason.trim()) throw new Error("Add a reason for cancelling.")
-    return accommodationApi.adminCancel(requestId, { reason: cancelReason.trim() })
-  })
+  const submitAdminCancel = runConfirmed(
+    () => {
+      if (!cancelReason.trim()) throw new Error("Add a reason for cancelling.")
+      return accommodationApi.adminCancel(requestId, { reason: cancelReason.trim() })
+    },
+    {
+      title: "Cancel this booking?",
+      message:
+        "Rooms and reserved beds are released. Any refund is settled outside the portal. The student is emailed your reason.",
+      confirmText: "Cancel booking",
+      isDestructive: true,
+    }
+  )
   const submitAssign = run(() => {
     if (myGuestIndexes.some((i) => !guestChoices[i])) throw new Error("Assign every visitor to a room.")
     const byRoom = {}
@@ -485,10 +606,7 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                     type="button"
                     size="sm"
                     variant="outline"
-                    onClick={() => {
-                      loadAllotment()
-                      setShowOfficeEdit(true)
-                    }}
+                    onClick={openOfficeEdit}
                   >
                     Edit
                   </Button>
@@ -819,6 +937,13 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
                   <RadioGroupItem value="approve" label="Approve" description="Apply the new stay dates." />
                   <RadioGroupItem value="reject" label="Reject" description="Keep the current dates." />
                 </RadioGroup>
+                {schedDecision.action === "approve" && paymentStepPassed && Number(schedDecision.extraAmount) > 0 && (
+                  <Alert type="warning">
+                    {paidLocked
+                      ? `Approving emails a second payment request of ${money(Number(schedDecision.extraAmount))}. The original payment is not changed.`
+                      : `Approving adds ${money(Number(schedDecision.extraAmount))} to the unpaid bill so the student pays once.`}
+                  </Alert>
+                )}
                 {schedDecision.action === "approve" && paymentStepPassed && (
                   <Field
                     label="Extra amount (optional)"
@@ -852,6 +977,9 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
             {showIssuePayment && (
               <DetailSection title="Request payment & allot hostel" icon={CreditCard} tone="primary">
+                <Alert type="warning">
+                  Sending this request emails the student to pay and reserves beds at the chosen hostels. After they pay, this amount cannot be edited — only an extra payment can be added.
+                </Alert>
                 <Text size="sm" color="muted">
                   Set price and GST for each guest (presets from Accommodation settings, type a custom value, or 0 to waive that person). Total is calculated from your selections — not auto-estimated.
                 </Text>
@@ -1115,17 +1243,14 @@ const AccommodationStaffDetail = ({ open, request, user, onClose, onChanged }) =
 
             {canOfficeEdit && (
               <DetailSection title="Edit booking" icon={CalendarRange}>
-                <Text size="sm" color="muted">
-                  Change stay dates, guests, or contact details. If the student has already paid, the original bill stays locked and an extra payment is requested instead.
-                </Text>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => {
-                    loadAllotment()
-                    setShowOfficeEdit(true)
-                  }}
-                >
+                <Alert type="warning">
+                  {paidLocked
+                    ? "The original payment is locked. Adding an extra amount emails a second payment request to the student."
+                    : paymentStepPassed
+                      ? "The student has not paid yet. Changing the amount replaces the current payment request."
+                      : "Editing stay details now does not bill the student. Charges start when you send the payment request."}
+                </Alert>
+                <Button type="button" size="sm" onClick={openOfficeEdit}>
                   Edit request
                 </Button>
               </DetailSection>

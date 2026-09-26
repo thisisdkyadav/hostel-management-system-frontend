@@ -14,6 +14,7 @@ import {
   Textarea,
   ToggleButtonGroup,
   VStack,
+  useConfirm,
 } from "hzero"
 import { Plus, Trash2 } from "lucide-react"
 import { accommodationApi } from "@/service"
@@ -86,6 +87,7 @@ const AccommodationOfficeEdit = ({
   priceOptions = [],
   gstOptions = [],
 }) => {
+  const confirm = useConfirm()
   const [form, setForm] = useState(() => fromRequest(request))
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)
@@ -194,6 +196,27 @@ const AccommodationOfficeEdit = ({
         }
       }
 
+      const extra = Number(body.extraAmount) || 0
+      const warning = extra > 0
+        ? {
+            title: "Request an extra payment?",
+            message: `The original ${money(payment.amount)} payment stays locked. A second payment request of ${money(extra)} will be emailed to the student.`,
+            confirmText: "Send extra payment request",
+          }
+        : canUpdateOpenBill
+          ? {
+              title: "Update the open payment request?",
+              message: `The student has not paid yet. Saving replaces the current bill — they will be asked to pay ${money(chargeTotal)}.`,
+              confirmText: "Update payment request",
+            }
+          : {
+              title: "Save these changes?",
+              message: "The student is notified. No new payment request is sent.",
+              confirmText: "Save",
+            }
+      const ok = await confirm(warning)
+      if (!ok) return
+
       await accommodationApi.officeEdit(request._id || request.id, body)
       onSaved?.()
       onClose?.()
@@ -208,6 +231,13 @@ const AccommodationOfficeEdit = ({
     <Modal isOpen={open} onClose={onClose} title="Edit request" width={720} closeButtonVariant="button">
       <VStack gap={4}>
         {error && <Alert type="error">{error}</Alert>}
+        <Alert type="warning">
+          {canAddExtra
+            ? "The original payment cannot be edited. Leave extra amount blank to only update stay details. Entering an extra amount emails a second payment request."
+            : canUpdateOpenBill
+              ? "This payment request has not been paid. Saving a new amount replaces the current bill and emails the student."
+              : "Charges are not billed until you send the payment request on the main screen."}
+        </Alert>
 
         <Field label="Stay dates">
           <Grid cols={2} gap={2}>
