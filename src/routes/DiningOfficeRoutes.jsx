@@ -1,3 +1,4 @@
+const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 import DiningOfficeLayout from "../layouts/DiningOfficeLayout"
@@ -27,6 +28,7 @@ const DiningOfficeRoutes = () => (
     <Suspense fallback={<LoadingPage message="Loading Dining Office..." />}>
       <Routes>
         <Route element={<DiningOfficeLayout />}>
+          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.dining.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
           <Route index element={guardRoute("route.diningOffice.dashboard", <DashboardPage />)} />
           <Route path="caterers" element={guardRoute("route.admin.caterers", <CaterersPage />)} />
           <Route path="dining-periods" element={guardRoute("route.admin.diningPeriods", <DiningPeriodsPage />)} />

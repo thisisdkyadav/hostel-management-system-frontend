@@ -180,7 +180,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
       { name: "Check-In/Out", icon: CheckSquare, section: "main", path: "/admin/live-checkinout" },
       { name: "Face Scanner Management", icon: Scan, section: "main", path: "/admin/face-scanners" },
       createProfileItem("/admin"),
-      createLogoutItem(handleLogout),
+      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
+  createLogoutItem(handleLogout),
     ]
   }
 
@@ -250,7 +251,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   }
 
   navItems.push(createProfileItem("/admin"))
-  navItems.push(createLogoutItem(handleLogout))
+  navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
+  createLogoutItem(handleLogout))
 
   return navItems
 }
@@ -265,12 +267,14 @@ export const getSuperAdminNavItems = (handleLogout) => [
   { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
   { name: "AuthZ", icon: ShieldCheck, section: "main", path: "/super-admin/authz" },
   createProfileItem("/super-admin"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/super-admin/intern-accommodation", routeKey: "route.superAdmin.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
 export const getCatererNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
   { name: "Current Meal", icon: UtensilsCrossed, section: "main", path: "/caterer/meal-verification", routeKey: "route.caterer.mealVerification" },
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/caterer/intern-accommodation", routeKey: "route.dining.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -284,6 +288,7 @@ export const getDiningOfficeNavItems = (handleLogout) => [
   { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/dining-office/dining-periods", routeKey: "route.admin.diningPeriods" },
   { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/dining-office/dining-rebates", routeKey: "route.admin.diningRebates" },
   { name: "Dining Billing", icon: Wallet, section: "main", path: "/dining-office/dining-billing", pathPattern: "^/dining-office/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling" },
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/dining-office/intern-accommodation", routeKey: "route.dining.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -305,6 +310,7 @@ export const getWardenNavItems = (handleLogout, user) => [
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/warden/feedbacks" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/warden/undertakings" },
   createProfileItem("/warden"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/warden/intern-accommodation", routeKey: "route.warden.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -326,6 +332,7 @@ export const getAssociateWardenNavItems = (handleLogout, user) => [
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/associate-warden/feedbacks" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/associate-warden/undertakings" },
   createProfileItem("/associate-warden"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/associate-warden/intern-accommodation", routeKey: "route.associateWarden.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -348,6 +355,7 @@ export const getHostelSupervisorNavItems = (handleLogout, user) => [
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/hostel-supervisor/feedbacks" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/hostel-supervisor/undertakings" },
   createProfileItem("/hostel-supervisor"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/hostel-supervisor/intern-accommodation", routeKey: "route.hostelSupervisor.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -364,6 +372,7 @@ export const getHostelGateNavItems = (handleLogout) => [
   { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/hostel-gate/intern-accommodation", routeKey: "route.hostelGate.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -383,7 +392,8 @@ export const getSecurityNavItems = (handleLogout, user) => {
       { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
       { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
       { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },
-      createLogoutItem(handleLogout),
+      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/hostel-gate/intern-accommodation", routeKey: "route.hostelGate.internAccommodation" },
+  createLogoutItem(handleLogout),
     ]
   }
 
@@ -392,7 +402,8 @@ export const getSecurityNavItems = (handleLogout, user) => {
     { name: "Attendance", icon: CheckSquare, section: "main", path: "/guard" },
     { name: "My Tasks", icon: ListTodo, section: "main", path: "/guard/my-tasks" },
     { name: "Lost and Found", icon: Search, section: "main", path: "/guard/lost-and-found" },
-    createLogoutItem(handleLogout),
+    { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/guard/intern-accommodation", routeKey: "route.security.internAccommodation" },
+  createLogoutItem(handleLogout),
   ]
 }
 
@@ -405,6 +416,7 @@ export const getMaintenanceNavItems = (handleLogout) => [
   { name: "Leaves", icon: CalendarOff, section: "main", path: "/maintenance/leaves" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/maintenance/my-tasks" },
   { name: "Attendance", icon: CheckSquare, section: "main", path: "/maintenance/attendance" },
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/maintenance/intern-accommodation", routeKey: "route.maintenance.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -439,6 +451,7 @@ export const getStudentNavItems = (
     isNew: electionPortalState.mode === "voting",
   }] : []),
   createProfileItem("/student"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/student/intern-accommodation", routeKey: "route.student.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -456,7 +469,8 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
       { name: "Club Home", icon: Users, section: "main", path: "/gymkhana/club" },
       { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
       createProfileItem("/gymkhana"),
-      createLogoutItem(handleLogout),
+      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
+  createLogoutItem(handleLogout),
     ]
   }
 
@@ -465,7 +479,8 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
       { name: "Elections", icon: BadgeCheck, section: "main", path: "/gymkhana/elections" },
       { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
       createProfileItem("/gymkhana"),
-      createLogoutItem(handleLogout),
+      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
+  createLogoutItem(handleLogout),
     ]
   }
 
@@ -476,7 +491,8 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
     { name: "Attendance", icon: CheckSquare, section: "main", path: "/gymkhana/attendance", pathPattern: "^/gymkhana/attendance(/.*)?$" },
     createProfileItem("/gymkhana"),
-    createLogoutItem(handleLogout),
+    { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
+  createLogoutItem(handleLogout),
   ]
 }
 
@@ -487,6 +503,7 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
 export const getAcademicsNavItems = (handleLogout) => [
   { name: "Best Performer", icon: Trophy, section: "main", path: "/academics/overall-best-performer", routeKey: "route.academics.bestPerformer" },
   createProfileItem("/academics"),
+  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/academics/intern-accommodation", routeKey: "route.academics.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 

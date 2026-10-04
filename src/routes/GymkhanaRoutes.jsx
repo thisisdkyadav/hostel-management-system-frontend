@@ -1,3 +1,4 @@
+const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Navigate, Routes, Route } from "react-router-dom"
 import GymkhanaLayout from "../layouts/GymkhanaLayout"
@@ -122,6 +123,7 @@ const GymkhanaRoutes = () => (
       <GymkhanaRolePrefetch />
       <Routes>
         <Route element={<GymkhanaLayout />}>
+          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.gymkhana.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
           <Route
             index
             element={

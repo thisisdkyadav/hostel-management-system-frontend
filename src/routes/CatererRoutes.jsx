@@ -1,3 +1,4 @@
+const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 import CatererLayout from "../layouts/CatererLayout"
@@ -14,6 +15,7 @@ const CatererRoutes = () => (
     <Suspense fallback={<LoadingPage message="Loading Caterer Portal..." />}>
       <Routes>
         <Route element={<CatererLayout />}>
+          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.dining.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
           <Route
             index
             element={

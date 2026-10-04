@@ -1,3 +1,4 @@
+const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route, Navigate } from "react-router-dom"
 import AdminLayout from "../layouts/AdminLayout"
@@ -132,6 +133,7 @@ const AdminRoutes = () => {
         <AdminRolePrefetch />
         <Routes>
           <Route element={<AdminLayout />}>
+          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.admin.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
             {isCsoAdmin ? (
               <>
                 <Route index element={guardRoute("route.admin.liveCheckInOut", <Navigate to="live-checkinout" replace />)} />

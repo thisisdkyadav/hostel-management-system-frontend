@@ -1,3 +1,4 @@
+const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 import HostelGateLayout from "../layouts/HostelGateLayout.jsx"
@@ -46,6 +47,7 @@ const HostelGateRoutes = () => (
       <HostelGateRolePrefetch />
       <Routes>
         <Route element={<HostelGateLayout />}>
+          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.hostelGate.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
           <Route
             index
             element={

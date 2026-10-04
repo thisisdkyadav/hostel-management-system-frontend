@@ -1,3 +1,4 @@
+const InternAccommodationAccessPage = lazy(() => import("../pages/public/InternAccommodationAccessPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 
@@ -39,6 +40,7 @@ const DiningOfficeRoutes = lazy(() => import("./DiningOfficeRoutes"))
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/intern-accommodation/access/:token" element={<Suspense fallback={<LoadingPage message="Loading accommodation..." />}><InternAccommodationAccessPage /></Suspense>} />
       {/* Public Routes - HomePage and LoginPage always loaded */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
