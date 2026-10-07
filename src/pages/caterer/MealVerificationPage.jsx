@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { createPortal } from "react-dom"
 import { Alert, Avatar, Button, Card, EmptyState, Field, Heading, HStack, Input, Page, StatusBadge, Table, Tabs, Text, VStack } from "hzero"
 import { Clock, RefreshCw, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
@@ -58,6 +59,35 @@ const fetchFeedEntries = async () => {
   return Array.isArray(response?.entries) ? response.entries : []
 }
 
+const MealProfilePhoto = ({ student, onPreview, onDismiss }) => {
+  const src = student?.profileImage ? getMediaUrl(student.profileImage) : undefined
+  const name = student?.name || "Unknown Student"
+  const avatar = (
+    <Avatar
+      src={src}
+      name={name}
+      alt={`${name} profile photo`}
+      shape="square"
+      size="large"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+    />
+  )
+  if (!src) return avatar
+  return (
+    <button
+      type="button"
+      aria-label={`Enlarge ${name}'s profile photo`}
+      className="absolute inset-0 h-full w-full border-0 bg-transparent p-0 cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]"
+      onPointerEnter={(event) => { if (event.pointerType !== "touch") onPreview(event, name) }}
+      onPointerLeave={onDismiss}
+      onFocus={(event) => onPreview(event, name)}
+      onBlur={onDismiss}
+    >
+      {avatar}
+    </button>
+  )
+}
+
 const MealVerificationPage = () => {
   const { socket, isConnected } = useSocket()
   const [entries, setEntries] = useState([])
@@ -69,6 +99,7 @@ const MealVerificationPage = () => {
   const [feedError, setFeedError] = useState("")
   const [manualError, setManualError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const [profilePreview, setProfilePreview] = useState(null)
 
   const issuesCount = useMemo(() => entries.filter((entry) => entry.status !== "verified").length, [entries])
   const visibleEntries = useMemo(
@@ -76,7 +107,45 @@ const MealVerificationPage = () => {
     [entries, feedFilter]
   )
 
+  const showProfilePreview = (event, name) => {
+    const image = event.currentTarget.querySelector("img")
+    const table = event.currentTarget.closest("[data-meal-verification-table]")
+    if (!image?.complete || !image.naturalWidth || !table) return
+    const tableBounds = table.getBoundingClientRect()
+    const width = Math.min(360, tableBounds.left - 24)
+    if (width < 120) return
+    const height = Math.min(window.innerHeight - 32, width * image.naturalHeight / image.naturalWidth)
+    const photoBounds = event.currentTarget.getBoundingClientRect()
+    setProfilePreview({
+      src: image.currentSrc || image.src,
+      name,
+      width,
+      height,
+      left: tableBounds.left - width - 12,
+      top: Math.max(16, Math.min(photoBounds.top + (photoBounds.height - height) / 2, window.innerHeight - height - 16)),
+    })
+  }
+
+  const hideProfilePreview = () => setProfilePreview(null)
+
+  useEffect(() => {
+    if (!profilePreview) return undefined
+    const dismiss = () => setProfilePreview(null)
+    const handleKey = (event) => { if (event.key === "Escape") dismiss() }
+    window.addEventListener("scroll", dismiss, true)
+    window.addEventListener("resize", dismiss)
+    window.addEventListener("blur", dismiss)
+    document.addEventListener("keydown", handleKey)
+    return () => {
+      window.removeEventListener("scroll", dismiss, true)
+      window.removeEventListener("resize", dismiss)
+      window.removeEventListener("blur", dismiss)
+      document.removeEventListener("keydown", handleKey)
+    }
+  }, [profilePreview])
+
   const refreshFeed = async () => {
+    hideProfilePreview()
     setLoading(true)
     setFeedError("")
     try {
@@ -191,7 +260,7 @@ const MealVerificationPage = () => {
                   { value: "issues", label: "Issues", count: issuesCount || undefined },
                 ]}
                 activeTab={feedFilter}
-                setActiveTab={setFeedFilter}
+                setActiveTab={(filter) => { hideProfilePreview(); setFeedFilter(filter) }}
               />
             </HStack>
 
@@ -202,7 +271,7 @@ const MealVerificationPage = () => {
                 message={feedFilter === "issues" ? "Failed or flagged scans will appear here." : "Face scanner and manual verification attempts will appear here in real time."}
               />
             ) : (
-              <div className="overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-border-primary)]">
+              <div data-meal-verification-table className="overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-border-primary)]">
                 <Table>
                   <Table.Header>
                     <Table.Row>
@@ -225,14 +294,7 @@ const MealVerificationPage = () => {
                           </HStack>
                         </Table.Cell>
                         <Table.Cell style={{ position: "relative", width: "var(--spacing-20)", minWidth: "var(--spacing-20)", padding: 0 }}>
-                          <Avatar
-                            src={entry.student?.profileImage ? getMediaUrl(entry.student.profileImage) : undefined}
-                            name={entry.student?.name || "Unknown Student"}
-                            alt={`${entry.student?.name || "Unknown Student"} profile photo`}
-                            shape="square"
-                            size="large"
-                            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-                          />
+                          <MealProfilePhoto student={entry.student} onPreview={showProfilePreview} onDismiss={hideProfilePreview} />
                         </Table.Cell>
                         <Table.Cell>
                           <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Unknown Student"}</Text>
@@ -253,6 +315,20 @@ const MealVerificationPage = () => {
           </Card>
         </VStack>
       </Page.Body>
+      {profilePreview && createPortal(
+        <div
+          data-meal-profile-preview
+          style={{ position: "fixed", left: profilePreview.left, top: profilePreview.top, width: profilePreview.width, height: profilePreview.height, zIndex: "var(--popover-z)", pointerEvents: "none", overflow: "hidden", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-bg-primary)", boxShadow: "var(--shadow-lg)" }}
+        >
+          <img
+            src={profilePreview.src}
+            alt={`${profilePreview.name} enlarged profile photo`}
+            onError={hideProfilePreview}
+            style={{ display: "block", width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        </div>,
+        document.body
+      )}
     </Page>
   )
 }
