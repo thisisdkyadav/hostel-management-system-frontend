@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { Alert, Avatar, Button, Card, EmptyState, Field, Grid, Heading, HStack, Input, Label, Modal, Page, StatCards, StatusBadge, Table, Tabs, Text, VStack } from "hzero"
-import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
+import { Alert, Avatar, Button, Card, EmptyState, Field, Heading, HStack, Input, Page, StatusBadge, Table, Tabs, Text, VStack } from "hzero"
+import { Clock, RefreshCw, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useSocket } from "../../contexts/SocketProvider"
-import CapacityBar from "@/components/dining/CapacityBar"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const STATUS_LABELS = {
@@ -29,33 +28,12 @@ const STATUS_TONES = {
   "on-rebate": "warning",
 }
 
-const formatDateTime = (value) => {
-  if (!value) return "-"
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return "-"
-  return date.toLocaleString(undefined, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })
-}
-
 const formatTime = (value) => {
   if (!value) return "-"
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return "-"
   return date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
 }
-
-const formatDate = (value) => {
-  if (!value) return "-"
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return "-"
-  return date.toLocaleDateString(undefined, { weekday: "short", day: "2-digit", month: "short" })
-}
-
-const formatPeriodRange = (period) => {
-  if (!period) return "No active dining period"
-  return `${formatDate(period.startDate)} – ${formatDate(period.endDate)}`
-}
-
-const getErrorMessage = (error, fallback) => error?.response?.data?.message || error?.message || fallback
 
 const LiveIndicator = ({ connected }) => (
   <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1-5)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: connected ? "var(--color-success)" : "var(--color-text-muted)" }}>
@@ -67,78 +45,24 @@ const LiveIndicator = ({ connected }) => (
   </span>
 )
 
-const StudentListModal = ({ isOpen, onClose, students = [], loading = false, mealSlot = null }) => {
-  if (!isOpen) return null
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Students for Current Meal" width={880}>
-      <VStack gap="medium">
-        <Text color="muted" size="sm">
-          {mealSlot ? `${mealSlot.name} · ${mealSlot.startTime}–${mealSlot.endTime}` : "No meal slot is active right now."}
-        </Text>
-        {!loading && students.length === 0 ? (
-          <Alert type="info" icon>No students are allocated to this caterer for the active period yet.</Alert>
-        ) : (
-          <div className="overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-border-primary)]">
-            <Table>
-              <Table.Header>
-                <Table.Row>
-                  <Table.Head>Student</Table.Head>
-                  <Table.Head>Roll Number</Table.Head>
-                  <Table.Head>Status</Table.Head>
-                  <Table.Head>Last Scan</Table.Head>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {students.map((entry) => (
-                  <Table.Row key={entry.allocationId || entry.rollNumber}>
-                    <Table.Cell>
-                      <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Student"}</Text>
-                      <Text as="div" color="muted" size="sm">{entry.student?.email || "-"}</Text>
-                    </Table.Cell>
-                    <Table.Cell>{entry.rollNumber}</Table.Cell>
-                    <Table.Cell>
-                      <StatusBadge status={entry.isVerified ? "Verified" : "Pending"} tone={entry.isVerified ? "success" : "warning"} />
-                    </Table.Cell>
-                    <Table.Cell>{formatDateTime(entry.latestVerification?.scannedAt)}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
-        )}
-      </VStack>
-    </Modal>
-  )
+const getErrorMessage = (error, fallback) => error?.response?.data?.message || error?.message || fallback
+
+const fetchFeedEntries = async () => {
+  const response = await catererApi.getMealVerificationFeed({ limit: 50 })
+  return Array.isArray(response?.entries) ? response.entries : []
 }
 
 const MealVerificationPage = () => {
   const { socket, isConnected } = useSocket()
-  const [context, setContext] = useState({ caterer: null, currentPeriod: null })
-  const [studentState, setStudentState] = useState({ students: [], total: 0, verifiedCount: 0, pendingCount: 0, rebateCount: 0, currentMealSlot: null })
-  const [rebateSummary, setRebateSummary] = useState({ days: [], currentRebateCount: 0, upcomingRebateCount: 0 })
   const [entries, setEntries] = useState([])
   const [feedFilter, setFeedFilter] = useState("all")
   const [rollNumber, setRollNumber] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [studentsLoading, setStudentsLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [manualLoading, setManualLoading] = useState(false)
-  const [showStudentsModal, setShowStudentsModal] = useState(false)
-  const [error, setError] = useState("")
+  const [showManualVerification, setShowManualVerification] = useState(false)
+  const [feedError, setFeedError] = useState("")
+  const [manualError, setManualError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
-
-  const currentMealSlot = studentState.currentMealSlot || context.currentPeriod?.currentMealSlot || null
-  const currentMealLabel = currentMealSlot ? `${currentMealSlot.name}` : "No active meal slot"
-  const currentMealTime = currentMealSlot ? `${currentMealSlot.startTime} – ${currentMealSlot.endTime}` : "Verification opens during meal hours"
-
-  const stats = useMemo(
-    () => [
-      { title: "Allocated", value: studentState.total || 0, subtitle: "Students this meal", icon: <Users size={20} />, color: "var(--color-primary)" },
-      { title: "Verified", value: studentState.verifiedCount || 0, subtitle: "Meals confirmed", icon: <CheckCircle2 size={20} />, color: "var(--color-success)" },
-      { title: "Pending", value: studentState.pendingCount || 0, subtitle: "Not yet scanned", icon: <Clock size={20} />, color: "var(--color-warning)" },
-      { title: "On Rebate", value: studentState.rebateCount || rebateSummary.currentRebateCount || 0, subtitle: "Excused today", icon: <UtensilsCrossed size={20} />, color: "var(--color-text-muted)" },
-    ],
-    [studentState, rebateSummary]
-  )
 
   const issuesCount = useMemo(() => entries.filter((entry) => entry.status !== "verified").length, [entries])
   const visibleEntries = useMemo(
@@ -146,58 +70,25 @@ const MealVerificationPage = () => {
     [entries, feedFilter]
   )
 
-  const fetchContext = async () => {
-    const response = await catererApi.getMealVerificationContext()
-    setContext(response || { caterer: null, currentPeriod: null })
-  }
-
-  const fetchFeed = async () => {
-    const response = await catererApi.getMealVerificationFeed({ limit: 50 })
-    setEntries(Array.isArray(response?.entries) ? response.entries : [])
-  }
-
-  const fetchStudents = async () => {
-    setStudentsLoading(true)
-    try {
-      const response = await catererApi.getCurrentMealStudents()
-      setStudentState({
-        students: Array.isArray(response?.students) ? response.students : [],
-        total: Number(response?.total || 0),
-        verifiedCount: Number(response?.verifiedCount || 0),
-        pendingCount: Number(response?.pendingCount || 0),
-        rebateCount: Number(response?.rebateCount || 0),
-        currentMealSlot: response?.currentMealSlot || null,
-      })
-    } catch (studentError) {
-      setError(getErrorMessage(studentError, "Unable to load current meal students."))
-    } finally {
-      setStudentsLoading(false)
-    }
-  }
-
-  const fetchRebateSummary = async () => {
-    const response = await catererApi.getRebateSummary()
-    setRebateSummary({
-      days: Array.isArray(response?.days) ? response.days : [],
-      currentRebateCount: Number(response?.currentRebateCount || 0),
-      upcomingRebateCount: Number(response?.upcomingRebateCount || 0),
-    })
-  }
-
-  const refreshAll = async () => {
+  const refreshFeed = async () => {
     setLoading(true)
-    setError("")
+    setFeedError("")
     try {
-      await Promise.all([fetchContext(), fetchFeed(), fetchStudents(), fetchRebateSummary()])
+      setEntries(await fetchFeedEntries())
     } catch (refreshError) {
-      setError(getErrorMessage(refreshError, "Unable to load current meal verification details."))
+      setFeedError(getErrorMessage(refreshError, "Unable to load the live verification feed."))
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    refreshAll()
+    let active = true
+    fetchFeedEntries()
+      .then((feedEntries) => { if (active) setEntries(feedEntries) })
+      .catch((error) => { if (active) setFeedError(getErrorMessage(error, "Unable to load the live verification feed.")) })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
   }, [])
 
   useEffect(() => {
@@ -209,8 +100,6 @@ const MealVerificationPage = () => {
         if (prev.some((entry) => entry.id === verification.id)) return prev
         return [verification, ...prev].slice(0, 50)
       })
-      fetchStudents().catch(() => {})
-      fetchRebateSummary().catch(() => {})
     }
     socket.on("dining-meal-verification:new", handleNewVerification)
     return () => socket.off("dining-meal-verification:new", handleNewVerification)
@@ -219,11 +108,11 @@ const MealVerificationPage = () => {
   const handleManualVerify = async (event) => {
     event.preventDefault()
     if (!rollNumber.trim()) {
-      setError("Please enter a roll number.")
+      setManualError("Please enter a roll number.")
       return
     }
     setManualLoading(true)
-    setError("")
+    setManualError("")
     setSuccessMessage("")
     try {
       const response = await catererApi.manualMealVerification({ rollNumber: rollNumber.trim() })
@@ -231,12 +120,10 @@ const MealVerificationPage = () => {
       if (verification) {
         setEntries((prev) => [verification, ...prev.filter((entry) => entry.id !== verification.id)].slice(0, 50))
       }
-      await fetchStudents()
-      await fetchRebateSummary()
       setSuccessMessage(response?.verification?.message || "Manual meal verification recorded.")
       setRollNumber("")
     } catch (manualError) {
-      setError(getErrorMessage(manualError, "Unable to verify meal manually."))
+      setManualError(getErrorMessage(manualError, "Unable to verify meal manually."))
     } finally {
       setManualLoading(false)
     }
@@ -246,10 +133,15 @@ const MealVerificationPage = () => {
     <Page>
       <PageHeader title="Meal Verification">
         <HStack gap="small">
-          <Button variant="secondary" onClick={() => setShowStudentsModal(true)}>
-            <Users size={18} /> View Students
+          <Button
+            variant="secondary"
+            onClick={() => setShowManualVerification((visible) => !visible)}
+            aria-expanded={showManualVerification}
+            aria-controls="manual-verification"
+          >
+            <Search size={18} /> {showManualVerification ? "Hide Manual Verification" : "Manual Verification"}
           </Button>
-          <Button variant="secondary" onClick={refreshAll} disabled={loading}>
+          <Button variant="secondary" onClick={refreshFeed} disabled={loading}>
             <RefreshCw size={18} /> {loading ? "Refreshing..." : "Refresh"}
           </Button>
         </HStack>
@@ -257,81 +149,29 @@ const MealVerificationPage = () => {
 
       <Page.Body>
         <VStack gap="large">
-          {error && <Alert type="error" icon dismissible onDismiss={() => setError("")}>{error}</Alert>}
-          {successMessage && <Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert>}
-
-          {/* Current meal hero */}
-          <Card>
-            <div className="flex flex-col lg:flex-row lg:items-center gap-[var(--spacing-5)]">
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <HStack gap={3} align="center">
-                  <Text as="div" color="brand" style={{ width: 48, height: 48, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-primary-bg)", flexShrink: 0 }} className="flex items-center justify-center">
-                    <UtensilsCrossed size={24} />
-                  </Text>
-                  <div style={{ minWidth: 0 }}>
-                    <HStack gap={2} align="center">
-                      <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>{currentMealLabel}</Heading>
-                      <LiveIndicator connected={isConnected} />
-                    </HStack>
-                    <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{currentMealTime}</Text>
-                    <Text color="muted" size="xs" style={{ margin: "var(--spacing-1) 0 0" }}>
-                      {context.caterer?.name || "Caterer"} · {formatPeriodRange(context.currentPeriod)}
-                    </Text>
+          {showManualVerification && (
+            <Card id="manual-verification">
+              <VStack gap="medium">
+                {manualError && <Alert type="error" icon dismissible onDismiss={() => setManualError("")}>{manualError}</Alert>}
+                {successMessage && <Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert>}
+                <form onSubmit={handleManualVerify}>
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-[var(--spacing-3)] items-end">
+                    <Field label="Manual Verification" htmlFor="manual-roll" required>
+                      <Input id="manual-roll" value={rollNumber} onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
+                        placeholder="Enter roll number, e.g. 22BCS001" required />
+                    </Field>
+                    <Button type="submit" variant="primary" loading={manualLoading} disabled={manualLoading}>
+                      <Search size={18} /> Verify Meal
+                    </Button>
                   </div>
-                </HStack>
-              </div>
-              <div className="w-full lg:w-[280px] lg:flex-shrink-0">
-                <CapacityBar allocated={studentState.verifiedCount} total={studentState.total} label="Verified this meal" />
-                <Text color="muted" size="xs" style={{ margin: "var(--spacing-2) 0 0" }}>
-                  {studentState.verifiedCount} verified · {studentState.pendingCount} pending
-                </Text>
-              </div>
-            </div>
-          </Card>
-
-          {/* Manual verify */}
-          <Card>
-            <form onSubmit={handleManualVerify}>
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-[var(--spacing-3)] items-end">
-                <Field label="Manual Verification" htmlFor="manual-roll" required>
-                  <Input id="manual-roll" value={rollNumber} onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
-                    placeholder="Enter roll number, e.g. 22BCS001" required />
-                </Field>
-                <Button type="submit" variant="primary" loading={manualLoading} disabled={manualLoading}>
-                  <Search size={18} /> Verify Meal
-                </Button>
-              </div>
-            </form>
-          </Card>
-
-          {/* Stats */}
-          <StatCards columns={4} stats={stats} />
-
-          {/* 3-day availability */}
-          {rebateSummary.days.length > 0 && (
-            <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-              <div>
-                <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Availability Forecast</Heading>
-                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
-                  Today and the next two days, after approved rebates are excluded.
-                </Text>
-              </div>
-              <Grid cols={{ base: 1, sm: 3 }} gap={3}>
-                {rebateSummary.days.map((day) => (
-                  <div key={day.date} className="rounded-[var(--radius-lg)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-[var(--spacing-4)]">
-                    <Text color="muted" size="sm">{formatDate(day.date)}</Text>
-                    <Text color="heading" weight="bold" size="2xl">{day.availableStudentCount || 0}</Text>
-                    <Text color="muted" size="xs">
-                      of {day.allocatedStudentCount || 0} allocated · {day.approvedRebateCount || 0} on rebate
-                    </Text>
-                  </div>
-                ))}
-              </Grid>
+                </form>
+              </VStack>
             </Card>
           )}
 
           {/* Live feed */}
           <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+            {feedError && <Alert type="error" icon dismissible onDismiss={() => setFeedError("")}>{feedError}</Alert>}
             <HStack gap={3} align="center" justify="between" wrap>
               <HStack gap={2} align="center">
                 <Heading as="h3" size="md" weight="bold" color="heading" style={{ margin: 0 }}>Live Verification Feed</Heading>
@@ -407,14 +247,6 @@ const MealVerificationPage = () => {
           </Card>
         </VStack>
       </Page.Body>
-
-      <StudentListModal
-        isOpen={showStudentsModal}
-        onClose={() => setShowStudentsModal(false)}
-        students={studentState.students}
-        loading={studentsLoading}
-        mealSlot={currentMealSlot}
-      />
     </Page>
   )
 }

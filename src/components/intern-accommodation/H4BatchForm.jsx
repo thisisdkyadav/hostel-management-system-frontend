@@ -236,7 +236,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
     >
       <VStack gap={4}>
         <StepIndicator steps={steps} currentStep={String(step)} />
-        {error && <Alert tone="danger">{error}</Alert>}
+        {error && <Alert type="error">{error}</Alert>}
         {step === 0 && (
           <VStack gap={4}>
             <Field label="Batch title" required>
@@ -260,10 +260,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
               />
             </Field>
             <Surface bg="secondary" padding={3} radius="md">
-              <Text size="sm">Faculty → CW Office → Chief Warden → Payment → Room</Text>
-              <Text size="xs" color="muted">
-                One request per student. Students can use external email.
-              </Text>
+              <Text size="sm">Faculty → Office → Chief Warden → Payment → Room</Text>
             </Surface>
           </VStack>
         )}
@@ -334,7 +331,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                 </IconButton>
               )}
             </HStack>
-            <Grid columns={2} gap={3}>
+            <Grid cols={2} gap={3}>
               <Field label="Full name" required>
                 <Input value={student.name} onChange={(e) => update("name", e.target.value)} maxLength={120} />
               </Field>
@@ -401,14 +398,14 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                   onChange={(e) => stay("toDate", e.target.value)}
                 />
               </Field>
-              <Field label="Arrival time · IST">
+              <Field label="Arrival time">
                 <Input
                   type="time"
                   value={student.stay.checkInTime}
                   onChange={(e) => stay("checkInTime", e.target.value)}
                 />
               </Field>
-              <Field label="Departure time · IST">
+              <Field label="Departure time">
                 <Input
                   type="time"
                   value={student.stay.checkOutTime}
@@ -416,7 +413,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                 />
               </Field>
             </Grid>
-            <Field label="Reason for stay" required>
+            <Field label="Purpose" required>
               <Textarea rows={2} value={student.stay.purpose} onChange={(e) => stay("purpose", e.target.value)} />
             </Field>
           </VStack>
@@ -460,11 +457,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
             <Checkbox
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
-              label={
-                ownFaculty
-                  ? "Student details and accommodation payer are correct"
-                  : "I have checked the student details and designated payer"
-              }
+              label="Details and payer verified"
             />
           </VStack>
         )}

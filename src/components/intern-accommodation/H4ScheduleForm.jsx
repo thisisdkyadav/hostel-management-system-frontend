@@ -31,7 +31,7 @@ export default function H4ScheduleForm({ request, token, onSaved }) {
   }
   return (
     <VStack gap={3}>
-      {error && <Alert tone="danger">{error}</Alert>}
+      {error && <Alert type="error">{error}</Alert>}
       <Field label="Date change">
         <Select
           value={type}
@@ -42,7 +42,7 @@ export default function H4ScheduleForm({ request, token, onSaved }) {
           onChange={(e) => setType(e.target.value)}
         />
       </Field>
-      <Grid columns={2} gap={3}>
+      <Grid cols={2} gap={3}>
         <Field label="New arrival">
           <DatePicker value={fromDate} disabled={type === "extend"} onChange={(e) => setFrom(e.target.value)} />
         </Field>

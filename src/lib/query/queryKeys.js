@@ -84,6 +84,13 @@ export const queryKeys = {
     list: (filters) => [...queryKeys.accommodationRequests.all, "list", filters ?? {}],
     detail: (id) => [...queryKeys.accommodationRequests.all, "detail", id],
   },
+  h4: {
+    all: ["h4"],
+    options: () => [...queryKeys.h4.all, "options"],
+    list: (filters) => [...queryKeys.h4.all, "list", filters ?? {}],
+    detail: (id) => [...queryKeys.h4.all, "detail", id],
+    availability: (id, revision) => [...queryKeys.h4.all, "availability", id, revision ?? null],
+  },
   elections: {
     all: ["elections"],
     list: (filters) => [...queryKeys.elections.all, "list", filters ?? {}],

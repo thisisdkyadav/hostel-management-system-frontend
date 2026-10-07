@@ -68,8 +68,8 @@ export default function H4RoomCheck({ request, amendment = false, onReady, onSav
   }
   return (
     <VStack gap={3}>
-      {error && <Alert tone="danger">{error}</Alert>}
-      <Grid columns={2} gap={3}>
+      {error && <Alert type="error">{error}</Alert>}
+      <Grid cols={2} gap={3}>
         <Field label="Unit / block">
           <Input
             value={unitNumber}
@@ -100,7 +100,7 @@ export default function H4RoomCheck({ request, amendment = false, onReady, onSav
         </Field>
       </Grid>
       <Button variant="secondary" onClick={check} loading={busy} disabled={!roomNumber || busy}>
-        <Search size={16} /> {amendment ? "Check room for proposed dates" : "Check room"}
+        <Search size={16} /> Check
       </Button>
       {preview && (
         <VStack gap={3}>
@@ -118,13 +118,12 @@ export default function H4RoomCheck({ request, amendment = false, onReady, onSav
           </Surface>
           {preview.warnings.length ? (
             <>
-              <Alert tone="warning">
+              <Alert type="warning">
                 <VStack gap={2}>
                   <Text weight="semibold">
                     <TriangleAlert size={16} /> {preview.warnings.length} warning
                     {preview.warnings.length > 1 ? "s" : ""}
-                  </Text>
-                  {preview.warnings.map((w) => (
+                  </Text>                  {preview.warnings.map((w) => (
                     <div key={`${w.kind}:${w.id}`}>
                       <Text size="sm" weight="semibold">
                         {w.name || w.kind}
@@ -143,11 +142,11 @@ export default function H4RoomCheck({ request, amendment = false, onReady, onSav
               <Checkbox
                 checked={ack}
                 onChange={(e) => setAcknowledgment(e.target.checked)}
-                label="I have checked these conflicts and confirm this room can be used"
+                label="Conflicts checked — room can be used"
               />
             </>
           ) : (
-            <Alert tone="success">No recorded conflicts for these dates.</Alert>
+            <Alert type="success">No recorded conflicts for these dates.</Alert>
           )}
           {(preview.warnings.length > 0 || request.room) && (
             <Field label={request.room && !amendment ? "Reason for room move" : "Override reason"} required>

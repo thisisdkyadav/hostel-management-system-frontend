@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom"
 import { Alert, Button, DetailSection, HStack, Text, VStack } from "hzero"
 import { BedDouble, CalendarDays, CreditCard, Download, RefreshCw } from "lucide-react"
 import { h4Api, h4AccessFileUrl } from "@/service/modules/intern-accommodation.api"
-import { H4Journey, H4Status, H4StayDetails } from "@/components/intern-accommodation/H4Kit"
+import { H4Status, H4Journey, H4StayDetails } from "@/components/intern-accommodation/H4Kit"
 import { date, money } from "@/components/intern-accommodation/h4.format"
 import H4PaymentForm from "@/components/intern-accommodation/H4PaymentForm"
 import H4ScheduleForm from "@/components/intern-accommodation/H4ScheduleForm"
@@ -22,45 +22,31 @@ export default function InternAccommodationAccessPage() {
         <VStack gap={5}>
           <HStack justify="between" wrap gap={2}>
             <VStack gap={1}>
-              <Text size="xs" color="muted">
-                IIT INDORE · HOSTEL ACCOMMODATION
-              </Text>
-              <Text as="h1" size="xl" weight="bold">
-                {r?.applicantName || "H4 accommodation"}
-              </Text>
+              <Text size="xs" color="muted">IIT Indore · Hostel accommodation</Text>
+              <Text as="h1" size="xl" weight="bold">{r?.applicantName || "Accommodation"}</Text>
             </VStack>
-            <Button variant="ghost" aria-label="Refresh accommodation details" onClick={() => query.refetch()}>
+            <Button variant="ghost" aria-label="Refresh" onClick={() => query.refetch()}>
               <RefreshCw size={16} />
             </Button>
           </HStack>
-          {query.isLoading && <Text>Loading your accommodation…</Text>}
-          {query.error && <Alert tone="danger">{query.error.message}</Alert>}
+          {query.isLoading && <Text>Loading…</Text>}
+          {query.error && <Alert type="error">{query.error.message}</Alert>}
           {r && (
             <>
-              <H4Status request={r} />
-              <H4Journey request={r} />
-              <DetailSection title="Stay details" icon={BedDouble}>
-                <VStack gap={3}>
-                  <H4StayDetails request={r} />
-                  <Text size="sm">{r.stay.purpose}</Text>
-                  <Text size="xs" color="muted">
-                    Food charges are handled separately from accommodation.
-                  </Text>
-                </VStack>
+              <H4Status request={r} studentFacing />
+              <H4Journey request={r} studentFacing />
+              <DetailSection title="Stay" icon={BedDouble}>
+                <H4StayDetails request={r} />
               </DetailSection>
               {r.h4.amendment?.stage && (
-                <Alert tone="info">
-                  A date change is awaiting {r.h4.amendment.stage} review. Your current stay remains effective.
-                </Alert>
+                <Alert type="info">Date change under {r.h4.amendment.stage} review.</Alert>
               )}
               {r.purpose === "payer" && (
-                <DetailSection title="Accommodation payment" icon={CreditCard}>
+                <DetailSection title="Payment" icon={CreditCard}>
                   <VStack gap={3}>
                     {[r.payment, ...(r.additionalPayments || [])].map((p, i) => (
                       <HStack key={i} justify="between" wrap>
-                        <Text size="sm">
-                          {p.label || "Accommodation"} · {money(p.amount)}
-                        </Text>
+                        <Text size="sm">{p.label || "Accommodation"} · {money(p.amount)}</Text>
                         <Text size="sm">{p.status}</Text>
                       </HStack>
                     ))}
@@ -83,7 +69,7 @@ export default function InternAccommodationAccessPage() {
                 </DetailSection>
               )}
               {r.purpose === "intern" && !closed && !r.h4.amendment?.stage && (
-                <DetailSection title="Change dates" icon={CalendarDays}>
+                <DetailSection title="Dates" icon={CalendarDays}>
                   {showSchedule ? (
                     <H4ScheduleForm
                       request={r}
@@ -95,13 +81,13 @@ export default function InternAccommodationAccessPage() {
                     />
                   ) : (
                     <Button variant="secondary" onClick={() => setShowSchedule(true)}>
-                      Extend / postpone stay
+                      Extend / postpone
                     </Button>
                   )}
                 </DetailSection>
               )}
               <Text size="xs" color="muted">
-                Link valid until {date(r.expiresAt)}. Contact your requester or CW Office for help.
+                Link valid until {date(r.expiresAt)}.
               </Text>
             </>
           )}

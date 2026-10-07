@@ -61,7 +61,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
   if (!bill) return null
   return (
     <VStack gap={3}>
-      {error && <Alert tone="danger">{error}</Alert>}
+      {error && <Alert type="error">{error}</Alert>}
       {bills.length > 1 && (
         <Field label="Payment">
           <Select
@@ -79,7 +79,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
         {bill.label} · {money(bill.amount)}
       </Text>
       {(bill.remarks || request.payment?.remarks) && (
-        <Alert tone="info">{bill.remarks || request.payment.remarks}</Alert>
+        <Alert type="info">{bill.remarks || request.payment.remarks}</Alert>
       )}
       {/^https?:\/\//i.test(request.payment?.paymentLink || "") && (
         <a href={request.payment.paymentLink} target="_blank" rel="noreferrer">
@@ -115,7 +115,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
       <Field label="Payment date" required>
         <DatePicker value={paidAt} max={today()} onChange={(e) => setPaidAt(e.target.value)} />
       </Field>
-      <Field label="Payment proof · PNG / JPG, up to 5 MB" required>
+      <Field label="Payment proof · PNG / JPG, 5 MB max" required>
         <input
           aria-label="Upload payment proof"
           type="file"
@@ -144,7 +144,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
         )}
       </HStack>
       <Text size="xs" color="muted">
-        Room assignment starts after payment verification.
+        Rooms are assigned after verification.
       </Text>
     </VStack>
   )
