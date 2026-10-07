@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
-import { Alert, Button, Card, EmptyState, Field, Grid, Heading, HStack, Input, Label, Modal, Page, StatCards, StatusBadge, Table, Tabs, Text, VStack } from "hzero"
+import { Alert, Avatar, Button, Card, EmptyState, Field, Grid, Heading, HStack, Input, Label, Modal, Page, StatCards, StatusBadge, Table, Tabs, Text, VStack } from "hzero"
 import { CheckCircle2, Clock, RefreshCw, Search, UtensilsCrossed, Users } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useSocket } from "../../contexts/SocketProvider"
 import CapacityBar from "@/components/dining/CapacityBar"
+import { getMediaUrl } from "../../utils/mediaUtils"
 
 const STATUS_LABELS = {
   verified: "Verified",
@@ -360,6 +361,7 @@ const MealVerificationPage = () => {
                   <Table.Header>
                     <Table.Row>
                       <Table.Head>Time</Table.Head>
+                      <Table.Head width="var(--spacing-20)" style={{ paddingInline: "var(--spacing-2)" }}>Photo</Table.Head>
                       <Table.Head>Student</Table.Head>
                       <Table.Head>Meal</Table.Head>
                       <Table.Head>Status</Table.Head>
@@ -375,6 +377,16 @@ const MealVerificationPage = () => {
                             <Clock size={14} style={{ color: "var(--color-text-muted)" }} />
                             {formatTime(entry.scannedAt)}
                           </HStack>
+                        </Table.Cell>
+                        <Table.Cell style={{ position: "relative", width: "var(--spacing-20)", minWidth: "var(--spacing-20)", padding: 0 }}>
+                          <Avatar
+                            src={entry.student?.profileImage ? getMediaUrl(entry.student.profileImage) : undefined}
+                            name={entry.student?.name || "Unknown Student"}
+                            alt={`${entry.student?.name || "Unknown Student"} profile photo`}
+                            shape="square"
+                            size="large"
+                            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+                          />
                         </Table.Cell>
                         <Table.Cell>
                           <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Unknown Student"}</Text>
