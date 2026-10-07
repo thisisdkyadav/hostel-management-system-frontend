@@ -317,7 +317,7 @@ const StudentsPage = () => {
         )}
 
         {canBulkUpdate && (
-          <UpdateStudentsModal isOpen={openModal === "update"} onClose={close} onUpdate={handleUpdateStudents} />
+          <UpdateStudentsModal isOpen={openModal === "update"} onClose={close} onUpdate={handleUpdateStudents} onPhotosUpdated={refreshStudents} />
         )}
 
         <StudentExportModal

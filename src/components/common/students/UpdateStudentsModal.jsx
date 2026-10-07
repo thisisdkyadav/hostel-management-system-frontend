@@ -20,6 +20,7 @@ import ConsistencyCheckTab from "./update-students/ConsistencyCheckTab"
 import BatchAssignmentTab from "./update-students/BatchAssignmentTab"
 import { escapeCsvValue as escapeCSV } from "@/utils/csvExport"
 import GroupsAssignmentTab from "./update-students/GroupsAssignmentTab"
+import ProfilePicturesTab from "./update-students/ProfilePicturesTab"
 
 // Reusable styles using theme CSS variables
 const styles = {
@@ -236,7 +237,7 @@ const uniqueNonEmptyValues = (values = []) => {
 }
 
 
-const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
+const UpdateStudentsModal = ({ isOpen, onClose, onUpdate, onPhotosUpdated }) => {
   const { toast } = useToast()
   const { on, isConnected } = useSocket()
 
@@ -246,6 +247,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [basicInvalidCellMap, setBasicInvalidCellMap] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [photosUploading, setPhotosUploading] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
@@ -1395,6 +1397,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   }
 
   function handleCloseModal() {
+    if (isUpdating || photosUploading) return
     resetForm()
     setActiveTab("basic")
     onClose()
@@ -1423,6 +1426,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     { id: "rollCheck", name: "Check Roll Numbers", icon: <Search /> },
     { id: "consistency", name: "Data Consistency", icon: <FileSearch /> },
     { id: "dayScholar", name: "Day Scholar", icon: <House /> },
+    { id: "profilePictures", name: "Profile Pictures", icon: <User /> },
   ]
 
 
@@ -1433,7 +1437,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   if (!isOpen) return null
 
   return (
-    <Modal title="Update Students in Bulk" onClose={handleCloseModal} width={1280} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
+    <Modal title="Update Students in Bulk" onClose={handleCloseModal} width={1280} tabs={tabs} activeTab={activeTab} onTabChange={(tab) => { if (!isUpdating && !photosUploading) setActiveTab(tab) }}>
       {activeTab === "basic" && (
         <>
           {step === 1 && (
@@ -1739,6 +1743,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         />
       )}
 
+      {activeTab === "profilePictures" && (
+        <ProfilePicturesTab onBusyChange={setPhotosUploading} onComplete={onPhotosUpdated} />
+      )}
+
       <div style={styles.footer}>
         {activeTab === "basic" && step === 1 ? (
           <Button onClick={handleCloseModal} variant="secondary" size="md" disabled={isUpdating}>
@@ -1775,12 +1783,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             Update Another File
           </Button>
         ) : (
-          <Button onClick={handleCloseModal} variant="secondary" size="md" disabled={isUpdating}>
+          <Button onClick={handleCloseModal} variant="secondary" size="md" disabled={isUpdating || photosUploading}>
             Cancel
           </Button>
         )}
 
-        {(step === 2 || activeTab !== "basic") && (
+        {activeTab !== "profilePictures" && (step === 2 || activeTab !== "basic") && (
           <Button
             onClick={handleUpdate}
             variant="primary"

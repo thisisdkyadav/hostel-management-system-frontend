@@ -62,6 +62,15 @@ const unwrapListFromKey = (key) => (response) => {
 }
 
 export const studentApi = {
+  uploadProfilePhoto: (file, override = false) => {
+    const formData = new FormData()
+    formData.append("override", String(override))
+    formData.append("image", file, file.name)
+    return apiClient
+      .upload("/students/profiles-admin/profiles/profile-picture", formData, { signal: AbortSignal.timeout(120000) })
+      .then(unwrapStandardResponse)
+  },
+
   /**
    * Import students in bulk
    * @param {Array} students - Array of student data
