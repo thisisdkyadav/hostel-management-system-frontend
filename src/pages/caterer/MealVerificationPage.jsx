@@ -28,6 +28,12 @@ const STATUS_TONES = {
   "on-rebate": "warning",
 }
 
+const STATUS_ROW_BACKGROUNDS = {
+  verified: "var(--color-success-bg)",
+  duplicate: "var(--color-warning-bg)",
+  "wrong-caterer": "var(--color-danger-bg)",
+}
+
 const formatTime = (value) => {
   if (!value) return "-"
   const date = new Date(value)
@@ -211,7 +217,7 @@ const MealVerificationPage = () => {
                   </Table.Header>
                   <Table.Body>
                     {visibleEntries.map((entry) => (
-                      <Table.Row key={entry.id}>
+                      <Table.Row key={entry.id} style={{ backgroundColor: STATUS_ROW_BACKGROUNDS[entry.status] }}>
                         <Table.Cell>
                           <HStack gap="small" align="center">
                             <Clock size={14} style={{ color: "var(--color-text-muted)" }} />
