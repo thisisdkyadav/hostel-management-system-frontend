@@ -29,9 +29,9 @@ const STATUS_TONES = {
 }
 
 const STATUS_ROW_BACKGROUNDS = {
-  verified: "var(--color-success-bg)",
-  duplicate: "var(--color-warning-bg)",
-  "wrong-caterer": "var(--color-danger-bg)",
+  verified: "color-mix(in srgb, var(--color-success) 4%, var(--color-bg-primary))",
+  duplicate: "color-mix(in srgb, var(--color-warning) 4%, var(--color-bg-primary))",
+  "wrong-caterer": "color-mix(in srgb, var(--color-danger) 4%, var(--color-bg-primary))",
 }
 
 const formatTime = (value) => {
