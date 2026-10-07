@@ -202,15 +202,15 @@ const categoryText = (s) =>
 /**
  * The trade a maintenance member practises: its label, its mark, and its
  * colour twice over — `badge` is an hzero Badge variant, `tone` is the CSS
- * colour a StatCard takes. Seven trades need seven distinguishable colours,
- * which is exactly the palette; Attendant is teal rather than the pink the
+ * colour a StatCard takes. Attendant is teal rather than the pink the
  * old card used, because that pink is HMS's gender token and has no business
  * labelling a job.
  */
 export const MAINTENANCE_CATEGORIES = [
   { value: "Plumbing", label: "Plumber", icon: Wrench, badge: "primary", tone: "var(--color-primary)" },
   { value: "Electrical", label: "Electrician", icon: Bolt, badge: "warning", tone: "var(--color-warning)" },
-  { value: "Civil", label: "Carpenter", icon: Hammer, badge: "orange", tone: "var(--color-orange-text)" },
+  { value: "Civil", label: "Civil", icon: Building2, badge: "orange", tone: "var(--color-orange-text)" },
+  { value: "Carpenter", label: "Carpenter", icon: Hammer, badge: "orange", tone: "var(--color-orange-text)" },
   { value: "Cleanliness", label: "House keeping", icon: Brush, badge: "success", tone: "var(--color-success)" },
   { value: "Internet", label: "IT technician", icon: Wifi, badge: "purple", tone: "var(--color-purple-text)" },
   { value: "Attendant", label: "Attendant", icon: User, badge: "teal", tone: "var(--color-teal-text)" },
@@ -375,7 +375,7 @@ export const STAFF_TYPES = {
     search: (s) => [s.name, s.email, s.category, maintenanceCategory(s.category).label],
 
     // Every trade, not a sample of them: the point of this row is to see the
-    // shape of the workforce at a glance, and three of seven is not a shape.
+    // shape of the workforce at a glance.
     stats: (list) => [
       { title: "Total staff", value: list.length, subtitle: "All trades", icon: Wrench, color: "var(--color-primary)" },
       ...MAINTENANCE_CATEGORIES.map((c) => ({
