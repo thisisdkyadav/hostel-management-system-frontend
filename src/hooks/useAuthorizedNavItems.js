@@ -1,11 +1,15 @@
 import { useMemo } from "react"
 import useAuthz from "./useAuthz"
+import { isProductionEnvironment } from "../config/environment"
 
 export const filterNavItemsByAccess = (items = [], canRouteByPath, canRouteByKey) => {
   if (!Array.isArray(items)) return []
   if (typeof canRouteByPath !== "function") return []
 
   return items.filter((item) => {
+    if (isProductionEnvironment && (
+      item?.routeKey?.endsWith(".internAccommodation") || item?.path?.endsWith("/intern-accommodation")
+    )) return false
     if (item?.alwaysVisible) return true
     if (!item?.path) return true
     if (item.routeKey && typeof canRouteByKey === "function") {
