@@ -29,9 +29,9 @@ const STATUS_TONES = {
 }
 
 const STATUS_ROW_BACKGROUNDS = {
-  verified: "color-mix(in srgb, var(--color-success) 4%, var(--color-bg-primary))",
+  verified: "var(--color-bg-primary)",
   duplicate: "color-mix(in srgb, var(--color-warning) 4%, var(--color-bg-primary))",
-  "wrong-caterer": "color-mix(in srgb, var(--color-danger) 4%, var(--color-bg-primary))",
+  "outside-meal-time": "color-mix(in srgb, var(--color-warning) 4%, var(--color-bg-primary))",
 }
 
 const formatTime = (value) => {
@@ -217,7 +217,7 @@ const MealVerificationPage = () => {
                   </Table.Header>
                   <Table.Body>
                     {visibleEntries.map((entry) => (
-                      <Table.Row key={entry.id} style={{ backgroundColor: STATUS_ROW_BACKGROUNDS[entry.status] }}>
+                      <Table.Row key={entry.id} style={{ backgroundColor: STATUS_ROW_BACKGROUNDS[entry.status] || "color-mix(in srgb, var(--color-danger) 4%, var(--color-bg-primary))" }}>
                         <Table.Cell>
                           <HStack gap="small" align="center">
                             <Clock size={14} style={{ color: "var(--color-text-muted)" }} />
