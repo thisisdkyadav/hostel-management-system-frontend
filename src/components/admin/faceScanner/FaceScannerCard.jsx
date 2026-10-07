@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Grid, Heading, HStack, Surface, Text, useConfirm, useToast, VStack } from "hzero"
 import { faceScannerApi } from "../../../service"
 import { ArrowLeft, ArrowRight, Building2, Camera, Key, Pencil, Power, Trash2 } from "lucide-react"
+import AddFaceScannerModal from "./AddFaceScannerModal"
 
 const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     const { toast } = useToast()
@@ -9,6 +10,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     const [showCredentials, setShowCredentials] = useState(false)
     const [newCredentials, setNewCredentials] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [showSettings, setShowSettings] = useState(false)
 
     const getDirectionStyle = (direction) => {
         if (direction === "in") {
@@ -128,6 +130,11 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                 )}
 
                 <HStack align="center" gap={2} size="sm" color="muted">
+                    <span>Provider: {scanner.provider === "zkteco" ? "ZKTeco" : scanner.provider === "time-watch" ? "Time Watch" : "Legacy (unconfigured)"}</span>
+                </HStack>
+                {scanner.provider === "zkteco" && <Text size="sm" color="muted">Device name: {scanner.deviceName}</Text>}
+
+                <HStack align="center" gap={2} size="sm" color="muted">
                     <span>Username: {scanner.username}</span>
                 </HStack>
 
@@ -157,6 +164,9 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
 
             {/* Action Buttons */}
             <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
+                <Button onClick={() => setShowSettings(true)} variant="secondary" size="md" fullWidth disabled={loading}>
+                    <Pencil size="1em" /> Scanner Settings
+                </Button>
                 <Grid cols={2} gap={2}>
                     <Button onClick={handleRegeneratePassword} variant="secondary" size="md" fullWidth disabled={loading}>
                         <Key size="1em" />
@@ -172,6 +182,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     Delete Scanner
                 </Button>
             </CardFooter>
+            {showSettings && <AddFaceScannerModal show onClose={() => setShowSettings(false)} onAdd={onUpdate} scanner={scanner} />}
         </Card>
     )
 }

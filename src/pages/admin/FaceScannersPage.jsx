@@ -38,7 +38,12 @@ const FaceScannersPage = () => {
     }
 
     useEffect(() => {
-        fetchScanners()
+        let active = true
+        faceScannerApi.getAllScanners()
+            .then((response) => { if (active) setScanners(response?.data || []) })
+            .catch((error) => console.error("Error fetching scanners:", error))
+            .finally(() => { if (active) setLoading(false) })
+        return () => { active = false }
     }, [])
 
     // Filter scanners based on tab and search
@@ -55,7 +60,9 @@ const FaceScannersPage = () => {
             const matchesName = scanner.name?.toLowerCase().includes(search)
             const matchesHostel = scanner.hostelId?.name?.toLowerCase().includes(search)
             const matchesUsername = scanner.username?.toLowerCase().includes(search)
-            if (!matchesName && !matchesHostel && !matchesUsername) return false
+            const matchesDeviceName = scanner.deviceName?.toLowerCase().includes(search)
+            const matchesProvider = scanner.provider?.toLowerCase().includes(search)
+            if (!matchesName && !matchesHostel && !matchesUsername && !matchesDeviceName && !matchesProvider) return false
         }
 
         return true
@@ -103,7 +110,7 @@ const FaceScannersPage = () => {
                 </Page.Body>
             </Page>
 
-            <AddFaceScannerModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchScanners} />
+            {showAddModal && <AddFaceScannerModal show onClose={() => setShowAddModal(false)} onAdd={fetchScanners} />}
             <LiveScanMonitorModal isOpen={showLiveMonitor} onClose={() => setShowLiveMonitor(false)} />
         </>
     )

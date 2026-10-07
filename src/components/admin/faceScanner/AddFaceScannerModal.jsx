@@ -1,17 +1,20 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Alert, Button, Field, HStack, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
 import { faceScannerApi, adminApi } from "../../../service"
-import { useEffect } from "react"
 
-const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
+const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
     const { toast } = useToast()
-    const [formData, setFormData] = useState({
-        name: "",
-        type: "hostel-gate",
-        direction: "in",
-        hostelId: "",
-        catererId: "",
-    })
+    const [formData, setFormData] = useState(() => ({
+        name: scanner?.name || "",
+        provider: scanner ? scanner.provider || "" : "time-watch",
+        deviceName: scanner?.deviceName || "",
+        username: "",
+        password: "",
+        type: scanner?.type || "hostel-gate",
+        direction: scanner?.direction || "in",
+        hostelId: scanner?.hostelId?._id || scanner?.hostelId || "",
+        catererId: scanner?.catererId?._id || scanner?.catererId || "",
+    }))
     const [hostels, setHostels] = useState([])
     const [caterers, setCaterers] = useState([])
     const [loading, setLoading] = useState(false)
@@ -37,7 +40,6 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
         }
         if (show) {
             fetchOptions()
-            setCredentials(null)
         }
     }, [show])
 
@@ -60,30 +62,43 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
         setLoading(true)
 
         try {
-            const response = await faceScannerApi.createScanner(formData)
+            const { username, password, provider, deviceName, ...settings } = formData
+            const payload = {
+                ...settings,
+                ...(provider ? { provider } : {}),
+                ...(provider === "zkteco" ? { deviceName: deviceName.trim() } : {}),
+            }
+            if (provider === "zkteco" && (username || password)) {
+                if (!username.trim() || !password) {
+                    toast.error("Enter both username and password to use existing credentials.")
+                    return
+                }
+                payload.username = username.trim()
+                payload.password = password
+            }
+            const response = scanner
+                ? await faceScannerApi.updateScanner(scanner._id, payload)
+                : await faceScannerApi.createScanner(payload)
             if (response?.success) {
-                setCredentials(response.data.credentials)
                 onAdd()
+                if (scanner) {
+                    toast.success("Scanner settings saved.")
+                    onClose()
+                } else {
+                    setCredentials(response.data.credentials)
+                }
             } else {
-                toast.error("Failed to create scanner. Please try again.")
+                toast.error(response?.message || "Failed to save scanner. Please try again.")
             }
         } catch (error) {
-            console.error("Error creating scanner:", error)
-            toast.error("Failed to create scanner. Please try again.")
+            console.error("Error saving scanner:", error)
+            toast.error(error?.response?.data?.message || error?.message || "Failed to save scanner. Please try again.")
         } finally {
             setLoading(false)
         }
     }
 
     const handleClose = () => {
-        setFormData({
-            name: "",
-            type: "hostel-gate",
-            direction: "in",
-            hostelId: "",
-            catererId: "",
-        })
-        setCredentials(null)
         onClose()
     }
 
@@ -109,13 +124,19 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
         { value: "dining-meal", label: "Dining Meal" },
     ]
 
+    const providerOptions = [
+        ...(scanner && !scanner.provider ? [{ value: "", label: "Legacy (current behavior)" }] : []),
+        { value: "time-watch", label: "Time Watch" },
+        { value: "zkteco", label: "ZKTeco" },
+    ]
+
     const directionOptions = [
         { value: "in", label: "Entry (Check In)" },
         { value: "out", label: "Exit (Check Out)" },
     ]
 
     return (
-        <Modal isOpen={show} title={credentials ? "Scanner Created" : "Add Face Scanner"} onClose={handleClose} width={500}>
+        <Modal isOpen={show} title={credentials ? "Scanner Created" : scanner ? "Scanner Settings" : "Add Face Scanner"} onClose={handleClose} width={500}>
             {credentials ? (
                 <VStack gap="large">
                     <Alert type="success">
@@ -126,6 +147,10 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                             Save these credentials now. The password will not be shown again.
                         </Text>
                     </Alert>
+
+                    {formData.provider === "zkteco" && (
+                        <Text size="sm">Device name: {formData.deviceName.trim()}. Configure this exact name as the terminal alias and use the credentials below for Basic authentication.</Text>
+                    )}
 
                     <Field label="Username">
                         <HStack gap="small">
@@ -154,9 +179,31 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
             ) : (
                 <form onSubmit={handleSubmit}>
                     <VStack gap="large">
+                        <Field label="Provider" htmlFor="provider" required>
+                            <Select name="provider" id="provider" value={formData.provider} onChange={handleChange} options={providerOptions} required={!scanner} />
+                        </Field>
+
                         <Field label="Scanner Name" htmlFor="name" required>
                             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Dining Hall Breakfast Scanner" required />
                         </Field>
+
+                        {formData.provider === "zkteco" && (
+                            <>
+                                <Field label="Device Name (TERMINAL_ALIAS)" htmlFor="deviceName" required>
+                                    <Input name="deviceName" id="deviceName" value={formData.deviceName} onChange={handleChange} placeholder="e.g., m1" required />
+                                    <Text size="sm" color="muted">Must match the terminal alias exactly. Each ZKTeco device needs a unique name.</Text>
+                                </Field>
+                                <Text size="sm" color="muted">
+                                    {scanner ? `Current username: ${scanner.username}. Leave both fields blank to keep the credentials.` : "Leave both credential fields blank to generate credentials, or enter an existing username and password shared by your devices."}
+                                </Text>
+                                <Field label="Username (Optional)" htmlFor="username">
+                                    <Input name="username" id="username" value={formData.username} onChange={handleChange} autoComplete="off" />
+                                </Field>
+                                <Field label="Password (Optional)" htmlFor="password">
+                                    <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} autoComplete="new-password" />
+                                </Field>
+                            </>
+                        )}
 
                         <HStack gap="medium">
                             <div style={{ flex: 1 }}>
@@ -185,7 +232,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                                 Cancel
                             </Button>
                             <Button type="submit" variant="primary" size="md" disabled={loading}>
-                                {loading ? "Creating..." : "Create Scanner"}
+                                {loading ? "Saving..." : scanner ? "Save Settings" : "Create Scanner"}
                             </Button>
                         </HStack>
                     </VStack>
