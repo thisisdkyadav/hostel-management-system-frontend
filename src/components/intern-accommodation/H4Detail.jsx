@@ -25,7 +25,8 @@ import { useAuth } from "@/contexts/AuthProvider"
 import { queryKeys } from "@/lib/query"
 import { h4Api, h4FileUrl } from "@/service/modules/intern-accommodation.api"
 import { date, money } from "./h4.format"
-import { MetaBar, JourneyTimeline } from "@/components/accommodation/AccommodationKit"
+import { MetaBar } from "@/components/accommodation/AccommodationKit"
+import H4Timeline from "./H4Timeline"
 import H4RoomCheck from "./H4RoomCheck"
 import H4PaymentForm from "./H4PaymentForm"
 import H4ScheduleForm from "./H4ScheduleForm"
@@ -261,17 +262,6 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
               </VStack>
             </DetailSection>
 
-            <DetailSection title="Timeline" icon={CalendarDays}>
-              <JourneyTimeline status={r.status} timeline={r.timeline} />
-              <VStack gap={2}>
-                {r.timeline.slice().reverse().map((entry, i) => (
-                  <div key={i}>
-                    <Text size="sm">{entry.note || entry.status}</Text>
-                    <Text size="xs" color="muted">{new Date(entry.at).toLocaleString("en-IN")}</Text>
-                  </div>
-                ))}
-              </VStack>
-            </DetailSection>
           </VStack>
 
           <VStack gap={4}>
@@ -430,6 +420,9 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
             )}
           </VStack>
         </Grid>
+        <DetailSection title="Timeline" icon={CalendarDays}>
+          <H4Timeline request={r} />
+        </DetailSection>
       </VStack>
     </Modal>
   )

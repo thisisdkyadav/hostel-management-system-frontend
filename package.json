@@ -4,6 +4,7 @@
   "version": "0.2.0",
   "type": "module",
   "scripts": {
+    "test:h4-timeline": "node --test scripts/test-h4-timeline.mjs",
     "dev": "vite",
     "build": "node scripts/generate-meta.js && vite build",
     "lint": "eslint .",
