@@ -18,6 +18,7 @@ import {
   CalendarDays,
 
   CalendarOff,
+  ClipboardList,
   Search,
   Trophy,
   MessageCircle,
@@ -274,7 +275,8 @@ export const getSuperAdminNavItems = (handleLogout) => [
 export const getCatererNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
   { name: "Current Meal", icon: UtensilsCrossed, section: "main", path: "/caterer/meal-verification", routeKey: "route.caterer.mealVerification" },
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/caterer/intern-accommodation", routeKey: "route.dining.internAccommodation" },
+  { name: "Meal Records", icon: ClipboardList, section: "main", path: "/caterer/meal-records", routeKey: "route.caterer.mealRecords" },
+  { name: "Rebates", icon: CalendarOff, section: "main", path: "/caterer/rebates", routeKey: "route.caterer.rebates" },
   createLogoutItem(handleLogout),
 ]
 

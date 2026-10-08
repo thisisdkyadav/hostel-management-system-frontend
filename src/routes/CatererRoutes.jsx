@@ -1,4 +1,3 @@
-const InternAccommodationPage = lazy(() => import("../pages/common/InternAccommodationPage"))
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 import CatererLayout from "../layouts/CatererLayout"
@@ -9,13 +8,14 @@ import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const DashboardPage = lazy(() => import("../pages/caterer/DashboardPage"))
 const MealVerificationPage = lazy(() => import("../pages/caterer/MealVerificationPage"))
+const MealRecordsPage = lazy(() => import("../pages/caterer/MealRecordsPage"))
+const RebatesPage = lazy(() => import("../pages/caterer/RebatesPage"))
 
 const CatererRoutes = () => (
   <ProtectedRoute allowedRoles={["Dining"]} allowedSubRoles={["Caterer"]}>
     <Suspense fallback={<LoadingPage message="Loading Caterer Portal..." />}>
       <Routes>
         <Route element={<CatererLayout />}>
-          <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.dining.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
           <Route
             index
             element={
@@ -29,6 +29,22 @@ const CatererRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.caterer.mealVerification" fallback={<NotFoundPage />}>
                 <MealVerificationPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="meal-records"
+            element={
+              <RouteAccessGuard routeKey="route.caterer.mealRecords" fallback={<NotFoundPage />}>
+                <MealRecordsPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="rebates"
+            element={
+              <RouteAccessGuard routeKey="route.caterer.rebates" fallback={<NotFoundPage />}>
+                <RebatesPage />
               </RouteAccessGuard>
             }
           />

@@ -35,6 +35,15 @@ export const queryKeys = {
     profiles: () => [...queryKeys.visitors.all, "profiles"],
     stats: (hostelId) => [...queryKeys.visitors.all, "stats", hostelId ?? null],
   },
+  caterer: {
+    all: ["caterer"],
+    mealRecordOptions: () => [...queryKeys.caterer.all, "meal-record-options"],
+    mealRecordOverview: (params) => [...queryKeys.caterer.all, "meal-record-overview", params ?? {}],
+    mealRecord: (params) => [...queryKeys.caterer.all, "meal-record", params ?? {}],
+    rebateOverview: (params) => [...queryKeys.caterer.all, "rebate-overview", params ?? {}],
+    rebateDay: (date) => [...queryKeys.caterer.all, "rebate-day", date],
+    rebates: (params) => [...queryKeys.caterer.all, "rebates", params ?? {}],
+  },
   dining: {
     all: ["dining"],
     portalState: () => [...queryKeys.dining.all, "portal-state"],
