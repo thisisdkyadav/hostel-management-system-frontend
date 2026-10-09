@@ -47,6 +47,7 @@ import {
   BadgeCheck,
   Wallet,
   Map,
+  Radio,
 } from "lucide-react"
 
 // ============================================
@@ -272,11 +273,15 @@ export const getSuperAdminNavItems = (handleLogout) => [
   createLogoutItem(handleLogout),
 ]
 
+/** sessionStorage key: the last caterer page shown inside the layout, so the full-screen Live Feed can close back to it. */
+export const CATERER_LAST_PATH_KEY = "hms.caterer.lastPath"
+
 export const getCatererNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
   { name: "Current Meal", icon: UtensilsCrossed, section: "main", path: "/caterer/meal-verification", routeKey: "route.caterer.mealVerification" },
   { name: "Meal Records", icon: ClipboardList, section: "main", path: "/caterer/meal-records", routeKey: "route.caterer.mealRecords" },
   { name: "Rebates", icon: CalendarOff, section: "main", path: "/caterer/rebates", routeKey: "route.caterer.rebates" },
+  { name: "Live Feed", icon: Radio, section: "main", path: "/caterer/live", routeKey: "route.caterer.mealVerification", accent: "success", badge: { label: "Live", pulse: true } },
   createLogoutItem(handleLogout),
 ]
 

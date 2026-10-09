@@ -37,6 +37,7 @@ export const queryKeys = {
   },
   caterer: {
     all: ["caterer"],
+    mealFeed: (params) => [...queryKeys.caterer.all, "meal-feed", params ?? {}],
     mealRecordOptions: () => [...queryKeys.caterer.all, "meal-record-options"],
     mealRecordOverview: (params) => [...queryKeys.caterer.all, "meal-record-overview", params ?? {}],
     mealRecord: (params) => [...queryKeys.caterer.all, "meal-record", params ?? {}],

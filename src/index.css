@@ -293,6 +293,78 @@ html[data-admin-sidebar="v5"] .sidebar-scrollbar::-webkit-scrollbar {
   }
 }
 
+/* Sidebar row accents: a persistent green tint, left bar and "Live" pill (see SidebarNavItem / LiveTag). */
+.sidebar-accent-success {
+  --sidebar-live-bg: color-mix(in srgb, var(--color-success) 10%, transparent);
+  container: sidebar-item / inline-size;
+}
+
+.sidebar-accent-success:hover {
+  --sidebar-live-bg: color-mix(in srgb, var(--color-success) 18%, transparent);
+}
+
+.sidebar-accent-success::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--spacing-2);
+  left: 0;
+  width: var(--border-3);
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  pointer-events: none;
+}
+
+.sidebar-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: var(--spacing-0-5) var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-success) 16%, transparent);
+  color: var(--color-success-text);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.sidebar-live-dot {
+  position: relative;
+  width: var(--spacing-1-5);
+  height: var(--spacing-1-5);
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+}
+
+.sidebar-live-dot[data-pulse] {
+  animation: sidebarLivePulse 1.8s ease-out infinite;
+}
+
+/* A compact sidebar has no room for the word: keep only the dot. */
+@container sidebar-item (max-width: 7rem) {
+  .sidebar-live-tag {
+    padding: 0;
+    background: transparent;
+  }
+
+  .sidebar-live-text {
+    display: none;
+  }
+}
+
+@keyframes sidebarLivePulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 55%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 var(--spacing-1-5) transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-live-dot[data-pulse] {
+    animation: none;
+  }
+}
+
 @keyframes sidebarListIn {
   from {
     opacity: 0;

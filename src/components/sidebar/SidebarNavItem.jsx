@@ -2,6 +2,7 @@ import { Pin } from "lucide-react"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "./NewBadge"
 import CategoryCountBadge from "./CategoryCountBadge"
+import LiveTag from "./LiveTag"
 import { SIDEBAR_MOTION_CURVE } from "./motion"
 
 /**
@@ -11,6 +12,9 @@ import { SIDEBAR_MOTION_CURVE } from "./motion"
  *
  * `accent` opts the row into category-colored selected/hover states.
  * `sharedFill` means a sliding pill behind the list owns the selected fill.
+ *
+ * Items may also carry `accent: "success"` (a persistent green tint, left bar and icon) and
+ * `badge: { label, pulse }` (an inline pill with a pulsing dot). A numeric `badge` stays the count pip.
  */
 const SidebarNavItem = ({
   item,
@@ -26,6 +30,8 @@ const SidebarNavItem = ({
   lightFill = false,
 }) => {
   const useAccent = !!accent
+  const isLive = item.accent === "success"
+  const tag = item.badge && typeof item.badge === "object" ? item.badge : null
   const tint = (percent) => `color-mix(in srgb, ${accent} ${percent}%, transparent)`
   const displayName = label || item.name
   const pinTitle = pinLocked
@@ -82,8 +88,16 @@ const SidebarNavItem = ({
     }
   }
 
+  if (isLive) {
+    buttonStyle = { ...buttonStyle, "--nav-accent": "var(--color-success)" }
+    if (!isActive) {
+      buttonStyle = { ...buttonStyle, backgroundColor: "var(--sidebar-live-bg)", color: "var(--color-text-body)" }
+      iconColor = "var(--color-success)"
+    }
+  }
+
   return (
-    <li className="group relative">
+    <li className={`group relative ${isLive ? "sidebar-accent-success" : ""}`}>
       <button
         type="button"
         onClick={() => onNavigate(item)}
@@ -127,6 +141,7 @@ const SidebarNavItem = ({
             {displayName}
           </span>
           {isNew && <NewTag />}
+          {tag && <LiveTag label={tag.label} pulse={tag.pulse} />}
         </span>
       </button>
 
