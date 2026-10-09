@@ -15,7 +15,7 @@ import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupCont
 // hzero is the only component source now; the @/components/ui shim is gone
 // that re-exports it verbatim.
 import { Badge, Checkbox, EmptyState, ErrorState, Grid, HStack, Page, Panel, Popover, Progress, Skeleton, SkeletonTable, StatRow, Table, Text, ToggleButtonGroup, VStack } from "hzero"
-import { formatCurrency } from "../../components/dining/diningBillingHelpers"
+import DiningInsights from "../../components/dining/admin-insights/DiningInsights"
 import { ADMIN_DASHBOARD_SECTIONS } from "../../constants/navigationConfig"
 import "./DashboardPage.css"
 
@@ -757,44 +757,6 @@ const StaffRosterFeed = ({ loading, staff }) => {
   )
 }
 
-const DiningTodayFeed = ({ loading, dining }) => {
-  const today = dining?.today || {}
-  const meal = today.mealSlot || "No active meal"
-  return (
-    <Feed title="Today's meal" icon={UtensilsCrossed} accent="success" count={today.allocated || 0} to="/admin/dining-periods" loading={loading}>
-      <StatRow dot tone="info" label="Meal slot" value={meal} />
-      <MetricRow to="/admin/dining-periods" tone="primary" label="Allocated" value={today.allocated || 0} />
-      <MetricRow tone="success" label="Verified" value={today.verified || 0} />
-      <MetricRow tone="warning" emphasis={(today.pending || 0) > 0} label="Pending" value={today.pending || 0} />
-      <MetricRow to="/admin/dining-rebates" tone="info" label="On rebate" value={today.onRebate || 0} />
-    </Feed>
-  )
-}
-
-const DiningRebatesFeed = ({ loading, dining }) => {
-  const rebates = dining?.rebates || {}
-  const pending = rebates.pending || 0
-  return (
-    <Feed title="Rebates" icon={ClipboardCheck} accent="warning" count={pending} to="/admin/dining-rebates" loading={loading}>
-      <MetricRow to="/admin/dining-rebates" tone="warning" emphasis={pending > 0} label="Pending approval" value={pending} />
-      <MetricRow tone="success" label="Approved today" value={rebates.approvedToday || 0} />
-      <MetricRow tone="info" label="Upcoming approved" value={rebates.upcoming || 0} />
-    </Feed>
-  )
-}
-
-const DiningBillingFeed = ({ loading, dining }) => {
-  const billing = dining?.billing || {}
-  return (
-    <Feed title="Billing" icon={Wallet} accent="info" count={billing.duesCount || 0} to="/admin/dining-billing" loading={loading}>
-      <StatRow as={Link} to="/admin/dining-billing" dot tone="primary" label="Allocated" value={formatCurrency(billing.totalAllocated)} />
-      <StatRow dot tone="warning" label="Charged" value={formatCurrency(billing.totalCharged)} />
-      <StatRow dot tone="success" label="Outstanding" value={formatCurrency(billing.totalOutstanding)} />
-      <MetricRow to="/admin/dining-billing" tone="danger" emphasis={(billing.duesCount || 0) > 0} label="In dues" value={billing.duesCount || 0} />
-    </Feed>
-  )
-}
-
 const ActionCenter = ({ loading, error, dashboardData, approvalCounts, approvalsLoading }) => {
   const events = dashboardData?.events || []
   const complaints = dashboardData?.complaints || {}
@@ -906,7 +868,6 @@ const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, 
   const complaints = dashboardData?.complaints || {}
   const inProcess = dashboardData?.inProcess || []
   const staff = dashboardData?.staff || []
-  const dining = dashboardData?.dining
   const ops = dashboardData?.ops || {}
   const complaintsOpen = (complaints.pending || 0) + (complaints.inProgress || 0) + (complaints.forwardedToIDO || 0)
   const inProcessTotal = inProcess.reduce((sum, item) => sum + (item.count || 0), 0)
@@ -1202,20 +1163,6 @@ const SectionLower = ({ section, loading, error, dashboardData, approvalCounts, 
     )
   }
 
-  if (section === "dining") {
-    return (
-      <Panel padded={false}>
-        {error ? <ErrorState message={error} /> : (
-          <Panel.Columns>
-            <DiningTodayFeed loading={loading} dining={dining} />
-            <DiningRebatesFeed loading={loading} dining={dining} />
-            <DiningBillingFeed loading={loading} dining={dining} />
-          </Panel.Columns>
-        )}
-      </Panel>
-    )
-  }
-
   return (
     <>
       <Panel padded={false}>
@@ -1337,7 +1284,10 @@ const DashboardPage = ({ section = "home" }) => {
         <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
       </PageHeader>
 
-      <Page.Body padded={false} className="admin-dashboard p-[var(--spacing-5)]">
+      <Page.Body padded={false} className={`admin-dashboard p-[var(--spacing-5)]${section === "dining" ? " dxi-body" : ""}`}>
+        {section === "dining" ? (
+          <DiningInsights billing={dashboardData?.dining?.billing} rebates={dashboardData?.dining?.rebates} />
+        ) : (
         <VStack gap={5}>
           <Grid cols={{ base: 1, lg: 2 }} gap={5}>
             <Panel
@@ -1388,6 +1338,7 @@ const DashboardPage = ({ section = "home" }) => {
             approvalsLoading={approvalsLoading}
           />
         </VStack>
+        )}
       </Page.Body>
     </Page>
   )

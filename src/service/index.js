@@ -59,6 +59,7 @@ export { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
 export { expenditureApi } from "./modules/expenditure.api"
 export { electionsApi } from "./modules/elections.api"
 export { catererApi } from "./modules/caterer.api"
+export { diningInsightsApi } from "./modules/diningInsights.api"
 
 // NOTE:
 // Keep this module as named re-exports only.

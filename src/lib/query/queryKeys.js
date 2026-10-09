@@ -45,6 +45,10 @@ export const queryKeys = {
     rebateDay: (date) => [...queryKeys.caterer.all, "rebate-day", date],
     rebates: (params) => [...queryKeys.caterer.all, "rebates", params ?? {}],
   },
+  diningInsights: {
+    all: ["dining-insights"],
+    overview: (params) => [...queryKeys.diningInsights.all, "overview", params ?? {}],
+  },
   dining: {
     all: ["dining"],
     portalState: () => [...queryKeys.dining.all, "portal-state"],
