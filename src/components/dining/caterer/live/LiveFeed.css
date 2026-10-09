@@ -653,14 +653,6 @@
   scrollbar-width: thin;
 }
 
-@media (min-width: 1800px) {
-  .lf-stream-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-content: start;
-  }
-}
-
 .lf-row-wrap { display: grid; grid-template-rows: 1fr; }
 
 .lf-row-wrap[data-fresh] { animation: lf-slot-in 450ms var(--ease-spring) both; }
@@ -670,8 +662,9 @@
   grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   align-items: center;
   gap: var(--spacing-4);
-  min-height: 0;
-  padding: var(--spacing-2-5) var(--spacing-4);
+  min-height: var(--spacing-20);
+  padding: 0 var(--spacing-5) 0 0;
+  overflow: hidden;
   border: var(--border-1) solid var(--color-border-primary);
   border-left: var(--border-4) solid transparent;
   border-radius: var(--radius-xl);
@@ -700,20 +693,23 @@
 .lf-row-wrap[data-fresh="warning"] .lf-row { animation: lf-flash-warning 3.2s ease-out both; }
 
 .lf-row-photo {
+  /* Flush with the row's edges: the photo fills the full row height, clipped by the row's radius. */
   container-type: size;
-  width: var(--spacing-14);
-  height: var(--spacing-14);
+  align-self: stretch;
+  width: var(--spacing-20);
+  height: auto;
   padding: 0;
   overflow: hidden;
-  border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
+  border: 0;
+  border-right: var(--border-1) solid var(--color-border-primary);
+  border-radius: 0;
   background: var(--color-bg-tertiary);
   cursor: pointer;
 }
 
 .lf-row-photo:focus-visible {
   outline: var(--border-2) solid var(--color-border-focus);
-  outline-offset: var(--border-2);
+  outline-offset: calc(var(--border-2) * -1);
 }
 
 .lf-row-who { display: flex; flex-direction: column; gap: var(--spacing-0-5); min-width: 0; }
@@ -768,11 +764,6 @@
 @media (max-width: 640px) {
   .lf-row { grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--spacing-3); }
   .lf-row-source, .lf-row-time { display: none; }
-}
-
-@media (min-width: 1800px) {
-  .lf-row { gap: var(--spacing-3); padding: var(--spacing-2) var(--spacing-3); }
-  .lf-row-time { min-width: 4.5rem; }
 }
 
 /* ---- Empty states ---- */
