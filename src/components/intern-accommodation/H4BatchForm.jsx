@@ -17,6 +17,7 @@ import {
   Text,
   Textarea,
   VStack,
+  useToast,
 } from "hzero"
 import { Download, Plus, Trash2, Upload, Users } from "lucide-react"
 import { h4Api } from "@/service/modules/intern-accommodation.api"
@@ -50,6 +51,7 @@ const fromRequest = (r) => ({
   payerType: r.h4.payer.type,
   stay: { ...r.stay, fromDate: r.stay.fromDate?.slice(0, 10) || "", toDate: r.stay.toDate?.slice(0, 10) || "" },
 })
+const LOCKED_HINT = "Charges issued — use Change dates for date changes."
 const genderOptions = ["Male", "Female", "Other"].map((value) => ({ value, label: value }))
 const payerOptions = [
   { value: "intern", label: "Student" },
@@ -84,6 +86,9 @@ const template = () => {
 }
 export default function H4BatchForm({ options, existing, onClose, onSaved }) {
   const { user } = useAuth()
+  const { toast } = useToast()
+  const office = options.role === "Admin" && options.subRole === "Chief Warden Office"
+  const locked = !!(existing && office && existing.allotment?.hostelId)
   const personal = options.academicCategory !== "office" && user.role === "Academics"
   const firstStep = personal ? 1 : 0
   const steps = [
@@ -152,10 +157,11 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
     setError("")
     try {
       if (!draft && !confirmed) throw new Error("Confirm the student details and payer before submitting")
-      const body = { facultyUserId, students, draft, recommend }
+      const body = existing && office ? { facultyUserId, students } : { facultyUserId, students, draft, recommend }
       const result = existing
         ? await h4Api.edit(existing._id, { ...body, student: students[0], revision: existing.h4.revision })
         : await h4Api.create(body)
+      if (existing && office) toast.success("Changes saved")
       onSaved(result.data)
     } catch (e) {
       setError(e.message)
@@ -209,22 +215,24 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                 Back
               </Button>
             )}
-            <Button
-              variant="secondary"
-              onClick={() => submit(true)}
-              loading={busy}
-              disabled={busy || !facultyUserId}
-            >
-              Save draft
-            </Button>
+            {!(existing && office) && (
+              <Button
+                variant="secondary"
+                onClick={() => submit(true)}
+                loading={busy}
+                disabled={busy || !facultyUserId}
+              >
+                Save draft
+              </Button>
+            )}
             {step < 2 ? (
               <Button onClick={next}>Continue</Button>
             ) : (
               <>
                 <Button onClick={() => submit()} loading={busy} disabled={!confirmed || busy}>
-                  Submit{students.length > 1 ? ` ${students.length} students` : " request"}
+                  {existing && office ? "Save changes" : `Submit${students.length > 1 ? ` ${students.length} students` : " request"}`}
                 </Button>
-                {ownFaculty && (
+                {ownFaculty && !(existing && office) && (
                   <Button onClick={() => submit(false, true)} disabled={!confirmed || busy}>
                     Submit & recommend
                   </Button>
@@ -249,8 +257,10 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                   label: `${f.name} · ${f.email}`,
                 }))}
                 onChange={(e) => setFaculty(e.target.value)}
+                disabled={locked}
               />
             </Field>
+            {locked && <Text size="xs" color="muted">{LOCKED_HINT}</Text>}
             <Surface bg="secondary" padding={3} radius="md">
               <Text size="sm">Faculty → Office → Chief Warden → Payment → Room</Text>
             </Surface>
@@ -366,6 +376,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                   value={student.payerType}
                   options={payerOptions}
                   onChange={(e) => update("payerType", e.target.value)}
+                  disabled={locked}
                 />
               </Field>
               <Field label="Institute / organisation" required>
@@ -381,16 +392,18 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                 <Input value={student.department} onChange={(e) => update("department", e.target.value)} />
               </Field>
               <Field label="Arrival date" required>
-                <DatePicker value={student.stay.fromDate} onChange={(e) => stay("fromDate", e.target.value)} />
+                <DatePicker value={student.stay.fromDate} onChange={(e) => stay("fromDate", e.target.value)} disabled={locked} />
               </Field>
               <Field label="Departure date" required>
                 <DatePicker
                   value={student.stay.toDate}
                   min={student.stay.fromDate}
                   onChange={(e) => stay("toDate", e.target.value)}
+                  disabled={locked}
                 />
               </Field>
             </Grid>
+            {locked && <Text size="xs" color="muted">{LOCKED_HINT}</Text>}
             <Field label="Purpose" required>
               <Textarea rows={2} value={student.stay.purpose} onChange={(e) => stay("purpose", e.target.value)} />
             </Field>

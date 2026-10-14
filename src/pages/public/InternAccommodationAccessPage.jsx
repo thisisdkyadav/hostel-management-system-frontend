@@ -51,6 +51,12 @@ export default function InternAccommodationAccessPage() {
                         <Text size="sm">{p.status}</Text>
                       </HStack>
                     ))}
+                    {r.h4.caterer?.name && (
+                      <VStack gap={1}>
+                        <Text size="sm">Mess caterer: {r.h4.caterer.name}</Text>
+                        <Text size="xs" color="muted">Collect your mess card and other details from the hostel office.</Text>
+                      </VStack>
+                    )}
                     {!r.h4.amendment?.stage && (
                       <H4PaymentForm
                         request={{ ...r, qrUrl: r.hasQr ? h4AccessFileUrl(token, "qr") : undefined }}

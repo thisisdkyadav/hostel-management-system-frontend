@@ -116,6 +116,7 @@ export const queryKeys = {
     all: ["h4"],
     options: () => [...queryKeys.h4.all, "options"],
     list: (filters) => [...queryKeys.h4.all, "list", filters ?? {}],
+    stats: () => [...queryKeys.h4.all, "stats"],
     detail: (id) => [...queryKeys.h4.all, "detail", id],
     availability: (id, revision) => [...queryKeys.h4.all, "availability", id, revision ?? null],
   },

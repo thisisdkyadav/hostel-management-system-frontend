@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSearchParams } from "react-router-dom"
-import { Alert, Button, Checkbox, DataTable, Field, HStack, Input, Modal, Select, StatCards, StatusBadge, Tabs, Text, Textarea, VStack, useToast } from "hzero"
-import { Download, Plus, RefreshCw, Users } from "lucide-react"
+import { Alert, Button, Checkbox, DataTable, Field, HStack, Input, Modal, Select, StatCards, StatusBadge, Tabs, Text, Textarea, ToggleButtonGroup, VStack, useToast } from "hzero"
+import { Download, Plus, ReceiptText, RefreshCw, Users } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import PageHeader from "@/components/common/PageHeader"
 import { h4Api } from "@/service/modules/intern-accommodation.api"
@@ -13,6 +13,18 @@ import { money } from "@/components/intern-accommodation/h4.format"
 import { shortId } from "@/components/accommodation/AccommodationKit"
 import H4BatchForm from "@/components/intern-accommodation/H4BatchForm"
 import H4Detail from "@/components/intern-accommodation/H4Detail"
+import H4ChargesModal from "@/components/intern-accommodation/H4ChargesModal"
+import { BatchModal, BatchTable } from "@/components/intern-accommodation/H4Batches"
+import { groupByBatch } from "@/components/intern-accommodation/h4.batches"
+
+const VIEW_KEY = "h4.viewMode"
+const readViewMode = () => {
+  try {
+    return localStorage.getItem(VIEW_KEY) === "individual" ? "individual" : "batches"
+  } catch {
+    return "batches"
+  }
+}
 
 const stageFor = (r) => r.h4.amendment?.stage || r.currentStage
 const isMe = (r, user) => String(r.requesterUserId) === String(user._id || user.id)
@@ -27,6 +39,8 @@ const lanesFor = (user, options) => {
   if (options.canRecommend) lanes.push(l("faculty", "Faculty review", (r) => isMyFacultyQueue(r, user)))
   if (options.role === "Admin" && options.subRole === "Chief Warden Office")
     lanes.push(l("office", "Office review", (r) => stageFor(r) === "office"))
+  if (options.role === "Admin" && options.subRole === "Chief Warden Office")
+    lanes.push(l("charges", "Issue charges", (r) => r.status === "CW Approved"))
   if (options.role === "Admin" && options.subRole === "Chief Warden")
     lanes.push(l("chief", "Chief Warden", (r) => stageFor(r) === "chief"))
   if (options.role === "Admin" && options.subRole === "Accountant")
@@ -54,6 +68,14 @@ const subtitleFor = (options) => {
   return "Intern and unregistered-student stays."
 }
 
+// "12 male · 8 female", plus any other/unknown genders that show up.
+const genderSplit = (counts = {}) => {
+  const parts = [`${counts.Male || 0} male`, `${counts.Female || 0} female`]
+  for (const [g, n] of Object.entries(counts)) if (g !== "Male" && g !== "Female" && n) parts.push(`${n} ${g.toLowerCase()}`)
+  return parts.join(" · ")
+}
+const sum = (counts = {}) => Object.values(counts).reduce((a, n) => a + n, 0)
+
 const laneMatcher = (lane) => lane.match || (() => true)
 
 const matchesSearch = (r, q) => {
@@ -72,8 +94,8 @@ export default function InternAccommodationPage() {
   const requestId = params.get("request")
 
   const listQuery = useQuery({
-    queryKey: queryKeys.h4.list({ limit: 200 }),
-    queryFn: () => h4Api.list({ limit: 200 }),
+    queryKey: queryKeys.h4.list({ limit: 500 }),
+    queryFn: () => h4Api.list({ limit: 500 }),
     select: (res) => res?.data?.items || [],
   })
   const allRequests = useMemo(() => listQuery.data || [], [listQuery.data])
@@ -95,7 +117,10 @@ export default function InternAccommodationPage() {
   const [selectedIds, setSelectedIds] = useState([])
   const [selected, setSelected] = useState(null)
   const [form, setForm] = useState(null)
-  const [batchOpen, setBatchOpen] = useState(false)
+  const [viewMode, setViewModeState] = useState(readViewMode)
+  const [openBatchKey, setOpenBatchKey] = useState(null)
+  const [reviewIds, setReviewIds] = useState(null)
+  const [chargeIds, setChargeIds] = useState(null)
   const [batchAction, setBatchAction] = useState("approve")
   const [batchConfirmed, setBatchConfirmed] = useState(false)
   const [reason, setReason] = useState("")
@@ -111,6 +136,14 @@ export default function InternAccommodationPage() {
   const lanes = useMemo(() => lanesFor(user, options), [user, options])
   const subtitle = useMemo(() => subtitleFor(options), [options])
   const isAccountant = options.role === "Admin" && options.subRole === "Accountant"
+  const isDesk = options.role === "Admin" && ["Chief Warden Office", "Chief Warden", "Accountant"].includes(options.subRole)
+
+  const statsQuery = useQuery({
+    queryKey: queryKeys.h4.stats(),
+    queryFn: h4Api.stats,
+    enabled: isDesk,
+    select: (res) => res?.data,
+  })
 
   const office = options.role === "Admin" && options.subRole === "Chief Warden Office"
   const chief = options.role === "Admin" && options.subRole === "Chief Warden"
@@ -131,12 +164,18 @@ export default function InternAccommodationPage() {
 
   const statCards = useMemo(
     () => [
-      { title: "Total", value: allRequests.length, subtitle: "Intern requests" },
+      ...(isDesk
+        ? [
+            { title: "Pending", value: sum(statsQuery.data?.pending), subtitle: genderSplit(statsQuery.data?.pending) },
+            { title: "Staying now", value: sum(statsQuery.data?.active), subtitle: genderSplit(statsQuery.data?.active) },
+            { title: "Total", value: sum(statsQuery.data?.total), subtitle: genderSplit(statsQuery.data?.total) },
+          ]
+        : [{ title: "Total", value: allRequests.length, subtitle: "Intern requests" }]),
       ...lanes
         .filter((l) => l.key !== "all" && l.key !== "mine")
         .map((l) => ({ title: l.label, value: counts[l.key] || 0, subtitle: "In queue" })),
     ],
-    [lanes, counts, allRequests.length],
+    [lanes, counts, allRequests.length, isDesk, statsQuery.data],
   )
 
   const visible = useMemo(() => {
@@ -151,15 +190,42 @@ export default function InternAccommodationPage() {
     r.h4.amendment?.stage !== "office" &&
     !(r.h4.amendment?.stage === "chief" && r.rooms.length)
 
-  const reviewableIds = useMemo(() => new Set(visible.filter(reviewable).map((r) => r._id)), [visible, reviewStage, user]) // eslint-disable-line react-hooks/exhaustive-deps
-  const selectedReviewable = useMemo(
-    () => visible.filter((r) => selectedIds.includes(r._id) && reviewableIds.has(r._id)),
-    [visible, selectedIds, reviewableIds],
+  const chargeable = (r) => office && r.status === "CW Approved" && !reviewable(r)
+
+  const setViewMode = (mode) => {
+    setViewModeState(mode)
+    setSelectedIds([])
+    setOpenBatchKey(null)
+    try {
+      localStorage.setItem(VIEW_KEY, mode)
+    } catch {
+      /* private mode */
+    }
+  }
+
+  // Students the current user can act on in bulk: review decisions or (office) issuing charges.
+  const bulkIds = useMemo(() => new Set(visible.filter((r) => reviewable(r) || chargeable(r)).map((r) => r._id)), [visible, reviewStage, office, user]) // eslint-disable-line react-hooks/exhaustive-deps
+  const groups = useMemo(
+    () => groupByBatch(visible).map((g) => ({ ...g, eligible: g.students.filter((r) => bulkIds.has(r._id)).map((r) => r._id) })),
+    [visible, bulkIds],
+  )
+  const openGroup = groups.find((g) => g.key === openBatchKey) || null
+  const selectedKeys = useMemo(
+    () => groups.filter((g) => g.eligible.length && g.eligible.every((id) => selectedIds.includes(id))).map((g) => g.key),
+    [groups, selectedIds],
   )
 
   const onSelectionChange = (ids) => {
-    setSelectedIds(ids.filter((id) => reviewableIds.has(id)))
+    setSelectedIds(ids.filter((id) => bulkIds.has(id)))
   }
+  const onBatchSelectionChange = (keys) => {
+    setSelectedIds(groups.filter((g) => keys.includes(g.key)).flatMap((g) => g.eligible))
+  }
+
+  const reviewList = useMemo(
+    () => (reviewIds ? allRequests.filter((r) => reviewIds.includes(r._id) && reviewable(r)) : []),
+    [allRequests, reviewIds, reviewStage, user], // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   const openDetail = async (row) => {
     setSelected(row)
@@ -208,7 +274,7 @@ export default function InternAccommodationPage() {
         reason,
         confirmPayer: batchConfirmed,
         confirmAvailability: batchConfirmed,
-        requests: selectedReviewable.map((r) => ({ id: r._id, revision: r.h4.revision })),
+        requests: reviewList.map((r) => ({ id: r._id, revision: r.h4.revision })),
       })
       const failed = (result.data.results || []).filter((r) => !r.success)
       const done = (result.data.results || []).length - failed.length
@@ -217,7 +283,7 @@ export default function InternAccommodationPage() {
         toast.error(`${failed.length} need attention`)
         setError(failed.map((r) => r.message).join(" "))
       } else {
-        setBatchOpen(false)
+        setReviewIds(null)
       }
       setSelectedIds([])
       await refreshRequests()
@@ -293,6 +359,34 @@ export default function InternAccommodationPage() {
     },
   ]
 
+  const openReview = (ids) => {
+    setBatchAction("approve")
+    setBatchConfirmed(false)
+    setReason("")
+    setError("")
+    setReviewIds(ids)
+  }
+
+  const renderBulk = (students) => {
+    const picked = students.filter((r) => selectedIds.includes(r._id))
+    const review = picked.filter(reviewable).map((r) => r._id)
+    const charge = picked.filter(chargeable).map((r) => r._id)
+    return (
+      <>
+        {review.length > 0 && (
+          <Button size="sm" onClick={() => openReview(review)}>
+            <Users size={16} /> Review {review.length}
+          </Button>
+        )}
+        {charge.length > 0 && (
+          <Button size="sm" onClick={() => setChargeIds(charge)}>
+            <ReceiptText size={16} /> Issue charges ({charge.length})
+          </Button>
+        )}
+      </>
+    )
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <PageHeader title="Intern Accommodation" subtitle={subtitle}>
@@ -323,7 +417,12 @@ export default function InternAccommodationPage() {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
         <div style={{ marginBottom: "var(--spacing-5)" }}>
-          <StatCards stats={statCards} columns={statCards.length} loading={loading} loadingCount={statCards.length} />
+          <StatCards
+            stats={statCards}
+            columns={statCards.length}
+            loading={loading || (isDesk && statsQuery.isLoading)}
+            loadingCount={statCards.length}
+          />
         </div>
 
         {(error || listQuery.error || optionsQuery.error) && (
@@ -341,39 +440,64 @@ export default function InternAccommodationPage() {
               onClear={() => setSearch("")}
             />
           </Field>
-          {selectedReviewable.length > 0 && (
-            <Button
-              size="sm"
-              onClick={() => {
-                setBatchAction("approve")
-                setBatchConfirmed(false)
-                setReason("")
-                setBatchOpen(true)
-              }}
-            >
-              <Users size={16} /> Review {selectedReviewable.length}
-            </Button>
-          )}
+          <Field label="View">
+            <ToggleButtonGroup
+              size="md"
+              shape="rounded"
+              hideLabelsOnMobile={false}
+              value={viewMode}
+              onChange={setViewMode}
+              options={[
+                { value: "batches", label: "Batches" },
+                { value: "individual", label: "Individual" },
+              ]}
+            />
+          </Field>
+          {renderBulk(visible)}
         </HStack>
 
         <div style={{ marginBottom: "var(--spacing-4)" }}>
           <Tabs variant="pills" size="md" tabs={tabs} activeTab={filter} setActiveTab={(v) => { setFilter(v); setSelectedIds([]) }} />
         </div>
 
-        <DataTable
-          data={visible}
-          columns={columns}
-          isLoading={loading}
-          selectable={!!reviewStage}
-          selectedRows={selectedIds}
-          onSelectionChange={onSelectionChange}
-          getRowId={(row) => row._id}
-          pagination
-          pageSize={10}
-          onRowClick={openDetail}
-          emptyMessage="Nothing in this queue right now."
-        />
+        {viewMode === "batches" ? (
+          <BatchTable
+            groups={groups}
+            loading={loading}
+            selectable={!!reviewStage}
+            selectedKeys={selectedKeys}
+            onSelectionChange={onBatchSelectionChange}
+            onOpen={(g) => setOpenBatchKey(g.key)}
+          />
+        ) : (
+          <DataTable
+            data={visible}
+            columns={columns}
+            isLoading={loading}
+            selectable={!!reviewStage}
+            selectedRows={selectedIds}
+            onSelectionChange={onSelectionChange}
+            getRowId={(row) => row._id}
+            pagination
+            pageSize={10}
+            onRowClick={openDetail}
+            emptyMessage="Nothing in this queue right now."
+          />
+        )}
       </div>
+
+      {viewMode === "batches" && openGroup && (
+        <BatchModal
+          group={openGroup}
+          columns={columns}
+          selectable={openGroup.eligible.length > 0}
+          selectedIds={selectedIds}
+          onSelectionChange={onSelectionChange}
+          onRowClick={openDetail}
+          onClose={() => setOpenBatchKey(null)}
+          actions={<HStack gap={2}>{renderBulk(openGroup.students)}</HStack>}
+        />
+      )}
 
       {requestId && !selected && detailQuery.isLoading && (
         <Modal isOpen onClose={closeDetail} title="Intern accommodation">
@@ -412,10 +536,28 @@ export default function InternAccommodationPage() {
         />
       )}
 
-      {batchOpen && (
-        <Modal isOpen onClose={() => setBatchOpen(false)} title={`Review ${selectedReviewable.length}`} width={520}>
+      {chargeIds && (
+        <H4ChargesModal
+          ids={chargeIds}
+          requests={allRequests}
+          options={options}
+          onClose={() => setChargeIds(null)}
+          onDone={async () => {
+            setSelectedIds([])
+            await refreshRequests()
+          }}
+        />
+      )}
+
+      {reviewIds && (
+        <Modal isOpen onClose={() => setReviewIds(null)} title={`Review ${reviewList.length}`} width={520}>
           <VStack gap={3}>
             {error && <Alert type="error">{error}</Alert>}
+            <div style={{ maxHeight: 120, overflowY: "auto", padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-md)" }}>
+              {reviewList.map((r) => (
+                <Text key={r._id} size="xs">{r.applicantName || "—"}</Text>
+              ))}
+            </div>
             <Field label="Decision">
               <Select
                 value={batchAction}
@@ -441,12 +583,13 @@ export default function InternAccommodationPage() {
               loading={busy}
               disabled={
                 busy ||
+                !reviewList.length ||
                 (batchAction !== "approve" && !reason.trim()) ||
                 (batchAction === "approve" && reviewStage !== "chief" && !batchConfirmed)
               }
               onClick={applyBatch}
             >
-              Apply to {selectedReviewable.length}
+              Apply to {reviewList.length}
             </Button>
           </VStack>
         </Modal>

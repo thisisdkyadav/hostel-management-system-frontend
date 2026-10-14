@@ -132,6 +132,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
   const [manual, setManual] = useState(null)
   const [reference, setReference] = useState("")
   const [paidAt, setPaidAt] = useState("")
+  const [catererId, setCatererId] = useState(String(r.h4.caterer?.catererId || ""))
 
   const office = options.role === "Admin" && options.subRole === "Chief Warden Office"
   const chief = options.role === "Admin" && options.subRole === "Chief Warden"
@@ -173,12 +174,20 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
     ["Payment Verified", "Rooms Assigned", "Checked In"].includes(r.status) &&
     payments.every((p) => p.status === "Verified")
 
+  const messBilled = r.h4.mess === "with"
+  const catererOptions = (options.caterers || []).map((c) => ({ value: String(c._id), label: c.name }))
+  const catererSelect = (
+    <Select value={catererId} placeholder="Select caterer" options={catererOptions} onChange={(e) => setCatererId(e.target.value)} />
+  )
+  const messVerified = messBilled && r.h4.messPayment?.status === "Verified" && !["Cancelled", "Rejected", "Invoiced"].includes(r.status)
+
   const save = async (suffix, body = {}) => {
     setError("")
     setBusy(true)
     try {
       const result = await h4Api.action(r._id, suffix, { revision: r.h4.revision, ...body })
       if (["offer", "resend"].includes(suffix)) toast.success(result.message || "Payment emails queued for delivery.")
+      if (suffix === "caterer") toast.success("Caterer assigned")
       await onRefresh()
       setReason("")
       setConfirmPayer(false)
@@ -200,7 +209,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
   }
 
   const editAllowed =
-    ((creator && ["Draft", "Returned to Student"].includes(r.status)) || (office && !r.allotment?.hostelId)) && !closed
+    ((creator && ["Draft", "Returned to Student"].includes(r.status)) || office) && !closed
 
   const hasAction = canReview || (office && r.status === "CW Approved") || (proofOpen && !amendment) ||
     accounts || readyForRooms || canSchedule
@@ -241,7 +250,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
               <InfoRow label="Hostel" value={r.hostelName || r.hostel?.name || "Pending"} />
               <InfoRow label="Room" value={r.roomLabel || (r.room ? [r.room.unitId?.unitNumber, r.room.roomNumber].filter(Boolean).join(" / ") : "Pending")} />
               <InfoRow label="Payer" value={r.h4.payer.name} />
-              <InfoRow label="Mess" value={r.h4.mess === "with" ? "With mess" : "Without mess"} />
+              <InfoRow label="Mess" value={messBilled ? "With mess" : "Without mess"} />
+              {messBilled && <InfoRow label="Caterer" value={r.h4.caterer?.name || "Not assigned"} />}
               <InfoRow label="Purpose" value={r.stay.purpose} />
               {r.h4.cancellation?.reason && <InfoRow label="Cancelled" value={r.h4.cancellation.reason} />}
             </DetailSection>
@@ -267,7 +277,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <HStack gap={2} wrap>
                           {p.status === "Submitted" && (
                             <>
-                              <Button size="sm" disabled={busy} onClick={() => save("verify", { action: "verify", ...h4BillAction(p) })}>Verify</Button>
+                              {p.paymentType === "mess" && catererSelect}
+                              <Button size="sm" disabled={busy || (p.paymentType === "mess" && !catererId)} onClick={() => save("verify", { action: "verify", ...(p.paymentType === "mess" ? { catererId } : {}), ...h4BillAction(p) })}>Verify</Button>
                               <Button size="sm" variant="secondary" disabled={busy || !reason.trim()} onClick={() => save("verify", { action: "reject", reason, ...h4BillAction(p) })}>Reject</Button>
                             </>
                           )}
@@ -369,9 +380,25 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                   <Field label="Note">
                     <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
                   </Field>
+                  {messVerified && (
+                    <Field label="Mess caterer">
+                      <HStack gap={2} wrap>
+                        {catererSelect}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy || !catererId || catererId === String(r.h4.caterer?.catererId || "")}
+                          onClick={() => save("caterer", { catererId })}
+                        >
+                          {r.h4.caterer ? "Change" : "Assign"}
+                        </Button>
+                      </HStack>
+                    </Field>
+                  )}
                   {manual && (
                     <>
                       <Text size="sm">{manual.label} · {money(manual.amount)}</Text>
+                      {manual.paymentType === "mess" && <Field label="Caterer" required>{catererSelect}</Field>}
                       <Field label="Reference">
                         <Input value={reference} onChange={(e) => setReference(e.target.value)} />
                       </Field>
@@ -379,7 +406,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <Input type="date" value={paidAt} onChange={(e) => setPaidAt(e.target.value)} />
                       </Field>
                       <HStack gap={2} wrap>
-                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, ...h4BillAction(manual) })}>Paid</Button>
+                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt || (manual.paymentType === "mess" && !catererId)} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, ...(manual.paymentType === "mess" ? { catererId } : {}), ...h4BillAction(manual) })}>Paid</Button>
                         <Button size="sm" variant="secondary" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "correct", reference, paidAt, reason, ...h4BillAction(manual) })}>Correct</Button>
                         <Button size="sm" variant="danger" disabled={busy || !reason} onClick={() => save("settle", { action: "mark_unpaid", reason, ...h4BillAction(manual) })}>Unpaid</Button>
                       </HStack>
