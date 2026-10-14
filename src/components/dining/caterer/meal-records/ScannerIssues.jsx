@@ -2,11 +2,12 @@ import { useId, useState } from "react"
 import { Button, Panel } from "hzero"
 import { ChevronDown } from "lucide-react"
 import { ISSUE_LABELS } from "../catererHelpers"
+import { catererColor } from "../diningScope"
 import { formatClock } from "./mealRecordsHelpers"
 import "./MealRecords.css"
 
 /** Collapsible list of attempts that were not verified (duplicates, wrong caterer, outside meal time...). */
-const ScannerIssues = ({ issues = [], issueCount = 0 }) => {
+const ScannerIssues = ({ issues = [], issueCount = 0, palette, showCaterer = false }) => {
   const [open, setOpen] = useState(false)
   const regionId = useId()
 
@@ -43,6 +44,11 @@ const ScannerIssues = ({ issues = [], issueCount = 0 }) => {
                   <div className="mr-issue__who">
                     <span className="mr-issue__name">{name || (roll ? "Unknown student" : "Unknown")}</span>
                     {roll && <span className="mr-issue__roll">{roll}</span>}
+                    {showCaterer && issue.caterer?.name && (
+                      <span className="mr-caterer" style={{ "--kitchen": catererColor(palette, String(issue.caterer.id)) }}>
+                        <span className="mr-caterer__name">at {issue.caterer.name}</span>
+                      </span>
+                    )}
                   </div>
                   <div className="mr-issue__what">
                     <span className="mr-issue__reason">{ISSUE_LABELS[issue.status] || issue.status || "Not verified"}</span>

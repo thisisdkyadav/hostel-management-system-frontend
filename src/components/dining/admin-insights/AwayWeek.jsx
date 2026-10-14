@@ -4,7 +4,7 @@ import { fmtInt, WEEKDAY_LONG, WEEKDAY_SHORT, weekdayOf } from "./insightHelpers
 const DAYS_SHOWN = 7
 
 /** Who is away on rebate this week: approved as solid, still-to-approve as a hatched cap. */
-const AwayWeek = ({ data, loading }) => {
+const AwayWeek = ({ data, loading, basePath }) => {
   const forecast = (data?.rebateForecast || []).slice(0, DAYS_SHOWN)
   const max = Math.max(1, ...forecast.map((d) => (d.onRebate || 0) + (d.pending || 0)))
   const today = forecast[0]
@@ -15,7 +15,7 @@ const AwayWeek = ({ data, loading }) => {
       className="dxi-away"
       title="Away this week"
       caption={today ? `${fmtInt(today.onRebate)} away today` : undefined}
-      to="/admin/dining-rebates"
+      to={`${basePath}/dining-rebates`}
       linkLabel="Rebates"
       loading={loading}
     >

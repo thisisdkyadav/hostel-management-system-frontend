@@ -8,6 +8,7 @@ import { H4Status, H4Journey, H4StayDetails } from "@/components/intern-accommod
 import { date, money } from "@/components/intern-accommodation/h4.format"
 import H4PaymentForm from "@/components/intern-accommodation/H4PaymentForm"
 import H4ScheduleForm from "@/components/intern-accommodation/H4ScheduleForm"
+import { h4Bills } from "@/components/intern-accommodation/h4.payments"
 import "@/components/intern-accommodation/h4.css"
 
 export default function InternAccommodationAccessPage() {
@@ -41,10 +42,10 @@ export default function InternAccommodationAccessPage() {
               {r.h4.amendment?.stage && (
                 <Alert type="info">Date change under {r.h4.amendment.stage} review.</Alert>
               )}
-              {r.purpose === "payer" && (
+              {h4Bills(r).length > 0 && (
                 <DetailSection title="Payment" icon={CreditCard}>
                   <VStack gap={3}>
-                    {[r.payment, ...(r.additionalPayments || [])].map((p, i) => (
+                    {h4Bills(r).map((p, i) => (
                       <HStack key={i} justify="between" wrap>
                         <Text size="sm">{p.label || "Accommodation"} · {money(p.amount)}</Text>
                         <Text size="sm">{p.status}</Text>

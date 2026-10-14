@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Maximize, Minimize, X } from "lucide-react"
 import { IconButton, LoadingState } from "hzero"
-import { catererApi } from "@/service"
-import { queryKeys } from "@/lib/query"
 import { useSocket } from "@/contexts/SocketProvider"
-import { CATERER_LAST_PATH_KEY } from "@/constants/navigationConfig"
 import { localTodayKey } from "../catererHelpers"
+import { buildCatererPalette, useDiningScope } from "../diningScope"
 import PulsePanel from "./PulsePanel"
 import ScanStream from "./ScanStream"
+import KitchenTabs from "./KitchenTabs"
 import {
   FEED_LIMIT,
   FEED_REFRESH_MS,
@@ -23,6 +22,7 @@ import {
   indexStudents,
   mergeEntries,
   resolveMeals,
+  sameCaterer,
   useNow,
 } from "./liveHelpers"
 import "./LiveFeed.css"
@@ -84,7 +84,32 @@ const useFullscreen = () => {
   return [active, toggle]
 }
 
+const CATERER_FILTER_KEY = "hms.dining.liveCaterer"
+
+/** Admin and Dining Office: which caterer the screen is narrowed to, kept for the tab session. */
+const useCatererFilter = (enabled) => {
+  const [value, setValue] = useState(() => {
+    if (!enabled) return ""
+    try {
+      return window.sessionStorage.getItem(CATERER_FILTER_KEY) || ""
+    } catch {
+      return ""
+    }
+  })
+  const change = useCallback((next) => {
+    setValue(next)
+    try {
+      if (next) window.sessionStorage.setItem(CATERER_FILTER_KEY, next)
+      else window.sessionStorage.removeItem(CATERER_FILTER_KEY)
+    } catch {
+      // Storage can be unavailable; the filter still works for this visit.
+    }
+  }, [])
+  return [enabled ? value : "", change]
+}
+
 const LiveFeedScreen = () => {
+  const scope = useDiningScope()
   const navigate = useNavigate()
   const { socket, isConnected } = useSocket()
   const nowMs = useNow(15000)
@@ -94,11 +119,12 @@ const LiveFeedScreen = () => {
   const [filter, setFilter] = useState("all")
   const [previewId, setPreviewId] = useState(null)
   const [socketEntries, setSocketEntries] = useState([])
+  const [catererPick, setCatererPick] = useCatererFilter(scope.oversight)
 
   /* ---------- who, when, and which meal is open ---------- */
   const optionsQuery = useQuery({
-    queryKey: queryKeys.caterer.mealRecordOptions(),
-    queryFn: () => catererApi.getMealRecordOptions(),
+    queryKey: scope.optionsKey(),
+    queryFn: () => scope.options(),
     refetchInterval: OPTIONS_REFRESH_MS,
   })
   const options = optionsQuery.data
@@ -110,6 +136,15 @@ const LiveFeedScreen = () => {
     [period, options?.currentMealSlotKey, nowMs, today]
   )
   const mealKey = meals.current?.key || ""
+
+  // Admin and Dining Office: the caterers serving this period, each with its own colour.
+  const caterers = useMemo(() => {
+    const serving = new Set(period?.catererIds || [])
+    return (options?.caterers || []).filter((item) => serving.has(item.id))
+  }, [options, period])
+  const palette = useMemo(() => buildCatererPalette(caterers), [caterers])
+  const catererId = caterers.some((item) => item.id === catererPick) ? catererPick : ""
+  const showCaterer = scope.oversight && !catererId
 
   // The local clock moved on to another meal before the server's answer did: ask again soon.
   const { refetch: refetchOptions } = optionsQuery
@@ -123,20 +158,17 @@ const LiveFeedScreen = () => {
   /* ---------- the meal being served ---------- */
   const recordParams = { periodId, date: today, mealSlotKey: mealKey }
   const recordQuery = useQuery({
-    queryKey: queryKeys.caterer.mealRecord(recordParams),
-    queryFn: () => catererApi.getMealRecord(recordParams),
+    queryKey: scope.pulseKey(recordParams),
+    queryFn: () => scope.pulse(recordParams),
     enabled: Boolean(periodId && mealKey),
     refetchInterval: RECORD_REFRESH_MS,
   })
   const record = mealKey ? recordQuery.data : undefined
 
-  const feedParams = { limit: FEED_LIMIT, mealSlotKey: mealKey }
+  const feedParams = { limit: FEED_LIMIT, mealSlotKey: mealKey, ...(scope.oversight ? { date: today, catererId } : {}) }
   const feedQuery = useQuery({
-    queryKey: queryKeys.caterer.mealFeed(feedParams),
-    queryFn: async () => {
-      const response = await catererApi.getMealVerificationFeed({ limit: FEED_LIMIT })
-      return Array.isArray(response?.entries) ? response.entries : []
-    },
+    queryKey: scope.feedKey(feedParams),
+    queryFn: () => scope.feed(feedParams),
     enabled: Boolean(mealKey),
     refetchInterval: FEED_REFRESH_MS,
   })
@@ -145,13 +177,22 @@ const LiveFeedScreen = () => {
   const last = meals.last
   const lastParams = { periodId, date: last?.date || today, mealSlotKey: last?.slot.key || "" }
   const lastQuery = useQuery({
-    queryKey: queryKeys.caterer.mealRecord(lastParams),
-    queryFn: () => catererApi.getMealRecord(lastParams),
+    queryKey: scope.pulseKey(lastParams),
+    queryFn: () => scope.pulse(lastParams),
     enabled: Boolean(periodId && last && !mealKey),
     refetchInterval: OPTIONS_REFRESH_MS,
     retry: false,
   })
   const lastRecord = mealKey ? undefined : lastQuery.data
+  // The caterer's record lists every scan; across all caterers the last meal's scans come from the feed.
+  const lastFeedParams = { limit: FEED_LIMIT, date: last?.date || today, mealSlotKey: last?.slot.key || "", catererId }
+  const lastFeedQuery = useQuery({
+    queryKey: scope.feedKey(lastFeedParams),
+    queryFn: () => scope.feed(lastFeedParams),
+    enabled: scope.oversight && Boolean(last && !mealKey),
+    refetchInterval: OPTIONS_REFRESH_MS,
+    retry: false,
+  })
 
   /* ---------- live scans over the socket, then a calm refresh of the counts ---------- */
   const { refetch: refetchRecord } = recordQuery
@@ -166,14 +207,18 @@ const LiveFeedScreen = () => {
       // Only this meal's scans are kept, so a new meal starts a fresh stream.
       setSocketEntries((prev) => [entry, ...prev.filter((item) => item.id !== entry.id && item.mealSlotKey === entry.mealSlotKey)].slice(0, MAX_ENTRIES))
       clearTimeout(debounceRef.current)
-      debounceRef.current = setTimeout(() => refetchRecord(), SOCKET_DEBOUNCE_MS)
+      debounceRef.current = setTimeout(() => {
+        refetchRecord()
+        // Across caterers the feed is what carries rooms for brand-new scans.
+        if (scope.oversight) refetchFeed()
+      }, SOCKET_DEBOUNCE_MS)
     }
     socket.on("dining-meal-verification:new", onScan)
     return () => {
       socket.off("dining-meal-verification:new", onScan)
       clearTimeout(debounceRef.current)
     }
-  }, [socket, refetchRecord])
+  }, [socket, refetchRecord, refetchFeed, scope.oversight])
 
   // Back online after a drop: catch up on whatever was missed.
   const wasConnected = useRef(isConnected)
@@ -187,37 +232,53 @@ const LiveFeedScreen = () => {
   }, [isConnected, refetchOptions, refetchRecord, refetchFeed])
 
   /* ---------- derived ---------- */
-  const index = useMemo(() => indexStudents(record || lastRecord), [record, lastRecord])
-  const raw = useMemo(
-    () => (mealKey
-      ? mergeEntries([feedQuery.data || [], socketEntries], { mealKey, today })
-      : entriesFromRecord(lastRecord)),
-    [mealKey, feedQuery.data, socketEntries, today, lastRecord]
-  )
+  const raw = useMemo(() => {
+    if (!mealKey) return scope.oversight ? lastFeedQuery.data || [] : entriesFromRecord(lastRecord)
+    const live = socketEntries.filter((entry) => sameCaterer(entry, catererId))
+    return mergeEntries([feedQuery.data || [], live], { mealKey, today })
+  }, [mealKey, scope.oversight, lastFeedQuery.data, lastRecord, socketEntries, catererId, feedQuery.data, today])
+  const index = useMemo(() => indexStudents(record || lastRecord, raw), [record, lastRecord, raw])
   const entries = useMemo(() => raw.map((entry) => decorate(entry, index, nowMs)), [raw, index, nowMs])
-  const rush = useMemo(() => buildRush({ record, entries: raw, nowMs }), [record, raw, nowMs])
+  const rush = useMemo(() => buildRush({ record, entries: raw, nowMs, catererId }), [record, raw, nowMs, catererId])
+  // Narrowed to one caterer, its row of the breakdown stands in for the meal's totals.
+  const narrow = (source) => (catererId ? source?.caterers?.find((item) => item.id === catererId) : source?.summary)
 
   const previewed = previewId ? entries.find((entry) => entry.id === previewId) : null
   const spotlight = previewed || entries[0] || null
   const issueCount = entries.filter((entry) => entry.status !== "verified").length
-  const summary = record?.summary
+  const summary = narrow(record)
   const todayCount = summary ? summary.verifiedCount + summary.issueCount : entries.length
 
   const idle = !meals.current
   const caption = idle && last ? `Last meal: ${last.slot.name}${last.yesterday ? ", yesterday" : ""}` : null
-  const feedLoading = mealKey ? feedQuery.isPending : Boolean(last) && lastQuery.isPending && Boolean(periodId)
+  const lastLoading = scope.oversight ? lastFeedQuery.isPending : lastQuery.isPending
+  const feedLoading = mealKey ? feedQuery.isPending : Boolean(last) && lastLoading && Boolean(periodId)
   const feedError = mealKey ? feedQuery.isError && !feedQuery.data : false
 
   const close = () => {
     exitFullscreen()
-    let target = "/caterer"
+    let target = scope.home
     try {
-      target = window.sessionStorage.getItem(CATERER_LAST_PATH_KEY) || target
+      target = window.sessionStorage.getItem(scope.lastPathKey) || target
     } catch {
-      // Storage can be unavailable; the dashboard is a fine place to land.
+      // Storage can be unavailable; the portal home is a fine place to land.
     }
-    navigate(target.startsWith("/caterer") && target !== "/caterer/live" ? target : "/caterer", { replace: true })
+    navigate(target.startsWith(scope.home) && target !== scope.livePath ? target : scope.home, { replace: true })
   }
+
+  const kitchens = scope.oversight ? (
+    <KitchenTabs
+      caterers={caterers}
+      kitchens={(record || lastRecord)?.caterers}
+      totals={(record || lastRecord)?.summary}
+      palette={palette}
+      value={catererId}
+      onChange={(next) => {
+        setPreviewId(null)
+        setCatererPick(next)
+      }}
+    />
+  ) : null
 
   if (optionsQuery.isPending) {
     return (
@@ -247,11 +308,13 @@ const LiveFeedScreen = () => {
           summary={summary}
           summaryError={mealKey ? recordQuery.isError : false}
           onRetrySummary={() => refetchRecord()}
-          lastRecord={lastRecord}
+          lastSummary={narrow(lastRecord)}
           rush={rush}
           spotlight={spotlight}
           previewing={Boolean(previewed)}
           nowMs={nowMs}
+          palette={palette}
+          showCaterer={scope.oversight}
         />
         <ScanStream
           entries={entries}
@@ -267,6 +330,9 @@ const LiveFeedScreen = () => {
           loading={feedLoading}
           error={feedError}
           onRetry={() => refetchFeed()}
+          kitchens={kitchens}
+          palette={palette}
+          showCaterer={showCaterer}
         />
       </main>
     </div>

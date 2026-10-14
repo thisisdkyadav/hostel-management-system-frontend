@@ -26,7 +26,7 @@ const initialValues = (fields, staff, config) => {
       .map((field) => {
         const current = source[field.name]
         if (field.type === "checkboxes") return [field.name, Array.isArray(current) ? current : []]
-        return [field.name, current ?? ""]
+        return [field.name, current ?? field.defaultValue ?? ""]
       })
   )
 }

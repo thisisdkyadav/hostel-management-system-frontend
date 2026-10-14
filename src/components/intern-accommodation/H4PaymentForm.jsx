@@ -2,12 +2,11 @@ import { useState } from "react"
 import { Alert, Button, DatePicker, Field, HStack, Input, Select, Text, VStack } from "hzero"
 import { h4Api, h4FileUrl } from "@/service/modules/intern-accommodation.api"
 import { money, today } from "./h4.format"
+import { h4Bills, h4BillAction } from "./h4.payments"
 
-export default function H4PaymentForm({ request, token, onSaved }) {
-  const bills = [
-    { ...request.payment, _id: "main", label: "Accommodation" },
-    ...(request.additionalPayments || []),
-  ].filter((p) => p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status))
+export default function H4PaymentForm({ request, token, onSaved, accommodationOnly = false }) {
+  const bills = h4Bills(request).filter((p) =>
+    (!accommodationOnly || p.paymentType === "accommodation") && p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status))
   const [selected, setSelected] = useState(bills[0]?._id || "main")
   const bill = bills.find((p) => String(p._id) === String(selected)) || bills[0]
   const [utr, setUtr] = useState("")
@@ -42,7 +41,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
     try {
       await run(defer ? "defer" : "payment", {
         revision: uploadedRevision ?? request.h4.revision,
-        additionalPaymentId: bill._id === "main" ? undefined : bill._id,
+        ...h4BillAction(bill),
         utr,
         paidAt,
         screenshotFileRef: fileRef,
@@ -81,12 +80,12 @@ export default function H4PaymentForm({ request, token, onSaved }) {
       {(bill.remarks || request.payment?.remarks) && (
         <Alert type="info">{bill.remarks || request.payment.remarks}</Alert>
       )}
-      {/^https?:\/\//i.test(request.payment?.paymentLink || "") && (
-        <a href={request.payment.paymentLink} target="_blank" rel="noreferrer">
+      {/^https?:\/\//i.test(bill.paymentLink || (bill.paymentType === "accommodation" ? request.payment?.paymentLink : "") || "") && (
+        <a href={bill.paymentLink || request.payment.paymentLink} target="_blank" rel="noreferrer">
           Open payment portal
         </a>
       )}
-      {token
+      {bill.paymentType === "accommodation" && (token
         ? request.qrUrl && (
             <img
               src={request.qrUrl}
@@ -102,7 +101,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
               referrerPolicy="no-referrer"
               style={{ width: 180, maxWidth: "100%" }}
             />
-          )}
+          ))}
       <Field label="UTR" required>
         <Input
           inputMode="numeric"

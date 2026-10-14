@@ -6,6 +6,7 @@ import StudentEditPermissionsForm from "../../components/admin/settings/StudentE
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import StudentBatchManager from "../../components/admin/settings/StudentBatchManager"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
+import InternAccommodationSettingsForm from "../../components/admin/settings/InternAccommodationSettingsForm"
 import AccommodationSettingsForm from "../../components/admin/settings/AccommodationSettingsForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
@@ -74,6 +75,7 @@ const SettingsPage = () => {
     "gymkhanaCategories",
     "systemSettings",
     "accommodation",
+    "internAccommodation",
     "porCertificate",
   ]
 
@@ -84,13 +86,13 @@ const SettingsPage = () => {
 
   const canViewTab = (tab) => {
     if (!SETTINGS_TABS.includes(tab)) return false
-    if (tab === "accommodation") return canAccessAccommodationSettings
+    if (["accommodation", "internAccommodation"].includes(tab)) return canAccessAccommodationSettings
     return true
   }
 
   const canUpdateTab = (tab) => {
     if (!SETTINGS_TABS.includes(tab)) return false
-    if (tab === "accommodation") return canAccessAccommodationSettings
+    if (["accommodation", "internAccommodation"].includes(tab)) return canAccessAccommodationSettings
     return true
   }
 
@@ -757,6 +759,7 @@ const SettingsPage = () => {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
+        { key: "internAccommodation", label: "Intern Accommodation", icon: HiOfficeBuilding, description: "Payment links, GST and daily accommodation and mess rates." },
         { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation: payment QR image, three preset prices per person, three GST % options (Chief Warden Office selects per guest), and GSTIN for invoices." },
       ],
     },
@@ -979,6 +982,8 @@ const SettingsPage = () => {
                   )}
                 </>
               )}
+
+              {activeTab === "internAccommodation" && canViewTab("internAccommodation") && <InternAccommodationSettingsForm />}
 
               {/* Accommodation Settings Tab — CWO + Accountant only */}
               {activeTab === "accommodation" && canViewTab("accommodation") && (

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { canAccessInternAccommodation, isInternAccommodationRoute } from "../utils/internAccommodationAccess"
 import { authzApi } from "../service"
 import { useAuth } from "./AuthProvider"
 import { AuthzContext } from "./AuthzContext"
@@ -67,7 +68,8 @@ export const AuthzProvider = ({ children }) => {
   }, [refreshAuthz])
 
   const value = useMemo(() => {
-    const canRouteByKey = (routeKey) => canRoute(effective, routeKey)
+    const canRouteByKey = (routeKey) =>
+      (!isInternAccommodationRoute(routeKey) || canAccessInternAccommodation(user)) && canRoute(effective, routeKey)
     const canRouteByPath = (path) => {
       const routeKey = resolveRouteKeyByPath(path, routePathMap, routePathMatchers)
       if (!routeKey) return false
@@ -88,7 +90,7 @@ export const AuthzProvider = ({ children }) => {
       canAll: (capabilityKeys) => canAllCapabilities(effective, capabilityKeys),
       getConstraint: (key, fallback = null) => getConstraint(effective, key, fallback),
     }
-  }, [catalog, effective, error, loading, override, refreshAuthz, routePathMap, routePathMatchers])
+  }, [catalog, effective, error, loading, override, refreshAuthz, routePathMap, routePathMatchers, user])
 
   return <AuthzContext.Provider value={value}>{children}</AuthzContext.Provider>
 }

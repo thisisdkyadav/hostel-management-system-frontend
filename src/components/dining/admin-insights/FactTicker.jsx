@@ -3,7 +3,7 @@ import { Skeleton } from "hzero"
 import { CalendarClock, ClipboardCheck, Ghost, Heart, ScanFace, Sparkles, Trophy, UserX, UtensilsCrossed, Wallet, Zap } from "lucide-react"
 import { dayLabel, fmtCompact, fmtInt, fmtPct, friendlyTime, isoToMinutes, slotName } from "./insightHelpers"
 
-const buildFacts = (data, billing, rebates) => {
+const buildFacts = (data, billing, rebates, basePath) => {
   const facts = []
   const students = data?.students || {}
   const records = data?.records || {}
@@ -11,7 +11,7 @@ const buildFacts = (data, billing, rebates) => {
   const mealSlots = data?.mealSlots || []
 
   const pending = rebates?.pending ?? data?.totals?.pendingRebates ?? 0
-  if (pending > 0) facts.push({ key: "pending", icon: ClipboardCheck, tone: "warning", to: "/admin/dining-rebates", text: <><strong>{fmtInt(pending)}</strong> rebate requests are waiting for approval</> })
+  if (pending > 0) facts.push({ key: "pending", icon: ClipboardCheck, tone: "warning", to: `${basePath}/dining-rebates`, text: <><strong>{fmtInt(pending)}</strong> rebate requests are waiting for approval</> })
   if (students.ghosts > 0) facts.push({ key: "ghosts", icon: Ghost, tone: "warning", text: <><strong>{fmtInt(students.ghosts)}</strong> students haven&apos;t eaten a single meal this week</> })
 
   const unused = caterers.reduce((s, c) => s + (c.unusedPlates7d || 0), 0)
@@ -32,8 +32,8 @@ const buildFacts = (data, billing, rebates) => {
   }
   if (students.neverScanned > 0) facts.push({ key: "never", icon: UserX, text: <><strong>{fmtInt(students.neverScanned)}</strong> students have not eaten here once this period</> })
 
-  if (billing?.totalAllocated) facts.push({ key: "billing", icon: Wallet, to: "/admin/dining-billing", text: <><strong>₹{fmtCompact(billing.totalAllocated)}</strong> billed this period</> })
-  if (billing?.duesCount > 0) facts.push({ key: "dues", icon: CalendarClock, tone: "danger", to: "/admin/dining-billing", text: <><strong>{fmtInt(billing.duesCount)}</strong> students have dues to clear</> })
+  if (billing?.totalAllocated) facts.push({ key: "billing", icon: Wallet, to: `${basePath}/dining-billing`, text: <><strong>₹{fmtCompact(billing.totalAllocated)}</strong> billed this period</> })
+  if (billing?.duesCount > 0) facts.push({ key: "dues", icon: CalendarClock, tone: "danger", to: `${basePath}/dining-billing`, text: <><strong>{fmtInt(billing.duesCount)}</strong> students have dues to clear</> })
 
   return facts
 }
@@ -54,8 +54,8 @@ const Fact = ({ fact, hidden }) => {
 }
 
 /** A slow-moving ribbon of plain-language facts. Hover to pause; click the ones that lead somewhere. */
-const FactTicker = ({ data, billing, rebates, loading }) => {
-  const facts = buildFacts(data, billing, rebates)
+const FactTicker = ({ data, billing, rebates, loading, basePath = "/admin" }) => {
+  const facts = buildFacts(data, billing, rebates, basePath)
   return (
     <section className="dxi-ticker" aria-label="Good to know">
       <span className="dxi-ticker-label"><Sparkles size={15} aria-hidden="true" /> Good to know</span>

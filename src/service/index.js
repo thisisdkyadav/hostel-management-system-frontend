@@ -60,6 +60,7 @@ export { expenditureApi } from "./modules/expenditure.api"
 export { electionsApi } from "./modules/elections.api"
 export { catererApi } from "./modules/caterer.api"
 export { diningInsightsApi } from "./modules/diningInsights.api"
+export { diningOversightApi } from "./modules/diningOversight.api"
 
 // NOTE:
 // Keep this module as named re-exports only.

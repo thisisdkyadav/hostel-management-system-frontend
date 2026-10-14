@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { Check, Keyboard, ScanFace, TriangleAlert } from "lucide-react"
 import { SCAN_SOURCE_LABELS } from "../catererHelpers"
+import { catererColor } from "../diningScope"
 import ScanPhoto from "./ScanPhoto"
 import { exactTime, isIssue, issueLabel, issueTone, relativeTime } from "./liveHelpers"
 
-const Card = ({ entry, nowMs, previewing, layer, idle }) => {
+const Card = ({ entry, nowMs, previewing, layer, idle, palette, showCaterer }) => {
   const issue = isIssue(entry)
   const tone = issue ? issueTone(entry) : "ok"
   const SourceIcon = entry.source === "manual" ? Keyboard : ScanFace
@@ -22,6 +23,11 @@ const Card = ({ entry, nowMs, previewing, layer, idle }) => {
           <span>{entry.rollNumber}</span>
           {entry.room && <span className="lf-spot-room">{entry.room}</span>}
         </p>
+        {showCaterer && entry.caterer?.name && (
+          <p className="lf-spot-caterer" style={{ "--kitchen": catererColor(palette, entry.caterer.id) }}>
+            {entry.caterer.name}
+          </p>
+        )}
         <p className="lf-spot-status" data-tone={tone}>
           {issue ? <TriangleAlert size={20} aria-hidden="true" /> : <Check size={20} aria-hidden="true" />}
           <span>{issue ? issueLabel(entry) : "Verified"}</span>
@@ -40,7 +46,7 @@ const Card = ({ entry, nowMs, previewing, layer, idle }) => {
 }
 
 /** The big card: the student who just scanned, or whoever the caterer is pointing at in the stream. */
-const Spotlight = ({ entry, previewing, nowMs, idle }) => {
+const Spotlight = ({ entry, previewing, nowMs, idle, palette, showCaterer = false }) => {
   // Keep the card that was on show so it can fade out while the new one fades in.
   const [shown, setShown] = useState(entry)
   const [leaving, setLeaving] = useState(null)
@@ -55,11 +61,11 @@ const Spotlight = ({ entry, previewing, nowMs, idle }) => {
         <>
           {leaving && (
             <div className="lf-spot-out" onAnimationEnd={() => setLeaving(null)}>
-              <Card entry={leaving} nowMs={nowMs} previewing={false} layer="out" idle={idle} />
+              <Card entry={leaving} nowMs={nowMs} previewing={false} layer="out" idle={idle} palette={palette} showCaterer={showCaterer} />
             </div>
           )}
           <div className="lf-spot-in" key={entry.id}>
-            <Card entry={entry} nowMs={nowMs} previewing={previewing} layer="in" idle={idle} />
+            <Card entry={entry} nowMs={nowMs} previewing={previewing} layer="in" idle={idle} palette={palette} showCaterer={showCaterer} />
           </div>
         </>
       ) : (

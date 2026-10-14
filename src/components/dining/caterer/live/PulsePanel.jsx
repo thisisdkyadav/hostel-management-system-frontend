@@ -40,8 +40,7 @@ const ServingHeader = ({ meal, endsIn, connected }) => (
   </header>
 )
 
-const IdleHeader = ({ next, last, lastRecord, connected }) => {
-  const summary = lastRecord?.summary
+const IdleHeader = ({ next, last, lastSummary: summary, connected }) => {
   return (
     <header className="lf-head lf-panel lf-head-idle">
       <div className="lf-head-main">
@@ -78,12 +77,12 @@ const IdleHeader = ({ next, last, lastRecord, connected }) => {
 }
 
 /** Left side: which meal, how it is going, how busy it is, and who just walked in. */
-const PulsePanel = ({ meals, connected, summary, summaryError, onRetrySummary, lastRecord, rush, spotlight, previewing, nowMs }) => {
+const PulsePanel = ({ meals, connected, summary, summaryError, onRetrySummary, lastSummary, rush, spotlight, previewing, nowMs, palette, showCaterer }) => {
   const idle = !meals.current
   return (
     <div className="lf-pulse">
       {idle ? (
-        <IdleHeader next={meals.next} last={meals.last} lastRecord={lastRecord} connected={connected} />
+        <IdleHeader next={meals.next} last={meals.last} lastSummary={lastSummary} connected={connected} />
       ) : (
         <>
           <ServingHeader meal={meals.current} endsIn={meals.endsIn} connected={connected} />
@@ -91,7 +90,7 @@ const PulsePanel = ({ meals, connected, summary, summaryError, onRetrySummary, l
           <RushMeter rush={rush} />
         </>
       )}
-      <Spotlight entry={spotlight} previewing={previewing} nowMs={nowMs} idle={idle} />
+      <Spotlight entry={spotlight} previewing={previewing} nowMs={nowMs} idle={idle} palette={palette} showCaterer={showCaterer} />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { Avatar, Badge, Card, DataTable, EmptyState, FilterTabs, SearchInput, St
 import { Users } from "lucide-react"
 import { getMediaUrl } from "@/utils/mediaUtils"
 import { describeRoom, formatDayMonth, MEAL_STATUS, SCAN_SOURCE_LABELS } from "../catererHelpers"
+import { catererColor } from "../diningScope"
 import { countByStatus, formatClock, PAGE_SIZE, rebateEndLabel } from "./mealRecordsHelpers"
 import "./MealRecords.css"
 
@@ -12,11 +13,11 @@ const matchesFilter = (row, filter) => {
   return row.status === filter
 }
 
-const emptyCopy = ({ filter, ended, searching, query }) => {
+const emptyCopy = ({ filter, ended, searching, query, oversight }) => {
   if (searching) return { title: "No student matches", message: `Nothing in this list matches "${query}".` }
   if (filter === "verified") {
     return ended
-      ? { title: "Nobody ate this meal", message: "No student was verified at your counter." }
+      ? { title: "Nobody ate this meal", message: oversight ? "No student was verified for this meal." : "No student was verified at your counter." }
       : { title: "Nobody has eaten yet", message: "Students show up here as they are verified." }
   }
   if (filter === "left") {
@@ -24,9 +25,22 @@ const emptyCopy = ({ filter, ended, searching, query }) => {
       ? { title: "Nobody missed this meal", message: "Every expected student ate." }
       : { title: "Nobody is waiting", message: "Every expected student has eaten." }
   }
-  if (filter === "on-rebate") return { title: "Nobody is away on rebate", message: "Everyone allocated to you is expected at this meal." }
-  return { title: "No students for this meal", message: "Nobody is allocated to you for this period." }
+  if (filter === "on-rebate") return { title: "Nobody is away on rebate", message: oversight ? "Every allocated student is expected at this meal." : "Everyone allocated to you is expected at this meal." }
+  return { title: "No students for this meal", message: oversight ? "Nobody is allocated to a caterer for this period." : "Nobody is allocated to you for this period." }
 }
+
+const catererColumn = (palette) => ({
+  key: "catererName",
+  header: "Caterer",
+  render: (row) =>
+    row.caterer ? (
+      <span className="mr-caterer" style={{ "--kitchen": catererColor(palette, row.caterer.id) }}>
+        <span className="mr-caterer__name">{row.caterer.name}</span>
+      </span>
+    ) : (
+      <span className="mr-muted">-</span>
+    ),
+})
 
 const COLUMNS = [
   {
@@ -86,7 +100,7 @@ const COLUMNS = [
 ]
 
 /** The whole roster for one service, filterable, searchable and sortable client-side. */
-const MealRoster = ({ record, stale }) => {
+const MealRoster = ({ record, stale, palette, showCaterer = false, oversight = false }) => {
   const [filter, setFilter] = useState("all")
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
@@ -117,6 +131,8 @@ const MealRoster = ({ record, stale }) => {
         method: SCAN_SOURCE_LABELS[item.verificationSource] || "",
         attemptCount: item.attemptCount || 0,
         rebate: item.rebate,
+        caterer: item.caterer || null,
+        catererName: item.caterer?.name || "",
       })),
     [students]
   )
@@ -139,7 +155,8 @@ const MealRoster = ({ record, stale }) => {
     { value: "on-rebate", label: "Away", count: counts["on-rebate"] },
   ]
 
-  const copy = emptyCopy({ filter, ended, searching: Boolean(needle), query: query.trim() })
+  const copy = emptyCopy({ filter, ended, searching: Boolean(needle), query: query.trim(), oversight })
+  const columns = useMemo(() => (showCaterer ? [COLUMNS[0], catererColumn(palette), ...COLUMNS.slice(1)] : COLUMNS), [showCaterer, palette])
   const totalPages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE))
 
   return (
@@ -168,7 +185,7 @@ const MealRoster = ({ record, stale }) => {
       </div>
       <DataTable
         data={visible}
-        columns={COLUMNS}
+        columns={columns}
         sortable
         pagination
         pageSize={PAGE_SIZE}

@@ -99,7 +99,7 @@ const CentreText = ({ summary }) => {
   )
 }
 
-const CatererStandings = ({ caterers }) => {
+const CatererStandings = ({ caterers, basePath }) => {
   const ranked = [...caterers].sort((a, b) => (b.attendanceRate ?? -1) - (a.attendanceRate ?? -1))
   const shown = ranked.slice(0, 5)
   return (
@@ -123,14 +123,14 @@ const CatererStandings = ({ caterers }) => {
         ))}
       </ol>
       {ranked.length > shown.length && (
-        <Link to="/admin/caterers" className="dxi-standings-more">+{ranked.length - shown.length} more caterers</Link>
+        <Link to={`${basePath}/caterers`} className="dxi-standings-more">+{ranked.length - shown.length} more caterers</Link>
       )}
     </div>
   )
 }
 
 /** Hero: today on a 24-hour dial, the meals as glowing arcs, and how each caterer is doing. */
-const TodayDial = ({ data, palette, nowMin, loading }) => {
+const TodayDial = ({ data, palette, nowMin, loading, basePath }) => {
   const summary = data ? todaySummary(data, nowMin) : null
   const openVars = summary?.open ? mealVars(palette, summary.open.slot.key) : undefined
 
@@ -154,13 +154,13 @@ const TodayDial = ({ data, palette, nowMin, loading }) => {
             ))}
           </ul>
 
-          <Link to="/admin/dining-rebates" className="dxi-away-line">
+          <Link to={`${basePath}/dining-rebates`} className="dxi-away-line">
             <Users size={14} aria-hidden="true" />
             <strong>{fmtInt(summary.onRebate)}</strong> students away on rebate today
           </Link>
 
           {(data.caterers || []).length > 0 ? (
-            <CatererStandings caterers={data.caterers} />
+            <CatererStandings caterers={data.caterers} basePath={basePath} />
           ) : (
             <PanelMessage title="No caterers yet" text="Caterers appear here once a dining period is running." />
           )}

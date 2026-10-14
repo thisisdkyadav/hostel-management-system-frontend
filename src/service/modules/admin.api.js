@@ -772,6 +772,9 @@ export const adminApi = {
   /**
    * Get visitor accommodation settings
    */
+  getInternAccommodationSettings: () => apiClient.get("/config/internAccommodation"),
+  updateInternAccommodationSettings: (config) => apiClient.put("/config/internAccommodation", { value: config }),
+
   getAccommodationSettings: () => {
     return apiClient.get("/config/accommodation")
   },

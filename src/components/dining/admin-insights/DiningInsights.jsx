@@ -14,10 +14,10 @@ import { buildMealPalette, DEFAULT_DAYS, REFRESH_MS } from "./insightHelpers"
 import "./DiningInsights.css"
 
 /**
- * Admin dining dashboard: one screen, no scrolling. Today on a dial, the daily rush,
+ * Admin (and Dining Office) dining dashboard: one screen, no scrolling. Today on a dial, the daily rush,
  * the weekly habit, who is away, and a ribbon of plain-language facts.
  */
-const DiningInsights = ({ billing, rebates }) => {
+const DiningInsights = ({ billing, rebates, basePath = "/admin" }) => {
   const [days, setDays] = useState(DEFAULT_DAYS)
   const nowMin = useMinuteClock()
 
@@ -55,7 +55,7 @@ const DiningInsights = ({ billing, rebates }) => {
     )
   }
 
-  const shared = { data, palette, nowMin, loading, days: data?.days || days }
+  const shared = { data, palette, nowMin, loading, days: data?.days || days, basePath }
 
   return (
     <div className="dxi">
@@ -65,7 +65,7 @@ const DiningInsights = ({ billing, rebates }) => {
         <WeekMood {...shared} />
         <AwayWeek {...shared} />
       </div>
-      <FactTicker data={data} billing={billing} rebates={rebates} loading={loading} />
+      <FactTicker data={data} billing={billing} rebates={rebates} loading={loading} basePath={basePath} />
     </div>
   )
 }

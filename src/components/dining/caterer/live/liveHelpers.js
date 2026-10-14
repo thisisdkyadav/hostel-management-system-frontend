@@ -129,19 +129,31 @@ export const mergeEntries = (lists, { mealKey, today }) => {
     .slice(0, MAX_ENTRIES)
 }
 
-/** Students on the meal record by roll number: they carry the room and hostel the scan feed lacks. */
-export const indexStudents = (record) => {
+/**
+ * Students by roll number, from the meal record (caterer) and from feed entries that already
+ * carry a room (Admin and Dining Office), so live socket scans can borrow the room.
+ */
+export const indexStudents = (record, entries = []) => {
   const index = new Map()
+  for (const entry of entries) {
+    const student = entry?.student
+    if (student?.rollNumber && (student.hostel || student.room)) index.set(student.rollNumber, student)
+  }
   for (const row of record?.students || []) {
     if (row.student?.rollNumber) index.set(row.student.rollNumber, row.student)
   }
   return index
 }
 
+/** Same caterer? Ids arrive as strings or populated objects. */
+export const sameCaterer = (entry, catererId) => !catererId || String(entry?.catererId?._id || entry?.catererId || entry?.caterer?.id || "") === catererId
+
 /** Scan entry plus the room and the best photo we have, ready for rows and the spotlight. */
 export const decorate = (entry, index, nowMs) => {
   const known = index.get(entry.rollNumber) || index.get(entry.student?.rollNumber) || null
-  const room = known ? [known.hostel?.name, known.room?.displayRoom].filter(Boolean).join(", ") : ""
+  const placed = known || entry.student
+  const room = placed ? [placed.hostel?.name, placed.room?.displayRoom].filter(Boolean).join(", ") : ""
+  const catererId = String(entry.catererId?._id || entry.catererId || entry.caterer?.id || "")
   return {
     id: entry.id,
     name: entry.student?.name || known?.name || "Unknown student",
@@ -152,6 +164,7 @@ export const decorate = (entry, index, nowMs) => {
     source: entry.source,
     message: entry.message || "",
     scannedAt: entry.scannedAt,
+    caterer: catererId ? { id: catererId, name: entry.caterer?.name || "" } : null,
     fresh: Boolean(entry.receivedAt) && nowMs - entry.receivedAt < FRESH_MS,
   }
 }
@@ -195,9 +208,10 @@ export const exactTime = (value) => {
 
 /**
  * Verified students per minute over the last RUSH_MINUTES minutes, oldest first.
- * The meal record knows every student's first verified time; the feed fills in scans newer than the last refresh.
+ * The meal record knows every student's first verified time (Admin and the Dining Office get bare
+ * arrival times, each tagged with its caterer); the feed fills in scans newer than the last refresh.
  */
-export const buildRush = ({ record, entries, nowMs }) => {
+export const buildRush = ({ record, entries, nowMs, catererId = "" }) => {
   const firstSeen = new Map()
   const note = (key, at) => {
     if (!key) return
@@ -207,10 +221,13 @@ export const buildRush = ({ record, entries, nowMs }) => {
     if (previous === undefined || ms < previous) firstSeen.set(key, ms)
   }
   for (const row of record?.students || []) {
-    if (row.verifiedAt) note(row.student?.rollNumber || row.allocationId, row.verifiedAt)
+    if (row.verifiedAt) note(row.student?.id || row.student?.rollNumber || row.allocationId, row.verifiedAt)
+  }
+  for (const arrival of record?.arrivals || []) {
+    if (!catererId || arrival.catererId === catererId) note(arrival.studentId, arrival.at)
   }
   for (const entry of entries) {
-    if (entry.status === "verified") note(entry.rollNumber || entry.student?.rollNumber || entry.id, entry.scannedAt)
+    if (entry.status === "verified" && sameCaterer(entry, catererId)) note(entry.student?.id || entry.rollNumber || entry.id, entry.scannedAt)
   }
 
   const buckets = new Array(RUSH_MINUTES).fill(0)

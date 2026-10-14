@@ -13,6 +13,8 @@ const DiningRebatesPage = lazy(() => import("../pages/admin/DiningRebatesPage"))
 const DiningBillingPage = lazy(() => import("../pages/admin/DiningBillingPage"))
 const DiningBillingDetailPage = lazy(() => import("../pages/admin/DiningBillingDetailPage"))
 const DiningOfficeStaffPage = lazy(() => import("../pages/admin/DiningOfficeStaffPage"))
+const DiningMealRecordsPage = lazy(() => import("../pages/common/DiningMealRecordsPage"))
+const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
 const HostelExplorerPage = lazy(() => import("../pages/admin/HostelExplorerPage"))
 const AdminAdminManagement = lazy(() => import("../pages/admin/AdminManagementPage"))
@@ -74,6 +76,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/DiningBillingPage"),
   () => import("../pages/admin/DiningBillingDetailPage"),
   () => import("../pages/admin/DiningOfficeStaffPage"),
+  () => import("../pages/common/DiningMealRecordsPage"),
   () => import("../pages/admin/HostelsPage"),
   () => import("../pages/admin/HostelExplorerPage"),
   () => import("../pages/admin/AdminManagementPage"),
@@ -165,6 +168,7 @@ const AdminRoutes = () => {
                 <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
                 <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />
                 <Route path="dining-office" element={guardRoute("route.admin.diningOffice", <DiningOfficeStaffPage />)} />
+                <Route path="meal-records" element={guardRoute("route.admin.caterers", <DiningMealRecordsPage home="/admin" />)} />
                 <Route path="administrators" element={guardRoute("route.admin.administrators", <AdminAdminManagement />)} />
                 <Route path="wardens" element={guardRoute("route.admin.wardens", <AdminWarden />)} />
                 <Route path="associate-wardens" element={guardRoute("route.admin.associateWardens", <AdminAssociateWardens />)} />
@@ -204,6 +208,8 @@ const AdminRoutes = () => {
               </>
             )}
           </Route>
+          {/* Full-screen display: no sidebar or header. */}
+          {!isCsoAdmin && <Route path="dining-live" element={guardRoute("route.admin.caterers", <DiningLiveFeedPage home="/admin" />)} />}
         </Routes>
       </Suspense>
     </ProtectedRoute>

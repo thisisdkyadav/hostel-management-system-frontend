@@ -577,3 +577,53 @@
   .dxi-away-bars { min-height: 10rem; }
   .dxi-ticker { border-radius: var(--radius-card); }
 }
+
+/* ---- Dining Office header shortcuts ---- */
+
+.dxi-office-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.dxi-office-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: background var(--transition-fast) var(--ease-out), border-color var(--transition-fast) var(--ease-out);
+}
+
+.dxi-office-link:hover { background: var(--color-bg-secondary); }
+
+.dxi-office-link[data-live] {
+  border-color: color-mix(in srgb, var(--color-success) 45%, var(--color-border-primary));
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-bg-primary));
+  color: var(--color-success-text, var(--color-success));
+}
+
+.dxi-office-link[data-live]:hover { background: color-mix(in srgb, var(--color-success) 18%, var(--color-bg-primary)); }
+
+.dxi-office-pulse {
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  animation: dxi-office-pulse 1.8s ease-out infinite;
+}
+
+@keyframes dxi-office-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 60%, transparent); }
+  100% { box-shadow: 0 0 0 var(--spacing-2) transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dxi-office-pulse { animation: none; }
+}

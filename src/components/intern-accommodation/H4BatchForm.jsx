@@ -34,7 +34,7 @@ const blank = () => ({
   course: "",
   department: "",
   payerType: "intern",
-  stay: { fromDate: "", toDate: "", checkInTime: "11:00", checkOutTime: "11:00", purpose: "" },
+  stay: { fromDate: "", toDate: "", purpose: "" },
 })
 const fromRequest = (r) => ({
   ...blank(),
@@ -52,8 +52,8 @@ const fromRequest = (r) => ({
 })
 const genderOptions = ["Male", "Female", "Other"].map((value) => ({ value, label: value }))
 const payerOptions = [
-  { value: "intern", label: "Student / intern" },
-  { value: "faculty", label: "Recommending faculty" },
+  { value: "intern", label: "Student" },
+  { value: "faculty", label: "Faculty (from project funds)" },
 ]
 const CSV_HEADERS = [
   "name",
@@ -82,23 +82,24 @@ const template = () => {
   a.click()
   URL.revokeObjectURL(url)
 }
-const steps = [
-  { id: "0", label: "Batch & faculty" },
-  { id: "1", label: "Students" },
-  { id: "2", label: "Review" },
-]
 export default function H4BatchForm({ options, existing, onClose, onSaved }) {
   const { user } = useAuth()
-  const [step, setStep] = useState(0)
-  const [label, setLabel] = useState(existing?.h4.batchLabel || "")
-  const [facultyUserId, setFaculty] = useState(existing?.h4.facultyUserId || "")
+  const personal = options.academicCategory !== "office" && user.role === "Academics"
+  const firstStep = personal ? 1 : 0
+  const steps = [
+    ...(!personal ? [{ id: "0", label: "Faculty" }] : []),
+    { id: "1", label: "Students" },
+    { id: "2", label: "Review" },
+  ]
+  const [step, setStep] = useState(firstStep)
+  const [facultyUserId, setFaculty] = useState(String(personal ? options.defaultFacultyUserId || user._id || user.id : existing?.h4.facultyUserId || ""))
   const [students, setStudents] = useState(existing ? [fromRequest(existing)] : [blank()])
   const [active, setActive] = useState(0)
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
-  const selectedFaculty = options.faculty?.find((f) => String(f._id) === facultyUserId)
-  const ownFaculty = user.role === "Academics" && facultyUserId === String(user._id || user.id)
+  const selectedFaculty = options.faculty?.find((f) => String(f._id) === facultyUserId) || (personal ? user : null)
+  const ownFaculty = personal && facultyUserId === String(user._id || user.id)
   const student = students[active]
   const update = (key, value) => setStudents((rows) => rows.map((s, i) => (i === active ? { ...s, [key]: value } : s)))
   const stay = (key, value) => update("stay", { ...student.stay, [key]: value })
@@ -151,7 +152,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
     setError("")
     try {
       if (!draft && !confirmed) throw new Error("Confirm the student details and payer before submitting")
-      const body = { label, facultyUserId, students, draft, recommend }
+      const body = { facultyUserId, students, draft, recommend }
       const result = existing
         ? await h4Api.edit(existing._id, { ...body, student: students[0], revision: existing.h4.revision })
         : await h4Api.create(body)
@@ -164,8 +165,8 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
   }
   const next = () => {
     setError("")
-    if (!label.trim() || !facultyUserId) {
-      setError("Enter a batch title and select faculty")
+    if (!facultyUserId) {
+      setError("Select the recommending faculty")
       return
     }
     if (step === 1) {
@@ -195,7 +196,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
     <Modal
       isOpen
       onClose={busy ? undefined : onClose}
-      title={existing ? "Update H4 request" : "New H4 accommodation batch"}
+      title={existing ? "Update H4 request" : "New accommodation request"}
       width={880}
       footer={
         <HStack justify="between" wrap gap={2}>
@@ -203,7 +204,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
             Cancel
           </Button>
           <HStack gap={2}>
-            {step > 0 && (
+            {step > firstStep && (
               <Button variant="secondary" onClick={() => setStep(step - 1)} disabled={busy}>
                 Back
               </Button>
@@ -212,7 +213,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
               variant="secondary"
               onClick={() => submit(true)}
               loading={busy}
-              disabled={busy || !label || !facultyUserId}
+              disabled={busy || !facultyUserId}
             >
               Save draft
             </Button>
@@ -239,19 +240,10 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
         {error && <Alert type="error">{error}</Alert>}
         {step === 0 && (
           <VStack gap={4}>
-            <Field label="Batch title" required>
-              <Input
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-                maxLength={120}
-                placeholder="Summer research interns · Physics"
-                disabled={!!existing}
-              />
-            </Field>
             <Field label="Recommending faculty" required>
               <Select
                 value={facultyUserId}
-                placeholder="Select an Academics user"
+                placeholder="Select professor"
                 options={(options.faculty || []).map((f) => ({
                   value: String(f._id),
                   label: `${f.name} · ${f.email}`,
@@ -398,20 +390,6 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                   onChange={(e) => stay("toDate", e.target.value)}
                 />
               </Field>
-              <Field label="Arrival time">
-                <Input
-                  type="time"
-                  value={student.stay.checkInTime}
-                  onChange={(e) => stay("checkInTime", e.target.value)}
-                />
-              </Field>
-              <Field label="Departure time">
-                <Input
-                  type="time"
-                  value={student.stay.checkOutTime}
-                  onChange={(e) => stay("checkOutTime", e.target.value)}
-                />
-              </Field>
             </Grid>
             <Field label="Purpose" required>
               <Textarea rows={2} value={student.stay.purpose} onChange={(e) => stay("purpose", e.target.value)} />
@@ -421,7 +399,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
         {step === 2 && (
           <VStack gap={3}>
             <Text weight="semibold">
-              <Users size={16} /> {label} · {students.length} student{students.length > 1 ? "s" : ""}
+              <Users size={16} /> {students.length} student{students.length > 1 ? "s" : ""}
             </Text>
             <Text size="sm" color="muted">
               Faculty: {selectedFaculty?.name} · {selectedFaculty?.email}

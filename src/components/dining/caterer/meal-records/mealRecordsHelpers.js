@@ -207,7 +207,7 @@ export const rebateEndLabel = (rebate) => (rebate?.endDate ? toDayKey(rebate.end
 
 /* ---------- CSV ---------- */
 
-export const buildRosterCsv = (record) => {
+export const buildRosterCsv = (record, { withCaterer = false } = {}) => {
   const rows = (record?.students || []).map((row) => {
     const student = row.student || {}
     let time = ""
@@ -216,13 +216,15 @@ export const buildRosterCsv = (record) => {
     return [
       student.name || "",
       student.rollNumber || "",
+      ...(withCaterer ? [row.caterer?.name || ""] : []),
       describeRoom(student),
       MEAL_STATUS[row.status]?.label || row.status || "",
       time,
       SCAN_SOURCE_LABELS[row.verificationSource] || "",
     ]
   })
-  return buildCsvContent(["Name", "Roll number", "Hostel and room", "Status", "Time", "Method"], rows)
+  const head = ["Name", "Roll number", ...(withCaterer ? ["Caterer"] : []), "Hostel and room", "Status", "Time", "Method"]
+  return buildCsvContent(head, rows)
 }
 
 export const downloadCsv = (filename, content) => {

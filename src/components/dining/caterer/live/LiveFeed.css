@@ -868,3 +868,167 @@
     transition: none;
   }
 }
+
+/* ---- Kitchens (Admin and Dining Office): every caterer as a tab that fills as students eat ---- */
+
+.lf-kitchens {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  overflow-x: auto;
+  border-bottom: var(--border-1) solid var(--color-border-primary);
+  scrollbar-width: thin;
+}
+
+.lf-kitchen {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1 0 11rem;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  max-width: 18rem;
+  padding: var(--spacing-2-5) var(--spacing-4);
+  overflow: hidden;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  color: var(--color-text-body);
+  text-align: left;
+  cursor: pointer;
+  opacity: 0.78;
+  transition: opacity 150ms var(--ease-smooth), border-color 150ms var(--ease-smooth), box-shadow 150ms var(--ease-smooth), transform 150ms var(--ease-smooth);
+}
+
+.lf-kitchen:hover { opacity: 1; transform: translateY(calc(var(--border-1) * -1)); }
+
+.lf-kitchen:focus-visible {
+  outline: var(--border-2) solid var(--kitchen);
+  outline-offset: var(--border-2);
+}
+
+.lf-kitchen[data-active] {
+  opacity: 1;
+  border-color: var(--kitchen);
+  box-shadow: 0 0 0 var(--border-1) var(--kitchen), 0 var(--spacing-2) var(--spacing-6) calc(var(--spacing-2) * -1) color-mix(in srgb, var(--kitchen) 55%, transparent);
+}
+
+/* The tab fills from the left like a gauge, in the caterer's colour. */
+.lf-kitchen-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: -1;
+  width: var(--fill);
+  background: linear-gradient(to right, color-mix(in srgb, var(--kitchen) 6%, transparent), color-mix(in srgb, var(--kitchen) 18%, transparent));
+  border-right: var(--border-2) solid color-mix(in srgb, var(--kitchen) 55%, transparent);
+  transition: width 900ms var(--ease-smooth);
+}
+
+.lf-kitchen-name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.lf-kitchen-dot {
+  flex: 0 0 auto;
+  width: var(--spacing-2-5);
+  height: var(--spacing-2-5);
+  border-radius: var(--radius-full);
+  background: var(--kitchen);
+}
+
+.lf-kitchen[data-active] .lf-kitchen-dot { box-shadow: 0 0 0 var(--spacing-1) color-mix(in srgb, var(--kitchen) 25%, transparent); }
+
+.lf-kitchen-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lf-kitchen-issues {
+  flex: 0 0 auto;
+  margin-left: auto;
+  min-width: var(--spacing-5);
+  padding: 0 var(--spacing-1-5);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-warning) 18%, transparent);
+  color: var(--color-warning-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+}
+
+.lf-kitchen-count {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-1);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.lf-kitchen-count strong {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1.1;
+  color: var(--color-text-heading);
+}
+
+.lf-kitchen-pct {
+  margin-left: auto;
+  font-weight: var(--font-weight-bold);
+  color: var(--kitchen);
+}
+
+/* Caterer tag on a scan row and in the spotlight. */
+.lf-row-caterer,
+.lf-spot-caterer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  min-width: 0;
+  color: var(--color-text-body);
+}
+
+.lf-row-caterer::before,
+.lf-spot-caterer::before {
+  content: "";
+  flex: 0 0 auto;
+  width: var(--spacing-2-5);
+  height: var(--spacing-2-5);
+  border-radius: var(--radius-full);
+  background: var(--kitchen);
+}
+
+.lf-row-caterer {
+  max-width: 12rem;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--kitchen) 12%, transparent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lf-row-caterer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lf-row[data-caterer] { grid-template-columns: auto minmax(0, 1fr) auto auto auto auto; }
+
+.lf-row[data-caterer] .lf-row-photo { border-right: var(--border-4) solid var(--kitchen); }
+
+.lf-spot-caterer {
+  font-size: clamp(var(--font-size-md), min(1.2vw, 2.2vh), var(--font-size-2xl));
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 640px) {
+  .lf-row-caterer { display: none; }
+}

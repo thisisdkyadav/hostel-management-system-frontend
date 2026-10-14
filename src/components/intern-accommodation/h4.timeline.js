@@ -40,8 +40,9 @@ const actorName = (request, entry, role, approval) => {
 }
 const eventDetails = (entry, request, index, context) => {
   const note = String(entry.note || "").trim()
-  const lower = note.toLowerCase()
-  const payerRole = !entry.by || (userId(entry.by) === userId(request.h4?.facultyUserId) && request.h4?.payer?.type === "faculty") ? "Payer" : "Requester"
+  const messEvent = /^mess payment|^accounts mess /i.test(note)
+  const lower = note.toLowerCase().replace(/^mess /, "")
+  const payerRole = messEvent && !entry.by ? "Intern" : !entry.by || (userId(entry.by) === userId(request.h4?.facultyUserId) && request.h4?.payer?.type === "faculty") ? "Payer" : "Requester"
   const change = context.change || (request.scheduleChanges || []).filter((c) => timestamp(c.requestedAt) !== null
     && timestamp(c.requestedAt) <= timestamp(entry.at) && (!c.decidedAt || timestamp(entry.at) <= timestamp(c.decidedAt) + 2000))
     .sort((a, b) => timestamp(b.requestedAt) - timestamp(a.requestedAt))[0]
@@ -115,7 +116,8 @@ const eventDetails = (entry, request, index, context) => {
     // A submission can happen milliseconds before self-recommendation; it is not an approval.
     if (!["Pending CWO Capacity Check", "Pending CW Approval", "CW Approved", "Rejected", "Returned to Student"].includes(entry.status)) approval = null
   }
-  const readableNote = routineNotes.has(note) || (change && lower.startsWith("date change approved:")) ? "" : note.replace(/^Accounts\s+(?:mark_paid|mark_unpaid|correct):\s*/i, "")
+  if (messEvent) title = `Mess · ${title}`
+  const readableNote = routineNotes.has(note) || (change && lower.startsWith("date change approved:")) ? "" : note.replace(/^Accounts\s+(?:mess\s+)?(?:mark_paid|mark_unpaid|correct):\s*/i, "")
   const changedStay = lower.startsWith("date change") && change && timestamp(change.requestedToDate) !== null
     ? `${lower.includes("approved") ? "Approved" : "Requested"} stay: ${date(change.requestedFromDate)} → ${date(change.requestedToDate)}` : ""
   const details = [...new Set([readableNote, changedStay, lower.startsWith("date change") && lower.includes("submitted") ? change?.reason : "", approval?.reason].filter(Boolean))].filter((text) => text.toLowerCase() !== title.toLowerCase())
@@ -147,7 +149,7 @@ export const buildH4Timeline = (request = {}) => {
     pending[0] = { ...pending[0], title: "Correct and resubmit request", note: "Update the returned details and submit for fresh faculty review." }
   }
   // Additional payments retain the operational status; never mistake them for check-in or room events.
-  const outstanding = [request.payment, ...(request.additionalPayments || [])].filter((p) => p?.amount > 0 && p.status !== "Verified")
+  const outstanding = [request.payment, request.h4?.messPayment, ...(request.additionalPayments || [])].filter((p) => p?.amount > 0 && p.status !== "Verified")
   if (outstanding.length && ["Payment Verified", "Hostel Allotted", "Rooms Assigned", "Checked In", "Checked Out"].includes(request.status)) {
     const proofsNeeded = outstanding.some((p) => p.status !== "Submitted")
     const financial = (proofsNeeded ? ["payment", "verification"] : ["verification"]).map((key) => ({ ...steps[key], id: `next-${key}`, title: key === "payment" ? "Outstanding payment proof" : "Outstanding payment verification" }))

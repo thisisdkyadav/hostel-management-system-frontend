@@ -27,7 +27,7 @@ const Waiting = ({ filter, idle }) => {
 }
 
 /** The live scroll of scans, newest on top. */
-const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, previewId, onPreview, caption, idle, loading, error, onRetry }) => {
+const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, previewId, onPreview, caption, idle, loading, error, onRetry, kitchens, palette, showCaterer = false }) => {
   const shown = filter === "issues" ? entries.filter((entry) => entry.status !== "verified") : entries
   const count = todayCount > MAX_ENTRIES ? todayCount : Math.max(todayCount, entries.length)
 
@@ -44,6 +44,8 @@ const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, 
         </div>
       </header>
 
+      {kitchens}
+
       {loading ? (
         <div className="lf-stream-list" aria-hidden="true">
           {[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} variant="rounded" height="4.5rem" />)}
@@ -58,7 +60,7 @@ const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, 
       ) : (
         <ul className="lf-stream-list" aria-live={idle ? "off" : "polite"}>
           {shown.map((entry) => (
-            <ScanRow key={entry.id} entry={entry} nowMs={nowMs} previewing={entry.id === previewId} onPreview={onPreview} />
+            <ScanRow key={entry.id} entry={entry} nowMs={nowMs} previewing={entry.id === previewId} onPreview={onPreview} palette={palette} showCaterer={showCaterer} />
           ))}
         </ul>
       )}

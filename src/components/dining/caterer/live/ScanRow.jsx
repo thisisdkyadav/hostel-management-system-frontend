@@ -2,6 +2,7 @@ import { memo } from "react"
 import { Check, Keyboard, ScanFace } from "lucide-react"
 import { StatusBadge } from "hzero"
 import { SCAN_SOURCE_LABELS } from "../catererHelpers"
+import { catererColor } from "../diningScope"
 import ScanPhoto from "./ScanPhoto"
 import { exactTime, isIssue, issueLabel, issueTone, relativeTime } from "./liveHelpers"
 
@@ -16,15 +17,22 @@ const SourceIcon = ({ source }) => {
 }
 
 /** One scan: who, where they live, how they were checked in, when, and (only if it went wrong) why. */
-const ScanRow = ({ entry, nowMs, previewing, onPreview }) => {
+const ScanRow = ({ entry, nowMs, previewing, onPreview, palette, showCaterer = false }) => {
   const issue = isIssue(entry)
   const tone = issue ? issueTone(entry) : undefined
   const show = () => onPreview(entry.id)
   const hide = () => onPreview(null)
+  const tagged = showCaterer && entry.caterer
 
   return (
     <li className="lf-row-wrap" data-fresh={entry.fresh ? tone || "ok" : undefined}>
-      <div className="lf-row" data-issue={tone} data-previewing={previewing || undefined}>
+      <div
+        className="lf-row"
+        data-issue={tone}
+        data-previewing={previewing || undefined}
+        data-caterer={tagged ? "" : undefined}
+        style={tagged ? { "--kitchen": catererColor(palette, entry.caterer.id) } : undefined}
+      >
         <button
           type="button"
           className="lf-row-photo"
@@ -43,6 +51,11 @@ const ScanRow = ({ entry, nowMs, previewing, onPreview }) => {
             {entry.room && <span className="lf-row-room">{entry.room}</span>}
           </span>
         </div>
+        {tagged && (
+          <span className="lf-row-caterer" title={`Scanned at ${entry.caterer.name}`}>
+            <span>{entry.caterer.name}</span>
+          </span>
+        )}
         <SourceIcon source={entry.source} />
         <time className="lf-row-time" dateTime={entry.scannedAt} title={exactTime(entry.scannedAt)}>
           {relativeTime(entry.scannedAt, nowMs)}

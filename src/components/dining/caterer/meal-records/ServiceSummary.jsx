@@ -4,6 +4,7 @@ import { formatDayLong, pluralize } from "../catererHelpers"
 import { countByStatus } from "./mealRecordsHelpers"
 import PlateBar from "./PlateBar"
 import ArrivalCurve from "./ArrivalCurve"
+import KitchenSplit from "./KitchenSplit"
 import "./MealRecords.css"
 
 const STATE_BADGE = {
@@ -22,7 +23,7 @@ const headlineFor = (summary, state) => {
 }
 
 /** The selected service: what happened (plate bar) and when (arrival curve). */
-const ServiceSummary = ({ slot, date, record, stale, loading, error, onRetry }) => {
+const ServiceSummary = ({ slot, date, record, stale, loading, error, onRetry, palette, onPickCaterer }) => {
   const students = record?.students
   const counts = useMemo(() => countByStatus(students), [students])
 
@@ -73,6 +74,14 @@ const ServiceSummary = ({ slot, date, record, stale, loading, error, onRetry }) 
         </div>
       </div>
     )
+    if (record.caterers?.length > 1 && onPickCaterer) {
+      body = (
+        <>
+          {body}
+          <KitchenSplit caterers={record.caterers} palette={palette} mealState={mealState} onPick={onPickCaterer} />
+        </>
+      )
+    }
   }
 
   return (

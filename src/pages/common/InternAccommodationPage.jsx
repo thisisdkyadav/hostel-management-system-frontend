@@ -34,7 +34,7 @@ const lanesFor = (user, options) => {
       l(
         "payments",
         "Verify payment",
-        (r) => r.payment?.status === "Submitted" || (r.additionalPayments || []).some((p) => p.status === "Submitted"),
+        (r) => r.payment?.status === "Submitted" || r.h4.messPayment?.status === "Submitted" || (r.additionalPayments || []).some((p) => p.status === "Submitted"),
       ),
     )
   if (options.role === "Hostel Supervisor")
@@ -59,7 +59,7 @@ const laneMatcher = (lane) => lane.match || (() => true)
 const matchesSearch = (r, q) => {
   const s = q.trim().toLowerCase()
   if (!s) return true
-  return [r.applicantName, r.applicantEmail, r.h4.institute, r.h4.batchLabel, r.h4.facultyName, r.h4.creatorName]
+  return [r.applicantName, r.applicantEmail, r.h4.institute, r.h4.facultyName, r.h4.creatorName]
     .filter(Boolean)
     .some((v) => String(v).toLowerCase().includes(s))
 }
@@ -312,7 +312,7 @@ export default function InternAccommodationPage() {
           )}
           {options.canCreate && (
             <Button onClick={() => setForm({ create: true })}>
-              <Plus size={16} /> New batch
+              <Plus size={16} /> New request
             </Button>
           )}
           <Button variant="ghost" onClick={refreshRequests} aria-label="Refresh">
@@ -335,7 +335,7 @@ export default function InternAccommodationPage() {
         <HStack gap={3} wrap align="end" style={{ marginBottom: "var(--spacing-4)" }}>
           <Field label="Search">
             <Input
-              placeholder="Student, institute, batch, faculty…"
+              placeholder="Student, institute, faculty…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onClear={() => setSearch("")}

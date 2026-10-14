@@ -143,7 +143,7 @@ const hostelRole = ({ key, title, plural, api, extraFields = [], extraCard = () 
 
 // ─── gymkhana and academics ──────────────────────────────────────────────────
 
-const subRoleRole = ({ key, title, plural, api, subRoles, extraFields = [], extraCard = () => [] }) => ({
+const subRoleRole = ({ key, title, plural, api, subRoles, subRoleRequired = true, extraFields = [], extraCard = () => [] }) => ({
   title,
   plural,
   icon: Award,
@@ -180,12 +180,12 @@ const subRoleRole = ({ key, title, plural, api, subRoles, extraFields = [], extr
     create: [
       ...CREDENTIAL_FIELDS,
       PASSWORD_FIELD,
-      { name: "subRole", label: "Sub role", type: "select", icon: Award, required: true, options: subRoles, placeholder: "Select a sub role" },
+      { name: "subRole", label: "Sub role", type: "select", icon: Award, required: subRoleRequired, options: subRoles, placeholder: "Select a sub role" },
       ...extraFields,
     ],
     edit: [
       CREDENTIAL_FIELDS[0],
-      { name: "subRole", label: "Sub role", type: "select", icon: Award, required: true, options: subRoles, placeholder: "Select a sub role" },
+      { name: "subRole", label: "Sub role", type: "select", icon: Award, required: subRoleRequired, options: subRoles, placeholder: "Select a sub role" },
       ...extraFields,
     ],
   },
@@ -301,7 +301,14 @@ export const STAFF_TYPES = {
     title: "Academics",
     plural: "Academics users",
     api: { list: adminApi.getAllAcademicsUsers, create: adminApi.addAcademics, update: adminApi.updateAcademics, remove: adminApi.deleteAcademics },
-    subRoles: ACADEMICS_SUBROLE_OPTIONS,
+    subRoles: [{ value: "", label: "None" }, ...ACADEMICS_SUBROLE_OPTIONS],
+    subRoleRequired: false,
+    extraFields: [{
+      name: "academicCategory", label: "Account category", type: "select", required: true,
+      defaultValue: "personal",
+      options: [{ value: "personal", label: "Personal" }, { value: "office", label: "Office" }],
+    }],
+    extraCard: (s) => [{ label: "Account category", value: s.academicCategory === "office" ? "Office" : "Personal" }],
   }),
 
   security: {

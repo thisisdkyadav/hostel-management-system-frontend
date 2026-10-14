@@ -45,6 +45,18 @@ export const queryKeys = {
     rebateDay: (date) => [...queryKeys.caterer.all, "rebate-day", date],
     rebates: (params) => [...queryKeys.caterer.all, "rebates", params ?? {}],
   },
+  diningOffice: {
+    all: ["dining-office"],
+    dashboard: () => [...queryKeys.diningOffice.all, "dashboard"],
+  },
+  diningOversight: {
+    all: ["dining-oversight"],
+    mealFeed: (params) => [...queryKeys.diningOversight.all, "meal-feed", params ?? {}],
+    mealRecordOptions: (params) => [...queryKeys.diningOversight.all, "meal-record-options", params ?? {}],
+    mealRecordOverview: (params) => [...queryKeys.diningOversight.all, "meal-record-overview", params ?? {}],
+    mealRecord: (params) => [...queryKeys.diningOversight.all, "meal-record", params ?? {}],
+    mealPulse: (params) => [...queryKeys.diningOversight.all, "meal-pulse", params ?? {}],
+  },
   diningInsights: {
     all: ["dining-insights"],
     overview: (params) => [...queryKeys.diningInsights.all, "overview", params ?? {}],

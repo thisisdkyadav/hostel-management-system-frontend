@@ -6,6 +6,8 @@
  * a handleLogout callback and optionally user data for dynamic paths.
  */
 
+import { canAccessInternAccommodation } from "@/utils/internAccommodationAccess"
+
 import {
   LayoutDashboard,
   Building2,
@@ -182,7 +184,6 @@ export const getAdminNavItems = (handleLogout, user = null) => {
       { name: "Check-In/Out", icon: CheckSquare, section: "main", path: "/admin/live-checkinout" },
       { name: "Face Scanner Management", icon: Scan, section: "main", path: "/admin/face-scanners" },
       createProfileItem("/admin"),
-      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
   createLogoutItem(handleLogout),
     ]
   }
@@ -211,6 +212,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/admin/dining-rebates", routeKey: "route.admin.diningRebates", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Billing", icon: Wallet, section: "main", path: "/admin/dining-billing", pathPattern: "^/admin/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Meal Records", icon: ClipboardList, section: "main", path: "/admin/meal-records", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Live Feed", icon: Radio, section: "main", path: "/admin/dining-live", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING, accent: "success", badge: { label: "Live", pulse: true } },
     { name: "Dining Office", icon: UserCog, section: "main", path: "/admin/dining-office", routeKey: "route.admin.diningOffice", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
@@ -253,8 +256,10 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   }
 
   navItems.push(createProfileItem("/admin"))
-  navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
-  createLogoutItem(handleLogout))
+  if (canAccessInternAccommodation(user)) {
+    navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true })
+  }
+  navItems.push(createLogoutItem(handleLogout))
 
   return navItems
 }
@@ -269,12 +274,13 @@ export const getSuperAdminNavItems = (handleLogout) => [
   { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
   { name: "AuthZ", icon: ShieldCheck, section: "main", path: "/super-admin/authz" },
   createProfileItem("/super-admin"),
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/super-admin/intern-accommodation", routeKey: "route.superAdmin.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
 /** sessionStorage key: the last caterer page shown inside the layout, so the full-screen Live Feed can close back to it. */
 export const CATERER_LAST_PATH_KEY = "hms.caterer.lastPath"
+/** sessionStorage key: the same, for the Admin and Dining Office live feed. */
+export const DINING_LIVE_RETURN_KEY = "hms.dining.liveReturn"
 
 export const getCatererNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/caterer", routeKey: "route.caterer.dashboard" },
@@ -295,7 +301,8 @@ export const getDiningOfficeNavItems = (handleLogout) => [
   { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/dining-office/dining-periods", routeKey: "route.admin.diningPeriods" },
   { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/dining-office/dining-rebates", routeKey: "route.admin.diningRebates" },
   { name: "Dining Billing", icon: Wallet, section: "main", path: "/dining-office/dining-billing", pathPattern: "^/dining-office/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling" },
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/dining-office/intern-accommodation", routeKey: "route.dining.internAccommodation" },
+  { name: "Meal Records", icon: ClipboardList, section: "main", path: "/dining-office/meal-records", routeKey: "route.admin.caterers" },
+  { name: "Live Feed", icon: Radio, section: "main", path: "/dining-office/live", routeKey: "route.admin.caterers", accent: "success", badge: { label: "Live", pulse: true } },
   createLogoutItem(handleLogout),
 ]
 
@@ -317,7 +324,6 @@ export const getWardenNavItems = (handleLogout, user) => [
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/warden/feedbacks" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/warden/undertakings" },
   createProfileItem("/warden"),
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/warden/intern-accommodation", routeKey: "route.warden.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -339,7 +345,6 @@ export const getAssociateWardenNavItems = (handleLogout, user) => [
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/associate-warden/feedbacks" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/associate-warden/undertakings" },
   createProfileItem("/associate-warden"),
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/associate-warden/intern-accommodation", routeKey: "route.associateWarden.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -409,7 +414,6 @@ export const getSecurityNavItems = (handleLogout, user) => {
     { name: "Attendance", icon: CheckSquare, section: "main", path: "/guard" },
     { name: "My Tasks", icon: ListTodo, section: "main", path: "/guard/my-tasks" },
     { name: "Lost and Found", icon: Search, section: "main", path: "/guard/lost-and-found" },
-    { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/guard/intern-accommodation", routeKey: "route.security.internAccommodation" },
   createLogoutItem(handleLogout),
   ]
 }
@@ -423,7 +427,6 @@ export const getMaintenanceNavItems = (handleLogout) => [
   { name: "Leaves", icon: CalendarOff, section: "main", path: "/maintenance/leaves" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/maintenance/my-tasks" },
   { name: "Attendance", icon: CheckSquare, section: "main", path: "/maintenance/attendance" },
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/maintenance/intern-accommodation", routeKey: "route.maintenance.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -458,7 +461,6 @@ export const getStudentNavItems = (
     isNew: electionPortalState.mode === "voting",
   }] : []),
   createProfileItem("/student"),
-  { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/student/intern-accommodation", routeKey: "route.student.internAccommodation" },
   createLogoutItem(handleLogout),
 ]
 
@@ -476,7 +478,6 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
       { name: "Club Home", icon: Users, section: "main", path: "/gymkhana/club" },
       { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
       createProfileItem("/gymkhana"),
-      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
   createLogoutItem(handleLogout),
     ]
   }
@@ -486,7 +487,6 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
       { name: "Elections", icon: BadgeCheck, section: "main", path: "/gymkhana/elections" },
       { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
       createProfileItem("/gymkhana"),
-      { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
   createLogoutItem(handleLogout),
     ]
   }
@@ -498,7 +498,6 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
     { name: "Attendance", icon: CheckSquare, section: "main", path: "/gymkhana/attendance", pathPattern: "^/gymkhana/attendance(/.*)?$" },
     createProfileItem("/gymkhana"),
-    { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/gymkhana/intern-accommodation", routeKey: "route.gymkhana.internAccommodation" },
   createLogoutItem(handleLogout),
   ]
 }

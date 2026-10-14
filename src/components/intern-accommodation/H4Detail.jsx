@@ -19,6 +19,7 @@ import {
   Textarea,
   VStack,
   useConfirm,
+  useToast,
 } from "hzero"
 import { BedDouble, CalendarDays, CircleCheck, CreditCard, Download, ExternalLink, Mail, Pencil, User, XCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -30,14 +31,21 @@ import H4Timeline from "./H4Timeline"
 import H4RoomCheck from "./H4RoomCheck"
 import H4PaymentForm from "./H4PaymentForm"
 import H4ScheduleForm from "./H4ScheduleForm"
+import { h4Bills, h4BillAction } from "./h4.payments"
 
-function OfferForm({ options, save, busy }) {
+function OfferForm({ request, options, save, busy }) {
   const [hostelId, setHostel] = useState("")
   const [mess, setMess] = useState("without")
-  const [price, setPrice] = useState("")
-  const [gstPercentage, setGst] = useState("0")
+  const days = request.nights
+  const config = options.config || {}
+  const [dailyRate, setDailyRate] = useState(String(config.accommodationDailyRate || 0))
+  const [priceOverride, setPriceOverride] = useState(null)
+  const price = priceOverride ?? String(Math.round(Number(dailyRate || 0) * days * 100) / 100)
+  const gstPercentage = Number(config.gstPercentage || 0)
   const [remarks, setRemarks] = useState("")
-  const [paymentLink, setPaymentLink] = useState("")
+  const [messDailyRate, setMessDailyRate] = useState(String(config.messDailyRate || 0))
+  const [messOverride, setMessOverride] = useState(null)
+  const messAmount = messOverride ?? String(Math.round(Number(messDailyRate || 0) * days * 100) / 100)
   const [reason, setReason] = useState("")
   const total = Number(price || 0) * (1 + Number(gstPercentage || 0) / 100)
   return (
@@ -50,14 +58,17 @@ function OfferForm({ options, save, busy }) {
           onChange={(e) => setHostel(e.target.value)}
         />
       </Field>
+      <InfoRow label="Charge days" value={`${days} days · departure day excluded`} />
       <Grid cols={{ base: 1, lg: 2 }} gap={3}>
-        <Field label="Charge" required>
-          <Input type="number" min="0" value={price} onChange={(e) => setPrice(e.target.value)} />
+        <Field label="Accommodation / day (₹)" required>
+          <Input type="number" min="0" step="0.01" value={dailyRate} onChange={(e) => { setDailyRate(e.target.value); setPriceOverride(null) }} />
         </Field>
-        <Field label="GST %" required>
-          <Input type="number" min="0" max="100" value={gstPercentage} onChange={(e) => setGst(e.target.value)} />
+        <Field label="Accommodation total before GST (₹)" required>
+          <Input type="number" min="0" step="0.01" value={price} onChange={(e) => setPriceOverride(e.target.value)} />
         </Field>
       </Grid>
+      {priceOverride !== null && <Button variant="ghost" size="sm" onClick={() => setPriceOverride(null)}>Use calculated accommodation total</Button>}
+      <InfoRow label="GST (from settings)" value={`${gstPercentage}%`} />
       <Field label="Mess">
         <Select
           value={mess}
@@ -68,7 +79,20 @@ function OfferForm({ options, save, busy }) {
           onChange={(e) => setMess(e.target.value)}
         />
       </Field>
-      <InfoRow label="Total" value={money(total)} strong />
+      <InfoRow label="Accommodation including GST" value={money(total)} strong />
+      {mess === "with" && (
+        <>
+          <Grid cols={{ base: 1, lg: 2 }} gap={3}>
+            <Field label="Mess / day (₹)" required>
+              <Input type="number" min="0" step="0.01" value={messDailyRate} onChange={(e) => { setMessDailyRate(e.target.value); setMessOverride(null) }} />
+            </Field>
+            <Field label="Mess total — student pays (₹)" required>
+              <Input type="number" min="0" step="0.01" value={messAmount} onChange={(e) => setMessOverride(e.target.value)} />
+            </Field>
+          </Grid>
+          {messOverride !== null && <Button variant="ghost" size="sm" onClick={() => setMessOverride(null)}>Use calculated mess total</Button>}
+        </>
+      )}
       {price !== "" && Number(price) === 0 && (
         <Field label="Waiver reason" required>
           <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
@@ -77,13 +101,13 @@ function OfferForm({ options, save, busy }) {
       <Field label="Note for payer">
         <Textarea rows={2} value={remarks} onChange={(e) => setRemarks(e.target.value)} />
       </Field>
-      <Field label="Payment link (optional)">
-        <Input type="url" value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="https://…" />
-      </Field>
+      {!config.accommodationPaymentLink && <Text size="xs" color="muted">No accommodation payment link configured.</Text>}
+      {mess === "with" && !config.messPaymentLink && <Text size="xs" color="muted">No mess payment link configured.</Text>}
+      <Text size="xs" color="muted">Payment links are managed in Settings → Intern Accommodation.</Text>
       <Button
-        disabled={busy || !hostelId || price === ""}
+        disabled={busy || !hostelId || price === "" || dailyRate === "" || (mess === "with" && (messAmount === "" || messDailyRate === ""))}
         loading={busy}
-        onClick={() => save("offer", { hostelId, mess, price, gstPercentage, remarks, reason, paymentLink })}
+        onClick={() => save("offer", { hostelId, mess, price, accommodationDailyRate: dailyRate, remarks, reason, messAmount, messDailyRate })}
       >
         Send charges
       </Button>
@@ -94,6 +118,7 @@ function OfferForm({ options, save, busy }) {
 export default function H4Detail({ request: r, options, onClose, onRefresh, onEdit }) {
   const { user } = useAuth()
   const confirm = useConfirm()
+  const { toast } = useToast()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [reason, setReason] = useState("")
@@ -137,7 +162,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
     ["Payment Requested", "Payment Deferred", "Payment Submitted", "Payment Verified", "Rooms Assigned", "Checked In"].includes(r.status) &&
     (creator || faculty || office)
 
-  const payments = [{ ...r.payment, label: "Accommodation", _id: "main" }, ...(r.additionalPayments || [])]
+  const payments = h4Bills(r)
   const proofOpen =
     payments.some((p) => p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status)) &&
     !["Rejected", "Cancelled", "Invoiced"].includes(r.status)
@@ -152,7 +177,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
     setError("")
     setBusy(true)
     try {
-      await h4Api.action(r._id, suffix, { revision: r.h4.revision, ...body })
+      const result = await h4Api.action(r._id, suffix, { revision: r.h4.revision, ...body })
+      if (["offer", "resend"].includes(suffix)) toast.success(result.message || "Payment emails queued for delivery.")
       await onRefresh()
       setReason("")
       setConfirmPayer(false)
@@ -210,8 +236,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
             </DetailSection>
 
             <DetailSection title="Stay" icon={CalendarDays}>
-              <InfoRow label="Arrival" value={`${date(r.stay.fromDate)} · ${r.stay.checkInTime || "11:00"}`} />
-              <InfoRow label="Departure" value={`${date(r.stay.toDate)} · ${r.stay.checkOutTime || "11:00"}`} />
+              <InfoRow label="Arrival" value={date(r.stay.fromDate)} />
+              <InfoRow label="Departure" value={date(r.stay.toDate)} />
               <InfoRow label="Hostel" value={r.hostelName || r.hostel?.name || "Pending"} />
               <InfoRow label="Room" value={r.roomLabel || (r.room ? [r.room.unitId?.unitNumber, r.room.roomNumber].filter(Boolean).join(" / ") : "Pending")} />
               <InfoRow label="Payer" value={r.h4.payer.name} />
@@ -229,10 +255,11 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <Text weight="semibold">{p.label} · {money(p.amount)}</Text>
                         <Badge>{p.status}</Badge>
                       </HStack>
+                      {p.paymentType === "mess" && p.days > 0 && <Text size="xs" color="muted">{p.days} days × {money(p.dailyRate)} / day{p.amountOverridden ? " · Total adjusted" : ""}</Text>}
                       {p.utr && <Text size="xs" color="muted">{p.utr} · {date(p.paidAt)}</Text>}
                       {p.note && <Text size="xs">{p.note}</Text>}
                       {p.screenshotFileRef && (accounts || office || creator || faculty) && (
-                        <a href={h4FileUrl(r._id, "proof", p._id !== "main" ? { additionalPaymentId: p._id } : {})} target="_blank" rel="noreferrer">
+                        <a href={h4FileUrl(r._id, "proof", h4BillAction(p))} target="_blank" rel="noreferrer">
                           <HStack gap={1}><ExternalLink size={14} /><Text size="sm">Proof</Text></HStack>
                         </a>
                       )}
@@ -240,8 +267,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <HStack gap={2} wrap>
                           {p.status === "Submitted" && (
                             <>
-                              <Button size="sm" disabled={busy} onClick={() => save("verify", { action: "verify", additionalPaymentId: p._id === "main" ? undefined : p._id })}>Verify</Button>
-                              <Button size="sm" variant="secondary" disabled={busy || !reason.trim()} onClick={() => save("verify", { action: "reject", reason, additionalPaymentId: p._id === "main" ? undefined : p._id })}>Reject</Button>
+                              <Button size="sm" disabled={busy} onClick={() => save("verify", { action: "verify", ...h4BillAction(p) })}>Verify</Button>
+                              <Button size="sm" variant="secondary" disabled={busy || !reason.trim()} onClick={() => save("verify", { action: "reject", reason, ...h4BillAction(p) })}>Reject</Button>
                             </>
                           )}
                           <Button size="sm" variant="ghost" onClick={() => { setManual(p); setReason("") }}>Adjust</Button>
@@ -326,13 +353,13 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
 
             {office && r.status === "CW Approved" && (
               <DetailSection title="Charges" icon={CreditCard}>
-                <OfferForm options={options} save={save} busy={busy} />
+                <OfferForm request={r} options={options} save={save} busy={busy} />
               </DetailSection>
             )}
 
             {proofOpen && !amendment && (creator || (faculty && r.h4.payer.type === "faculty")) && (
               <DetailSection title="Payment" icon={CreditCard}>
-                <H4PaymentForm request={r} onSaved={onRefresh} />
+                <H4PaymentForm request={r} onSaved={onRefresh} accommodationOnly={!creator} />
               </DetailSection>
             )}
 
@@ -352,9 +379,9 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <Input type="date" value={paidAt} onChange={(e) => setPaidAt(e.target.value)} />
                       </Field>
                       <HStack gap={2} wrap>
-                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, additionalPaymentId: manual._id === "main" ? undefined : manual._id })}>Paid</Button>
-                        <Button size="sm" variant="secondary" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "correct", reference, paidAt, reason, additionalPaymentId: manual._id === "main" ? undefined : manual._id })}>Correct</Button>
-                        <Button size="sm" variant="danger" disabled={busy || !reason} onClick={() => save("settle", { action: "mark_unpaid", reason, additionalPaymentId: manual._id === "main" ? undefined : manual._id })}>Unpaid</Button>
+                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, ...h4BillAction(manual) })}>Paid</Button>
+                        <Button size="sm" variant="secondary" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "correct", reference, paidAt, reason, ...h4BillAction(manual) })}>Correct</Button>
+                        <Button size="sm" variant="danger" disabled={busy || !reason} onClick={() => save("settle", { action: "mark_unpaid", reason, ...h4BillAction(manual) })}>Unpaid</Button>
                       </HStack>
                     </>
                   )}
