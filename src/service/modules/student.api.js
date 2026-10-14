@@ -284,6 +284,13 @@ export const studentApi = {
   getDiningBilling: () => {
     return apiClient.get("/students/dining/billing").then(unwrapStandardResponse)
   },
+
+  /**
+   * Get the student's own meals: today meal by meal, and the last two weeks
+   */
+  getDiningMeals: () => {
+    return apiClient.get("/students/dining/meals").then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

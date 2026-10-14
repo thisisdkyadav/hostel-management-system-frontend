@@ -1,0 +1,531 @@
+/* Student Dining page.
+   Today's meals up top, a two-week dot grid under it, "away" and the bill on
+   the side. Tokens only; status colours carry the meaning. */
+
+.sd-page,
+.sd-main,
+.sd-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.sd-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-4);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .sd-layout {
+    grid-template-columns: minmax(0, 1fr) calc(var(--spacing-24) * 3.5);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Cards                                                               */
+/* ------------------------------------------------------------------ */
+
+.sd-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5);
+  background: var(--color-bg-primary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+}
+
+.sd-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.sd-card__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.sd-card__aside,
+.sd-card__note,
+.sd-card__empty {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-card__head + .sd-card__note {
+  margin-top: calc(var(--spacing-2) * -1);
+}
+
+.sd-empty {
+  align-items: center;
+  padding: var(--spacing-10) var(--spacing-5);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.sd-link {
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.sd-link:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Notice (choose a caterer / next period)                             */
+/* ------------------------------------------------------------------ */
+
+.sd-notice {
+  --sd-tone: var(--color-primary);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: color-mix(in srgb, var(--sd-tone) 8%, var(--color-bg-primary));
+  border: var(--border-1) solid color-mix(in srgb, var(--sd-tone) 30%, var(--color-bg-primary));
+  border-radius: var(--radius-card);
+}
+
+.sd-notice[data-tone="warning"] {
+  --sd-tone: var(--color-warning);
+}
+
+.sd-notice__icon {
+  display: inline-flex;
+  color: var(--sd-tone);
+}
+
+.sd-notice__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: calc(var(--spacing-24) * 2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-notice__text strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+/* ------------------------------------------------------------------ */
+/* Today                                                               */
+/* ------------------------------------------------------------------ */
+
+.sd-today {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--spacing-24) * 1.75), 1fr));
+  gap: var(--spacing-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-meal {
+  --sd-tone: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3-5) var(--spacing-4);
+  background: var(--color-bg-secondary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.sd-meal[data-status="ate"] {
+  --sd-tone: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 7%, var(--color-bg-primary));
+  border-color: color-mix(in srgb, var(--color-success) 28%, var(--color-bg-primary));
+}
+
+.sd-meal[data-status="serving"] {
+  --sd-tone: var(--color-primary);
+  background: var(--color-bg-primary);
+  border-color: var(--color-primary);
+}
+
+.sd-meal[data-status="missed"] {
+  --sd-tone: var(--color-danger);
+}
+
+.sd-meal[data-status="away"] {
+  --sd-tone: var(--color-warning);
+}
+
+.sd-meal__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.sd-meal__name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.sd-meal__time {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.sd-meal__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+}
+
+.sd-meal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--spacing-5);
+  height: var(--spacing-5);
+  border-radius: var(--radius-full);
+  color: var(--color-bg-primary);
+  background: var(--sd-tone);
+}
+
+.sd-meal[data-status="upcoming"] .sd-meal__icon,
+.sd-meal[data-status="serving"] .sd-meal__icon {
+  color: var(--sd-tone);
+  background: none;
+}
+
+.sd-live-dot {
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 var(--spacing-1) color-mix(in srgb, var(--color-primary) 25%, transparent);
+  animation: sd-pulse 1.6s var(--ease-smooth) infinite;
+}
+
+@keyframes sd-pulse {
+  50% {
+    box-shadow: 0 0 0 var(--spacing-1-5) color-mix(in srgb, var(--color-primary) 5%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-live-dot {
+    animation: none;
+  }
+}
+
+.sd-meal__issue {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-1-5);
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-warning-text);
+}
+
+.sd-meal__issue svg {
+  flex-shrink: 0;
+  margin-top: var(--spacing-0-5);
+}
+
+/* ------------------------------------------------------------------ */
+/* History dot grid                                                    */
+/* ------------------------------------------------------------------ */
+
+.sd-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.sd-history__scroll {
+  overflow-x: auto;
+}
+
+.sd-history__grid {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--font-size-xs);
+}
+
+.sd-history__grid th,
+.sd-history__grid td {
+  padding: var(--spacing-1) var(--spacing-1-5);
+  text-align: center;
+}
+
+.sd-history__grid tbody th {
+  padding-right: var(--spacing-3);
+  text-align: left;
+  white-space: nowrap;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-body);
+}
+
+.sd-history__grid thead th {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+}
+
+.sd-history__grid [data-today] {
+  background: var(--color-bg-secondary);
+}
+
+.sd-history__grid thead th[data-today] {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--color-primary);
+}
+
+.sd-history__weekday,
+.sd-history__day {
+  display: block;
+}
+
+.sd-history__day {
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sd-dot {
+  display: inline-block;
+  vertical-align: middle;
+  width: var(--spacing-3-5);
+  height: var(--spacing-3-5);
+  border-radius: var(--radius-full);
+  border: var(--border-2) solid var(--color-border-primary);
+}
+
+.sd-dot[data-status="ate"] {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.sd-dot[data-status="missed"] {
+  border-color: var(--color-danger);
+}
+
+.sd-dot[data-status="away"] {
+  background: color-mix(in srgb, var(--color-warning) 55%, var(--color-bg-primary));
+  border-color: var(--color-warning);
+}
+
+.sd-dot[data-status="serving"] {
+  border-color: var(--color-primary);
+  border-style: dashed;
+}
+
+.sd-history__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-history__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+}
+
+.sd-history__key strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+/* ------------------------------------------------------------------ */
+/* Away list                                                           */
+/* ------------------------------------------------------------------ */
+
+.sd-away {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-away__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2-5) 0;
+  border-top: var(--border-1) solid var(--color-border-primary);
+}
+
+.sd-away__row:first-child {
+  border-top: 0;
+}
+
+.sd-away__when {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sd-away__dates {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-heading);
+}
+
+.sd-away__row:not([data-ahead]) .sd-away__dates {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-body);
+}
+
+.sd-away__meta {
+  overflow: hidden;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Bill                                                                */
+/* ------------------------------------------------------------------ */
+
+.sd-bill__balance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5);
+}
+
+.sd-bill__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.sd-bill__amount {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-heading);
+  line-height: var(--line-height-none);
+}
+
+.sd-bill__balance[data-negative] .sd-bill__amount {
+  color: var(--color-danger);
+}
+
+.sd-bill__sums {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+  margin: 0;
+}
+
+.sd-bill__sums dt {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.sd-bill__sums dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-heading);
+}
+
+.sd-bill__lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: var(--spacing-3) 0 0;
+  list-style: none;
+  border-top: var(--border-1) solid var(--color-border-primary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.sd-bill__lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.sd-bill__lines strong {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-heading);
+}
+
+/* ------------------------------------------------------------------ */
+/* Modals                                                              */
+/* ------------------------------------------------------------------ */
+
+.sd-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.sd-form__note {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-form__dates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--spacing-24) * 1.5), 1fr));
+  gap: var(--spacing-3);
+}
+
+.sd-choose {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--spacing-24) * 2.25), 1fr));
+  gap: var(--spacing-3);
+  margin: var(--spacing-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-choose__option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.sd-choose__option[data-full] {
+  opacity: 0.6;
+}
+
+.sd-choose__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.sd-choose__name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}

@@ -1,650 +1,238 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Avatar, Button, Card, ConfirmDialog, EmptyState, Field, Grid, Heading, HStack, InfoRow, Input, Label, LoadingState, Modal, Page, StatusBadge, Surface, Table, Text, Textarea, VStack } from "hzero"
-import { CalendarDays, CheckCircle2, ChevronDown, ChevronRight, Clock, FileText, Mail, RefreshCw, UtensilsCrossed, Users, Wallet } from "lucide-react"
+import { Alert, Button, ConfirmDialog, LoadingState, Page } from "hzero"
+import { CalendarClock, UtensilsCrossed } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
 import { queryKeys, useOptimisticMutation } from "@/lib/query"
-import CapacityBar from "@/components/dining/CapacityBar"
-import {
-  formatDate,
-  formatRebateStatus,
-  formatRebateType,
-  getErrorMessage,
-  rebateStatusTone,
-} from "@/components/dining/diningPeriodHelpers"
-import {
-  balanceTone,
-  clearanceTone,
-  formatClearance,
-  formatCurrency,
-} from "@/components/dining/diningBillingHelpers"
+import { formatDayLong, formatDayMonth, formatRange, localTodayKey } from "@/components/dining/caterer/catererHelpers"
+import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
+import TodayMeals from "@/components/dining/student/TodayMeals"
+import MealHistory from "@/components/dining/student/MealHistory"
+import AwayCard from "@/components/dining/student/AwayCard"
+import BillCard from "@/components/dining/student/BillCard"
+import { AwayModal, ChooseCatererModal } from "@/components/dining/student/DiningModals"
+import "@/components/dining/student/StudentDining.css"
 
-const REFRESH_INTERVAL_MS = 5000
+const SELECTING_REFRESH_MS = 5000
+const IDLE_REFRESH_MS = 60000
 
-const formatDateTime = (value) => {
-  if (!value) return "-"
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return "-"
-  return date.toLocaleString(undefined, {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
+const periodId = (period) => String(period?.id || period?._id || "")
 
-const formatPeriodRange = (period) => {
-  if (!period) return "-"
-  return `${formatDate(period.startDate)} – ${formatDate(period.endDate)}`
-}
+const formatWhen = (value) =>
+  value ? new Date(value).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""
 
-const getPeriodId = (period) => String(period?.id || period?._id || "")
-
-/* ------------------------------------------------------------------ */
-/* Hero status banner                                                 */
-/* ------------------------------------------------------------------ */
-
-const HERO_TONES = {
-  success: { color: "var(--color-success)", bg: "var(--color-success-bg-light)" },
-  warning: { color: "var(--color-warning)", bg: "var(--color-warning-bg-light)" },
-  primary: { color: "var(--color-primary)", bg: "var(--color-primary-bg)" },
-  neutral: { color: "var(--color-text-muted)", bg: "var(--color-bg-hover)" },
-}
-
-const DiningHero = ({ tone = "primary", icon: Icon, title, subtitle, action }) => {
-  const palette = HERO_TONES[tone] || HERO_TONES.primary
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-4)",
-        padding: "var(--spacing-5)",
-        borderRadius: "var(--radius-card)",
-        border: `1px solid ${palette.color}33`,
-        backgroundColor: palette.bg,
-      }}
-    >
-      <Text as="div" color={palette.color} style={{ width: 56, height: 56, borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-bg-primary)", flexShrink: 0 }} className="flex items-center justify-center">
-        {Icon && <Icon size={26} />}
-      </Text>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <Heading as="h2" size="xl" weight="bold" color="heading" style={{ margin: 0 }}>
-          {title}
-        </Heading>
-        {subtitle && (
-          <Text color="body" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>{subtitle}</Text>
-        )}
-      </div>
-      {action && <div style={{ flexShrink: 0 }}>{action}</div>}
+/** One line under the header for anything about choosing a caterer. */
+const Notice = ({ tone = "neutral", icon, title, text, action }) => (
+  <div className="sd-notice" data-tone={tone}>
+    <span className="sd-notice__icon" aria-hidden="true">
+      {icon}
+    </span>
+    <div className="sd-notice__text">
+      <strong>{title}</strong>
+      {text && <span>{text}</span>}
     </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/* Info cards                                                         */
-/* ------------------------------------------------------------------ */
-
-const InfoCard = ({ title, badge, children }) => (
-  <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-    <HStack gap={2} align="center" justify="between">
-      <Heading as="h3" size="sm" weight="semibold" color="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-        {title}
-      </Heading>
-      {badge}
-    </HStack>
-    {children}
-  </Card>
-)
-
-const CatererIdentity = ({ caterer, selectedAt }) => (
-  <VStack gap={3}>
-    <HStack gap="medium" align="center">
-      <Avatar name={caterer?.name || "?"} size="medium" />
-      <div style={{ minWidth: 0 }}>
-        <Text as="div" size="lg" weight="bold" color="heading">
-          {caterer?.name || "Not selected"}
-        </Text>
-        {caterer?.email && (
-          <HStack align="center" gap="var(--spacing-1-5)" size="sm" color="muted">
-            <Mail size={14} /> {caterer.email}
-          </HStack>
-        )}
-      </div>
-    </HStack>
-    {selectedAt && (
-      <Text as="div" size="xs" color="muted">Selected on {formatDateTime(selectedAt)}</Text>
-    )}
-  </VStack>
-)
-
-const Detail = ({ label, value }) => (
-  <div>
-    <Text as="div" size="xs" color="muted">{label}</Text>
-    <Text as="div" size="sm" color="secondary" weight="medium">{value || "-"}</Text>
+    {action}
   </div>
 )
-
-/* ------------------------------------------------------------------ */
-/* Modals                                                             */
-/* ------------------------------------------------------------------ */
-
-const RebateRequestModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
-  const [formData, setFormData] = useState({ startDate: "", endDate: "", reason: "" })
-  const [error, setError] = useState("")
-
-  if (!isOpen) return null
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    if (!formData.startDate || !formData.endDate) {
-      setError("Please select start and end dates.")
-      return
-    }
-    if (new Date(formData.startDate) > new Date(formData.endDate)) {
-      setError("Start date must be before or equal to end date.")
-      return
-    }
-    setError("")
-    await onSubmit(formData)
-  }
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Request Dining Rebate"
-      width={620}
-      footer={
-        <>
-          <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button type="submit" form="rebate-form" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
-            Submit Request
-          </Button>
-        </>
-      }
-    >
-      <form id="rebate-form" onSubmit={handleSubmit}>
-        <VStack gap="large">
-          <Alert type="info" icon>
-            Short-term rebates that follow the period rules are approved automatically. Longer requests are sent to admin for approval.
-          </Alert>
-          {error && <Alert type="error" icon>{error}</Alert>}
-
-          <Grid min={200} gap={4}>
-            <Field label="Start Date" htmlFor="rebate-start" required>
-              <Input id="rebate-start" type="date" value={formData.startDate}
-                onChange={(e) => setFormData((p) => ({ ...p, startDate: e.target.value }))} required />
-            </Field>
-            <Field label="End Date" htmlFor="rebate-end" required>
-              <Input id="rebate-end" type="date" value={formData.endDate}
-                onChange={(e) => setFormData((p) => ({ ...p, endDate: e.target.value }))} required />
-            </Field>
-          </Grid>
-
-          <Field label="Reason" htmlFor="rebate-reason">
-            <Textarea id="rebate-reason" rows={3} value={formData.reason}
-              onChange={(e) => setFormData((p) => ({ ...p, reason: e.target.value }))}
-              placeholder="Add a short reason for the rebate request" />
-          </Field>
-        </VStack>
-      </form>
-    </Modal>
-  )
-}
-
-const CatererSelectionModal = ({ isOpen, period, selectedCatererId, selectingCatererId, onClose, onSelect }) => {
-  const capacityCards = Array.isArray(period?.catererCapacities) ? period.catererCapacities : []
-  if (!isOpen || !period) return null
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Select Dining Caterer" width={920}>
-      <VStack gap="large">
-        <Alert type="info" icon>
-          Choose one caterer for {formatPeriodRange(period)}. Seat counts refresh every few seconds.
-        </Alert>
-
-        <Grid cols={{ base: 1, sm: 2, xl: 3 }} gap={4}>
-          {capacityCards.map((capacity) => {
-            const isSelected = selectedCatererId === String(capacity.catererId)
-            const remaining = Number(capacity.remainingSeats || 0)
-            const max = Number(capacity.maxStudentCount || 0)
-            const isFull = remaining <= 0 && !isSelected
-            const isSelecting = selectingCatererId === capacity.catererId
-
-            return (
-              <Card key={capacity.catererId} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", opacity: isFull ? 0.7 : 1 }}>
-                <HStack gap="medium" align="center">
-                  <Avatar name={capacity.caterer?.name || "?"} size="small" />
-                  <div style={{ minWidth: 0 }}>
-                    <Text as="div" size="md" weight="bold" color="heading">
-                      {capacity.caterer?.name || "Caterer"}
-                    </Text>
-                    <Text as="div" size="xs" color="muted">{capacity.caterer?.email || ""}</Text>
-                  </div>
-                  {isSelected && <div style={{ marginLeft: "auto" }}><StatusBadge status="Selected" tone="success" /></div>}
-                </HStack>
-
-                <CapacityBar allocated={max - remaining} total={max} label="Seats" />
-
-                <Button
-                  variant={isSelected ? "secondary" : "primary"}
-                  fullWidth
-                  disabled={isFull || isSelecting || isSelected}
-                  loading={isSelecting}
-                  onClick={() => onSelect(capacity)}
-                  style={{ marginTop: "auto" }}
-                >
-                  {isSelected ? "Selected" : isFull ? "Full" : "Select Caterer"}
-                </Button>
-              </Card>
-            )
-          })}
-        </Grid>
-      </VStack>
-    </Modal>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/* Billing                                                            */
-/* ------------------------------------------------------------------ */
-
-const BillingFigure = ({ label, value, tone }) => (
-  <div>
-    <Text as="div" size="xs" color="muted">{label}</Text>
-    <Text as="div" size="md" weight="bold" color={tone === "danger" ? "var(--color-danger)" : tone === "success" ? "var(--color-success)" : "var(--color-text-heading)"}>
-      {value}
-    </Text>
-  </div>
-)
-
-const StudentBillingCard = ({ billingPeriod }) => {
-  const [expanded, setExpanded] = useState(false)
-  const hasBreakdown = Array.isArray(billingPeriod.perPeriod) && billingPeriod.perPeriod.length > 0
-
-  return (
-    <Surface bg="secondary" padding={4} radius="lg" border="1px solid var(--color-border-primary)">
-      <HStack gap={2} align="start" justify="between">
-        <div style={{ minWidth: 0 }}>
-          <Text as="div" size="md" weight="bold" color="heading">
-            {billingPeriod.name}
-          </Text>
-          <Text as="div" size="xs" color="muted">
-            {billingPeriod.startDate ? `${formatDate(billingPeriod.startDate)} – ${formatDate(billingPeriod.endDate)}` : "No dining periods"}
-          </Text>
-        </div>
-        <StatusBadge status={formatClearance(billingPeriod.clearance)} tone={clearanceTone(billingPeriod.clearance)} />
-      </HStack>
-
-      <Grid cols={3} gap={3} style={{ marginTop: "var(--spacing-3)" }}>
-        <BillingFigure label="Allocated" value={formatCurrency(billingPeriod.allocatedAmount)} />
-        <BillingFigure label="Charged" value={formatCurrency(billingPeriod.totalCharged)} />
-        <BillingFigure label="Balance" value={formatCurrency(billingPeriod.balance)} tone={balanceTone(billingPeriod.balance)} />
-      </Grid>
-
-      {hasBreakdown && (
-        <>
-          <button
-            type="button"
-            onClick={() => setExpanded((prev) => !prev)}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", marginTop: "var(--spacing-3)",
-              background: "none", border: "none", cursor: "pointer", padding: 0,
-              color: "var(--color-primary)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)",
-            }}
-          >
-            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-            {expanded ? "Hide breakdown" : "Show breakdown"}
-          </button>
-
-          {expanded && (
-            <VStack gap={2} style={{ marginTop: "var(--spacing-2)" }}>
-              {billingPeriod.perPeriod.map((row) => (
-                <InfoRow label={<>{formatDate(row.startDate)} – {formatDate(row.endDate)} · {row.chargeableDays}d × {formatCurrency(row.dailyRate)}
-                    {row.rebateDays > 0 ? ` (−${row.rebateDays} rebate)` : ""}</>} value={formatCurrency(row.amount)} key={row.periodId} style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }} />
-              ))}
-            </VStack>
-          )}
-        </>
-      )}
-    </Surface>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/* Page                                                               */
-/* ------------------------------------------------------------------ */
 
 const DiningPage = () => {
   const queryClient = useQueryClient()
+  const [choosing, setChoosing] = useState(false)
   const [pendingCaterer, setPendingCaterer] = useState(null)
-  const [showAllocationModal, setShowAllocationModal] = useState(false)
-  const [showRebateModal, setShowRebateModal] = useState(false)
-  const [mutationError, setMutationError] = useState("")
-  const [dismissedQueryError, setDismissedQueryError] = useState(null)
-  const [successMessage, setSuccessMessage] = useState("")
+  const [awayOpen, setAwayOpen] = useState(false)
+  const [message, setMessage] = useState(null)
 
-  const portalStateQuery = useQuery({
+  const portalQuery = useQuery({
     queryKey: queryKeys.dining.portalState(),
     queryFn: () => studentApi.getDiningPortalState(),
-    refetchInterval: REFRESH_INTERVAL_MS,
+    // Seats move fast only while a selection window is open.
+    refetchInterval: (query) => (query.state.data?.canSelect ? SELECTING_REFRESH_MS : IDLE_REFRESH_MS),
   })
-
+  const mealsQuery = useQuery({
+    queryKey: queryKeys.dining.meals(),
+    queryFn: () => studentApi.getDiningMeals(),
+    refetchInterval: IDLE_REFRESH_MS,
+  })
   const rebatesQuery = useQuery({
     queryKey: queryKeys.dining.rebates(),
     queryFn: () => studentApi.getDiningRebates(),
   })
-
-  // Billing is supplementary — a failed load just hides the billing card.
+  // The bill is a side card; if it fails to load the card just stays hidden.
   const billingQuery = useQuery({
     queryKey: queryKeys.dining.billing(),
     queryFn: () => studentApi.getDiningBilling(),
     retry: false,
   })
 
-  const portalState = portalStateQuery.data || null
-  const rebates = Array.isArray(rebatesQuery.data?.rebates) ? rebatesQuery.data.rebates : []
-  const billing = Array.isArray(billingQuery.data?.billingPeriods) ? billingQuery.data.billingPeriods : []
-  const refreshing = portalStateQuery.isRefetching
+  const portal = portalQuery.data || null
+  const meals = mealsQuery.data || null
+  const rebates = rebatesQuery.data?.rebates || []
+  const billingPeriods = billingQuery.data?.billingPeriods || []
 
-  // Close the selection modal whenever the selection-window state changes
-  // (the old fetch flow did this as a side-effect after each refresh).
-  const canSelectNow = Boolean(portalStateQuery.data?.canSelect)
-  const [lastCanSelect, setLastCanSelect] = useState(canSelectNow)
-  if (canSelectNow !== lastCanSelect) {
-    setLastCanSelect(canSelectNow)
-    setShowAllocationModal(false)
-  }
-
-  const currentPeriod = portalState?.currentPeriod || null
-  const activeAllocationPeriod = portalState?.activeAllocationPeriod || portalState?.period || null
-  const upcomingAllocationPeriod = portalState?.upcomingAllocationPeriod || null
-  const canSelect = Boolean(portalState?.canSelect && activeAllocationPeriod)
-  const activeSelectedCatererId = activeAllocationPeriod?.selectedAllocation?.catererId
-    ? String(activeAllocationPeriod.selectedAllocation.catererId)
-    : ""
-
-  const selectedUpcomingPeriod = useMemo(() => {
-    const currentId = getPeriodId(currentPeriod)
-    return (
-      [activeAllocationPeriod, upcomingAllocationPeriod].find(
-        (period) => period?.selectedAllocation && getPeriodId(period) !== currentId
-      ) || null
-    )
-  }, [activeAllocationPeriod, currentPeriod, upcomingAllocationPeriod])
-
+  const currentPeriod = portal?.currentPeriod || null
+  const openPeriod = portal?.activeAllocationPeriod || portal?.period || null
+  const nextWindow = portal?.upcomingAllocationPeriod || null
+  const canSelect = Boolean(portal?.canSelect && openPeriod)
   const currentAllocation = currentPeriod?.selectedAllocation || null
-  const activeUnselected = Boolean(activeAllocationPeriod && !activeAllocationPeriod.selectedAllocation)
-  const canRequestRebate = Boolean(currentAllocation || selectedUpcomingPeriod?.selectedAllocation)
-
-  const hero = useMemo(() => {
-    const openSelect = (
-      <Button variant="primary" onClick={() => setShowAllocationModal(true)}>
-        <UtensilsCrossed size={18} /> Select Caterer
-      </Button>
-    )
-
-    if (canSelect && activeUnselected) {
-      return {
-        tone: "warning",
-        icon: Clock,
-        title: "Choose your dining caterer",
-        subtitle: `Selection closes ${formatDateTime(activeAllocationPeriod.allocationEndAt)}`,
-        action: openSelect,
-      }
-    }
-    if (currentAllocation || selectedUpcomingPeriod?.selectedAllocation) {
-      const set = currentAllocation || selectedUpcomingPeriod?.selectedAllocation
-      const setPeriod = currentAllocation ? currentPeriod : selectedUpcomingPeriod
-      return {
-        tone: "success",
-        icon: CheckCircle2,
-        title: "You're all set for dining",
-        subtitle: `${set?.caterer?.name || "Caterer"} · ${formatPeriodRange(setPeriod)}`,
-        action: canSelect ? (
-          <Button variant="secondary" onClick={() => setShowAllocationModal(true)}>Change</Button>
-        ) : null,
-      }
-    }
-    if (upcomingAllocationPeriod && !activeAllocationPeriod) {
-      return {
-        tone: "primary",
-        icon: CalendarDays,
-        title: "Dining selection opens soon",
-        subtitle: `Opens ${formatDateTime(upcomingAllocationPeriod.allocationStartAt)}`,
-      }
-    }
-    return {
-      tone: "neutral",
-      icon: CalendarDays,
-      title: "No dining allocation scheduled",
-      subtitle: portalState?.message || "Any future dining allocation window will appear here automatically.",
-    }
-  }, [activeAllocationPeriod, activeUnselected, canSelect, currentAllocation, currentPeriod, portalState, selectedUpcomingPeriod, upcomingAllocationPeriod])
-
-  const queryError = portalStateQuery.isError
-    ? getErrorMessage(portalStateQuery.error, "Unable to load dining allocation details.")
-    : rebatesQuery.isError
-      ? getErrorMessage(rebatesQuery.error, "Unable to load dining rebate requests.")
-      : ""
-  const error = mutationError || (queryError && queryError !== dismissedQueryError ? queryError : "")
-
-  const dismissError = () => {
-    if (mutationError) setMutationError("")
-    else setDismissedQueryError(queryError)
-  }
+  const nextPeriod =
+    [openPeriod, nextWindow].find((period) => period?.selectedAllocation && periodId(period) !== periodId(currentPeriod)) || null
+  const needsChoice = canSelect && !openPeriod?.selectedAllocation
+  const canRequestAway = Boolean(currentAllocation || nextPeriod)
 
   const selectCaterer = useOptimisticMutation({
     queryKey: queryKeys.dining.portalState(),
-    // Optimistically mark the caterer as selected in the active allocation
-    // period; on error the snapshot restore replaces the old silent refetch,
-    // and on settle the invalidation converges with the server response.
+    // Mark the caterer as chosen right away; the snapshot restores on error.
     updateFn: (previous, variables) => {
       if (!previous || typeof previous !== "object") return undefined
-      const allocation = {
-        catererId: variables.catererId,
-        caterer: variables.caterer,
-        selectedAt: new Date().toISOString(),
-      }
+      const allocation = { catererId: variables.catererId, caterer: variables.caterer, selectedAt: new Date().toISOString() }
       let next = previous
-      const patchPeriod = (key) => {
+      for (const key of ["activeAllocationPeriod", "period"]) {
         const period = next[key]
-        if (period && !period.selectedAllocation) {
-          next = { ...next, [key]: { ...period, selectedAllocation: allocation } }
-        }
+        if (period && !period.selectedAllocation) next = { ...next, [key]: { ...period, selectedAllocation: allocation } }
       }
-      patchPeriod("activeAllocationPeriod")
-      patchPeriod("period")
-      if (next === previous) return undefined
-      return { ...next, canSelect: false }
+      return next === previous ? undefined : { ...next, canSelect: false }
     },
     mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId),
     onSuccess: (_response, variables) => {
-      setShowAllocationModal(false)
-      setSuccessMessage(`${variables.catererName} selected successfully.`)
+      setChoosing(false)
+      queryClient.invalidateQueries({ queryKey: queryKeys.dining.meals() })
+      setMessage({ type: "success", text: `You'll eat at ${variables.catererName}.` })
     },
-    onError: (selectError) => {
-      setMutationError(getErrorMessage(selectError, "Unable to select caterer. Please try another option."))
-    },
+    onError: (error) => setMessage({ type: "error", text: getErrorMessage(error, "Couldn't choose that caterer. Please try another.") }),
   })
-  const selectingCatererId = selectCaterer.isPending ? selectCaterer.variables?.catererId : ""
 
-  const requestRebate = useMutation({
+  const requestAway = useMutation({
     mutationFn: (payload) => studentApi.requestDiningRebate(payload),
-    onSuccess: async (response) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.dining.rebates() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.dining.billing() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.dining.portalState() }),
-      ])
-      setShowRebateModal(false)
-      const hasPending = Array.isArray(response?.rebates) && response.rebates.some((rebate) => rebate.status === "pending")
-      setSuccessMessage(hasPending ? "Long-term rebate request submitted for approval." : "Short-term rebate approved successfully.")
-    },
-    onError: (rebateError) => {
-      setMutationError(getErrorMessage(rebateError, "Unable to submit rebate request."))
+    onSuccess: (response) => {
+      for (const key of [queryKeys.dining.rebates(), queryKeys.dining.billing(), queryKeys.dining.meals(), queryKeys.dining.portalState()]) {
+        queryClient.invalidateQueries({ queryKey: key })
+      }
+      setAwayOpen(false)
+      const pending = response?.rebates?.some((rebate) => rebate.status === "pending")
+      setMessage({
+        type: "success",
+        text: pending ? "Sent to the dining office. You'll see it here once they approve it." : "Done. You won't be charged for those days.",
+      })
     },
   })
 
-  const performSelect = (capacity) => {
-    setSuccessMessage("")
-    setMutationError("")
-    selectCaterer.mutate({
-      catererId: capacity.catererId,
-      caterer: capacity.caterer,
-      catererName: capacity.caterer?.name || "this caterer",
-    })
-  }
+  if (portalQuery.isLoading || mealsQuery.isLoading) return <LoadingState message="Loading your meals..." />
 
-  const handleRequestRebate = async (payload) => {
-    setSuccessMessage("")
-    setMutationError("")
-    await requestRebate.mutateAsync(payload)
-  }
+  const loadError = portalQuery.isError
+    ? getErrorMessage(portalQuery.error, "Couldn't load your dining details.")
+    : mealsQuery.isError
+      ? getErrorMessage(mealsQuery.error, "Couldn't load your meals.")
+      : ""
 
-  if (portalStateQuery.isLoading) {
-    return <LoadingState message="Loading dining allocation..." />
-  }
+  const caterer = meals?.caterer || currentAllocation?.caterer || null
+  const subtitle = caterer
+    ? `${caterer.name} · until ${formatDayMonth((meals?.period || currentPeriod)?.endDate)}`
+    : "No caterer right now"
+  const chooseButton = (label, variant = "primary") => (
+    <Button variant={variant} size="sm" onClick={() => setChoosing(true)}>
+      {label}
+    </Button>
+  )
 
   return (
     <Page>
-      <PageHeader title="Dining">
-        <Button variant="secondary" onClick={() => portalStateQuery.refetch()} disabled={refreshing}>
-          <RefreshCw size={18} /> {refreshing ? "Refreshing..." : "Refresh"}
-        </Button>
-      </PageHeader>
-
+      <PageHeader title="Dining" subtitle={subtitle} />
       <Page.Body>
-        {error && <div className="mb-[var(--spacing-4)]"><Alert type="error" icon dismissible onDismiss={dismissError}>{error}</Alert></div>}
-        {successMessage && <div className="mb-[var(--spacing-4)]"><Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert></div>}
-
-        <VStack gap="large">
-          <DiningHero {...hero} />
-
-          <Grid cols={{ base: 1, md: 2 }} gap={4}>
-            <InfoCard
-              title="Current Caterer"
-              badge={currentAllocation ? <StatusBadge status="Active" tone="success" /> : <StatusBadge status="None" tone="primary" showDot={false} />}
+        <div className="sd-page">
+          <p className="sd-card__note sm:hidden">{subtitle}</p>
+          {(message || loadError) && (
+            <Alert
+              type={message?.type || "error"}
+              icon
+              dismissible={Boolean(message)}
+              onDismiss={() => setMessage(null)}
             >
-              <CatererIdentity caterer={currentAllocation?.caterer} selectedAt={currentAllocation?.selectedAt} />
-              {currentPeriod && <Detail label="Dining period" value={formatPeriodRange(currentPeriod)} />}
-            </InfoCard>
-
-            {selectedUpcomingPeriod ? (
-              <InfoCard title="Next Period" badge={<StatusBadge status="Upcoming" tone="warning" />}>
-                <CatererIdentity
-                  caterer={selectedUpcomingPeriod.selectedAllocation?.caterer}
-                  selectedAt={selectedUpcomingPeriod.selectedAllocation?.selectedAt}
-                />
-                <Detail label="Dining period" value={formatPeriodRange(selectedUpcomingPeriod)} />
-              </InfoCard>
-            ) : activeUnselected ? (
-              <InfoCard title="Allocation Window" badge={<StatusBadge status="Open" tone="warning" />}>
-                <Detail label="Dining period" value={formatPeriodRange(activeAllocationPeriod)} />
-                <Detail label="Selection closes" value={formatDateTime(activeAllocationPeriod.allocationEndAt)} />
-                {canSelect && (
-                  <Button variant="primary" onClick={() => setShowAllocationModal(true)} style={{ marginTop: "var(--spacing-1)" }}>
-                    <UtensilsCrossed size={16} /> Select Caterer
-                  </Button>
-                )}
-              </InfoCard>
-            ) : upcomingAllocationPeriod ? (
-              <InfoCard title="Upcoming Allocation" badge={<StatusBadge status="Scheduled" tone="primary" showDot={false} />}>
-                <Detail label="Dining period" value={formatPeriodRange(upcomingAllocationPeriod)} />
-                <Detail label="Selection opens" value={formatDateTime(upcomingAllocationPeriod.allocationStartAt)} />
-              </InfoCard>
-            ) : null}
-          </Grid>
-
-          {/* Rebates */}
-          <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <HStack gap={3} align="center" justify="between" wrap>
-              <div>
-                <Heading as="h3" size="lg" weight="bold" color="heading" style={{ margin: 0 }}>
-                  Rebate Requests
-                </Heading>
-                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
-                  Your approved, pending and rejected dining rebate requests.
-                </Text>
-              </div>
-              <Button variant="secondary" onClick={() => setShowRebateModal(true)} disabled={!canRequestRebate}>
-                <FileText size={16} /> Request Rebate
-              </Button>
-            </HStack>
-
-            {rebates.length === 0 ? (
-              <EmptyState icon={FileText} title="No Rebate Requests" message="Requests you submit will be tracked here." />
-            ) : (
-              <div className="overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-border-primary)]">
-                <Table>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.Head>Dates</Table.Head>
-                      <Table.Head>Caterer</Table.Head>
-                      <Table.Head>Days</Table.Head>
-                      <Table.Head>Type</Table.Head>
-                      <Table.Head>Status</Table.Head>
-                      <Table.Head>Comment</Table.Head>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {rebates.map((rebate) => (
-                      <Table.Row key={rebate.id}>
-                        <Table.Cell>{formatDate(rebate.startDate)} – {formatDate(rebate.endDate)}</Table.Cell>
-                        <Table.Cell>{rebate.caterer?.name || "-"}</Table.Cell>
-                        <Table.Cell>{rebate.dayCount}</Table.Cell>
-                        <Table.Cell>{formatRebateType(rebate.type)}</Table.Cell>
-                        <Table.Cell>
-                          <StatusBadge status={formatRebateStatus(rebate.status)} tone={rebateStatusTone(rebate.status)} />
-                        </Table.Cell>
-                        <Table.Cell>{rebate.adminComment || rebate.reason || "-"}</Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
-            )}
-          </Card>
-
-          {/* Billing */}
-          {billing.length > 0 && (
-            <Card style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-              <div>
-                <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
-                  <Wallet size={18} style={{ color: "var(--color-primary)" }} /> Mess Billing
-                </h3>
-                <Text color="muted" size="sm" style={{ margin: "var(--spacing-1) 0 0" }}>
-                  Your allocated funds, daily charges and balance for each billing period. Approved-rebate days are not charged.
-                </Text>
-              </div>
-              <Grid cols={{ base: 1, md: 2 }} gap={3}>
-                {billing.map((billingPeriod) => (
-                  <StudentBillingCard key={billingPeriod.id} billingPeriod={billingPeriod} />
-                ))}
-              </Grid>
-            </Card>
+              {message?.text || loadError}
+            </Alert>
           )}
-        </VStack>
+
+          {needsChoice && (
+            <Notice
+              tone="warning"
+              icon={<UtensilsCrossed size={18} />}
+              title={`Choose your caterer for ${formatRange(openPeriod.startDate, openPeriod.endDate)}`}
+              text={openPeriod.allocationEndAt ? `Closes ${formatWhen(openPeriod.allocationEndAt)}` : ""}
+              action={chooseButton("Choose")}
+            />
+          )}
+          {!needsChoice && nextPeriod && (
+            <Notice
+              icon={<CalendarClock size={18} />}
+              title={`From ${formatDayMonth(nextPeriod.startDate)}: ${nextPeriod.selectedAllocation?.caterer?.name || "your caterer"}`}
+              text={formatRange(nextPeriod.startDate, nextPeriod.endDate)}
+              action={canSelect ? chooseButton("Change", "secondary") : null}
+            />
+          )}
+          {!needsChoice && !nextPeriod && nextWindow && !openPeriod && (
+            <Notice
+              icon={<CalendarClock size={18} />}
+              title="Choosing for the next period opens soon"
+              text={formatWhen(nextWindow.allocationStartAt)}
+            />
+          )}
+
+          <div className="sd-layout">
+            <div className="sd-main">
+              {meals?.period ? (
+                <>
+                  <section className="sd-card">
+                    <header className="sd-card__head">
+                      <h2 className="sd-card__title">Today</h2>
+                      <span className="sd-card__aside">{formatDayLong(meals.today)}</span>
+                    </header>
+                    <TodayMeals meals={meals.todayMeals} />
+                  </section>
+                  {meals.days.length > 1 && (
+                    <section className="sd-card">
+                      <header className="sd-card__head">
+                        <h2 className="sd-card__title">Last {meals.days.length} days</h2>
+                      </header>
+                      <MealHistory slots={meals.mealSlots} days={meals.days} summary={meals.summary} today={meals.today} />
+                    </section>
+                  )}
+                </>
+              ) : (
+                <section className="sd-card sd-empty">
+                  <UtensilsCrossed size={28} aria-hidden="true" />
+                  <h2 className="sd-card__title">You don&apos;t have a caterer right now</h2>
+                  <p className="sd-card__note">
+                    {needsChoice
+                      ? "Choose one above and your meals will show up here."
+                      : portal?.message || "When the next dining period opens, you can choose a caterer here."}
+                  </p>
+                </section>
+              )}
+            </div>
+
+            <aside className="sd-side">
+              <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest={canRequestAway} onRequest={() => setAwayOpen(true)} />
+              <BillCard billingPeriods={billingPeriods} />
+            </aside>
+          </div>
+        </div>
       </Page.Body>
 
-      <CatererSelectionModal
-        isOpen={showAllocationModal && canSelect}
-        period={activeAllocationPeriod}
-        selectedCatererId={activeSelectedCatererId}
-        selectingCatererId={selectingCatererId}
-        onClose={() => setShowAllocationModal(false)}
-        onSelect={setPendingCaterer}
-      />
+      {choosing && canSelect && (
+        <ChooseCatererModal
+          period={openPeriod}
+          selectedCatererId={String(openPeriod?.selectedAllocation?.catererId || "")}
+          selectingCatererId={selectCaterer.isPending ? selectCaterer.variables?.catererId : ""}
+          onClose={() => setChoosing(false)}
+          onSelect={setPendingCaterer}
+        />
+      )}
 
-      {showRebateModal && (
-        <RebateRequestModal
-          isOpen={showRebateModal}
-          onClose={() => setShowRebateModal(false)}
-          onSubmit={handleRequestRebate}
-          isSubmitting={requestRebate.isPending}
+      {awayOpen && (
+        <AwayModal
+          onClose={() => setAwayOpen(false)}
+          onSubmit={(payload) => requestAway.mutateAsync(payload)}
+          isSubmitting={requestAway.isPending}
         />
       )}
 
@@ -654,11 +242,13 @@ const DiningPage = () => {
         onConfirm={() => {
           const target = pendingCaterer
           setPendingCaterer(null)
-          if (target) performSelect(target)
+          if (!target) return
+          setMessage(null)
+          selectCaterer.mutate({ catererId: target.catererId, caterer: target.caterer, catererName: target.caterer?.name || "this caterer" })
         }}
-        title="Confirm Caterer"
-        message={`Confirm ${pendingCaterer?.caterer?.name || "this caterer"} as your dining caterer for this period?`}
-        confirmText="Confirm Selection"
+        title="Choose this caterer?"
+        message={`You'll eat at ${pendingCaterer?.caterer?.name || "this caterer"} for the whole period.`}
+        confirmText="Yes, choose"
       />
     </Page>
   )

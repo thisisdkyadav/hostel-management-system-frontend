@@ -67,6 +67,7 @@ export const queryKeys = {
     portalState: () => [...queryKeys.dining.all, "portal-state"],
     rebates: (filters) => [...queryKeys.dining.all, "rebates", filters ?? {}],
     billing: () => [...queryKeys.dining.all, "billing"],
+    meals: () => [...queryKeys.dining.all, "meals"],
   },
   lostAndFound: {
     all: ["lost-and-found"],
