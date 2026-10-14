@@ -50,6 +50,7 @@ import {
   Wallet,
   Map,
   Radio,
+  CalendarCheck,
 } from "lucide-react"
 
 // ============================================
@@ -212,6 +213,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/admin/dining-rebates", routeKey: "route.admin.diningRebates", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Billing", icon: Wallet, section: "main", path: "/admin/dining-billing", pathPattern: "^/admin/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling", adminCategory: ADMIN_NAV_CATEGORY_DINING },
+    { name: "Daily Meals", icon: CalendarCheck, section: "main", path: "/admin/daily-meals", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Meal Records", icon: ClipboardList, section: "main", path: "/admin/meal-records", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Live Feed", icon: Radio, section: "main", path: "/admin/dining-live", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING, accent: "success", badge: { label: "Live", pulse: true } },
     { name: "Dining Office", icon: UserCog, section: "main", path: "/admin/dining-office", routeKey: "route.admin.diningOffice", adminCategory: ADMIN_NAV_CATEGORY_DINING },
@@ -301,6 +303,7 @@ export const getDiningOfficeNavItems = (handleLogout) => [
   { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/dining-office/dining-periods", routeKey: "route.admin.diningPeriods" },
   { name: "Dining Rebates", icon: ClipboardCheck, section: "main", path: "/dining-office/dining-rebates", routeKey: "route.admin.diningRebates" },
   { name: "Dining Billing", icon: Wallet, section: "main", path: "/dining-office/dining-billing", pathPattern: "^/dining-office/dining-billing(/.*)?$", routeKey: "route.admin.diningBilling" },
+  { name: "Daily Meals", icon: CalendarCheck, section: "main", path: "/dining-office/daily-meals", routeKey: "route.admin.caterers" },
   { name: "Meal Records", icon: ClipboardList, section: "main", path: "/dining-office/meal-records", routeKey: "route.admin.caterers" },
   { name: "Live Feed", icon: Radio, section: "main", path: "/dining-office/live", routeKey: "route.admin.caterers", accent: "success", badge: { label: "Live", pulse: true } },
   createLogoutItem(handleLogout),

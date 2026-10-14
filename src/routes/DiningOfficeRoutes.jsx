@@ -18,6 +18,7 @@ const DiningBillingPage = lazy(() => import("../pages/admin/DiningBillingPage"))
 const DiningBillingDetailPage = lazy(() => import("../pages/admin/DiningBillingDetailPage"))
 // The caterer Meal Records and Live Feed, across every caterer.
 const DiningMealRecordsPage = lazy(() => import("../pages/common/DiningMealRecordsPage"))
+const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
 const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage"))
 
 const guardRoute = (routeKey, element) => (
@@ -38,6 +39,7 @@ const DiningOfficeRoutes = () => (
           <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
           <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
           <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />
+          <Route path="daily-meals" element={guardRoute("route.admin.caterers", <DailyMealsPage home="/dining-office" />)} />
           <Route path="meal-records" element={guardRoute("route.admin.caterers", <DiningMealRecordsPage home="/dining-office" />)} />
         </Route>
         {/* Full-screen display: no sidebar or header. */}

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Page } from "hzero"
-import { ClipboardList, Radio } from "lucide-react"
+import { CalendarCheck, ClipboardList, Radio } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import DiningInsights from "@/components/dining/admin-insights/DiningInsights"
 import { greetingFor } from "@/components/dining/caterer/dashboard/dashboardHelpers"
@@ -31,6 +31,9 @@ const DashboardPage = () => {
     <Page>
       <PageHeader title="Dining" subtitle={`${greetingFor(new Date().getHours() * 60 + new Date().getMinutes())}${firstName ? `, ${firstName}` : ""}`}>
         <div className="dxi-office-actions">
+          <Link to="/dining-office/daily-meals" className="dxi-office-link">
+            <CalendarCheck size={16} aria-hidden="true" /> Daily meals
+          </Link>
           <Link to="/dining-office/meal-records" className="dxi-office-link">
             <ClipboardList size={16} aria-hidden="true" /> Meal records
           </Link>

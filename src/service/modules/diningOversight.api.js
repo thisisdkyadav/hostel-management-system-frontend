@@ -36,6 +36,11 @@ export const diningOversightApi = {
   getMealFeed: (params = {}) => {
     return apiClient.get("/dining-oversight/feed", { params }).then(unwrapStandardResponse)
   },
+
+  /** One day across every caterer: assigned, away and who ate each meal, plus students to check on. */
+  getDailyReport: (params = {}) => {
+    return apiClient.get("/dining-oversight/daily-report", { params }).then(unwrapStandardResponse)
+  },
 }
 
 export default diningOversightApi

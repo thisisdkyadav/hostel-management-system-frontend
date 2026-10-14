@@ -56,6 +56,7 @@ export const queryKeys = {
     mealRecordOverview: (params) => [...queryKeys.diningOversight.all, "meal-record-overview", params ?? {}],
     mealRecord: (params) => [...queryKeys.diningOversight.all, "meal-record", params ?? {}],
     mealPulse: (params) => [...queryKeys.diningOversight.all, "meal-pulse", params ?? {}],
+    dailyReport: (params) => [...queryKeys.diningOversight.all, "daily-report", params ?? {}],
   },
   diningInsights: {
     all: ["dining-insights"],

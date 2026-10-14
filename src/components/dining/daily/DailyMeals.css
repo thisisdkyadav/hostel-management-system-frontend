@@ -1,0 +1,363 @@
+/* Daily meals (Admin and Dining Office).
+   One day, every caterer: a quiet stat strip, the day sheet, then the
+   students to check on. Tokens only; caterer colours come in as --kitchen. */
+
+.dm-page,
+.dm-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 0;
+}
+
+.dm-stack[data-stale] {
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+
+.dm-muted {
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Day bar                                                             */
+/* ------------------------------------------------------------------ */
+
+.dm-daybar,
+.dm-daybar__nav,
+.dm-daybar__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.dm-daybar {
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.dm-daybar__day {
+  min-width: var(--spacing-24);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  text-align: center;
+}
+
+.dm-daybar__links {
+  gap: var(--spacing-4);
+}
+
+.dm-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.dm-link:hover {
+  color: var(--color-primary);
+}
+
+.dm-link:focus-visible {
+  outline: var(--border-2) solid var(--color-primary);
+  outline-offset: var(--border-2);
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Stat strip                                                          */
+/* ------------------------------------------------------------------ */
+
+.dm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--spacing-3);
+}
+
+.dm-stat {
+  --dm-accent: var(--color-border-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-left: var(--spacing-1) solid var(--dm-accent);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-bg-primary);
+}
+
+.dm-stat[data-tone="primary"] { --dm-accent: var(--color-primary); }
+.dm-stat[data-tone="success"] { --dm-accent: var(--color-success); }
+.dm-stat[data-tone="warning"] { --dm-accent: var(--color-warning); }
+
+.dm-stat__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.dm-stat__value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  color: var(--color-text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-stat__note {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Day sheet                                                           */
+/* ------------------------------------------------------------------ */
+
+.dm-sheet-wrap {
+  overflow-x: auto;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-primary);
+}
+
+.dm-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.dm-sheet th,
+.dm-sheet td {
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.dm-sheet thead th {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  border-bottom: var(--border-1) solid var(--color-border-primary);
+}
+
+.dm-sheet__time {
+  display: block;
+  font-weight: var(--font-weight-normal);
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-sheet tbody tr + tr {
+  border-top: var(--border-1) solid var(--color-border-primary);
+}
+
+.dm-sheet tbody tr:hover {
+  background: var(--color-bg-secondary);
+}
+
+.dm-sheet .dm-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-sheet td.dm-num--strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.dm-sheet [data-alert] {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-danger-text);
+}
+
+.dm-sheet__name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.dm-sheet__pick {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.dm-sheet__pick:hover {
+  color: var(--kitchen);
+  text-decoration: underline;
+  text-underline-offset: var(--spacing-0-5);
+}
+
+.dm-sheet__pick:focus-visible {
+  outline: var(--border-2) solid var(--kitchen);
+  outline-offset: var(--border-2);
+  border-radius: var(--radius-sm);
+}
+
+.dm-sheet__dot {
+  width: var(--spacing-2-5);
+  height: var(--spacing-2-5);
+  border-radius: var(--radius-full);
+  background: var(--kitchen);
+}
+
+.dm-sheet__total {
+  border-top: var(--border-2) solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+}
+
+.dm-sheet__total th,
+.dm-sheet__total td {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+/* One meal: count, a thin bar, and the gap. */
+.dm-meal {
+  --dm-tone: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: var(--spacing-24);
+}
+
+.dm-meal[data-tone="good"] { --dm-tone: var(--color-success); }
+.dm-meal[data-tone="fair"] { --dm-tone: var(--color-warning); }
+.dm-meal[data-tone="low"] { --dm-tone: var(--color-danger); }
+.dm-meal[data-tone="live"] { --dm-tone: var(--color-success); }
+
+.dm-meal__count {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-meal__count strong {
+  font-size: var(--font-size-md);
+  color: var(--color-text-heading);
+}
+
+.dm-meal__bar {
+  display: block;
+  height: var(--spacing-1);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--dm-tone) 16%, var(--color-bg-tertiary));
+}
+
+.dm-meal__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--dm-tone);
+}
+
+.dm-meal__sub {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-meal[data-tone="low"] .dm-meal__sub {
+  color: var(--color-danger-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.dm-meal--later {
+  color: var(--color-text-muted);
+}
+
+.dm-live-dot {
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  animation: dm-pulse 1.6s ease-out infinite;
+}
+
+@keyframes dm-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 55%, transparent); }
+  100% { box-shadow: 0 0 0 var(--spacing-1-5) transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-live-dot { animation: none; }
+}
+
+.dm-showall {
+  align-self: flex-start;
+}
+
+/* ------------------------------------------------------------------ */
+/* Students to check on                                                */
+/* ------------------------------------------------------------------ */
+
+.dm-checkon__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.dm-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.dm-checkon__count {
+  padding: 0 var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-section-note {
+  max-width: 60ch;
+  margin: var(--spacing-1) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.dm-checkon__filters {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+}
+
+/* Inputs stay compact so the day bar and filters sit on one line. */
+.dm-daybar__picker {
+  flex: 0 0 auto;
+  width: calc(var(--spacing-24) * 1.75);
+}
+
+.dm-checkon__hostel {
+  flex: 0 0 auto;
+  width: calc(var(--spacing-24) * 1.75);
+}
