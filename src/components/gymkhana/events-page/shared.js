@@ -262,6 +262,21 @@ export const getEventStatusVariant = (status) => {
   }
 }
 
+// The tint a list row wears for where its proposal stands. Not yet submitted
+// (or cancelled) stays plain; in review is amber; approved — and anything
+// completed past approval — is green.
+export const getProposalTone = (event) => {
+  switch (event?.eventStatus) {
+    case "proposal_approved":
+    case "completed":
+      return "approved"
+    case "proposal_submitted":
+      return "submitted"
+    default:
+      return null
+  }
+}
+
 export const toDate = (value) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date

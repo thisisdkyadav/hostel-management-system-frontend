@@ -12,6 +12,7 @@ import {
   getCategoryOptions,
   getCategoryOrder,
   getDateConflicts,
+  getProposalTone,
   getCalendarCategoryDefinitions,
   isProposalWindowOpen,
   normalizeEventId,
@@ -71,8 +72,13 @@ export const useCalendarDisplayData = ({
         key: "title",
         header: "Event",
         width: "40%",
+        // The marker lets the row tint itself by proposal status (see
+        // .gymkhana-event-timeline-table in index.css) — DataTable has no
+        // per-row class hook.
         render: (event) => (
-          <Text as="span" weight="medium">{event.title}</Text>
+          <Text as="span" weight="medium" data-proposal-tone={getProposalTone(event) || undefined}>
+            {event.title}
+          </Text>
         ),
       },
       {

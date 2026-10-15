@@ -732,3 +732,24 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Rows tint by proposal status: submitted (in review) amber, approved green,
+   with a matching edge on the first cell. Not submitted stays plain. */
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="submitted"]) {
+  background-color: var(--color-warning-bg);
+}
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="submitted"]):hover {
+  background-color: color-mix(in srgb, var(--color-warning-bg) 85%, var(--color-warning));
+}
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="submitted"]) > .hz-table-cell:first-child {
+  box-shadow: inset 3px 0 0 var(--color-warning);
+}
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="approved"]) {
+  background-color: var(--color-success-bg);
+}
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="approved"]):hover {
+  background-color: color-mix(in srgb, var(--color-success-bg) 85%, var(--color-success));
+}
+.gymkhana-event-timeline-table .hz-table-row:has([data-proposal-tone="approved"]) > .hz-table-cell:first-child {
+  box-shadow: inset 3px 0 0 var(--color-success);
+}
