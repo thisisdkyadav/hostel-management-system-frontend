@@ -5,8 +5,7 @@ import { checkSupportingPdfs, mergeSupportingPdfs } from "../src/pages/common/ov
 import { collectApplicationPdfDocuments } from "../src/pages/common/overall-best-performer/proofDocuments.js"
 
 beforeEach((t) => {
-  t.mock.method(console, "info", () => {})
-  t.mock.method(console, "error", () => {})
+  for (const level of ["info", "warn", "error"]) t.mock.method(console, level, () => {})
 })
 
 const createPdf = async (sizes) => {
@@ -14,141 +13,197 @@ const createPdf = async (sizes) => {
   for (const size of sizes) pdf.addPage(size)
   return pdf.save({ addDefaultPage: false })
 }
+const sizes = async (bytes) => (await PDFDocument.load(bytes)).getPages().map((page) => [page.getWidth(), page.getHeight()])
+const unavailableRenderer = { renderFallback: async () => { throw new Error("Cannot print this attachment") } }
+const brokenPdf = async () => {
+  const pdf = await PDFDocument.create()
+  pdf.addPage()
+  pdf.catalog.set(PDFName.of("Pages"), PDFRef.of(9999))
+  return pdf.save()
+}
+const encryptedPdf = async () => {
+  const pdf = await PDFDocument.load(await createPdf([[200, 300]]))
+  // The real encryption fixtures are exercised by the browser integration test.
+  pdf.context.trailerInfo.Encrypt = pdf.context.register(pdf.context.obj({ Filter: "Standard" }))
+  return pdf.save()
+}
 
-test("all attachments and pages are merged in order with their original dimensions", async () => {
+test("normal merging preserves attachment order and dimensions without invoking the renderer", async () => {
   const documents = [{ label: "Coursework" }, { label: "Award" }]
   const bytes = [await createPdf([[200, 300], [400, 500]]), await createPdf([[600, 700]])]
-  const merged = await mergeSupportingPdfs(documents, async (document) => bytes[documents.indexOf(document)])
-  const result = await PDFDocument.load(merged)
-  assert.deepEqual(result.getPages().map((page) => [page.getWidth(), page.getHeight()]), [[200, 300], [400, 500], [600, 700]])
+  let report
+  const merged = await mergeSupportingPdfs(documents, async (document) => bytes[documents.indexOf(document)], {
+    onReport: (value) => { report = value },
+  }, { renderFallback: () => assert.fail("Normal PDFs should not need rendering") })
+  assert.deepEqual(await sizes(merged), [[200, 300], [400, 500], [600, 700]])
+  assert.equal(report.includedDocumentCount, 2)
+  assert.equal(report.renderedDocumentCount, 0)
+  assert.equal(report.skippedDocumentCount, 0)
+  assert.equal(report.status, "success")
 })
 
-test("missing page-tree objects identify the failing attachment and preserve the parser error", async (t) => {
-  const log = t.mock.method(console, "error", () => {})
-  const broken = await PDFDocument.create()
-  broken.addPage()
-  broken.catalog.set(PDFName.of("Pages"), PDFRef.of(9999))
-  const bytes = await broken.save()
+test("a broken attachment tries printing, skips on failure, and preserves later attachments", async (t) => {
+  const log = t.mock.method(console, "warn", () => {})
+  const broken = await brokenPdf()
+  const valid = await createPdf([[200, 300]])
   const documents = [{ label: "Coursework" }, { label: "Sports certificate" }, { label: "Publication" }]
   const fetched = []
-  await assert.rejects(mergeSupportingPdfs(documents, async (document) => {
+  let report
+  const merged = await mergeSupportingPdfs(documents, async (document) => {
     fetched.push(document)
-    return document === documents[1] ? bytes : createPdf([[200, 300]])
-  }), (error) => {
-    assert.match(error.message, /^PDF 2 \(Sports certificate\): Could not merge/)
-    assert.match(error.message, /fresh PDF copy/)
-    assert.match(error.cause.message, /Expected instance of PDFDict, but got instance of undefined/)
-    assert.equal(error.document, documents[1])
-    const report = error.diagnostics
-    assert.equal(report.status, "failed")
-    assert.equal(report.stage, "enumerate-pages")
-    assert.equal(report.currentDocumentNumber, 2)
-    assert.equal(report.mergedPageCount, 1)
-    assert.equal(report.documents[0].stage, "complete")
-    assert.equal(report.documents[1].pageTree.pagesReference, "9999 0 R")
-    assert.equal(report.documents[1].pageTree.pagesObjectType, "missing")
-    assert.equal(report.documents[2].stage, "pending")
-    assert.match(report.error.cause.stack, /PDFContext/)
-    assert.deepEqual(JSON.parse(log.mock.calls[0].arguments[0].replace(/^\[Best Performer PDF Export\] /, "")), report)
-    return true
-  })
-  assert.deepEqual(fetched, documents.slice(0, 2))
+    return document === documents[1] ? broken : valid
+  }, { onReport: (value) => { report = value } }, unavailableRenderer)
+  assert.deepEqual(fetched, documents)
+  assert.deepEqual(await sizes(merged), [[200, 300], [200, 300]])
+  assert.equal(report.schemaVersion, 3)
+  assert.equal(report.status, "partial")
+  assert.equal(report.mergedPageCount, 2)
+  assert.equal(report.skippedDocumentCount, 1)
+  assert.equal(report.checkedDocumentCount, 3)
+  assert.equal(report.documents[1].pageTree.pagesReference, "9999 0 R")
+  assert.equal(report.documents[1].pageTree.pagesObjectType, "missing")
+  assert.equal(report.documents[1].attempts[0].stage, "enumerate-pages")
+  assert.match(report.documents[1].attempts[0].error.message, /Expected instance of PDFDict, but got instance of undefined/)
+  assert.equal(report.documents[1].attempts[1].method, "print")
+  assert.equal(report.documents[1].attempts[1].error.message, "Cannot print this attachment")
+  assert.equal(report.issues[0].outcome, "skipped")
+  assert.equal(report.documents[2].stage, "complete")
+  assert.deepEqual(JSON.parse(log.mock.calls[0].arguments[0].replace(/^\[Best Performer PDF Export\] /, "")), report)
 })
 
-test("successful reports include response metadata, page counts and redact signed URL queries", async (t) => {
+test("encrypted PDFs use a printed copy from the same bytes, in their original position", async () => {
+  const encrypted = await encryptedPdf()
+  const first = await createPdf([[100, 200]])
+  const printed = await createPdf([[300, 400], [400, 300]])
+  let report
+  let calls = 0
+  const merged = await mergeSupportingPdfs([{ url: "first" }, { url: "encrypted" }, { url: "last" }], async (document) => document.url === "encrypted" ? encrypted : first,
+    { onReport: (value) => { report = value } }, {
+      renderFallback: async (bytes, progress) => {
+        calls += 1
+        assert.equal(bytes, encrypted)
+        progress({ pageNumber: 2, pageCount: 2 })
+        return printed
+      },
+    })
+  assert.equal(calls, 1)
+  assert.deepEqual(await sizes(merged), [[100, 200], [300, 400], [400, 300], [100, 200]])
+  assert.equal(report.status, "success")
+  assert.equal(report.includedDocumentCount, 3)
+  assert.equal(report.renderedDocumentCount, 1)
+  assert.equal(report.documents[1].encrypted, true)
+  assert.equal(report.documents[1].method, "print")
+  assert.equal(report.documents[1].currentPageNumber, 2)
+  assert.equal(report.issues[0].outcome, "recovered")
+  assert.equal(report.documents[1].attempts[1].stage, "complete")
+})
+
+test("successful reports retain response metadata and redact signed URL queries", async (t) => {
   const log = t.mock.method(console, "info", () => {})
   const bytes = await createPdf([[200, 300], [300, 400]])
-  const source = "https://storage.example/certificate.pdf?token=secret#fragment"
-  const result = await mergeSupportingPdfs([{ label: "Certificate", url: source }], async (_, onResponse) => {
-    onResponse({
-      status: 200,
-      headers: new Headers({ "content-type": "application/pdf", "content-length": String(bytes.byteLength) }),
-      redirected: true,
-      url: "https://cdn.example/certificate.pdf?signature=secret",
-    })
+  const result = await mergeSupportingPdfs([{ label: "Certificate", url: "https://storage.example/certificate.pdf?token=secret#fragment" }], async (_, onResponse) => {
+    onResponse({ status: 200, headers: new Headers({ "content-type": "application/pdf", "content-length": String(bytes.byteLength) }), redirected: true, url: "https://cdn.example/certificate.pdf?signature=secret" })
     return bytes
   }, { applicationId: "application-123" })
   const json = log.mock.calls[0].arguments[0].replace(/^\[Best Performer PDF Export\] /, "")
   const report = JSON.parse(json)
   assert.equal(report.applicationId, "application-123")
-  assert.equal(report.status, "success")
-  assert.equal(report.stage, "complete")
-  assert.equal(report.mergedPageCount, 2)
   assert.equal(report.outputByteLength, result.byteLength)
-  assert.equal(report.documents[0].pageCount, 2)
+  assert.equal(report.mergedPageCount, 2)
   assert.equal(report.documents[0].byteLength, bytes.byteLength)
   assert.equal(report.documents[0].pdfHeader, "%PDF-1.7")
   assert.equal(report.documents[0].source, "https://storage.example/certificate.pdf")
-  assert.equal(report.documents[0].response.status, 200)
   assert.equal(report.documents[0].response.contentType, "application/pdf")
   assert.equal(report.documents[0].response.finalUrl, "https://cdn.example/certificate.pdf")
   assert.ok(!json.includes("secret"))
 })
 
-test("serialization failures report the save stage after all attachments completed", async (t) => {
-  t.mock.method(console, "error", () => {})
+test("combined serialization failures still report a fatal save error", async (t) => {
   const bytes = await createPdf([[200, 300]])
   const output = await PDFDocument.create()
+  const originalCreate = PDFDocument.create.bind(PDFDocument)
   const cause = new Error("Serialization failed")
   t.mock.method(output, "save", async () => { throw cause })
-  t.mock.method(PDFDocument, "create", async () => output)
+  let creates = 0
+  t.mock.method(PDFDocument, "create", async () => ++creates === 1 ? output : originalCreate())
   await assert.rejects(mergeSupportingPdfs([{ label: "Certificate" }], async () => bytes), (error) => {
     assert.equal(error, cause)
     assert.equal(error.diagnostics.stage, "save")
     assert.equal(error.diagnostics.currentDocumentNumber, null)
     assert.equal(error.diagnostics.documents[0].stage, "complete")
     assert.equal(error.diagnostics.mergedPageCount, 1)
-    assert.match(error.diagnostics.error.stack, /Serialization failed/)
     return true
   })
 })
 
-test("download failures identify the document without exposing the raw network error", async () => {
-  const cause = new Error("HTTP 403")
-  await assert.rejects(mergeSupportingPdfs([{ label: "Transcript" }], async () => { throw cause }), (error) => {
-    assert.match(error.message, /^PDF 1 \(Transcript\): Could not download/)
-    assert.equal(error.cause, cause)
-    return true
-  })
-})
-
-test("invalid PDF responses identify the attachment and explain how to replace it", async () => {
-  await assert.rejects(
-    mergeSupportingPdfs([{ label: "Award" }], async () => new TextEncoder().encode("<html>Login</html>")),
-    /PDF 1 \(Award\): Could not read this attachment as a PDF/
-  )
-})
-
-test("empty exports and PDFs without pages do not produce a misleading blank PDF", async () => {
-  await assert.rejects(mergeSupportingPdfs([], async () => {}), /No supporting PDFs/)
-  await assert.rejects(
-    mergeSupportingPdfs([{ label: "Empty attachment" }], async () => createPdf([])),
-    /PDF 1 \(Empty attachment\): Could not merge/
-  )
-})
-
-test("encrypted attachments are rejected with instructions instead of ignoring encryption", async () => {
-  const bytes = await createPdf([[200, 300]])
-  const pdf = await PDFDocument.load(bytes)
-  // A trailer encryption entry exercises pdf-lib's encrypted-document guard.
-  pdf.context.trailerInfo.Encrypt = pdf.context.register(pdf.context.obj({ Filter: "Standard" }))
-  const encrypted = await pdf.save()
-  await assert.rejects(
-    mergeSupportingPdfs([{ label: "Protected transcript" }], async () => encrypted),
-    /PDF 1 \(Protected transcript\): This attachment is encrypted/
-  )
-})
-
-test("checks continue after multiple failures and identify each affected application field", async (t) => {
-  const log = t.mock.method(console, "error", () => {})
+test("download failures skip without invoking the printing fallback", async () => {
   const valid = await createPdf([[200, 300]])
-  const brokenPdf = await PDFDocument.create()
-  brokenPdf.addPage()
-  brokenPdf.catalog.set(PDFName.of("Pages"), PDFRef.of(9999))
-  const broken = await brokenPdf.save()
-  const encryptedPdf = await PDFDocument.load(valid)
-  encryptedPdf.context.trailerInfo.Encrypt = encryptedPdf.context.register(encryptedPdf.context.obj({ Filter: "Standard" }))
-  const encrypted = await encryptedPdf.save()
+  let report
+  await mergeSupportingPdfs([{ url: "missing" }, { url: "valid" }], async (document) => {
+    if (document.url === "missing") throw Object.assign(new Error("HTTP 403"), { status: 403 })
+    return valid
+  }, { onReport: (value) => { report = value } }, { renderFallback: () => assert.fail("No downloaded PDF to print") })
+  assert.equal(report.skippedDocumentCount, 1)
+  assert.equal(report.documents[0].httpStatus, 403)
+  assert.equal(report.documents[0].stage, "download")
+  assert.match(report.documents[0].error.cause.message, /HTTP 403/)
+  assert.equal(report.documents[0].attempts.length, 0)
+})
+
+test("empty inputs and entirely skipped attachments never generate a blank PDF", async () => {
+  await assert.rejects(mergeSupportingPdfs([], async () => {}), /No supporting PDFs/)
+  for (const bytes of [await createPdf([]), new TextEncoder().encode("<html>Login</html>")]) {
+    await assert.rejects(mergeSupportingPdfs([{ label: "Unreadable" }], async () => bytes, {}, unavailableRenderer), (error) => {
+      assert.match(error.message, /All attachments were skipped/)
+      assert.equal(error.diagnostics.skippedDocumentCount, 1)
+      assert.equal(error.diagnostics.includedDocumentCount, 0)
+      assert.equal(error.diagnostics.outputByteLength, undefined)
+      assert.equal(error.diagnostics.documents[0].attempts.length, 2)
+      return true
+    })
+  }
+})
+
+test("a printing attempt that fails midway cannot leave partial pages in the export", async () => {
+  const valid = await createPdf([[200, 300]])
+  const encrypted = await encryptedPdf()
+  let report
+  const merged = await mergeSupportingPdfs([{ url: "first" }, { url: "bad" }, { url: "last" }], async (document) => document.url === "bad" ? encrypted : valid,
+    { onReport: (value) => { report = value } }, {
+      renderFallback: async (_, progress) => {
+        progress({ pageNumber: 1, pageCount: 3 })
+        await createPdf([[500, 600]])
+        throw new Error("Page 2 rendering failed")
+      },
+    })
+  assert.deepEqual(await sizes(merged), [[200, 300], [200, 300]])
+  assert.equal(report.mergedPageCount, 2)
+  assert.equal(report.includedDocumentCount, 2)
+  assert.equal(report.documents[1].currentPageNumber, 1)
+})
+
+test("failed appends roll back already added pages before using the fallback", async (t) => {
+  const valid = await createPdf([[200, 300], [300, 400]])
+  const printed = await createPdf([[600, 700]])
+  const output = await PDFDocument.create()
+  const originalCreate = PDFDocument.create.bind(PDFDocument)
+  let creates = 0
+  t.mock.method(PDFDocument, "create", async () => ++creates === 1 ? output : originalCreate())
+  const addPage = output.addPage.bind(output)
+  let adds = 0
+  t.mock.method(output, "addPage", (page) => {
+    const result = addPage(page)
+    if (++adds === 2) throw new Error("Adding page failed")
+    return result
+  })
+  const merged = await mergeSupportingPdfs([{}], async () => valid, {}, { renderFallback: async () => printed })
+  assert.deepEqual(await sizes(merged), [[600, 700]])
+})
+
+test("check-all runs the same recovery pipeline and reports every affected application field", async () => {
+  const broken = await brokenPdf()
+  const encrypted = await encryptedPdf()
+  const valid = await createPdf([[200, 300]])
   const documents = collectApplicationPdfDocuments({
     awardItems: [{ title: "Academic award", proofs: [{ label: "Proof", url: "broken" }] }],
     gamesSportsItems: [
@@ -162,42 +217,41 @@ test("checks continue after multiple failures and identify each affected applica
     fetched.push(document.url)
     if (document.url === "unavailable") throw new Error("HTTP 404")
     return { broken, encrypted, valid }[document.url]
-  })
-  assert.equal(report.schemaVersion, 2)
+  }, {}, { renderFallback: async (bytes) => {
+    if (bytes === encrypted) return valid
+    throw new Error("Invalid PDF")
+  } })
   assert.equal(report.operation, "check-all")
   assert.equal(report.status, "issues-found")
-  assert.equal(report.stage, "complete")
   assert.equal(report.checkedDocumentCount, 4)
   assert.equal(report.mergedPageCount, 0)
   assert.equal(report.outputByteLength, undefined)
+  assert.equal(report.includedDocumentCount, 2)
+  assert.equal(report.skippedDocumentCount, 2)
+  assert.equal(report.renderedDocumentCount, 1)
   assert.deepEqual(fetched, ["broken", "encrypted", "unavailable", "valid"])
-  assert.deepEqual(report.issues.map((issue) => issue.documentNumber), [1, 2, 3])
-  assert.deepEqual(report.issues.map((issue) => issue.stage), ["enumerate-pages", "check-encryption", "download"])
+  assert.deepEqual(report.issues.map((issue) => issue.outcome), ["skipped", "recovered", "skipped"])
   assert.equal(report.issues[1].displayLocation, "Games & Sports activities → Item 1: Cricket → Proof 1")
   assert.equal(report.issues[1].locations[0].fieldPath, "gamesSportsItems[0].proofs[0].url")
-  assert.match(report.issues[1].message, /may open normally without asking for a password/)
   assert.equal(report.documents[3].stage, "complete")
-  assert.equal(report.documents[3].pageCount, 1)
-  assert.equal(report.documents[3].error, undefined)
-  assert.deepEqual(JSON.parse(log.mock.calls[0].arguments[0].replace(/^\[Best Performer PDF Export\] /, "")), report)
 })
 
-test("merge failures include the field location in both the popup message and downloadable report", async () => {
+test("all-skipped errors retain every location for attachments shared across fields", async () => {
   const documents = collectApplicationPdfDocuments({
     culturalItems: [{ title: "Dance", proofs: [{ label: "Proof", url: "file" }] }],
     gamesSportsItems: [{ title: "Cricket", proofs: [{ label: "Proof", url: "file" }] }],
   })
   await assert.rejects(mergeSupportingPdfs(documents, async () => { throw new Error("HTTP 404") }), (error) => {
-    assert.match(error.message, /PDF 1 \(Cultural activities → Item 1: Dance → Proof 1\)/)
     const report = error.diagnostics
     assert.equal(report.checkedDocumentCount, 1)
     assert.equal(report.documents[0].locations.length, 2)
+    assert.match(report.documents[0].error.message, /Cultural activities → Item 1: Dance → Proof 1/)
     assert.equal(report.issues[0].locations[1].fieldPath, "gamesSportsItems[0].proofs[0].url")
     return true
   })
 })
 
-test("checking valid attachments returns a report after verifying every page can be copied and saved", async () => {
+test("checking valid attachments verifies every page can be copied and saved", async () => {
   const valid = await createPdf([[200, 300], [300, 400]])
   const report = await checkSupportingPdfs([{ label: "First" }, { label: "Second" }], async () => valid)
   assert.equal(report.status, "success")

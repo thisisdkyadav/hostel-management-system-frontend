@@ -5,6 +5,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import fs from "fs";
 import path from "path";
 import { generateBuildVersion, readPackageVersion } from "./scripts/version.js";
+import { pdfjsAssets } from "./scripts/pdfjs-assets.js";
 
 /* --------------------------------
    Copy meta.json into dist
@@ -100,6 +101,7 @@ export default defineConfig({
   },
 
   plugins: [
+    pdfjsAssets(),
     tailwindcss(),
 
     react({

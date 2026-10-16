@@ -14,7 +14,8 @@ export const PdfDiagnosticsPanel = ({ report, documents, onViewPdf }) => {
         </Text>
         {issues.length ? (
           <Text as="div" size="sm" color="secondary">
-            These attachments could not be merged. Their locations in the application are listed below.
+            {report.includedDocumentCount || 0} of {report.documentCount} included ({report.renderedDocumentCount || 0} as printed copies); {report.skippedDocumentCount || 0} skipped{report.operation === "check-all" ? " if exported" : ""}.
+            {" "}The affected application fields are listed below.
           </Text>
         ) : report.status === "success" ? (
           <Text as="div" size="sm" color="secondary">All attachments passed the PDF checks.</Text>
@@ -25,7 +26,7 @@ export const PdfDiagnosticsPanel = ({ report, documents, onViewPdf }) => {
           return (
             <HStack key={issue.documentNumber} gap={3} align="start" justify="between" wrap>
               <VStack gap={1} style={{ flex: 1, minWidth: 240 }}>
-                <Text as="div" size="sm" weight="semibold">PDF #{issue.documentNumber}</Text>
+                <Text as="div" size="sm" weight="semibold">PDF #{issue.documentNumber} — {issue.outcome === "recovered" ? "Recovered as printed copy" : report.operation === "check-all" ? "Will be skipped" : "Skipped"}</Text>
                 {locations.map((location, index) => (
                   <Text key={index} as="div" size="sm">{location}</Text>
                 ))}

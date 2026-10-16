@@ -121,10 +121,19 @@ export const ReviewModal = ({
     try {
       setDownloadingAllPdfs(true)
       setPdfDebugReport(null)
-      const mergedPdfBytes = await mergePdfDocuments(applicationPdfDocuments, { applicationId: application.id })
-      const filename = `${slugifyFilePart(application.rollNumber || application.studentName, "best-performer")}-supporting-documents.pdf`
+      let report
+      const mergedPdfBytes = await mergePdfDocuments(applicationPdfDocuments, {
+        applicationId: application.id,
+        onReport: (value) => { report = value; setPdfDebugReport(value) },
+      })
+      const suffix = report?.skippedDocumentCount ? "-partial" : ""
+      const filename = `${slugifyFilePart(application.rollNumber || application.studentName, "best-performer")}-supporting-documents${suffix}.pdf`
       downloadBlobFile(new Blob([mergedPdfBytes], { type: "application/pdf" }), filename)
-      toast.success("Supporting PDFs downloaded.")
+      if (report?.skippedDocumentCount) {
+        toast.error(`Partial PDF downloaded: ${report.skippedDocumentCount} attachment(s) skipped. See their application fields below.`)
+      } else {
+        toast.success(report?.renderedDocumentCount ? "Supporting PDFs downloaded, including recovered printed copies." : "Supporting PDFs downloaded.")
+      }
     } catch (error) {
       setPdfDebugReport(error?.diagnostics || null)
       if (!error?.diagnostics) console.error("Failed to merge Best Performer PDFs:", error)
@@ -141,10 +150,10 @@ export const ReviewModal = ({
       setPdfDebugReport(null)
       const report = await checkPdfDocuments(applicationPdfDocuments, { applicationId: application.id })
       setPdfDebugReport(report)
-      if (report.issues.length) {
-        toast.error(`${report.issues.length} PDF attachment(s) could not be merged. See their application fields below.`)
+      if (report.skippedDocumentCount) {
+        toast.error(`${report.skippedDocumentCount} PDF attachment(s) would be skipped. See their application fields below.`)
       } else {
-        toast.success("All PDF attachments passed the checks.")
+        toast.success(report.renderedDocumentCount ? "All PDFs can be exported; some need printed copies. See details below." : "All PDF attachments passed the checks.")
       }
     } catch (error) {
       setPdfDebugReport(error?.diagnostics || null)
