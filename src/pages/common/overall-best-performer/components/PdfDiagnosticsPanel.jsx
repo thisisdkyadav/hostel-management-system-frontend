@@ -45,7 +45,7 @@ export const PdfDiagnosticsPanel = ({ report, documents, onViewPdf }) => {
           )
         })}
         {report.checkedDocumentCount < report.documentCount ? (
-          <Text as="div" size="sm" color="secondary">Use Check all PDFs to inspect the remaining attachments.</Text>
+          <Text as="div" size="sm" color="secondary">The export stopped before all attachments could be checked.</Text>
         ) : null}
       </VStack>
     </Surface>

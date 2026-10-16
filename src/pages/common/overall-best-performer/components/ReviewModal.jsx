@@ -6,7 +6,7 @@ import ProfileAvatar from "@/components/profile/ProfileAvatar"
 import { overallBestPerformerApi, studentApi } from "@/service"
 import { BTP_AWARD_OPTIONS, PROJECT_GRADE_OPTIONS, getApplicationItemsForReviewSection } from "../scoring"
 import { fieldClusterStyle, fieldLabelStyle, helperTextStyle, statusTone } from "../styles"
-import { checkPdfDocuments, collectApplicationPdfDocuments, downloadBlobFile, mergePdfDocuments, resolvePrimaryProof, slugifyFilePart } from "../documents"
+import { collectApplicationPdfDocuments, downloadBlobFile, mergePdfDocuments, resolvePrimaryProof, slugifyFilePart } from "../documents"
 import { PdfDiagnosticsPanel } from "./PdfDiagnosticsPanel"
 import { PorProofDetailModal } from "./PorProofDetailModal"
 import { ScoreBreakdownCard } from "./ScoreCards"
@@ -40,7 +40,6 @@ export const ReviewModal = ({
   const [showProjectThesisGradesModal, setShowProjectThesisGradesModal] = useState(false)
   const [savingProjectThesisGrades, setSavingProjectThesisGrades] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
-  const [checkingPdfs, setCheckingPdfs] = useState(false)
   const [pdfDebugReport, setPdfDebugReport] = useState(null)
   const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
@@ -67,7 +66,6 @@ export const ReviewModal = ({
         setShowProjectThesisGradesModal(false)
         setSavingProjectThesisGrades(false)
         setDownloadingAllPdfs(false)
-        setCheckingPdfs(false)
         setPdfDebugReport(null)
         setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
@@ -138,29 +136,9 @@ export const ReviewModal = ({
       setPdfDebugReport(error?.diagnostics || null)
       if (!error?.diagnostics) console.error("Failed to merge Best Performer PDFs:", error)
       const message = error?.message || "Failed to download supporting PDFs."
-      toast.error(error?.diagnostics ? `${message} Use Download debug report to share the details.` : message)
+      toast.error(message)
     } finally {
       setDownloadingAllPdfs(false)
-    }
-  }
-
-  const handleCheckAllPdfs = async () => {
-    try {
-      setCheckingPdfs(true)
-      setPdfDebugReport(null)
-      const report = await checkPdfDocuments(applicationPdfDocuments, { applicationId: application.id })
-      setPdfDebugReport(report)
-      if (report.skippedDocumentCount) {
-        toast.error(`${report.skippedDocumentCount} PDF attachment(s) would be skipped. See their application fields below.`)
-      } else {
-        toast.success(report.renderedDocumentCount ? "All PDFs can be exported; some need printed copies. See details below." : "All PDF attachments passed the checks.")
-      }
-    } catch (error) {
-      setPdfDebugReport(error?.diagnostics || null)
-      if (!error?.diagnostics) console.error("Failed to check Best Performer PDFs:", error)
-      toast.error(error?.message || "Failed to check PDF attachments.")
-    } finally {
-      setCheckingPdfs(false)
     }
   }
 
@@ -274,31 +252,10 @@ export const ReviewModal = ({
               variant="secondary"
               onClick={handleDownloadAllPdfs}
               loading={downloadingAllPdfs}
-              disabled={downloadingAllPdfs || checkingPdfs || !applicationPdfDocuments.length}
+              disabled={downloadingAllPdfs || !applicationPdfDocuments.length}
             >
               <Download size={14} /> Download All PDFs
             </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={handleCheckAllPdfs}
-              loading={checkingPdfs}
-              disabled={checkingPdfs || downloadingAllPdfs || !applicationPdfDocuments.length}
-            >
-              <FileText size={14} /> Check all PDFs
-            </Button>
-            {pdfDebugReport ? (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => downloadBlobFile(
-                  new Blob([JSON.stringify(pdfDebugReport, null, 2)], { type: "application/json" }),
-                  "best-performer-pdf-debug.json"
-                )}
-              >
-                <Download size={14} /> Download debug report
-              </Button>
-            ) : null}
           </HStack>
         </HStack>
 
