@@ -2,6 +2,7 @@ import { Activity } from "lucide-react"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { uploadApi, apiClient } from "@/service"
 import { Select } from "hzero"
+import { mergeSupportingPdfs } from "./pdfMerge"
 
 export const formatExportDateTime = (value) => {
   if (!value) return ""
@@ -163,27 +164,16 @@ const resolvePdfDownloadEndpoint = (mediaPath) => {
   return getMediaDownloadUrl(normalizedPath)
 }
 
-export const fetchPdfBytes = async (document) => {
+export const fetchPdfBytes = async (document, onResponse) => {
   const response = await apiClient.download(resolvePdfDownloadEndpoint(document.url), {
     credentials: "include",
   })
 
+  onResponse?.(response)
   return response.arrayBuffer()
 }
 
-export const mergePdfDocuments = async (documents = []) => {
-  const { PDFDocument } = await import("pdf-lib")
-  const mergedPdf = await PDFDocument.create()
-
-  for (const document of documents) {
-    const pdfBytes = await fetchPdfBytes(document)
-    const sourcePdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true })
-    const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices())
-    copiedPages.forEach((page) => mergedPdf.addPage(page))
-  }
-
-  return mergedPdf.save()
-}
+export const mergePdfDocuments = (documents = [], context = {}) => mergeSupportingPdfs(documents, fetchPdfBytes, context)
 
 export const collectLinkedPorsFromApplication = (application = null) => {
   if (!application) return []

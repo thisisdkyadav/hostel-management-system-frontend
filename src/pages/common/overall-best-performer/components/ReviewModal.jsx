@@ -39,6 +39,7 @@ export const ReviewModal = ({
   const [showProjectThesisGradesModal, setShowProjectThesisGradesModal] = useState(false)
   const [savingProjectThesisGrades, setSavingProjectThesisGrades] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
+  const [pdfDebugReport, setPdfDebugReport] = useState(null)
   const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
@@ -64,6 +65,7 @@ export const ReviewModal = ({
         setShowProjectThesisGradesModal(false)
         setSavingProjectThesisGrades(false)
         setDownloadingAllPdfs(false)
+        setPdfDebugReport(null)
         setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
       }, 0)
@@ -115,13 +117,16 @@ export const ReviewModal = ({
 
     try {
       setDownloadingAllPdfs(true)
-      const mergedPdfBytes = await mergePdfDocuments(applicationPdfDocuments)
+      setPdfDebugReport(null)
+      const mergedPdfBytes = await mergePdfDocuments(applicationPdfDocuments, { applicationId: application.id })
       const filename = `${slugifyFilePart(application.rollNumber || application.studentName, "best-performer")}-supporting-documents.pdf`
       downloadBlobFile(new Blob([mergedPdfBytes], { type: "application/pdf" }), filename)
       toast.success("Supporting PDFs downloaded.")
     } catch (error) {
-      console.error("Failed to merge Best Performer PDFs:", error)
-      toast.error(error?.message || "Failed to download supporting PDFs.")
+      setPdfDebugReport(error?.diagnostics || null)
+      if (!error?.diagnostics) console.error("Failed to merge Best Performer PDFs:", error)
+      const message = error?.message || "Failed to download supporting PDFs."
+      toast.error(error?.diagnostics ? `${message} Use Download debug report to share the details.` : message)
     } finally {
       setDownloadingAllPdfs(false)
     }
@@ -241,6 +246,18 @@ export const ReviewModal = ({
             >
               <Download size={14} /> Download All PDFs
             </Button>
+            {pdfDebugReport ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => downloadBlobFile(
+                  new Blob([JSON.stringify(pdfDebugReport, null, 2)], { type: "application/json" }),
+                  "best-performer-pdf-debug.json"
+                )}
+              >
+                <Download size={14} /> Download debug report
+              </Button>
+            ) : null}
           </HStack>
         </HStack>
 
