@@ -2,7 +2,7 @@ import { Activity } from "lucide-react"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { uploadApi, apiClient } from "@/service"
 import { Select } from "hzero"
-import { mergeSupportingPdfs } from "./pdfMerge"
+import { checkSupportingPdfs, mergeSupportingPdfs } from "./pdfMerge"
 
 export const formatExportDateTime = (value) => {
   if (!value) return ""
@@ -94,65 +94,7 @@ export const slugifyFilePart = (value, fallback = "document") => {
 
 export const resolvePrimaryProof = (proofs = []) => (Array.isArray(proofs) ? proofs[0] || null : null)
 
-export const collectPdfDocumentsFromProofs = (proofs = [], fallbackLabel = "Supporting Document") =>
-  (Array.isArray(proofs) ? proofs : [])
-    .map((proof) => {
-      if (proof?.sourceType === "por") {
-        const linkedPor = proof?.linkedPor
-        if (!linkedPor?.supportingDocumentUrl) return null
-
-        return {
-          url: linkedPor.supportingDocumentUrl,
-          label: linkedPor.supportingDocumentName || linkedPor.positionTitle || proof?.label || fallbackLabel,
-        }
-      }
-
-      if (!proof?.url) return null
-
-      return {
-        url: proof.url,
-        label: proof.label || fallbackLabel,
-      }
-    })
-    .filter(Boolean)
-
-export const collectApplicationPdfDocuments = (application = null) => {
-  if (!application) return []
-
-  const documents = []
-  const addProofs = (proofs, label) => {
-    documents.push(...collectPdfDocumentsFromProofs(proofs, label))
-  }
-
-  addProofs(application?.coursework?.proofs, "Coursework")
-  addProofs(application?.projectThesis?.btpAwardProofs, "BTP Award")
-  addProofs(application?.projectThesis?.projectGradeProofs, "Project Grade")
-
-  const addItemProofs = (items = [], sectionLabel = "Supporting Document") => {
-    for (const item of Array.isArray(items) ? items : []) {
-      addProofs(item?.proofs, item?.title || sectionLabel)
-    }
-  }
-
-  addItemProofs(application?.projectThesis?.publicationItems, "Publication")
-  addItemProofs(application?.projectThesis?.technologyTransferItems, "Technology Transfer")
-  addItemProofs(application?.responsibilityItems, "Responsibility")
-  addItemProofs(application?.awardItems, "Award")
-  addItemProofs(application?.culturalItems, "Cultural Activity")
-  addItemProofs(application?.scienceTechnologyItems, "Science And Technology Activity")
-  addItemProofs(application?.gamesSportsItems, "Games And Sports Activity")
-  addItemProofs(application?.coCurricularItems, "Co-curricular Activity")
-
-  const uniqueByUrl = new Map()
-  for (const document of documents) {
-    const key = String(document?.url || "").trim()
-    if (key && !uniqueByUrl.has(key)) {
-      uniqueByUrl.set(key, document)
-    }
-  }
-
-  return [...uniqueByUrl.values()]
-}
+export { collectPdfDocumentsFromProofs, collectApplicationPdfDocuments, formatProofLocation } from "./proofDocuments"
 
 const MEDIA_REF_PREFIX = "media://"
 
@@ -174,6 +116,8 @@ export const fetchPdfBytes = async (document, onResponse) => {
 }
 
 export const mergePdfDocuments = (documents = [], context = {}) => mergeSupportingPdfs(documents, fetchPdfBytes, context)
+
+export const checkPdfDocuments = (documents = [], context = {}) => checkSupportingPdfs(documents, fetchPdfBytes, context)
 
 export const collectLinkedPorsFromApplication = (application = null) => {
   if (!application) return []

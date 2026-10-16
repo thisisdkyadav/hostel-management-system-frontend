@@ -1,7 +1,13 @@
 import assert from "node:assert/strict"
-import { test } from "node:test"
+import { beforeEach, test } from "node:test"
 import { PDFDocument, PDFName, PDFRef } from "pdf-lib"
-import { mergeSupportingPdfs } from "../src/pages/common/overall-best-performer/pdfMerge.js"
+import { checkSupportingPdfs, mergeSupportingPdfs } from "../src/pages/common/overall-best-performer/pdfMerge.js"
+import { collectApplicationPdfDocuments } from "../src/pages/common/overall-best-performer/proofDocuments.js"
+
+beforeEach((t) => {
+  t.mock.method(console, "info", () => {})
+  t.mock.method(console, "error", () => {})
+})
 
 const createPdf = async (sizes) => {
   const pdf = await PDFDocument.create()
@@ -131,4 +137,72 @@ test("encrypted attachments are rejected with instructions instead of ignoring e
     mergeSupportingPdfs([{ label: "Protected transcript" }], async () => encrypted),
     /PDF 1 \(Protected transcript\): This attachment is encrypted/
   )
+})
+
+test("checks continue after multiple failures and identify each affected application field", async (t) => {
+  const log = t.mock.method(console, "error", () => {})
+  const valid = await createPdf([[200, 300]])
+  const brokenPdf = await PDFDocument.create()
+  brokenPdf.addPage()
+  brokenPdf.catalog.set(PDFName.of("Pages"), PDFRef.of(9999))
+  const broken = await brokenPdf.save()
+  const encryptedPdf = await PDFDocument.load(valid)
+  encryptedPdf.context.trailerInfo.Encrypt = encryptedPdf.context.register(encryptedPdf.context.obj({ Filter: "Standard" }))
+  const encrypted = await encryptedPdf.save()
+  const documents = collectApplicationPdfDocuments({
+    awardItems: [{ title: "Academic award", proofs: [{ label: "Proof", url: "broken" }] }],
+    gamesSportsItems: [
+      { title: "Cricket", proofs: [{ label: "Proof", url: "encrypted" }] },
+      { title: "Badminton", proofs: [{ label: "Proof", url: "unavailable" }] },
+      { title: "Hockey", proofs: [{ label: "Proof", url: "valid" }] },
+    ],
+  })
+  const fetched = []
+  const report = await checkSupportingPdfs(documents, async (document) => {
+    fetched.push(document.url)
+    if (document.url === "unavailable") throw new Error("HTTP 404")
+    return { broken, encrypted, valid }[document.url]
+  })
+  assert.equal(report.schemaVersion, 2)
+  assert.equal(report.operation, "check-all")
+  assert.equal(report.status, "issues-found")
+  assert.equal(report.stage, "complete")
+  assert.equal(report.checkedDocumentCount, 4)
+  assert.equal(report.mergedPageCount, 0)
+  assert.equal(report.outputByteLength, undefined)
+  assert.deepEqual(fetched, ["broken", "encrypted", "unavailable", "valid"])
+  assert.deepEqual(report.issues.map((issue) => issue.documentNumber), [1, 2, 3])
+  assert.deepEqual(report.issues.map((issue) => issue.stage), ["enumerate-pages", "check-encryption", "download"])
+  assert.equal(report.issues[1].displayLocation, "Games & Sports activities → Item 1: Cricket → Proof 1")
+  assert.equal(report.issues[1].locations[0].fieldPath, "gamesSportsItems[0].proofs[0].url")
+  assert.match(report.issues[1].message, /may open normally without asking for a password/)
+  assert.equal(report.documents[3].stage, "complete")
+  assert.equal(report.documents[3].pageCount, 1)
+  assert.equal(report.documents[3].error, undefined)
+  assert.deepEqual(JSON.parse(log.mock.calls[0].arguments[0].replace(/^\[Best Performer PDF Export\] /, "")), report)
+})
+
+test("merge failures include the field location in both the popup message and downloadable report", async () => {
+  const documents = collectApplicationPdfDocuments({
+    culturalItems: [{ title: "Dance", proofs: [{ label: "Proof", url: "file" }] }],
+    gamesSportsItems: [{ title: "Cricket", proofs: [{ label: "Proof", url: "file" }] }],
+  })
+  await assert.rejects(mergeSupportingPdfs(documents, async () => { throw new Error("HTTP 404") }), (error) => {
+    assert.match(error.message, /PDF 1 \(Cultural activities → Item 1: Dance → Proof 1\)/)
+    const report = error.diagnostics
+    assert.equal(report.checkedDocumentCount, 1)
+    assert.equal(report.documents[0].locations.length, 2)
+    assert.equal(report.issues[0].locations[1].fieldPath, "gamesSportsItems[0].proofs[0].url")
+    return true
+  })
+})
+
+test("checking valid attachments returns a report after verifying every page can be copied and saved", async () => {
+  const valid = await createPdf([[200, 300], [300, 400]])
+  const report = await checkSupportingPdfs([{ label: "First" }, { label: "Second" }], async () => valid)
+  assert.equal(report.status, "success")
+  assert.equal(report.checkedDocumentCount, 2)
+  assert.deepEqual(report.issues, [])
+  assert.deepEqual(report.documents.map((document) => document.stage), ["complete", "complete"])
+  assert.deepEqual(report.documents.map((document) => document.pageCount), [2, 2])
 })

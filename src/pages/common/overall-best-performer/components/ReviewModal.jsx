@@ -6,7 +6,8 @@ import ProfileAvatar from "@/components/profile/ProfileAvatar"
 import { overallBestPerformerApi, studentApi } from "@/service"
 import { BTP_AWARD_OPTIONS, PROJECT_GRADE_OPTIONS, getApplicationItemsForReviewSection } from "../scoring"
 import { fieldClusterStyle, fieldLabelStyle, helperTextStyle, statusTone } from "../styles"
-import { collectApplicationPdfDocuments, downloadBlobFile, mergePdfDocuments, resolvePrimaryProof, slugifyFilePart } from "../documents"
+import { checkPdfDocuments, collectApplicationPdfDocuments, downloadBlobFile, mergePdfDocuments, resolvePrimaryProof, slugifyFilePart } from "../documents"
+import { PdfDiagnosticsPanel } from "./PdfDiagnosticsPanel"
 import { PorProofDetailModal } from "./PorProofDetailModal"
 import { ScoreBreakdownCard } from "./ScoreCards"
 import { MarkingSchemeModal } from "./MarkingSchemeModal"
@@ -39,6 +40,7 @@ export const ReviewModal = ({
   const [showProjectThesisGradesModal, setShowProjectThesisGradesModal] = useState(false)
   const [savingProjectThesisGrades, setSavingProjectThesisGrades] = useState(false)
   const [downloadingAllPdfs, setDownloadingAllPdfs] = useState(false)
+  const [checkingPdfs, setCheckingPdfs] = useState(false)
   const [pdfDebugReport, setPdfDebugReport] = useState(null)
   const [showReviewMarkingSchemeModal, setShowReviewMarkingSchemeModal] = useState(false)
   const [studentProfileId, setStudentProfileId] = useState(null)
@@ -65,6 +67,7 @@ export const ReviewModal = ({
         setShowProjectThesisGradesModal(false)
         setSavingProjectThesisGrades(false)
         setDownloadingAllPdfs(false)
+        setCheckingPdfs(false)
         setPdfDebugReport(null)
         setShowReviewMarkingSchemeModal(false)
         setShowStudentDetailModal(false)
@@ -129,6 +132,26 @@ export const ReviewModal = ({
       toast.error(error?.diagnostics ? `${message} Use Download debug report to share the details.` : message)
     } finally {
       setDownloadingAllPdfs(false)
+    }
+  }
+
+  const handleCheckAllPdfs = async () => {
+    try {
+      setCheckingPdfs(true)
+      setPdfDebugReport(null)
+      const report = await checkPdfDocuments(applicationPdfDocuments, { applicationId: application.id })
+      setPdfDebugReport(report)
+      if (report.issues.length) {
+        toast.error(`${report.issues.length} PDF attachment(s) could not be merged. See their application fields below.`)
+      } else {
+        toast.success("All PDF attachments passed the checks.")
+      }
+    } catch (error) {
+      setPdfDebugReport(error?.diagnostics || null)
+      if (!error?.diagnostics) console.error("Failed to check Best Performer PDFs:", error)
+      toast.error(error?.message || "Failed to check PDF attachments.")
+    } finally {
+      setCheckingPdfs(false)
     }
   }
 
@@ -242,9 +265,18 @@ export const ReviewModal = ({
               variant="secondary"
               onClick={handleDownloadAllPdfs}
               loading={downloadingAllPdfs}
-              disabled={downloadingAllPdfs || !applicationPdfDocuments.length}
+              disabled={downloadingAllPdfs || checkingPdfs || !applicationPdfDocuments.length}
             >
               <Download size={14} /> Download All PDFs
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleCheckAllPdfs}
+              loading={checkingPdfs}
+              disabled={checkingPdfs || downloadingAllPdfs || !applicationPdfDocuments.length}
+            >
+              <FileText size={14} /> Check all PDFs
             </Button>
             {pdfDebugReport ? (
               <Button
@@ -260,6 +292,8 @@ export const ReviewModal = ({
             ) : null}
           </HStack>
         </HStack>
+
+        <PdfDiagnosticsPanel report={pdfDebugReport} documents={applicationPdfDocuments} onViewPdf={setActivePdfDetail} />
 
         {/* Main 3-Column Grid Layout */}
         <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
