@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo, createElement } from "react"
-import { Button, DataTable, Field, HStack, Input, StatCards, StatusBadge, Tabs, Text, useToast } from "hzero"
+import { Badge, Button, DataTable, Field, HStack, Input, StatCards, StatusBadge, Tabs, Text, useToast } from "hzero"
 import { FaClipboardList, FaInbox, FaRegCheckCircle, FaDoorOpen } from "react-icons/fa"
 import { MdOutlineWatchLater } from "react-icons/md"
 import { Download } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { useAuth } from "../../contexts/AuthProvider"
 import { accommodationApi } from "@/service"
-import { ACCOMMODATION_STATUS, getStatusTone } from "@/constants/accommodationStatus"
+import { ACCOMMODATION_STATUS, SCHEDULE_CHANGE_STATUS, SCHEDULE_CHANGE_TYPE, getStatusTone } from "@/constants/accommodationStatus"
 import { money, shortId, ApplicantCell, StayCell } from "../../components/accommodation/AccommodationKit"
 import AccommodationStaffDetail from "../../components/accommodation/AccommodationStaffDetail"
 
@@ -30,10 +30,15 @@ const LANE_PALETTE = [
 const S = ACCOMMODATION_STATUS
 const ALL = "__all"
 
+const pendingScheduleChange = (r) => (r.scheduleChanges || []).find((c) => c.status === SCHEDULE_CHANGE_STATUS.PENDING)
+
 // A lane is normally one status; `match` covers queues that can't be expressed
 // that way — e.g. accountant verification keys off payment.status.
 const lanesFor = (user) => {
   const l = (status, label, match) => ({ status, label, match })
+  // Postpone / extend requests sit on bookings in any later status, so they get
+  // their own lane for every admin desk.
+  const dateChanges = l("__dateChange", "Date change pending", (r) => Boolean(pendingScheduleChange(r)))
   if (user?.role === "Hostel Supervisor") {
     return [
       // Only visitors allotted to this supervisor's hostel; rooms after payment.
@@ -42,18 +47,16 @@ const lanesFor = (user) => {
       l(S.CHECKED_IN, "Checked in"),
     ]
   }
-  if (user?.role === "Admin" && user.subRole === "Chief Warden") return [l(S.PENDING_CW_APPROVAL, "Awaiting you"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.CW_APPROVED, "Approved"), l(S.RETURNED_TO_STUDENT, "Returned")]
+  if (user?.role === "Admin" && user.subRole === "Chief Warden") {
+    return [l(S.PENDING_CW_APPROVAL, "Awaiting you"), l(S.PENDING_FA_RECOMMENDATION, "FA pending"), l(S.CW_APPROVED, "Approved"), l(S.RETURNED_TO_STUDENT, "Returned"), dateChanges]
+  }
   if (user?.role === "Admin" && user.subRole === "Chief Warden Office") {
     return [
       l(S.PENDING_CWO_CAPACITY, "Capacity check"),
       l(S.CW_APPROVED, "Request payment"),
       l(S.PENDING_FA_RECOMMENDATION, "FA pending"),
       l("__awaitingPayment", "Awaiting payment", (r) => [S.PAYMENT_REQUESTED, S.PAYMENT_DEFERRED].includes(r.status)),
-      l(
-        "__dateChange",
-        "Date changes",
-        (r) => (r.scheduleChanges || []).some((c) => c.status === "pending")
-      ),
+      dateChanges,
     ]
   }
   if (user?.role === "Admin" && user.subRole === "Accountant") {
@@ -66,9 +69,10 @@ const lanesFor = (user) => {
           (r.additionalPayments || []).some((p) => p.status === "Submitted")
       ),
       l("__verified", "Verified", (r) => r.payment?.status === "Verified"),
+      dateChanges,
     ]
   }
-  return [l(S.PENDING_CWO_CAPACITY, "Capacity check"), l(S.PENDING_CW_APPROVAL, "In approval"), l(S.PAYMENT_SUBMITTED, "In payment")]
+  return [l(S.PENDING_CWO_CAPACITY, "Capacity check"), l(S.PENDING_CW_APPROVAL, "In approval"), l(S.PAYMENT_SUBMITTED, "In payment"), dateChanges]
 }
 
 const subtitleFor = (user) => {
@@ -101,8 +105,15 @@ const AccommodationStaffPage = () => {
   const fetchRequests = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await accommodationApi.listRequests({ limit: 200 })
-      setAllRequests(res?.data?.items || [])
+      // Date changes are raised on older bookings that can fall outside the
+      // newest-first page, so fetch the pending ones separately and merge.
+      const [res, changes] = await Promise.all([
+        accommodationApi.listRequests({ limit: 100 }),
+        accommodationApi.listRequests({ limit: 100, scheduleChange: SCHEDULE_CHANGE_STATUS.PENDING }),
+      ])
+      const items = res?.data?.items || []
+      const seen = new Set(items.map((r) => String(r._id)))
+      setAllRequests([...items, ...(changes?.data?.items || []).filter((r) => !seen.has(String(r._id)))])
     } catch {
       setAllRequests([])
     } finally {
@@ -195,7 +206,23 @@ const AccommodationStaffPage = () => {
     { key: "stay", header: "Stay", render: (r) => <StayCell request={r} /> },
     { key: "persons", header: "Guests", align: "center", render: (r) => r.persons ?? (r.guests?.length || 0) },
     { key: "total", header: "Amount", align: "right", render: (r) => money(r.payment?.amount || r.quote?.total) },
-    { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} tone={getStatusTone(r.status)}>{r.status}</StatusBadge> },
+    {
+      key: "status",
+      header: "Status",
+      render: (r) => {
+        const change = pendingScheduleChange(r)
+        return (
+          <HStack gap={1} wrap>
+            <StatusBadge status={r.status} tone={getStatusTone(r.status)}>{r.status}</StatusBadge>
+            {change && (
+              <Badge variant="warning" size="small">
+                {change.type === SCHEDULE_CHANGE_TYPE.POSTPONE ? "Postpone requested" : "Extension requested"}
+              </Badge>
+            )}
+          </HStack>
+        )
+      },
+    },
     { key: "id", header: "ID", align: "right", render: (r) => <Text as="span" size="10px" color="muted" style={{ fontFamily: "monospace" }}>{shortId(r._id || r.id)}</Text> },
   ]
 
