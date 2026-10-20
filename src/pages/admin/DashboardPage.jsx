@@ -1284,7 +1284,7 @@ const DashboardPage = ({ section = "home" }) => {
         <HeaderFigures loading={loading} error={error} dashboardData={dashboardData} onlineStats={onlineStats} />
       </PageHeader>
 
-      <Page.Body padded={false} className={`admin-dashboard p-[var(--spacing-5)]${section === "dining" ? " dxi-body" : ""}`}>
+      <Page.Body padded={false} className={`admin-dashboard${section === "dining" ? " dxi-body" : ""}`}>
         {section === "dining" ? (
           <DiningInsights billing={dashboardData?.dining?.billing} rebates={dashboardData?.dining?.rebates} />
         ) : (

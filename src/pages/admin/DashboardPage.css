@@ -107,6 +107,10 @@
 .admin-dashboard {
   --statrow-padding: var(--spacing-2) var(--spacing-3);
   --statrow-gap: var(--spacing-2-5);
+  /* Matches the dashboard header's inline padding. Kept in CSS rather than a
+     Tailwind arbitrary class: a class token directly followed by `${` in a
+     template literal is not extracted, so the utility never gets generated. */
+  padding: var(--spacing-5);
 }
 
 .admin-dashboard .hz-panel-columns {
