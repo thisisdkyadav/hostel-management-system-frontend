@@ -9,7 +9,7 @@ export default function EventExportButton({ eventId, mega = false }) {
   const download = useMutation({
     mutationFn: async () => {
       const response = await gymkhanaEventsApi.exportEvent(eventId, mega)
-      await downloadEventDossier(response.data)
+      await downloadEventDossier(response)
     },
   })
   if (!eventId) return null
