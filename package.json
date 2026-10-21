@@ -15,7 +15,8 @@
     "check": "npm run lint:jsx-refs && npm run check:csv && npm run check:tokens && npm run check:design && npm run lint",
     "check:csv": "node scripts/check-csv-escaping.js",
     "check:tokens": "node scripts/check-theme-tokens.js",
-    "check:design": "node scripts/check-design-system.js"
+    "check:design": "node scripts/check-design-system.js",
+    "test:event-export": "node --test scripts/test-event-export.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",

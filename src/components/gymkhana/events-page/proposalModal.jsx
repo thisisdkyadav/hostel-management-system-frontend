@@ -1,3 +1,4 @@
+import EventExportButton from "@/components/gymkhana/events-page/EventExportButton"
 import { useState } from "react"
 import { Alert, Badge, Button, Grid, HStack, Modal, Select, Surface, Text, Textarea, VStack } from "hzero"
 import { ProposalDossier, ProposalLedger, ProposalPapers } from "@/components/gymkhana/events-page/proposalDossier"
@@ -103,6 +104,7 @@ export const GymkhanaProposalModal = ({
     size="full"
     closeButtonVariant="button"
     onClose={onClose}
+    headerExtra={<EventExportButton eventId={proposalEvent?.gymkhanaEventId} />}
     footer={
       canEditProposalForm ? (
         <HStack gap={2} align="center">

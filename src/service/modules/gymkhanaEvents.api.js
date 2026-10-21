@@ -4,6 +4,7 @@
  */
 
 import apiClient from "../core/apiClient"
+import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 
 const BASE_PATH = "/student-affairs/events"
 
@@ -29,6 +30,16 @@ const buildApprovalPayload = (
 }
 
 export const gymkhanaEventsApi = {
+  exportEvent: (id, mega = false) => apiClient.get(mega ? `${BASE_PATH}/mega-occurrences/${id}/export` : `${BASE_PATH}/${id}/export`),
+
+  fetchExportPdf: async (ref) => {
+    const endpoint = ref.startsWith("media://")
+      ? `/media/resolve?ref=${encodeURIComponent(ref)}&disposition=attachment&redirect=1`
+      : getMediaDownloadUrl(ref)
+    const response = await apiClient.download(endpoint)
+    return response.arrayBuffer()
+  },
+
   /**
    * Get current gymkhana profile
    */

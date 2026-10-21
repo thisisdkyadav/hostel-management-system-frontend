@@ -1,3 +1,4 @@
+import EventExportButton from "@/components/gymkhana/events-page/EventExportButton"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Alert, Badge, Button, Card, CardContent, Checkbox, DetailSection, EmptyState, ErrorState, Grid, Heading, HStack, Input, LoadingState, Modal, Surface, Text, Textarea, useToast, VStack } from "hzero"
@@ -1388,6 +1389,7 @@ const MegaEventsPage = () => {
                     )}
 
                     <HStack gap={2} wrap style={{ marginTop: "var(--spacing-4)" }}>
+                      <EventExportButton eventId={selectedOccurrence?._id} mega />
                       {canCreateOrEditProposal && (
                         <Button size="sm" onClick={() => setIsProposalOpen(true)}>
                           <FileText size={14} /> {proposalData ? "Open proposal" : "Write proposal"}

@@ -1,3 +1,4 @@
+import EventExportButton from "@/components/gymkhana/events-page/EventExportButton"
 import { createElement } from "react"
 import {
   Alert,
@@ -354,6 +355,7 @@ export const GymkhanaEventDetailsModal = ({
       isOpen={isOpen}
       title={selectedEvent?.title || "Event"}
       description={selectedEvent ? journey.line : undefined}
+      headerExtra={<EventExportButton eventId={selectedEvent?.gymkhanaEventId || selectedEvent?._id} />}
       size="full"
       closeButtonVariant="button"
       onClose={onClose}

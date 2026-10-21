@@ -1,3 +1,4 @@
+import EventExportButton from "@/components/gymkhana/events-page/EventExportButton"
 import { useState } from "react"
 import { Alert, Badge, Button, Grid, HStack, Input, Modal, Select, Text, Textarea, VStack } from "hzero"
 import AuditTimeline from "@/components/gymkhana/AuditTimeline"
@@ -79,6 +80,7 @@ export const GymkhanaExpenseModal = ({
     width={1120}
     closeButtonVariant="button"
     onClose={onClose}
+    headerExtra={<EventExportButton eventId={expenseEvent?.gymkhanaEventId} />}
     footer={
       canEditExpenseForm ? (
         <HStack gap={2} align="center">
