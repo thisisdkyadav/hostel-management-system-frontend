@@ -355,7 +355,6 @@ export const GymkhanaEventDetailsModal = ({
       isOpen={isOpen}
       title={selectedEvent?.title || "Event"}
       description={selectedEvent ? journey.line : undefined}
-      headerExtra={<EventExportButton eventId={selectedEvent?.gymkhanaEventId || selectedEvent?._id} />}
       size="full"
       closeButtonVariant="button"
       onClose={onClose}
@@ -389,6 +388,7 @@ export const GymkhanaEventDetailsModal = ({
               <Badge variant={getEventStatusVariant(selectedEvent.eventStatus)}>
                 {eventStatusLabel}
               </Badge>
+              <EventExportButton eventId={selectedEvent?.gymkhanaEventId || selectedEvent?._id} />
             </HStack>
 
             {selectedEvent.eventStatus === "cancelled" ? (

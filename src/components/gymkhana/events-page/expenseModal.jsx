@@ -80,7 +80,6 @@ export const GymkhanaExpenseModal = ({
     width={1120}
     closeButtonVariant="button"
     onClose={onClose}
-    headerExtra={<EventExportButton eventId={expenseEvent?.gymkhanaEventId} />}
     footer={
       canEditExpenseForm ? (
         <HStack gap={2} align="center">
@@ -128,6 +127,7 @@ export const GymkhanaExpenseModal = ({
           <EventDetailSectionCard
             icon={Receipt}
             title="Bills & Documents"
+            headerAction={<EventExportButton eventId={expenseEvent?.gymkhanaEventId} />}
             accentColor="var(--color-primary)"
           >
             <VStack gap={2}>

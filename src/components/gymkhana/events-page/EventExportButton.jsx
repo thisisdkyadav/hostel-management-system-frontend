@@ -14,7 +14,7 @@ export default function EventExportButton({ eventId, mega = false }) {
   })
   if (!eventId) return null
   return (
-    <VStack gap={2}>
+    <VStack gap={2} align="end" style={{ width: "fit-content", maxWidth: "100%", marginInlineStart: "auto" }}>
       <Button variant="secondary" size="sm" loading={download.isPending} disabled={download.isPending} onClick={() => download.mutate()}>
         <Download size={14} /> {download.isPending ? "Preparing event PDF…" : "Download complete event PDF"}
       </Button>

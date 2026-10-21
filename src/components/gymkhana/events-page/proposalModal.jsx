@@ -104,7 +104,6 @@ export const GymkhanaProposalModal = ({
     size="full"
     closeButtonVariant="button"
     onClose={onClose}
-    headerExtra={<EventExportButton eventId={proposalEvent?.gymkhanaEventId} />}
     footer={
       canEditProposalForm ? (
         <HStack gap={2} align="center">
@@ -154,9 +153,12 @@ export const GymkhanaProposalModal = ({
             title="Proposal"
             accentColor="var(--color-primary)"
             headerAction={
-              <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
-                {proposalActionLabel}
-              </Button>
+              <HStack gap={2} align="center" wrap>
+                <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
+                  {proposalActionLabel}
+                </Button>
+                <EventExportButton eventId={proposalEvent?.gymkhanaEventId} />
+              </HStack>
             }
           >
             <VStack gap={3}>
