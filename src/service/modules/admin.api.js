@@ -250,6 +250,16 @@ export const adminApi = {
    * Get accounts (per-student derived charges/balance) for a billing period
    * @param {string} billingPeriodId
    */
+  /** Billing cycles: one per dining period, with derived allocation/meal/rebate/billing totals */
+  getBillingCycles: () => {
+    return apiClient.get("/admin/dining-billing-cycles").then(unwrapStandardResponse)
+  },
+
+  /** One billing cycle: per-student rows (categories, meals, rebates, billed, mess fee) + daily turnout */
+  getBillingCycle: (periodId) => {
+    return apiClient.get(`/admin/dining-billing-cycles/${periodId}`).then(unwrapStandardResponse)
+  },
+
   getBillingAccounts: (billingPeriodId) => {
     return apiClient.get(`/admin/dining-billing-periods/${billingPeriodId}/accounts`).then(unwrapStandardResponse)
   },

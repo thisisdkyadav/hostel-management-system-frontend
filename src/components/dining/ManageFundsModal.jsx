@@ -4,7 +4,7 @@ import CsvUploader from "@/components/common/CsvUploader"
 import { FUND_MODES, getErrorMessage } from "./diningBillingHelpers"
 
 /**
- * Bulk-manage student fund allocations for a billing period via CSV.
+ * Bulk-manage student fund allocations for a mess fee period via CSV.
  * Mode (add / deduct / set) decides how the uploaded amounts are applied.
  * Conditional-mounted with a `key` so each open starts fresh (no reset effect).
  */

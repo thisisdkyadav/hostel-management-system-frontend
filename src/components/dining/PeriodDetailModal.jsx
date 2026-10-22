@@ -46,6 +46,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
           <InfoRow label="Period end" value={formatDate(period.endDate)} />
           <InfoRow label="Allocation opens" value={formatDateTime(period.allocationStartAt)} />
           <InfoRow label="Allocation closes" value={formatDateTime(period.allocationEndAt)} />
+          <InfoRow label="Student email" value={period.notificationAt ? `${formatDateTime(period.notificationAt)}${period.notificationSentAt ? " (sent)" : ""}` : "Not scheduled"} />
           <InfoRow label="Daily rate" value={period.dailyRate > 0 ? `₹${period.dailyRate}/day` : "Not set"} />
         </DetailSection>
 

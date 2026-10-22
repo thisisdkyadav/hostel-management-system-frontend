@@ -16,6 +16,7 @@ const DiningPeriodsPage = lazy(() => import("../pages/admin/DiningPeriodsPage"))
 const DiningRebatesPage = lazy(() => import("../pages/admin/DiningRebatesPage"))
 const DiningBillingPage = lazy(() => import("../pages/admin/DiningBillingPage"))
 const DiningBillingDetailPage = lazy(() => import("../pages/admin/DiningBillingDetailPage"))
+const BillingCyclesPage = lazy(() => import("../pages/admin/BillingCyclesPage"))
 // The caterer Meal Records and Live Feed, across every caterer.
 const DiningMealRecordsPage = lazy(() => import("../pages/common/DiningMealRecordsPage"))
 const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
@@ -39,6 +40,8 @@ const DiningOfficeRoutes = () => (
           <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
           <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
           <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />
+          <Route path="billing-cycles" element={guardRoute("route.admin.diningBilling", <BillingCyclesPage />)} />
+          <Route path="billing-cycles/:periodId" element={guardRoute("route.admin.diningBilling", <BillingCyclesPage />)} />
           <Route path="daily-meals" element={guardRoute("route.admin.caterers", <DailyMealsPage home="/dining-office" />)} />
           <Route path="meal-records" element={guardRoute("route.admin.caterers", <DiningMealRecordsPage home="/dining-office" />)} />
         </Route>

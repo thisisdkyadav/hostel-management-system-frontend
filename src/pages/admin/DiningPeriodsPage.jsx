@@ -33,6 +33,14 @@ const SectionHeader = ({ title, count }) => (
 
 const DiningPeriodsPage = () => {
   const [periods, setPeriods] = useState([])
+  // New periods pre-fill the daily rate from the most recent period.
+  const createInitialData = useMemo(() => {
+    const latest = periods.reduce(
+      (best, period) => (!best || new Date(period.startDate) > new Date(best.startDate) ? period : best),
+      null
+    )
+    return latest?.dailyRate ? { dailyRate: latest.dailyRate } : {}
+  }, [periods])
   const [caterers, setCaterers] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [fetchArchive, setFetchArchive] = useState(false)
@@ -261,6 +269,7 @@ const DiningPeriodsPage = () => {
         title="Add Dining Period"
         submitLabel="Create Period"
         mode="create"
+        initialData={createInitialData}
         caterers={caterers}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddPeriod}

@@ -35,7 +35,7 @@ const BreakdownModal = ({ account, onClose }) => {
         </HStack>
 
         {account.perPeriod.length === 0 ? (
-          <Alert type="info" icon>No charges yet — the student isn&apos;t allocated to any dining period in this billing period, or none have started.</Alert>
+          <Alert type="info" icon>No charges yet — the student isn&apos;t allocated to any dining period in this mess fee period, or none have started.</Alert>
         ) : (
           <VStack gap={2}>
             {account.perPeriod.map((row) => (
@@ -136,18 +136,18 @@ const DiningBillingDetailPage = () => {
     { key: "clearance", header: "Status", render: (row) => <StatusBadge status={formatClearance(row.clearance)} tone={clearanceTone(row.clearance)} /> },
   ]
 
-  if (loading) return <LoadingState message="Loading billing period..." />
+  if (loading) return <LoadingState message="Loading mess fee period..." />
 
   if (notFound || !billingPeriod) {
     return (
       <Page>
-        <PageHeader title="Dining Billing">
+        <PageHeader title="Mess Fee">
           <Button variant="secondary" onClick={() => navigate(billingBase)}>
             <ArrowLeft size={18} /> Back
           </Button>
         </PageHeader>
         <Page.Body padded={false} className="px-[var(--spacing-6)] py-[var(--spacing-6)]">
-          <EmptyState icon={Wallet} title="Billing Period Not Found" message="This billing period may have been removed or archived." />
+          <EmptyState icon={Wallet} title="Mess Fee Period Not Found" message="This mess fee period may have been removed or archived." />
         </Page.Body>
       </Page>
     )

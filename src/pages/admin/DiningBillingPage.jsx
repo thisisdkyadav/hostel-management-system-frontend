@@ -108,7 +108,7 @@ const DiningBillingPage = () => {
       const response = await adminApi.getBillingPeriods(archive ? "archive=true" : "")
       setBillingPeriods(Array.isArray(response) ? response.map(normalizeBillingPeriod) : [])
     } catch (error) {
-      console.error("Error fetching billing periods:", error)
+      console.error("Error fetching mess fee periods:", error)
       setBillingPeriods([])
     }
   }
@@ -146,7 +146,7 @@ const DiningBillingPage = () => {
 
   const handleAdd = async (payload) => {
     await adminApi.addBillingPeriod(payload)
-    setFeedback({ type: "success", message: "Billing period created." })
+    setFeedback({ type: "success", message: "Mess fee period created." })
     await fetchBillingPeriods()
   }
 
@@ -154,7 +154,7 @@ const DiningBillingPage = () => {
     if (!editingPeriod?.id) return
     await adminApi.updateBillingPeriod(editingPeriod.id, payload)
     setEditingPeriod(null)
-    setFeedback({ type: "success", message: "Billing period updated." })
+    setFeedback({ type: "success", message: "Mess fee period updated." })
     await fetchBillingPeriods()
   }
 
@@ -165,11 +165,11 @@ const DiningBillingPage = () => {
       await adminApi.changeBillingPeriodArchiveStatus(archiveTarget.id, !archiveTarget.isArchived)
       setArchiveTarget(null)
       setEditingPeriod(null)
-      setFeedback({ type: "success", message: `Billing period ${action}d.` })
+      setFeedback({ type: "success", message: `Mess fee period ${action}d.` })
       await fetchBillingPeriods()
     } catch (error) {
       setArchiveTarget(null)
-      setFeedback({ type: "error", message: getErrorMessage(error, `Unable to ${action} billing period.`) })
+      setFeedback({ type: "error", message: getErrorMessage(error, `Unable to ${action} mess fee period.`) })
     }
   }
 
@@ -185,7 +185,7 @@ const DiningBillingPage = () => {
       { allocated: 0, charged: 0, students: 0, dues: 0 }
     )
     return [
-      { title: "Total Allocated", value: formatCurrency(totals.allocated), subtitle: "Across billing periods", icon: <Wallet size={20} />, color: "var(--color-primary)" },
+      { title: "Total Allocated", value: formatCurrency(totals.allocated), subtitle: "Across mess fee periods", icon: <Wallet size={20} />, color: "var(--color-primary)" },
       { title: "Total Charged", value: formatCurrency(totals.charged), subtitle: "Derived to date", icon: <Wallet size={20} />, color: "var(--color-warning)" },
       { title: "Outstanding", value: formatCurrency(totals.allocated - totals.charged), subtitle: "Allocated − charged", icon: <Wallet size={20} />, color: "var(--color-success)" },
       { title: "Students in Dues", value: totals.dues, subtitle: "Negative balance", icon: <Users size={20} />, color: "var(--color-danger)" },
@@ -195,13 +195,13 @@ const DiningBillingPage = () => {
   return (
     <>
       <Page>
-        <PageHeader title="Dining Billing">
+        <PageHeader title="Mess Fee">
           <Button variant="secondary" onClick={handleArchiveToggle}>
             {fetchArchive ? <ArchiveRestore size={18} /> : <Archive size={18} />}
             {fetchArchive ? "Show Active" : "Show Archived"}
           </Button>
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
-            <Plus size={18} /> New Billing Period
+            <Plus size={18} /> New Mess Fee Period
           </Button>
         </PageHeader>
 
@@ -216,15 +216,15 @@ const DiningBillingPage = () => {
 
           <div className="mt-[var(--spacing-6)] flex justify-end">
             <div className="w-full sm:w-[18rem]">
-              <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search billing periods..." />
+              <SearchInput value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search mess fee periods..." />
             </div>
           </div>
 
           {filtered.length === 0 ? (
             <EmptyState
               icon={Wallet}
-              title="No Billing Periods Found"
-              message={fetchArchive ? "No archived billing periods match your search." : "Create a billing period and group dining periods to start billing students."}
+              title="No Mess Fee Periods Found"
+              message={fetchArchive ? "No archived mess fee periods match your search." : "Create a mess fee period and group dining periods to start billing students."}
             />
           ) : (
             <Grid cols={{ sm: 2, xl: 3 }} gap={4} className="mt-[var(--spacing-6)]">
@@ -245,7 +245,7 @@ const DiningBillingPage = () => {
       {showAddModal && (
         <BillingPeriodFormModal
           isOpen
-          title="New Billing Period"
+          title="New Mess Fee Period"
           submitLabel="Create"
           periods={diningPeriods}
           onClose={() => setShowAddModal(false)}
@@ -257,7 +257,7 @@ const DiningBillingPage = () => {
         <BillingPeriodFormModal
           key={editingPeriod.id}
           isOpen
-          title="Edit Billing Period"
+          title="Edit Mess Fee Period"
           submitLabel="Save Changes"
           initialData={editingPeriod}
           periods={diningPeriods}
@@ -270,11 +270,11 @@ const DiningBillingPage = () => {
         isOpen={Boolean(archiveTarget)}
         onClose={() => setArchiveTarget(null)}
         onConfirm={handleConfirmArchive}
-        title={archiveTarget?.isArchived ? "Unarchive Billing Period" : "Archive Billing Period"}
+        title={archiveTarget?.isArchived ? "Unarchive Mess Fee Period" : "Archive Mess Fee Period"}
         message={
           archiveTarget?.isArchived
-            ? "This billing period will be visible to admins and students again."
-            : "Archiving hides this billing period from admins and students. Allocations and history are kept."
+            ? "This mess fee period will be visible to admins and students again."
+            : "Archiving hides this mess fee period from admins and students. Allocations and history are kept."
         }
         confirmText={archiveTarget?.isArchived ? "Unarchive" : "Archive"}
         isDestructive={!archiveTarget?.isArchived}

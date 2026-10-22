@@ -5,7 +5,7 @@ import { formatCurrency, formatDateRange, getErrorMessage, getIdValue } from "./
 import { periodStatusTone } from "./diningPeriodHelpers"
 
 /**
- * Create / edit a billing period: a name, an optional note, and the set of
+ * Create / edit a mess fee period: a name, an optional note, and the set of
  * dining periods ("timing periods") it bills for. Conditional-mounted with a
  * `key` so the useState initializer seeds edit values without a reset effect.
  */
@@ -43,7 +43,7 @@ const BillingPeriodFormModal = ({
       await onSubmit({ name: name.trim(), note: note.trim(), diningPeriodIds: selectedPeriodIds })
       onClose()
     } catch (submitError) {
-      setError(getErrorMessage(submitError, "Unable to save billing period. Please try again."))
+      setError(getErrorMessage(submitError, "Unable to save mess fee period. Please try again."))
     } finally {
       setIsSubmitting(false)
     }
@@ -70,12 +70,12 @@ const BillingPeriodFormModal = ({
         <VStack gap="large">
           {error && <Alert type="error" icon>{error}</Alert>}
 
-          <Field label="Billing Period Name" htmlFor="billing-name" required>
+          <Field label="Mess Fee Period Name" htmlFor="billing-name" required>
             <Input
               id="billing-name"
               value={name}
               onChange={(e) => { setName(e.target.value); if (error) setError("") }}
-              placeholder="e.g. Semester 1 — Mess Billing"
+              placeholder="e.g. Semester 1 — Mess Fee"
               required
             />
           </Field>
@@ -124,14 +124,14 @@ const BillingPeriodFormModal = ({
               id="billing-note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Any internal note about this billing period"
+              placeholder="Any internal note about this mess fee period"
               rows={2}
             />
           </Field>
 
           <Alert type="info" icon>
             Each student is billed each dining period&apos;s daily rate for every eligible day (approved-rebate days are skipped).
-            Top up student allocations from the billing period&apos;s detail page.
+            Top up student allocations from the mess fee period&apos;s detail page.
           </Alert>
         </VStack>
       </form>

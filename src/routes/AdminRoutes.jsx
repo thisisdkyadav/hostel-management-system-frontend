@@ -12,6 +12,7 @@ const DiningPeriodsPage = lazy(() => import("../pages/admin/DiningPeriodsPage"))
 const DiningRebatesPage = lazy(() => import("../pages/admin/DiningRebatesPage"))
 const DiningBillingPage = lazy(() => import("../pages/admin/DiningBillingPage"))
 const DiningBillingDetailPage = lazy(() => import("../pages/admin/DiningBillingDetailPage"))
+const BillingCyclesPage = lazy(() => import("../pages/admin/BillingCyclesPage"))
 const DiningOfficeStaffPage = lazy(() => import("../pages/admin/DiningOfficeStaffPage"))
 const DiningMealRecordsPage = lazy(() => import("../pages/common/DiningMealRecordsPage"))
 const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
@@ -76,6 +77,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/DiningRebatesPage"),
   () => import("../pages/admin/DiningBillingPage"),
   () => import("../pages/admin/DiningBillingDetailPage"),
+  () => import("../pages/admin/BillingCyclesPage"),
   () => import("../pages/admin/DiningOfficeStaffPage"),
   () => import("../pages/common/DiningMealRecordsPage"),
   () => import("../pages/common/DailyMealsPage"),
@@ -169,6 +171,8 @@ const AdminRoutes = () => {
                 <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
                 <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
                 <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />
+                <Route path="billing-cycles" element={guardRoute("route.admin.diningBilling", <BillingCyclesPage />)} />
+                <Route path="billing-cycles/:periodId" element={guardRoute("route.admin.diningBilling", <BillingCyclesPage />)} />
                 <Route path="dining-office" element={guardRoute("route.admin.diningOffice", <DiningOfficeStaffPage />)} />
                 <Route path="daily-meals" element={guardRoute("route.admin.caterers", <DailyMealsPage home="/admin" />)} />
                 <Route path="meal-records" element={guardRoute("route.admin.caterers", <DiningMealRecordsPage home="/admin" />)} />

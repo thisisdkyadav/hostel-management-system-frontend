@@ -8,6 +8,7 @@ import {
   FileDown,
   FileUp,
   Plus,
+  Sparkles,
   Trash2,
   Users,
   UtensilsCrossed,
@@ -25,6 +26,8 @@ import {
   toDateInputValue,
   toDateTimeInputValue,
 } from "./diningPeriodHelpers"
+import MealPlannerModal from "./meal-planner/MealPlannerModal"
+import { summarizePlan } from "./meal-planner/mealPlanner"
 
 const FORM_TABS = [
   { id: "schedule", name: "Schedule", icon: <CalendarClock size={14} /> },
@@ -40,9 +43,12 @@ const initialFormState = {
   registrationEnabled: true,
   allocationStartAt: "",
   allocationEndAt: "",
+  notificationAt: "",
   catererIds: [],
   catererCapacities: [],
   mealSlots: DEFAULT_MEAL_SLOTS,
+  weekSchedule: [],
+  dateSchedule: [],
   rebateSettings: normalizeRebateSettings(DEFAULT_REBATE_SETTINGS),
   dailyRate: "",
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
@@ -172,6 +178,7 @@ const PeriodFormModal = ({
   const [error, setError] = useState("")
   const [activeTab, setActiveTab] = useState("schedule")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [plannerOpen, setPlannerOpen] = useState(false)
 
   useEffect(() => {
     if (!isOpen) return
@@ -185,6 +192,7 @@ const PeriodFormModal = ({
       registrationEnabled: initialData.registrationEnabled !== false,
       allocationStartAt: toDateTimeInputValue(initialData.allocationStartAt),
       allocationEndAt: toDateTimeInputValue(initialData.allocationEndAt),
+      notificationAt: toDateTimeInputValue(initialData.notificationAt),
       catererIds: selectedCatererIds,
       catererCapacities: buildCapacityRows(selectedCatererIds, initialData.catererCapacities),
       mealSlots:
@@ -195,6 +203,8 @@ const PeriodFormModal = ({
               endTime: slot.endTime || "",
             }))
           : DEFAULT_MEAL_SLOTS,
+      weekSchedule: Array.isArray(initialData.weekSchedule) ? initialData.weekSchedule : [],
+      dateSchedule: Array.isArray(initialData.dateSchedule) ? initialData.dateSchedule : [],
       rebateSettings: normalizeRebateSettings(initialData.rebateSettings || DEFAULT_REBATE_SETTINGS),
       dailyRate: initialData.dailyRate != null && initialData.dailyRate !== "" ? String(initialData.dailyRate) : "",
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
@@ -279,6 +289,8 @@ const PeriodFormModal = ({
         return fail("schedule", "Allocation start and end time are required.")
       if (new Date(formData.allocationStartAt) > new Date(formData.allocationEndAt))
         return fail("schedule", "Allocation start time must be before or equal to allocation end time.")
+      if (formData.notificationAt && new Date(formData.notificationAt) > new Date(formData.allocationEndAt))
+        return fail("schedule", "Notification time must be before the allocation end time.")
     }
 
     if (formData.catererIds.length === 0) return fail("caterers", "Please select at least one caterer.")
@@ -320,6 +332,7 @@ const PeriodFormModal = ({
         registrationEnabled: formData.registrationEnabled,
         allocationStartAt: formData.registrationEnabled ? formData.allocationStartAt : "",
         allocationEndAt: formData.registrationEnabled ? formData.allocationEndAt : "",
+        notificationAt: formData.registrationEnabled ? formData.notificationAt : "",
         catererIds: formData.catererIds,
         catererCapacities: formData.catererCapacities.map((entry) => ({
           ...entry,
@@ -331,6 +344,8 @@ const PeriodFormModal = ({
           startTime: slot.startTime,
           endTime: slot.endTime,
         })),
+        weekSchedule: formData.weekSchedule,
+        dateSchedule: formData.dateSchedule,
         rebateSettings: {
           shortTermMaxTotalDays: Number(formData.rebateSettings.shortTermMaxTotalDays || 0),
           shortTermMaxContinuousDays: Number(formData.rebateSettings.shortTermMaxContinuousDays || 0),
@@ -475,6 +490,11 @@ const PeriodFormModal = ({
                     <Input id="allocationEndAt" type="datetime-local" value={formData.allocationEndAt}
                       onChange={(e) => setFormData((p) => ({ ...p, allocationEndAt: e.target.value }))} required />
                   </Field>
+                  <Field label="Notify Students At" htmlFor="notificationAt"
+                    help="One group email goes to all eligible students at this time. Leave empty to skip.">
+                    <Input id="notificationAt" type="datetime-local" value={formData.notificationAt}
+                      onChange={(e) => setFormData((p) => ({ ...p, notificationAt: e.target.value }))} />
+                  </Field>
                 </Grid>
               ) : (
                 <Alert type="warning" icon>
@@ -491,7 +511,7 @@ const PeriodFormModal = ({
               </Grid>
               <Alert type="info" icon>
                 The period dates control when meals are verified. The daily rate is what each eligible student is
-                billed per day in this period (skipping approved-rebate days) — used by billing periods.
+                billed per day in this period (skipping approved-rebate days) — used by mess fee periods.
               </Alert>
             </VStack>
           )}
@@ -585,6 +605,20 @@ const PeriodFormModal = ({
                   </div>
                 ))}
               </Grid>
+              <Surface bg="var(--color-bg-secondary)" padding={4} radius="lg" border="1px solid var(--color-border-primary)">
+                <HStack justify="between" align="center" gap={3} wrap>
+                  <VStack gap={1}>
+                    <Text weight="semibold">Day-by-day timings</Text>
+                    <Text size="sm" color="secondary">
+                      The slots above are the standard timings. Vary them by weekday or for specific dates.
+                      {" "}<strong>{summarizePlan(formData)}</strong>
+                    </Text>
+                  </VStack>
+                  <Button type="button" variant="primary" size="sm" onClick={() => setPlannerOpen(true)}>
+                    <Sparkles size={16} /> Open meal planner
+                  </Button>
+                </HStack>
+              </Surface>
             </VStack>
           )}
 
@@ -640,6 +674,16 @@ const PeriodFormModal = ({
           )}
         </VStack>
       </form>
+      <MealPlannerModal
+        isOpen={plannerOpen}
+        onClose={() => setPlannerOpen(false)}
+        onApply={(schedule) => setFormData((prev) => ({ ...prev, ...schedule }))}
+        mealSlots={formData.mealSlots}
+        weekSchedule={formData.weekSchedule}
+        dateSchedule={formData.dateSchedule}
+        startDate={formData.startDate}
+        endDate={formData.endDate}
+      />
     </Modal>
   )
 }

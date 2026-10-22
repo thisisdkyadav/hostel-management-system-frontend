@@ -18,7 +18,7 @@ export const formatCurrency = (value) => {
   return `${sign}₹${formatted}`
 }
 
-/** Derived date range label for a billing period (from its contained periods). */
+/** Derived date range label for a mess fee period (from its contained periods). */
 export const billingDateRange = (billingPeriod = {}) => {
   if (!billingPeriod.startDate || !billingPeriod.endDate) return "No dining periods"
   return formatDateRange(billingPeriod.startDate, billingPeriod.endDate)
