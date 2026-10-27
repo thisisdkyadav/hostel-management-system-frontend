@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Alert, Button, Field, Input, Modal, StatusBadge, Textarea } from "hzero"
 import CapacityBar from "@/components/dining/CapacityBar"
-import { formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
+import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
 
 /** "I'll be away": a date range and an optional reason. */
 export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
@@ -52,7 +52,14 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
             <Input id="sd-away-start" type="date" min={localTodayKey()} value={form.startDate} onChange={set("startDate")} required />
           </Field>
           <Field label="Last day away" htmlFor="sd-away-end" required>
-            <Input id="sd-away-end" type="date" min={form.startDate || localTodayKey()} value={form.endDate} onChange={set("endDate")} required />
+            <Input
+              id="sd-away-end"
+              type="date"
+              min={form.startDate || localTodayKey()}
+              value={form.endDate}
+              onChange={set("endDate")}
+              required
+            />
           </Field>
         </div>
         <Field label="Reason (optional)" htmlFor="sd-away-reason">
@@ -63,25 +70,51 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
   )
 }
 
+const SERIES_COUNT = 8
+// "Filling fast" once a caterer is down to its last 15% of seats.
+const LOW_SEATS_RATIO = 0.15
+
+const seatState = ({ isSelected, remaining, max }) => {
+  if (isSelected) return { key: "selected", label: "Your caterer", tone: "success" }
+  if (remaining <= 0) return { key: "full", label: "Full", tone: "danger" }
+  if (max > 0 && remaining / max <= LOW_SEATS_RATIO) return { key: "low", label: "Filling fast", tone: "warning" }
+  return { key: "open", label: "", tone: "" }
+}
+
 /** One card per caterer with live seats; `onSelect(option)` asks to choose it. */
 export const CatererOptions = ({ period, selectedCatererId, selectingCatererId, onSelect }) => {
   const options = Array.isArray(period?.catererCapacities) ? period.catererCapacities : []
 
   return (
     <ul className="sd-choose">
-      {options.map((option) => {
+      {options.map((option, index) => {
         const isSelected = selectedCatererId === String(option.catererId)
-        const remaining = Number(option.remainingSeats || 0)
+        const remaining = Math.max(0, Number(option.remainingSeats || 0))
         const max = Number(option.maxStudentCount || 0)
-        const isFull = remaining <= 0 && !isSelected
+        const state = seatState({ isSelected, remaining, max })
+        const isFull = state.key === "full"
         const isSelecting = selectingCatererId === option.catererId
+        const name = option.caterer?.name || "Caterer"
         return (
-          <li key={option.catererId} className="sd-choose__option" data-full={isFull || undefined}>
-            <div className="sd-choose__head">
-              <span className="sd-choose__name">{option.caterer?.name || "Caterer"}</span>
-              {isSelected && <StatusBadge status="Your caterer" tone="success" />}
+          <li
+            key={option.catererId}
+            className="sd-choose__option"
+            data-state={state.key}
+            style={{ "--sd-hue": `var(--color-series-${(index % SERIES_COUNT) + 1})` }}
+          >
+            <div className="sd-choose__top">
+              <span className="sd-choose__avatar" aria-hidden="true">
+                {catererInitials(name)}
+              </span>
+              <div className="sd-choose__id">
+                <span className="sd-choose__name">{name}</span>
+                <span className="sd-choose__meta">
+                  {isFull ? "No seats left" : `${remaining.toLocaleString()} of ${max.toLocaleString()} seats left`}
+                </span>
+              </div>
+              {state.label && <StatusBadge status={state.label} tone={state.tone} />}
             </div>
-            <CapacityBar allocated={max - remaining} total={max} label={isFull ? "Full" : `${remaining} seats left`} />
+            <CapacityBar allocated={max - remaining} total={max} size="sm" showLabel={false} />
             <Button
               variant={isSelected ? "secondary" : "primary"}
               fullWidth
@@ -104,11 +137,6 @@ export const ChooseCatererModal = ({ period, selectedCatererId, selectingCaterer
     <p className="sd-form__note">
       For {formatRange(period.startDate, period.endDate)}. Seats update live, so pick soon if one is filling up.
     </p>
-    <CatererOptions
-      period={period}
-      selectedCatererId={selectedCatererId}
-      selectingCatererId={selectingCatererId}
-      onSelect={onSelect}
-    />
+    <CatererOptions period={period} selectedCatererId={selectedCatererId} selectingCatererId={selectingCatererId} onSelect={onSelect} />
   </Modal>
 )

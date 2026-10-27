@@ -120,3 +120,13 @@ export const describeRoom = (student) => {
   if (hostel && room) return `${hostel}, ${room}`
   return hostel || room || ""
 }
+
+/** Two-letter monogram for a caterer ("Annapurna Caterers (demo)" -> "AC"). */
+export const catererInitials = (name = "") =>
+  name
+    .replace(/\(.*?\)/g, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join("") || "C"
