@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react"
-import { Alert, Button, Field, HStack, Input, Label, Modal, Select, Text, useToast, VStack } from "hzero"
+import { Alert, Button, Field, HStack, Input, Label, Modal, Select, Switch, Text, useToast, VStack } from "hzero"
 import { faceScannerApi, adminApi } from "../../../service"
+import CredentialsFields from "./CredentialsFields"
+import { accountIdOf, errorMessage } from "./scannerHelpers"
 
-const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
+/**
+ * Add / edit a scanner.
+ *  - ZKTeco scanners live inside an account: pass `account` (preselected) and `accounts` (move targets).
+ *    They carry no credentials of their own.
+ *  - Otherwise this is the Time Watch / legacy flow, where credentials are generated and shown once.
+ */
+const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null, account = null, accounts = [] }) => {
     const { toast } = useToast()
+    const isZk = scanner ? scanner.provider === "zkteco" : Boolean(account)
     const [formData, setFormData] = useState(() => ({
         name: scanner?.name || "",
-        provider: scanner ? scanner.provider || "" : "time-watch",
+        provider: scanner ? scanner.provider || "" : account ? "zkteco" : "time-watch",
         deviceName: scanner?.deviceName || "",
-        username: "",
-        password: "",
+        accountId: accountIdOf(scanner?.accountId) || scanner?.accountId || accountIdOf(account),
+        isActive: scanner ? scanner.isActive !== false : true,
         type: scanner?.type || "hostel-gate",
         direction: scanner?.direction || "in",
         hostelId: scanner?.hostelId?._id || scanner?.hostelId || "",
@@ -62,27 +71,19 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
         setLoading(true)
 
         try {
-            const { username, password, provider, deviceName, ...settings } = formData
+            const { provider, deviceName, accountId, isActive, ...settings } = formData
             const payload = {
                 ...settings,
                 ...(provider ? { provider } : {}),
-                ...(provider === "zkteco" ? { deviceName: deviceName.trim() } : {}),
-            }
-            if (provider === "zkteco" && (username || password)) {
-                if (!username.trim() || !password) {
-                    toast.error("Enter both username and password to use existing credentials.")
-                    return
-                }
-                payload.username = username.trim()
-                payload.password = password
+                ...(isZk ? { deviceName: deviceName.trim(), accountId, isActive } : {}),
             }
             const response = scanner
                 ? await faceScannerApi.updateScanner(scanner._id, payload)
                 : await faceScannerApi.createScanner(payload)
             if (response?.success) {
                 onAdd()
-                if (scanner) {
-                    toast.success("Scanner settings saved.")
+                if (scanner || isZk) {
+                    toast.success(scanner ? "Scanner settings saved." : "Scanner added.")
                     onClose()
                 } else {
                     setCredentials(response.data.credentials)
@@ -92,7 +93,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
             }
         } catch (error) {
             console.error("Error saving scanner:", error)
-            toast.error(error?.response?.data?.message || error?.message || "Failed to save scanner. Please try again.")
+            toast.error(errorMessage(error, "Failed to save scanner. Please try again."))
         } finally {
             setLoading(false)
         }
@@ -100,11 +101,6 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
 
     const handleClose = () => {
         onClose()
-    }
-
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text)
-        toast.success("Copied to clipboard!")
     }
 
     if (!show) return null
@@ -127,8 +123,10 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
     const providerOptions = [
         ...(scanner && !scanner.provider ? [{ value: "", label: "Legacy (current behavior)" }] : []),
         { value: "time-watch", label: "Time Watch" },
-        { value: "zkteco", label: "ZKTeco" },
     ]
+
+    const accountList = account && !accounts.some((a) => accountIdOf(a) === accountIdOf(account)) ? [account, ...accounts] : accounts
+    const accountOptions = accountList.map((a) => ({ value: accountIdOf(a), label: a.name }))
 
     const directionOptions = [
         { value: "in", label: "Entry (Check In)" },
@@ -136,7 +134,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
     ]
 
     return (
-        <Modal isOpen={show} title={credentials ? "Scanner Created" : scanner ? "Scanner Settings" : "Add Face Scanner"} onClose={handleClose} width={500}>
+        <Modal isOpen={show} title={credentials ? "Scanner Created" : scanner ? "Scanner Settings" : isZk ? "Add ZKTeco Scanner" : "Add Face Scanner"} onClose={handleClose} width={500}>
             {credentials ? (
                 <VStack gap="large">
                     <Alert type="success">
@@ -148,27 +146,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
                         </Text>
                     </Alert>
 
-                    {formData.provider === "zkteco" && (
-                        <Text size="sm">Device name: {formData.deviceName.trim()}. Configure this exact name as the terminal alias and use the credentials below for Basic authentication.</Text>
-                    )}
-
-                    <Field label="Username">
-                        <HStack gap="small">
-                            <Input type="text" value={credentials.username} readOnly />
-                            <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.username)}>
-                                Copy
-                            </Button>
-                        </HStack>
-                    </Field>
-
-                    <Field label="Password">
-                        <HStack gap="small">
-                            <Input type="text" value={credentials.password} readOnly />
-                            <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.password)}>
-                                Copy
-                            </Button>
-                        </HStack>
-                    </Field>
+                    <CredentialsFields credentials={credentials} />
 
                     <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
                         <Button variant="primary" size="md" onClick={handleClose}>
@@ -179,28 +157,33 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
             ) : (
                 <form onSubmit={handleSubmit}>
                     <VStack gap="large">
-                        <Field label="Provider" htmlFor="provider" required>
-                            <Select name="provider" id="provider" value={formData.provider} onChange={handleChange} options={providerOptions} required={!scanner} />
-                        </Field>
+                        {!isZk && (
+                            <Field label="Provider" htmlFor="provider" required>
+                                <Select name="provider" id="provider" value={formData.provider} onChange={handleChange} options={providerOptions} required={!scanner} />
+                            </Field>
+                        )}
 
                         <Field label="Scanner Name" htmlFor="name" required>
                             <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Dining Hall Breakfast Scanner" required />
                         </Field>
 
-                        {formData.provider === "zkteco" && (
+                        {isZk && (
                             <>
-                                <Field label="Device Name (TERMINAL_ALIAS)" htmlFor="deviceName" required>
+                                <Field
+                                    label="Device Name (TERMINAL_ALIAS)"
+                                    htmlFor="deviceName"
+                                    required
+                                    help="Must match the device's terminal alias exactly. Unique within this account."
+                                >
                                     <Input name="deviceName" id="deviceName" value={formData.deviceName} onChange={handleChange} placeholder="e.g., m1" required />
-                                    <Text size="sm" color="muted">Must match the terminal alias exactly. Each ZKTeco device needs a unique name.</Text>
                                 </Field>
-                                <Text size="sm" color="muted">
-                                    {scanner ? `Current username: ${scanner.username}. Leave both fields blank to keep the credentials.` : "Leave both credential fields blank to generate credentials, or enter an existing username and password shared by your devices."}
-                                </Text>
-                                <Field label="Username (Optional)" htmlFor="username">
-                                    <Input name="username" id="username" value={formData.username} onChange={handleChange} autoComplete="off" />
-                                </Field>
-                                <Field label="Password (Optional)" htmlFor="password">
-                                    <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} autoComplete="new-password" />
+                                <Field
+                                    label="Account"
+                                    htmlFor="accountId"
+                                    required
+                                    help={scanner ? "Moving a scanner to another account means its device must use that account's login." : "The device authenticates with this account's username and password."}
+                                >
+                                    <Select name="accountId" id="accountId" value={formData.accountId} onChange={handleChange} options={accountOptions} required />
                                 </Field>
                             </>
                         )}
@@ -225,6 +208,10 @@ const AddFaceScannerModal = ({ show, onClose, onAdd, scanner = null }) => {
                             <Field label="Caterer" htmlFor="catererId" required>
                                 <Select name="catererId" id="catererId" value={formData.catererId} onChange={handleChange} options={catererOptions} required />
                             </Field>
+                        )}
+
+                        {isZk && (
+                            <Switch checked={formData.isActive} onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))} label="Active" description="An inactive scanner's punches are rejected." />
                         )}
 
                         <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>

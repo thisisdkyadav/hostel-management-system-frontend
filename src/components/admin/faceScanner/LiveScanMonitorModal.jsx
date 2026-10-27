@@ -75,6 +75,12 @@ const ScanEventRow = ({ event, showHeaders }) => {
           {event.scanner?.name || "Unrecognized device"}
         </Text>
 
+        {event.account?.name && (
+          <Pill color="var(--color-text-muted)" bg="var(--color-bg-hover)">
+            {event.account.name}
+          </Pill>
+        )}
+
         {event.scanner?.type && (
           <Pill color="var(--color-text-muted)" bg="var(--color-bg-hover)">
             {event.scanner.type}
