@@ -257,10 +257,11 @@ export const studentApi = {
   },
 
   /**
-   * Select dining caterer for the active allocation period
+   * Select dining caterer for the active allocation period. `periodId` is the
+   * period the student was shown; the server refuses if it is no longer open.
    */
-  selectDiningCaterer: (catererId) => {
-    return apiClient.post("/students/dining/select", { catererId }).then(unwrapStandardResponse)
+  selectDiningCaterer: (catererId, periodId) => {
+    return apiClient.post("/students/dining/select", { catererId, periodId }).then(unwrapStandardResponse)
   },
 
   /**

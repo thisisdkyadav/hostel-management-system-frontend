@@ -77,7 +77,9 @@ const DiningPage = () => {
   const canSelect = Boolean(portal?.canSelect && openPeriod)
   const currentAllocation = currentPeriod?.selectedAllocation || null
   const nextPeriod =
-    [openPeriod, nextWindow].find((period) => period?.selectedAllocation && periodId(period) !== periodId(currentPeriod)) || null
+    [openPeriod, nextWindow, portal?.allocatedUpcomingPeriod].find(
+      (period) => period?.selectedAllocation && periodId(period) !== periodId(currentPeriod)
+    ) || null
   const needsChoice = canSelect && !openPeriod?.selectedAllocation
   const canRequestAway = Boolean(currentAllocation || nextPeriod)
 
@@ -230,7 +232,12 @@ const DiningPage = () => {
           setPendingCaterer(null)
           if (!target) return
           setMessage(null)
-          selectCaterer.mutate({ catererId: target.catererId, caterer: target.caterer, catererName: target.caterer?.name || "this caterer" })
+          selectCaterer.mutate({
+            catererId: target.catererId,
+            caterer: target.caterer,
+            catererName: target.caterer?.name || "this caterer",
+            periodId: periodId(openPeriod),
+          })
         }}
         title="Choose this caterer?"
         message={`You'll eat at ${pendingCaterer?.caterer?.name || "this caterer"} for the whole period. You can't change it after confirming.`}

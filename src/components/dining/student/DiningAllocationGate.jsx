@@ -14,6 +14,10 @@ import { studentDiningPortalQuery } from "./portalQuery"
 import "./StudentDining.css"
 
 const SELECTING_REFRESH_MS = 5000
+// While nothing is open: a slow fallback poll, plus an exact refresh when the
+// next known window opens (see the effect below).
+const IDLE_REFRESH_MS = 5 * 60_000
+const MAX_TIMEOUT_MS = 2 ** 31 - 1
 
 // Periods the student skipped in this page load. Module-level on purpose: it
 // survives in-app navigation (layout remounts) but a reload or a fresh visit
@@ -96,8 +100,20 @@ const DiningAllocationGate = ({ children }) => {
   const portalQuery = useQuery({
     ...studentDiningPortalQuery(),
     enabled: canDine,
-    refetchInterval: (query) => (query.state.data?.canSelect ? SELECTING_REFRESH_MS : false),
+    refetchInterval: (query) => (query.state.data?.canSelect ? SELECTING_REFRESH_MS : IDLE_REFRESH_MS),
   })
+
+  // A student already in the app when the window opens should get the screen
+  // right then, not on their next reload.
+  const opensAt = portalQuery.data?.canSelect ? null : portalQuery.data?.upcomingAllocationPeriod?.allocationStartAt
+  const { refetch } = portalQuery
+  useEffect(() => {
+    if (!opensAt) return undefined
+    const wait = Date.parse(opensAt) - Date.now() + 1000
+    if (!Number.isFinite(wait) || wait > MAX_TIMEOUT_MS) return undefined
+    const timer = setTimeout(() => refetch(), Math.max(0, wait))
+    return () => clearTimeout(timer)
+  }, [opensAt, refetch])
 
   const choose = useChooseCaterer({
     onError: (err) => {
@@ -230,6 +246,7 @@ const DiningAllocationGate = ({ children }) => {
           choose.mutate({
             catererId: target.catererId,
             caterer: target.caterer,
+            periodId: periodKey(openPeriod),
           })
         }}
         title="Choose this caterer?"
