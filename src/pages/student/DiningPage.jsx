@@ -4,7 +4,7 @@ import { Alert, Button, ConfirmDialog, LoadingState, Page } from "hzero"
 import { CalendarClock, UtensilsCrossed } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
-import { queryKeys, useOptimisticMutation } from "@/lib/query"
+import { queryKeys } from "@/lib/query"
 import { formatDayLong, formatDayMonth, formatRange, localTodayKey } from "@/components/dining/caterer/catererHelpers"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import TodayMeals from "@/components/dining/student/TodayMeals"
@@ -12,6 +12,8 @@ import MealHistory from "@/components/dining/student/MealHistory"
 import AwayCard from "@/components/dining/student/AwayCard"
 import BillCard from "@/components/dining/student/BillCard"
 import { AwayModal, ChooseCatererModal } from "@/components/dining/student/DiningModals"
+import useChooseCaterer from "@/components/dining/student/useChooseCaterer"
+import { studentDiningPortalQuery } from "@/components/dining/student/portalQuery"
 import "@/components/dining/student/StudentDining.css"
 
 const SELECTING_REFRESH_MS = 5000
@@ -44,8 +46,7 @@ const DiningPage = () => {
   const [message, setMessage] = useState(null)
 
   const portalQuery = useQuery({
-    queryKey: queryKeys.dining.portalState(),
-    queryFn: () => studentApi.getDiningPortalState(),
+    ...studentDiningPortalQuery(),
     // Seats move fast only while a selection window is open.
     refetchInterval: (query) => (query.state.data?.canSelect ? SELECTING_REFRESH_MS : IDLE_REFRESH_MS),
   })
@@ -80,23 +81,9 @@ const DiningPage = () => {
   const needsChoice = canSelect && !openPeriod?.selectedAllocation
   const canRequestAway = Boolean(currentAllocation || nextPeriod)
 
-  const selectCaterer = useOptimisticMutation({
-    queryKey: queryKeys.dining.portalState(),
-    // Mark the caterer as chosen right away; the snapshot restores on error.
-    updateFn: (previous, variables) => {
-      if (!previous || typeof previous !== "object") return undefined
-      const allocation = { catererId: variables.catererId, caterer: variables.caterer, selectedAt: new Date().toISOString() }
-      let next = previous
-      for (const key of ["activeAllocationPeriod", "period"]) {
-        const period = next[key]
-        if (period && !period.selectedAllocation) next = { ...next, [key]: { ...period, selectedAllocation: allocation } }
-      }
-      return next === previous ? undefined : { ...next, canSelect: false }
-    },
-    mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId),
+  const selectCaterer = useChooseCaterer({
     onSuccess: (_response, variables) => {
       setChoosing(false)
-      queryClient.invalidateQueries({ queryKey: queryKeys.dining.meals() })
       setMessage({ type: "success", text: `You'll eat at ${variables.catererName}.` })
     },
     onError: (error) => setMessage({ type: "error", text: getErrorMessage(error, "Couldn't choose that caterer. Please try another.") }),
@@ -129,8 +116,8 @@ const DiningPage = () => {
   const subtitle = caterer
     ? `${caterer.name} · until ${formatDayMonth((meals?.period || currentPeriod)?.endDate)}`
     : "No caterer right now"
-  const chooseButton = (label, variant = "primary") => (
-    <Button variant={variant} size="sm" onClick={() => setChoosing(true)}>
+  const chooseButton = (label) => (
+    <Button variant="primary" size="sm" onClick={() => setChoosing(true)}>
       {label}
     </Button>
   )
@@ -166,7 +153,6 @@ const DiningPage = () => {
               icon={<CalendarClock size={18} />}
               title={`From ${formatDayMonth(nextPeriod.startDate)}: ${nextPeriod.selectedAllocation?.caterer?.name || "your caterer"}`}
               text={formatRange(nextPeriod.startDate, nextPeriod.endDate)}
-              action={canSelect ? chooseButton("Change", "secondary") : null}
             />
           )}
           {!needsChoice && !nextPeriod && nextWindow && !openPeriod && (
@@ -247,7 +233,7 @@ const DiningPage = () => {
           selectCaterer.mutate({ catererId: target.catererId, caterer: target.caterer, catererName: target.caterer?.name || "this caterer" })
         }}
         title="Choose this caterer?"
-        message={`You'll eat at ${pendingCaterer?.caterer?.name || "this caterer"} for the whole period.`}
+        message={`You'll eat at ${pendingCaterer?.caterer?.name || "this caterer"} for the whole period. You can't change it after confirming.`}
         confirmText="Yes, choose"
       />
     </Page>

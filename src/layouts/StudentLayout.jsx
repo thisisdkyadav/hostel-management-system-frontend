@@ -15,6 +15,7 @@ import {
 } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 import { Heading, Surface, Text } from "hzero"
+import DiningAllocationGate from "../components/dining/student/DiningAllocationGate"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
@@ -213,15 +214,17 @@ const StudentLayout = () => {
   const showSidebar = !showBottomBar
 
   return (
-    <div className={`layout-container ${showBottomBar ? "pwa-container" : ""}`}>
-      {showSidebar && <Sidebar navItems={allNavItems} />}
+    <DiningAllocationGate>
+      <div className={`layout-container ${showBottomBar ? "pwa-container" : ""}`}>
+        {showSidebar && <Sidebar navItems={allNavItems} />}
 
-      <div className={`layout-content ${showBottomBar ? "pb-16 pwa-bottom-padding" : ""}`}>
-        <Outlet />
+        <div className={`layout-content ${showBottomBar ? "pb-16 pwa-bottom-padding" : ""}`}>
+          <Outlet />
+        </div>
+
+        {showBottomBar && <BottomBar mainNavItems={pwaBottomBarMainItems} hiddenNavItems={pwaBottomBarHiddenItems} handleNavigation={handleNavigation} />}
       </div>
-
-      {showBottomBar && <BottomBar mainNavItems={pwaBottomBarMainItems} hiddenNavItems={pwaBottomBarHiddenItems} handleNavigation={handleNavigation} />}
-    </div>
+    </DiningAllocationGate>
   )
 }
 

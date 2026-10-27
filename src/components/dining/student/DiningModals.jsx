@@ -63,42 +63,52 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
   )
 }
 
-/** Pick a caterer for the open period; seats refresh while it is open. */
-export const ChooseCatererModal = ({ period, selectedCatererId, selectingCatererId, onClose, onSelect }) => {
+/** One card per caterer with live seats; `onSelect(option)` asks to choose it. */
+export const CatererOptions = ({ period, selectedCatererId, selectingCatererId, onSelect }) => {
   const options = Array.isArray(period?.catererCapacities) ? period.catererCapacities : []
 
   return (
-    <Modal isOpen onClose={onClose} title="Choose your caterer" width={760}>
-      <p className="sd-form__note">
-        For {formatRange(period.startDate, period.endDate)}. Seats update live, so pick soon if one is filling up.
-      </p>
-      <ul className="sd-choose">
-        {options.map((option) => {
-          const isSelected = selectedCatererId === String(option.catererId)
-          const remaining = Number(option.remainingSeats || 0)
-          const max = Number(option.maxStudentCount || 0)
-          const isFull = remaining <= 0 && !isSelected
-          const isSelecting = selectingCatererId === option.catererId
-          return (
-            <li key={option.catererId} className="sd-choose__option" data-full={isFull || undefined}>
-              <div className="sd-choose__head">
-                <span className="sd-choose__name">{option.caterer?.name || "Caterer"}</span>
-                {isSelected && <StatusBadge status="Your caterer" tone="success" />}
-              </div>
-              <CapacityBar allocated={max - remaining} total={max} label={isFull ? "Full" : `${remaining} seats left`} />
-              <Button
-                variant={isSelected ? "secondary" : "primary"}
-                fullWidth
-                disabled={isFull || isSelecting || isSelected}
-                loading={isSelecting}
-                onClick={() => onSelect(option)}
-              >
-                {isSelected ? "Chosen" : isFull ? "Full" : "Choose"}
-              </Button>
-            </li>
-          )
-        })}
-      </ul>
-    </Modal>
+    <ul className="sd-choose">
+      {options.map((option) => {
+        const isSelected = selectedCatererId === String(option.catererId)
+        const remaining = Number(option.remainingSeats || 0)
+        const max = Number(option.maxStudentCount || 0)
+        const isFull = remaining <= 0 && !isSelected
+        const isSelecting = selectingCatererId === option.catererId
+        return (
+          <li key={option.catererId} className="sd-choose__option" data-full={isFull || undefined}>
+            <div className="sd-choose__head">
+              <span className="sd-choose__name">{option.caterer?.name || "Caterer"}</span>
+              {isSelected && <StatusBadge status="Your caterer" tone="success" />}
+            </div>
+            <CapacityBar allocated={max - remaining} total={max} label={isFull ? "Full" : `${remaining} seats left`} />
+            <Button
+              variant={isSelected ? "secondary" : "primary"}
+              fullWidth
+              disabled={isFull || isSelecting || isSelected || Boolean(selectingCatererId)}
+              loading={isSelecting}
+              onClick={() => onSelect(option)}
+            >
+              {isSelected ? "Chosen" : isFull ? "Full" : "Choose"}
+            </Button>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
+
+/** Pick a caterer for the open period; seats refresh while it is open. */
+export const ChooseCatererModal = ({ period, selectedCatererId, selectingCatererId, onClose, onSelect }) => (
+  <Modal isOpen onClose={onClose} title="Choose your caterer" width={760}>
+    <p className="sd-form__note">
+      For {formatRange(period.startDate, period.endDate)}. Seats update live, so pick soon if one is filling up.
+    </p>
+    <CatererOptions
+      period={period}
+      selectedCatererId={selectedCatererId}
+      selectingCatererId={selectingCatererId}
+      onSelect={onSelect}
+    />
+  </Modal>
+)

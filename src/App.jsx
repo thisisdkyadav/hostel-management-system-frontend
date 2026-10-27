@@ -10,8 +10,13 @@ import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
 import AppUpdatePrompt from "./components/common/AppUpdatePrompt"
 import { createAppQueryClient } from "./lib/query/queryClient"
 import QueryInvalidationBridge from "./lib/query/QueryInvalidationBridge"
+import { readStoredUser, warmStudentPortal } from "./components/dining/student/portalQuery"
 
 const queryClient = createAppQueryClient()
+
+// A returning student's session is verified with Go first; start the dining
+// portal read in parallel so the allocation screen doesn't wait on login.
+warmStudentPortal(queryClient, readStoredUser())
 
 // Hostel vocabulary for StatusBadge. czero ships the states every app shares
 // (active, pending, failed, …); these are the ones only HMS knows about.

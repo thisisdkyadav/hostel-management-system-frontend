@@ -529,3 +529,113 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-heading);
 }
+
+/* ------------------------------------------------------------------ */
+/* Allocation screen (shown on app open while a choice is pending)      */
+/* ------------------------------------------------------------------ */
+
+.sd-gate {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--spacing-10) var(--spacing-4);
+  background: var(--color-bg-page);
+}
+
+.sd-gate__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  width: 100%;
+  max-width: calc(var(--spacing-24) * 8);
+  padding: var(--spacing-6);
+  background: var(--color-bg-primary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+}
+
+.sd-gate__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+}
+
+.sd-gate__badge {
+  --sd-tone: var(--color-primary);
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
+  color: var(--sd-tone);
+  background: color-mix(in srgb, var(--sd-tone) 10%, var(--color-bg-primary));
+  border-radius: var(--radius-full);
+}
+
+.sd-gate__badge[data-tone="success"] {
+  --sd-tone: var(--color-success);
+}
+
+.sd-gate__eyebrow {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.sd-gate__title {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.sd-gate__text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-gate .sd-choose {
+  margin: 0;
+}
+
+.sd-gate__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-4);
+  border-top: var(--border-1) solid var(--color-border-primary);
+}
+
+.sd-gate__done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-6) 0;
+  text-align: center;
+}
+
+.sd-gate__done .sd-gate__text {
+  max-width: calc(var(--spacing-24) * 4.5);
+  margin-bottom: var(--spacing-2);
+}
+
+@media (max-width: 640px) {
+  .sd-gate {
+    padding: var(--spacing-4);
+  }
+
+  .sd-gate__panel {
+    padding: var(--spacing-4);
+  }
+}

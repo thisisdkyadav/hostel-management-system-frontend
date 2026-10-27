@@ -1,9 +1,11 @@
 import { createContext, useState, useContext, useEffect } from "react"
 import { Navigate, useLocation } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { authApi } from "../service"
 import LoadingPage from "@/pages/LoadingPage"
 import useNetworkStatus from "../hooks/useNetworkStatus"
 import { buildLoginRedirectPath, getDefaultHomeRoute } from "../utils/authRedirect"
+import { warmStudentPortal } from "@/components/dining/student/portalQuery"
 
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
@@ -33,6 +35,7 @@ export const ProtectedRoute = ({ children, allowedRoles = [], allowedSubRoles = 
 
 export const AuthProvider = ({ children }) => {
   const isOnline = useNetworkStatus()
+  const queryClient = useQueryClient()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(true)
@@ -60,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.login(credentials)
       setUser(data.user)
+      warmStudentPortal(queryClient, data.user)
       const aesKey = data.user.aesKey
       localStorage.setItem("publicKey", aesKey)
       localStorage.setItem("user", JSON.stringify(data.user))
@@ -78,6 +82,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.loginWithGoogle(token)
       setUser(data.user)
+      warmStudentPortal(queryClient, data.user)
       const aesKey = data.user.aesKey
       localStorage.setItem("publicKey", aesKey)
       localStorage.setItem("user", JSON.stringify(data.user))
@@ -96,6 +101,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.verifySSOToken(token)
       setUser(data.user)
+      warmStudentPortal(queryClient, data.user)
       const aesKey = data.user.aesKey
       localStorage.setItem("publicKey", aesKey)
       localStorage.setItem("user", JSON.stringify(data.user))
@@ -117,6 +123,8 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout error", err)
     } finally {
       setUser(null)
+      // Cached reads belong to the user who just left (dining portal, etc.).
+      queryClient.clear()
     }
   }
 
