@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button, StatusBadge } from "hzero"
 import { Plane } from "lucide-react"
+import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import { formatRange, toDayKey } from "../caterer/catererHelpers"
 import { formatRebateStatus, rebateStatusTone } from "../diningPeriodHelpers"
 
@@ -9,6 +10,7 @@ const SHOWN = 4
 /** Rebates as "times I'm away": upcoming first, then the rest, newest first. */
 const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
   const [showAll, setShowAll] = useState(false)
+  const [viewForm, setViewForm] = useState(null)
   const sorted = [...rebates].sort((a, b) => {
     const aEnd = toDayKey(a.endDate)
     const bEnd = toDayKey(b.endDate)
@@ -43,7 +45,14 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
                     {rebate.adminComment || rebate.reason ? ` · ${rebate.adminComment || rebate.reason}` : ""}
                   </span>
                 </div>
-                <StatusBadge status={formatRebateStatus(rebate.status)} tone={rebateStatusTone(rebate.status)} />
+                <div className="sd-away__side">
+                  {rebate.form?.ref && (
+                    <button type="button" className="sd-link" onClick={() => setViewForm(rebate.form)}>
+                      View form
+                    </button>
+                  )}
+                  <StatusBadge status={formatRebateStatus(rebate.status)} tone={rebateStatusTone(rebate.status)} />
+                </div>
               </li>
             )
           })}
@@ -54,6 +63,14 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
           {showAll ? "Show fewer" : `Show all ${sorted.length}`}
         </button>
       )}
+      <PdfViewerModal
+        isOpen={Boolean(viewForm)}
+        onClose={() => setViewForm(null)}
+        documentUrl={viewForm?.ref}
+        title="Long-term rebate form"
+        subtitle="The form you submitted"
+        downloadFileName={viewForm?.name || "rebate-form.pdf"}
+      />
     </section>
   )
 }

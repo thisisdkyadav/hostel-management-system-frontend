@@ -231,6 +231,7 @@ const DiningPage = () => {
           onClose={() => setAwayOpen(false)}
           onSubmit={(payload) => requestAway.mutateAsync(payload)}
           isSubmitting={requestAway.isPending}
+          longTermForm={rebatesQuery.data?.longTermForm || null}
         />
       )}
 

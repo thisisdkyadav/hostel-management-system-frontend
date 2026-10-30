@@ -13,8 +13,8 @@ const STATUS_TABS = [
 ]
 
 const EMPTY_MESSAGES = {
-  pending: "No long-term rebate requests are awaiting approval.",
-  approved: "No approved rebate requests yet.",
+  pending: "No rebate requests are awaiting approval.",
+  approved: "No approved rebates yet (long-term approvals and short-term rebates approved automatically appear here).",
   rejected: "No rejected rebate requests yet.",
 }
 
@@ -81,7 +81,7 @@ const DiningRebatesPage = () => {
 
   return (
     <Page>
-      <PageHeader title="Dining Rebates" subtitle="Review and approve long-term meal rebate requests">
+      <PageHeader title="Dining Rebates" subtitle="Review rebate requests, read the student's message and approve long-term rebates">
         <Button variant="secondary" onClick={() => fetchRebates()}>
           <RefreshCw size={18} /> Refresh
         </Button>
@@ -111,7 +111,7 @@ const DiningRebatesPage = () => {
 
         {status === "pending" && (
           <Alert type="info" icon style={{ marginTop: "var(--spacing-4)" }}>
-            Pending requests need admin approval before caterer counts are reduced.
+            Pending long-term requests need approval before caterer counts are reduced. Open a request to read the student's message and the submitted form.
           </Alert>
         )}
 

@@ -797,6 +797,21 @@ export const adminApi = {
     return apiClient.put("/config/accommodation", { value: config })
   },
 
+  // ==================== Dining Rebate Settings ====================
+
+  /** Dining rebate settings: `{ longTermFormRef, longTermFormName }` (response.value). */
+  getDiningRebateSettings: () => {
+    return apiClient.get("/config/diningRebate")
+  },
+
+  /**
+   * Update dining rebate settings
+   * @param {{ longTermFormRef: string, longTermFormName: string }} value
+   */
+  updateDiningRebateSettings: (value) => {
+    return apiClient.put("/config/diningRebate", { value })
+  },
+
   // ==================== Maintenance Staff Stats ====================
 
   /**

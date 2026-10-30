@@ -154,6 +154,22 @@ export const uploadApi = {
   uploadPorDocumentPDF: (fileData) => {
     return apiClient.upload("/upload/por-document-pdf", fileData)
   },
+
+  /**
+   * Upload the blank long-term dining rebate form template (Admin, PDF only)
+   * @param {FormData} formData - Form data (field "file")
+   */
+  uploadDiningRebateFormTemplate: (formData) => {
+    return apiClient.upload("/upload/dining-rebate-form-template", formData)
+  },
+
+  /**
+   * Upload a student's filled long-term dining rebate form (PDF or image)
+   * @param {FormData} formData - Form data (field "file")
+   */
+  uploadDiningRebateForm: (formData) => {
+    return apiClient.upload("/upload/dining-rebate-form", formData)
+  },
 }
 
 export default uploadApi

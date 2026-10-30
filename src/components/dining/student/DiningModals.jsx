@@ -1,21 +1,64 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Alert, Button, ConfirmDialog, Field, Input, Modal, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
+import { Download } from "lucide-react"
 import CapacityBar from "@/components/dining/CapacityBar"
+import PdfUploadField from "@/components/common/pdf/PdfUploadField"
+import { uploadApi } from "@/service"
+import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
+import useRebatePreview from "./useRebatePreview"
 
-/** "I'll be away": a date range and an optional reason. */
-export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
+const uploadFilledForm = (file) => {
+  const formData = new FormData()
+  formData.append("file", file)
+  return uploadApi.uploadDiningRebateForm(formData)
+}
+
+const isPdfOrImage = (file) =>
+  file.type === "application/pdf" || file.type?.startsWith("image/") || file.name.toLowerCase().endsWith(".pdf")
+
+const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`
+
+const segmentLabel = (segment) => {
+  const days = plural(Number(segment.dayCount) || 0, "day")
+  return segment.type === "long-term" ? `Long-term · ${days} · needs approval` : `Short-term · ${days} · approved straight away`
+}
+
+/**
+ * "I'll be away": a date range and an optional reason. Once both dates are
+ * set the server previews the request; long-term stretches that need a form
+ * show a download (blank form) + upload (filled form) step.
+ * `longTermForm` is the blank template `{ ref, name }` (or null).
+ */
+export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null }) => {
   const [form, setForm] = useState({ startDate: "", endDate: "", reason: "" })
   const [error, setError] = useState("")
+  const [filled, setFilled] = useState({ ref: "", name: "" })
+  const [pendingFile, setPendingFile] = useState(null)
+  const uploadedNameRef = useRef("")
   const set = (key) => (event) => setForm((prev) => ({ ...prev, [key]: event.target.value }))
+
+  const { ready, isPending: previewPending, preview, error: previewError } = useRebatePreview(form.startDate, form.endDate)
+  const formRequired = Boolean(preview?.formRequired)
+  const segments = Array.isArray(preview?.segments) ? preview.segments : []
+  const previewMessage = previewError ? getErrorMessage(previewError, "Couldn't check those dates. Please try again.") : ""
+  const canSubmit = ready && !previewPending && !previewError && Boolean(preview) && (!formRequired || Boolean(filled.ref))
+
+  const handleUploadForm = async (file) => {
+    const result = await uploadFilledForm(file)
+    uploadedNameRef.current = file.name
+    return result
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (!form.startDate || !form.endDate) return setError("Pick the first and last day you'll be away.")
     if (form.startDate > form.endDate) return setError("The last day can't be before the first day.")
+    if (!preview || previewError) return setError(previewMessage || "Please wait while we check those dates.")
+    if (formRequired && !filled.ref) return setError("Please upload the filled long-term rebate form.")
     setError("")
     try {
-      await onSubmit(form)
+      await onSubmit({ ...form, ...(formRequired ? { form: { ref: filled.ref, name: filled.name } } : {}) })
     } catch (submitError) {
       setError(getErrorMessage(submitError, "Couldn't save that. Please check the dates."))
     }
@@ -32,7 +75,7 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" form="sd-away-form" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
+          <Button type="submit" form="sd-away-form" variant="primary" loading={isSubmitting} disabled={isSubmitting || !canSubmit}>
             Send
           </Button>
         </>
@@ -42,9 +85,9 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
         <p className="sd-form__note">
           You won&apos;t be charged for these days. Short trips are approved straight away; longer ones go to the dining office.
         </p>
-        {error && (
+        {(error || previewMessage) && (
           <Alert type="error" icon>
-            {error}
+            {error || previewMessage}
           </Alert>
         )}
         <div className="sd-form__dates">
@@ -62,9 +105,55 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting }) => {
             />
           </Field>
         </div>
+        {ready && previewPending && <p className="sd-form__note">Checking your dates…</p>}
+        {segments.length > 0 && (
+          <ul className="sd-preview">
+            {segments.map((segment, index) => (
+              <li key={`${segment.periodId}-${index}`} className="sd-preview__row" data-type={segment.type}>
+                <span className="sd-preview__dates">{formatRange(segment.startDate, segment.endDate)}</span>
+                <span className="sd-preview__type">{segmentLabel(segment)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
         <Field label="Reason (optional)" htmlFor="sd-away-reason">
           <Textarea id="sd-away-reason" rows={2} value={form.reason} onChange={set("reason")} placeholder="e.g. Going home for Diwali" />
         </Field>
+        {formRequired && (
+          <div className="sd-formstep">
+            <h3 className="sd-formstep__title">Long-term rebate form</h3>
+            <p className="sd-form__note">
+              Long-term rebates need a form. Download it, fill it in, then upload it here (PDF or photo). The dining office checks it before approving.
+            </p>
+            {longTermForm?.ref && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => window.open(getMediaDownloadUrl(longTermForm.ref), "_blank", "noopener")}
+              >
+                <Download size={15} /> Download form
+              </Button>
+            )}
+            <PdfUploadField
+              label="Filled form"
+              value={filled.ref}
+              onChange={(ref) => setFilled({ ref: ref || "", name: ref ? uploadedNameRef.current || "Filled rebate form" : "" })}
+              onUpload={handleUploadForm}
+              onPendingFileChange={setPendingFile}
+              required
+              maxSizeMb={10}
+              accept=".pdf,image/*"
+              acceptHint="PDF or image"
+              validateType={isPdfOrImage}
+              uploadedText={filled.name ? `${filled.name} uploaded` : "Form uploaded"}
+              viewerTitle="Filled rebate form"
+              viewerSubtitle="The form you will submit"
+              downloadFileName={filled.name || "rebate-form.pdf"}
+            />
+            {pendingFile && !filled.ref && <p className="sd-form__note">Press Upload to attach the selected file.</p>}
+          </div>
+        )}
       </form>
     </Modal>
   )

@@ -8,6 +8,7 @@ import StudentBatchManager from "../../components/admin/settings/StudentBatchMan
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import InternAccommodationSettingsForm from "../../components/admin/settings/InternAccommodationSettingsForm"
 import AccommodationSettingsForm from "../../components/admin/settings/AccommodationSettingsForm"
+import DiningRebateSettingsForm from "../../components/admin/settings/DiningRebateSettingsForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
 import CertificateTemplateForm from "../../components/admin/settings/CertificateTemplateForm"
@@ -37,6 +38,7 @@ const SettingsPage = () => {
     gymkhanaCategories: false,
     systemSettings: false,
     accommodation: false,
+    diningRebate: false,
     porCertificate: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -50,6 +52,7 @@ const SettingsPage = () => {
   const [gymkhanaCategories, setGymkhanaCategories] = useState([])
   const [systemSettings, setSystemSettings] = useState({})
   const [accommodationSettings, setAccommodationSettings] = useState({})
+  const [diningRebateSettings, setDiningRebateSettings] = useState(null)
   const [porCertificateTemplate, setPorCertificateTemplate] = useState(null)
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
@@ -62,6 +65,7 @@ const SettingsPage = () => {
     gymkhanaCategories: null,
     systemSettings: null,
     accommodation: null,
+    diningRebate: null,
     porCertificate: null,
   })
 
@@ -76,6 +80,7 @@ const SettingsPage = () => {
     "systemSettings",
     "accommodation",
     "internAccommodation",
+    "diningRebate",
     "porCertificate",
   ]
 
@@ -164,6 +169,8 @@ const SettingsPage = () => {
       fetchSystemSettings()
     } else if (activeTab === "accommodation" && Object.keys(accommodationSettings).length === 0) {
       fetchAccommodationSettings()
+    } else if (activeTab === "diningRebate" && diningRebateSettings === null) {
+      fetchDiningRebateSettings()
     } else if (activeTab === "porCertificate" && porCertificateTemplate === null) {
       fetchPorCertificateTemplate()
     }
@@ -589,6 +596,52 @@ const SettingsPage = () => {
     }
   }
 
+  const normalizeDiningRebateSettings = (value) => ({
+    longTermFormRef: value?.longTermFormRef || "",
+    longTermFormName: value?.longTermFormName || "",
+  })
+
+  const fetchDiningRebateSettings = async () => {
+    setLoading((prev) => ({ ...prev, diningRebate: true }))
+    setError((prev) => ({ ...prev, diningRebate: null }))
+    try {
+      const response = await adminApi.getDiningRebateSettings()
+      setDiningRebateSettings(normalizeDiningRebateSettings(response?.value))
+    } catch (err) {
+      console.error("Error fetching dining settings:", err)
+      setError((prev) => ({ ...prev, diningRebate: "Failed to load dining settings. Please try again later." }))
+    } finally {
+      setLoading((prev) => ({ ...prev, diningRebate: false }))
+    }
+  }
+
+  const handleUpdateDiningRebateSettings = async (updatedSettings) => {
+    if (!canUpdateTab("diningRebate")) {
+      toast.error("You do not have permission to update dining settings.")
+      return
+    }
+
+    const confirmUpdate = await confirm(
+      updatedSettings.longTermFormRef
+        ? "Are you sure you want to update the dining settings? Long-term rebates will require students to upload this form."
+        : "Are you sure you want to update the dining settings? Long-term rebates will no longer require a form."
+    )
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, diningRebate: true }))
+    try {
+      const response = await adminApi.updateDiningRebateSettings(normalizeDiningRebateSettings(updatedSettings))
+      setDiningRebateSettings(normalizeDiningRebateSettings(response?.configuration?.value ?? updatedSettings))
+      setSuccessMessage(`Dining settings updated successfully on ${new Date(response?.lastUpdated || Date.now()).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating dining settings:", err)
+      toast.error(err?.message || "An error occurred while updating dining settings. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, diningRebate: false }))
+    }
+  }
+
   const handleRenameStudentBatch = async ({ degree, department, oldName, newName }) => {
     if (!canRenameInTab("studentBatches")) {
       toast.error("You do not have permission to rename student batch values.")
@@ -747,6 +800,12 @@ const SettingsPage = () => {
       group: "Gymkhana",
       items: [
         { key: "gymkhanaCategories", label: "Event Categories", icon: HiCollection, description: "Manage the global Gymkhana category catalog. These categories are used across activity calendars, category filters, and budget-cap summaries, so changes here apply everywhere." },
+      ],
+    },
+    {
+      group: "Dining",
+      items: [
+        { key: "diningRebate", label: "Dining", icon: HiCollection, description: "Dining rebate settings: the blank long-term rebate form students download, fill and upload when they request a long-term rebate." },
       ],
     },
     {
@@ -992,6 +1051,17 @@ const SettingsPage = () => {
                     <TabSpinner />
                   ) : (
                     <AccommodationSettingsForm config={accommodationSettings} onUpdate={handleUpdateAccommodationSettings} isLoading={loading.accommodation} />
+                  )}
+                </>
+              )}
+
+              {/* Dining Rebate Settings Tab */}
+              {activeTab === "diningRebate" && canViewTab("diningRebate") && (
+                <>
+                  {diningRebateSettings === null && loading.diningRebate ? (
+                    <TabSpinner />
+                  ) : (
+                    <DiningRebateSettingsForm key={diningRebateSettings === null ? "unloaded" : diningRebateSettings.longTermFormRef} config={diningRebateSettings} onUpdate={handleUpdateDiningRebateSettings} isLoading={loading.diningRebate} />
                   )}
                 </>
               )}
