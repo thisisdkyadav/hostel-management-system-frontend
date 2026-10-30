@@ -125,6 +125,8 @@ export const normalizePeriod = (period = {}) => {
     allocationEndAt: period.allocationEndAt,
     notificationAt: period.notificationAt || null,
     notificationSentAt: period.notificationSentAt || null,
+    autoAllocationAt: period.autoAllocationAt || null,
+    autoAllocation: period.autoAllocation || null,
     catererIds: Array.isArray(period.catererIds) ? period.catererIds.map(getIdValue).filter(Boolean) : [],
     caterers: Array.isArray(period.caterers) ? period.caterers : [],
     catererCapacities,
@@ -139,12 +141,58 @@ export const normalizePeriod = (period = {}) => {
     eligibilityMode: period.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
     eligibleRollNumbers: Array.isArray(period.eligibleRollNumbers) ? period.eligibleRollNumbers : [],
     eligibleStudentCount: Number(period.eligibleStudentCount || 0),
+    tags: Array.isArray(period.tags)
+      ? period.tags.map((tag) => ({
+          id: tag.id || tag._id,
+          name: tag.name || "",
+          question: tag.question || "",
+          defaultValue: typeof tag.defaultValue === "boolean" ? tag.defaultValue : null,
+          counts: {
+            yes: Number(tag.counts?.yes || 0),
+            no: Number(tag.counts?.no || 0),
+            answered: Number(tag.counts?.answered || 0),
+          },
+        }))
+      : [],
     isArchived: Boolean(period.isArchived),
     status: period.status || "Upcoming",
     allocationStatus: period.allocationStatus || "Not configured",
     createdAt: period.createdAt,
     updatedAt: period.updatedAt,
   }
+}
+
+/**
+ * Lifecycle of a period's scheduled auto-allocation:
+ * "none" | "scheduled" | "running" | "completed" | "failed".
+ * The time locks once the server reports any run status.
+ */
+export const getAutoAllocationState = (period) => {
+  const status = period?.autoAllocation?.status
+  if (status === "running" || status === "completed" || status === "failed") return status
+  return period?.autoAllocationAt ? "scheduled" : "none"
+}
+
+// Mirrors the server: a failed run, or one stuck "running" over an hour, can be given a new time.
+const AUTO_ALLOCATION_STALE_MS = 60 * 60 * 1000
+
+export const isAutoAllocationRearmable = (period, now = Date.now()) => {
+  const run = period?.autoAllocation
+  if (run?.status === "failed") return true
+  if (run?.status !== "running") return false
+  const startedAt = run.startedAt ? new Date(run.startedAt).getTime() : null
+  return !startedAt || now - startedAt > AUTO_ALLOCATION_STALE_MS
+}
+
+/** Short result line for a run, or "" while nothing has run yet. */
+export const autoAllocationResultText = (autoAllocation) => {
+  if (!autoAllocation?.status) return ""
+  if (autoAllocation.status === "running") return "Auto-allocation is running…"
+  if (autoAllocation.status === "failed")
+    return `Auto-allocation failed${autoAllocation.error ? `: ${autoAllocation.error}` : "."}`
+  const assigned = Number(autoAllocation.assigned || 0)
+  const leftOver = Number(autoAllocation.leftOver || 0)
+  return `Assigned ${assigned} · ${leftOver} left over`
 }
 
 export const eligibilityLabel = (period) =>

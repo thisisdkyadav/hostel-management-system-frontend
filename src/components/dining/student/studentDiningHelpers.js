@@ -38,3 +38,16 @@ export const dayHead = (key) => {
   const date = new Date(y, m - 1, d)
   return { weekday: date.toLocaleDateString(undefined, { weekday: "narrow" }), day: d }
 }
+
+const formatWhen = (value) =>
+  new Date(value).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+
+/** The calm heads-up under a pending choice: pick by the deadline or be placed automatically. "" when no auto-allocation is scheduled. */
+export const autoAssignLine = (period) => {
+  if (!period?.autoAllocationAt || Number.isNaN(Date.parse(period.autoAllocationAt))) return ""
+  const choose = period.allocationEndAt ? `Choose by ${formatWhen(period.allocationEndAt)}. ` : ""
+  return `${choose}If you don't, you'll be assigned a caterer automatically on ${formatWhen(period.autoAllocationAt)}.`
+}
+
+/** True when an open dining-tag question still has no answer from the student. */
+export const needsResponse = (item) => Boolean(item?.editable) && typeof item?.value !== "boolean"

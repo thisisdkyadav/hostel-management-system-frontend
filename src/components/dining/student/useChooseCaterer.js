@@ -9,7 +9,8 @@ import { queryKeys, useOptimisticMutation } from "@/lib/query"
  * optimistic patch also turns `canSelect` off; on failure the snapshot comes
  * back and the portal refetches fresh seat counts.
  *
- * Call `mutate({ catererId, caterer, periodId })`.
+ * Call `mutate({ catererId, caterer, periodId, tagAnswers })`, where `tagAnswers`
+ * is `[{ tagId, value }]` for the period's allocation tags (empty when it has none).
  */
 const useChooseCaterer = ({ onSuccess, onError } = {}) => {
   const queryClient = useQueryClient()
@@ -34,9 +35,10 @@ const useChooseCaterer = ({ onSuccess, onError } = {}) => {
       }
       return next === previous ? undefined : { ...next, canSelect: false }
     },
-    mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId, variables.periodId),
+    mutationFn: (variables) => studentApi.selectDiningCaterer(variables.catererId, variables.periodId, variables.tagAnswers || []),
     onSuccess: (response, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dining.meals() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.dining.tags() })
       onSuccess?.(response, variables)
     },
     onError,

@@ -4,6 +4,7 @@ import { CalendarOff } from "lucide-react"
 import { catererApi } from "@/service"
 import { queryKeys } from "@/lib/query"
 import { formatDayLong, pluralize } from "../catererHelpers"
+import { DiningTagCounts } from "../../DiningTagChips"
 import RebateStudent from "./RebateStudent"
 import { rangeLabel, typeLabel } from "./rebateHelpers"
 import "./Rebates.css"
@@ -61,7 +62,14 @@ const RebateDayDrawer = ({ date, onClose }) => {
   let body
   if (query.isPending) body = <Skeleton variant="text" lines={6} />
   else if (query.isError) body = <ErrorState message="Could not load this day." onRetry={() => query.refetch()} />
-  else body = <DayBody data={data} />
+  else {
+    body = (
+      <>
+        {data?.periodId && <DiningTagCounts counts={data.tagCounts} className="rd-tagcounts" />}
+        <DayBody data={data} />
+      </>
+    )
+  }
 
   return (
     <Drawer isOpen={Boolean(date)} onClose={onClose} title={title} placement="right" size="medium">

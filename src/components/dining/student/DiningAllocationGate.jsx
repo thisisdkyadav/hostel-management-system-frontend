@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useLocation } from "react-router-dom"
-import { Alert, Button, ConfirmDialog } from "hzero"
+import { Alert, Button } from "hzero"
 import { CalendarDays, CircleCheck, Clock, Users } from "lucide-react"
 import LoadingPage from "@/pages/LoadingPage"
 import useAuthz from "@/hooks/useAuthz"
 import { useAuth } from "@/contexts/AuthProvider"
 import { catererInitials, formatRange } from "@/components/dining/caterer/catererHelpers"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
-import { CatererOptions } from "./DiningModals"
+import { CatererOptions, ConfirmCatererDialog } from "./DiningModals"
+import { autoAssignLine } from "./studentDiningHelpers"
 import useChooseCaterer from "./useChooseCaterer"
 import { studentDiningPortalQuery } from "./portalQuery"
 import "./StudentDining.css"
@@ -147,6 +148,7 @@ const DiningAllocationGate = ({ children }) => {
     .trim()
     .split(/\s+/)[0]
   const closesIn = openPeriod?.allocationEndAt ? Date.parse(openPeriod.allocationEndAt) - now : null
+  const autoLine = autoAssignLine(openPeriod)
   const capacities = Array.isArray(openPeriod?.catererCapacities) ? openPeriod.catererCapacities : []
   const seatsLeft = capacities.reduce((sum, entry) => sum + Math.max(0, Number(entry.remainingSeats || 0)), 0)
 
@@ -187,6 +189,7 @@ const DiningAllocationGate = ({ children }) => {
               </p>
               <h1 className="sd-gate__title">Choose your caterer</h1>
               <p className="sd-gate__text">Pick where you&apos;ll eat this period. Seats go first come, first served.</p>
+              {autoLine && <p className="sd-gate__text">{autoLine}</p>}
               <ul className="sd-gate__facts">
                 <Fact
                   icon={<CalendarDays size={16} />}
@@ -235,24 +238,24 @@ const DiningAllocationGate = ({ children }) => {
         )}
       </main>
 
-      <ConfirmDialog
-        isOpen={Boolean(pending)}
-        onClose={() => setPending(null)}
-        onConfirm={() => {
-          const target = pending
-          setPending(null)
-          if (!target) return
-          setChosen({ caterer: target.caterer, period: openPeriod })
-          choose.mutate({
-            catererId: target.catererId,
-            caterer: target.caterer,
-            periodId: periodKey(openPeriod),
-          })
-        }}
-        title="Choose this caterer?"
-        message={`You'll eat at ${pending?.caterer?.name || "this caterer"} for the whole period. You can't change it after confirming.`}
-        confirmText="Yes, choose"
-      />
+      {pending && (
+        <ConfirmCatererDialog
+          target={pending}
+          tags={openPeriod?.tags}
+          onClose={() => setPending(null)}
+          onConfirm={(tagAnswers) => {
+            const target = pending
+            setPending(null)
+            setChosen({ caterer: target.caterer, period: openPeriod })
+            choose.mutate({
+              catererId: target.catererId,
+              caterer: target.caterer,
+              periodId: periodKey(openPeriod),
+              tagAnswers,
+            })
+          }}
+        />
+      )}
     </div>
   )
 }

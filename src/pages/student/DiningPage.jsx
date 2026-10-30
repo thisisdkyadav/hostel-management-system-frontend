@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button, ConfirmDialog, LoadingState, Page } from "hzero"
+import { Alert, Button, LoadingState, Page } from "hzero"
 import { CalendarClock, UtensilsCrossed } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
@@ -11,9 +11,11 @@ import TodayMeals from "@/components/dining/student/TodayMeals"
 import MealHistory from "@/components/dining/student/MealHistory"
 import AwayCard from "@/components/dining/student/AwayCard"
 import BillCard from "@/components/dining/student/BillCard"
-import { AwayModal, ChooseCatererModal } from "@/components/dining/student/DiningModals"
+import TagAnswersCard from "@/components/dining/student/TagAnswersCard"
+import { AwayModal, ChooseCatererModal, ConfirmCatererDialog } from "@/components/dining/student/DiningModals"
+import { autoAssignLine, needsResponse } from "@/components/dining/student/studentDiningHelpers"
 import useChooseCaterer from "@/components/dining/student/useChooseCaterer"
-import { studentDiningPortalQuery } from "@/components/dining/student/portalQuery"
+import { studentDiningPortalQuery, studentDiningTagsQuery } from "@/components/dining/student/portalQuery"
 import "@/components/dining/student/StudentDining.css"
 
 const SELECTING_REFRESH_MS = 5000
@@ -66,7 +68,12 @@ const DiningPage = () => {
     retry: false,
   })
 
+  // Preference questions are a bonus card; if they fail to load it just stays hidden.
+  const tagsQuery = useQuery({ ...studentDiningTagsQuery(), retry: false })
+
   const portal = portalQuery.data || null
+  const tagItems = tagsQuery.data?.items || []
+  const tagsNeedResponse = tagItems.some(needsResponse)
   const meals = mealsQuery.data || null
   const rebates = rebatesQuery.data?.rebates || []
   const billingPeriods = billingQuery.data?.billingPeriods || []
@@ -146,7 +153,7 @@ const DiningPage = () => {
               tone="warning"
               icon={<UtensilsCrossed size={18} />}
               title={`Choose your caterer for ${formatRange(openPeriod.startDate, openPeriod.endDate)}`}
-              text={openPeriod.allocationEndAt ? `Closes ${formatWhen(openPeriod.allocationEndAt)}` : ""}
+              text={autoAssignLine(openPeriod) || (openPeriod.allocationEndAt ? `Closes ${formatWhen(openPeriod.allocationEndAt)}` : "")}
               action={chooseButton("Choose")}
             />
           )}
@@ -164,6 +171,8 @@ const DiningPage = () => {
               text={formatWhen(nextWindow.allocationStartAt)}
             />
           )}
+
+          {tagsNeedResponse && <TagAnswersCard items={tagItems} />}
 
           <div className="sd-layout">
             <div className="sd-main">
@@ -199,6 +208,7 @@ const DiningPage = () => {
             </div>
 
             <aside className="sd-side">
+              {!tagsNeedResponse && <TagAnswersCard items={tagItems} />}
               <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest={canRequestAway} onRequest={() => setAwayOpen(true)} />
               <BillCard billingPeriods={billingPeriods} />
             </aside>
@@ -224,25 +234,25 @@ const DiningPage = () => {
         />
       )}
 
-      <ConfirmDialog
-        isOpen={Boolean(pendingCaterer)}
-        onClose={() => setPendingCaterer(null)}
-        onConfirm={() => {
-          const target = pendingCaterer
-          setPendingCaterer(null)
-          if (!target) return
-          setMessage(null)
-          selectCaterer.mutate({
-            catererId: target.catererId,
-            caterer: target.caterer,
-            catererName: target.caterer?.name || "this caterer",
-            periodId: periodId(openPeriod),
-          })
-        }}
-        title="Choose this caterer?"
-        message={`You'll eat at ${pendingCaterer?.caterer?.name || "this caterer"} for the whole period. You can't change it after confirming.`}
-        confirmText="Yes, choose"
-      />
+      {pendingCaterer && (
+        <ConfirmCatererDialog
+          target={pendingCaterer}
+          tags={openPeriod?.tags}
+          onClose={() => setPendingCaterer(null)}
+          onConfirm={(tagAnswers) => {
+            const target = pendingCaterer
+            setPendingCaterer(null)
+            setMessage(null)
+            selectCaterer.mutate({
+              catererId: target.catererId,
+              caterer: target.caterer,
+              catererName: target.caterer?.name || "this caterer",
+              periodId: periodId(openPeriod),
+              tagAnswers,
+            })
+          }}
+        />
+      )}
     </Page>
   )
 }

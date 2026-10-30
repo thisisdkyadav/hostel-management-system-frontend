@@ -3,6 +3,7 @@ import { Button, Skeleton } from "hzero"
 import { LogIn, LogOut } from "lucide-react"
 import { ratio } from "./dashboardHelpers"
 import PanelMessage from "./PanelMessage"
+import { DiningTagCounts } from "../../DiningTagChips"
 
 const RADIUS = 52
 const STROKE = 13
@@ -91,6 +92,7 @@ const CookForHero = ({ day, loading, error, onRetry, children }) => {
             </li>
           )}
         </ul>
+        <DiningTagCounts counts={day.tagCounts} />
         <div className="cdb-chips">
           <span className="cdb-chip"><LogOut size={14} aria-hidden="true" />{day.startingCount} leaving today</span>
           <span className="cdb-chip"><LogIn size={14} aria-hidden="true" />{day.returningCount} back today</span>

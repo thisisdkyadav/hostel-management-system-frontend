@@ -1,0 +1,74 @@
+/* Dining tag chips: effective-yes tags (e.g. "Jain food") wherever students or headcounts are listed.
+   Tokens only. Warning/accent tone so kitchen staff notice them. */
+
+.dtag-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.dtag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: var(--spacing-0-5) var(--spacing-2);
+  border: var(--border-1) solid var(--color-warning-border);
+  border-radius: var(--radius-full);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A yes that came from the tag's default rather than the student's own answer. */
+.dtag[data-muted] {
+  border-style: dashed;
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-muted);
+}
+
+/* Scan result card: impossible to miss. */
+.dtag[data-size="lg"] {
+  padding: var(--spacing-1) var(--spacing-3);
+  border: var(--border-2) solid var(--color-warning);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.dtag-counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1) var(--spacing-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.dtag-counts li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-1);
+}
+
+.dtag-counts b {
+  color: var(--color-warning-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dtag-counts--end {
+  justify-content: flex-end;
+  font-weight: var(--font-weight-normal);
+}

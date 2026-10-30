@@ -160,6 +160,7 @@ export const decorate = (entry, index, nowMs) => {
     rollNumber: entry.rollNumber || entry.student?.rollNumber || "",
     photo: entry.student?.profileImage || known?.profileImage || "",
     room,
+    tags: entry.student?.tags || known?.tags || [],
     status: entry.status,
     source: entry.source,
     message: entry.message || "",

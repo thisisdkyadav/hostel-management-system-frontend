@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Alert, Button, Field, Input, Modal, StatusBadge, Textarea } from "hzero"
+import { Alert, Button, ConfirmDialog, Field, Input, Modal, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
 import CapacityBar from "@/components/dining/CapacityBar"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
 
@@ -140,3 +140,93 @@ export const ChooseCatererModal = ({ period, selectedCatererId, selectingCaterer
     <CatererOptions period={period} selectedCatererId={selectedCatererId} selectingCatererId={selectingCatererId} onSelect={onSelect} />
   </Modal>
 )
+
+const YES_NO_OPTIONS = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+]
+
+/** Yes / No answer; `value` null/undefined shows neither selected. */
+export const YesNoToggle = ({ value, onChange, disabled = false, size = "small" }) => (
+  <ToggleButtonGroup
+    options={YES_NO_OPTIONS}
+    value={value}
+    onChange={onChange}
+    shape="rounded"
+    size={size}
+    hideLabelsOnMobile={false}
+    disabled={disabled}
+  />
+)
+
+/**
+ * "Choose this caterer?" confirmation shared by the Dining page and the
+ * allocation screen. When the period asks allocation-tag questions, each needs
+ * a Yes / No answer (nothing preselected) before the choice can be confirmed.
+ * `onConfirm(tagAnswers)` gets `[{ tagId, value }]`. Mount it only while a
+ * caterer is pending so the answers start blank each time.
+ */
+export const ConfirmCatererDialog = ({ target, tags, onClose, onConfirm }) => {
+  const [answers, setAnswers] = useState({})
+  const questions = Array.isArray(tags) ? tags : []
+  const name = target?.caterer?.name || "this caterer"
+  const message = `You'll eat at ${name} for the whole period. You can't change it after confirming.`
+
+  if (questions.length === 0) {
+    return (
+      <ConfirmDialog
+        isOpen
+        onClose={onClose}
+        onConfirm={() => onConfirm([])}
+        title="Choose this caterer?"
+        message={message}
+        confirmText="Yes, choose"
+      />
+    )
+  }
+
+  const unanswered = questions.filter((tag) => typeof answers[tag.id] !== "boolean")
+  return (
+    <Modal
+      isOpen
+      onClose={onClose}
+      title="Choose this caterer?"
+      width={520}
+      footer={
+        <>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="primary"
+            disabled={unanswered.length > 0}
+            onClick={() => onConfirm(questions.map((tag) => ({ tagId: tag.id, value: answers[tag.id] })))}
+          >
+            Yes, choose
+          </Button>
+        </>
+      }
+    >
+      <div className="sd-form">
+        <p className="sd-form__note">{message}</p>
+        <ul className="sd-tagq">
+          {questions.map((tag) => (
+            <li key={tag.id} className="sd-tagq__row">
+              <span id={`sd-tagq-${tag.id}`} className="sd-tagq__label">
+                {tag.question || tag.name}
+              </span>
+              <YesNoToggle value={answers[tag.id]} onChange={(value) => setAnswers((prev) => ({ ...prev, [tag.id]: value }))} />
+            </li>
+          ))}
+        </ul>
+        <p className="sd-form__note">
+          {unanswered.length > 0
+            ? `Answer ${unanswered.length === 1 ? "this question" : "all questions"} to continue. `
+            : ""}
+          Your caterer is final, but you can change these answers until the period starts.
+        </p>
+      </div>
+    </Modal>
+  )
+}

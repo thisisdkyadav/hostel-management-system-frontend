@@ -11,6 +11,7 @@ const MealVerificationPage = lazy(() => import("../pages/caterer/MealVerificatio
 const MealRecordsPage = lazy(() => import("../pages/caterer/MealRecordsPage"))
 const RebatesPage = lazy(() => import("../pages/caterer/RebatesPage"))
 const LiveFeedPage = lazy(() => import("../pages/caterer/LiveFeedPage"))
+const DiningAllocationsPage = lazy(() => import("../pages/common/DiningAllocationsPage"))
 
 const CatererRoutes = () => (
   <ProtectedRoute allowedRoles={["Dining"]} allowedSubRoles={["Caterer"]}>
@@ -22,6 +23,14 @@ const CatererRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.caterer.dashboard" fallback={<NotFoundPage />}>
                 <DashboardPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="allocations"
+            element={
+              <RouteAccessGuard routeKey="route.caterer.students" fallback={<NotFoundPage />}>
+                <DiningAllocationsPage home="/caterer" />
               </RouteAccessGuard>
             }
           />

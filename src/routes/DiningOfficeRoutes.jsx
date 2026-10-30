@@ -21,6 +21,10 @@ const BillingCyclesPage = lazy(() => import("../pages/admin/BillingCyclesPage"))
 const DiningMealRecordsPage = lazy(() => import("../pages/common/DiningMealRecordsPage"))
 const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
 const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage"))
+// Who is allocated to which caterer, period by period.
+const DiningAllocationsPage = lazy(() => import("../pages/common/DiningAllocationsPage"))
+// Yes/no student attributes (e.g. Jain food) and their answers.
+const DiningTagsPage = lazy(() => import("../pages/common/DiningTagsPage"))
 
 const guardRoute = (routeKey, element) => (
   <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
@@ -37,6 +41,8 @@ const DiningOfficeRoutes = () => (
           <Route index element={guardRoute("route.diningOffice.dashboard", <DashboardPage />)} />
           <Route path="caterers" element={guardRoute("route.admin.caterers", <CaterersPage />)} />
           <Route path="dining-periods" element={guardRoute("route.admin.diningPeriods", <DiningPeriodsPage />)} />
+          <Route path="allocations" element={guardRoute("route.admin.diningAllocations", <DiningAllocationsPage home="/dining-office" />)} />
+          <Route path="dining-tags" element={guardRoute("route.admin.diningTags", <DiningTagsPage />)} />
           <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
           <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
           <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />

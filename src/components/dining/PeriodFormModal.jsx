@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import Papa from "papaparse"
-import { Alert, Button, Field, FileInput, Grid, HStack, Input, Label, Modal, Surface, Text, VStack } from "hzero"
+import { Alert, Button, ConfirmDialog, Field, FileInput, Grid, HStack, Input, Label, Modal, Surface, Text, ToggleButtonGroup, VStack } from "hzero"
 import {
   Archive,
   ArchiveRestore,
   CalendarClock,
+  ChevronDown,
+  ChevronUp,
   FileDown,
   FileUp,
   Plus,
   Sparkles,
+  Tags,
   Trash2,
   Users,
   UtensilsCrossed,
@@ -19,7 +22,10 @@ import {
   DEFAULT_REBATE_SETTINGS,
   ELIGIBILITY_MODE_ALL_ACTIVE,
   ELIGIBILITY_MODE_CUSTOM,
+  autoAllocationResultText,
+  isAutoAllocationRearmable,
   buildCapacityRows,
+  getAutoAllocationState,
   getErrorMessage,
   getIdValue,
   normalizeRebateSettings,
@@ -35,7 +41,23 @@ const FORM_TABS = [
   { id: "meals", name: "Meal Slots", icon: <UtensilsCrossed size={14} /> },
   { id: "rebates", name: "Rebates", icon: <Archive size={14} /> },
   { id: "eligibility", name: "Eligibility", icon: <Users size={14} /> },
+  { id: "tags", name: "Allocation tags", icon: <Tags size={14} /> },
 ]
+
+const DEFAULT_ANSWER_OPTIONS = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+]
+
+let tagRowSeq = 0
+/** A form row for an allocation tag. `defaultValue` stays null until the admin picks Yes / No. */
+const makeTagRow = (tag = {}) => ({
+  key: tag.id ? `tag-${tag.id}` : `new-tag-${(tagRowSeq += 1)}`,
+  id: tag.id || "",
+  name: tag.name || "",
+  question: tag.question || "",
+  defaultValue: typeof tag.defaultValue === "boolean" ? tag.defaultValue : null,
+})
 
 const initialFormState = {
   startDate: "",
@@ -44,6 +66,7 @@ const initialFormState = {
   allocationStartAt: "",
   allocationEndAt: "",
   notificationAt: "",
+  autoAllocationAt: "",
   catererIds: [],
   catererCapacities: [],
   mealSlots: DEFAULT_MEAL_SLOTS,
@@ -53,6 +76,7 @@ const initialFormState = {
   dailyRate: "",
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: [],
+  tags: [],
 }
 
 const RollNumberCsvInput = ({ rollNumbers, onChange }) => {
@@ -158,6 +182,17 @@ const sectionTile = {
   backgroundColor: "var(--color-bg-secondary)",
 }
 
+const tagTile = {
+  display: "grid",
+  gridTemplateColumns: "auto minmax(0, 1fr) auto",
+  gap: "var(--spacing-3)",
+  alignItems: "start",
+  padding: "var(--spacing-3)",
+  border: "1px solid var(--color-border-primary)",
+  borderRadius: "var(--radius-lg)",
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
 /**
  * Create / edit a dining period. Sections are split across header tabs;
  * validation failures jump to the offending tab so nothing hides off-screen.
@@ -179,6 +214,7 @@ const PeriodFormModal = ({
   const [activeTab, setActiveTab] = useState("schedule")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [plannerOpen, setPlannerOpen] = useState(false)
+  const [tagToRemove, setTagToRemove] = useState(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -193,6 +229,7 @@ const PeriodFormModal = ({
       allocationStartAt: toDateTimeInputValue(initialData.allocationStartAt),
       allocationEndAt: toDateTimeInputValue(initialData.allocationEndAt),
       notificationAt: toDateTimeInputValue(initialData.notificationAt),
+      autoAllocationAt: toDateTimeInputValue(initialData.autoAllocationAt),
       catererIds: selectedCatererIds,
       catererCapacities: buildCapacityRows(selectedCatererIds, initialData.catererCapacities),
       mealSlots:
@@ -209,6 +246,7 @@ const PeriodFormModal = ({
       dailyRate: initialData.dailyRate != null && initialData.dailyRate !== "" ? String(initialData.dailyRate) : "",
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
       eligibleRollNumbers: Array.isArray(initialData.eligibleRollNumbers) ? initialData.eligibleRollNumbers : [],
+      tags: Array.isArray(initialData.tags) ? initialData.tags.map(makeTagRow) : [],
     })
     setError("")
     setActiveTab("schedule")
@@ -277,6 +315,43 @@ const PeriodFormModal = ({
     setFormData((prev) => ({ ...prev, rebateSettings: { ...prev.rebateSettings, [field]: nextValue } }))
   }
 
+  const handleTagChange = (key, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.map((tag) => (tag.key === key ? { ...tag, [field]: value } : tag)),
+    }))
+  }
+
+  const handleAddTag = () => {
+    setFormData((prev) => ({ ...prev, tags: [...prev.tags, makeTagRow()] }))
+  }
+
+  const handleMoveTag = (index, direction) => {
+    setFormData((prev) => {
+      const target = index + direction
+      if (target < 0 || target >= prev.tags.length) return prev
+      const next = [...prev.tags]
+      ;[next[index], next[target]] = [next[target], next[index]]
+      return { ...prev, tags: next }
+    })
+  }
+
+  const removeTag = (key) => {
+    setFormData((prev) => ({ ...prev, tags: prev.tags.filter((tag) => tag.key !== key) }))
+  }
+
+  // Saved tags keep their students' answers, so removing one asks first; unsaved rows just go.
+  const handleRemoveTag = (tag) => {
+    if (tag.id) setTagToRemove(tag)
+    else removeTag(tag.key)
+  }
+
+  const initialAutoAllocationAt = toDateTimeInputValue(initialData.autoAllocationAt)
+  const autoAllocationRearmable = isAutoAllocationRearmable(initialData)
+  const autoAllocationLocked = !autoAllocationRearmable && getAutoAllocationState(initialData) !== "none" &&
+    getAutoAllocationState(initialData) !== "scheduled"
+  const autoAllocationResult = autoAllocationResultText(initialData.autoAllocation)
+
   /** Returns { tab, message } for the first failure, or null when valid. */
   const validateForm = () => {
     const fail = (tab, message) => ({ tab, message })
@@ -291,6 +366,18 @@ const PeriodFormModal = ({
         return fail("schedule", "Allocation start time must be before or equal to allocation end time.")
       if (formData.notificationAt && new Date(formData.notificationAt) > new Date(formData.allocationEndAt))
         return fail("schedule", "Notification time must be before the allocation end time.")
+    }
+
+    // Scheduled auto-allocation. A locked (already run) time is never re-validated.
+    if (formData.autoAllocationAt && !autoAllocationLocked) {
+      const autoAt = new Date(formData.autoAllocationAt)
+      if (Number.isNaN(autoAt.getTime())) return fail("schedule", "Auto-allocation time is not a valid date and time.")
+      if (formData.registrationEnabled && autoAt <= new Date(formData.allocationEndAt))
+        return fail("schedule", "Auto-allocation time must be after the allocation closes.")
+      if (autoAt >= new Date(`${formData.startDate}T00:00`))
+        return fail("schedule", "Auto-allocation time must be before the period's first day starts.")
+      if (formData.autoAllocationAt !== initialAutoAllocationAt && autoAt <= new Date())
+        return fail("schedule", "Auto-allocation time must be in the future.")
     }
 
     if (formData.catererIds.length === 0) return fail("caterers", "Please select at least one caterer.")
@@ -311,6 +398,18 @@ const PeriodFormModal = ({
 
     if (formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM && formData.eligibleRollNumbers.length === 0)
       return fail("eligibility", "Please upload at least one roll number for custom eligibility.")
+
+    const seenTagNames = new Set()
+    for (const [index, tag] of formData.tags.entries()) {
+      const name = tag.name.trim()
+      if (!name) return fail("tags", `Tag ${index + 1} needs a name.`)
+      if (name.length > 60) return fail("tags", `Tag “${name.slice(0, 20)}…” is too long (60 characters max).`)
+      const lowered = name.toLowerCase()
+      if (seenTagNames.has(lowered)) return fail("tags", `Tag name “${name}” is used more than once.`)
+      seenTagNames.add(lowered)
+      if (typeof tag.defaultValue !== "boolean")
+        return fail("tags", `Choose a default answer (Yes or No) for “${name}”.`)
+    }
 
     return null
   }
@@ -333,6 +432,13 @@ const PeriodFormModal = ({
         allocationStartAt: formData.registrationEnabled ? formData.allocationStartAt : "",
         allocationEndAt: formData.registrationEnabled ? formData.allocationEndAt : "",
         notificationAt: formData.registrationEnabled ? formData.notificationAt : "",
+        // Unchanged value keeps the original ISO string; locked periods always resend it untouched.
+        autoAllocationAt:
+          autoAllocationLocked || formData.autoAllocationAt === initialAutoAllocationAt
+            ? initialData.autoAllocationAt || ""
+            : formData.autoAllocationAt
+              ? new Date(formData.autoAllocationAt).toISOString()
+              : "",
         catererIds: formData.catererIds,
         catererCapacities: formData.catererCapacities.map((entry) => ({
           ...entry,
@@ -356,6 +462,12 @@ const PeriodFormModal = ({
         eligibilityMode: formData.eligibilityMode,
         eligibleRollNumbers:
           formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM ? formData.eligibleRollNumbers : [],
+        tags: formData.tags.map((tag) => ({
+          ...(tag.id ? { id: tag.id } : {}),
+          name: tag.name.trim(),
+          question: tag.question.trim(),
+          defaultValue: tag.defaultValue,
+        })),
       })
       onClose()
     } catch (submitError) {
@@ -502,6 +614,26 @@ const PeriodFormModal = ({
                   from the “Manage Students” action on the period card (single, or bulk by roll-number CSV).
                 </Alert>
               )}
+              <Grid min={220} gap={4}>
+                <Field
+                  label="Auto-allocate Unassigned Students"
+                  htmlFor="autoAllocationAt"
+                  help={
+                    autoAllocationLocked
+                      ? autoAllocationResult
+                      : autoAllocationRearmable
+                        ? `${autoAllocationResult} Set a new time to run it again; students already placed are kept.`
+                        : formData.registrationEnabled
+                        ? "Students who haven’t picked a caterer by then are assigned one with free seats. Leave empty to skip."
+                        : "Assign every eligible student automatically at this time. Leave empty to skip."
+                  }
+                >
+                  <Input id="autoAllocationAt" type="datetime-local" value={formData.autoAllocationAt}
+                    disabled={autoAllocationLocked}
+                    onClear={autoAllocationLocked ? undefined : () => setFormData((p) => ({ ...p, autoAllocationAt: "" }))}
+                    onChange={(e) => setFormData((p) => ({ ...p, autoAllocationAt: e.target.value }))} />
+                </Field>
+              </Grid>
               <Grid min={220} gap={4}>
                 <Field label="Daily Rate (₹ / day)" htmlFor="dailyRate">
                   <Input id="dailyRate" type="number" min="0" step="0.01" placeholder="0"
@@ -672,8 +804,84 @@ const PeriodFormModal = ({
               )}
             </VStack>
           )}
+
+          {/* ALLOCATION TAGS */}
+          {activeTab === "tags" && (
+            <VStack gap="small">
+              <HStack justify="between" align="center">
+                <Label>Allocation Tags</Label>
+                <Button type="button" variant="secondary" size="sm" onClick={handleAddTag}>
+                  <Plus size={16} /> Add Tag
+                </Button>
+              </HStack>
+              <Alert type="info" icon>
+                Students answer each tag yes/no when choosing a caterer. Students who never answer (auto-allocated or
+                placed by the office) get the default.
+              </Alert>
+              {formData.tags.length === 0 && (
+                <Text size="sm" color="muted">
+                  No tags yet. Add one if the caterer needs to know something about each student, such as “Jain food”.
+                </Text>
+              )}
+              <Grid cols={1} gap={3}>
+                {formData.tags.map((tag, index) => (
+                  <div key={tag.key} style={tagTile}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                      <Button type="button" variant="ghost" size="sm" title="Move up" aria-label="Move tag up"
+                        onClick={() => handleMoveTag(index, -1)} disabled={index === 0}>
+                        <ChevronUp size={16} />
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" title="Move down" aria-label="Move tag down"
+                        onClick={() => handleMoveTag(index, 1)} disabled={index === formData.tags.length - 1}>
+                        <ChevronDown size={16} />
+                      </Button>
+                    </div>
+                    <VStack gap="small">
+                      <Grid min={200} gap={3}>
+                        <Field label="Name" htmlFor={`tag-name-${tag.key}`} required>
+                          <Input id={`tag-name-${tag.key}`} value={tag.name} placeholder="Jain food" maxLength={60}
+                            onChange={(e) => handleTagChange(tag.key, "name", e.target.value)} />
+                        </Field>
+                        <Field label="Question" htmlFor={`tag-question-${tag.key}`}>
+                          <Input id={`tag-question-${tag.key}`} value={tag.question} placeholder="Do you want Jain food?"
+                            onChange={(e) => handleTagChange(tag.key, "question", e.target.value)} />
+                        </Field>
+                      </Grid>
+                      <Field label="Default answer" required
+                        help="Used for students who don’t answer.">
+                        <ToggleButtonGroup
+                          options={DEFAULT_ANSWER_OPTIONS}
+                          value={tag.defaultValue}
+                          onChange={(value) => handleTagChange(tag.key, "defaultValue", value)}
+                          shape="rounded"
+                          size="small"
+                          hideLabelsOnMobile={false}
+                        />
+                      </Field>
+                    </VStack>
+                    <Button type="button" variant="secondary" size="md" title="Remove tag" aria-label="Remove tag"
+                      onClick={() => handleRemoveTag(tag)}>
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </VStack>
+          )}
         </VStack>
       </form>
+      <ConfirmDialog
+        isOpen={Boolean(tagToRemove)}
+        onClose={() => setTagToRemove(null)}
+        onConfirm={() => {
+          if (tagToRemove) removeTag(tagToRemove.key)
+          setTagToRemove(null)
+        }}
+        title="Remove this tag?"
+        message={`Students’ answers for “${tagToRemove?.name || "this tag"}” are kept, but the tag is archived and stops applying once you save.`}
+        confirmText="Remove tag"
+        isDestructive
+      />
       <MealPlannerModal
         isOpen={plannerOpen}
         onClose={() => setPlannerOpen(false)}

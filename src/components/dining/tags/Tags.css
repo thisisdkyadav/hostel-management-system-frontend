@@ -1,0 +1,393 @@
+/* Dining Tags: a list of tag cards, a tag form, an answers drawer and a CSV upload.
+   Tokens only. Hover, focus and selection are read from CSS, never from React state. */
+
+.tg-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 0;
+}
+
+.tg-page__loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.tg-muted {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.tg-hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.tg-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.tg-bar__tabs {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.tg-bar__end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+/* ------------------------------------------------------------------ */
+/* Cards                                                               */
+/* ------------------------------------------------------------------ */
+
+.tg-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing-24) * 3 + var(--spacing-8))), 1fr));
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.tg-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.tg-card[data-archived] {
+  background: var(--color-bg-secondary);
+}
+
+.tg-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.tg-card__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+}
+
+.tg-card__title:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.tg-card__name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+.tg-card__title:hover .tg-card__name {
+  color: var(--color-primary);
+}
+
+.tg-card__question {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.tg-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-1-5);
+}
+
+.tg-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-2) var(--spacing-4);
+  margin: 0;
+}
+
+.tg-fact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-0-5);
+  min-width: 0;
+}
+
+.tg-fact dt {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.tg-fact dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  overflow-wrap: anywhere;
+}
+
+.tg-card__note {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.tg-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-3);
+  margin-top: auto;
+  padding-top: var(--spacing-3);
+  border-top: var(--border-1) solid var(--color-border-primary);
+}
+
+.tg-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.tg-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.tg-counts__item b {
+  color: var(--color-text-heading);
+}
+
+.tg-counts__item[data-tone="yes"] b {
+  color: var(--color-success-text);
+}
+
+.tg-counts__item[data-tone="no"] b {
+  color: var(--color-danger-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* Form                                                                */
+/* ------------------------------------------------------------------ */
+
+.tg-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.tg-field__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.tg-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-secondary);
+}
+
+/* ------------------------------------------------------------------ */
+/* Drawer                                                              */
+/* ------------------------------------------------------------------ */
+
+.tg-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.tg-drawer__hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.tg-drawer__hero p {
+  margin: 0;
+}
+
+.tg-drawer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.tg-drawer__question {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-heading);
+}
+
+.tg-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing-24) + var(--spacing-4))), 1fr));
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.tg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.tg-toolbar__search {
+  flex: 1 1 var(--spacing-24);
+  min-width: 0;
+  max-width: calc(var(--spacing-24) * 3);
+}
+
+.tg-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.tg-quick {
+  overflow-x: auto;
+}
+
+.tg-table {
+  min-width: 0;
+  transition: opacity var(--transition-normal) var(--ease-smooth);
+}
+
+.tg-table[data-stale] {
+  opacity: 0.7;
+}
+
+.tg-student {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.tg-student__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tg-student__name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-heading);
+}
+
+.tg-student__roll {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.tg-setter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+@media (max-width: 767px) {
+  .tg-col-wide {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* CSV upload                                                          */
+/* ------------------------------------------------------------------ */
+
+.tg-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.tg-preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.tg-lines {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.tg-lines li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-1-5) var(--spacing-3);
+}
+
+.tg-lines li + li {
+  border-top: var(--border-1) solid var(--color-border-primary);
+}
+
+.tg-lines[data-tone="invalid"] {
+  border-color: var(--color-warning);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-table {
+    transition: none;
+  }
+}
+
+.tg-list-wrap {
+  min-width: 0;
+  transition: opacity var(--transition-normal) var(--ease-smooth);
+}
+
+.tg-list-wrap[data-stale] {
+  opacity: 0.7;
+}

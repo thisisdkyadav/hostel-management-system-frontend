@@ -3,6 +3,7 @@ import { Avatar, Badge, Card, DataTable, EmptyState, FilterTabs, SearchInput, St
 import { Users } from "lucide-react"
 import { getMediaUrl } from "@/utils/mediaUtils"
 import { describeRoom, formatDayMonth, MEAL_STATUS, SCAN_SOURCE_LABELS } from "../catererHelpers"
+import DiningTagChips from "../../DiningTagChips"
 import { catererColor } from "../diningScope"
 import { countByStatus, formatClock, PAGE_SIZE, rebateEndLabel } from "./mealRecordsHelpers"
 import "./MealRecords.css"
@@ -52,6 +53,7 @@ const COLUMNS = [
         <div className="mr-student__text">
           <span className="mr-student__name">{row.student.name || "Unnamed student"}</span>
           <span className="mr-student__roll">{row.student.rollNumber || "No roll number"}</span>
+          {row.student.tags?.length > 0 && <DiningTagChips tags={row.student.tags} max={3} />}
         </div>
       </div>
     ),

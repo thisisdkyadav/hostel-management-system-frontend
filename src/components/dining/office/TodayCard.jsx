@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import { formatDayLong, percent } from "../caterer/catererHelpers"
 import { turnoutTone } from "../daily/dailyMealsHelpers"
+import { DiningTagCounts } from "../DiningTagChips"
 
 const STATE_LABELS = { ended: "Done", serving: "Now", upcoming: "Later" }
 
@@ -71,6 +72,7 @@ const TodayCard = ({ home, report, dailyRate }) => {
         </span>
         {dailyRate ? <span>₹{dailyRate} a day</span> : null}
       </p>
+      <DiningTagCounts counts={totals.tagCounts} />
 
       {caterers.length > 1 && (
         <table className="od-table">

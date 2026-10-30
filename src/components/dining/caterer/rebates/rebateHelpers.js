@@ -103,6 +103,8 @@ export const describeForecastDay = (day) => {
   if (day.pendingCount > 0) parts.push(`${day.pendingCount} pending`)
   if (day.startingCount > 0) parts.push(`${day.startingCount} leaving`)
   if (day.returningCount > 0) parts.push(`${day.returningCount} back`)
+  const tagParts = (day.tagCounts || []).filter((tag) => tag.count > 0).map((tag) => `${tag.count} ${tag.name}`)
+  parts.push(...tagParts)
   return head + parts.join(", ")
 }
 

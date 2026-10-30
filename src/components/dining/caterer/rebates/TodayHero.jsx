@@ -1,6 +1,7 @@
 import { Card, Heading, Skeleton, Text, Tooltip } from "hzero"
 import { Clock, LogIn, LogOut } from "lucide-react"
 import { pluralize } from "../catererHelpers"
+import { DiningTagCounts } from "../../DiningTagChips"
 import "./Rebates.css"
 
 const Chip = ({ icon, children, tabIndex }) => (
@@ -70,6 +71,7 @@ const TodayHero = ({ day, tomorrow, loading }) => {
           <Text color="body" style={{ margin: "var(--spacing-1) 0 0" }}>
             Cook for {day.expectedCount} of {day.allocatedCount} allocated students
           </Text>
+          <DiningTagCounts counts={day.tagCounts} className="reb-tagcounts" />
           <div className="reb-chips">
             {chips.length > 0 ? chips : <span className="reb-chip">No one leaving or returning around today</span>}
           </div>

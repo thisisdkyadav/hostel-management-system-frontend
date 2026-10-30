@@ -584,3 +584,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.reb-tagcounts {
+  margin-top: var(--spacing-1-5);
+}
+
+.rd-tagcounts {
+  margin-bottom: var(--spacing-3);
+}

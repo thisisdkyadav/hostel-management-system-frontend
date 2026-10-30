@@ -1,4 +1,5 @@
 import { percent } from "../caterer/catererHelpers"
+import { DiningTagCounts } from "../DiningTagChips"
 import { catererColor } from "../caterer/diningScope"
 import { turnoutTone } from "./dailyMealsHelpers"
 
@@ -41,7 +42,10 @@ const Row = ({ row, slots, palette, onPick, total = false }) => {
       </th>
       <td className="dm-num">{row.allocatedCount}</td>
       <td className="dm-num">{row.onRebateCount}</td>
-      <td className="dm-num dm-num--strong">{row.expectedCount}</td>
+      <td className="dm-num dm-num--strong">
+        {row.expectedCount}
+        <DiningTagCounts counts={row.tagCounts} className="dtag-counts--end" />
+      </td>
       {slots.map((slot) => (
         <td key={slot.key}>
           <MealCell meal={row.meals[slot.key]} slot={slot} />

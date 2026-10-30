@@ -1,0 +1,670 @@
+/* Allocations: a period rail, a kitchen strip, a phase-aware figures row and the student table.
+   Tokens only. Hover, focus and selection are read from CSS (:hover, :focus-visible,
+   aria-pressed, aria-current), never from React state. */
+
+.al-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 0;
+}
+
+.al-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 0;
+  transition: opacity var(--transition-normal) var(--ease-smooth);
+}
+
+.al-body[data-stale] {
+  opacity: 0.7;
+}
+
+.al-page__loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.al-muted {
+  color: var(--color-text-muted);
+}
+
+p.al-muted {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Period rail                                                         */
+/* ------------------------------------------------------------------ */
+
+.al-rail-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.al-rail-wrap__foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.al-rail {
+  position: relative;
+  display: flex;
+  gap: var(--spacing-3);
+  overflow-x: auto;
+  padding: var(--spacing-1) var(--spacing-1) var(--spacing-2);
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+
+.al-tile {
+  --tone: var(--color-text-muted);
+  --tone-text: var(--color-text-muted);
+  flex: 0 0 calc(var(--spacing-24) * 2 + var(--spacing-8));
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-primary);
+  scroll-snap-align: start;
+  transition:
+    border-color var(--transition-fast) var(--ease-smooth),
+    box-shadow var(--transition-fast) var(--ease-smooth),
+    transform var(--transition-fast) var(--ease-smooth);
+}
+
+.al-tile[data-phase="current"] {
+  --tone: var(--color-success);
+  --tone-text: var(--color-success-text);
+}
+
+.al-tile[data-phase="upcoming"] {
+  --tone: var(--color-warning);
+  --tone-text: var(--color-warning-text);
+}
+
+.al-tile[data-archived] {
+  background: var(--color-bg-secondary);
+}
+
+.al-tile:hover {
+  border-color: var(--color-border-hover);
+  transform: translateY(calc(var(--spacing-0-5) * -1));
+}
+
+.al-tile:active {
+  transform: none;
+}
+
+.al-tile:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.al-tile[aria-pressed="true"] {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 var(--spacing-0-5) var(--color-primary-bg);
+}
+
+.al-tile[aria-pressed="true"]:focus-visible {
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.al-tile__top {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  font-size: var(--font-size-xs);
+}
+
+.al-tile__dot {
+  flex: 0 0 auto;
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--tone);
+}
+
+.al-tile__phase {
+  font-weight: var(--font-weight-semibold);
+  color: var(--tone-text);
+}
+
+.al-tile__archived {
+  margin-left: auto;
+  padding: 0 var(--spacing-1-5);
+  border-radius: var(--radius-badge);
+  background: var(--color-bg-hover);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Subtle mark: an auto-allocation is waiting to run for this period. */
+.al-tile__auto {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  color: var(--color-text-muted);
+}
+
+.al-tile__auto + .al-tile__archived {
+  margin-left: 0;
+}
+
+.al-tile__range {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.al-tile__seats {
+  display: block;
+}
+
+.al-tile__day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.al-tile__progress {
+  display: block;
+  height: var(--spacing-1);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-hover);
+  overflow: hidden;
+}
+
+.al-tile__progress > span {
+  display: block;
+  height: 100%;
+  background: var(--tone);
+}
+
+/* ------------------------------------------------------------------ */
+/* Kitchen strip                                                       */
+/* ------------------------------------------------------------------ */
+
+.al-kitchens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing-24) * 2)), 1fr));
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.al-kitchen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-primary);
+}
+
+button.al-kitchen {
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast) var(--ease-smooth),
+    background-color var(--transition-fast) var(--ease-smooth),
+    box-shadow var(--transition-fast) var(--ease-smooth);
+}
+
+button.al-kitchen:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg-hover);
+}
+
+button.al-kitchen:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+button.al-kitchen[aria-pressed="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.al-kitchen__name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.al-kitchen__dot {
+  flex: 0 0 auto;
+  width: var(--spacing-2-5);
+  height: var(--spacing-2-5);
+  border-radius: var(--radius-full);
+  background: var(--kitchen, var(--color-text-muted));
+}
+
+/* ------------------------------------------------------------------ */
+/* Figures                                                             */
+/* ------------------------------------------------------------------ */
+
+.al-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing-24) + var(--spacing-12))), 1fr));
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.al-kpi-button {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: none;
+}
+
+.al-kpi-button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.al-kpi-button > * {
+  height: 100%;
+}
+
+.al-kpi-action {
+  display: flex;
+  align-items: center;
+}
+
+/* ------------------------------------------------------------------ */
+/* Roster                                                              */
+/* ------------------------------------------------------------------ */
+
+.al-roster {
+  min-width: 0;
+}
+
+.al-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.al-toolbar__filters,
+.al-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.al-toolbar__filters {
+  flex: 1 1 var(--spacing-24);
+}
+
+.al-toolbar__search {
+  flex: 1 1 var(--spacing-24);
+  min-width: 0;
+  max-width: calc(var(--spacing-24) * 3);
+}
+
+.al-quick {
+  margin-bottom: var(--spacing-4);
+  overflow-x: auto;
+}
+
+.al-student {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+}
+
+.al-student:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.al-student__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.al-student__name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-heading);
+}
+
+.al-student__roll {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.al-caterer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  max-width: 100%;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+}
+
+.al-caterer__dot {
+  flex: 0 0 auto;
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--kitchen, var(--color-text-muted));
+}
+
+.al-mealmix {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.al-mealmix b {
+  min-width: 2ch;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.al-mealmix__bar {
+  display: flex;
+  width: calc(var(--spacing-16) + var(--spacing-2));
+  height: var(--spacing-1-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-hover);
+  overflow: hidden;
+}
+
+.al-att {
+  font-variant-numeric: tabular-nums;
+}
+
+.al-att[data-low] {
+  color: var(--color-danger-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Secondary columns drop out on a phone so the student and the headline figures stay readable. */
+@media (max-width: 767px) {
+  .al-col-wide {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Student drawer                                                      */
+/* ------------------------------------------------------------------ */
+
+.al-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.al-drawer__hero {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.al-drawer__who {
+  min-width: 0;
+}
+
+.al-drawer__name {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+.al-drawer__roll,
+.al-drawer__email {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.al-drawer__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.al-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--spacing-24) + var(--spacing-8))), 1fr));
+  gap: var(--spacing-2);
+  margin: 0 0 var(--spacing-2);
+  padding: 0;
+  list-style: none;
+}
+
+.al-slots__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 0;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  font-size: var(--font-size-sm);
+}
+
+.al-slots__dot {
+  flex: 0 0 auto;
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-radius: var(--radius-full);
+}
+
+.al-slots__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-body);
+}
+
+.al-slots__count {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.al-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.al-history__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-2-5) var(--spacing-3);
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  transition:
+    border-color var(--transition-fast) var(--ease-smooth),
+    background-color var(--transition-fast) var(--ease-smooth);
+}
+
+.al-history__row:hover {
+  background: var(--color-bg-hover);
+}
+
+.al-history__row:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--border-2) var(--color-bg-primary),
+    0 0 0 calc(var(--border-2) * 2) var(--color-primary);
+}
+
+.al-history__row[aria-current="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.al-history__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5);
+  min-width: 0;
+}
+
+.al-history__range {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.al-move {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+}
+
+.al-move > :first-child {
+  flex: 1 1 var(--spacing-24);
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .al-body,
+  .al-tile,
+  button.al-kitchen,
+  .al-history__row {
+    transition: none;
+  }
+
+  .al-tile:hover {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Dining tags in the student drawer                                   */
+/* ------------------------------------------------------------------ */
+
+.al-tagrows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.al-tagrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+}
+
+.al-tagrow__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.al-tagrow__name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-heading);
+}
+
+.al-tagrow__note {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.al-tagrow__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1-5);
+}

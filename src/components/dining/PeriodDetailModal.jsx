@@ -1,5 +1,5 @@
 import { Button, DetailSection, EmptyState, HStack, InfoRow, Modal, StatusBadge, Text, VStack } from "hzero"
-import { Archive, ArchiveRestore, CalendarClock, ClipboardCheck, Pencil, Users, UtensilsCrossed } from "lucide-react"
+import { Archive, ArchiveRestore, CalendarClock, ClipboardCheck, Pencil, Tags, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -7,8 +7,20 @@ import {
   formatDate,
   formatDateRange,
   formatDateTime,
+  getAutoAllocationState,
   periodStatusTone,
 } from "./diningPeriodHelpers"
+
+const autoAllocationLabel = (period) => {
+  const state = getAutoAllocationState(period)
+  if (state === "none") return "Not scheduled"
+  const when = formatDateTime(period.autoAllocationAt)
+  if (state === "scheduled") return `${when} (scheduled)`
+  if (state === "running") return `${when} (running)`
+  if (state === "failed") return `${when} (failed)`
+  const { assigned, leftOver } = period.autoAllocation
+  return `${when} (done: ${Number(assigned || 0)} assigned, ${Number(leftOver || 0)} left over)`
+}
 
 /** Read-only deep view of a single dining period, in the common Modal. */
 const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive }) => {
@@ -47,6 +59,7 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
           <InfoRow label="Allocation opens" value={formatDateTime(period.allocationStartAt)} />
           <InfoRow label="Allocation closes" value={formatDateTime(period.allocationEndAt)} />
           <InfoRow label="Student email" value={period.notificationAt ? `${formatDateTime(period.notificationAt)}${period.notificationSentAt ? " (sent)" : ""}` : "Not scheduled"} />
+          <InfoRow label="Auto-allocation" value={autoAllocationLabel(period)} />
           <InfoRow label="Daily rate" value={period.dailyRate > 0 ? `₹${period.dailyRate}/day` : "Not set"} />
         </DetailSection>
 
@@ -82,6 +95,21 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
         <DetailSection title="Student eligibility" icon={Users} columns={2}>
           <InfoRow label="Mode" value={eligibilityLabel(period)} />
           <InfoRow label="Eligible students" value={period.eligibleStudentCount} />
+        </DetailSection>
+
+        <DetailSection title="Allocation tags" icon={Tags}>
+          {period.tags.length === 0 && (
+            <EmptyState variant="inline" icon={Tags} message="No allocation tags. Add one in Edit to ask students a yes/no question when they choose a caterer." />
+          )}
+          {period.tags.map((tag) => (
+            <VStack gap={1} key={tag.id}>
+              <InfoRow label={tag.name} value={<>Default: {tag.defaultValue === null ? "Not set" : tag.defaultValue ? "Yes" : "No"}</>} />
+              <Text as="div" size="xs" color="muted">
+                {tag.question ? `${tag.question} · ` : ""}
+                {tag.counts.yes} yes · {tag.counts.no} no · {tag.counts.answered} answered
+              </Text>
+            </VStack>
+          ))}
         </DetailSection>
       </VStack>
     </Modal>

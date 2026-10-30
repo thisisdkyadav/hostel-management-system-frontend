@@ -260,8 +260,21 @@ export const studentApi = {
    * Select dining caterer for the active allocation period. `periodId` is the
    * period the student was shown; the server refuses if it is no longer open.
    */
-  selectDiningCaterer: (catererId, periodId) => {
-    return apiClient.post("/students/dining/select", { catererId, periodId }).then(unwrapStandardResponse)
+  selectDiningCaterer: (catererId, periodId, tagAnswers = []) => {
+    return apiClient.post("/students/dining/select", { catererId, periodId, tagAnswers }).then(unwrapStandardResponse)
+  },
+
+  /**
+   * Dining tag questions the student can answer now: tags of periods they are allocated in
+   * (editable until the period starts) and open standalone tag forms.
+   */
+  getDiningTags: () => {
+    return apiClient.get("/students/dining/tags").then(unwrapStandardResponse)
+  },
+
+  /** Answer one dining tag question (`value` true | false). */
+  setDiningTagAnswer: (tagId, value) => {
+    return apiClient.put(`/students/dining/tags/${tagId}`, { value }).then(unwrapStandardResponse)
   },
 
   /**

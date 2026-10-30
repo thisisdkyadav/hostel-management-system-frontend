@@ -3,6 +3,7 @@ import { Check, Keyboard, ScanFace } from "lucide-react"
 import { StatusBadge } from "hzero"
 import { SCAN_SOURCE_LABELS } from "../catererHelpers"
 import { catererColor } from "../diningScope"
+import DiningTagChips from "../../DiningTagChips"
 import ScanPhoto from "./ScanPhoto"
 import { exactTime, isIssue, issueLabel, issueTone, relativeTime } from "./liveHelpers"
 
@@ -50,6 +51,7 @@ const ScanRow = ({ entry, nowMs, previewing, onPreview, palette, showCaterer = f
             <span className="lf-row-roll">{entry.rollNumber}</span>
             {entry.room && <span className="lf-row-room">{entry.room}</span>}
           </span>
+          {entry.tags?.length > 0 && <DiningTagChips tags={entry.tags} max={2} />}
         </div>
         {tagged && (
           <span className="lf-row-caterer" title={`Scanned at ${entry.caterer.name}`}>

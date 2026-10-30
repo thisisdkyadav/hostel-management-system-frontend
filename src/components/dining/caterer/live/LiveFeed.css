@@ -1032,3 +1032,7 @@
 @media (max-width: 640px) {
   .lf-row-caterer { display: none; }
 }
+
+.lf-spot-dtags {
+  margin-block: var(--spacing-2);
+}

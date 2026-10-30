@@ -24,3 +24,9 @@ export const warmStudentPortal = (queryClient, user) => {
   if (user?.role !== "Student") return
   queryClient.prefetchQuery(studentDiningPortalQuery())
 }
+
+/** Dining tag questions this student can answer (or has answered): period tags and open standalone forms. */
+export const studentDiningTagsQuery = () => ({
+  queryKey: queryKeys.dining.tags(),
+  queryFn: () => studentApi.getDiningTags(),
+})

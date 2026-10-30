@@ -6,6 +6,7 @@ import PageHeader from "../../components/common/PageHeader"
 import { catererApi } from "../../service"
 import { useSocket } from "../../contexts/SocketProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import DiningTagChips from "../../components/dining/DiningTagChips"
 
 const STATUS_LABELS = {
   verified: "Verified",
@@ -99,6 +100,7 @@ const MealVerificationPage = () => {
   const [feedError, setFeedError] = useState("")
   const [manualError, setManualError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const [successTags, setSuccessTags] = useState([])
   const [profilePreview, setProfilePreview] = useState(null)
 
   const issuesCount = useMemo(() => entries.filter((entry) => entry.status !== "verified").length, [entries])
@@ -189,6 +191,7 @@ const MealVerificationPage = () => {
     setManualLoading(true)
     setManualError("")
     setSuccessMessage("")
+    setSuccessTags([])
     try {
       const response = await catererApi.manualMealVerification({ rollNumber: rollNumber.trim() })
       const verification = response?.verification
@@ -196,6 +199,7 @@ const MealVerificationPage = () => {
         setEntries((prev) => [verification, ...prev.filter((entry) => entry.id !== verification.id)].slice(0, 50))
       }
       setSuccessMessage(response?.verification?.message || "Manual meal verification recorded.")
+      setSuccessTags(verification?.student?.tags || [])
       setRollNumber("")
     } catch (manualError) {
       setManualError(getErrorMessage(manualError, "Unable to verify meal manually."))
@@ -228,7 +232,12 @@ const MealVerificationPage = () => {
             <Card id="manual-verification">
               <VStack gap="medium">
                 {manualError && <Alert type="error" icon dismissible onDismiss={() => setManualError("")}>{manualError}</Alert>}
-                {successMessage && <Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>{successMessage}</Alert>}
+                {successMessage && (
+                  <Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>
+                    {successMessage}
+                    {successTags.length > 0 && <div style={{ marginTop: "var(--spacing-2)" }}><DiningTagChips tags={successTags} size="lg" /></div>}
+                  </Alert>
+                )}
                 <form onSubmit={handleManualVerify}>
                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-[var(--spacing-3)] items-end">
                     <Field label="Manual Verification" htmlFor="manual-roll" required>
@@ -299,6 +308,7 @@ const MealVerificationPage = () => {
                         <Table.Cell>
                           <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Unknown Student"}</Text>
                           <Text as="div" color="muted" size="sm">{entry.rollNumber}</Text>
+                          {entry.student?.tags?.length > 0 && <div style={{ marginTop: "var(--spacing-1)" }}><DiningTagChips tags={entry.student.tags} size="lg" /></div>}
                         </Table.Cell>
                         <Table.Cell>{entry.mealSlotName || "-"}</Table.Cell>
                         <Table.Cell>

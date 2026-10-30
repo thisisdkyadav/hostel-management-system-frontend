@@ -1,10 +1,12 @@
-import { Button, Card, HStack, StatusBadge, Surface, Text } from "hzero"
-import { CalendarClock, Eye, Pencil, Users, UtensilsCrossed } from "lucide-react"
+import { Badge, Button, Card, HStack, StatusBadge, Surface, Text } from "hzero"
+import { AlertTriangle, CalendarClock, Eye, Pencil, Users, UtensilsCrossed, Wand2 } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
   eligibilityLabel,
   formatDateRange,
+  formatDateTime,
+  getAutoAllocationState,
   periodStatusTone,
 } from "./diningPeriodHelpers"
 
@@ -17,6 +19,30 @@ const MealSlotChip = ({ slot }) => (
     </Text>
   </Surface>
 )
+
+/** Scheduled auto-allocation chip, or a warning once it ran and students were left over. */
+const AutoAllocationMeta = ({ period }) => {
+  const state = getAutoAllocationState(period)
+  const leftOver = Number(period.autoAllocation?.leftOver || 0)
+  const showScheduled = state === "scheduled" || state === "running"
+  const showLeftOver = state === "completed" && leftOver > 0
+  if (!showScheduled && !showLeftOver) return null
+
+  return (
+    <HStack gap={2} wrap>
+      {showScheduled && (
+        <Badge variant="info" size="sm" icon={<Wand2 />}>
+          {state === "running" ? "Auto-allocating…" : `Auto-allocates ${formatDateTime(period.autoAllocationAt)}`}
+        </Badge>
+      )}
+      {showLeftOver && (
+        <Badge variant="warning" size="sm" icon={<AlertTriangle />}>
+          {leftOver} student{leftOver === 1 ? "" : "s"} left unassigned
+        </Badge>
+      )}
+    </HStack>
+  )
+}
 
 /**
  * A single dining period rendered as a scannable card.
@@ -52,6 +78,9 @@ const PeriodCard = ({ period, onView, onEdit, onManage }) => (
 
     {/* Capacity */}
     <CapacityBar allocated={period.totalAllocated} total={period.totalCapacity} />
+
+    {/* Scheduled auto-allocation / leftovers */}
+    <AutoAllocationMeta period={period} />
 
     {/* Meal slots */}
     <HStack gap={2} wrap>

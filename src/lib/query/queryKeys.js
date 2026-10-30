@@ -58,6 +58,17 @@ export const queryKeys = {
     mealPulse: (params) => [...queryKeys.diningOversight.all, "meal-pulse", params ?? {}],
     dailyReport: (params) => [...queryKeys.diningOversight.all, "daily-report", params ?? {}],
   },
+  diningAllocations: {
+    all: ["dining-allocations"],
+    periods: (params) => [...queryKeys.diningAllocations.all, "periods", params ?? {}],
+    roster: (params) => [...queryKeys.diningAllocations.all, "roster", params ?? {}],
+    history: (studentUserId) => [...queryKeys.diningAllocations.all, "history", studentUserId ?? ""],
+  },
+  diningTags: {
+    all: ["dining-tags"],
+    list: (params) => [...queryKeys.diningTags.all, "list", params ?? {}],
+    students: (tagId, params) => [...queryKeys.diningTags.all, "students", tagId ?? "", params ?? {}],
+  },
   diningInsights: {
     all: ["dining-insights"],
     overview: (params) => [...queryKeys.diningInsights.all, "overview", params ?? {}],
@@ -67,6 +78,7 @@ export const queryKeys = {
     portalState: () => [...queryKeys.dining.all, "portal-state"],
     rebates: (filters) => [...queryKeys.dining.all, "rebates", filters ?? {}],
     billing: () => [...queryKeys.dining.all, "billing"],
+    tags: () => [...queryKeys.dining.all, "tags"],
     meals: () => [...queryKeys.dining.all, "meals"],
   },
   lostAndFound: {
