@@ -6,6 +6,7 @@ import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import { uploadApi } from "@/service"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
+import { DEFAULT_MAX_ADVANCE_MONTHS, addMonthsToDayKey, periodRangeLabel } from "../diningPeriodHelpers"
 import useRebatePreview from "./useRebatePreview"
 
 const uploadFilledForm = (file) => {
@@ -19,18 +20,30 @@ const isPdfOrImage = (file) =>
 
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`
 
-const segmentLabel = (segment) => {
-  const days = plural(Number(segment.dayCount) || 0, "day")
-  return segment.type === "long-term" ? `Long-term · ${days} · needs approval` : `Short-term · ${days} · approved straight away`
+const previewSummary = (preview) => {
+  const days = plural(Number(preview.dayCount) || 0, "day")
+  return preview.type === "long-term" ? `Long-term · ${days} · needs approval` : `Short-term · ${days} · approved straight away`
+}
+
+/** "4 days · 4 of 10 short-term days used after this" (quota text is short-term only). */
+const placementDetail = (placement, preview, rules) => {
+  const dayCount = Number(placement.dayCount) || 0
+  const days = plural(dayCount, "day")
+  if (preview.type === "long-term") return days
+  const max = placement.maxShortTermDays ?? rules?.shortTermMaxTotalDays
+  if (max === undefined || max === null) return days
+  const used = (Number(placement.usedShortTermDays) || 0) + dayCount
+  return `${days} · ${used} of ${max} short-term days used after this`
 }
 
 /**
  * "I'll be away": a date range and an optional reason. Once both dates are
  * set the server previews the request; long-term stretches that need a form
  * show a download (blank form) + upload (filled form) step.
- * `longTermForm` is the blank template `{ ref, name }` (or null).
+ * `longTermForm` is the blank template `{ ref, name }` (or null); `rules` is
+ * the global rebate rules from GET rebates (or null while loading).
  */
-export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null }) => {
+export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null, rules = null }) => {
   const [form, setForm] = useState({ startDate: "", endDate: "", reason: "" })
   const [error, setError] = useState("")
   const [filled, setFilled] = useState({ ref: "", name: "" })
@@ -40,7 +53,13 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
 
   const { ready, isPending: previewPending, preview, error: previewError } = useRebatePreview(form.startDate, form.endDate)
   const formRequired = Boolean(preview?.formRequired)
-  const segments = Array.isArray(preview?.segments) ? preview.segments : []
+  const placements = Array.isArray(preview?.placements) ? preview.placements : []
+  const unplacedDayCount = Number(preview?.unplacedDayCount) || 0
+  const today = localTodayKey()
+  const maxMonths = Number(rules?.maxAdvanceMonths) || DEFAULT_MAX_ADVANCE_MONTHS
+  const maxDate = addMonthsToDayKey(today, maxMonths)
+  const continuousDays = Number(rules?.shortTermMaxContinuousDays) || 0
+  const advanceDays = Number(rules?.shortTermMinAdvanceDays) || 0
   const previewMessage = previewError ? getErrorMessage(previewError, "Couldn't check those dates. Please try again.") : ""
   const canSubmit = ready && !previewPending && !previewError && Boolean(preview) && (!formRequired || Boolean(filled.ref))
 
@@ -54,6 +73,7 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
     event.preventDefault()
     if (!form.startDate || !form.endDate) return setError("Pick the first and last day you'll be away.")
     if (form.startDate > form.endDate) return setError("The last day can't be before the first day.")
+    if (maxDate && form.endDate > maxDate) return setError(`You can only plan up to ${maxMonths} months ahead.`)
     if (!preview || previewError) return setError(previewMessage || "Please wait while we check those dates.")
     if (formRequired && !filled.ref) return setError("Please upload the filled long-term rebate form.")
     setError("")
@@ -84,6 +104,9 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
       <form id="sd-away-form" className="sd-form" onSubmit={handleSubmit}>
         <p className="sd-form__note">
           You won&apos;t be charged for these days. Short trips are approved straight away; longer ones go to the dining office.
+          {continuousDays > 0 && ` Up to ${plural(continuousDays, "day")} in a row counts as short.`}
+          {advanceDays > 0 && ` Ask at least ${plural(advanceDays, "day")} before you leave.`}
+          {` You can plan up to ${maxMonths} months ahead, even before the dining period is created.`}
         </p>
         {(error || previewMessage) && (
           <Alert type="error" icon>
@@ -92,13 +115,14 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
         )}
         <div className="sd-form__dates">
           <Field label="First day away" htmlFor="sd-away-start" required>
-            <Input id="sd-away-start" type="date" min={localTodayKey()} value={form.startDate} onChange={set("startDate")} required />
+            <Input id="sd-away-start" type="date" min={today} max={maxDate} value={form.startDate} onChange={set("startDate")} required />
           </Field>
           <Field label="Last day away" htmlFor="sd-away-end" required>
             <Input
               id="sd-away-end"
               type="date"
-              min={form.startDate || localTodayKey()}
+              min={form.startDate || today}
+              max={maxDate}
               value={form.endDate}
               onChange={set("endDate")}
               required
@@ -106,15 +130,30 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
           </Field>
         </div>
         {ready && previewPending && <p className="sd-form__note">Checking your dates…</p>}
-        {segments.length > 0 && (
-          <ul className="sd-preview">
-            {segments.map((segment, index) => (
-              <li key={`${segment.periodId}-${index}`} className="sd-preview__row" data-type={segment.type}>
-                <span className="sd-preview__dates">{formatRange(segment.startDate, segment.endDate)}</span>
-                <span className="sd-preview__type">{segmentLabel(segment)}</span>
-              </li>
-            ))}
-          </ul>
+        {preview && (
+          <div className="sd-preview">
+            <p className="sd-preview__summary" data-type={preview.type}>
+              {previewSummary(preview)}
+            </p>
+            {placements.length > 0 && (
+              <ul className="sd-preview__list">
+                {placements.map((placement, index) => (
+                  <li key={`${placement.periodId}-${index}`} className="sd-preview__row">
+                    <span className="sd-preview__dates">
+                      {[periodRangeLabel(placement.period), placement.caterer?.name || "No caterer chosen yet"].filter(Boolean).join(" · ")}
+                    </span>
+                    <span className="sd-preview__type">{placementDetail(placement, preview, rules)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {unplacedDayCount > 0 && (
+              <p className="sd-preview__note">
+                {plural(unplacedDayCount, "day")} {unplacedDayCount === 1 ? "isn't" : "aren't"} in a dining period yet — {unplacedDayCount === 1 ? "it'll" : "they'll"} count
+                once one is created and you&apos;re allocated.
+              </p>
+            )}
+          </div>
         )}
         <Field label="Reason (optional)" htmlFor="sd-away-reason">
           <Textarea id="sd-away-reason" rows={2} value={form.reason} onChange={set("reason")} placeholder="e.g. Going home for Diwali" />

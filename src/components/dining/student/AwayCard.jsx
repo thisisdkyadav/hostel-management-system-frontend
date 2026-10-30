@@ -3,7 +3,7 @@ import { Button, StatusBadge } from "hzero"
 import { Plane } from "lucide-react"
 import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import { formatRange, toDayKey } from "../caterer/catererHelpers"
-import { formatRebateStatus, rebateStatusTone } from "../diningPeriodHelpers"
+import { formatRebateStatus, getRebateWhereLines, rebateStatusTone } from "../diningPeriodHelpers"
 
 const SHOWN = 4
 
@@ -36,6 +36,7 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
         <ul className="sd-away">
           {visible.map((rebate) => {
             const ahead = toDayKey(rebate.endDate) >= today
+            const where = getRebateWhereLines(rebate, { compact: true })
             return (
               <li key={rebate.id} className="sd-away__row" data-ahead={ahead || undefined}>
                 <div className="sd-away__when">
@@ -44,6 +45,9 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
                     {rebate.dayCount} {rebate.dayCount === 1 ? "day" : "days"}
                     {rebate.adminComment || rebate.reason ? ` · ${rebate.adminComment || rebate.reason}` : ""}
                   </span>
+                  {where.length > 0 && (
+                    <span className="sd-away__where">{where.map((line) => line.label).join(" · ")}</span>
+                  )}
                 </div>
                 <div className="sd-away__side">
                   {rebate.form?.ref && (

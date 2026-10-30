@@ -1,5 +1,5 @@
 import { Button, DetailSection, EmptyState, HStack, InfoRow, Modal, StatusBadge, Text, VStack } from "hzero"
-import { Archive, ArchiveRestore, CalendarClock, ClipboardCheck, Pencil, Tags, Users, UtensilsCrossed } from "lucide-react"
+import { Archive, ArchiveRestore, CalendarClock, Pencil, Tags, Users, UtensilsCrossed } from "lucide-react"
 import CapacityBar from "./CapacityBar"
 import {
   allocationStatusTone,
@@ -83,13 +83,6 @@ const PeriodDetailModal = ({ period, isOpen, onClose, onEdit, onToggleArchive })
           {period.mealSlots.map((slot, index) => (
             <InfoRow label={slot.name} value={<>{slot.startTime} – {slot.endTime}</>} key={`${slot.name}-${index}`} />
           ))}
-        </DetailSection>
-
-        <DetailSection title="Short-term rebate rules" icon={ClipboardCheck} columns={2}>
-          <InfoRow label="Max total days" value={period.rebateSettings.shortTermMaxTotalDays} />
-          <InfoRow label="Max continuous days" value={period.rebateSettings.shortTermMaxContinuousDays} />
-          <InfoRow label="Min days per request" value={period.rebateSettings.shortTermMinApplicationDays} />
-          <InfoRow label="Advance notice days" value={period.rebateSettings.shortTermMinAdvanceDays} />
         </DetailSection>
 
         <DetailSection title="Student eligibility" icon={Users} columns={2}>

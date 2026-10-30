@@ -88,7 +88,6 @@ const DiningPage = () => {
       (period) => period?.selectedAllocation && periodId(period) !== periodId(currentPeriod)
     ) || null
   const needsChoice = canSelect && !openPeriod?.selectedAllocation
-  const canRequestAway = Boolean(currentAllocation || nextPeriod)
 
   const selectCaterer = useChooseCaterer({
     onSuccess: (_response, variables) => {
@@ -209,7 +208,7 @@ const DiningPage = () => {
 
             <aside className="sd-side">
               {!tagsNeedResponse && <TagAnswersCard items={tagItems} />}
-              <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest={canRequestAway} onRequest={() => setAwayOpen(true)} />
+              <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest onRequest={() => setAwayOpen(true)} />
               <BillCard billingPeriods={billingPeriods} />
             </aside>
           </div>
@@ -232,6 +231,7 @@ const DiningPage = () => {
           onSubmit={(payload) => requestAway.mutateAsync(payload)}
           isSubmitting={requestAway.isPending}
           longTermForm={rebatesQuery.data?.longTermForm || null}
+          rules={rebatesQuery.data?.rules || null}
         />
       )}
 

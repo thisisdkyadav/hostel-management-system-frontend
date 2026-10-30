@@ -9,6 +9,7 @@ import ConfigForm from "../../components/admin/settings/ConfigForm"
 import InternAccommodationSettingsForm from "../../components/admin/settings/InternAccommodationSettingsForm"
 import AccommodationSettingsForm from "../../components/admin/settings/AccommodationSettingsForm"
 import DiningRebateSettingsForm from "../../components/admin/settings/DiningRebateSettingsForm"
+import { normalizeRebateSettings } from "../../components/dining/diningPeriodHelpers"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
 import CertificateTemplateForm from "../../components/admin/settings/CertificateTemplateForm"
@@ -596,10 +597,18 @@ const SettingsPage = () => {
     }
   }
 
-  const normalizeDiningRebateSettings = (value) => ({
-    longTermFormRef: value?.longTermFormRef || "",
-    longTermFormName: value?.longTermFormName || "",
-  })
+  // One `diningRebate` config value: the rebate rule numbers plus the long-term form. Never drop either on save.
+  const normalizeDiningRebateSettings = (value) => {
+    const rules = normalizeRebateSettings(value || {})
+    return {
+      shortTermMaxTotalDays: Number(rules.shortTermMaxTotalDays),
+      shortTermMaxContinuousDays: Number(rules.shortTermMaxContinuousDays),
+      shortTermMinApplicationDays: Number(rules.shortTermMinApplicationDays),
+      shortTermMinAdvanceDays: Number(rules.shortTermMinAdvanceDays),
+      longTermFormRef: value?.longTermFormRef || "",
+      longTermFormName: value?.longTermFormName || "",
+    }
+  }
 
   const fetchDiningRebateSettings = async () => {
     setLoading((prev) => ({ ...prev, diningRebate: true }))
@@ -623,8 +632,8 @@ const SettingsPage = () => {
 
     const confirmUpdate = await confirm(
       updatedSettings.longTermFormRef
-        ? "Are you sure you want to update the dining settings? Long-term rebates will require students to upload this form."
-        : "Are you sure you want to update the dining settings? Long-term rebates will no longer require a form."
+        ? "Are you sure you want to update the dining settings? The rebate rules apply to all new requests, and long-term rebates will require students to upload this form."
+        : "Are you sure you want to update the dining settings? The rebate rules apply to all new requests, and long-term rebates will no longer require a form."
     )
     if (!confirmUpdate) return
 
@@ -805,7 +814,7 @@ const SettingsPage = () => {
     {
       group: "Dining",
       items: [
-        { key: "diningRebate", label: "Dining", icon: HiCollection, description: "Dining rebate settings: the blank long-term rebate form students download, fill and upload when they request a long-term rebate." },
+        { key: "diningRebate", label: "Dining", icon: HiCollection, description: "Dining rebate settings: the short-term rebate rules, and the blank long-term rebate form students download, fill and upload when they request a long-term rebate." },
       ],
     },
     {
@@ -1061,7 +1070,7 @@ const SettingsPage = () => {
                   {diningRebateSettings === null && loading.diningRebate ? (
                     <TabSpinner />
                   ) : (
-                    <DiningRebateSettingsForm key={diningRebateSettings === null ? "unloaded" : diningRebateSettings.longTermFormRef} config={diningRebateSettings} onUpdate={handleUpdateDiningRebateSettings} isLoading={loading.diningRebate} />
+                    <DiningRebateSettingsForm key={diningRebateSettings === null ? "unloaded" : JSON.stringify(diningRebateSettings)} config={diningRebateSettings} onUpdate={handleUpdateDiningRebateSettings} isLoading={loading.diningRebate} />
                   )}
                 </>
               )}

@@ -3,10 +3,32 @@ import { Badge, Button, Checkbox, ConfirmDialog, EmptyState, Field, HStack, Info
 import { CalendarRange, CheckCircle2, Download, Eye, XCircle } from "lucide-react"
 import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import { getMediaDownloadUrl } from "@/utils/mediaUtils"
-import { formatDate, formatDateTime, formatRebateStatus, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
+import { formatDate, formatDateTime, formatRebateStatus, getRebateWhereLines, formatRebateType, rebateStatusTone } from "./diningPeriodHelpers"
 
 const hasMessage = (rebate) => Boolean(String(rebate?.reason || "").trim())
 const needsFormCheck = (rebate) => rebate?.type === "long-term" && Boolean(rebate?.form?.ref)
+
+/** Where the rebate's days land (period range · caterer (days)), one line per placement. */
+const RebateWhere = ({ rebate }) => {
+  const lines = getRebateWhereLines(rebate)
+  if (lines.length === 0) {
+    return (
+      <Text as="span" color="muted" size="sm">
+        -
+      </Text>
+    )
+  }
+  return (
+    <VStack gap="none">
+      {lines.map((line) => (
+        <Text as="div" size="sm" color={line.key === "unplaced" ? "muted" : "body"} key={line.key}>
+          {line.label}
+        </Text>
+      ))}
+    </VStack>
+  )
+}
+
 const typeVariant = (type) => (type === "long-term" ? "warning" : "info")
 
 /**
@@ -94,8 +116,8 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
           <Table.Header>
             <Table.Row>
               <Table.Head>Student</Table.Head>
-              <Table.Head>Period</Table.Head>
-              <Table.Head>Caterer</Table.Head>
+              <Table.Head>Dates</Table.Head>
+              <Table.Head>Where</Table.Head>
               <Table.Head>Days</Table.Head>
               <Table.Head>Type</Table.Head>
               <Table.Head>Status</Table.Head>
@@ -117,7 +139,9 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
                 <Table.Cell>
                   {formatDate(rebate.startDate)} – {formatDate(rebate.endDate)}
                 </Table.Cell>
-                <Table.Cell>{rebate.caterer?.name || "-"}</Table.Cell>
+                <Table.Cell>
+                  <RebateWhere rebate={rebate} />
+                </Table.Cell>
                 <Table.Cell>{rebate.dayCount}</Table.Cell>
                 <Table.Cell>{formatRebateType(rebate.type)}</Table.Cell>
                 <Table.Cell>
@@ -189,8 +213,8 @@ const RebateRequestsPanel = ({ rebates, loading, onApprove, onReject, emptyMessa
             <VStack gap={1}>
               <InfoRow label="Student" value={detailsTarget.student?.name || "Student"} />
               <InfoRow label="Roll number" value={detailsTarget.rollNumber || "-"} />
-              <InfoRow label="Caterer" value={detailsTarget.caterer?.name || "-"} />
               <InfoRow label="Dates" value={`${formatDate(detailsTarget.startDate)} – ${formatDate(detailsTarget.endDate)}`} />
+              <InfoRow label="Where" value={<RebateWhere rebate={detailsTarget} />} />
               <InfoRow label="Days" value={detailsTarget.dayCount} />
               <InfoRow label="Type" value={<Badge variant={typeVariant(detailsTarget.type)} size="sm">{formatRebateType(detailsTarget.type)}</Badge>} />
               <InfoRow

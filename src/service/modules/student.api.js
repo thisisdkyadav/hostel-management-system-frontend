@@ -285,8 +285,9 @@ export const studentApi = {
   },
 
   /**
-   * Validate a rebate date range without saving: per-period segments (short /
-   * long-term) and whether a filled long-term form is required.
+   * Validate a rebate date range without saving: short / long-term type, how its
+   * days fall over existing dining periods (placements), and whether a filled
+   * long-term form is required.
    */
   previewDiningRebate: ({ startDate, endDate }) => {
     return apiClient.post("/students/dining/rebates/preview", { startDate, endDate }).then(unwrapStandardResponse)

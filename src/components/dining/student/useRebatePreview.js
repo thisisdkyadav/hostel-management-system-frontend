@@ -7,7 +7,8 @@ const DEBOUNCE_MS = 400
 
 /**
  * Server-side preview of a rebate date range (validation + short/long-term
- * split + whether a filled long-term form is needed). Debounced; runs only
+ * type, how its days fall over existing dining periods, and whether a filled
+ * long-term form is needed). Debounced; runs only
  * once both dates are set and in order. A 400 from the server surfaces as `error`.
  */
 const useRebatePreview = (startDate, endDate) => {

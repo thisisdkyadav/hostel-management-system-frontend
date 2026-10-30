@@ -134,7 +134,6 @@ export const normalizePeriod = (period = {}) => {
       Array.isArray(period.mealSlots) && period.mealSlots.length > 0 ? period.mealSlots : DEFAULT_MEAL_SLOTS,
     weekSchedule: Array.isArray(period.weekSchedule) ? period.weekSchedule : [],
     dateSchedule: Array.isArray(period.dateSchedule) ? period.dateSchedule : [],
-    rebateSettings: { ...DEFAULT_REBATE_SETTINGS, ...(period.rebateSettings || {}) },
     dailyRate: Math.max(0, Number(period.dailyRate || 0)),
     totalCapacity: Number(period.totalCapacity || 0),
     totalAllocated,
@@ -247,4 +246,68 @@ export const rebateStatusTone = (status = "") => {
   if (status === "approved") return "success"
   if (status === "rejected") return "danger"
   return "warning"
+}
+
+const shortDay = (value) => {
+  if (!value) return ""
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+  return date.toLocaleDateString(undefined, { day: "numeric", month: "short", timeZone: "UTC" })
+}
+
+export const periodRangeLabel = (period) => {
+  const start = shortDay(period?.startDate)
+  const end = shortDay(period?.endDate)
+  if (!start) return ""
+  return end && end !== start ? `${start} – ${end}` : start
+}
+
+/**
+ * Where a rebate's days land, from the server's `placements` / `unplacedDayCount`.
+ * Returns `[{ key, label }]`, e.g. "1 Jan – 31 Jan · Annapurna (4d)" and
+ * "Not in a dining period yet (2d)". Legacy rows with no `placements` field
+ * fall back to the old rebate.period / rebate.caterer; with neither they get "-".
+ * `compact` drops the period range (student list).
+ */
+export const getRebateWhereLines = (rebate, { compact = false } = {}) => {
+  if (!rebate) return []
+  const placements = Array.isArray(rebate.placements) ? rebate.placements : null
+  const lines = []
+
+  if (placements) {
+    placements.forEach((placement, index) => {
+      const range = compact ? "" : periodRangeLabel(placement.period)
+      const caterer = placement.caterer?.name || "No caterer yet"
+      const days = `${Number(placement.dayCount) || 0}d`
+      const where = [range, caterer].filter(Boolean).join(" · ")
+      lines.push({ key: `${placement.periodId || index}`, label: `${where} (${days})` })
+    })
+    const unplaced = Number(rebate.unplacedDayCount) || 0
+    if (unplaced > 0) {
+      lines.push({ key: "unplaced", label: `Not in a dining period yet${placements.length > 0 ? ` (${unplaced}d)` : ""}` })
+    } else if (placements.length === 0) {
+      lines.push({ key: "unplaced", label: "Not in a dining period yet" })
+    }
+    return lines
+  }
+
+  // Legacy rows (before standalone rebates) only carry a single period + caterer.
+  const caterer = rebate.caterer?.name
+  const range = compact ? "" : periodRangeLabel(rebate.period)
+  const label = [range, caterer].filter(Boolean).join(" · ")
+  return label ? [{ key: "legacy", label }] : []
+}
+
+/** Months a rebate can be requested ahead; the server also sends this as `rules.maxAdvanceMonths`. */
+export const DEFAULT_MAX_ADVANCE_MONTHS = 6
+
+/** Day key (YYYY-MM-DD) `months` calendar months after `todayKey`, clamped to the month's last day. */
+export const addMonthsToDayKey = (todayKey, months) => {
+  const [year, month, day] = String(todayKey || "").split("-").map(Number)
+  if (!year || !month || !day) return ""
+  const target = new Date(year, month - 1 + months, 1)
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()
+  target.setDate(Math.min(day, lastDay))
+  const pad = (n) => String(n).padStart(2, "0")
+  return `${target.getFullYear()}-${pad(target.getMonth() + 1)}-${pad(target.getDate())}`
 }

@@ -19,7 +19,6 @@ import {
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import {
   DEFAULT_MEAL_SLOTS,
-  DEFAULT_REBATE_SETTINGS,
   ELIGIBILITY_MODE_ALL_ACTIVE,
   ELIGIBILITY_MODE_CUSTOM,
   autoAllocationResultText,
@@ -28,7 +27,6 @@ import {
   getAutoAllocationState,
   getErrorMessage,
   getIdValue,
-  normalizeRebateSettings,
   toDateInputValue,
   toDateTimeInputValue,
 } from "./diningPeriodHelpers"
@@ -39,7 +37,6 @@ const FORM_TABS = [
   { id: "schedule", name: "Schedule", icon: <CalendarClock size={14} /> },
   { id: "caterers", name: "Caterers", icon: <Users size={14} /> },
   { id: "meals", name: "Meal Slots", icon: <UtensilsCrossed size={14} /> },
-  { id: "rebates", name: "Rebates", icon: <Archive size={14} /> },
   { id: "eligibility", name: "Eligibility", icon: <Users size={14} /> },
   { id: "tags", name: "Allocation tags", icon: <Tags size={14} /> },
 ]
@@ -72,7 +69,6 @@ const initialFormState = {
   mealSlots: DEFAULT_MEAL_SLOTS,
   weekSchedule: [],
   dateSchedule: [],
-  rebateSettings: normalizeRebateSettings(DEFAULT_REBATE_SETTINGS),
   dailyRate: "",
   eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
   eligibleRollNumbers: [],
@@ -242,7 +238,6 @@ const PeriodFormModal = ({
           : DEFAULT_MEAL_SLOTS,
       weekSchedule: Array.isArray(initialData.weekSchedule) ? initialData.weekSchedule : [],
       dateSchedule: Array.isArray(initialData.dateSchedule) ? initialData.dateSchedule : [],
-      rebateSettings: normalizeRebateSettings(initialData.rebateSettings || DEFAULT_REBATE_SETTINGS),
       dailyRate: initialData.dailyRate != null && initialData.dailyRate !== "" ? String(initialData.dailyRate) : "",
       eligibilityMode: initialData.eligibilityMode || ELIGIBILITY_MODE_ALL_ACTIVE,
       eligibleRollNumbers: Array.isArray(initialData.eligibleRollNumbers) ? initialData.eligibleRollNumbers : [],
@@ -308,11 +303,6 @@ const PeriodFormModal = ({
 
   const handleRemoveMealSlot = (index) => {
     setFormData((prev) => ({ ...prev, mealSlots: prev.mealSlots.filter((_, slotIndex) => slotIndex !== index) }))
-  }
-
-  const handleRebateSettingChange = (field, value) => {
-    const nextValue = String(value || "").replace(/[^\d]/g, "")
-    setFormData((prev) => ({ ...prev, rebateSettings: { ...prev.rebateSettings, [field]: nextValue } }))
   }
 
   const handleTagChange = (key, field, value) => {
@@ -388,14 +378,6 @@ const PeriodFormModal = ({
     if (formData.mealSlots.some((slot) => !slot.name.trim() || !slot.startTime || !slot.endTime))
       return fail("meals", "Each meal slot must have a name, start time, and end time.")
 
-    const rebate = formData.rebateSettings || {}
-    if (Number(rebate.shortTermMaxContinuousDays || 0) < 1)
-      return fail("rebates", "Short-term max continuous days must be at least 1.")
-    if (Number(rebate.shortTermMinApplicationDays || 0) < 1)
-      return fail("rebates", "Short-term minimum application days must be at least 1.")
-    if (Number(rebate.shortTermMinApplicationDays || 0) > Number(rebate.shortTermMaxContinuousDays || 0))
-      return fail("rebates", "Minimum application days cannot exceed max continuous short-term days.")
-
     if (formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM && formData.eligibleRollNumbers.length === 0)
       return fail("eligibility", "Please upload at least one roll number for custom eligibility.")
 
@@ -452,12 +434,6 @@ const PeriodFormModal = ({
         })),
         weekSchedule: formData.weekSchedule,
         dateSchedule: formData.dateSchedule,
-        rebateSettings: {
-          shortTermMaxTotalDays: Number(formData.rebateSettings.shortTermMaxTotalDays || 0),
-          shortTermMaxContinuousDays: Number(formData.rebateSettings.shortTermMaxContinuousDays || 0),
-          shortTermMinApplicationDays: Number(formData.rebateSettings.shortTermMinApplicationDays || 0),
-          shortTermMinAdvanceDays: Number(formData.rebateSettings.shortTermMinAdvanceDays || 0),
-        },
         dailyRate: Number(formData.dailyRate || 0),
         eligibilityMode: formData.eligibilityMode,
         eligibleRollNumbers:
@@ -560,6 +536,9 @@ const PeriodFormModal = ({
           {/* SCHEDULE */}
           {activeTab === "schedule" && (
             <VStack gap="large">
+              <Alert type="info" icon>
+                Rebate rules (short-term limits, advance notice) are no longer set per period. Manage them in Settings › Dining.
+              </Alert>
               <Grid min={220} gap={4}>
                 <Field label="Start Date" htmlFor="startDate" required>
                   <Input id="startDate" type="date" value={formData.startDate}
@@ -751,34 +730,6 @@ const PeriodFormModal = ({
                   </Button>
                 </HStack>
               </Surface>
-            </VStack>
-          )}
-
-          {/* REBATES */}
-          {activeTab === "rebates" && (
-            <VStack gap="small">
-              <Label required>Short-Term Rebate Rules</Label>
-              <Grid min={180} gap={4}>
-                <Field label="Max Total Days" htmlFor="rebate-total-days" required>
-                  <Input id="rebate-total-days" type="number" min="0" value={formData.rebateSettings.shortTermMaxTotalDays}
-                    onChange={(e) => handleRebateSettingChange("shortTermMaxTotalDays", e.target.value)} required />
-                </Field>
-                <Field label="Max Continuous Days" htmlFor="rebate-continuous-days" required>
-                  <Input id="rebate-continuous-days" type="number" min="1" value={formData.rebateSettings.shortTermMaxContinuousDays}
-                    onChange={(e) => handleRebateSettingChange("shortTermMaxContinuousDays", e.target.value)} required />
-                </Field>
-                <Field label="Min Days / Request" htmlFor="rebate-min-days" required>
-                  <Input id="rebate-min-days" type="number" min="1" value={formData.rebateSettings.shortTermMinApplicationDays}
-                    onChange={(e) => handleRebateSettingChange("shortTermMinApplicationDays", e.target.value)} required />
-                </Field>
-                <Field label="Advance Notice Days" htmlFor="rebate-advance-days" required>
-                  <Input id="rebate-advance-days" type="number" min="0" value={formData.rebateSettings.shortTermMinAdvanceDays}
-                    onChange={(e) => handleRebateSettingChange("shortTermMinAdvanceDays", e.target.value)} required />
-                </Field>
-              </Grid>
-              <Alert type="info" icon>
-                Requests within the continuous-day limit are auto-approved only when these rules pass. Longer requests go to admin approval.
-              </Alert>
             </VStack>
           )}
 
