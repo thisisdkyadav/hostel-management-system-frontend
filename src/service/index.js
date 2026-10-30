@@ -63,6 +63,7 @@ export { diningInsightsApi } from "./modules/diningInsights.api"
 export { diningOversightApi } from "./modules/diningOversight.api"
 export { diningAllocationsApi } from "./modules/diningAllocations.api"
 export { diningTagsApi } from "./modules/diningTags.api"
+export { diningMenuApi } from "./modules/diningMenu.api"
 
 // NOTE:
 // Keep this module as named re-exports only.

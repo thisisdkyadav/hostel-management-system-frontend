@@ -25,6 +25,8 @@ const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage
 const DiningAllocationsPage = lazy(() => import("../pages/common/DiningAllocationsPage"))
 // Yes/no student attributes (e.g. Jain food) and their answers.
 const DiningTagsPage = lazy(() => import("../pages/common/DiningTagsPage"))
+// What each kitchen serves: weekly menu, single-day changes, and the record of past weeks.
+const DiningMenuPage = lazy(() => import("../pages/common/DiningMenuPage"))
 
 const guardRoute = (routeKey, element) => (
   <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
@@ -43,6 +45,7 @@ const DiningOfficeRoutes = () => (
           <Route path="dining-periods" element={guardRoute("route.admin.diningPeriods", <DiningPeriodsPage />)} />
           <Route path="allocations" element={guardRoute("route.admin.diningAllocations", <DiningAllocationsPage home="/dining-office" />)} />
           <Route path="dining-tags" element={guardRoute("route.admin.diningTags", <DiningTagsPage />)} />
+          <Route path="dining-menu" element={guardRoute("route.admin.diningMenu", <DiningMenuPage />)} />
           <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
           <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
           <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />

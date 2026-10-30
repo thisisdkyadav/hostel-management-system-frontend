@@ -9,6 +9,7 @@ import { formatDayLong, formatDayMonth, formatRange, localTodayKey } from "@/com
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import TodayMeals from "@/components/dining/student/TodayMeals"
 import MealHistory from "@/components/dining/student/MealHistory"
+import MenuCard from "@/components/dining/student/MenuCard"
 import AwayCard from "@/components/dining/student/AwayCard"
 import BillCard from "@/components/dining/student/BillCard"
 import TagAnswersCard from "@/components/dining/student/TagAnswersCard"
@@ -184,6 +185,7 @@ const DiningPage = () => {
                     </header>
                     <TodayMeals meals={meals.todayMeals} />
                   </section>
+                  <MenuCard />
                   {meals.days.length > 1 && (
                     <section className="sd-card">
                       <header className="sd-card__head">

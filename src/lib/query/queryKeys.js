@@ -69,6 +69,14 @@ export const queryKeys = {
     list: (params) => [...queryKeys.diningTags.all, "list", params ?? {}],
     students: (tagId, params) => [...queryKeys.diningTags.all, "students", tagId ?? "", params ?? {}],
   },
+  diningMenu: {
+    all: ["dining-menu"],
+    caterers: () => [...queryKeys.diningMenu.all, "caterers"],
+    range: (params) => [...queryKeys.diningMenu.all, "range", params ?? {}],
+    versions: (catererId) => [...queryKeys.diningMenu.all, "versions", catererId ?? ""],
+    items: (q) => [...queryKeys.diningMenu.all, "items", q ?? ""],
+    catererRange: (params) => [...queryKeys.diningMenu.all, "caterer-range", params ?? {}],
+  },
   diningInsights: {
     all: ["dining-insights"],
     overview: (params) => [...queryKeys.diningInsights.all, "overview", params ?? {}],
@@ -80,6 +88,7 @@ export const queryKeys = {
     billing: () => [...queryKeys.dining.all, "billing"],
     tags: () => [...queryKeys.dining.all, "tags"],
     meals: () => [...queryKeys.dining.all, "meals"],
+    menu: (params) => [...queryKeys.dining.all, "menu", params ?? {}],
   },
   lostAndFound: {
     all: ["lost-and-found"],

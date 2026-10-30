@@ -315,6 +315,14 @@ export const studentApi = {
   getDiningMeals: () => {
     return apiClient.get("/students/dining/meals").then(unwrapStandardResponse)
   },
+
+  /**
+   * The dining menu for `{ from, to }` (YYYY-MM-DD, at most 62 days) from the student's own caterer
+   * in each date's period. Returns `{ today, days }`.
+   */
+  getDiningMenu: (params = {}) => {
+    return apiClient.get("/students/dining/menu", { params }).then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

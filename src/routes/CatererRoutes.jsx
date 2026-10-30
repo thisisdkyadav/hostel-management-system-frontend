@@ -10,6 +10,7 @@ const DashboardPage = lazy(() => import("../pages/caterer/DashboardPage"))
 const MealVerificationPage = lazy(() => import("../pages/caterer/MealVerificationPage"))
 const MealRecordsPage = lazy(() => import("../pages/caterer/MealRecordsPage"))
 const RebatesPage = lazy(() => import("../pages/caterer/RebatesPage"))
+const DiningMenuPage = lazy(() => import("../pages/common/DiningMenuPage"))
 const LiveFeedPage = lazy(() => import("../pages/caterer/LiveFeedPage"))
 const DiningAllocationsPage = lazy(() => import("../pages/common/DiningAllocationsPage"))
 
@@ -55,6 +56,14 @@ const CatererRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.caterer.rebates" fallback={<NotFoundPage />}>
                 <RebatesPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="menu"
+            element={
+              <RouteAccessGuard routeKey="route.caterer.menu" fallback={<NotFoundPage />}>
+                <DiningMenuPage readOnly />
               </RouteAccessGuard>
             }
           />

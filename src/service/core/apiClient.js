@@ -130,8 +130,8 @@ const request = async (endpoint, options = {}, clientConfig = {}) => {
     },
   }
 
-  // Remove undefined body for GET/DELETE requests
-  if (config.method === "GET" || config.method === "DELETE") {
+  // GET never carries a body. DELETE keeps one only when the caller sends it (e.g. dining-menu date overrides).
+  if (config.method === "GET" || (config.method === "DELETE" && config.body === undefined)) {
     delete config.body
   }
 
