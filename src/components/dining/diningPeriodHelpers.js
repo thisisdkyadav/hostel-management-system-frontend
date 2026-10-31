@@ -3,8 +3,15 @@
  * Kept framework-agnostic (no JSX) so it can be reused by cards, drawer and form.
  */
 
+export const ELIGIBILITY_MODE_ALL_HOSTELLERS = "all-hostellers"
 export const ELIGIBILITY_MODE_ALL_ACTIVE = "all-active"
 export const ELIGIBILITY_MODE_CUSTOM = "custom"
+
+const ELIGIBILITY_LABELS = {
+  [ELIGIBILITY_MODE_ALL_HOSTELLERS]: "All hostellers",
+  [ELIGIBILITY_MODE_ALL_ACTIVE]: "All active students",
+  [ELIGIBILITY_MODE_CUSTOM]: "Custom CSV",
+}
 
 export const DEFAULT_MEAL_SLOTS = [
   { name: "Breakfast", startTime: "07:00", endTime: "10:00" },
@@ -194,8 +201,7 @@ export const autoAllocationResultText = (autoAllocation) => {
   return `Assigned ${assigned} · ${leftOver} left over`
 }
 
-export const eligibilityLabel = (period) =>
-  period.eligibilityMode === ELIGIBILITY_MODE_CUSTOM ? "Custom CSV" : "All active students"
+export const eligibilityLabel = (period) => ELIGIBILITY_LABELS[period.eligibilityMode] || ELIGIBILITY_LABELS[ELIGIBILITY_MODE_ALL_ACTIVE]
 
 /** Maps a period lifecycle status to a czero StatusBadge tone. */
 export const periodStatusTone = (status) => {

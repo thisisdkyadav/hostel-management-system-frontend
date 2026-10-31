@@ -20,6 +20,7 @@ import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemL
 import {
   DEFAULT_MEAL_SLOTS,
   ELIGIBILITY_MODE_ALL_ACTIVE,
+  ELIGIBILITY_MODE_ALL_HOSTELLERS,
   ELIGIBILITY_MODE_CUSTOM,
   autoAllocationResultText,
   isAutoAllocationRearmable,
@@ -70,7 +71,7 @@ const initialFormState = {
   weekSchedule: [],
   dateSchedule: [],
   dailyRate: "",
-  eligibilityMode: ELIGIBILITY_MODE_ALL_ACTIVE,
+  eligibilityMode: ELIGIBILITY_MODE_ALL_HOSTELLERS,
   eligibleRollNumbers: [],
   tags: [],
 }
@@ -284,7 +285,7 @@ const PeriodFormModal = ({
     setFormData((prev) => ({
       ...prev,
       eligibilityMode: mode,
-      eligibleRollNumbers: mode === ELIGIBILITY_MODE_ALL_ACTIVE ? [] : prev.eligibleRollNumbers,
+      eligibleRollNumbers: mode === ELIGIBILITY_MODE_CUSTOM ? prev.eligibleRollNumbers : [],
     }))
   }
 
@@ -738,6 +739,10 @@ const PeriodFormModal = ({
             <VStack gap="small">
               <Label required>Student Eligibility</Label>
               <HStack gap="small" style={{ flexWrap: "wrap" }}>
+                <Button type="button" variant={formData.eligibilityMode === ELIGIBILITY_MODE_ALL_HOSTELLERS ? "primary" : "secondary"}
+                  onClick={() => handleEligibilityModeChange(ELIGIBILITY_MODE_ALL_HOSTELLERS)}>
+                  All Hostellers
+                </Button>
                 <Button type="button" variant={formData.eligibilityMode === ELIGIBILITY_MODE_ALL_ACTIVE ? "primary" : "secondary"}
                   onClick={() => handleEligibilityModeChange(ELIGIBILITY_MODE_ALL_ACTIVE)}>
                   All Active Students
@@ -747,6 +752,13 @@ const PeriodFormModal = ({
                   Custom Roll Number CSV
                 </Button>
               </HStack>
+              <Text color="muted" size="sm">
+                {formData.eligibilityMode === ELIGIBILITY_MODE_ALL_HOSTELLERS
+                  ? "Every active student except day scholars."
+                  : formData.eligibilityMode === ELIGIBILITY_MODE_ALL_ACTIVE
+                    ? "Every active student, day scholars included."
+                    : "Only the active students on the uploaded roll list."}
+              </Text>
               {formData.eligibilityMode === ELIGIBILITY_MODE_CUSTOM && (
                 <RollNumberCsvInput
                   rollNumbers={formData.eligibleRollNumbers}
