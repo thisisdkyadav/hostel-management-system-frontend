@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { Alert, Button, ConfirmDialog, Field, Input, Modal, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
+import { Alert, Button, Checkbox, ConfirmDialog, Field, Input, Modal, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
 import { Download } from "lucide-react"
 import CapacityBar from "@/components/dining/CapacityBar"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
@@ -8,7 +8,7 @@ import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
 import { DEFAULT_MAX_ADVANCE_MONTHS, addMonthsToDayKey, periodRangeLabel } from "../diningPeriodHelpers"
 import useRebatePreview from "./useRebatePreview"
-import { blockedPeriodFor, unregisteredRebateMessage } from "./studentDiningHelpers"
+import { REGISTRATION_ACK_TEXT, blockedPeriodFor, needsRegistrationAck, unregisteredRebateMessage } from "./studentDiningHelpers"
 
 const uploadFilledForm = (file) => {
   const formData = new FormData()
@@ -37,6 +37,63 @@ const placementDetail = (placement, preview, rules) => {
   return `${days} · ${used} of ${max} short-term days used after this`
 }
 
+/** Which parts of a rebate fall outside periods the student is registered for (lines + counts). */
+const atRiskSummary = (preview, placements, unplacedDayCount) => {
+  const days = Number(preview?.atRiskDayCount) || 0
+  const lines = placements
+    .filter((placement) => placement.registered === false)
+    .map((placement) => `${periodRangeLabel(placement.period) || "Dining period"} \u2014 not registered yet`)
+  if (unplacedDayCount > 0) lines.push(`${plural(unplacedDayCount, "day")} \u2014 no dining period yet`)
+  return { days, lines }
+}
+
+/** Warning shown once the preview says part of the rebate is outside the student's registered periods. */
+const RegistrationWarning = ({ summary }) => (
+  <Alert type="warning" icon>
+    <div className="sd-regwarn">
+      <p className="sd-regwarn__rule">
+        Part of this rebate ({plural(summary.days, "day")}) is outside a dining period you&apos;re registered for.
+      </p>
+      {summary.lines.length > 0 && (
+        <ul className="sd-regwarn__list">
+          {summary.lines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
+      <p className="sd-regwarn__rule">Register for each of these periods when allocation opens, or these days won&apos;t be rebated.</p>
+    </div>
+  </Alert>
+)
+
+/** Second step on Send: restates the warning and needs the box ticked. Mounted only while open so the tick starts clear. */
+const RegistrationConfirmModal = ({ summary, isSubmitting, onClose, onConfirm }) => {
+  const [accepted, setAccepted] = useState(false)
+  return (
+    <Modal
+      isOpen
+      onClose={onClose}
+      title="Before you send this"
+      width={520}
+      footer={
+        <>
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button type="button" variant="primary" loading={isSubmitting} disabled={!accepted || isSubmitting} onClick={onConfirm}>
+            Confirm and send
+          </Button>
+        </>
+      }
+    >
+      <div className="sd-form">
+        <RegistrationWarning summary={summary} />
+        <Checkbox checked={accepted} onChange={(event) => setAccepted(event.target.checked)} label={REGISTRATION_ACK_TEXT} required />
+      </div>
+    </Modal>
+  )
+}
+
 /**
  * "I'll be away": a date range and an optional reason. Once both dates are
  * set the server previews the request; long-term stretches that need a form
@@ -49,6 +106,7 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
   const [error, setError] = useState("")
   const [filled, setFilled] = useState({ ref: "", name: "" })
   const [pendingFile, setPendingFile] = useState(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const uploadedNameRef = useRef("")
   const set = (key) => (event) => setForm((prev) => ({ ...prev, [key]: event.target.value }))
 
@@ -65,6 +123,9 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
   // Auto-allocated (unregistered) periods can't take new rebates; the server enforces it too.
   const blockedPeriod = blockedPeriodFor(rules?.unregisteredPeriods, form.startDate, form.endDate)
   const blockedMessage = blockedPeriod ? unregisteredRebateMessage(blockedPeriod) : ""
+  // Only once both dates are set and the matching preview has arrived (`preview` is null while typing/loading).
+  const registrationAck = !blockedPeriod && needsRegistrationAck(preview)
+  const riskSummary = registrationAck ? atRiskSummary(preview, placements, unplacedDayCount) : null
   const canSubmit = ready && !blockedPeriod && !previewPending && !previewError && Boolean(preview) && (!formRequired || Boolean(filled.ref))
 
   const handleUploadForm = async (file) => {
@@ -82,9 +143,19 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
     if (!preview || previewError) return setError(previewMessage || "Please wait while we check those dates.")
     if (formRequired && !filled.ref) return setError("Please upload the filled long-term rebate form.")
     setError("")
+    if (registrationAck) return setConfirmOpen(true)
+    await send(false)
+  }
+
+  const send = async (acknowledgeRegistration) => {
     try {
-      await onSubmit({ ...form, ...(formRequired ? { form: { ref: filled.ref, name: filled.name } } : {}) })
+      await onSubmit({
+        ...form,
+        ...(formRequired ? { form: { ref: filled.ref, name: filled.name } } : {}),
+        ...(acknowledgeRegistration ? { acknowledgeRegistration: true } : {}),
+      })
     } catch (submitError) {
+      setConfirmOpen(false)
       setError(getErrorMessage(submitError, "Couldn't save that. Please check the dates."))
     }
   }
@@ -170,6 +241,7 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
             )}
           </div>
         )}
+        {riskSummary && <RegistrationWarning summary={riskSummary} />}
         <Field label="Reason (optional)" htmlFor="sd-away-reason">
           <Textarea id="sd-away-reason" rows={2} value={form.reason} onChange={set("reason")} placeholder="e.g. Going home for Diwali" />
         </Field>
@@ -209,6 +281,9 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
           </div>
         )}
       </form>
+      {confirmOpen && riskSummary && (
+        <RegistrationConfirmModal summary={riskSummary} isSubmitting={isSubmitting} onClose={() => setConfirmOpen(false)} onConfirm={() => send(true)} />
+      )}
     </Modal>
   )
 }

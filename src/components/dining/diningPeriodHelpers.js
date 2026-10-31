@@ -286,7 +286,7 @@ export const getRebateWhereLines = (rebate, { compact = false } = {}) => {
       const caterer = placement.caterer?.name || "No caterer yet"
       const days = `${Number(placement.dayCount) || 0}d`
       const where = [range, caterer].filter(Boolean).join(" · ")
-      lines.push({ key: `${placement.periodId || index}`, label: `${where} (${days})` })
+      lines.push({ key: `${placement.periodId || index}`, label: `${where} (${days})`, notCounted: placement.counted === false })
     })
     const unplaced = Number(rebate.unplacedDayCount) || 0
     if (unplaced > 0) {

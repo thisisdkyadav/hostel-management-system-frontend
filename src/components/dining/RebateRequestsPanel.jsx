@@ -23,6 +23,11 @@ const RebateWhere = ({ rebate }) => {
       {lines.map((line) => (
         <Text as="div" size="sm" color={line.key === "unplaced" ? "muted" : "body"} key={line.key}>
           {line.label}
+          {line.notCounted && (
+            <Text as="span" size="sm" color="muted">
+              {" · Not counted (unregistered)"}
+            </Text>
+          )}
         </Text>
       ))}
     </VStack>

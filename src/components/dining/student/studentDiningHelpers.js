@@ -68,3 +68,13 @@ export const blockedPeriodFor = (unregisteredPeriods, startDate, endDate) => {
 /** Why a rebate can't be requested for an auto-allocated (unregistered) period; same wording as the server. */
 export const unregisteredRebateMessage = (period) =>
   `You were auto-allocated for the dining period ${formatRange(period.startDate, period.endDate)} because you didn't choose a caterer, so you can't request a rebate for those dates. Contact the dining office.`
+
+/** The exact acknowledgement the student must tick when a rebate reaches beyond the periods they are registered for. */
+export const REGISTRATION_ACK_TEXT =
+  "I understand that I must register (choose a caterer) for each upcoming dining period when its allocation opens. If I don't register, I will be marked Unregistered and this rebate will not be given for that dining period."
+
+/** True when the server preview says some days are not in a period the student is registered for. */
+export const needsRegistrationAck = (preview) => Boolean(preview?.requiresRegistrationAcknowledgement)
+
+/** Shown on a rebate placement whose days are not counted because the student is Unregistered for that period. */
+export const NOT_COUNTED_STUDENT_TEXT = "Not counted \u2014 you didn't register for this period"

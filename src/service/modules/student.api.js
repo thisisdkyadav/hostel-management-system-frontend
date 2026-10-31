@@ -295,7 +295,7 @@ export const studentApi = {
 
   /**
    * Request a dining rebate
-   * @param {{ startDate: string, endDate: string, reason?: string, form?: { ref: string, name: string } }} payload
+   * @param {{ startDate: string, endDate: string, reason?: string, form?: { ref: string, name: string }, acknowledgeRegistration?: boolean }} payload
    */
   requestDiningRebate: (payload) => {
     return apiClient.post("/students/dining/rebates", payload).then(unwrapStandardResponse)

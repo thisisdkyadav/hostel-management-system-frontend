@@ -4,6 +4,7 @@ import { Plane } from "lucide-react"
 import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import { formatRange, toDayKey } from "../caterer/catererHelpers"
 import { formatRebateStatus, getRebateWhereLines, rebateStatusTone } from "../diningPeriodHelpers"
+import { NOT_COUNTED_STUDENT_TEXT } from "./studentDiningHelpers"
 
 const SHOWN = 4
 
@@ -53,6 +54,7 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeri
                   {where.length > 0 && (
                     <span className="sd-away__where">{where.map((line) => line.label).join(" · ")}</span>
                   )}
+                  {where.some((line) => line.notCounted) && <span className="sd-away__where">{NOT_COUNTED_STUDENT_TEXT}</span>}
                 </div>
                 <div className="sd-away__side">
                   {rebate.form?.ref && (
