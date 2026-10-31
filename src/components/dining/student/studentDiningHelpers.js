@@ -1,5 +1,6 @@
 // Helpers for the student Dining page.
 import { formatClock } from "../caterer/meal-records/mealRecordsHelpers"
+import { formatRange, toDayKey } from "../caterer/catererHelpers"
 
 export { formatClock }
 
@@ -51,3 +52,19 @@ export const autoAssignLine = (period) => {
 
 /** True when an open dining-tag question still has no answer from the student. */
 export const needsResponse = (item) => Boolean(item?.editable) && typeof item?.value !== "boolean"
+
+/** The unregistered period (from rules.unregisteredPeriods) that the chosen rebate dates touch, or null. */
+export const blockedPeriodFor = (unregisteredPeriods, startDate, endDate) => {
+  if (!Array.isArray(unregisteredPeriods) || !startDate || !endDate) return null
+  return (
+    unregisteredPeriods.find((period) => {
+      const start = toDayKey(period.startDate)
+      const end = toDayKey(period.endDate)
+      return start && end && startDate <= end && endDate >= start
+    }) || null
+  )
+}
+
+/** Why a rebate can't be requested for an auto-allocated (unregistered) period; same wording as the server. */
+export const unregisteredRebateMessage = (period) =>
+  `You were auto-allocated for the dining period ${formatRange(period.startDate, period.endDate)} because you didn't choose a caterer, so you can't request a rebate for those dates. Contact the dining office.`

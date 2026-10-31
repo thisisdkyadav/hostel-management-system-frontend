@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Avatar, Button, Drawer, DetailSection, InfoRow, Select, Skeleton, StatusBadge, useConfirm, useToast } from "hzero"
-import { ArrowRightLeft, Banknote, CalendarClock, History, Tags, UserRound, UserMinus, Utensils } from "lucide-react"
+import { ArrowRightLeft, Banknote, CalendarClock, History, ShieldCheck, Tags, UserRound, UserMinus, Utensils } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { adminApi, diningAllocationsApi, diningTagsApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -101,6 +101,14 @@ const DrawerBody = ({ student, tags, period, slots, caterers, palette, canManage
     },
     onError: (error) => toast.error(getErrorMessage(error, "Unable to save the tag answer.")),
   })
+  const markRegistered = useMutation({
+    mutationFn: () => diningAllocationsApi.markRegistered(period.id, student.id),
+    onSuccess: async () => {
+      toast.success(`${student.name || student.rollNumber} is marked as registered`)
+      await refresh()
+    },
+    onError: (error) => toast.error(getErrorMessage(error, "Unable to mark the student as registered.")),
+  })
   const remove = useMutation({
     mutationFn: () => adminApi.removeDiningAllocation(period.id, student.id),
     onSuccess: async () => {
@@ -129,6 +137,15 @@ const DrawerBody = ({ student, tags, period, slots, caterers, palette, canManage
       }
       toast.error(message)
     }
+  }
+
+  const runMarkRegistered = async () => {
+    const ok = await confirm({
+      title: "Mark as registered?",
+      message: `${student.name || student.rollNumber} will be able to request rebates for ${periodRange(period.startDate, period.endDate)} again.`,
+      confirmText: "Mark as registered",
+    })
+    if (ok) markRegistered.mutate()
   }
 
   const runRemove = async () => {
@@ -166,10 +183,34 @@ const DrawerBody = ({ student, tags, period, slots, caterers, palette, canManage
             {period.phase === "current" && (
               <StatusBadge tone={status.tone} showDot={false}>{status.label}</StatusBadge>
             )}
+            {student.unregistered && <StatusBadge tone="warning" showDot={false}>Unregistered</StatusBadge>}
             <DiningTagChips tags={tagChips} />
           </div>
         </div>
       </header>
+
+      {student.unregistered && (
+        <DetailSection title="Registration" icon={ShieldCheck}>
+          <div className="al-registration">
+            <Alert type="warning" icon>
+              Auto-allocated — didn't choose a caterer. Can't request rebates for this period.
+            </Alert>
+            {oversight && (
+              <Button variant="secondary" onClick={runMarkRegistered} loading={markRegistered.isPending}>
+                <ShieldCheck size={16} /> Mark as registered
+              </Button>
+            )}
+          </div>
+        </DetailSection>
+      )}
+      {!student.unregistered && student.registrationClearedAt && (
+        <DetailSection title="Registration" icon={ShieldCheck}>
+          <InfoRow
+            label="Marked registered"
+            value={`${student.registrationClearedBy?.name ? `by ${student.registrationClearedBy.name} on ` : "on "}${formatDayMonth(toDayKey(student.registrationClearedAt))}`}
+          />
+        </DetailSection>
+      )}
 
       <DetailSection title="Student" icon={UserRound} columns={2}>
         <InfoRow label="Hostel / room" value={roomLabel(student) || "-"} />

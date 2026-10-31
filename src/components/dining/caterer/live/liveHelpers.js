@@ -161,6 +161,7 @@ export const decorate = (entry, index, nowMs) => {
     photo: entry.student?.profileImage || known?.profileImage || "",
     room,
     tags: entry.student?.tags || known?.tags || [],
+    unregistered: Boolean(entry.student?.unregistered ?? known?.unregistered),
     status: entry.status,
     source: entry.source,
     message: entry.message || "",

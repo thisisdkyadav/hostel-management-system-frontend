@@ -82,6 +82,9 @@ const AllocationStats = ({ period, summary, oversight, today, onQuick, onOpenCyc
       {period.phase === "current" && currentTiles(summary, props)}
       {period.phase === "past" && pastTiles(summary, props)}
       {period.phase === "upcoming" && upcomingTiles(summary, props)}
+      {summary.unregisteredCount > 0 && (
+        <StatTile label="Unregistered" value={summary.unregisteredCount} tone="warning" note="Auto-allocated, no rebates" />
+      )}
     </section>
   )
 }

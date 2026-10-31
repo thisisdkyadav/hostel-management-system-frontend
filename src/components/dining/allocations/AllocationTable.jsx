@@ -14,9 +14,11 @@ import {
   formatPct,
   LOW_ATTENDANCE,
   matchesQuick,
+  matchesRegistration,
   matchesTag,
   PAGE_SIZE,
   quickFilterDefs,
+  REGISTRATION_OPTIONS,
   searchText,
   TAG_VALUE_OPTIONS,
   toRow,
@@ -75,6 +77,7 @@ const AllocationTable = ({
   const [batch, setBatch] = useState("")
   const [tagId, setTagId] = useState("")
   const [tagValue, setTagValue] = useState("yes")
+  const [registration, setRegistration] = useState("")
   const [page, setPage] = useState(1)
 
   // A different period starts on page one; the filters carry over.
@@ -95,6 +98,7 @@ const AllocationTable = ({
     ],
     [tagList, rows]
   )
+  const hasUnregistered = useMemo(() => rows.some((row) => row.unregistered), [rows])
   const hostels = useMemo(() => uniqueSorted(rows.map((row) => row.hostel?.name)), [rows])
   const batches = useMemo(() => uniqueSorted(rows.map((row) => row.batch)), [rows])
   const mealPalette = useMemo(() => mealPaletteFor(slots), [slots])
@@ -107,15 +111,16 @@ const AllocationTable = ({
           (!hostel || row.hostel?.name === hostel) &&
           (!batch || row.batch === batch) &&
           matchesTag(row, activeTagId, tagValue) &&
+          matchesRegistration(row, registration) &&
           (!needle || searchText(row).includes(needle))
       ),
-    [rows, hostel, batch, activeTagId, tagValue, needle]
+    [rows, hostel, batch, activeTagId, tagValue, registration, needle]
   )
   const visible = useMemo(() => scoped.filter((row) => matchesQuick(row, quick)), [scoped, quick])
 
   const defs = quickFilterDefs(period.phase, oversight)
   const tabs = defs.map((def) => ({ ...def, count: scoped.filter((row) => matchesQuick(row, def.value)).length }))
-  const filtersActive = Boolean(needle || hostel || batch || activeTagId || quick !== "all")
+  const filtersActive = Boolean(needle || hostel || batch || activeTagId || registration || quick !== "all")
   const totalPages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE))
 
   const resetFilters = () => {
@@ -124,6 +129,7 @@ const AllocationTable = ({
     setBatch("")
     setTagId("")
     setTagValue("yes")
+    setRegistration("")
     onQuick("all")
     setPage(1)
   }
@@ -144,6 +150,11 @@ const AllocationTable = ({
           <span className="al-student__text">
             <span className="al-student__name">{row.name || "Unnamed student"}</span>
             <span className="al-student__roll">{row.rollNumber || "No roll number"}</span>
+            {row.unregistered && (
+              <span className="al-student__flag" title="Auto-allocated: did not choose a caterer. Cannot request rebates for this period.">
+                <StatusBadge tone="warning" showDot={false}>Unregistered</StatusBadge>
+              </span>
+            )}
           </span>
         </button>
       ),
@@ -315,6 +326,18 @@ const AllocationTable = ({
                 />
               )}
             </>
+          )}
+          {(hasUnregistered || registration) && (
+            <Select
+              size="small"
+              value={registration}
+              onChange={(event) => {
+                setRegistration(event.target.value)
+                setPage(1)
+              }}
+              options={REGISTRATION_OPTIONS}
+              aria-label="Registration"
+            />
           )}
           {filtersActive && (
             <Button variant="ghost" size="sm" onClick={resetFilters}>

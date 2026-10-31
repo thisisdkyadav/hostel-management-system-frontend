@@ -101,6 +101,7 @@ const MealVerificationPage = () => {
   const [manualError, setManualError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
   const [successTags, setSuccessTags] = useState([])
+  const [successUnregistered, setSuccessUnregistered] = useState(false)
   const [profilePreview, setProfilePreview] = useState(null)
 
   const issuesCount = useMemo(() => entries.filter((entry) => entry.status !== "verified").length, [entries])
@@ -192,6 +193,7 @@ const MealVerificationPage = () => {
     setManualError("")
     setSuccessMessage("")
     setSuccessTags([])
+    setSuccessUnregistered(false)
     try {
       const response = await catererApi.manualMealVerification({ rollNumber: rollNumber.trim() })
       const verification = response?.verification
@@ -200,6 +202,7 @@ const MealVerificationPage = () => {
       }
       setSuccessMessage(response?.verification?.message || "Manual meal verification recorded.")
       setSuccessTags(verification?.student?.tags || [])
+      setSuccessUnregistered(Boolean(verification?.student?.unregistered))
       setRollNumber("")
     } catch (manualError) {
       setManualError(getErrorMessage(manualError, "Unable to verify meal manually."))
@@ -235,7 +238,7 @@ const MealVerificationPage = () => {
                 {successMessage && (
                   <Alert type="success" icon dismissible onDismiss={() => setSuccessMessage("")}>
                     {successMessage}
-                    {successTags.length > 0 && <div style={{ marginTop: "var(--spacing-2)" }}><DiningTagChips tags={successTags} size="lg" /></div>}
+                    {(successTags.length > 0 || successUnregistered) && <div style={{ marginTop: "var(--spacing-2)" }}><DiningTagChips tags={successTags} unregistered={successUnregistered} size="lg" /></div>}
                   </Alert>
                 )}
                 <form onSubmit={handleManualVerify}>
@@ -308,7 +311,7 @@ const MealVerificationPage = () => {
                         <Table.Cell>
                           <Text as="div" weight="semibold" color="secondary">{entry.student?.name || "Unknown Student"}</Text>
                           <Text as="div" color="muted" size="sm">{entry.rollNumber}</Text>
-                          {entry.student?.tags?.length > 0 && <div style={{ marginTop: "var(--spacing-1)" }}><DiningTagChips tags={entry.student.tags} size="lg" /></div>}
+                          {(entry.student?.tags?.length > 0 || entry.student?.unregistered) && <div style={{ marginTop: "var(--spacing-1)" }}><DiningTagChips tags={entry.student.tags} unregistered={entry.student.unregistered} size="lg" /></div>}
                         </Table.Cell>
                         <Table.Cell>{entry.mealSlotName || "-"}</Table.Cell>
                         <Table.Cell>

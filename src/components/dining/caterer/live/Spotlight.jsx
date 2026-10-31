@@ -24,7 +24,7 @@ const Card = ({ entry, nowMs, previewing, layer, idle, palette, showCaterer }) =
           <span>{entry.rollNumber}</span>
           {entry.room && <span className="lf-spot-room">{entry.room}</span>}
         </p>
-        {entry.tags?.length > 0 && <DiningTagChips tags={entry.tags} size="lg" className="lf-spot-dtags" />}
+        {(entry.tags?.length > 0 || entry.unregistered) && <DiningTagChips tags={entry.tags} unregistered={entry.unregistered} size="lg" className="lf-spot-dtags" />}
         {showCaterer && entry.caterer?.name && (
           <p className="lf-spot-caterer" style={{ "--kitchen": catererColor(palette, entry.caterer.id) }}>
             {entry.caterer.name}

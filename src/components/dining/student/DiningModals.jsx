@@ -8,6 +8,7 @@ import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
 import { DEFAULT_MAX_ADVANCE_MONTHS, addMonthsToDayKey, periodRangeLabel } from "../diningPeriodHelpers"
 import useRebatePreview from "./useRebatePreview"
+import { blockedPeriodFor, unregisteredRebateMessage } from "./studentDiningHelpers"
 
 const uploadFilledForm = (file) => {
   const formData = new FormData()
@@ -61,7 +62,10 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
   const continuousDays = Number(rules?.shortTermMaxContinuousDays) || 0
   const advanceDays = Number(rules?.shortTermMinAdvanceDays) || 0
   const previewMessage = previewError ? getErrorMessage(previewError, "Couldn't check those dates. Please try again.") : ""
-  const canSubmit = ready && !previewPending && !previewError && Boolean(preview) && (!formRequired || Boolean(filled.ref))
+  // Auto-allocated (unregistered) periods can't take new rebates; the server enforces it too.
+  const blockedPeriod = blockedPeriodFor(rules?.unregisteredPeriods, form.startDate, form.endDate)
+  const blockedMessage = blockedPeriod ? unregisteredRebateMessage(blockedPeriod) : ""
+  const canSubmit = ready && !blockedPeriod && !previewPending && !previewError && Boolean(preview) && (!formRequired || Boolean(filled.ref))
 
   const handleUploadForm = async (file) => {
     const result = await uploadFilledForm(file)
@@ -74,6 +78,7 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
     if (!form.startDate || !form.endDate) return setError("Pick the first and last day you'll be away.")
     if (form.startDate > form.endDate) return setError("The last day can't be before the first day.")
     if (maxDate && form.endDate > maxDate) return setError(`You can only plan up to ${maxMonths} months ahead.`)
+    if (blockedMessage) return setError(blockedMessage)
     if (!preview || previewError) return setError(previewMessage || "Please wait while we check those dates.")
     if (formRequired && !filled.ref) return setError("Please upload the filled long-term rebate form.")
     setError("")
@@ -113,6 +118,16 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
             {error || previewMessage}
           </Alert>
         )}
+        {blockedMessage && !error && !previewMessage && (
+          <Alert type="warning" icon>
+            {blockedMessage}
+          </Alert>
+        )}
+        {!blockedMessage && rules?.unregisteredPeriods?.length > 0 && (
+          <p className="sd-form__note">
+            Rebates aren&apos;t available for {rules.unregisteredPeriods.map((period) => formatRange(period.startDate, period.endDate)).join(", ")}: you didn&apos;t choose a caterer in time.
+          </p>
+        )}
         <div className="sd-form__dates">
           <Field label="First day away" htmlFor="sd-away-start" required>
             <Input id="sd-away-start" type="date" min={today} max={maxDate} value={form.startDate} onChange={set("startDate")} required />
@@ -129,8 +144,8 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
             />
           </Field>
         </div>
-        {ready && previewPending && <p className="sd-form__note">Checking your dates…</p>}
-        {preview && (
+        {ready && previewPending && !blockedPeriod && <p className="sd-form__note">Checking your dates…</p>}
+        {preview && !blockedPeriod && (
           <div className="sd-preview">
             <p className="sd-preview__summary" data-type={preview.type}>
               {previewSummary(preview)}

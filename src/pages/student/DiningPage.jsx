@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Button, LoadingState, Page } from "hzero"
-import { CalendarClock, UtensilsCrossed } from "lucide-react"
+import { CalendarClock, Info, UtensilsCrossed } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { studentApi } from "../../service"
 import { queryKeys } from "@/lib/query"
@@ -89,6 +89,11 @@ const DiningPage = () => {
       (period) => period?.selectedAllocation && periodId(period) !== periodId(currentPeriod)
     ) || null
   const needsChoice = canSelect && !openPeriod?.selectedAllocation
+  // Periods where the student never chose and was auto-allocated: rebates are off for them.
+  const unregisteredPeriods = [currentPeriod, openPeriod, nextWindow, portal?.allocatedUpcomingPeriod].filter(
+    (period, index, list) =>
+      period?.selectedAllocation?.unregistered && list.findIndex((other) => other && periodId(other) === periodId(period)) === index
+  )
 
   const selectCaterer = useChooseCaterer({
     onSuccess: (_response, variables) => {
@@ -172,6 +177,16 @@ const DiningPage = () => {
             />
           )}
 
+          {unregisteredPeriods.map((period) => (
+            <Notice
+              key={periodId(period)}
+              tone="warning"
+              icon={<Info size={18} />}
+              title="You didn't choose a caterer in time, so you were assigned one."
+              text={`Rebates aren't available for ${formatRange(period.startDate, period.endDate)}.`}
+            />
+          ))}
+
           {tagsNeedResponse && <TagAnswersCard items={tagItems} />}
 
           <div className="sd-layout">
@@ -210,7 +225,7 @@ const DiningPage = () => {
 
             <aside className="sd-side">
               {!tagsNeedResponse && <TagAnswersCard items={tagItems} />}
-              <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest onRequest={() => setAwayOpen(true)} />
+              <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest onRequest={() => setAwayOpen(true)} unregisteredPeriods={rebatesQuery.data?.rules?.unregisteredPeriods || []} />
               <BillCard billingPeriods={billingPeriods} />
             </aside>
           </div>

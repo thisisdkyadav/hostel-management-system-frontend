@@ -45,6 +45,14 @@
   letter-spacing: 0.02em;
 }
 
+/* Auto-allocated student who never chose a caterer: a calm "needs attention" cue, distinct from tags. */
+.dtag--unregistered,
+.dtag--unregistered[data-size="lg"] {
+  border: var(--border-1) solid var(--color-info-border);
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
+}
+
 .dtag-counts {
   display: flex;
   flex-wrap: wrap;

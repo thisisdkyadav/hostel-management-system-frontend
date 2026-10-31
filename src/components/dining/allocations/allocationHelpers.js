@@ -147,6 +147,21 @@ export const quickFilterDefs = (phase, oversight) => {
 
 export const validQuick = (phase, oversight, value) => (quickFilterDefs(phase, oversight).some((def) => def.value === value) ? value : "all")
 
+/* ---------- registration (auto-allocated = "unregistered") ---------- */
+
+export const REGISTRATION_OPTIONS = [
+  { value: "", label: "All students" },
+  { value: "registered", label: "Registered" },
+  { value: "unregistered", label: "Unregistered" },
+]
+
+/** "" matches everyone; "unregistered" the auto-allocated students still marked; "registered" the rest. */
+export const matchesRegistration = (student, value) => {
+  if (value === "unregistered") return Boolean(student.unregistered)
+  if (value === "registered") return !student.unregistered
+  return true
+}
+
 /* ---------- dining tags ---------- */
 
 /** One student's entry for one tag: { value, effective, source } (value null = never answered). */
@@ -227,6 +242,7 @@ export const buildAllocationsCsv = (rows, { slots = [], oversight = false, phase
     "Batch",
     ...(oversight ? ["Caterer"] : []),
     "Allocated on",
+    "Unregistered",
     ...(phase === "upcoming" ? ["Rebate days booked"] : ["Meals", ...slots.map((slot) => slot.name), "Attendance %", "Rebate days", "Billable days", "Billed"]),
     ...(oversight && phase !== "upcoming" ? ["Mess fee", "Balance"] : []),
     ...tags.map((tag) => `Tag: ${tag.name}`),
@@ -242,6 +258,7 @@ export const buildAllocationsCsv = (rows, { slots = [], oversight = false, phase
     row.batch,
     ...(oversight ? [row.caterer?.name || ""] : []),
     row.selectedAt ? toDayKey(row.selectedAt) : "",
+    row.unregistered ? "Yes" : "",
     ...(phase === "upcoming"
       ? [row.approvedRebateDays]
       : [

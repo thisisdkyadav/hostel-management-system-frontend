@@ -53,7 +53,7 @@ const COLUMNS = [
         <div className="mr-student__text">
           <span className="mr-student__name">{row.student.name || "Unnamed student"}</span>
           <span className="mr-student__roll">{row.student.rollNumber || "No roll number"}</span>
-          {row.student.tags?.length > 0 && <DiningTagChips tags={row.student.tags} max={3} />}
+          {(row.student.tags?.length > 0 || row.student.unregistered) && <DiningTagChips tags={row.student.tags} unregistered={row.student.unregistered} max={3} />}
         </div>
       </div>
     ),

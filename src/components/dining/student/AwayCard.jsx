@@ -8,7 +8,7 @@ import { formatRebateStatus, getRebateWhereLines, rebateStatusTone } from "../di
 const SHOWN = 4
 
 /** Rebates as "times I'm away": upcoming first, then the rest, newest first. */
-const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
+const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeriods = [] }) => {
   const [showAll, setShowAll] = useState(false)
   const [viewForm, setViewForm] = useState(null)
   const sorted = [...rebates].sort((a, b) => {
@@ -30,6 +30,11 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest }) => {
         </Button>
       </header>
       <p className="sd-card__note">Tell us when you won&apos;t eat here and those days are not charged.</p>
+      {unregisteredPeriods.length > 0 && (
+        <p className="sd-card__note">
+          You didn&apos;t choose a caterer in time, so rebates aren&apos;t available for {unregisteredPeriods.map((period) => formatRange(period.startDate, period.endDate)).join(", ")}.
+        </p>
+      )}
       {visible.length === 0 ? (
         <p className="sd-card__empty">No rebates yet.</p>
       ) : (

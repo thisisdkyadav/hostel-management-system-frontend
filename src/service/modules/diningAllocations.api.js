@@ -29,6 +29,14 @@ export const diningAllocationsApi = {
     return apiClient.get("/dining-allocations/roster", { params }).then(unwrapStandardResponse)
   },
 
+  /**
+   * Clear the "Unregistered" mark of an auto-allocated student so they may request rebates for the period again.
+   * Admin and the Dining Office only. Returns { allocation } (the roster row).
+   */
+  markRegistered: (periodId, studentUserId) => {
+    return apiClient.put(`/dining-allocations/${periodId}/students/${studentUserId}/registered`).then(unwrapStandardResponse)
+  },
+
   /** Every period one student was allocated in, newest first. */
   getStudentHistory: (studentUserId) => {
     return apiClient.get("/dining-allocations/student-history", { params: { studentUserId } }).then(unwrapStandardResponse)

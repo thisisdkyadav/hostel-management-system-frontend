@@ -51,7 +51,7 @@ const ScanRow = ({ entry, nowMs, previewing, onPreview, palette, showCaterer = f
             <span className="lf-row-roll">{entry.rollNumber}</span>
             {entry.room && <span className="lf-row-room">{entry.room}</span>}
           </span>
-          {entry.tags?.length > 0 && <DiningTagChips tags={entry.tags} max={2} />}
+          {(entry.tags?.length > 0 || entry.unregistered) && <DiningTagChips tags={entry.tags} unregistered={entry.unregistered} max={2} />}
         </div>
         {tagged && (
           <span className="lf-row-caterer" title={`Scanned at ${entry.caterer.name}`}>
