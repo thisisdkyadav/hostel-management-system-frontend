@@ -1181,3 +1181,24 @@
   border-radius: var(--radius-lg);
   border: var(--border-1) solid var(--color-border-primary);
 }
+
+.sd-card[data-highlight] {
+  animation: sd-bio-highlight 2.4s ease-out;
+}
+
+@keyframes sd-bio-highlight {
+  0%,
+  40% {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 var(--spacing-1) var(--color-primary-bg);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-card[data-highlight] {
+    animation-duration: 0.01s;
+  }
+}

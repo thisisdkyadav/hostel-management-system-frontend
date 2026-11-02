@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Button, ConfirmDialog, Field, Modal, StatusBadge, Textarea } from "hzero"
 import { Camera, ImagePlus } from "lucide-react"
@@ -18,11 +19,18 @@ const STATUS = {
   cancelled: { label: "Cancelled", tone: "neutral" },
 }
 
+/** Shareable link: /student/dining?photo=update opens the upload straight away. */
+export const BIO_PHOTO_LINK_PARAM = "photo"
+const BIO_PHOTO_LINK_VALUE = "update"
+
+const PRIVACY_NOTE = "This photo is used only by the mess face scanners. It won't be shown on your profile or anywhere else."
+
 const GUIDELINES = [
-  "Face the camera, eyes open, whole face visible",
-  "Plain, light background and even lighting",
-  "No cap, mask or sunglasses",
-  "Only you in the photo, recent and in focus",
+  "Take a new photo now. A recent photo matches best.",
+  "Only your face: fill most of the photo with it, looking straight at the camera",
+  "Eyes open, whole face visible: no cap, mask or sunglasses",
+  "Plain, light background, even lighting, in focus",
+  "Only you in the photo",
 ]
 
 /** "image/jpeg" | "image/png" | "" from the file's first bytes (the name and type can lie). */
@@ -117,6 +125,9 @@ const UpdatePhotoModal = ({ rules, onClose, onSent }) => {
       }
     >
       <div className="sd-form">
+        <Alert type="info" icon>
+          {PRIVACY_NOTE}
+        </Alert>
         <p className="sd-form__note">
           The dining office checks your photo first. Once they approve it, the face scanners at the mess use it within a few minutes.
         </p>
@@ -165,7 +176,10 @@ const UpdatePhotoModal = ({ rules, onClose, onSent }) => {
 /** Side card on the student Dining page: the face-scanner photo and its update request. */
 const BioPhotoCard = () => {
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const cardRef = useRef(null)
   const [open, setOpen] = useState(false)
+  const [highlight, setHighlight] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(false)
   const [message, setMessage] = useState("")
 
@@ -187,6 +201,28 @@ const BioPhotoCard = () => {
     },
   })
 
+  // Opened from the shared link: open the upload (unless a photo is already
+  // waiting) and highlight the card once; then scroll to it and drop the parameter.
+  const [linkHandled, setLinkHandled] = useState(false)
+  const fromLink = searchParams.get(BIO_PHOTO_LINK_PARAM) === BIO_PHOTO_LINK_VALUE
+  if (fromLink && query.isSuccess && !linkHandled) {
+    setLinkHandled(true)
+    setHighlight(true)
+    if (query.data?.current?.status !== "pending") setOpen(true)
+  }
+  useEffect(() => {
+    if (!linkHandled) return
+    cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+    setSearchParams(
+      (params) => {
+        const next = new URLSearchParams(params)
+        next.delete(BIO_PHOTO_LINK_PARAM)
+        return next
+      },
+      { replace: true }
+    )
+  }, [linkHandled, setSearchParams])
+
   // The card is a side feature: if it can't load, it stays hidden.
   if (query.isLoading || query.isError) return null
 
@@ -196,7 +232,7 @@ const BioPhotoCard = () => {
   const status = current ? STATUS[current.status] : null
 
   return (
-    <section className="sd-card">
+    <section className="sd-card" ref={cardRef} id="face-scanner-photo" data-highlight={highlight || undefined} onAnimationEnd={() => setHighlight(false)}>
       <header className="sd-card__head">
         <h2 className="sd-card__title">Face scanner photo</h2>
         {!pending && (
@@ -207,6 +243,7 @@ const BioPhotoCard = () => {
       </header>
 
       {!current && <p className="sd-card__note">If the mess scanner doesn&apos;t recognise you, send a new photo of your face here.</p>}
+      <p className="sd-card__note">{PRIVACY_NOTE}</p>
 
       {current && (
         <div className="sd-bio__row">
