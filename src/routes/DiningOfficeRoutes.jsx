@@ -29,6 +29,7 @@ const DiningTagsPage = lazy(() => import("../pages/common/DiningTagsPage"))
 const DiningMenuPage = lazy(() => import("../pages/common/DiningMenuPage"))
 // Students' face-scanner photo requests: approve sends the photo to EasyWDMS.
 const DiningBioPhotosPage = lazy(() => import("../pages/common/DiningBioPhotosPage"))
+const DiningScannerUsersPage = lazy(() => import("../pages/common/DiningScannerUsersPage"))
 
 const guardRoute = (routeKey, element) => (
   <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
@@ -49,6 +50,7 @@ const DiningOfficeRoutes = () => (
           <Route path="dining-tags" element={guardRoute("route.admin.diningTags", <DiningTagsPage />)} />
           <Route path="dining-menu" element={guardRoute("route.admin.diningMenu", <DiningMenuPage />)} />
           <Route path="bio-photos" element={guardRoute("route.admin.diningBioPhotos", <DiningBioPhotosPage />)} />
+          <Route path="scanner-users" element={guardRoute("route.admin.diningScannerUsers", <DiningScannerUsersPage />)} />
           <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
           <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
           <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />

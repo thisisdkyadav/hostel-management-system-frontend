@@ -19,6 +19,7 @@ const DiningAllocationsPage = lazy(() => import("../pages/common/DiningAllocatio
 const DiningTagsPage = lazy(() => import("../pages/common/DiningTagsPage"))
 const DiningMenuPage = lazy(() => import("../pages/common/DiningMenuPage"))
 const DiningBioPhotosPage = lazy(() => import("../pages/common/DiningBioPhotosPage"))
+const DiningScannerUsersPage = lazy(() => import("../pages/common/DiningScannerUsersPage"))
 const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
 const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
@@ -88,6 +89,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/DiningTagsPage"),
   () => import("../pages/common/DiningMenuPage"),
   () => import("../pages/common/DiningBioPhotosPage"),
+  () => import("../pages/common/DiningScannerUsersPage"),
   () => import("../pages/common/DailyMealsPage"),
   () => import("../pages/admin/HostelsPage"),
   () => import("../pages/admin/HostelExplorerPage"),
@@ -180,6 +182,7 @@ const AdminRoutes = () => {
                 <Route path="dining-tags" element={guardRoute("route.admin.diningTags", <DiningTagsPage />)} />
                 <Route path="dining-menu" element={guardRoute("route.admin.diningMenu", <DiningMenuPage />)} />
                 <Route path="dining-bio-photos" element={guardRoute("route.admin.diningBioPhotos", <DiningBioPhotosPage />)} />
+                <Route path="dining-scanner-users" element={guardRoute("route.admin.diningScannerUsers", <DiningScannerUsersPage />)} />
                 <Route path="dining-rebates" element={guardRoute("route.admin.diningRebates", <DiningRebatesPage />)} />
                 <Route path="dining-billing" element={guardRoute("route.admin.diningBilling", <DiningBillingPage />)} />
                 <Route path="dining-billing/:billingPeriodId" element={guardRoute("route.admin.diningBilling", <DiningBillingDetailPage />)} />

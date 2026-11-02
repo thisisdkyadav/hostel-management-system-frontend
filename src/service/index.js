@@ -65,6 +65,7 @@ export { diningAllocationsApi } from "./modules/diningAllocations.api"
 export { diningTagsApi } from "./modules/diningTags.api"
 export { diningMenuApi } from "./modules/diningMenu.api"
 export { diningBioPhotosApi } from "./modules/diningBioPhotos.api"
+export { diningScannerUsersApi } from "./modules/diningScannerUsers.api"
 
 // NOTE:
 // Keep this module as named re-exports only.
