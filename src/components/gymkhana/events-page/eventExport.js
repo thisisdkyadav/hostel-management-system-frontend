@@ -10,7 +10,7 @@ export const resolveEventExportBundle = (response) => {
   return bundle
 }
 
-// Export the designed report first, then every uploaded PDF in manifest order.
+// Export the designed report first, then the proposal's uploaded PDFs in manifest order.
 // Fail as a unit: a partial bundle must never look like a complete event record.
 export const mergeEventDossier = async (response, fetchBytes) => {
   const { reportPdf, documents = [] } = resolveEventExportBundle(response)
@@ -51,7 +51,7 @@ export const downloadEventDossier = async (response) => {
   const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }))
   const link = document.createElement("a")
   link.href = url
-  link.download = `${slug}-complete-event.pdf`
+  link.download = `${slug}-event-record.pdf`
   document.body.appendChild(link)
   link.click()
   link.remove()
