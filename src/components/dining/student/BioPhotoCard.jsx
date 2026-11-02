@@ -8,6 +8,7 @@ import { queryKeys } from "@/lib/query"
 import { getMediaUrl } from "@/utils/mediaUtils"
 import { getErrorMessage } from "../diningPeriodHelpers"
 import { formatDayMonth } from "../caterer/catererHelpers"
+import { BIO_PHOTO_LINK_PARAM, BIO_PHOTO_LINK_VALUE } from "./studentDiningHelpers"
 
 const DEFAULT_RULES = { formats: ["JPG", "PNG"], maxSizeMb: 5, minSidePx: 300 }
 const ACCEPT = ".jpg,.jpeg,.png,image/jpeg,image/png"
@@ -19,9 +20,6 @@ const STATUS = {
   cancelled: { label: "Cancelled", tone: "neutral" },
 }
 
-/** Shareable link: /student/dining?photo=update opens the upload straight away. */
-export const BIO_PHOTO_LINK_PARAM = "photo"
-const BIO_PHOTO_LINK_VALUE = "update"
 
 const PRIVACY_NOTE = "This photo is used only by the mess face scanners. It won't be shown on your profile or anywhere else."
 

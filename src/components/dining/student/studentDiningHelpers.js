@@ -4,6 +4,11 @@ import { formatRange, toDayKey } from "../caterer/catererHelpers"
 
 export { formatClock }
 
+/** Shareable link to the face-scanner photo upload: /student/dining?photo=update */
+export const BIO_PHOTO_LINK_PARAM = "photo"
+export const BIO_PHOTO_LINK_VALUE = "update"
+export const isBioPhotoLink = (search) => new URLSearchParams(search).get(BIO_PHOTO_LINK_PARAM) === BIO_PHOTO_LINK_VALUE
+
 /** Why a scan did not count, in the student's words. */
 export const ISSUE_REASONS = {
   "wrong-caterer": "you scanned at a different caterer",

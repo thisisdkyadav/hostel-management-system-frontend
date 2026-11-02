@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthProvider"
 import { catererInitials, formatRange } from "@/components/dining/caterer/catererHelpers"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import { CatererOptions, ConfirmCatererDialog } from "./DiningModals"
-import { autoAssignLine } from "./studentDiningHelpers"
+import { autoAssignLine, isBioPhotoLink } from "./studentDiningHelpers"
 import useChooseCaterer from "./useChooseCaterer"
 import { studentDiningPortalQuery } from "./portalQuery"
 import "./StudentDining.css"
@@ -88,7 +88,7 @@ const Fact = ({ icon, title, detail, tone }) => (
  * the portal rather than blocking the student.
  */
 const DiningAllocationGate = ({ children }) => {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const { user } = useAuth()
   const now = useNow(30_000)
   const { canRoute, loading: authzLoading } = useAuthz()
@@ -126,6 +126,10 @@ const DiningAllocationGate = ({ children }) => {
   const portal = portalQuery.data || null
   const openPeriod = portal?.activeAllocationPeriod || null
   const needsChoice = Boolean(portal?.canSelect && openPeriod && !openPeriod.selectedAllocation)
+  // Arriving through a link to a specific task (the face-photo upload) counts as
+  // a skip for this page load, so the link lands where it points; the Dining page
+  // still shows its own "choose a caterer" notice.
+  if (needsChoice && isBioPhotoLink(search)) skippedPeriods.add(periodKey(openPeriod))
   const isSkipped = skippedPeriods.has(periodKey(openPeriod))
 
   if (authzLoading || (canDine && portalQuery.isPending)) {

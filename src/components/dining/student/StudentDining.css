@@ -1134,6 +1134,7 @@
 .sd-bio__rules {
   margin: 0;
   padding-left: var(--spacing-5);
+  list-style: disc;
   font-size: var(--font-size-sm);
   color: var(--color-text-body);
 }
