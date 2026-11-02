@@ -21,6 +21,48 @@ const STATUS = {
 }
 
 
+/** The face scanners' view of the student's photo (from the server's per-minute check). */
+const scannerSummary = (scanner) => {
+  const { total = 0, accepted = 0, rejected = 0 } = scanner.machines || {}
+  const all = total ? `all ${total} mess scanners` : "the mess scanners"
+  switch (scanner.status) {
+    case "valid":
+      return { label: "Ready", tone: "success", text: `Your photo works on ${all}. You're good to go.` }
+    case "pending":
+      return {
+        label: "Updating",
+        tone: "warning",
+        text: total
+          ? `Your photo is reaching the scanners: ${accepted} of ${total} done. This usually takes a few minutes.`
+          : "Your photo is reaching the scanners. This usually takes a few minutes.",
+      }
+    case "failed":
+      return {
+        label: "Not working",
+        tone: "danger",
+        text: rejected && total
+          ? `${rejected} of ${total} scanners couldn't use your photo, so they may not recognise you. Send a clearer photo of your face.`
+          : "The scanners couldn't use your photo, so they may not recognise you. Send a clearer photo of your face.",
+        needsPhoto: true,
+      }
+    case "missing":
+      return { label: "No photo", tone: "danger", text: "The scanners don't have a photo of you, so they can't recognise you. Send one below.", needsPhoto: true }
+    case "notOnScanner":
+      return { label: "Not registered", tone: "neutral", text: "You aren't on the mess face scanners yet. Please contact the dining office." }
+    default:
+      return null
+  }
+}
+
+const checkedAgo = (value) => {
+  const time = new Date(value).getTime()
+  if (!value || Number.isNaN(time)) return ""
+  const minutes = Math.round((Date.now() - time) / 60000)
+  if (minutes < 1) return "Checked just now"
+  if (minutes < 60) return `Checked ${minutes} min ago`
+  return `Checked ${formatDayMonth(value)}`
+}
+
 const PRIVACY_NOTE = "This photo is used only by the mess face scanners. It won't be shown on your profile or anywhere else."
 
 const GUIDELINES = [
@@ -185,6 +227,8 @@ const BioPhotoCard = () => {
     queryKey: queryKeys.dining.bioPhoto(),
     queryFn: () => studentApi.getDiningBioPhoto(),
     retry: false,
+    // While the photo is reaching the machines, follow it (the server checks every minute).
+    refetchInterval: (current) => (current.state.data?.scanner?.status === "pending" ? 60_000 : false),
   })
   const cancel = useMutation({
     mutationFn: (id) => studentApi.cancelDiningBioPhoto(id),
@@ -228,19 +272,27 @@ const BioPhotoCard = () => {
   const current = query.data?.current || null
   const pending = current?.status === "pending"
   const status = current ? STATUS[current.status] : null
+  const scanner = query.data?.scanner ? scannerSummary(query.data.scanner) : null
 
   return (
     <section className="sd-card" ref={cardRef} id="face-scanner-photo" data-highlight={highlight || undefined} onAnimationEnd={() => setHighlight(false)}>
       <header className="sd-card__head">
         <h2 className="sd-card__title">Face scanner photo</h2>
         {!pending && (
-          <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+          <Button variant={scanner?.needsPhoto ? "primary" : "secondary"} size="sm" onClick={() => setOpen(true)}>
             <Camera size={15} /> Update photo
           </Button>
         )}
       </header>
 
-      {!current && <p className="sd-card__note">If the mess scanner doesn&apos;t recognise you, send a new photo of your face here.</p>}
+      {scanner && (
+        <div className="sd-bio__scanner" data-tone={scanner.tone}>
+          <StatusBadge status={scanner.label} tone={scanner.tone} />
+          <p className="sd-bio__scanner-text">{scanner.text}</p>
+          <span className="sd-card__note">{checkedAgo(query.data.scanner.checkedAt)}</span>
+        </div>
+      )}
+      {!current && !scanner && <p className="sd-card__note">If the mess scanner doesn&apos;t recognise you, send a new photo of your face here.</p>}
       <p className="sd-card__note">{PRIVACY_NOTE}</p>
 
       {current && (

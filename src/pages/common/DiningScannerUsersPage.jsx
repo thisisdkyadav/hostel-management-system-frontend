@@ -55,14 +55,14 @@ const Devices = ({ row }) => {
   )
 }
 
-const SyncLine = ({ sync }) => {
+const SyncLine = ({ sync, live }) => {
   if (!sync) return <p className="su-sync">Not checked yet. Use Sync now to load everyone from the scanners.</p>
   if (sync.running) return <p className="su-sync">Checking the scanners…</p>
   return (
     <p className="su-sync" data-error={sync.ok ? undefined : ""}>
-      {sync.ok ? "Last checked" : "Last check failed"} {formatDateTime(sync.lastRunAt)}
-      {sync.trigger === "nightly" ? " (nightly)" : ""}
-      {!sync.ok && sync.error ? `: ${sync.error}` : ""}. Checked again every night.
+      {sync.ok ? "Full check" : "Full check failed"} {formatDateTime(sync.lastRunAt)}
+      {!sync.ok && sync.error ? `: ${sync.error}` : ""}
+      {live?.lastRunAt ? `. New photos and machine answers checked every minute (last ${formatDateTime(live.lastRunAt)}).` : ". Checked again every night."}
     </p>
   )
 }
@@ -87,7 +87,7 @@ const DiningScannerUsersPage = () => {
     queryKey: queryKeys.diningScannerUsers.list(params),
     queryFn: () => diningScannerUsersApi.list(params),
     placeholderData: keepPreviousData,
-    refetchInterval: (current) => (current.state.data?.sync?.running || current.state.data?.profileJob?.running ? 5000 : false),
+    refetchInterval: (current) => (current.state.data?.sync?.running || current.state.data?.profileJob?.running ? 5000 : 60_000),
   })
   const refresh = () => queryClient.invalidateQueries({ queryKey: queryKeys.diningScannerUsers.all })
   const fail = (fallback) => (error) => setFeedback({ type: "error", message: getErrorMessage(error, fallback) })
@@ -250,7 +250,7 @@ const DiningScannerUsersPage = () => {
               <UserPlus size={15} /> Add
             </Button>
           </form>
-          <SyncLine sync={data?.sync} />
+          <SyncLine sync={data?.sync} live={data?.live} />
         </div>
 
         {!scannerReady && (
