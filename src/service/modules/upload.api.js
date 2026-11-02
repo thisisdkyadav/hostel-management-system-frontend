@@ -170,6 +170,15 @@ export const uploadApi = {
   uploadDiningRebateForm: (formData) => {
     return apiClient.upload("/upload/dining-rebate-form", formData)
   },
+
+  /**
+   * Upload a student's new face-scanner bio photo (JPG or PNG only, 5 MB)
+   * @param {FormData} formData - Form data (field "file")
+   * @returns {{ fileRef, contentType, width, height }}
+   */
+  uploadDiningBioPhoto: (formData) => {
+    return apiClient.upload("/upload/dining-bio-photo", formData)
+  },
 }
 
 export default uploadApi

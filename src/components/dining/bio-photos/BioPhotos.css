@@ -1,0 +1,143 @@
+/* Bio Photos review page (Admin + Dining Office) */
+
+.bp-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.bp-toolbar__search {
+  width: min(100%, calc(var(--spacing-24) * 3));
+}
+
+.bp-toolbar ~ .hz-alert {
+  margin-bottom: var(--spacing-4);
+}
+
+.bp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--spacing-24) * 3.5), 1fr));
+  gap: var(--spacing-4);
+}
+
+.bp-grid[data-stale] {
+  opacity: 0.6;
+}
+
+.bp-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background: var(--color-bg-primary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-card);
+}
+
+.bp-card[data-error] {
+  border-color: var(--color-danger);
+}
+
+.bp-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.bp-card__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bp-card__who strong {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+.bp-card__who span,
+.bp-card__time,
+.bp-card__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.bp-card__time {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-card__photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+}
+
+.bp-photo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin: 0;
+}
+
+.bp-photo a,
+.bp-photo__empty {
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.bp-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bp-photo__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.bp-photo figcaption {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.bp-card__note,
+.bp-card__meta {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.bp-card__note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+}
+
+.bp-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: auto;
+}
+
+.bp-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}

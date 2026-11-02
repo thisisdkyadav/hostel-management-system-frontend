@@ -323,6 +323,21 @@ export const studentApi = {
   getDiningMenu: (params = {}) => {
     return apiClient.get("/students/dining/menu", { params }).then(unwrapStandardResponse)
   },
+
+  /** Face-scanner photo: → { current, history, rules: { formats, maxSizeMb, minSidePx } } */
+  getDiningBioPhoto: () => {
+    return apiClient.get("/students/dining/bio-photo").then(unwrapStandardResponse)
+  },
+
+  /** Ask to change the face-scanner photo: `{ photoRef, note }` → { request } */
+  requestDiningBioPhoto: (payload) => {
+    return apiClient.post("/students/dining/bio-photo", payload).then(unwrapStandardResponse)
+  },
+
+  /** Withdraw a pending face-scanner photo request → { request } */
+  cancelDiningBioPhoto: (requestId) => {
+    return apiClient.delete(`/students/dining/bio-photo/${requestId}`).then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

@@ -64,6 +64,10 @@ export const queryKeys = {
     roster: (params) => [...queryKeys.diningAllocations.all, "roster", params ?? {}],
     history: (studentUserId) => [...queryKeys.diningAllocations.all, "history", studentUserId ?? ""],
   },
+  diningBioPhotos: {
+    all: ["dining-bio-photos"],
+    list: (params) => [...queryKeys.diningBioPhotos.all, "list", params ?? {}],
+  },
   diningTags: {
     all: ["dining-tags"],
     list: (params) => [...queryKeys.diningTags.all, "list", params ?? {}],
@@ -89,6 +93,7 @@ export const queryKeys = {
     tags: () => [...queryKeys.dining.all, "tags"],
     meals: () => [...queryKeys.dining.all, "meals"],
     menu: (params) => [...queryKeys.dining.all, "menu", params ?? {}],
+    bioPhoto: () => [...queryKeys.dining.all, "bio-photo"],
   },
   lostAndFound: {
     all: ["lost-and-found"],

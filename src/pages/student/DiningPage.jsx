@@ -13,6 +13,7 @@ import MenuCard from "@/components/dining/student/MenuCard"
 import AwayCard from "@/components/dining/student/AwayCard"
 import BillCard from "@/components/dining/student/BillCard"
 import TagAnswersCard from "@/components/dining/student/TagAnswersCard"
+import BioPhotoCard from "@/components/dining/student/BioPhotoCard"
 import { AwayModal, ChooseCatererModal, ConfirmCatererDialog } from "@/components/dining/student/DiningModals"
 import { autoAssignLine, needsResponse } from "@/components/dining/student/studentDiningHelpers"
 import useChooseCaterer from "@/components/dining/student/useChooseCaterer"
@@ -227,6 +228,7 @@ const DiningPage = () => {
               {!tagsNeedResponse && <TagAnswersCard items={tagItems} />}
               <AwayCard rebates={rebates} today={meals?.today || localTodayKey()} canRequest onRequest={() => setAwayOpen(true)} unregisteredPeriods={rebatesQuery.data?.rules?.unregisteredPeriods || []} />
               <BillCard billingPeriods={billingPeriods} />
+              <BioPhotoCard />
             </aside>
           </div>
         </div>
