@@ -42,19 +42,44 @@ const MACHINE = {
 
 const ATTEMPT = { sent: "Used", unusable: "Can't use", failed: "Failed" }
 
+/** The machines' own errors, grouped: "m2, m3: The machine couldn't make a face from this photo (D01E0001)". */
+const refusalGroups = (machines) => {
+  const groups = new Map()
+  for (const machine of machines) {
+    if (!machine.refusal) continue
+    const text = machine.refusal.code ? `${machine.refusal.message} (${machine.refusal.code})` : machine.refusal.message
+    groups.set(text, [...(groups.get(text) || []), machine.alias])
+  }
+  return [...groups].map(([text, aliases]) => ({ text, aliases }))
+}
+
 const Machines = ({ row }) => {
   if (!row.photo.present) return <span className="su-note">-</span>
   if (!row.machines.length) return <span className="su-note">No machine kept in sync</span>
+  const refusals = refusalGroups(row.machines)
   return (
-    <div className="su-devices">
-      {row.machines.map((machine) => {
-        const look = MACHINE[machine.state] || MACHINE.waiting
-        return (
-          <span key={machine.alias} className="su-device" data-state={machine.state} title={look.title}>
-            {machine.alias} {look.mark}
-          </span>
-        )
-      })}
+    <div className="su-machines">
+      <div className="su-devices">
+        {row.machines.map((machine) => {
+          const look = MACHINE[machine.state] || MACHINE.waiting
+          const title = machine.refusal ? `${machine.refusal.message}${machine.refusal.code ? ` (${machine.refusal.code})` : ""}` : look.title
+          return (
+            <span key={machine.alias} className="su-device" data-state={machine.state} title={title}>
+              {machine.alias} {look.mark}
+            </span>
+          )
+        })}
+      </div>
+      {refusals.length > 0 && (
+        <div className="su-refusal" role="note">
+          {refusals.map((group) => (
+            <span key={group.text}>
+              <strong>{group.aliases.join(", ")}:</strong> {group.text}
+            </span>
+          ))}
+          <span className="su-refusal__hint">Needs a new photo: clear, front-facing, one face, good light.</span>
+        </div>
+      )}
     </div>
   )
 }
