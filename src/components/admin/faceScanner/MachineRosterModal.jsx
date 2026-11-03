@@ -92,7 +92,7 @@ const MachineRosterModal = ({ machine, onClose }) => {
       const ok = await confirm({
         title: "Keep this machine in sync?",
         message:
-          "Every 2 minutes HMS adds active students who have a face photo and removes students who are no longer active (their face data is deleted from the machine; the photo stays in HMS). People HMS doesn't know, like staff, are left alone.",
+          "Every 2 minutes HMS adds active students who have a face photo and removes students who are no longer active (their face data is deleted from the machine; the photo stays in HMS). Anyone on the machine who isn't an active HMS student is removed too.",
         confirmText: "Switch on",
       })
       if (!ok) return
@@ -144,7 +144,7 @@ const MachineRosterModal = ({ machine, onClose }) => {
               <Count label="new photo" value={preview.toUpdateFace} tone={preview.toUpdateFace ? "warn" : undefined} />
               <Count label="to remove" value={preview.toRemove} tone={preview.toRemove ? "bad" : undefined} />
               <Count label="in progress" value={preview.inFlight} />
-              <Count label="not managed" value={preview.unmanaged} hint="not HMS students" />
+              <Count label="not in HMS" value={preview.unmanaged} hint="removed too" />
               <Count label="active, no photo" value={preview.activeWithoutFace} tone={preview.activeWithoutFace ? "warn" : undefined} />
             </div>
             <VStack gap={1}>
