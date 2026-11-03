@@ -72,6 +72,7 @@ export const queryKeys = {
     all: ["faceMachines"],
     list: () => [...queryKeys.faceMachines.all, "list"],
     activity: (sn) => [...queryKeys.faceMachines.all, "activity", sn],
+    roster: (sn) => [...queryKeys.faceMachines.all, "roster", sn],
   },
   diningScannerUsers: {
     all: ["dining-scanner-users"],

@@ -16,7 +16,7 @@ export const faceScannerApi = {
   /** → { machines: [...], faces: { stored, withoutFace, job } } */
   getMachines: () => apiClient.get("/face-scanner/machines").then(unwrap),
 
-  /** `{ alias?, faceScannerId?, mode? }` → same shape as getMachines */
+  /** `{ alias?, faceScannerId?, mode?, sync? }` → same shape as getMachines */
   updateMachine: (sn, data) => apiClient.patch(`/face-scanner/machines/${encodeURIComponent(sn)}`, data).then(unwrap),
 
   /** → { punches, commands, log } (latest 50 each) */
@@ -24,6 +24,16 @@ export const faceScannerApi = {
 
   /** Copy EasyWDMS face photos into HMS storage (background, 202). */
   importFaces: () => apiClient.post("/face-scanner/machines/faces/import").then(unwrap),
+
+  /** People on one machine: sync state, what a sync would do, recent failures. */
+  getMachineRoster: (sn) => apiClient.get(`/face-scanner/machines/${encodeURIComponent(sn)}/roster`).then(unwrap),
+  syncMachineRoster: (sn, { allowRemovals = false } = {}) =>
+    apiClient.post(`/face-scanner/machines/${encodeURIComponent(sn)}/roster/sync`, { allowRemovals }).then(unwrap),
+  readMachinePeople: (sn) => apiClient.post(`/face-scanner/machines/${encodeURIComponent(sn)}/roster/read`).then(unwrap),
+  pushMachinePerson: (sn, rollNumber) =>
+    apiClient.post(`/face-scanner/machines/${encodeURIComponent(sn)}/roster/people`, { rollNumber }).then(unwrap),
+  removeMachinePerson: (sn, rollNumber) =>
+    apiClient.delete(`/face-scanner/machines/${encodeURIComponent(sn)}/roster/people/${encodeURIComponent(rollNumber)}`).then(unwrap),
 
   /**
    * Get all face scanners

@@ -3,10 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Alert, Button, DataTable, EmptyState, Field, Heading, HStack, IconButton, Input, Modal, Select, StatusBadge, Tabs, Text, useConfirm, useToast, VStack,
 } from "hzero"
-import { Activity, Cpu, ImageDown, Pencil } from "lucide-react"
+import { Activity, Cpu, ImageDown, Pencil, Users } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { faceScannerApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
+import MachineRosterModal from "./MachineRosterModal"
 import "./MachinesSection.css"
 
 const MODE = {
@@ -182,6 +183,7 @@ const MachinesSection = ({ scanners = [] }) => {
   const confirm = useConfirm()
   const [editing, setEditing] = useState(null)
   const [watching, setWatching] = useState(null)
+  const [people, setPeople] = useState(null)
 
   const query = useQuery({
     queryKey: queryKeys.faceMachines.list(),
@@ -249,6 +251,7 @@ const MachinesSection = ({ scanners = [] }) => {
           <span className="fm-mono">
             {m.faces ?? "-"}{m.maxFaces ? ` / ${m.maxFaces}` : ""} faces
           </span>
+          <span data-tone={m.sync?.enabled ? "ok" : undefined} className="fm-note">{m.sync?.enabled ? "Kept in sync" : "Sync off"}</span>
         </div>
       ),
     },
@@ -287,6 +290,7 @@ const MachinesSection = ({ scanners = [] }) => {
       align: "right",
       render: (m) => (
         <HStack gap={1} justify="end">
+          <IconButton icon={<Users size={16} />} variant="ghost" size="small" ariaLabel={`People on ${m.sn}`} onClick={() => setPeople(m)} />
           <IconButton icon={<Activity size={16} />} variant="ghost" size="small" ariaLabel={`Activity for ${m.sn}`} onClick={() => setWatching(m)} />
           <IconButton icon={<Pencil size={16} />} variant="ghost" size="small" ariaLabel={`Edit ${m.sn}`} onClick={() => setEditing(m)} />
         </HStack>
@@ -323,6 +327,7 @@ const MachinesSection = ({ scanners = [] }) => {
 
       {editing && <EditMachineModal machine={editing} scanners={scanners} onClose={() => setEditing(null)} />}
       {watching && <ActivityModal machine={watching} onClose={() => setWatching(null)} />}
+      {people && <MachineRosterModal machine={people} onClose={() => setPeople(null)} />}
     </section>
   )
 }
