@@ -23,7 +23,6 @@ export const faceScannerApi = {
   getMachineActivity: (sn) => apiClient.get(`/face-scanner/machines/${encodeURIComponent(sn)}/activity`).then(unwrap),
 
   /** Copy EasyWDMS face photos into HMS storage (background, 202). */
-  importFaces: () => apiClient.post("/face-scanner/machines/faces/import").then(unwrap),
 
   /** People on one machine: sync state, what a sync would do, recent failures. */
   getMachineRoster: (sn) => apiClient.get(`/face-scanner/machines/${encodeURIComponent(sn)}/roster`).then(unwrap),

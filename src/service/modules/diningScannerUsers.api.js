@@ -7,24 +7,18 @@ const unwrap = (response) =>
     : response
 
 /**
- * Face-scanner users (Admin + Dining Office): HMS's copy of everyone on the
- * mess face scanners (EasyWDMS) and whether their scanner photo works.
+ * Scanner photos (Admin + Dining Office): each active student's face photo in
+ * HMS and whether every face machine has it.
  */
 export const diningScannerUsersApi = {
-  /** `{ status, search, page, limit }` → { items, total, counts, sync, profileJob, scanner } */
+  /** `{ status, search, page, limit }` → { items, total, counts, machines, profileJob } */
   list: (params = {}) => apiClient.get("/dining-scanner-users", { params }).then(unwrap),
 
-  /** Add an HMS student to the scanners → { item, alreadyOnScanner } */
-  add: (rollNumber) => apiClient.post("/dining-scanner-users", { rollNumber }).then(unwrap),
-
-  /** Refresh everyone from the scanner software in the background (202). */
-  sync: () => apiClient.post("/dining-scanner-users/sync").then(unwrap),
-
-  /** Send the HMS profile photo and wait for the machines → { item, outcome } */
+  /** Use the student's HMS profile photo as their scanner photo → { item, outcome } */
   useProfilePhoto: (rollNumber, { replace = false } = {}) =>
     apiClient.post(`/dining-scanner-users/${encodeURIComponent(rollNumber)}/profile-photo`, { replace }).then(unwrap),
 
-  /** Background run: profile photos for everyone in HMS with no scanner photo → { total } */
+  /** Background run: profile photos for every active student with no scanner photo → { total } */
   useProfilePhotos: () => apiClient.post("/dining-scanner-users/profile-photos").then(unwrap),
 
   /** The scanner photo (served by HMS with the staff session). */

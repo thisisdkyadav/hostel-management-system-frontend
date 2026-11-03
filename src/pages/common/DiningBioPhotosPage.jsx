@@ -65,12 +65,12 @@ const RequestCard = ({ item, onApprove, onReject, busy }) => {
 
       {pending && item.lastError && (
         <Alert type="error" icon>
-          Couldn&apos;t send to the scanners: {item.lastError}
+          Couldn&apos;t use this photo: {item.lastError}
         </Alert>
       )}
       {item.status === "approved" && (
         <p className="bp-card__meta">
-          Sent {formatDateTime(item.pushedAt || item.reviewedAt)}
+          Approved {formatDateTime(item.pushedAt || item.reviewedAt)}
           {item.reviewedBy ? ` by ${item.reviewedBy}` : ""}
         </p>
       )}
@@ -137,7 +137,7 @@ const RejectModal = ({ item, onClose, onSubmit, isSubmitting, error }) => {
 
 /**
  * Students' requests to change their face-scanner photo (Admin and Dining Office).
- * Approving uploads the photo to the face scanner software, which sends it to every machine.
+ * Approving makes it the student's scanner photo in HMS; every face machine gets it within a couple of minutes.
  */
 const DiningBioPhotosPage = () => {
   const queryClient = useQueryClient()
@@ -162,11 +162,11 @@ const DiningBioPhotosPage = () => {
   const approve = useMutation({
     mutationFn: (item) => diningBioPhotosApi.approve(item.id),
     onSuccess: (_, item) => {
-      setFeedback({ type: "success", message: `${nameOf(item)}'s photo was sent to the face scanners.` })
+      setFeedback({ type: "success", message: `${nameOf(item)}'s photo was approved. The face scanners get it within a couple of minutes.` })
       setApproving(null)
     },
     onError: (error, item) => {
-      setFeedback({ type: "error", message: `${nameOf(item)}: ${getErrorMessage(error, "Couldn't send the photo.")}` })
+      setFeedback({ type: "error", message: `${nameOf(item)}: ${getErrorMessage(error, "Couldn't approve the photo.")}` })
       setApproving(null)
     },
     onSettled: refresh,
@@ -184,7 +184,6 @@ const DiningBioPhotosPage = () => {
   const items = data?.items || []
   const counts = data?.counts || {}
   const totalPages = Math.max(1, Math.ceil((data?.total || 0) / PAGE_SIZE))
-  const scannerReady = data?.scanner?.configured !== false
 
   return (
     <Page>
@@ -218,11 +217,6 @@ const DiningBioPhotosPage = () => {
           />
         </div>
 
-        {!scannerReady && (
-          <Alert type="warning" icon>
-            The face scanner software isn&apos;t connected yet, so photos can&apos;t be approved. You can still reject requests.
-          </Alert>
-        )}
         {feedback && (
           <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)}>
             {feedback.message}
@@ -243,7 +237,7 @@ const DiningBioPhotosPage = () => {
                   key={item.id}
                   item={item}
                   busy={approve.isPending && approve.variables?.id === item.id}
-                  onApprove={(row) => (scannerReady ? setApproving(row) : setFeedback({ type: "error", message: "The face scanner software isn't connected yet." }))}
+                  onApprove={setApproving}
                   onReject={(row) => {
                     reject.reset()
                     setRejecting(row)
@@ -261,9 +255,9 @@ const DiningBioPhotosPage = () => {
           isOpen
           onClose={() => setApproving(null)}
           onConfirm={() => approve.mutate(approving)}
-          title="Send this photo to the scanners?"
-          message={`${nameOf(approving)} (${approving.rollNumber}): the new photo replaces their current one on every face scanner.`}
-          confirmText={approving.lastError ? "Try again" : "Approve and send"}
+          title="Approve this photo?"
+          message={`${nameOf(approving)} (${approving.rollNumber}): the new photo replaces their current one on every face scanner within a couple of minutes.`}
+          confirmText={approving.lastError ? "Try again" : "Approve"}
           cancelText="Cancel"
         />
       )}

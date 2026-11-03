@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
-  Alert, Button, DataTable, EmptyState, Field, Heading, HStack, IconButton, Input, Modal, Select, StatusBadge, Tabs, Text, useConfirm, useToast, VStack,
+  Alert, Button, DataTable, EmptyState, Field, Heading, HStack, IconButton, Input, Modal, Select, StatusBadge, Tabs, Text, useToast, VStack,
 } from "hzero"
-import { Activity, Cpu, ImageDown, Pencil, Users } from "lucide-react"
+import { Activity, Cpu, Pencil, Users } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { faceScannerApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
@@ -38,22 +38,13 @@ const usedFor = (scanner) => {
   return `${scanner.name} · ${place}`
 }
 
-const FaceImport = ({ faces, onStart, starting }) => {
-  const job = faces?.job
-  return (
-    <div className="fm-faces">
-      <Text size="sm" color="muted">
-        Faces kept in HMS: <strong>{faces?.stored ?? 0}</strong>
-        {faces?.withoutFace ? ` · ${faces.withoutFace} still only in EasyWDMS` : ""}
-        {job?.running && ` · copying… ${job.stored || 0} done`}
-        {!job?.running && job?.finishedAt && ` · last copy ${formatDateTime(job.finishedAt)}: ${job.stored} stored, ${job.unusable} unusable, ${job.failed} failed`}
-      </Text>
-      <Button variant="secondary" size="small" onClick={onStart} loading={starting || job?.running} disabled={job?.running}>
-        <ImageDown size={16} /> Copy faces from EasyWDMS
-      </Button>
-    </div>
-  )
-}
+const FaceCount = ({ faces }) => (
+  <div className="fm-faces">
+    <Text size="sm" color="muted">
+      Face photos kept in HMS: <strong>{faces?.stored ?? 0}</strong>. Manage them on the Scanner Photos page.
+    </Text>
+  </div>
+)
 
 const EditMachineModal = ({ machine, scanners, onClose }) => {
   const queryClient = useQueryClient()
@@ -178,9 +169,6 @@ const ActivityModal = ({ machine, onClose }) => {
 
 /** Face machines that talk to HMS directly. They register themselves on first contact. */
 const MachinesSection = ({ scanners = [] }) => {
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const confirm = useConfirm()
   const [editing, setEditing] = useState(null)
   const [watching, setWatching] = useState(null)
   const [people, setPeople] = useState(null)
@@ -188,27 +176,9 @@ const MachinesSection = ({ scanners = [] }) => {
   const query = useQuery({
     queryKey: queryKeys.faceMachines.list(),
     queryFn: faceScannerApi.getMachines,
-    refetchInterval: (q) => (q.state.data?.faces?.job?.running ? 5_000 : 30_000),
+    refetchInterval: 30_000,
   })
   const machines = query.data?.machines || []
-
-  const importFaces = useMutation({
-    mutationFn: faceScannerApi.importFaces,
-    onSuccess: () => {
-      toast.success("Copying faces in the background")
-      queryClient.invalidateQueries({ queryKey: queryKeys.faceMachines.all })
-    },
-    onError: (error) => toast.error(getErrorMessage(error, "Couldn't start the copy")),
-  })
-
-  const startImport = async () => {
-    const ok = await confirm({
-      title: "Copy faces from EasyWDMS?",
-      message: "HMS downloads every bio photo EasyWDMS has and keeps its own copy, so the machines can later be fed from HMS. Already-copied photos are skipped. Nothing changes on the machines.",
-      confirmText: "Copy faces",
-    })
-    if (ok) importFaces.mutate()
-  }
 
   const columns = [
     {
@@ -309,7 +279,7 @@ const MachinesSection = ({ scanners = [] }) => {
         </VStack>
       </HStack>
 
-      <FaceImport faces={query.data?.faces} onStart={startImport} starting={importFaces.isPending} />
+      <FaceCount faces={query.data?.faces} />
 
       {query.isError && <Alert type="error">{getErrorMessage(query.error, "Couldn't load machines")}</Alert>}
 

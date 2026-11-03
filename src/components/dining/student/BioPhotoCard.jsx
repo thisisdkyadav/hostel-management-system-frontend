@@ -227,7 +227,7 @@ const BioPhotoCard = () => {
     queryKey: queryKeys.dining.bioPhoto(),
     queryFn: () => studentApi.getDiningBioPhoto(),
     retry: false,
-    // While the photo is reaching the machines, follow it (the server checks every minute).
+    // While the photo is reaching the machines, follow it.
     refetchInterval: (current) => (current.state.data?.scanner?.status === "pending" ? 60_000 : false),
   })
   const cancel = useMutation({
