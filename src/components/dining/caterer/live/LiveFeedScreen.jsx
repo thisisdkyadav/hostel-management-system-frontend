@@ -238,7 +238,8 @@ const LiveFeedScreen = () => {
     return mergeEntries([feedQuery.data || [], live], { mealKey, today })
   }, [mealKey, scope.oversight, lastFeedQuery.data, lastRecord, socketEntries, catererId, feedQuery.data, today])
   const index = useMemo(() => indexStudents(record || lastRecord, raw), [record, lastRecord, raw])
-  const entries = useMemo(() => raw.map((entry) => decorate(entry, index, nowMs)), [raw, index, nowMs])
+  const showRooms = Boolean(scope.showRooms)
+  const entries = useMemo(() => raw.map((entry) => decorate(entry, index, nowMs, { showRooms })), [raw, index, nowMs, showRooms])
   const rush = useMemo(() => buildRush({ record, entries: raw, nowMs, catererId }), [record, raw, nowMs, catererId])
   // Narrowed to one caterer, its row of the breakdown stands in for the meal's totals.
   const narrow = (source) => (catererId ? source?.caterers?.find((item) => item.id === catererId) : source?.summary)
@@ -254,6 +255,20 @@ const LiveFeedScreen = () => {
   const lastLoading = scope.oversight ? lastFeedQuery.isPending : lastQuery.isPending
   const feedLoading = mealKey ? feedQuery.isPending : Boolean(last) && lastLoading && Boolean(periodId)
   const feedError = mealKey ? feedQuery.isError && !feedQuery.data : false
+
+  // A check-in typed by hand: show it straight away; the socket echo is merged by id.
+  const onManualEntry = useCallback((verification) => {
+    if (!verification?.id) return
+    const entry = { ...verification, receivedAt: Date.now() }
+    setPreviewId(null)
+    setSocketEntries((prev) => [entry, ...prev.filter((item) => item.id !== entry.id && item.mealSlotKey === entry.mealSlotKey)].slice(0, MAX_ENTRIES))
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      refetchRecord()
+      if (scope.oversight) refetchFeed()
+    }, SOCKET_DEBOUNCE_MS)
+  }, [refetchRecord, refetchFeed, scope.oversight])
+  const manualCheckIn = useCallback((rollNumber) => scope.manualCheckIn({ rollNumber, catererId }), [scope, catererId])
 
   const close = () => {
     exitFullscreen()
@@ -333,6 +348,9 @@ const LiveFeedScreen = () => {
           kitchens={kitchens}
           palette={palette}
           showCaterer={showCaterer}
+          onManualCheckIn={manualCheckIn}
+          onManualEntry={onManualEntry}
+          manualHint={scope.oversight ? (catererId ? `Recorded at ${caterers.find((item) => item.id === catererId)?.name || "this caterer"}` : "Recorded at the student's own caterer") : ""}
         />
       </main>
     </div>

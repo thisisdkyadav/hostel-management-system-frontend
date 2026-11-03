@@ -25,6 +25,9 @@ const CATERER_SCOPE = {
   // The caterer feed is already scoped to today and this kitchen; the screen keeps the open meal.
   feed: ({ limit }) => catererApi.getMealVerificationFeed({ limit }).then(feedEntries),
   feedKey: (params) => queryKeys.caterer.mealFeed(params),
+  // Rooms are for the Dining Office and Admin, not the caterer's screen.
+  showRooms: false,
+  manualCheckIn: ({ rollNumber }) => catererApi.manualMealVerification({ rollNumber }),
 }
 
 const clean = (params) => Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== ""))
@@ -46,6 +49,8 @@ export const oversightScope = ({ home, livePath, mealRecordsPath }) => ({
   pulseKey: (params) => queryKeys.diningOversight.mealPulse(clean(params)),
   feed: (params) => diningOversightApi.getMealFeed(clean(params)).then(feedEntries),
   feedKey: (params) => queryKeys.diningOversight.mealFeed(clean(params)),
+  showRooms: true,
+  manualCheckIn: (payload) => diningOversightApi.manualCheckIn(clean(payload)),
 })
 
 export const DiningScopeContext = createContext(CATERER_SCOPE)

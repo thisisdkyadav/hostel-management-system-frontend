@@ -149,10 +149,10 @@ export const indexStudents = (record, entries = []) => {
 export const sameCaterer = (entry, catererId) => !catererId || String(entry?.catererId?._id || entry?.catererId || entry?.caterer?.id || "") === catererId
 
 /** Scan entry plus the room and the best photo we have, ready for rows and the spotlight. */
-export const decorate = (entry, index, nowMs) => {
+export const decorate = (entry, index, nowMs, { showRooms = true } = {}) => {
   const known = index.get(entry.rollNumber) || index.get(entry.student?.rollNumber) || null
   const placed = known || entry.student
-  const room = placed ? [placed.hostel?.name, placed.room?.displayRoom].filter(Boolean).join(", ") : ""
+  const room = showRooms && placed ? [placed.hostel?.name, placed.room?.displayRoom].filter(Boolean).join(", ") : ""
   const catererId = String(entry.catererId?._id || entry.catererId || entry.caterer?.id || "")
   return {
     id: entry.id,

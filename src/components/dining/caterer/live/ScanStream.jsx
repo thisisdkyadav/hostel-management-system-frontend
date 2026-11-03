@@ -1,6 +1,7 @@
 import { Radio } from "lucide-react"
 import { Button, Skeleton, ToggleButtonGroup } from "hzero"
 import ScanRow from "./ScanRow"
+import ManualEntry from "./ManualEntry"
 import { MAX_ENTRIES } from "./liveHelpers"
 
 const FILTERS = (issues) => [
@@ -27,7 +28,7 @@ const Waiting = ({ filter, idle }) => {
 }
 
 /** The live scroll of scans, newest on top. */
-const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, previewId, onPreview, caption, idle, loading, error, onRetry, kitchens, palette, showCaterer = false }) => {
+const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, previewId, onPreview, caption, idle, loading, error, onRetry, kitchens, palette, showCaterer = false, onManualCheckIn, onManualEntry, manualHint }) => {
   const shown = filter === "issues" ? entries.filter((entry) => entry.status !== "verified") : entries
   const count = todayCount > MAX_ENTRIES ? todayCount : Math.max(todayCount, entries.length)
 
@@ -39,6 +40,7 @@ const ScanStream = ({ entries, issueCount, todayCount, filter, onFilter, nowMs, 
           {caption && <p className="lf-stream-caption">{caption}</p>}
         </div>
         <div className="lf-stream-tools">
+          {onManualCheckIn && !idle && <ManualEntry onSubmit={onManualCheckIn} onEntry={onManualEntry} hint={manualHint} />}
           <span className="lf-count">{count} today</span>
           <ToggleButtonGroup options={FILTERS(issueCount)} value={filter} onChange={onFilter} size="small" shape="pill" hideLabelsOnMobile={false} />
         </div>

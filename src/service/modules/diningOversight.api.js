@@ -37,6 +37,11 @@ export const diningOversightApi = {
     return apiClient.get("/dining-oversight/feed", { params }).then(unwrapStandardResponse)
   },
 
+  /** Check a student in by roll number: at `catererId`, or at the caterer they're allocated to. */
+  manualCheckIn: (payload) => {
+    return apiClient.post("/dining-oversight/manual", payload).then(unwrapStandardResponse)
+  },
+
   /** One day across every caterer: assigned, away and who ate each meal, plus students to check on. */
   getDailyReport: (params = {}) => {
     return apiClient.get("/dining-oversight/daily-report", { params }).then(unwrapStandardResponse)

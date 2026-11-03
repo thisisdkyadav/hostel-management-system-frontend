@@ -638,6 +638,48 @@
 
 .lf-stream-tools { display: flex; align-items: center; gap: var(--spacing-4); }
 
+/* Check in by roll number, tucked in beside the count. */
+.lf-manual {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  height: var(--spacing-9);
+  padding: 0 var(--spacing-1) 0 var(--spacing-2-5);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-text-muted);
+}
+.lf-manual:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 var(--border-2) color-mix(in srgb, var(--color-primary) 25%, transparent); }
+.lf-manual-icon { flex: 0 0 auto; }
+.lf-manual-input {
+  width: 8.5rem;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text-body);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.lf-manual-input::placeholder { color: var(--color-text-muted); }
+.lf-manual-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-7);
+  height: var(--spacing-7);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-white);
+  cursor: pointer;
+}
+.lf-manual-go:disabled { background: var(--color-bg-tertiary); color: var(--color-text-muted); cursor: default; }
+
+.lf-stream-tools { flex-wrap: wrap; }
+
 .lf-count { font-size: var(--font-size-md); font-variant-numeric: tabular-nums; color: var(--color-text-muted); }
 
 .lf-stream-list {
