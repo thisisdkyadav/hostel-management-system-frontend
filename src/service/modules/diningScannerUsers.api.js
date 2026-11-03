@@ -21,6 +21,13 @@ export const diningScannerUsersApi = {
   /** Background run: profile photos for every active student with no scanner photo → { total } */
   useProfilePhotos: () => apiClient.post("/dining-scanner-users/profile-photos").then(unwrap),
 
+  /** Ask every synced machine for what it holds for this student → { item } */
+  checkOnMachines: (rollNumber) => apiClient.post(`/dining-scanner-users/${encodeURIComponent(rollNumber)}/machine-check`).then(unwrap),
+
+  /** The face photo a machine sent back (`machine` = serial number). */
+  machinePhotoUrl: (rollNumber, machine, version = "") =>
+    `${getApiBaseUrl()}/dining-scanner-users/${encodeURIComponent(rollNumber)}/machine-photo?machine=${encodeURIComponent(machine)}${version ? `&v=${encodeURIComponent(version)}` : ""}`,
+
   /** The scanner photo (served by HMS with the staff session). */
   photoUrl: (rollNumber, version = "") =>
     `${getApiBaseUrl()}/dining-scanner-users/${encodeURIComponent(rollNumber)}/photo${version ? `?v=${encodeURIComponent(version)}` : ""}`,

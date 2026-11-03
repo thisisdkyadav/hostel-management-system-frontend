@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Button, ConfirmDialog, DataTable, Page, Pagination, SearchInput, StatusBadge, Tabs } from "hzero"
-import { ImageUp } from "lucide-react"
+import { ImageUp, RefreshCw } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import { useDebouncedValue } from "@/components/dining/caterer/rebates/rebateHelpers"
+import { getMediaUrl } from "@/utils/mediaUtils"
 import "@/components/dining/scanner-users/ScannerUsers.css"
 
 const PAGE_SIZE = 50
@@ -42,6 +43,73 @@ const MACHINE = {
 
 const ATTEMPT = { sent: "Used", unusable: "Can't use", failed: "Failed" }
 
+/** What a machine sent back when HMS asked it for the student (photo check). */
+const CHECK = {
+  match: { text: "same photo as HMS, face made", tone: "ok" },
+  noFace: { text: "has the photo but made no face from it", tone: "bad" },
+  different: { text: "has a different photo than HMS", tone: "bad" },
+  noPhoto: { text: "sent no photo (student not on it)", tone: "bad" },
+  noAnswer: { text: "didn't answer", tone: "warn" },
+  checking: { text: "checking…", tone: "warn" },
+}
+
+/** The machine whose photo to show: one that sent a photo, preferring an exact match. */
+const shownMachine = (row) =>
+  row.machines.find((m) => m.check?.status === "match") || row.machines.find((m) => m.check?.photo) || null
+
+const isChecking = (row) => row.machines.some((m) => m.check?.status === "checking")
+
+/** Profile photo next to the photo on the machine. */
+const PhotoPair = ({ row }) => {
+  const machine = shownMachine(row)
+  const who = row.name || row.rollNumber
+  const profileUrl = row.profileImage ? getMediaUrl(row.profileImage) : ""
+  const machineUrl = machine ? diningScannerUsersApi.machinePhotoUrl(row.rollNumber, machine.sn, String(machine.check.at || "")) : ""
+  const sentUrl = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : ""
+  return (
+    <div className="su-pair">
+      <figure className="su-pair__item">
+        {profileUrl ? (
+          <a className="su-thumb su-thumb--lg" href={profileUrl} target="_blank" rel="noreferrer" title="Open profile photo">
+            <img src={profileUrl} alt={`Profile photo of ${who}`} loading="lazy" />
+          </a>
+        ) : (
+          <span className="su-thumb su-thumb--lg" aria-label="No profile photo" />
+        )}
+        <figcaption>Profile</figcaption>
+      </figure>
+      <figure className="su-pair__item">
+        {machineUrl ? (
+          <a className="su-thumb su-thumb--lg" href={machineUrl} target="_blank" rel="noreferrer" title={`Open the photo ${machine.alias} holds`}>
+            <img src={machineUrl} alt={`Photo on ${machine.alias} for ${who}`} loading="lazy" />
+          </a>
+        ) : sentUrl ? (
+          <a className="su-thumb su-thumb--lg su-thumb--unchecked" href={sentUrl} target="_blank" rel="noreferrer" title="The photo HMS sends. Not fetched back from a machine yet.">
+            <img src={sentUrl} alt={`Scanner photo of ${who}`} loading="lazy" />
+          </a>
+        ) : (
+          <span className="su-thumb su-thumb--lg" aria-label="No scanner photo" />
+        )}
+        <figcaption>{machine ? `On ${machine.alias}` : sentUrl ? "Sent (not checked)" : "No photo"}</figcaption>
+      </figure>
+    </div>
+  )
+}
+
+/** "m2, m3: same photo as HMS, face made" lines from the last check of each machine. */
+const checkLines = (machines) => {
+  const groups = new Map()
+  for (const machine of machines) {
+    const look = CHECK[machine.check?.status]
+    if (!look) continue
+    const entry = groups.get(machine.check.status) || { look, aliases: [], at: null }
+    entry.aliases.push(machine.alias)
+    if (machine.check.at && (!entry.at || machine.check.at > entry.at)) entry.at = machine.check.at
+    groups.set(machine.check.status, entry)
+  }
+  return [...groups.values()]
+}
+
 /** The machines' own errors, grouped: "m2, m3: The machine couldn't make a face from this photo (D01E0001)". */
 const refusalGroups = (machines) => {
   const groups = new Map()
@@ -70,6 +138,12 @@ const Machines = ({ row }) => {
           )
         })}
       </div>
+      {checkLines(row.machines).map((line) => (
+        <span key={line.look.text} className="su-check" data-tone={line.look.tone}>
+          <strong>{line.aliases.join(", ")}:</strong> {line.look.text}
+          {line.at && line.look.tone !== "warn" ? <span className="su-check__at"> · {formatDateTime(line.at)}</span> : null}
+        </span>
+      ))}
       {refusals.length > 0 && (
         <div className="su-refusal" role="note">
           {refusals.map((group) => (
@@ -105,7 +179,7 @@ const DiningScannerUsersPage = () => {
     queryKey: queryKeys.diningScannerUsers.list(params),
     queryFn: () => diningScannerUsersApi.list(params),
     placeholderData: keepPreviousData,
-    refetchInterval: (current) => (current.state.data?.profileJob?.running ? 5000 : 30_000),
+    refetchInterval: (current) => (current.state.data?.profileJob?.running || current.state.data?.items?.some(isChecking) ? 5000 : 30_000),
   })
   const refresh = () => queryClient.invalidateQueries({ queryKey: queryKeys.diningScannerUsers.all })
 
@@ -120,6 +194,12 @@ const DiningScannerUsersPage = () => {
     onError: (error, { row }) => {
       setFeedback({ type: "error", message: `${row.name || row.rollNumber}: ${getErrorMessage(error, "Couldn't use the profile photo.")}` })
     },
+    onSettled: refresh,
+  })
+  const fetchBack = useMutation({
+    mutationFn: ({ row }) => diningScannerUsersApi.checkOnMachines(row.rollNumber),
+    onSuccess: (_, { row }) => setFeedback({ type: "info", message: `${row.name || row.rollNumber}: asked the machines. Their photos show here within a minute or two.` }),
+    onError: (error, { row }) => setFeedback({ type: "error", message: `${row.name || row.rollNumber}: ${getErrorMessage(error, "Couldn't ask the machines.")}` }),
     onSettled: refresh,
   })
   const bulk = useMutation({
@@ -138,21 +218,10 @@ const DiningScannerUsersPage = () => {
   const totalPages = Math.max(1, Math.ceil((data?.total || 0) / PAGE_SIZE))
   const job = data?.profileJob
   const busyRoll = useProfile.isPending ? useProfile.variables?.row.rollNumber : ""
+  const fetchingRoll = fetchBack.isPending ? fetchBack.variables?.row.rollNumber : ""
 
   const columns = [
-    {
-      key: "photo",
-      header: "Photo",
-      width: 64,
-      render: (row) =>
-        row.photo.present ? (
-          <a className="su-thumb" href={diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version)} target="_blank" rel="noreferrer" title="Open scanner photo">
-            <img src={diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version)} alt={`Scanner photo of ${row.name || row.rollNumber}`} loading="lazy" />
-          </a>
-        ) : (
-          <span className="su-thumb" aria-label="No scanner photo" />
-        ),
-    },
+    { key: "photos", header: "Photos", width: 132, render: (row) => <PhotoPair row={row} /> },
     {
       key: "student",
       header: "Student",
@@ -187,20 +256,36 @@ const DiningScannerUsersPage = () => {
       header: "",
       align: "right",
       render: (row) => {
-        if (!row.profileImage) return row.photoStatus === "valid" ? null : <span className="su-note">No HMS profile photo</span>
         const tried = row.profileAttempt && row.profileAttempt.outcome !== "sent"
+        const canFetch = row.photo.present && row.machines.length > 0
         return (
           <div className="su-action">
-            <Button
-              variant={row.photoStatus === "valid" ? "ghost" : "secondary"}
-              size="sm"
-              loading={busyRoll === row.rollNumber}
-              disabled={useProfile.isPending}
-              onClick={() => useProfile.mutate({ row })}
-              title={row.photoStatus === "valid" ? "Replace the scanner photo with the student's HMS profile photo" : "Use the student's HMS profile photo as their scanner photo"}
-            >
-              <ImageUp size={15} /> {row.photoStatus === "valid" ? "Replace with profile photo" : "Use profile photo"}
-            </Button>
+            {canFetch && (
+              <Button
+                variant="ghost"
+                size="sm"
+                loading={fetchingRoll === row.rollNumber}
+                disabled={fetchBack.isPending || isChecking(row)}
+                onClick={() => fetchBack.mutate({ row })}
+                title="Ask every machine for the photo it holds for this student"
+              >
+                <RefreshCw size={15} /> {isChecking(row) ? "Checking machines…" : "Fetch from machines"}
+              </Button>
+            )}
+            {row.profileImage ? (
+              <Button
+                variant={row.photoStatus === "valid" ? "ghost" : "secondary"}
+                size="sm"
+                loading={busyRoll === row.rollNumber}
+                disabled={useProfile.isPending}
+                onClick={() => useProfile.mutate({ row })}
+                title={row.photoStatus === "valid" ? "Replace the scanner photo with the student's HMS profile photo" : "Use the student's HMS profile photo as their scanner photo"}
+              >
+                <ImageUp size={15} /> {row.photoStatus === "valid" ? "Replace with profile photo" : "Use profile photo"}
+              </Button>
+            ) : row.photoStatus === "valid" ? null : (
+              <span className="su-note">No HMS profile photo</span>
+            )}
             {tried && (
               <span className="su-note" title={row.profileAttempt.message}>
                 {ATTEMPT[row.profileAttempt.outcome] || "Tried"} {formatDateTime(row.profileAttempt.at)}: {row.profileAttempt.message}
@@ -214,7 +299,7 @@ const DiningScannerUsersPage = () => {
 
   return (
     <Page>
-      <PageHeader title="Scanner Photos" subtitle="Every active student's face photo, and whether each mess face machine has it.">
+      <PageHeader title="Scanner Photos" subtitle="Each active student's profile photo next to the photo the mess face machines actually hold.">
         <Button variant="secondary" onClick={() => setConfirmBulk(true)} disabled={job?.running || bulk.isPending || !counts.missing}>
           <ImageUp size={18} /> Use profile photos
         </Button>
@@ -223,6 +308,7 @@ const DiningScannerUsersPage = () => {
       <Page.Body>
         <p className="su-sync">
           The machines hold exactly the active students who have a photo: new and changed photos reach them within a couple of minutes, and students who leave are removed.
+          Every night HMS fetches back the photos that changed (everyone on Sunday nights) and checks each machine made a face from them.
           {data?.machines?.length ? ` Machines: ${data.machines.join(", ")}.` : " No machine is kept in sync yet (Face Scanners page)."}
         </p>
 
