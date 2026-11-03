@@ -5,7 +5,26 @@
 
 import apiClient from "../core/apiClient"
 
+const unwrap = (response) =>
+  response && typeof response === "object" && typeof response.success === "boolean" && Object.prototype.hasOwnProperty.call(response, "data")
+    ? response.data
+    : response
+
 export const faceScannerApi = {
+  // ---- Machines connected to HMS directly (iclock receiver) ----
+
+  /** → { machines: [...], faces: { stored, withoutFace, job } } */
+  getMachines: () => apiClient.get("/face-scanner/machines").then(unwrap),
+
+  /** `{ alias?, faceScannerId?, mode? }` → same shape as getMachines */
+  updateMachine: (sn, data) => apiClient.patch(`/face-scanner/machines/${encodeURIComponent(sn)}`, data).then(unwrap),
+
+  /** → { punches, commands, log } (latest 50 each) */
+  getMachineActivity: (sn) => apiClient.get(`/face-scanner/machines/${encodeURIComponent(sn)}/activity`).then(unwrap),
+
+  /** Copy EasyWDMS face photos into HMS storage (background, 202). */
+  importFaces: () => apiClient.post("/face-scanner/machines/faces/import").then(unwrap),
+
   /**
    * Get all face scanners
    * @param {Object} filters - Optional filters (type, direction, hostelId, isActive)

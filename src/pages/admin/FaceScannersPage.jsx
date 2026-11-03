@@ -6,6 +6,7 @@ import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"
 import AddFaceScannerModal from "../../components/admin/faceScanner/AddFaceScannerModal"
 import ZktecoAccountsSection from "../../components/admin/faceScanner/ZktecoAccountsSection"
+import MachinesSection from "../../components/admin/faceScanner/MachinesSection"
 import LiveScanMonitorModal from "../../components/admin/faceScanner/LiveScanMonitorModal"
 import PageHeader from "../../components/common/PageHeader"
 import { faceScannerApi } from "../../service"
@@ -94,6 +95,8 @@ const FaceScannersPage = () => {
                     <FaceScannerStats scanners={scanners} />
 
                     <VStack gap={8} style={{ marginTop: "var(--spacing-6)" }}>
+                        <MachinesSection scanners={scanners} />
+
                         <ZktecoAccountsSection accounts={accounts} loading={loading} onChanged={fetchAll} />
 
                         <section>

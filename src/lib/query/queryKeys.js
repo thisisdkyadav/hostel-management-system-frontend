@@ -68,6 +68,11 @@ export const queryKeys = {
     all: ["dining-bio-photos"],
     list: (params) => [...queryKeys.diningBioPhotos.all, "list", params ?? {}],
   },
+  faceMachines: {
+    all: ["faceMachines"],
+    list: () => [...queryKeys.faceMachines.all, "list"],
+    activity: (sn) => [...queryKeys.faceMachines.all, "activity", sn],
+  },
   diningScannerUsers: {
     all: ["dining-scanner-users"],
     list: (params) => [...queryKeys.diningScannerUsers.all, "list", params ?? {}],

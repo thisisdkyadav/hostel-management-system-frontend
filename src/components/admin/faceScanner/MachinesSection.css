@@ -1,0 +1,61 @@
+/* Face Scanners → Machines connected to HMS */
+
+.fm-faces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  margin: var(--spacing-4) 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-bg-secondary);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.fm-faces strong {
+  color: var(--color-text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-table {
+  margin-top: var(--spacing-2);
+}
+
+.fm-who {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.fm-who strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+.fm-who span,
+.fm-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.fm-note[data-tone="bad"] {
+  color: var(--color-danger-text);
+}
+
+.fm-note[data-tone="ok"] {
+  color: var(--color-success-text);
+}
+
+.fm-mono {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-wrap {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
