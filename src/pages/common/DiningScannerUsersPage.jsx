@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button, ConfirmDialog, DataTable, Page, Pagination, SearchInput } from "hzero"
-import { ImageUp, X } from "lucide-react"
+import { Alert, Button, ConfirmDialog, Page, Pagination, SearchInput } from "hzero"
+import { ArrowLeft, ImageUp } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
@@ -10,7 +10,7 @@ import { useDebouncedValue } from "@/components/dining/caterer/rebates/rebateHel
 import { getMediaUrl } from "@/utils/mediaUtils"
 import ScannerOverview from "@/components/dining/scanner-users/ScannerOverview"
 import ScannerStudentModal from "@/components/dining/scanner-users/ScannerStudentModal"
-import { STATUS, isChecking } from "@/components/dining/scanner-users/scannerUsersHelpers"
+import { STATUS, initials, isChecking, number } from "@/components/dining/scanner-users/scannerUsersHelpers"
 import "@/components/dining/scanner-users/ScannerUsers.css"
 
 const PAGE_SIZE = 10
@@ -66,13 +66,24 @@ const OVERVIEW_ONLY = {
   },
 }
 
-/** Small thumbnail: the scanner photo, else the profile photo. */
-const Thumb = ({ row }) => {
+/** One result: the scanner photo (else the faded profile photo), name and roll. */
+const StudentCard = ({ row, onOpen }) => {
+  const [broken, setBroken] = useState(false)
   const url = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : row.profileImage ? getMediaUrl(row.profileImage) : ""
+  const badge = STATUS[row.photoStatus] || STATUS.missing
   return (
-    <span className="su-thumb" data-faded={!row.photo.present || undefined}>
-      {url ? <img src={url} alt="" loading="lazy" /> : null}
-    </span>
+    <li>
+      <button type="button" className="su-card" onClick={() => onOpen(row)}>
+        <span className="su-card__photo" data-faded={!row.photo.present || undefined}>
+          {url && !broken ? <img src={url} alt="" loading="lazy" onError={() => setBroken(true)} /> : <span className="su-card__initials">{initials(row.name)}</span>}
+          <span className="su-card__badge" data-tone={badge.tone}>
+            {badge.label}
+          </span>
+        </span>
+        <span className="su-card__name">{row.name || "-"}</span>
+        <span className="su-card__roll">{row.rollNumber}</span>
+      </button>
+    </li>
   )
 }
 
@@ -145,44 +156,17 @@ const DiningScannerUsersPage = () => {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const active = FILTERS.find((f) => f.value === filter) || OVERVIEW_ONLY[filter]
 
-  const columns = [
-    {
-      key: "photo",
-      header: "",
-      width: 56,
-      render: (row) => <Thumb row={row} />,
-    },
-    {
-      key: "student",
-      header: "Student",
-      render: (row) => (
-        <div className="su-who">
-          <strong>{row.name || "-"}</strong>
-          <span>{row.rollNumber}</span>
-        </div>
-      ),
-    },
-    {
-      key: "status",
-      header: "",
-      align: "right",
-      render: (row) => {
-        const badge = STATUS[row.photoStatus] || STATUS.missing
-        return (
-          <span className="su-dot" data-tone={badge.tone}>
-            {badge.label}
-          </span>
-        )
-      },
-    },
-  ]
+  const countOf = (key) => {
+    if (!overview) return null
+    return overview.status?.[key] ?? overview.checks?.[key] ?? null
+  }
 
   const summary = () => {
     if (list.isLoading) return "Looking…"
     const who = `${total.toLocaleString("en-IN")} student${total === 1 ? "" : "s"}`
-    if (search && active) return `${who} in "${active.label}" match "${search}"`
+    if (search && active) return `${active.label}: ${who} match "${search}"`
     if (search) return `${who} match "${search}"`
-    return `${who}: ${active?.label || filter}`
+    return `${active?.label || filter}: ${who}`
   }
 
   return (
@@ -224,13 +208,19 @@ const DiningScannerUsersPage = () => {
             placeholder="Find a student by roll number or name"
             aria-label="Find a student by roll number or name"
           />
-          <div className="su-chips" role="group" aria-label="Show a group">
-            {FILTERS.map((option) => (
-              <button key={option.value} type="button" className="su-chip" aria-pressed={filter === option.value} onClick={() => pick(option.value)}>
-                {option.label}
-              </button>
-            ))}
-          </div>
+          {listing && (
+            <div className="su-chips" role="group" aria-label="Show a group">
+              {FILTERS.map((option) => {
+                const n = countOf(option.value)
+                return (
+                  <button key={option.value} type="button" className="su-chip" aria-pressed={filter === option.value} onClick={() => pick(option.value)}>
+                    {option.label}
+                    {n !== null && <span>{number(n)}</span>}
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         {!listing ? (
@@ -248,21 +238,26 @@ const DiningScannerUsersPage = () => {
         ) : (
           <section className="su-results" aria-live="polite">
             <div className="su-results__head">
+              <button type="button" className="su-back" onClick={reset}>
+                <ArrowLeft size={16} /> Overview
+              </button>
               <span>{summary()}</span>
-              <Button variant="ghost" size="sm" onClick={reset}>
-                <X size={15} /> Back to overview
-              </Button>
             </div>
-            <div className="su-table" data-stale={list.isPlaceholderData || undefined}>
-              <DataTable
-                data={items}
-                columns={columns}
-                loading={list.isLoading}
-                getRowId={(row) => row.rollNumber}
-                onRowClick={(row) => setOpen(row)}
-                emptyMessage={search ? `Nobody matches "${search}".` : active?.empty || "Nobody here."}
-              />
-            </div>
+            {list.isLoading ? (
+              <ul className="su-grid" aria-busy="true">
+                {Array.from({ length: PAGE_SIZE }, (_, i) => (
+                  <li key={i} className="su-card su-card--ghost" />
+                ))}
+              </ul>
+            ) : items.length ? (
+              <ul className="su-grid" data-stale={list.isPlaceholderData || undefined}>
+                {items.map((row) => (
+                  <StudentCard key={row.rollNumber} row={row} onOpen={setOpen} />
+                ))}
+              </ul>
+            ) : (
+              <p className="su-empty">{search ? `Nobody matches "${search}".` : active?.empty || "Nobody here."}</p>
+            )}
             {totalPages > 1 && <Pagination currentPage={page} totalPages={totalPages} paginate={setPage} />}
           </section>
         )}

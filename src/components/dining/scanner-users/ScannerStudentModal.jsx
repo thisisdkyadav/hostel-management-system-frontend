@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Button, Modal, StatusBadge } from "hzero"
-import { ImageUp, RefreshCw } from "lucide-react"
+import { ImageOff, ImageUp, RefreshCw } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
@@ -11,66 +11,84 @@ import { STATUS, isChecking } from "./scannerUsersHelpers"
 
 const MACHINE = {
   ok: { text: "Has this photo", tone: "ok" },
-  waiting: {
-    text: "Not there yet. A machine that's off gets it when it's back.",
-    tone: "warn",
-  },
+  waiting: { text: "Not there yet", tone: "warn" },
   refused: { text: "Refused this photo", tone: "bad" },
 }
 
 /** What a machine sent back when HMS asked it for the student. */
 const CHECK = {
-  match: {
-    text: "Sent back the same photo and made a face from it",
-    tone: "ok",
-  },
-  noFace: { text: "Has the photo but made no face from it", tone: "bad" },
-  different: { text: "Holds a different photo than HMS", tone: "bad" },
-  noPhoto: { text: "Sent back no photo", tone: "bad" },
-  noAnswer: { text: "Didn't answer", tone: "warn" },
-  checking: { text: "Checking…", tone: "warn" },
-  none: { text: "Not checked yet", tone: "none" },
+  match: { text: "Same photo as HMS, face made", short: "Same as HMS", tone: "ok" },
+  noFace: { text: "Has the photo, made no face", short: "No face made", tone: "bad" },
+  different: { text: "Holds a different photo", short: "Different photo", tone: "bad" },
+  noPhoto: { text: "Sent back no photo", short: "No photo", tone: "bad" },
+  noAnswer: { text: "Didn't answer", short: "No answer", tone: "warn" },
+  checking: { text: "Checking…", short: "Checking…", tone: "warn" },
+  none: { text: "Not checked yet", short: "Not checked", tone: "none" },
 }
 
 const ATTEMPT = { sent: "Used", unusable: "Can't use", failed: "Failed" }
 
 
-/** The machine whose photo to show: one that sent a photo, preferring an exact match. */
-const shownMachine = (row) => row.machines.find((m) => m.check?.status === "match") || row.machines.find((m) => m.check?.photo) || null
+/** Machines that sent a photo back, exact matches first. */
+const machinesWithPhoto = (row) =>
+  row.machines.filter((m) => m.check?.photo).sort((a, b) => (b.check.status === "match") - (a.check.status === "match"))
 
-const Photo = ({ url, alt, caption, dashed, title }) => (
-  <figure className="sm-photo">
-    {url ? (
-      <a className="sm-photo__frame" data-dashed={dashed || undefined} href={url} target="_blank" rel="noreferrer" title={title}>
-        <img src={url} alt={alt} />
-      </a>
-    ) : (
-      <span className="sm-photo__frame sm-photo__frame--empty">No photo</span>
-    )}
-    <figcaption>{caption}</figcaption>
-  </figure>
-)
+const Photo = ({ url, alt, label, note, dashed }) => {
+  const [broken, setBroken] = useState(false)
+  return (
+    <figure className="sm-photo">
+      <figcaption>
+        <strong>{label}</strong>
+        {note && <span>{note}</span>}
+      </figcaption>
+      {url && !broken ? (
+        <a className="sm-photo__frame" data-dashed={dashed || undefined} href={url} target="_blank" rel="noreferrer" title="Open full size">
+          <img src={url} alt={alt} onError={() => setBroken(true)} />
+        </a>
+      ) : (
+        <span className="sm-photo__frame sm-photo__frame--empty">
+          <ImageOff size={22} aria-hidden="true" />
+          No photo
+        </span>
+      )}
+    </figure>
+  )
+}
 
-/** The student's HMS profile photo next to what a machine holds. */
+/** The HMS profile photo next to what a machine holds (pick the machine). */
 const PhotoPair = ({ row }) => {
-  const machine = shownMachine(row)
+  const fetched = machinesWithPhoto(row)
+  const [picked, setPicked] = useState(null)
+  const machine = fetched.find((m) => m.sn === picked) || fetched[0] || null
   const who = row.name || row.rollNumber
   const profileUrl = row.profileImage ? getMediaUrl(row.profileImage) : ""
-  const machineUrl = machine ? diningScannerUsersApi.machinePhotoUrl(row.rollNumber, machine.sn, String(machine.check.at || "")) : ""
   const sentUrl = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : ""
+  const machineUrl = machine ? diningScannerUsersApi.machinePhotoUrl(row.rollNumber, machine.sn, String(machine.check.at || "")) : ""
+  const verdict = machine ? CHECK[machine.check.status] : null
   return (
     <div className="sm-pair">
-      <Photo url={profileUrl} alt={`Profile photo of ${who}`} caption="HMS profile" title="Open profile photo" />
-      {machineUrl ? (
-        <Photo url={machineUrl} alt={`Photo on ${machine.alias} for ${who}`} caption={`On ${machine.alias}`} title={`Open the photo ${machine.alias} holds`} />
-      ) : (
+      <Photo url={profileUrl} alt={`Profile photo of ${who}`} label="HMS profile" />
+      {machine ? (
         <Photo
-          url={sentUrl}
-          dashed
-          alt={`Scanner photo of ${who}`}
-          caption={sentUrl ? "Sent, not fetched back yet" : "No scanner photo"}
-          title="The photo HMS sends. Not fetched back from a machine yet."
+          url={machineUrl}
+          alt={`Photo on ${machine.alias} for ${who}`}
+          label={
+            fetched.length > 1 ? (
+              <span className="sm-tabs" role="group" aria-label="Machine">
+                {fetched.map((m) => (
+                  <button key={m.sn} type="button" aria-pressed={m.sn === machine.sn} onClick={() => setPicked(m.sn)}>
+                    {m.alias}
+                  </button>
+                ))}
+              </span>
+            ) : (
+              `On ${machine.alias}`
+            )
+          }
+          note={verdict ? <span data-tone={verdict.tone}>{verdict.short}</span> : null}
         />
+      ) : (
+        <Photo url={sentUrl} dashed alt={`Scanner photo of ${who}`} label="Scanner photo" note={sentUrl ? "Sent, not fetched back yet" : null} />
       )}
     </div>
   )
@@ -189,7 +207,7 @@ const ScannerStudentModal = ({ row: initial, onClose }) => {
 
         <p className="sm-source">
           {row.photo.present
-            ? `${row.photo.sourceLabel || "Scanner photo"}${row.photo.storedAt ? `, saved ${formatDateTime(row.photo.storedAt)}` : ""}${row.photo.width ? `. ${row.photo.width}×${row.photo.height}` : ""}`
+            ? `Scanner photo: ${row.photo.sourceLabel || "uploaded"}${row.photo.storedAt ? `, ${formatDateTime(row.photo.storedAt)}` : ""}${row.photo.width ? ` · ${row.photo.width}×${row.photo.height}` : ""}`
             : row.profileImage
               ? "No scanner photo yet. The HMS profile photo can be used."
               : "No scanner photo and no HMS profile photo. The student can send one from their Dining page."}
@@ -206,23 +224,19 @@ const ScannerStudentModal = ({ row: initial, onClose }) => {
               const state = MACHINE[machine.state] || MACHINE.waiting
               const check = CHECK[machine.check?.status] || CHECK.none
               return (
-                <li key={machine.sn} className="sm-machine">
-                  <span className="sm-machine__name" data-tone={state.tone}>
-                    {machine.alias}
+                <li key={machine.sn} className="sm-machine" data-tone={machine.refusal ? "bad" : state.tone}>
+                  <strong className="sm-machine__name">{machine.alias}</strong>
+                  <span data-tone={state.tone}>{state.text}</span>
+                  <span className="sm-machine__check" data-tone={check.tone}>
+                    {check.text}
+                    {machine.check?.at && check.tone !== "warn" ? <small>{formatDateTime(machine.check.at)}</small> : null}
                   </span>
-                  <div className="sm-machine__lines">
-                    <span data-tone={state.tone}>{state.text}</span>
-                    <span className="sm-machine__check" data-tone={check.tone}>
-                      {check.text}
-                      {machine.check?.at && check.tone !== "warn" ? `, ${formatDateTime(machine.check.at)}` : ""}
+                  {machine.refusal && (
+                    <span className="sm-machine__error">
+                      {machine.refusal.message}
+                      {machine.refusal.code ? ` (${machine.refusal.code})` : ""}
                     </span>
-                    {machine.refusal && (
-                      <span className="sm-machine__error">
-                        {machine.refusal.message}
-                        {machine.refusal.code ? ` (${machine.refusal.code})` : ""}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </li>
               )
             })}

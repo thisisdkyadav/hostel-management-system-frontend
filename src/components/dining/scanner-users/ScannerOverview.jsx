@@ -1,136 +1,126 @@
-import { useMemo, useState } from "react"
-import { formatDateTime } from "@/components/dining/diningPeriodHelpers"
+import { ChevronRight } from "lucide-react"
+import { ago, number } from "./scannerUsersHelpers"
 
-/** The four places a student's photo can be, in the order the field fills. */
-const STATUS_GROUPS = [
-  { key: "valid", label: "can scan on every machine", tone: "ok" },
-  { key: "pending", label: "on their way to the machines", tone: "warn" },
-  { key: "failed", label: "refused by a machine", tone: "bad" },
-  { key: "missing", label: "have no photo yet", tone: "none" },
+/** How every active student's photo stands, in the order of the coverage strip. */
+const STRIP = [
+  { key: "valid", label: "Ready", tone: "ok" },
+  { key: "pending", label: "Sending", tone: "warn" },
+  { key: "failed", label: "Refused", tone: "bad" },
+  { key: "missing", label: "No photo", tone: "none" },
 ]
 
-/** What the machines sent back when HMS asked for the photo they hold. */
-const CHECK_GROUPS = [
-  { key: "match", label: "same photo, face made", tone: "ok" },
-  { key: "mismatch", label: "wrong or no photo on a machine", tone: "bad" },
-  { key: "noFace", label: "no face made from it", tone: "bad" },
-  { key: "checking", label: "being checked", tone: "warn" },
-  { key: "unchecked", label: "not checked yet", tone: "none" },
+/** The work list: each group staff may need to act on, most urgent first. */
+const QUEUE = [
+  { key: "failed", from: "status", tone: "bad", title: "Refused by a machine", text: "The machine couldn't make a face from the photo. The student needs a new one." },
+  { key: "noFace", from: "checks", tone: "bad", title: "No face made", text: "A machine holds the photo but made no face from it." },
+  { key: "mismatch", from: "checks", tone: "bad", title: "Wrong photo on a machine", text: "A machine sent back a different photo than HMS, or none." },
+  { key: "missing", from: "status", tone: "none", title: "No photo", text: null },
+  { key: "pending", from: "status", tone: "warn", title: "Sending", text: "On their way. A machine that's off gets them when it's back." },
+  { key: "unchecked", from: "checks", tone: "none", title: "Not checked yet", text: "Not fetched back from the machines yet. Checked every night." },
 ]
 
-const number = (value) => (value || 0).toLocaleString("en-IN")
-
-/** Squares for each group: one per student, or one per N when there are many. */
-const layoutField = (status, total) => {
-  const per = Math.max(1, Math.ceil(total / 360))
-  const cells = []
-  for (const group of STATUS_GROUPS) {
-    const count = status[group.key] || 0
-    const squares = count ? Math.max(1, Math.round(count / per)) : 0
-    for (let i = 0; i < squares; i++) cells.push(group.key)
-  }
-  return { per, cells }
+/** One face machine, drawn as the device: its screen shows how many faces it holds. */
+const Machine = ({ machine, withPhoto }) => {
+  const online = machine.online
+  const extra = [machine.waiting ? `${number(machine.waiting)} on the way` : "", machine.refused ? `${number(machine.refused)} refused` : ""].filter(Boolean).join(" · ")
+  return (
+    <li className="so-device">
+      <div className="so-device__body" aria-hidden="true">
+        <span className="so-device__cam" />
+        <span className="so-device__screen">
+          <strong>{number(machine.ok)}</strong>
+          <small>of {number(withPhoto)}</small>
+        </span>
+        <span className="so-device__led" data-on={online || undefined} />
+      </div>
+      <div className="so-device__text">
+        <strong>{machine.alias}</strong>
+        <span data-on={online || undefined}>{online ? "Online" : machine.lastSeenAt ? `Last seen ${ago(machine.lastSeenAt)}` : "Never seen"}</span>
+        {extra && <span className="so-device__extra">{extra}</span>}
+      </div>
+    </li>
+  )
 }
 
 /**
- * The default view of Scanner Photos: every active student as part of one field
- * of squares, coloured by whether they can scan their face at the mess. The
- * legend under it is the way into each group.
+ * The default view of Scanner Photos: how many students can scan their face,
+ * what each machine holds, and the groups that need someone's attention.
  */
 const ScannerOverview = ({ stats, onPick }) => {
-  const [focus, setFocus] = useState("")
-  const total = stats?.total || 0
-  const status = stats?.status || {}
-  const checks = stats?.checks || {}
-  const { per, cells } = useMemo(() => layoutField(stats?.status || {}, stats?.total || 0), [stats])
-  const withPhoto = stats?.withPhoto || 0
-  const checkedTotal = CHECK_GROUPS.reduce((sum, group) => sum + (checks[group.key] || 0), 0)
+  if (!stats) return <div className="so-loading" aria-busy="true" />
 
-  if (!stats) return <div className="so-field so-field--loading" aria-busy="true" />
+  const total = stats.total || 0
+  const status = stats.status || {}
+  const checks = stats.checks || {}
+  const ready = status.valid || 0
+  const percent = total ? Math.floor((ready / total) * 100) : 0
+  const count = (item) => (item.from === "status" ? status[item.key] : checks[item.key]) || 0
+  const missingText =
+    stats.missingWithProfile > 0
+      ? `No scanner photo yet. ${number(stats.missingWithProfile)} of them have a profile photo that can be used.`
+      : "No scanner photo yet. They can send one from their Dining page."
 
   return (
-    <section className="so" aria-label="Scanner photo overview">
-      <p className="so-lede">
-        <strong>{number(status.valid)}</strong> of {number(total)} active students can scan their face at the mess.
-      </p>
-
-      <div className="so-field" role="img" aria-label={STATUS_GROUPS.map((g) => `${number(status[g.key])} ${g.label}`).join(", ")} data-focus={focus || undefined}>
-        {cells.map((key, index) => (
-          <span key={index} className="so-cell" data-group={key} style={{ "--i": index }} />
-        ))}
-      </div>
-      <p className="so-scale">{per === 1 ? "Each square is a student." : `Each square is about ${per} students.`}</p>
-
-      <ul className="so-legend">
-        {STATUS_GROUPS.map((group) => (
-          <li key={group.key}>
-            <button
-              type="button"
-              className="so-legend__item"
-              data-tone={group.tone}
-              disabled={!status[group.key]}
-              onMouseEnter={() => setFocus(group.key)}
-              onMouseLeave={() => setFocus("")}
-              onFocus={() => setFocus(group.key)}
-              onBlur={() => setFocus("")}
-              onClick={() => onPick(group.key)}
-            >
-              <span className="so-swatch" aria-hidden="true" />
-              <span className="so-legend__count">{number(status[group.key])}</span>
-              <span className="so-legend__label">{group.label}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {withPhoto > 0 && checkedTotal > 0 && (
-        <div className="so-block">
-          <h2 className="so-heading">What the machines sent back</h2>
-          <p className="so-note">Each night HMS asks the machines for the photo they hold and compares it with the one in HMS.</p>
-          <div className="so-bar" role="img" aria-label={CHECK_GROUPS.map((g) => `${number(checks[g.key])} ${g.label}`).join(", ")}>
-            {CHECK_GROUPS.map((group) => (checks[group.key] ? <span key={group.key} data-tone={group.tone} style={{ flexGrow: checks[group.key] }} /> : null))}
+    <div className="so">
+      <section className="so-hero" aria-label="Face scanning at the mess">
+        <div className="so-cover">
+          <p className="so-cover__eyebrow">Face scanning at the mess</p>
+          <p className="so-cover__figure">
+            <strong>{percent}%</strong>
+            <span>
+              of active students can scan
+              <br />
+              {number(ready)} of {number(total)}
+            </span>
+          </p>
+          <div className="so-strip" role="img" aria-label={STRIP.map((s) => `${number(status[s.key])} ${s.label}`).join(", ")}>
+            {STRIP.map((s) => (status[s.key] ? <span key={s.key} data-tone={s.tone} style={{ flexGrow: status[s.key] }} /> : null))}
           </div>
-          <ul className="so-legend so-legend--compact">
-            {CHECK_GROUPS.map((group) => (
-              <li key={group.key}>
-                <button type="button" className="so-legend__item" data-tone={group.tone} disabled={!checks[group.key]} onClick={() => onPick(group.key)}>
-                  <span className="so-swatch" aria-hidden="true" />
-                  <span className="so-legend__count">{number(checks[group.key])}</span>
-                  <span className="so-legend__label">{group.label}</span>
+          <ul className="so-strip__legend">
+            {STRIP.map((s) => (
+              <li key={s.key}>
+                <button type="button" data-tone={s.tone} disabled={!status[s.key]} onClick={() => onPick(s.key)}>
+                  <i aria-hidden="true" />
+                  {s.label} <b>{number(status[s.key])}</b>
                 </button>
               </li>
             ))}
           </ul>
         </div>
-      )}
 
-      {stats.machines?.length > 0 ? (
-        <div className="so-block">
-          <h2 className="so-heading">Machines</h2>
-          <ul className="so-machines">
-            {stats.machines.map((machine) => {
-              const share = withPhoto ? Math.round((machine.ok / withPhoto) * 100) : 0
-              return (
-                <li key={machine.sn} className="so-machine">
-                  <span className="so-machine__name">{machine.alias}</span>
-                  <span className="so-machine__track" aria-hidden="true">
-                    <span style={{ width: `${share}%` }} />
-                  </span>
-                  <span className="so-machine__text">
-                    holds {number(machine.ok)} of {number(withPhoto)} photos
-                    {machine.waiting ? `, ${number(machine.waiting)} on the way` : ""}
-                    {machine.refused ? `, refused ${number(machine.refused)}` : ""}
-                    {machine.lastCheckAt ? `. Last checked ${formatDateTime(machine.lastCheckAt)}` : ""}
-                  </span>
-                </li>
-              )
-            })}
+        {stats.machines?.length ? (
+          <ul className="so-devices" aria-label="Machines">
+            {stats.machines.map((machine) => (
+              <Machine key={machine.sn} machine={machine} withPhoto={stats.withPhoto} />
+            ))}
           </ul>
-        </div>
-      ) : (
-        <p className="so-note">No machine is kept in sync yet. Switch on roster sync on the Face Scanners page.</p>
-      )}
-    </section>
+        ) : (
+          <p className="so-empty">No machine is kept in sync yet. Switch on roster sync on the Face Scanners page.</p>
+        )}
+      </section>
+
+      <section className="so-queue" aria-label="Needs attention">
+        <h2>Needs attention</h2>
+        <ul>
+          {QUEUE.map((item) => {
+            const n = count(item)
+            return (
+              <li key={item.key}>
+                <button type="button" className="so-queue__row" data-tone={item.tone} disabled={!n} onClick={() => onPick(item.key)}>
+                  <i aria-hidden="true" />
+                  <span className="so-queue__text">
+                    <strong>{item.title}</strong>
+                    <span>{n ? item.text || missingText : "None"}</span>
+                  </span>
+                  <b className="so-queue__count">{number(n)}</b>
+                  <ChevronRight size={16} aria-hidden="true" />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+    </div>
   )
 }
 
