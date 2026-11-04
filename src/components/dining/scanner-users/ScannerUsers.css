@@ -45,19 +45,6 @@
   background: var(--color-bg-primary);
 }
 
-.sp-mast__title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-3);
-}
-.sp-mast h1 {
-  margin: 0;
-  color: var(--color-text-heading);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.01em;
-}
 .sp-machines {
   display: flex;
   gap: 6px;
@@ -91,7 +78,7 @@
 }
 .sp-gauge {
   height: 4px;
-  margin-top: var(--spacing-3);
+  flex: none;
   border-radius: var(--radius-full);
   background: var(--color-danger-bg);
   overflow: hidden;
@@ -102,6 +89,30 @@
   border-radius: inherit;
   background: var(--color-success);
   transition: width 400ms ease;
+}
+
+/* Header: machines + actions */
+.sp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+}
+.sp-head .sp-machines {
+  margin-right: var(--spacing-2);
+}
+.sp-machines small {
+  color: var(--color-text-muted);
+  font-weight: normal;
+}
+.sp-spin {
+  animation: sp-spin 900ms linear infinite;
+}
+@keyframes sp-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* The two groups: the count is the label. */
@@ -378,27 +389,53 @@
   min-height: 100%;
   padding: var(--spacing-6);
 }
-.sc-top {
+.sc-head {
   display: grid;
-  grid-template-columns: clamp(170px, 30%, 280px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: var(--spacing-6);
+  align-items: end;
+}
+.sc-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--spacing-5);
   align-items: start;
 }
-.sc-portrait {
+.sc-photos {
+  display: flex;
+  gap: var(--spacing-3);
+}
+.sc-shot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: clamp(120px, 10.5vw, 190px);
+  margin: 0;
+}
+.sc-shot__frame {
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 5;
+  border: var(--border-1) solid var(--color-border-primary);
   border-radius: var(--radius-xl);
   background: var(--color-bg-tertiary);
   color: var(--color-text-muted);
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   overflow: hidden;
 }
-.sc-portrait img {
+.sc-shot__frame[data-dashed] {
+  border-style: dashed;
+}
+.sc-shot__frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.sc-shot figcaption {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  text-align: center;
 }
 .sc-who {
   display: flex;
@@ -432,7 +469,6 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: var(--spacing-5);
   padding-left: var(--spacing-3);
   border-left: 3px solid var(--t);
 }
@@ -447,7 +483,7 @@
 
 .sc-machines {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-3);
   margin: 0;
   padding: 0;
@@ -476,7 +512,12 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
 }
-.sc-machines small {
+.sc-machines__state small {
+  display: block;
+  font-weight: normal;
+  color: var(--color-text-secondary);
+}
+.sc-machines > li > small {
   grid-column: 1 / -1;
   margin-top: 2px;
   color: var(--color-text-secondary);
@@ -513,19 +554,6 @@
   padding-top: var(--spacing-4);
   border-top: var(--border-1) solid var(--color-border-light);
 }
-.sc-profile {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: var(--color-bg-tertiary);
-  overflow: hidden;
-}
-.sc-profile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* ---- Narrow screens: stack, the page scrolls ---- */
 @media (max-width: 959px) {
   .sp {
@@ -537,15 +565,24 @@
   .sc {
     padding: var(--spacing-4);
   }
-  .sc-top {
-    grid-template-columns: 110px minmax(0, 1fr);
+  .sc-head,
+  .sc-body {
+    grid-template-columns: 1fr;
     gap: var(--spacing-4);
+  }
+  .sc-shot {
+    width: auto;
+    flex: 1;
+    max-width: 180px;
   }
   .sc-who h2 {
     font-size: var(--font-size-xl);
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .sp-spin {
+    animation: none;
+  }
   .sp-gauge span,
   .sp-groups button {
     transition: none;

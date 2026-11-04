@@ -46,13 +46,38 @@ const verdict = (row) => {
   }
 }
 
-const Portrait = ({ row }) => {
+const Shot = ({ url, label, fallback, dashed }) => {
   const [broken, setBroken] = useState(false)
-  const url = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : ""
+  const shown = url && !broken
   return (
-    <a className="sc-portrait" href={url || undefined} target="_blank" rel="noreferrer" aria-label={url ? "Open the scanner photo" : undefined}>
-      {url && !broken ? <img src={url} alt="" onError={() => setBroken(true)} /> : <span>{initials(row.name)}</span>}
-    </a>
+    <figure className="sc-shot">
+      <a className="sc-shot__frame" data-dashed={dashed || undefined} href={shown ? url : undefined} target="_blank" rel="noreferrer" aria-label={shown ? `Open ${label}` : undefined}>
+        {shown ? <img src={url} alt="" onError={() => setBroken(true)} /> : <span>{fallback}</span>}
+      </a>
+      <figcaption>{label}</figcaption>
+    </figure>
+  )
+}
+
+/** The HMS profile photo (when there is one) next to the photo on the scanner. */
+const Photos = ({ row }) => {
+  // The photo a machine sent back (an exact match first), else the one HMS sends.
+  const fetched = row.machines.filter((m) => m.check?.photo).sort((a, b) => (b.check.status === "match") - (a.check.status === "match"))[0]
+  const scannerUrl = fetched
+    ? diningScannerUsersApi.machinePhotoUrl(row.rollNumber, fetched.sn, String(fetched.check.at || ""))
+    : row.photo.present
+      ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version)
+      : ""
+  return (
+    <div className="sc-photos">
+      {row.profileImage && <Shot url={getMediaUrl(row.profileImage)} label="HMS profile" fallback={initials(row.name)} />}
+      <Shot
+        url={scannerUrl}
+        label={fetched ? `On the scanner (${fetched.alias})` : row.photo.present ? "Sent to the scanners" : "No scanner photo"}
+        fallback="No photo"
+        dashed={!fetched}
+      />
+    </div>
   )
 }
 
@@ -100,18 +125,17 @@ const ScannerStudentCard = ({ row: initial }) => {
 
   return (
     <article className="sc" aria-label={`${row.name || row.rollNumber}`}>
-      <header className="sc-top">
-        <Portrait row={row} />
+      <header className="sc-head">
         <div className="sc-who">
           <span className="sc-tag" data-tone={reason.tone}>
             {reason.label}
           </span>
           <h2>{row.name || "-"}</h2>
           <p className="sc-roll">{row.rollNumber}</p>
-          <div className="sc-verdict" data-tone={head.tone}>
-            <strong>{head.title}</strong>
-            <span>{head.text}</span>
-          </div>
+        </div>
+        <div className="sc-verdict" data-tone={head.tone}>
+          <strong>{head.title}</strong>
+          <span>{head.text}</span>
         </div>
       </header>
 
@@ -121,22 +145,27 @@ const ScannerStudentCard = ({ row: initial }) => {
         </Alert>
       )}
 
-      {row.photo.present && row.machines.length > 0 && (
-        <ol className="sc-machines" aria-label="Machines">
-          {row.machines.map((machine) => {
-            const line = machineLine(machine)
-            return (
-              <li key={machine.sn} data-tone={line.tone}>
-                <ScanFace size={18} aria-hidden="true" />
-                <strong>{machine.alias}</strong>
-                <span className="sc-machines__state">{line.text}</span>
-                {line.note && <small>{line.note}</small>}
-                {machine.refusal && <small className="sc-machines__error">{machine.refusal.message}</small>}
-              </li>
-            )
-          })}
-        </ol>
-      )}
+      <div className="sc-body">
+        <Photos row={row} />
+        {row.photo.present && row.machines.length > 0 && (
+          <ol className="sc-machines" aria-label="Machines">
+            {row.machines.map((machine) => {
+              const line = machineLine(machine)
+              return (
+                <li key={machine.sn} data-tone={line.tone}>
+                  <ScanFace size={18} aria-hidden="true" />
+                  <strong>{machine.alias}</strong>
+                  <span className="sc-machines__state">
+                    {line.text}
+                    {line.note && <small>{line.note}</small>}
+                  </span>
+                  {machine.refusal && <small className="sc-machines__error">{machine.refusal.message}</small>}
+                </li>
+              )
+            })}
+          </ol>
+        )}
+      </div>
 
       <dl className="sc-facts">
         {row.photo.present && (
@@ -160,11 +189,6 @@ const ScannerStudentCard = ({ row: initial }) => {
       </dl>
 
       <footer className="sc-actions">
-        {offerProfile && (
-          <span className="sc-profile" title="The HMS profile photo">
-            <img src={getMediaUrl(row.profileImage)} alt="" onError={(event) => (event.currentTarget.parentElement.style.display = "none")} />
-          </span>
-        )}
         {offerProfile && (
           <Button variant="primary" loading={useProfile.isPending} disabled={useProfile.isPending} onClick={() => useProfile.mutate()}>
             <ImageUp size={15} /> Use profile photo

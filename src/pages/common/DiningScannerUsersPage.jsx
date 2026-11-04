@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Alert, Button, ConfirmDialog, Page } from "hzero"
-import { ChevronLeft, ChevronRight, ImageUp, Search, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, ImageUp, RefreshCw, Search, X } from "lucide-react"
+import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
@@ -100,6 +101,14 @@ const DiningScannerUsersPage = () => {
     setPicked(null)
   }
 
+  // Hovering a row shows that student (after a short pause, so sweeping the mouse across doesn't flicker).
+  const hoverTimer = useRef(null)
+  const hoverTo = (roll) => {
+    clearTimeout(hoverTimer.current)
+    hoverTimer.current = setTimeout(() => setPicked(roll), 90)
+  }
+  useEffect(() => () => clearTimeout(hoverTimer.current), [])
+
   // Arrow keys move through the list.
   const onListKey = (event) => {
     if (!items.length || !["ArrowDown", "ArrowUp"].includes(event.key)) return
@@ -119,25 +128,38 @@ const DiningScannerUsersPage = () => {
 
   return (
     <Page>
+      <PageHeader title="Scanner Photos" subtitle="Whose face works at the mess face machines, and why not.">
+        <div className="sp-head">
+          {overview?.machines?.length > 0 && (
+            <ul className="sp-machines" aria-label="Machines">
+              {overview.machines.map((m) => (
+                <li key={m.sn} data-on={m.online || undefined} title={m.online ? `${m.alias} is online` : `${m.alias} last seen ${ago(m.lastSeenAt) || "never"}`}>
+                  {m.alias}
+                  {!m.online && <small>{ago(m.lastSeenAt) || "never"}</small>}
+                </li>
+              ))}
+            </ul>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => queryClient.invalidateQueries({ queryKey: queryKeys.diningScannerUsers.all })}
+            disabled={stats.isFetching}
+            aria-label="Refresh"
+            title="Refresh"
+          >
+            <RefreshCw size={16} className={stats.isFetching ? "sp-spin" : undefined} />
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => setConfirmBulk(true)} disabled={job?.running || bulk.isPending || !overview?.missingWithProfile} title="Students with no scanner photo get their HMS profile photo">
+            <ImageUp size={15} /> Use profile photos{overview?.missingWithProfile ? ` (${number(overview.missingWithProfile)})` : ""}
+          </Button>
+        </div>
+      </PageHeader>
       <Page.Body>
         <div className="sp" ref={fitRef}>
           <aside className="sp-side">
-            <div className="sp-mast">
-              <div className="sp-mast__title">
-                <h1>Scanner photos</h1>
-                {overview?.machines?.length > 0 && (
-                  <ul className="sp-machines" aria-label="Machines">
-                    {overview.machines.map((m) => (
-                      <li key={m.sn} data-on={m.online || undefined} title={m.online ? `${m.alias} is online` : `${m.alias} last seen ${ago(m.lastSeenAt) || "never"}`}>
-                        {m.alias}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <div className="sp-gauge" role="img" aria-label={`${number(working)} of ${number(overview?.total)} students' faces work`}>
-                <span style={{ width: `${share}%` }} />
-              </div>
+            <div className="sp-gauge" role="img" aria-label={`${number(working)} of ${number(overview?.total)} students' faces work`}>
+              <span style={{ width: `${share}%` }} />
             </div>
 
             <div className="sp-groups" role="tablist" aria-label="Group">
@@ -186,14 +208,6 @@ const DiningScannerUsersPage = () => {
               )}
             </label>
 
-            {!search && reason === "noPhoto" && overview?.missingWithProfile > 0 && !job?.running && (
-              <div className="sp-bulk">
-                <span>{number(overview.missingWithProfile)} of them have an HMS profile photo.</span>
-                <Button size="sm" variant="secondary" onClick={() => setConfirmBulk(true)} disabled={bulk.isPending}>
-                  <ImageUp size={15} /> Use them all
-                </Button>
-              </div>
-            )}
             {job?.running && (
               <p className="sp-bulk">
                 Using profile photos: {job.done} of {job.total} done ({job.sent} saved, {job.unusable} can&apos;t be used).
@@ -215,7 +229,14 @@ const DiningScannerUsersPage = () => {
                   {items.map((row) => {
                     const tag = REASONS[row.reason] || REASONS.unchecked
                     return (
-                      <li key={row.rollNumber} role="option" aria-selected={row.rollNumber === selected?.rollNumber} onClick={() => setPicked(row.rollNumber)}>
+                      <li
+                        key={row.rollNumber}
+                        role="option"
+                        aria-selected={row.rollNumber === selected?.rollNumber}
+                        onMouseEnter={() => hoverTo(row.rollNumber)}
+                        onMouseLeave={() => clearTimeout(hoverTimer.current)}
+                        onClick={() => setPicked(row.rollNumber)}
+                      >
                         <Avatar row={row} />
                         <span className="sp-row__who">
                           <strong>{row.name || "-"}</strong>
