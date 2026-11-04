@@ -1,11 +1,15 @@
-/** Shared by the Scanner Photos page, its overview and its detail view. */
+/** Shared by the Scanner Photos page and its student card. */
 
-export const STATUS = {
-  valid: { label: "On every machine", tone: "success" },
-  pending: { label: "Sending", tone: "warning" },
-  failed: { label: "Refused", tone: "danger" },
-  missing: { label: "No photo", tone: "neutral" },
+/** Why a student's face doesn't work at the mess yet (or that it does). */
+export const REASONS = {
+  noPhoto: { label: "No photo", tone: "none" },
+  refused: { label: "Refused", tone: "bad" },
+  noFace: { label: "No face", tone: "bad" },
+  sending: { label: "Sending", tone: "warn" },
+  unchecked: { label: "Not checked", tone: "warn" },
+  working: { label: "Working", tone: "ok" },
 }
+export const NOT_WORKING = ["noPhoto", "refused", "noFace", "sending", "unchecked"]
 
 /** Some machine was asked for its photo and hasn't answered yet. */
 export const isChecking = (row) => row.machines.some((m) => m.check?.status === "checking")

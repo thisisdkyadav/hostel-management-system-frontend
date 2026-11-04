@@ -1,269 +1,260 @@
-import { useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button, ConfirmDialog, Page, Pagination, SearchInput } from "hzero"
-import { ArrowLeft, ImageUp } from "lucide-react"
-import PageHeader from "@/components/common/PageHeader"
+import { Alert, Button, ConfirmDialog, Page } from "hzero"
+import { ChevronLeft, ChevronRight, ImageUp, Search, X } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
-import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
+import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import { useDebouncedValue } from "@/components/dining/caterer/rebates/rebateHelpers"
-import { getMediaUrl } from "@/utils/mediaUtils"
-import ScannerOverview from "@/components/dining/scanner-users/ScannerOverview"
-import ScannerStudentModal from "@/components/dining/scanner-users/ScannerStudentModal"
-import { STATUS, initials, isChecking, number } from "@/components/dining/scanner-users/scannerUsersHelpers"
+import ScannerStudentCard from "@/components/dining/scanner-users/ScannerStudentCard"
+import { NOT_WORKING, REASONS, ago, initials, number } from "@/components/dining/scanner-users/scannerUsersHelpers"
 import "@/components/dining/scanner-users/ScannerUsers.css"
 
 const PAGE_SIZE = 10
 
-/** Groups staff can open. Values are what the list endpoint filters on. */
-const FILTERS = [
-  {
-    value: "missing",
-    label: "No photo",
-    empty: "Every active student has a photo.",
-  },
-  {
-    value: "failed",
-    label: "Refused",
-    empty: "No machine has refused a photo.",
-  },
-  {
-    value: "pending",
-    label: "Sending",
-    empty: "Nothing is on its way to the machines.",
-  },
-  {
-    value: "mismatch",
-    label: "Wrong photo on machine",
-    empty: "Every machine that was checked holds the HMS photo.",
-  },
-  {
-    value: "noFace",
-    label: "No face made",
-    empty: "Every machine made a face from the photos it was checked for.",
-  },
-  {
-    value: "unchecked",
-    label: "Not checked",
-    empty: "Every photo has been fetched back from every machine.",
-  },
-  {
-    value: "valid",
-    label: "On every machine",
-    empty: "No photo is on every machine yet.",
-  },
-]
-
-/** Groups only reachable from the overview's legend. */
-const OVERVIEW_ONLY = {
-  match: {
-    label: "Same photo, face made",
-    empty: "No machine has sent back a matching photo yet.",
-  },
-  checking: {
-    label: "Being checked",
-    empty: "Nothing is being checked right now.",
-  },
+/** Fill the space under the app bar exactly, so only the student list scrolls (wide screens). */
+const useFitHeight = () => {
+  const ref = useRef(null)
+  useLayoutEffect(() => {
+    const fit = () => {
+      const node = ref.current
+      if (!node) return
+      if (window.innerWidth < 960) {
+        node.style.height = ""
+        return
+      }
+      const top = node.getBoundingClientRect().top + window.scrollY
+      node.style.height = `${Math.max(480, window.innerHeight - top - 20)}px`
+    }
+    fit()
+    window.addEventListener("resize", fit)
+    return () => window.removeEventListener("resize", fit)
+  }, [])
+  return ref
 }
 
-/** One result: the scanner photo (else the faded profile photo), name and roll. */
-const StudentCard = ({ row, onOpen }) => {
+const Avatar = ({ row }) => {
   const [broken, setBroken] = useState(false)
-  const url = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : row.profileImage ? getMediaUrl(row.profileImage) : ""
-  const badge = STATUS[row.photoStatus] || STATUS.missing
-  return (
-    <li>
-      <button type="button" className="su-card" onClick={() => onOpen(row)}>
-        <span className="su-card__photo" data-faded={!row.photo.present || undefined}>
-          {url && !broken ? <img src={url} alt="" loading="lazy" onError={() => setBroken(true)} /> : <span className="su-card__initials">{initials(row.name)}</span>}
-          <span className="su-card__badge" data-tone={badge.tone}>
-            {badge.label}
-          </span>
-        </span>
-        <span className="su-card__name">{row.name || "-"}</span>
-        <span className="su-card__roll">{row.rollNumber}</span>
-      </button>
-    </li>
-  )
+  const url = row.photo.present ? diningScannerUsersApi.photoUrl(row.rollNumber, row.photo.version) : ""
+  return <span className="sp-avatar">{url && !broken ? <img src={url} alt="" loading="lazy" onError={() => setBroken(true)} /> : initials(row.name)}</span>
 }
 
 /**
- * Scanner photos (Admin and Dining Office). The page opens on an overview of
- * where every active student's face photo stands; searching or picking a group
- * lists students 10 at a time, and a student opens in a detail view with the
- * photos and each machine's state.
+ * Scanner Photos (Admin and Dining Office): whose face works at the mess
+ * machines and whose doesn't yet. Pick a group (or search), the list shows 10
+ * at a time, and the selected student's card sits beside it.
  */
 const DiningScannerUsersPage = () => {
   const queryClient = useQueryClient()
-  const [filter, setFilter] = useState("")
+  const fitRef = useFitHeight()
+  const listRef = useRef(null)
+  const [group, setGroup] = useState("notWorking")
+  const [reason, setReason] = useState("")
   const [searchInput, setSearchInput] = useState("")
   const [page, setPage] = useState(1)
-  const [open, setOpen] = useState(null)
+  const [picked, setPicked] = useState(null)
   const [feedback, setFeedback] = useState(null)
   const [confirmBulk, setConfirmBulk] = useState(false)
-  const search = useDebouncedValue(searchInput.trim(), 300)
-  const listing = Boolean(search || filter)
+  const search = useDebouncedValue(searchInput.trim(), 250)
 
   const stats = useQuery({
     queryKey: [...queryKeys.diningScannerUsers.all, "stats"],
     queryFn: () => diningScannerUsersApi.stats(),
     refetchInterval: (current) => (current.state.data?.profileJob?.running ? 5000 : 60_000),
   })
-  const params = { status: filter || "all", search, page, limit: PAGE_SIZE }
+  const params = search ? { search, page, limit: PAGE_SIZE } : { reason: reason || group, page, limit: PAGE_SIZE }
   const list = useQuery({
     queryKey: queryKeys.diningScannerUsers.list(params),
     queryFn: () => diningScannerUsersApi.list(params),
-    enabled: listing,
     placeholderData: keepPreviousData,
-    refetchInterval: (current) => (current.state.data?.items?.some(isChecking) ? 5000 : false),
   })
 
   const bulk = useMutation({
     mutationFn: () => diningScannerUsersApi.useProfilePhotos(),
-    onSuccess: (result) =>
-      setFeedback({
-        type: "info",
-        message: `Using profile photos for ${result.total} students. Progress shows here.`,
-      }),
-    onError: (error) =>
-      setFeedback({
-        type: "error",
-        message: getErrorMessage(error, "Couldn't start using profile photos."),
-      }),
+    onSuccess: (result) => setFeedback({ type: "info", message: `Using profile photos for ${result.total} students. Progress shows here.` }),
+    onError: (error) => setFeedback({ type: "error", message: getErrorMessage(error, "Couldn't start using profile photos.") }),
     onSettled: () => {
       setConfirmBulk(false)
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.diningScannerUsers.all,
-      })
+      queryClient.invalidateQueries({ queryKey: queryKeys.diningScannerUsers.all })
     },
   })
 
-  const pick = (next) => {
-    setFilter((current) => (current === next ? "" : next))
-    setPage(1)
-  }
-  const reset = () => {
-    setFilter("")
+  const overview = stats.data
+  const reasons = overview?.reasons || {}
+  const job = overview?.profileJob
+  const items = list.data?.items || []
+  const total = list.data?.total || 0
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  // The selected student: the one picked, else the top of the list.
+  const selected = items.find((row) => row.rollNumber === picked) || items[0] || null
+
+  const choose = (nextGroup, nextReason = "") => {
+    setGroup(nextGroup)
+    setReason(nextReason)
     setSearchInput("")
     setPage(1)
+    setPicked(null)
+  }
+  const goTo = (next) => {
+    setPage(next)
+    setPicked(null)
   }
 
-  const overview = stats.data
-  const job = overview?.profileJob
-  const data = list.data
-  const items = listing ? data?.items || [] : []
-  const total = data?.total || 0
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  const active = FILTERS.find((f) => f.value === filter) || OVERVIEW_ONLY[filter]
-
-  const countOf = (key) => {
-    if (!overview) return null
-    return overview.status?.[key] ?? overview.checks?.[key] ?? null
+  // Arrow keys move through the list.
+  const onListKey = (event) => {
+    if (!items.length || !["ArrowDown", "ArrowUp"].includes(event.key)) return
+    event.preventDefault()
+    const at = Math.max(0, items.indexOf(selected))
+    const next = items[Math.min(items.length - 1, Math.max(0, at + (event.key === "ArrowDown" ? 1 : -1)))]
+    setPicked(next.rollNumber)
   }
+  useEffect(() => {
+    listRef.current?.querySelector("[aria-selected='true']")?.scrollIntoView({ block: "nearest" })
+  }, [selected?.rollNumber])
 
-  const summary = () => {
-    if (list.isLoading) return "Looking…"
-    const who = `${total.toLocaleString("en-IN")} student${total === 1 ? "" : "s"}`
-    if (search && active) return `${active.label}: ${who} match "${search}"`
-    if (search) return `${who} match "${search}"`
-    return `${active?.label || filter}: ${who}`
-  }
+  const working = reasons.working || 0
+  const notWorking = overview?.notWorking || 0
+  const share = overview?.total ? (working / overview.total) * 100 : 0
+  const listLabel = search ? `"${search}"` : reason ? REASONS[reason].label : group === "working" ? "Working" : "Not working yet"
 
   return (
     <Page>
-      <PageHeader title="Scanner Photos" subtitle="The face photo each active student has on the mess face machines.">
-        <Button variant="secondary" onClick={() => setConfirmBulk(true)} disabled={job?.running || bulk.isPending || !overview?.missingWithProfile}>
-          <ImageUp size={18} /> Use profile photos
-        </Button>
-      </PageHeader>
-
       <Page.Body>
-        <div className="su-alerts">
-          {job?.running && (
-            <Alert type="info" icon>
-              Using profile photos: {job.done} of {job.total} done ({job.sent} saved, {job.unusable} can&apos;t be used).
-            </Alert>
-          )}
-          {job && !job.running && job.finishedAt && (
-            <Alert type={job.error ? "warning" : "info"} icon dismissible>
-              Profile photos {formatDateTime(job.finishedAt)}: {job.sent} saved, {job.unusable} couldn&apos;t be used
-              {job.failed ? `, ${job.failed} failed` : ""}.
-            </Alert>
-          )}
-          {feedback && (
-            <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)}>
-              {feedback.message}
-            </Alert>
-          )}
-        </div>
-
-        <div className="su-finder">
-          <SearchInput
-            className="su-finder__search"
-            value={searchInput}
-            onChange={(event) => {
-              setSearchInput(event.target.value)
-              setPage(1)
-            }}
-            placeholder="Find a student by roll number or name"
-            aria-label="Find a student by roll number or name"
-          />
-          {listing && (
-            <div className="su-chips" role="group" aria-label="Show a group">
-              {FILTERS.map((option) => {
-                const n = countOf(option.value)
-                return (
-                  <button key={option.value} type="button" className="su-chip" aria-pressed={filter === option.value} onClick={() => pick(option.value)}>
-                    {option.label}
-                    {n !== null && <span>{number(n)}</span>}
-                  </button>
-                )
-              })}
+        <div className="sp" ref={fitRef}>
+          <aside className="sp-side">
+            <div className="sp-mast">
+              <div className="sp-mast__title">
+                <h1>Scanner photos</h1>
+                {overview?.machines?.length > 0 && (
+                  <ul className="sp-machines" aria-label="Machines">
+                    {overview.machines.map((m) => (
+                      <li key={m.sn} data-on={m.online || undefined} title={m.online ? `${m.alias} is online` : `${m.alias} last seen ${ago(m.lastSeenAt) || "never"}`}>
+                        {m.alias}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="sp-gauge" role="img" aria-label={`${number(working)} of ${number(overview?.total)} students' faces work`}>
+                <span style={{ width: `${share}%` }} />
+              </div>
             </div>
-          )}
-        </div>
 
-        {!listing ? (
-          stats.isError ? (
-            <Alert type="error" icon>
-              {getErrorMessage(stats.error, "Couldn't load the overview.")}
-            </Alert>
-          ) : (
-            <ScannerOverview stats={overview} onPick={pick} />
-          )
-        ) : list.isError ? (
-          <Alert type="error" icon>
-            {getErrorMessage(list.error, "Couldn't load the students.")}
-          </Alert>
-        ) : (
-          <section className="su-results" aria-live="polite">
-            <div className="su-results__head">
-              <button type="button" className="su-back" onClick={reset}>
-                <ArrowLeft size={16} /> Overview
+            <div className="sp-groups" role="tablist" aria-label="Group">
+              <button type="button" role="tab" aria-selected={!search && group === "notWorking"} data-tone="bad" onClick={() => choose("notWorking")}>
+                <b>{overview ? number(notWorking) : "…"}</b>
+                <span>not working yet</span>
               </button>
-              <span>{summary()}</span>
+              <button type="button" role="tab" aria-selected={!search && group === "working"} data-tone="ok" onClick={() => choose("working")}>
+                <b>{overview ? number(working) : "…"}</b>
+                <span>working</span>
+              </button>
             </div>
-            {list.isLoading ? (
-              <ul className="su-grid" aria-busy="true">
-                {Array.from({ length: PAGE_SIZE }, (_, i) => (
-                  <li key={i} className="su-card su-card--ghost" />
-                ))}
-              </ul>
-            ) : items.length ? (
-              <ul className="su-grid" data-stale={list.isPlaceholderData || undefined}>
-                {items.map((row) => (
-                  <StudentCard key={row.rollNumber} row={row} onOpen={setOpen} />
-                ))}
-              </ul>
-            ) : (
-              <p className="su-empty">{search ? `Nobody matches "${search}".` : active?.empty || "Nobody here."}</p>
-            )}
-            {totalPages > 1 && <Pagination currentPage={page} totalPages={totalPages} paginate={setPage} />}
-          </section>
-        )}
-      </Page.Body>
 
-      {open && <ScannerStudentModal row={open} onClose={() => setOpen(null)} />}
+            {group === "notWorking" && !search && (
+              <div className="sp-reasons" role="group" aria-label="Why">
+                <button type="button" aria-pressed={!reason} onClick={() => choose("notWorking")}>
+                  All
+                </button>
+                {NOT_WORKING.map((key) => (
+                  <button key={key} type="button" aria-pressed={reason === key} data-tone={REASONS[key].tone} disabled={!reasons[key]} onClick={() => choose("notWorking", key)}>
+                    <i aria-hidden="true" />
+                    {REASONS[key].label}
+                    <small>{number(reasons[key])}</small>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <label className="sp-search">
+              <Search size={16} aria-hidden="true" />
+              <input
+                value={searchInput}
+                onChange={(event) => {
+                  setSearchInput(event.target.value)
+                  setPage(1)
+                  setPicked(null)
+                }}
+                onKeyDown={onListKey}
+                placeholder="Find anyone by roll number or name"
+                aria-label="Find a student by roll number or name"
+              />
+              {searchInput && (
+                <button type="button" onClick={() => setSearchInput("")} aria-label="Clear search">
+                  <X size={15} />
+                </button>
+              )}
+            </label>
+
+            {!search && reason === "noPhoto" && overview?.missingWithProfile > 0 && !job?.running && (
+              <div className="sp-bulk">
+                <span>{number(overview.missingWithProfile)} of them have an HMS profile photo.</span>
+                <Button size="sm" variant="secondary" onClick={() => setConfirmBulk(true)} disabled={bulk.isPending}>
+                  <ImageUp size={15} /> Use them all
+                </Button>
+              </div>
+            )}
+            {job?.running && (
+              <p className="sp-bulk">
+                Using profile photos: {job.done} of {job.total} done ({job.sent} saved, {job.unusable} can&apos;t be used).
+              </p>
+            )}
+            {feedback && (
+              <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)}>
+                {feedback.message}
+              </Alert>
+            )}
+
+            <div className="sp-list" data-stale={list.isPlaceholderData || undefined}>
+              {list.isError ? (
+                <p className="sp-empty">{getErrorMessage(list.error, "Couldn't load the students.")}</p>
+              ) : list.isLoading ? (
+                <p className="sp-empty">Loading…</p>
+              ) : items.length ? (
+                <ul ref={listRef} role="listbox" aria-label={listLabel} tabIndex={0} onKeyDown={onListKey}>
+                  {items.map((row) => {
+                    const tag = REASONS[row.reason] || REASONS.unchecked
+                    return (
+                      <li key={row.rollNumber} role="option" aria-selected={row.rollNumber === selected?.rollNumber} onClick={() => setPicked(row.rollNumber)}>
+                        <Avatar row={row} />
+                        <span className="sp-row__who">
+                          <strong>{row.name || "-"}</strong>
+                          <span>{row.rollNumber}</span>
+                        </span>
+                        {(search || !reason) && (
+                          <span className="sp-row__tag" data-tone={tag.tone}>
+                            {tag.label}
+                          </span>
+                        )}
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : (
+                <p className="sp-empty">{search ? `Nobody matches "${search}".` : group === "working" ? "Nobody's face works yet." : "Everyone's face works."}</p>
+              )}
+            </div>
+
+            <div className="sp-pager">
+              <span>{total ? `${(page - 1) * PAGE_SIZE + 1}–${Math.min(total, page * PAGE_SIZE)} of ${number(total)}` : ""}</span>
+              <button type="button" onClick={() => goTo(page - 1)} disabled={page <= 1} aria-label="Previous 10">
+                <ChevronLeft size={16} />
+              </button>
+              <button type="button" onClick={() => goTo(page + 1)} disabled={page >= totalPages} aria-label="Next 10">
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </aside>
+
+          <section className="sp-detail" aria-live="polite">
+            {selected ? (
+              <ScannerStudentCard key={selected.rollNumber} row={selected} />
+            ) : (
+              <p className="sp-empty sp-empty--detail">{list.isLoading ? "" : "Pick a student to see their face photo here."}</p>
+            )}
+          </section>
+        </div>
+      </Page.Body>
 
       {confirmBulk && (
         <ConfirmDialog
