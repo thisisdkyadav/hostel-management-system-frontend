@@ -14,6 +14,7 @@ const machineLine = (machine) => {
   // A face scan here since the photo was saved: proof, whatever the photo check said.
   if (machine.scannedAt) return { text: "Face scanned", tone: "ok", note: `Last ${formatDateTime(machine.scannedAt)}` }
   const check = machine.check?.status
+  if (check === "noPhoto" && machine.check.face) return { text: "Face on machine", tone: "ok", note: "Enrolled there, no photo stored" }
   if (check === "noFace" || check === "noPhoto") return { text: "No face", tone: "bad" }
   if (check === "checking") return { text: "Checking…", tone: "warn" }
   if (machine.state === "waiting") return { text: "Waiting", tone: "warn" }
@@ -27,7 +28,7 @@ const aliases = (machines) => machines.map((m) => m.alias).join(", ")
 /** The headline for the card: does the face work, and what to do if not. */
 const verdict = (row) => {
   const refused = row.machines.filter((m) => m.state === "refused")
-  const noFace = row.machines.filter((m) => ["noFace", "noPhoto"].includes(m.check?.status))
+  const noFace = row.machines.filter((m) => m.check?.status === "noFace" || (m.check?.status === "noPhoto" && !m.check.face))
   switch (row.reason) {
     case "working":
       return row.lastScan
