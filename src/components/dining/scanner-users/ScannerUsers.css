@@ -159,6 +159,53 @@
   color: var(--t-text);
 }
 
+.sp-scanned {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+.sp-scanned svg {
+  flex: none;
+  color: var(--color-success);
+}
+.sp-scanned b {
+  color: var(--color-text-heading);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.sp-bulkdlg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.sp-bulkdlg p {
+  margin: 0;
+}
+.sp-bulkdlg b {
+  color: var(--color-text-heading);
+}
+.sp-bulkdlg__toggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+}
+.sp-bulkdlg__toggle p,
+.sp-bulkdlg__note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
 /* Why it doesn't work: sub-filters of "not working yet". */
 .sp-reasons {
   display: flex;
@@ -479,6 +526,18 @@
 .sc-verdict span {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+}
+.sc-verdict .sc-lastscan {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+.sc-verdict .sc-lastscan[data-yes] {
+  color: var(--color-success-text);
+  font-weight: var(--font-weight-semibold);
 }
 
 .sc-machines {

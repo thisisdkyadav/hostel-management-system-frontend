@@ -136,6 +136,12 @@ const ScannerStudentCard = ({ row: initial }) => {
         <div className="sc-verdict" data-tone={head.tone}>
           <strong>{head.title}</strong>
           <span>{head.text}</span>
+          {row.photo.present && (
+            <span className="sc-lastscan" data-yes={row.lastScan ? true : undefined}>
+              <ScanFace size={14} aria-hidden="true" />
+              {row.lastScan ? `Last scanned ${formatDateTime(row.lastScan.at)} on ${row.lastScan.machine}` : "Not scanned at the mess since this photo was saved"}
+            </span>
+          )}
         </div>
       </header>
 

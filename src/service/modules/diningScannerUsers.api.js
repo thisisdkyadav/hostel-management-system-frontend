@@ -24,8 +24,11 @@ export const diningScannerUsersApi = {
   useProfilePhoto: (rollNumber, { replace = false } = {}) =>
     apiClient.post(`/dining-scanner-users/${encodeURIComponent(rollNumber)}/profile-photo`, { replace }).then(unwrap),
 
-  /** Background run: profile photos for every active student with no scanner photo → { total } */
-  useProfilePhotos: () => apiClient.post("/dining-scanner-users/profile-photos").then(unwrap),
+  /**
+   * Background run: profile photos for every active student with no scanner photo;
+   * with includeNotWorking, also for those whose photo a machine refused or made no face from → { total }
+   */
+  useProfilePhotos: ({ includeNotWorking = false } = {}) => apiClient.post("/dining-scanner-users/profile-photos", { includeNotWorking }).then(unwrap),
 
   /** Ask every synced machine for what it holds for this student → { item } */
   checkOnMachines: (rollNumber) => apiClient.post(`/dining-scanner-users/${encodeURIComponent(rollNumber)}/machine-check`).then(unwrap),

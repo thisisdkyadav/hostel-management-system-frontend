@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button, ConfirmDialog, Page } from "hzero"
-import { ChevronLeft, ChevronRight, ImageUp, RefreshCw, Search, X } from "lucide-react"
+import { Alert, Button, Modal, Page, Switch } from "hzero"
+import { ChevronLeft, ChevronRight, ImageUp, RefreshCw, ScanFace, Search, X } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
@@ -56,6 +56,7 @@ const DiningScannerUsersPage = () => {
   const [picked, setPicked] = useState(null)
   const [feedback, setFeedback] = useState(null)
   const [confirmBulk, setConfirmBulk] = useState(false)
+  const [includeNotWorking, setIncludeNotWorking] = useState(false)
   const search = useDebouncedValue(searchInput.trim(), 250)
 
   const stats = useQuery({
@@ -71,7 +72,7 @@ const DiningScannerUsersPage = () => {
   })
 
   const bulk = useMutation({
-    mutationFn: () => diningScannerUsersApi.useProfilePhotos(),
+    mutationFn: () => diningScannerUsersApi.useProfilePhotos({ includeNotWorking }),
     onSuccess: (result) => setFeedback({ type: "info", message: `Using profile photos for ${result.total} students. Progress shows here.` }),
     onError: (error) => setFeedback({ type: "error", message: getErrorMessage(error, "Couldn't start using profile photos.") }),
     onSettled: () => {
@@ -121,6 +122,7 @@ const DiningScannerUsersPage = () => {
     listRef.current?.querySelector("[aria-selected='true']")?.scrollIntoView({ block: "nearest" })
   }, [selected?.rollNumber])
 
+  const bulkCount = (overview?.missingWithProfile || 0) + (includeNotWorking ? overview?.notWorkingWithProfile || 0 : 0)
   const working = reasons.working || 0
   const notWorking = overview?.notWorking || 0
   const share = overview?.total ? (working / overview.total) * 100 : 0
@@ -150,8 +152,13 @@ const DiningScannerUsersPage = () => {
           >
             <RefreshCw size={16} className={stats.isFetching ? "sp-spin" : undefined} />
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => setConfirmBulk(true)} disabled={job?.running || bulk.isPending || !overview?.missingWithProfile} title="Students with no scanner photo get their HMS profile photo">
-            <ImageUp size={15} /> Use profile photos{overview?.missingWithProfile ? ` (${number(overview.missingWithProfile)})` : ""}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setConfirmBulk(true)} disabled={job?.running || bulk.isPending || !(overview?.missingWithProfile || overview?.notWorkingWithProfile)}
+            title="Give students their HMS profile photo as the scanner photo"
+          >
+            <ImageUp size={15} /> Use profile photos
           </Button>
         </div>
       </PageHeader>
@@ -172,6 +179,15 @@ const DiningScannerUsersPage = () => {
                 <span>working</span>
               </button>
             </div>
+
+            {overview && (
+              <p className="sp-scanned" title="Students whose face a machine recognised at least once since their current scanner photo was saved">
+                <ScanFace size={16} aria-hidden="true" />
+                <span>
+                  <b>{number(overview.scannedSinceUpdate)}</b> scanned their face at the mess since their photo was last updated
+                </span>
+              </p>
+            )}
 
             {group === "notWorking" && !search && (
               <div className="sp-reasons" role="group" aria-label="Why">
@@ -278,15 +294,37 @@ const DiningScannerUsersPage = () => {
       </Page.Body>
 
       {confirmBulk && (
-        <ConfirmDialog
+        <Modal
           isOpen
           onClose={() => setConfirmBulk(false)}
-          onConfirm={() => bulk.mutate()}
-          title="Use profile photos as scanner photos?"
-          message={`${overview?.missingWithProfile || 0} active students have no scanner photo but have an HMS profile photo. Each one not tried before gets it as their scanner photo. Students whose photo can't be used or is refused by a machine must send one themselves.`}
-          confirmText="Use profile photos"
-          cancelText="Cancel"
-        />
+          title="Use profile photos as scanner photos"
+          width={520}
+          footer={
+            <>
+              <Button variant="secondary" onClick={() => setConfirmBulk(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" loading={bulk.isPending} disabled={!bulkCount || bulk.isPending} onClick={() => bulk.mutate()}>
+                <ImageUp size={15} /> Use profile photos for {number(bulkCount)}
+              </Button>
+            </>
+          }
+        >
+          <div className="sp-bulkdlg">
+            <p>
+              <b>{number(overview?.missingWithProfile)}</b> students have no scanner photo but have an HMS profile photo. Each gets it as their scanner photo.
+            </p>
+            <div className="sp-bulkdlg__toggle">
+              <Switch
+                checked={includeNotWorking}
+                onChange={(event) => setIncludeNotWorking(event.target.checked)}
+                label={`Also students whose photo isn't working (${number(overview?.notWorkingWithProfile)})`}
+              />
+              <p>Replaces photos a machine refused or made no face from with the profile photo. Students already on their profile photo, or whose profile photo can&apos;t be used, are skipped.</p>
+            </div>
+            <p className="sp-bulkdlg__note">Photos that can&apos;t be used are skipped and shown on the student&apos;s card. The machines get the new photos within a few minutes.</p>
+          </div>
+        </Modal>
       )}
     </Page>
   )
