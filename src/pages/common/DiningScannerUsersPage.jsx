@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button, Modal, Page, Switch } from "hzero"
+import { Button, Modal, Page, Switch } from "hzero"
 import { ChevronLeft, ChevronRight, ImageUp, RefreshCw, ScanFace, Search, X } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
@@ -165,45 +165,6 @@ const DiningScannerUsersPage = () => {
       <Page.Body>
         <div className="sp" ref={fitRef}>
           <aside className="sp-side">
-            <div className="sp-gauge" role="img" aria-label={`${number(working)} of ${number(overview?.total)} students' faces work`}>
-              <span style={{ width: `${share}%` }} />
-            </div>
-
-            <div className="sp-groups" role="tablist" aria-label="Group">
-              <button type="button" role="tab" aria-selected={!search && group === "notWorking"} data-tone="bad" onClick={() => choose("notWorking")}>
-                <b>{overview ? number(notWorking) : "…"}</b>
-                <span>not working yet</span>
-              </button>
-              <button type="button" role="tab" aria-selected={!search && group === "working"} data-tone="ok" onClick={() => choose("working")}>
-                <b>{overview ? number(working) : "…"}</b>
-                <span>working</span>
-              </button>
-            </div>
-
-            {overview && (
-              <p className="sp-scanned" title="Students whose face a machine recognised at least once since their current scanner photo was saved">
-                <ScanFace size={16} aria-hidden="true" />
-                <span>
-                  <b>{number(overview.scannedSinceUpdate)}</b> scanned their face at the mess since their photo was last updated
-                </span>
-              </p>
-            )}
-
-            {group === "notWorking" && !search && (
-              <div className="sp-reasons" role="group" aria-label="Why">
-                <button type="button" aria-pressed={!reason} onClick={() => choose("notWorking")}>
-                  All
-                </button>
-                {NOT_WORKING.map((key) => (
-                  <button key={key} type="button" aria-pressed={reason === key} data-tone={REASONS[key].tone} disabled={!reasons[key]} onClick={() => choose("notWorking", key)}>
-                    <i aria-hidden="true" />
-                    {REASONS[key].label}
-                    <small>{number(reasons[key])}</small>
-                  </button>
-                ))}
-              </div>
-            )}
-
             <label className="sp-search">
               <Search size={16} aria-hidden="true" />
               <input
@@ -223,17 +184,10 @@ const DiningScannerUsersPage = () => {
                 </button>
               )}
             </label>
-
-            {job?.running && (
-              <p className="sp-bulk">
-                Using profile photos: {job.done} of {job.total} done ({job.sent} saved, {job.unusable} can&apos;t be used).
-              </p>
-            )}
-            {feedback && (
-              <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)}>
-                {feedback.message}
-              </Alert>
-            )}
+            <p className="sp-showing">
+              {search ? "Search results" : listLabel}
+              <span>{number(total)}</span>
+            </p>
 
             <div className="sp-list" data-stale={list.isPlaceholderData || undefined}>
               {list.isError ? (
@@ -255,7 +209,7 @@ const DiningScannerUsersPage = () => {
                       >
                         <Avatar row={row} />
                         <span className="sp-row__who">
-                          <strong>{row.name || "-"}</strong>
+                          <strong title={row.name || undefined}>{row.name || "-"}</strong>
                           <span>{row.rollNumber}</span>
                         </span>
                         {(search || !reason) && (
@@ -283,12 +237,84 @@ const DiningScannerUsersPage = () => {
             </div>
           </aside>
 
-          <section className="sp-detail" aria-live="polite">
-            {selected ? (
-              <ScannerStudentCard key={selected.rollNumber} row={selected} />
-            ) : (
-              <p className="sp-empty sp-empty--detail">{list.isLoading ? "" : "Pick a student to see their face photo here."}</p>
-            )}
+          <section className="sp-main">
+            <div className="sp-console">
+              <div className="sp-cover" role="img" aria-label={`${number(working)} of ${number(overview?.total)} students' faces work`}>
+                <span className="sp-label">Faces working</span>
+                <b>{overview ? `${share.toFixed(1)}%` : "…"}</b>
+                <span className="sp-cover__of">
+                  {number(working)} of {number(overview?.total)} students
+                </span>
+                <span className="sp-meter" aria-hidden="true">
+                  <i data-tone="ok" style={{ flexGrow: working }} />
+                  {NOT_WORKING.map((key) => (reasons[key] ? <i key={key} data-tone={REASONS[key].tone} style={{ flexGrow: reasons[key] }} /> : null))}
+                </span>
+              </div>
+
+              <div className="sp-groups" role="tablist" aria-label="Group">
+                <button type="button" role="tab" aria-selected={!search && group === "notWorking"} data-tone="bad" onClick={() => choose("notWorking")}>
+                  <span className="sp-label">Not working yet</span>
+                  <b>{overview ? number(notWorking) : "…"}</b>
+                </button>
+                <button type="button" role="tab" aria-selected={!search && group === "working"} data-tone="ok" onClick={() => choose("working")}>
+                  <span className="sp-label">Working</span>
+                  <b>{overview ? number(working) : "…"}</b>
+                </button>
+              </div>
+                <div className="sp-readout" title="Students whose face a machine recognised at least once since their current scanner photo was saved">
+                  <span className="sp-label">
+                    <ScanFace size={13} aria-hidden="true" />
+                    Scanned since photo update
+                  </span>
+                  <b>{overview ? number(overview.scannedSinceUpdate) : "…"}</b>
+                </div>
+
+              <div className="sp-reasons" role="group" aria-label="Why it isn't working">
+                <span className="sp-label">Why not</span>
+                <button type="button" aria-pressed={!search && group === "notWorking" && !reason} onClick={() => choose("notWorking")}>
+                  All
+                </button>
+                {NOT_WORKING.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={!search && reason === key}
+                    data-tone={REASONS[key].tone}
+                    disabled={!reasons[key]}
+                    onClick={() => choose("notWorking", key)}
+                  >
+                    <i aria-hidden="true" />
+                    {REASONS[key].label}
+                    <small>{number(reasons[key])}</small>
+                  </button>
+                ))}
+              </div>
+
+              {(job?.running || feedback) && (
+                <div className="sp-console__status">
+                  {job?.running ? (
+                    <span>
+                      Using profile photos: {job.done} of {job.total} done ({job.sent} saved, {job.unusable} can&apos;t be used)
+                    </span>
+                  ) : (
+                    <span data-tone={feedback.type === "error" ? "bad" : undefined}>{feedback.message}</span>
+                  )}
+                  {!job?.running && (
+                    <button type="button" onClick={() => setFeedback(null)} aria-label="Dismiss">
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="sp-detail" aria-live="polite">
+              {selected ? (
+                <ScannerStudentCard key={selected.rollNumber} row={selected} />
+              ) : (
+                <p className="sp-empty sp-empty--detail">{list.isLoading ? "" : "Pick a student to see their face photo here."}</p>
+              )}
+            </div>
           </section>
         </div>
       </Page.Body>

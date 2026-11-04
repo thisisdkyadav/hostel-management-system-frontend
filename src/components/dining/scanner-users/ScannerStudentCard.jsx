@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Alert, Button } from "hzero"
-import { ImageUp, RefreshCw, ScanFace } from "lucide-react"
+import { Button } from "hzero"
+import { ImageUp, RefreshCw, ScanFace, X } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { diningScannerUsersApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
@@ -54,7 +54,7 @@ const Shot = ({ url, label, fallback, dashed }) => {
       <a className="sc-shot__frame" data-dashed={dashed || undefined} href={shown ? url : undefined} target="_blank" rel="noreferrer" aria-label={shown ? `Open ${label}` : undefined}>
         {shown ? <img src={url} alt="" onError={() => setBroken(true)} /> : <span>{fallback}</span>}
       </a>
-      <figcaption>{label}</figcaption>
+      <figcaption title={label}>{label}</figcaption>
     </figure>
   )
 }
@@ -70,10 +70,10 @@ const Photos = ({ row }) => {
       : ""
   return (
     <div className="sc-photos">
-      {row.profileImage && <Shot url={getMediaUrl(row.profileImage)} label="HMS profile" fallback={initials(row.name)} />}
+      <Shot url={row.profileImage ? getMediaUrl(row.profileImage) : ""} label={row.profileImage ? "HMS profile" : "No HMS profile photo"} fallback={initials(row.name)} dashed={!row.profileImage} />
       <Shot
         url={scannerUrl}
-        label={fetched ? `On the scanner (${fetched.alias})` : row.photo.present ? "Sent to the scanners" : "No scanner photo"}
+        label={fetched ? `On the scanner · ${fetched.alias}` : row.photo.present ? "Sent to the scanners" : "No scanner photo"}
         fallback="No photo"
         dashed={!fetched}
       />
@@ -122,89 +122,92 @@ const ScannerStudentCard = ({ row: initial }) => {
   const offerProfile = row.profileImage && ["noPhoto", "refused", "noFace"].includes(row.reason)
   const tried = row.profileAttempt && row.profileAttempt.outcome !== "sent"
   const reason = REASONS[row.reason] || REASONS.unchecked
+  const profileState = tried
+    ? { text: row.profileAttempt.message, tone: "bad" }
+    : row.photo.source === "profile"
+      ? { text: "In use on the scanners" }
+      : { text: row.profileImage ? "Available, not used" : "None in HMS" }
+  const facts = [
+    { label: "Photo from", text: row.photo.present ? row.photo.sourceLabel || "Uploaded" : "—" },
+    { label: "Saved", text: row.photo.present && row.photo.storedAt ? formatDateTime(row.photo.storedAt) : "—" },
+    {
+      label: "Last face scan",
+      text: row.lastScan ? `${formatDateTime(row.lastScan.at)} · ${row.lastScan.machine}` : row.photo.present ? "None since this photo" : "—",
+      tone: row.lastScan ? "ok" : undefined,
+    },
+    { label: "Profile photo", ...profileState },
+  ]
 
   return (
     <article className="sc" aria-label={`${row.name || row.rollNumber}`}>
       <header className="sc-head">
         <div className="sc-who">
-          <span className="sc-tag" data-tone={reason.tone}>
-            {reason.label}
-          </span>
-          <h2>{row.name || "-"}</h2>
-          <p className="sc-roll">{row.rollNumber}</p>
+          <h2 title={row.name || undefined}>{row.name || "-"}</h2>
+          <p className="sc-roll">
+            <span>{row.rollNumber}</span>
+            <span className="sc-tag" data-tone={reason.tone}>
+              {reason.label}
+            </span>
+          </p>
         </div>
         <div className="sc-verdict" data-tone={head.tone}>
-          <strong>{head.title}</strong>
-          <span>{head.text}</span>
-          {row.photo.present && (
-            <span className="sc-lastscan" data-yes={row.lastScan ? true : undefined}>
-              <ScanFace size={14} aria-hidden="true" />
-              {row.lastScan ? `Last scanned ${formatDateTime(row.lastScan.at)} on ${row.lastScan.machine}` : "Not scanned at the mess since this photo was saved"}
-            </span>
-          )}
+          <strong title={head.title}>{head.title}</strong>
+          <span title={head.text}>{head.text}</span>
         </div>
       </header>
 
-      {feedback && (
-        <Alert type={feedback.type} icon dismissible onDismiss={() => setFeedback(null)}>
-          {feedback.message}
-        </Alert>
-      )}
-
       <div className="sc-body">
         <Photos row={row} />
-        {row.photo.present && row.machines.length > 0 && (
-          <ol className="sc-machines" aria-label="Machines">
-            {row.machines.map((machine) => {
-              const line = machineLine(machine)
-              return (
-                <li key={machine.sn} data-tone={line.tone}>
-                  <ScanFace size={18} aria-hidden="true" />
-                  <strong>{machine.alias}</strong>
-                  <span className="sc-machines__state">
-                    {line.text}
-                    {line.note && <small>{line.note}</small>}
-                  </span>
-                  {machine.refusal && <small className="sc-machines__error">{machine.refusal.message}</small>}
-                </li>
-              )
-            })}
-          </ol>
-        )}
+        <ol className="sc-machines" aria-label="Machines">
+          {row.machines.map((machine) => {
+            const line = row.photo.present ? machineLine(machine) : { text: "No photo to send", tone: "none" }
+            const note = machine.refusal?.message || line.note
+            return (
+              <li key={machine.sn} data-tone={line.tone}>
+                <ScanFace size={18} aria-hidden="true" />
+                <strong>{machine.alias}</strong>
+                <span className="sc-machines__state">{line.text}</span>
+                <small className="sc-machines__note" data-error={machine.refusal ? true : undefined} title={note || undefined}>
+                  {note || " "}
+                </small>
+              </li>
+            )
+          })}
+        </ol>
       </div>
 
       <dl className="sc-facts">
-        {row.photo.present && (
-          <>
-            <dt>Photo from</dt>
-            <dd>{row.photo.sourceLabel || "Uploaded"}</dd>
-            {row.photo.storedAt && (
-              <>
-                <dt>Saved</dt>
-                <dd>{formatDateTime(row.photo.storedAt)}</dd>
-              </>
-            )}
-          </>
-        )}
-        {tried && (
-          <>
-            <dt>Profile photo</dt>
-            <dd data-tone="bad">{row.profileAttempt.message}</dd>
-          </>
-        )}
+        {facts.map((fact) => (
+          <div key={fact.label}>
+            <dt>{fact.label}</dt>
+            <dd data-tone={fact.tone} title={fact.text}>
+              {fact.text}
+            </dd>
+          </div>
+        ))}
       </dl>
 
       <footer className="sc-actions">
-        {offerProfile && (
-          <Button variant="primary" loading={useProfile.isPending} disabled={useProfile.isPending} onClick={() => useProfile.mutate()}>
-            <ImageUp size={15} /> Use profile photo
-          </Button>
+        {feedback && (
+          <p className="sc-feedback" data-tone={feedback.type === "error" ? "bad" : feedback.type === "success" ? "ok" : undefined} title={feedback.message}>
+            <span>{feedback.message}</span>
+            <button type="button" onClick={() => setFeedback(null)} aria-label="Dismiss">
+              <X size={14} />
+            </button>
+          </p>
         )}
-        {row.photo.present && row.machines.length > 0 && (
-          <Button variant="secondary" loading={checkAgain.isPending} disabled={checkAgain.isPending || checking} onClick={() => checkAgain.mutate()}>
-            <RefreshCw size={15} /> {checking ? "Checking machines…" : "Check machines now"}
-          </Button>
-        )}
+        <div className="sc-actions__buttons">
+          {offerProfile && (
+            <Button variant="primary" size="sm" loading={useProfile.isPending} disabled={useProfile.isPending} onClick={() => useProfile.mutate()}>
+              <ImageUp size={15} /> Use profile photo
+            </Button>
+          )}
+          {row.photo.present && row.machines.length > 0 && (
+            <Button variant="secondary" size="sm" loading={checkAgain.isPending} disabled={checkAgain.isPending || checking} onClick={() => checkAgain.mutate()}>
+              <RefreshCw size={15} /> {checking ? "Checking machines…" : "Check machines now"}
+            </Button>
+          )}
+        </div>
       </footer>
     </article>
   )

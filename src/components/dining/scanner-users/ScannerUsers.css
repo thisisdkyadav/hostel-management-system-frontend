@@ -1,4 +1,10 @@
-/* Scanner Photos page (Admin + Dining Office): list on the left, student card on the right. */
+/*
+ * Scanner Photos page (Admin + Dining Office).
+ * Left: search + student list. Right: one panel — a dark "console" with the
+ * numbers on top, the selected student's card below.
+ * Sizes follow the viewport (clamp on vw/vh) and never the content, so
+ * moving between students never moves anything.
+ */
 
 .sp [data-tone="ok"] {
   --t: var(--color-success);
@@ -27,28 +33,36 @@
 }
 
 .sp {
+  /* The console's own palette: a deep navy drawn from the theme's blue. */
+  --sp-ink: color-mix(in oklab, var(--color-primary-darker) 52%, black);
+  --sp-ink-2: color-mix(in oklab, var(--color-primary-darker) 72%, black);
+  --sp-line: color-mix(in oklab, white 12%, transparent);
+  --sp-fg: color-mix(in oklab, white 94%, var(--color-primary));
+  --sp-fg-dim: color-mix(in oklab, white 62%, var(--sp-ink));
+  --sp-glow: color-mix(in oklab, var(--color-primary) 55%, white);
+  --sp-gap: clamp(12px, 1.2vw, 20px);
+  --sp-pad: clamp(14px, 1.5vw, 24px);
+
   display: grid;
-  grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
-  gap: var(--spacing-5);
+  grid-template-columns: clamp(300px, 26vw, 400px) minmax(0, 1fr);
+  gap: var(--sp-gap);
   min-height: 0;
 }
 
-/* ---- Left: groups, search, list ---- */
-.sp-side {
+/* ---------------------------------------------------------------- */
+/* Header: machines + actions                                       */
+/* ---------------------------------------------------------------- */
+.sp-head {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3);
-  min-height: 0;
-  padding: var(--spacing-5);
-  border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-card-lg);
-  background: var(--color-bg-primary);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
 }
-
 .sp-machines {
   display: flex;
   gap: 6px;
-  margin: 0;
+  margin: 0 var(--spacing-2) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -75,32 +89,7 @@
 }
 .sp-machines li[data-on]::before {
   background: var(--color-success);
-}
-.sp-gauge {
-  height: 4px;
-  flex: none;
-  border-radius: var(--radius-full);
-  background: var(--color-danger-bg);
-  overflow: hidden;
-}
-.sp-gauge span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--color-success);
-  transition: width 400ms ease;
-}
-
-/* Header: machines + actions */
-.sp-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--spacing-2);
-}
-.sp-head .sp-machines {
-  margin-right: var(--spacing-2);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-success) 25%, transparent);
 }
 .sp-machines small {
   color: var(--color-text-muted);
@@ -115,155 +104,33 @@
   }
 }
 
-/* The two groups: the count is the label. */
-.sp-groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-2);
-}
-.sp-groups button {
+/* ---------------------------------------------------------------- */
+/* Left: search + list                                              */
+/* ---------------------------------------------------------------- */
+.sp-side {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: var(--spacing-3);
+  gap: var(--spacing-3);
+  min-height: 0;
+  padding: var(--sp-pad);
   border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-muted);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background 120ms ease,
-    border-color 120ms ease;
-}
-.sp-groups button:hover {
-  border-color: var(--color-border-hover);
-}
-.sp-groups b {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-.sp-groups span {
-  font-size: var(--font-size-sm);
-}
-.sp-groups button[aria-selected="true"] {
-  border-color: var(--t);
-  background: var(--t-bg);
-  color: var(--t-text);
-}
-.sp-groups button[aria-selected="true"] b {
-  color: var(--t-text);
-}
-
-.sp-scanned {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  margin: 0;
-  padding: var(--spacing-2) var(--spacing-3);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-}
-.sp-scanned svg {
-  flex: none;
-  color: var(--color-success);
-}
-.sp-scanned b {
-  color: var(--color-text-heading);
-  font-size: var(--font-size-sm);
-  font-variant-numeric: tabular-nums;
-}
-.sp-bulkdlg {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-.sp-bulkdlg p {
-  margin: 0;
-}
-.sp-bulkdlg b {
-  color: var(--color-text-heading);
-}
-.sp-bulkdlg__toggle {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3);
-  border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-md);
-}
-.sp-bulkdlg__toggle p,
-.sp-bulkdlg__note {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
-}
-
-/* Why it doesn't work: sub-filters of "not working yet". */
-.sp-reasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.sp-reasons button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-card-lg);
   background: var(--color-bg-primary);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
 }
-.sp-reasons button:hover:not(:disabled) {
-  border-color: var(--color-border-hover);
-}
-.sp-reasons button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.sp-reasons i {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  background: var(--t);
-}
-.sp-reasons small {
-  color: var(--color-text-muted);
-  font-size: inherit;
-  font-weight: normal;
-  font-variant-numeric: tabular-nums;
-}
-.sp-reasons button[aria-pressed="true"] {
-  border-color: var(--color-text-heading);
-  background: var(--color-text-heading);
-  color: var(--color-bg-primary);
-}
-.sp-reasons button[aria-pressed="true"] small {
-  color: inherit;
-  opacity: 0.75;
-}
-
 .sp-search {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--spacing-2);
   padding: 0 var(--spacing-3);
-  height: 40px;
+  height: 42px;
   border: var(--border-1) solid var(--color-border-input);
   border-radius: var(--radius-input);
-  background: var(--color-bg-primary);
+  background: var(--color-bg-secondary);
   color: var(--color-text-muted);
+}
+.sp-search:focus-within {
+  background: var(--color-bg-primary);
 }
 .sp-search input {
   flex: 1;
@@ -288,18 +155,21 @@
   color: var(--color-text-muted);
   cursor: pointer;
 }
-
-.sp-bulk {
+.sp-showing {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-2);
   margin: 0;
-  padding: var(--spacing-2) var(--spacing-3);
-  border-radius: var(--radius-md);
-  background: var(--color-primary-bg);
-  color: var(--color-primary-text);
+  padding: 0 var(--spacing-1);
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sp-showing span {
+  font-variant-numeric: tabular-nums;
 }
 
 /* The list: the only thing that scrolls. */
@@ -323,7 +193,8 @@
   grid-template-columns: 36px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--spacing-3);
-  padding: 7px var(--spacing-2);
+  height: 52px;
+  padding: 0 var(--spacing-2);
   border-radius: var(--radius-md);
   cursor: pointer;
 }
@@ -385,12 +256,12 @@
   font-size: var(--font-size-sm);
   text-align: center;
 }
-
 .sp-pager {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--spacing-1);
-  padding-top: var(--spacing-2);
+  padding-top: var(--spacing-3);
   border-top: var(--border-1) solid var(--color-border-light);
   color: var(--color-text-muted);
   font-size: var(--font-size-xs);
@@ -415,13 +286,280 @@
   cursor: default;
 }
 
-/* ---- Right: the selected student ---- */
-.sp-detail {
+/* ---------------------------------------------------------------- */
+/* Right: one panel — console on top, student below                 */
+/* ---------------------------------------------------------------- */
+.sp-main {
+  container: spmain / inline-size;
+  display: flex;
+  flex-direction: column;
   min-height: 0;
-  overflow-y: auto;
   border: var(--border-1) solid var(--color-border-primary);
   border-radius: var(--radius-card-lg);
   background: var(--color-bg-primary);
+  overflow: hidden;
+}
+
+.sp-console {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr) minmax(0, 1.1fr);
+  gap: var(--sp-gap) var(--spacing-2);
+  flex: none;
+  padding: var(--sp-pad);
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--color-primary) 38%, transparent), transparent 55%),
+    radial-gradient(80% 120% at 100% 100%, color-mix(in oklab, var(--color-success) 14%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--sp-ink-2), var(--sp-ink));
+  color: var(--sp-fg);
+  isolation: isolate;
+}
+/* A faint measuring grid behind the numbers. */
+.sp-console::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--sp-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sp-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(90deg, black, transparent 85%);
+  opacity: 0.45;
+}
+.sp-console [data-tone="ok"] {
+  --t: var(--color-success);
+}
+.sp-console [data-tone="bad"] {
+  --t: var(--color-danger);
+}
+.sp-console [data-tone="warn"] {
+  --t: var(--color-warning);
+}
+.sp-console [data-tone="none"] {
+  --t: color-mix(in oklab, white 45%, var(--sp-ink));
+}
+
+.sp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--sp-fg-dim);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Coverage: the big percentage and a meter split by reason. */
+.sp-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+  padding-right: var(--spacing-2);
+}
+.sp-cover b {
+  font-size: clamp(1.75rem, 7cqi, 3rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 24px color-mix(in oklab, var(--sp-glow) 45%, transparent);
+}
+.sp-cover__of {
+  color: var(--sp-fg-dim);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+.sp-meter {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--sp-line);
+}
+.sp-meter i {
+  min-width: 3px;
+  background: var(--t);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--t) 60%, transparent);
+}
+
+/* The two groups (clickable) and the scan readout. */
+.sp-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-2);
+}
+.sp-groups button,
+.sp-readout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  min-width: 0;
+  padding: clamp(8px, 1.4vh, 14px) var(--spacing-3);
+  border: var(--border-1) solid var(--sp-line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, white 5%, transparent);
+  color: var(--sp-fg);
+  text-align: left;
+}
+.sp-groups button {
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+.sp-groups button .sp-label::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--t);
+  box-shadow: 0 0 8px var(--t);
+}
+.sp-groups button:hover {
+  background: color-mix(in oklab, white 10%, transparent);
+}
+.sp-groups button[aria-selected="true"] {
+  border-color: color-mix(in oklab, var(--t) 70%, transparent);
+  background: color-mix(in oklab, var(--t) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--t) 40%, transparent);
+}
+.sp-groups b,
+.sp-readout b {
+  font-size: clamp(1.25rem, 4.2cqi, 1.9rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.sp-readout .sp-label svg {
+  flex: none;
+  color: var(--sp-glow);
+}
+.sp-readout b {
+  color: var(--sp-glow);
+}
+/* Tile labels may take two lines; the space for two is always kept. */
+.sp-readout .sp-label,
+.sp-groups .sp-label {
+  display: block;
+  min-height: 2.6em;
+  overflow: hidden;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  white-space: normal;
+}
+.sp-readout .sp-label svg {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+.sp-groups button .sp-label::before {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+
+/* Why it doesn't work: the sub-filters. */
+.sp-reasons {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-top: clamp(10px, 1.6vh, 18px);
+  border-top: var(--border-1) solid var(--sp-line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sp-reasons::-webkit-scrollbar {
+  display: none;
+}
+.sp-reasons .sp-label {
+  margin-right: var(--spacing-1);
+}
+.sp-reasons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 26px;
+  padding: 0 9px;
+  border: var(--border-1) solid var(--sp-line);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--sp-fg);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+.sp-reasons button:hover:not(:disabled) {
+  background: color-mix(in oklab, white 8%, transparent);
+}
+.sp-reasons button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.sp-reasons i {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--t);
+}
+.sp-reasons small {
+  color: var(--sp-fg-dim);
+  font-size: inherit;
+  font-weight: normal;
+  font-variant-numeric: tabular-nums;
+}
+.sp-reasons button[aria-pressed="true"] {
+  border-color: var(--sp-fg);
+  background: var(--sp-fg);
+  color: var(--sp-ink);
+}
+.sp-reasons button[aria-pressed="true"] small {
+  color: inherit;
+  opacity: 0.7;
+}
+
+/* Bulk progress / result, as a line under the console. */
+.sp-console__status {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  margin-top: calc(var(--sp-gap) * -0.4);
+  color: var(--sp-glow);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+.sp-console__status [data-tone="bad"] {
+  color: color-mix(in oklab, var(--color-danger) 65%, white);
+}
+.sp-console__status button {
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--sp-fg-dim);
+  cursor: pointer;
+}
+
+.sp-detail {
+  container: spcard / size;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 .sp-empty--detail {
   display: grid;
@@ -429,24 +567,98 @@
   height: 100%;
 }
 
+/* ---------------------------------------------------------------- */
+/* The student card                                                 */
+/* ---------------------------------------------------------------- */
 .sc {
+  /* Photo width: from the card's own width and free height (what's left after the
+     fixed rows), never from the student shown. */
+  --sc-shot: clamp(84px, min(26cqi, calc((100cqb - 300px) * 0.78)), 200px);
+
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5);
-  min-height: 100%;
-  padding: var(--spacing-6);
+  gap: clamp(10px, 1.8vh, 20px);
+  height: 100%;
+  min-height: 0;
+  padding: var(--sp-pad);
 }
+
+/* Name and roll on the left, the verdict on the right; both one fixed height. */
 .sc-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--spacing-6);
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: var(--sp-gap);
+  align-items: center;
+  height: clamp(52px, 7vh, 64px);
+  flex: none;
 }
+.sc-who {
+  min-width: 0;
+}
+.sc-who h2 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-heading);
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sc-roll {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.sc-tag {
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--t-bg);
+  color: var(--t-text);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+}
+.sc-verdict {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+  min-width: 0;
+  padding: 0 var(--spacing-3);
+  border-left: 3px solid var(--t);
+}
+.sc-verdict strong {
+  overflow: hidden;
+  color: var(--t-text);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sc-verdict span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Photos (always two frames) beside the machines (one tile each). */
+/* Takes the free height and sits in the middle of it. */
 .sc-body {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--spacing-5);
-  align-items: start;
+  align-content: center;
+  align-items: center;
+  gap: var(--sp-gap);
+  flex: 1 0 auto;
 }
 .sc-photos {
   display: flex;
@@ -456,7 +668,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: clamp(120px, 10.5vw, 190px);
+  width: var(--sc-shot);
   margin: 0;
 }
 .sc-shot__frame {
@@ -480,84 +692,37 @@
   object-fit: cover;
 }
 .sc-shot figcaption {
+  overflow: hidden;
   color: var(--color-text-muted);
   font-size: var(--font-size-xs);
   text-align: center;
-}
-.sc-who {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
-.sc-tag {
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  background: var(--t-bg);
-  color: var(--t-text);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
-.sc-who h2 {
-  margin: var(--spacing-3) 0 0;
-  color: var(--color-text-heading);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-.sc-roll {
-  margin: 2px 0 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-md);
-  font-variant-numeric: tabular-nums;
-}
-.sc-verdict {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-left: var(--spacing-3);
-  border-left: 3px solid var(--t);
-}
-.sc-verdict strong {
-  color: var(--t-text);
-  font-size: var(--font-size-md);
-}
-.sc-verdict span {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-}
-.sc-verdict .sc-lastscan {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
-}
-.sc-verdict .sc-lastscan[data-yes] {
-  color: var(--color-success-text);
-  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .sc-machines {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-3);
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--spacing-2);
+  height: max(calc(var(--sc-shot) * 1.25), 138px);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .sc-machines li {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  align-items: center;
   column-gap: var(--spacing-2);
   row-gap: 2px;
-  align-items: center;
-  padding: var(--spacing-3);
+  min-height: 0;
+  padding: 0 var(--spacing-3);
   border-radius: var(--radius-lg);
   background: var(--t-bg);
   color: var(--t-text);
+  overflow: hidden;
 }
 .sc-machines li svg {
   grid-row: span 2;
@@ -567,53 +732,186 @@
   font-size: var(--font-size-sm);
 }
 .sc-machines__state {
-  grid-column: 2;
+  overflow: hidden;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.sc-machines__state small {
-  display: block;
-  font-weight: normal;
-  color: var(--color-text-secondary);
-}
-.sc-machines > li > small {
-  grid-column: 1 / -1;
-  margin-top: 2px;
+.sc-machines__note {
+  grid-column: 2 / -1;
+  overflow: hidden;
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.sc-machines .sc-machines__error {
+.sc-machines__note[data-error] {
   color: var(--color-danger-text);
 }
 
+/* Four facts in one fixed row. */
 .sc-facts {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: var(--spacing-1) var(--spacing-4);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr);
+  flex: none;
   margin: 0;
-  font-size: var(--font-size-sm);
+  border: var(--border-1) solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+}
+.sc-facts div {
+  min-width: 0;
+  padding: var(--spacing-2) var(--spacing-3);
+}
+.sc-facts div + div {
+  border-left: var(--border-1) solid var(--color-border-light);
 }
 .sc-facts dt {
   color: var(--color-text-muted);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .sc-facts dd {
-  margin: 0;
+  margin: 2px 0 0;
+  overflow: hidden;
   color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.sc-facts dd[data-tone="bad"] {
-  color: var(--color-danger-text);
+.sc-facts dd[data-tone] {
+  color: var(--t-text);
+  font-weight: var(--font-weight-semibold);
 }
 
+/* Actions sit at the bottom; a message takes the space to their left. */
 .sc-actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-2);
-  margin-top: auto;
-  padding-top: var(--spacing-4);
+  gap: var(--spacing-3);
+  flex: none;
+  height: 48px;
+  padding-top: var(--spacing-2);
   border-top: var(--border-1) solid var(--color-border-light);
 }
-/* ---- Narrow screens: stack, the page scrolls ---- */
+.sc-actions__buttons {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-left: auto;
+}
+.sc-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  min-width: 0;
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+.sc-feedback[data-tone] {
+  color: var(--t-text);
+}
+.sc-feedback span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sc-feedback button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- */
+/* Bulk dialog                                                      */
+/* ---------------------------------------------------------------- */
+.sp-bulkdlg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.sp-bulkdlg p {
+  margin: 0;
+}
+.sp-bulkdlg b {
+  color: var(--color-text-heading);
+}
+.sp-bulkdlg__toggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+}
+.sp-bulkdlg__toggle p,
+.sp-bulkdlg__note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* ---------------------------------------------------------------- */
+/* Narrower screens                                                 */
+/* ---------------------------------------------------------------- */
+/* A tall card: bigger photos, the machines in a row beneath them. */
+@container spcard (min-height: 600px) {
+  .sc {
+    --sc-shot: clamp(120px, min(36cqi, calc((100cqb - 400px) * 0.78)), 230px);
+  }
+  .sc-body {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+  .sc-machines {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-rows: 62px;
+    width: 100%;
+    height: auto;
+  }
+}
+/* A narrower right panel: drop the chip caption, then put the percentage on its own row. */
+@container spmain (max-width: 700px) {
+  .sp-reasons .sp-label {
+    display: none;
+  }
+}
+@container spmain (max-width: 480px) {
+  .sp-console {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+  .sp-cover {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto auto minmax(80px, 1fr);
+    align-items: end;
+    column-gap: var(--spacing-3);
+  }
+  .sp-cover .sp-label {
+    grid-column: 1 / -1;
+  }
+  .sp-meter {
+    align-self: center;
+    margin: 0;
+  }
+  .sp-reasons {
+    flex-wrap: wrap;
+  }
+}
+/* Stacked: the page scrolls, the card grows with its content. */
 @media (max-width: 959px) {
   .sp {
     grid-template-columns: 1fr;
@@ -621,28 +919,49 @@
   .sp-list {
     max-height: 60vh;
   }
-  .sc {
-    padding: var(--spacing-4);
+  .sp-detail {
+    container-type: inline-size;
   }
-  .sc-head,
+  .sc {
+    --sc-shot: clamp(110px, 38vw, 170px);
+    height: auto;
+  }
+  .sc-body {
+    flex: none;
+  }
+  .sc-head {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .sc-verdict {
+    padding: var(--spacing-1) var(--spacing-3);
+  }
   .sc-body {
     grid-template-columns: 1fr;
-    gap: var(--spacing-4);
   }
-  .sc-shot {
-    width: auto;
-    flex: 1;
-    max-width: 180px;
+  .sc-machines {
+    height: auto;
+    grid-auto-rows: 56px;
   }
-  .sc-who h2 {
-    font-size: var(--font-size-xl);
+  .sc-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sc-facts div:nth-child(3) {
+    border-left: 0;
+  }
+  .sc-facts div:nth-child(n + 3) {
+    border-top: var(--border-1) solid var(--color-border-light);
+  }
+  .sc-actions {
+    height: auto;
+    flex-wrap: wrap;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .sp-spin {
     animation: none;
   }
-  .sp-gauge span,
   .sp-groups button {
     transition: none;
   }
