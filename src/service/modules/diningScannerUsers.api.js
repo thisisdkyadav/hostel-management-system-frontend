@@ -11,8 +11,14 @@ const unwrap = (response) =>
  * HMS and whether every face machine has it.
  */
 export const diningScannerUsersApi = {
-  /** `{ status, search, page, limit }` → { items, total, counts, machines, profileJob } */
+  /** `{ status, search, page, limit }` → { items, total, page, limit, counts, machines }. `status` is a photo status or a check summary. */
   list: (params = {}) => apiClient.get("/dining-scanner-users", { params }).then(unwrap),
+
+  /** The overview → { total, withPhoto, status, checks, missingWithProfile, machines, profileJob } */
+  stats: () => apiClient.get("/dining-scanner-users/stats").then(unwrap),
+
+  /** One student → { item } */
+  get: (rollNumber) => apiClient.get(`/dining-scanner-users/${encodeURIComponent(rollNumber)}`).then(unwrap),
 
   /** Use the student's HMS profile photo as their scanner photo → { item, outcome } */
   useProfilePhoto: (rollNumber, { replace = false } = {}) =>
