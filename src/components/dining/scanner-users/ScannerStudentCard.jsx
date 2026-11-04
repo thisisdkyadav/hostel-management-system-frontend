@@ -11,6 +11,8 @@ import { REASONS, initials, isChecking } from "./scannerUsersHelpers"
 /** One machine's answer for this student, in a word or two. */
 const machineLine = (machine) => {
   if (machine.state === "refused") return { text: "Refused", tone: "bad" }
+  // A face scan here since the photo was saved: proof, whatever the photo check said.
+  if (machine.scannedAt) return { text: "Face scanned", tone: "ok", note: `Last ${formatDateTime(machine.scannedAt)}` }
   const check = machine.check?.status
   if (check === "noFace" || check === "noPhoto") return { text: "No face", tone: "bad" }
   if (check === "checking") return { text: "Checking…", tone: "warn" }
@@ -28,7 +30,9 @@ const verdict = (row) => {
   const noFace = row.machines.filter((m) => ["noFace", "noPhoto"].includes(m.check?.status))
   switch (row.reason) {
     case "working":
-      return { tone: "ok", title: "Scans at every machine", text: "Every machine took the photo and made a face from it." }
+      return row.lastScan
+        ? { tone: "ok", title: "Face works", text: `Scanned at ${row.lastScan.machine} on ${formatDateTime(row.lastScan.at)} with this photo.` }
+        : { tone: "ok", title: "Scans at every machine", text: "Every machine took the photo and made a face from it." }
     case "noPhoto":
       return {
         tone: "none",

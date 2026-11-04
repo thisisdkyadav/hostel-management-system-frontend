@@ -165,6 +165,40 @@ const DiningScannerUsersPage = () => {
       <Page.Body>
         <div className="sp" ref={fitRef}>
           <aside className="sp-side">
+            <div className="sp-filters">
+              <div className="sp-groups" role="tablist" aria-label="Group">
+                <button type="button" role="tab" aria-selected={!search && group === "notWorking"} data-tone="bad" onClick={() => choose("notWorking")}>
+                  <i aria-hidden="true" />
+                  Not working yet
+                  <small>{overview ? number(notWorking) : "…"}</small>
+                </button>
+                <button type="button" role="tab" aria-selected={!search && group === "working"} data-tone="ok" onClick={() => choose("working")}>
+                  <i aria-hidden="true" />
+                  Working
+                  <small>{overview ? number(working) : "…"}</small>
+                </button>
+              </div>
+              <div className="sp-reasons" role="group" aria-label="Why it isn't working">
+                <button type="button" aria-pressed={!search && group === "notWorking" && !reason} onClick={() => choose("notWorking")}>
+                  All
+                </button>
+                {NOT_WORKING.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={!search && reason === key}
+                    data-tone={REASONS[key].tone}
+                    disabled={!reasons[key]}
+                    onClick={() => choose("notWorking", key)}
+                  >
+                    <i aria-hidden="true" />
+                    {REASONS[key].label}
+                    <small>{number(reasons[key])}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <label className="sp-search">
               <Search size={16} aria-hidden="true" />
               <input
@@ -251,44 +285,33 @@ const DiningScannerUsersPage = () => {
                 </span>
               </div>
 
-              <div className="sp-groups" role="tablist" aria-label="Group">
-                <button type="button" role="tab" aria-selected={!search && group === "notWorking"} data-tone="bad" onClick={() => choose("notWorking")}>
+              <div className="sp-tiles">
+                <div className="sp-tile" data-tone="bad">
                   <span className="sp-label">Not working yet</span>
                   <b>{overview ? number(notWorking) : "…"}</b>
-                </button>
-                <button type="button" role="tab" aria-selected={!search && group === "working"} data-tone="ok" onClick={() => choose("working")}>
+                </div>
+                <div className="sp-tile" data-tone="ok">
                   <span className="sp-label">Working</span>
                   <b>{overview ? number(working) : "…"}</b>
-                </button>
-              </div>
-                <div className="sp-readout" title="Students whose face a machine recognised at least once since their current scanner photo was saved">
+                </div>
+                <div className="sp-tile sp-tile--scan" title="Students whose face a machine recognised at least once since their current scanner photo was saved">
                   <span className="sp-label">
                     <ScanFace size={13} aria-hidden="true" />
                     Scanned since photo update
                   </span>
                   <b>{overview ? number(overview.scannedSinceUpdate) : "…"}</b>
                 </div>
+              </div>
 
-              <div className="sp-reasons" role="group" aria-label="Why it isn't working">
-                <span className="sp-label">Why not</span>
-                <button type="button" aria-pressed={!search && group === "notWorking" && !reason} onClick={() => choose("notWorking")}>
-                  All
-                </button>
+              <ul className="sp-breakdown" aria-label="Why faces don't work yet">
                 {NOT_WORKING.map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    aria-pressed={!search && reason === key}
-                    data-tone={REASONS[key].tone}
-                    disabled={!reasons[key]}
-                    onClick={() => choose("notWorking", key)}
-                  >
+                  <li key={key} data-tone={REASONS[key].tone}>
                     <i aria-hidden="true" />
                     {REASONS[key].label}
-                    <small>{number(reasons[key])}</small>
-                  </button>
+                    <b>{overview ? number(reasons[key]) : "…"}</b>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               {(job?.running || feedback) && (
                 <div className="sp-console__status">

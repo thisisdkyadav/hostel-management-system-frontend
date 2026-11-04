@@ -117,6 +117,101 @@
   border-radius: var(--radius-card-lg);
   background: var(--color-bg-primary);
 }
+/* Filters: the group on one line, why-not on the next. */
+.sp-filters {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+.sp-groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+}
+.sp-groups button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  height: 34px;
+  padding: 0 var(--spacing-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.sp-groups button:hover {
+  color: var(--color-text-heading);
+}
+.sp-groups i,
+.sp-reasons i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--t);
+}
+.sp-groups small {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+.sp-groups button[aria-selected="true"] {
+  background: var(--color-bg-primary);
+  color: var(--color-text-heading);
+  box-shadow: var(--shadow-sm);
+}
+.sp-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sp-reasons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+.sp-reasons button:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+}
+.sp-reasons button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.sp-reasons small {
+  color: var(--color-text-muted);
+  font-size: inherit;
+  font-weight: normal;
+  font-variant-numeric: tabular-nums;
+}
+.sp-reasons button[aria-pressed="true"] {
+  border-color: var(--color-text-heading);
+  background: var(--color-text-heading);
+  color: var(--color-bg-primary);
+}
+.sp-reasons button[aria-pressed="true"] small {
+  color: inherit;
+  opacity: 0.75;
+}
+
 .sp-search {
   display: flex;
   flex: none;
@@ -303,8 +398,8 @@
 .sp-console {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr) minmax(0, 1.1fr);
-  gap: var(--sp-gap) var(--spacing-2);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+  gap: var(--sp-gap);
   flex: none;
   padding: var(--sp-pad);
   background:
@@ -389,14 +484,13 @@
   box-shadow: 0 0 10px color-mix(in oklab, var(--t) 60%, transparent);
 }
 
-/* The two groups (clickable) and the scan readout. */
-.sp-groups {
+/* Three read-only numbers. */
+.sp-tiles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--spacing-2);
 }
-.sp-groups button,
-.sp-readout {
+.sp-tile {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -406,49 +500,9 @@
   border: var(--border-1) solid var(--sp-line);
   border-radius: var(--radius-lg);
   background: color-mix(in oklab, white 5%, transparent);
-  color: var(--sp-fg);
-  text-align: left;
-}
-.sp-groups button {
-  cursor: pointer;
-  transition:
-    background 120ms ease,
-    border-color 120ms ease;
-}
-.sp-groups button .sp-label::before {
-  content: "";
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  background: var(--t);
-  box-shadow: 0 0 8px var(--t);
-}
-.sp-groups button:hover {
-  background: color-mix(in oklab, white 10%, transparent);
-}
-.sp-groups button[aria-selected="true"] {
-  border-color: color-mix(in oklab, var(--t) 70%, transparent);
-  background: color-mix(in oklab, var(--t) 18%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--t) 40%, transparent);
-}
-.sp-groups b,
-.sp-readout b {
-  font-size: clamp(1.25rem, 4.2cqi, 1.9rem);
-  font-weight: var(--font-weight-bold);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.sp-readout .sp-label svg {
-  flex: none;
-  color: var(--sp-glow);
-}
-.sp-readout b {
-  color: var(--sp-glow);
 }
 /* Tile labels may take two lines; the space for two is always kept. */
-.sp-readout .sp-label,
-.sp-groups .sp-label {
+.sp-tile .sp-label {
   display: block;
   min-height: 2.6em;
   overflow: hidden;
@@ -456,77 +510,60 @@
   letter-spacing: 0.1em;
   white-space: normal;
 }
-.sp-readout .sp-label svg {
-  vertical-align: -2px;
-  margin-right: 4px;
-}
-.sp-groups button .sp-label::before {
+.sp-tile[data-tone] .sp-label::before {
+  content: "";
   display: inline-block;
+  width: 7px;
+  height: 7px;
   margin-right: 6px;
   vertical-align: 1px;
+  border-radius: var(--radius-full);
+  background: var(--t);
+  box-shadow: 0 0 8px var(--t);
+}
+.sp-tile .sp-label svg {
+  margin-right: 4px;
+  vertical-align: -2px;
+  color: var(--sp-glow);
+}
+.sp-tile b {
+  font-size: clamp(1.25rem, 4.2cqi, 1.9rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.sp-tile--scan b {
+  color: var(--sp-glow);
 }
 
-/* Why it doesn't work: the sub-filters. */
-.sp-reasons {
+/* Not working, by reason: a legend for the meter. */
+.sp-breakdown {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding-top: clamp(10px, 1.6vh, 18px);
+  gap: var(--spacing-2) var(--spacing-5);
+  margin: 0;
+  padding: clamp(10px, 1.6vh, 16px) 0 0;
   border-top: var(--border-1) solid var(--sp-line);
-  overflow-x: auto;
-  scrollbar-width: none;
+  list-style: none;
 }
-.sp-reasons::-webkit-scrollbar {
-  display: none;
-}
-.sp-reasons .sp-label {
-  margin-right: var(--spacing-1);
-}
-.sp-reasons button {
+.sp-breakdown li {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  flex: none;
-  height: 26px;
-  padding: 0 9px;
-  border: var(--border-1) solid var(--sp-line);
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--sp-fg);
+  color: var(--sp-fg-dim);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
+  white-space: nowrap;
 }
-.sp-reasons button:hover:not(:disabled) {
-  background: color-mix(in oklab, white 8%, transparent);
-}
-.sp-reasons button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.sp-reasons i {
+.sp-breakdown i {
   width: 7px;
   height: 7px;
   border-radius: var(--radius-full);
   background: var(--t);
 }
-.sp-reasons small {
-  color: var(--sp-fg-dim);
-  font-size: inherit;
-  font-weight: normal;
+.sp-breakdown b {
+  color: var(--sp-fg);
   font-variant-numeric: tabular-nums;
-}
-.sp-reasons button[aria-pressed="true"] {
-  border-color: var(--sp-fg);
-  background: var(--sp-fg);
-  color: var(--sp-ink);
-}
-.sp-reasons button[aria-pressed="true"] small {
-  color: inherit;
-  opacity: 0.7;
 }
 
 /* Bulk progress / result, as a line under the console. */
@@ -883,15 +920,10 @@
     height: auto;
   }
 }
-/* A narrower right panel: drop the chip caption, then put the percentage on its own row. */
-@container spmain (max-width: 700px) {
-  .sp-reasons .sp-label {
-    display: none;
-  }
-}
+/* A narrow right panel: the percentage gets its own row. */
 @container spmain (max-width: 480px) {
   .sp-console {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
   .sp-cover {
     grid-column: 1 / -1;
@@ -906,9 +938,6 @@
   .sp-meter {
     align-self: center;
     margin: 0;
-  }
-  .sp-reasons {
-    flex-wrap: wrap;
   }
 }
 /* Stacked: the page scrolls, the card grows with its content. */
