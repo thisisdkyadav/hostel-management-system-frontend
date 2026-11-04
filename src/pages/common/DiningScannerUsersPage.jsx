@@ -24,8 +24,10 @@ const useFitHeight = () => {
         node.style.height = ""
         return
       }
-      const top = node.getBoundingClientRect().top + window.scrollY
-      node.style.height = `${Math.max(480, window.innerHeight - top - 20)}px`
+      // Fill down to the bottom of the scrolling page body, inside its own padding.
+      const body = node.closest(".hz-page-body")
+      const bottom = body ? body.getBoundingClientRect().bottom - parseFloat(getComputedStyle(body).paddingBottom || "0") : window.innerHeight - 20
+      node.style.height = `${Math.max(480, Math.floor(bottom - node.getBoundingClientRect().top))}px`
     }
     fit()
     window.addEventListener("resize", fit)
