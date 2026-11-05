@@ -17,6 +17,8 @@ export const faceScannerApi = {
   getMachines: () => apiClient.get("/face-scanner/machines").then(unwrap),
 
   /** `{ alias?, faceScannerId?, mode?, sync? }` → same shape as getMachines */
+  /** Add a machine by serial number → same shape as getMachines */
+  addMachine: (data) => apiClient.post("/face-scanner/machines", data).then(unwrap),
   updateMachine: (sn, data) => apiClient.patch(`/face-scanner/machines/${encodeURIComponent(sn)}`, data).then(unwrap),
 
   /** → { punches, commands, log } (latest 50 each) */

@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Alert, Button, DataTable, EmptyState, Field, Heading, HStack, IconButton, Input, Modal, Select, StatusBadge, Tabs, Text, useToast, VStack,
 } from "hzero"
-import { Activity, Cpu, Pencil, Users } from "lucide-react"
+import { Activity, Cpu, Pencil, Plus, Users } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { faceScannerApi } from "@/service"
 import { formatDateTime, getErrorMessage } from "@/components/dining/diningPeriodHelpers"
@@ -86,8 +86,7 @@ const EditMachineModal = ({ machine, scanners, onClose }) => {
         </Field>
         {goingLive && (
           <Alert type="warning">
-            Only make a machine live once EasyWDMS no longer sends its punches to HMS, or every meal will be recorded twice.
-            Punches older than 30 minutes are never turned into records.
+            Live machines turn every face scan into a meal or gate record. Punches older than 30 minutes are never turned into records.
           </Alert>
         )}
         {save.isError && <Alert type="error">{getErrorMessage(save.error, "Couldn't save the machine")}</Alert>}
@@ -96,6 +95,48 @@ const EditMachineModal = ({ machine, scanners, onClose }) => {
           <Button variant="primary" onClick={() => save.mutate()} loading={save.isPending}>Save</Button>
         </HStack>
       </VStack>
+    </Modal>
+  )
+}
+
+const AddMachineModal = ({ onClose }) => {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const [form, setForm] = useState({ sn: "", alias: "" })
+  const save = useMutation({
+    mutationFn: () => faceScannerApi.addMachine({ sn: form.sn.trim(), alias: form.alias.trim() }),
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKeys.faceMachines.list(), data)
+      toast.success("Machine added")
+      onClose()
+    },
+  })
+  const submit = (event) => {
+    event.preventDefault()
+    if (form.sn.trim()) save.mutate()
+  }
+
+  return (
+    <Modal isOpen title="Add a machine" onClose={onClose} width={480}>
+      <form onSubmit={submit}>
+        <VStack gap={4}>
+          <Text size="sm" color="muted">
+            HMS only talks to machines added here. Anything else that connects is refused.
+          </Text>
+          <Field label="Serial number" htmlFor="fm-new-sn" help="On the machine's label, or under Menu › System Info › Device Info. For example AJE1261500993.">
+            <Input id="fm-new-sn" value={form.sn} maxLength={32} autoFocus className="fm-mono" onChange={(e) => setForm((f) => ({ ...f, sn: e.target.value }))} />
+          </Field>
+          <Field label="Name" htmlFor="fm-new-alias" help="Optional. What staff call it, e.g. “Mess A entrance”.">
+            <Input id="fm-new-alias" value={form.alias} maxLength={60} onChange={(e) => setForm((f) => ({ ...f, alias: e.target.value }))} />
+          </Field>
+          <Text size="sm" color="muted">It starts in recording-only mode. Link it to a scanner and make it live once it shows as online.</Text>
+          {save.isError && <Alert type="error">{getErrorMessage(save.error, "Couldn't add the machine")}</Alert>}
+          <HStack gap={2} justify="end">
+            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+            <Button type="submit" variant="primary" loading={save.isPending} disabled={!form.sn.trim()}>Add machine</Button>
+          </HStack>
+        </VStack>
+      </form>
     </Modal>
   )
 }
@@ -167,11 +208,12 @@ const ActivityModal = ({ machine, onClose }) => {
   )
 }
 
-/** Face machines that talk to HMS directly. They register themselves on first contact. */
+/** Face machines that talk to HMS directly. Only machines an admin added are answered. */
 const MachinesSection = ({ scanners = [] }) => {
   const [editing, setEditing] = useState(null)
   const [watching, setWatching] = useState(null)
   const [people, setPeople] = useState(null)
+  const [adding, setAdding] = useState(false)
 
   const query = useQuery({
     queryKey: queryKeys.faceMachines.list(),
@@ -274,9 +316,12 @@ const MachinesSection = ({ scanners = [] }) => {
         <VStack gap={1}>
           <Heading as="h2" size="xl" weight="bold" color="secondary">Machines connected to HMS</Heading>
           <Text size="sm" color="muted">
-            These machines talk to HMS directly. A machine appears here by itself the first time it connects, and starts in recording-only mode.
+            These machines talk to HMS directly. HMS only answers machines added here; a new machine starts in recording-only mode.
           </Text>
         </VStack>
+        <Button variant="secondary" onClick={() => setAdding(true)}>
+          <Plus size={16} /> Add machine
+        </Button>
       </HStack>
 
       <FaceCount faces={query.data?.faces} />
@@ -287,14 +332,15 @@ const MachinesSection = ({ scanners = [] }) => {
         {!query.isLoading && machines.length === 0 ? (
           <EmptyState
             icon={<Cpu size={32} />}
-            title="No machine has connected yet"
-            description="Machines still report to EasyWDMS. Once a machine's server address points at HMS, it shows up here within a few seconds."
+            title="No machines added"
+            description="Add a machine by its serial number. It goes online here within a few seconds of its next contact with HMS."
           />
         ) : (
           <DataTable data={machines} columns={columns} loading={query.isLoading} getRowId={(m) => m.sn} />
         )}
       </div>
 
+      {adding && <AddMachineModal onClose={() => setAdding(false)} />}
       {editing && <EditMachineModal machine={editing} scanners={scanners} onClose={() => setEditing(null)} />}
       {watching && <ActivityModal machine={watching} onClose={() => setWatching(null)} />}
       {people && <MachineRosterModal machine={people} onClose={() => setPeople(null)} />}
