@@ -2,11 +2,10 @@ import { useState } from "react"
 import { Alert, Button, DatePicker, Field, HStack, Input, Select, Text, VStack } from "hzero"
 import { h4Api, h4FileUrl } from "@/service/modules/intern-accommodation.api"
 import { money, today } from "./h4.format"
-import { h4Bills, h4BillAction } from "./h4.payments"
+import { h4Bills, h4BillAction, h4BillParts } from "./h4.payments"
 
-export default function H4PaymentForm({ request, token, onSaved, accommodationOnly = false }) {
-  const bills = h4Bills(request).filter((p) =>
-    (!accommodationOnly || p.paymentType === "accommodation") && p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status))
+export default function H4PaymentForm({ request, token, onSaved }) {
+  const bills = h4Bills(request).filter((p) => p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status))
   const [selected, setSelected] = useState(bills[0]?._id || "main")
   const bill = bills.find((p) => String(p._id) === String(selected)) || bills[0]
   const [utr, setUtr] = useState("")
@@ -74,22 +73,27 @@ export default function H4PaymentForm({ request, token, onSaved, accommodationOn
           />
         </Field>
       )}
-      <Text weight="semibold">
-        {bill.label} · {money(bill.amount)}
-      </Text>
+      <VStack gap={1}>
+        <Text weight="semibold">
+          {bill.label} · {money(bill.amount)}
+        </Text>
+        {bill._id === "main" && h4BillParts(request, money) && (
+          <Text size="xs" color="muted">{h4BillParts(request, money)}</Text>
+        )}
+      </VStack>
       {(bill.remarks || request.payment?.remarks) && (
         <Alert type="info">{bill.remarks || request.payment.remarks}</Alert>
       )}
-      {/^https?:\/\//i.test(bill.paymentLink || (bill.paymentType === "accommodation" ? request.payment?.paymentLink : "") || "") && (
+      {/^https?:\/\//i.test(bill.paymentLink || request.payment?.paymentLink || "") && (
         <a href={bill.paymentLink || request.payment.paymentLink} target="_blank" rel="noreferrer">
           Open payment portal
         </a>
       )}
-      {bill.paymentType === "accommodation" && (token
+      {(token
         ? request.qrUrl && (
             <img
               src={request.qrUrl}
-              alt="Accommodation payment QR"
+              alt="Payment QR"
               referrerPolicy="no-referrer"
               style={{ width: 180, maxWidth: "100%" }}
             />
@@ -97,7 +101,7 @@ export default function H4PaymentForm({ request, token, onSaved, accommodationOn
         : request.payment?.qrRef && (
             <img
               src={h4FileUrl(request._id, "qr")}
-              alt="Accommodation payment QR"
+              alt="Payment QR"
               referrerPolicy="no-referrer"
               style={{ width: 180, maxWidth: "100%" }}
             />

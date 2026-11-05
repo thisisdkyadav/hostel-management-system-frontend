@@ -43,7 +43,7 @@ export const H4StayDetails = ({ request }) => (
       {request.roomLabel || request.room ? ` · ${request.roomLabel || ""}` : " · Room pending"}
     </Text>
     <Text size="xs" color="muted">
-      Payer: {request.h4?.payer?.name || "—"} · {request.h4?.mess === "with" ? "With mess" : "Without mess"}
+      {request.h4?.mess === "with" ? `With mess${request.h4.caterer?.name ? ` · ${request.h4.caterer.name}` : ""}` : "Without mess"}
     </Text>
   </VStack>
 )

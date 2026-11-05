@@ -21,7 +21,7 @@ import {
   useConfirm,
   useToast,
 } from "hzero"
-import { BedDouble, CalendarDays, CircleCheck, CreditCard, Download, ExternalLink, Mail, Pencil, User, XCircle } from "lucide-react"
+import { BedDouble, CalendarDays, Camera, CircleCheck, CreditCard, Download, ExternalLink, Mail, Pencil, User, XCircle } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import { queryKeys } from "@/lib/query"
 import { h4Api, h4FileUrl } from "@/service/modules/intern-accommodation.api"
@@ -31,7 +31,13 @@ import H4Timeline from "./H4Timeline"
 import H4RoomCheck from "./H4RoomCheck"
 import H4PaymentForm from "./H4PaymentForm"
 import H4ScheduleForm from "./H4ScheduleForm"
-import { h4Bills, h4BillAction } from "./h4.payments"
+import { h4Bills, h4BillAction, h4BillParts } from "./h4.payments"
+
+// "Mess A · 1141 / 1200 students · 3 interns" so Accounts sees this month's load.
+const catererLabel = (c) => {
+  const load = c.capacity ? `${c.allocated ?? 0} / ${c.capacity} students` : `${c.allocated ?? 0} students`
+  return `${c.name} · ${load}${c.interns ? ` · ${c.interns} intern${c.interns === 1 ? "" : "s"}` : ""}`
+}
 
 function OfferForm({ request, options, save, busy }) {
   const [hostelId, setHostel] = useState("")
@@ -48,6 +54,7 @@ function OfferForm({ request, options, save, busy }) {
   const messAmount = messOverride ?? String(Math.round(Number(messDailyRate || 0) * days * 100) / 100)
   const [reason, setReason] = useState("")
   const total = Number(price || 0) * (1 + Number(gstPercentage || 0) / 100)
+  const studentPays = total + (mess === "with" ? Number(messAmount || 0) : 0)
   return (
     <VStack gap={3}>
       <Field label="Hostel" required>
@@ -86,7 +93,7 @@ function OfferForm({ request, options, save, busy }) {
             <Field label="Mess / day (₹)" required>
               <Input type="number" min="0" step="0.01" value={messDailyRate} onChange={(e) => { setMessDailyRate(e.target.value); setMessOverride(null) }} />
             </Field>
-            <Field label="Mess total — student pays (₹)" required>
+            <Field label="Mess total (₹)" required>
               <Input type="number" min="0" step="0.01" value={messAmount} onChange={(e) => setMessOverride(e.target.value)} />
             </Field>
           </Grid>
@@ -98,12 +105,12 @@ function OfferForm({ request, options, save, busy }) {
           <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
         </Field>
       )}
-      <Field label="Note for payer">
+      <InfoRow label="Student pays (one payment)" value={money(studentPays)} strong />
+      <Field label="Note for student">
         <Textarea rows={2} value={remarks} onChange={(e) => setRemarks(e.target.value)} />
       </Field>
-      {!config.accommodationPaymentLink && <Text size="xs" color="muted">No accommodation payment link configured.</Text>}
-      {mess === "with" && !config.messPaymentLink && <Text size="xs" color="muted">No mess payment link configured.</Text>}
-      <Text size="xs" color="muted">Payment links are managed in Settings → Intern Accommodation.</Text>
+      {!config.paymentLink && <Text size="xs" color="muted">No payment link configured.</Text>}
+      <Text size="xs" color="muted">The payment link is managed in Settings → Intern Accommodation.</Text>
       <Button
         disabled={busy || !hostelId || price === "" || dailyRate === "" || (mess === "with" && (messAmount === "" || messDailyRate === ""))}
         loading={busy}
@@ -122,7 +129,6 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [reason, setReason] = useState("")
-  const [confirmPayer, setConfirmPayer] = useState(false)
   const [confirmAvailability, setConfirmAvailability] = useState(false)
   const [roomApproval, setRoomApproval] = useState(null)
   const [extraAmount, setExtra] = useState("0")
@@ -168,18 +174,30 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
     payments.some((p) => p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status)) &&
     !["Rejected", "Cancelled", "Invoiced"].includes(r.status)
 
+  const messBilled = r.h4.mess === "with"
+  const photo = r.h4.messPhoto
+  const messReady = !messBilled || (!!r.h4.caterer && photo?.status === "Approved")
   const readyForRooms =
     !amendment &&
     options.role === "Hostel Supervisor" &&
     ["Payment Verified", "Rooms Assigned", "Checked In"].includes(r.status) &&
-    payments.every((p) => p.status === "Verified")
+    payments.every((p) => p.status === "Verified") &&
+    (messReady || !!r.room)
 
-  const messBilled = r.h4.mess === "with"
-  const catererOptions = (options.caterers || []).map((c) => ({ value: String(c._id), label: c.name }))
+  const catererOptions = (options.caterers || []).map((c) => ({ value: String(c._id), label: catererLabel(c) }))
   const catererSelect = (
-    <Select value={catererId} placeholder="Select caterer" options={catererOptions} onChange={(e) => setCatererId(e.target.value)} />
+    <VStack gap={1}>
+      <Select value={catererId} placeholder="Select mess" options={catererOptions} onChange={(e) => setCatererId(e.target.value)} />
+      <Text size="xs" color="muted">
+        {options.messPeriod
+          ? `Students allotted in the dining period ${date(options.messPeriod.from)} – ${date(options.messPeriod.to)}, of its capacity.`
+          : "No dining period covers today; counts show 0."}
+      </Text>
+    </VStack>
   )
-  const messVerified = messBilled && r.h4.messPayment?.status === "Verified" && !["Cancelled", "Rejected", "Invoiced"].includes(r.status)
+  const needsCaterer = (p) => messBilled && p._id === "main"
+  const canChangeCaterer = messBilled && r.payment?.status === "Verified" && !["Cancelled", "Rejected", "Invoiced", "Checked Out"].includes(r.status)
+  const photoReview = office && photo?.status === "Submitted" && !closed
 
   const save = async (suffix, body = {}) => {
     setError("")
@@ -190,7 +208,6 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
       if (suffix === "caterer") toast.success("Caterer assigned")
       await onRefresh()
       setReason("")
-      setConfirmPayer(false)
       setConfirmAvailability(false)
       setRoomApproval(null)
       setManual(null)
@@ -211,8 +228,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
   const editAllowed =
     ((creator && ["Draft", "Returned to Student"].includes(r.status)) || office) && !closed
 
-  const hasAction = canReview || (office && r.status === "CW Approved") || (proofOpen && !amendment) ||
-    accounts || readyForRooms || canSchedule
+  const hasAction = canReview || (office && r.status === "CW Approved") || (proofOpen && !amendment && creator) ||
+    accounts || readyForRooms || canSchedule || photoReview
 
   const editAction = editAllowed ? (
     <Button size="sm" variant="ghost" onClick={() => onEdit(r)}>
@@ -238,7 +255,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
             <DetailSection title="Student" icon={User}>
               <InfoRow label="Email" value={r.applicantEmail} />
               <InfoRow label="Mobile" value={r.applicantPhone} />
-              <InfoRow label="Institute" value={r.h4.institute} />
+              <InfoRow label="Student's institute" value={r.h4.institute} />
+              <InfoRow label="Institute address" value={r.h4.instituteAddress} />
               <InfoRow label="Course" value={r.h4.course} />
               <InfoRow label="Department" value={r.h4.department} />
               <InfoRow label="Faculty" value={r.h4.facultyName} />
@@ -249,9 +267,14 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
               <InfoRow label="Departure" value={date(r.stay.toDate)} />
               <InfoRow label="Hostel" value={r.hostelName || r.hostel?.name || "Pending"} />
               <InfoRow label="Room" value={r.roomLabel || (r.room ? [r.room.unitId?.unitNumber, r.room.roomNumber].filter(Boolean).join(" / ") : "Pending")} />
-              <InfoRow label="Payer" value={r.h4.payer.name} />
               <InfoRow label="Mess" value={messBilled ? "With mess" : "Without mess"} />
               {messBilled && <InfoRow label="Caterer" value={r.h4.caterer?.name || "Not assigned"} />}
+              {messBilled && r.h4.caterer && (
+                <InfoRow
+                  label="Mess photo"
+                  value={{ Pending: "Waiting for the student", Submitted: "Waiting for CW Office", Approved: "Approved", Rejected: "Rejected · student to re-upload" }[photo?.status || "Pending"]}
+                />
+              )}
               <InfoRow label="Purpose" value={r.stay.purpose} />
               {r.h4.cancellation?.reason && <InfoRow label="Cancelled" value={r.h4.cancellation.reason} />}
             </DetailSection>
@@ -262,10 +285,10 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                   <Surface key={p._id} bg="secondary" padding={3} radius="md">
                     <VStack gap={2}>
                       <HStack justify="between" wrap>
-                        <Text weight="semibold">{p.label} · {money(p.amount)}</Text>
+                        <Text weight="semibold">{p.label || "Additional charge"} · {money(p.amount)}</Text>
                         <Badge>{p.status}</Badge>
                       </HStack>
-                      {p.paymentType === "mess" && p.days > 0 && <Text size="xs" color="muted">{p.days} days × {money(p.dailyRate)} / day{p.amountOverridden ? " · Total adjusted" : ""}</Text>}
+                      {p._id === "main" && h4BillParts(r, money) && <Text size="xs" color="muted">{h4BillParts(r, money)}</Text>}
                       {p.utr && <Text size="xs" color="muted">{p.utr} · {date(p.paidAt)}</Text>}
                       {p.note && <Text size="xs">{p.note}</Text>}
                       {p.screenshotFileRef && (accounts || office || creator || faculty) && (
@@ -277,8 +300,8 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <HStack gap={2} wrap>
                           {p.status === "Submitted" && (
                             <>
-                              {p.paymentType === "mess" && catererSelect}
-                              <Button size="sm" disabled={busy || (p.paymentType === "mess" && !catererId)} onClick={() => save("verify", { action: "verify", ...(p.paymentType === "mess" ? { catererId } : {}), ...h4BillAction(p) })}>Verify</Button>
+                              {needsCaterer(p) && catererSelect}
+                              <Button size="sm" disabled={busy || (needsCaterer(p) && !catererId)} onClick={() => save("verify", { action: "verify", ...(needsCaterer(p) ? { catererId } : {}), ...h4BillAction(p) })}>Verify</Button>
                               <Button size="sm" variant="secondary" disabled={busy || !reason.trim()} onClick={() => save("verify", { action: "reject", reason, ...h4BillAction(p) })}>Reject</Button>
                             </>
                           )}
@@ -324,12 +347,6 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                       ))}
                     </VStack>
                   )}
-                  {reviewStage === "faculty" && (
-                    <>
-                      <InfoRow label="Payer" value={`${r.h4.payer.name} · ${r.h4.payer.email}`} />
-                      <Checkbox checked={confirmPayer} onChange={(e) => setConfirmPayer(e.target.checked)} label="Stay and payer verified" />
-                    </>
-                  )}
                   {reviewStage === "office" && (
                     <>
                       <Checkbox checked={confirmAvailability} onChange={(e) => setConfirmAvailability(e.target.checked)} label="Availability checked" />
@@ -348,9 +365,9 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                     <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Required to return or reject" />
                   </Field>
                   <Button
-                    disabled={busy || (reviewStage === "faculty" && !confirmPayer) || (reviewStage === "office" && !confirmAvailability) || (amendment && reviewStage === "chief" && r.room && !roomApproval)}
+                    disabled={busy || (reviewStage === "office" && !confirmAvailability) || (amendment && reviewStage === "chief" && r.room && !roomApproval)}
                     loading={busy}
-                    onClick={() => save(`decision/${reviewStage}`, { action: "approve", reason, confirmPayer, confirmAvailability, extraAmount, ...roomApproval })}
+                    onClick={() => save(`decision/${reviewStage}`, { action: "approve", reason, confirmAvailability, extraAmount, ...roomApproval })}
                   >
                     {reviewStage === "chief" ? "Approve" : "Recommend"}
                   </Button>
@@ -368,9 +385,35 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
               </DetailSection>
             )}
 
-            {proofOpen && !amendment && (creator || (faculty && r.h4.payer.type === "faculty")) && (
+            {proofOpen && !amendment && creator && (
               <DetailSection title="Payment" icon={CreditCard}>
-                <H4PaymentForm request={r} onSaved={onRefresh} accommodationOnly={!creator} />
+                <Text size="xs" color="muted">The student pays from the link in their email. Submit here only on their behalf.</Text>
+                <H4PaymentForm request={r} onSaved={onRefresh} />
+              </DetailSection>
+            )}
+
+            {messBilled && photo?.fileRef && (office || options.role === "Hostel Supervisor") && (
+              <DetailSection title="Mess photo" icon={Camera}>
+                <VStack gap={3}>
+                  <img
+                    src={h4FileUrl(r._id, "photo", { v: r.h4.revision })}
+                    alt={`Mess photo of ${r.applicantName}`}
+                    style={{ width: 200, maxWidth: "100%", borderRadius: "var(--radius-md)" }}
+                  />
+                  {photo.note && <Text size="xs">{photo.note}</Text>}
+                  {photoReview && (
+                    <>
+                      <Text size="xs" color="muted">Approve if the photo is clear and shows the student's face.</Text>
+                      <Field label="Reason (to reject)">
+                        <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
+                      </Field>
+                      <HStack gap={2} wrap>
+                        <Button size="sm" disabled={busy} onClick={() => save("photo-review", { action: "approve" })}>Approve photo</Button>
+                        <Button size="sm" variant="secondary" disabled={busy || !reason.trim()} onClick={() => save("photo-review", { action: "reject", reason })}>Reject</Button>
+                      </HStack>
+                    </>
+                  )}
+                </VStack>
               </DetailSection>
             )}
 
@@ -380,9 +423,9 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                   <Field label="Note">
                     <Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
                   </Field>
-                  {messVerified && (
+                  {canChangeCaterer && (
                     <Field label="Mess caterer">
-                      <HStack gap={2} wrap>
+                      <HStack gap={2} wrap align="start">
                         {catererSelect}
                         <Button
                           size="sm"
@@ -398,7 +441,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                   {manual && (
                     <>
                       <Text size="sm">{manual.label} · {money(manual.amount)}</Text>
-                      {manual.paymentType === "mess" && <Field label="Caterer" required>{catererSelect}</Field>}
+                      {needsCaterer(manual) && manual.status !== "Verified" && <Field label="Mess" required>{catererSelect}</Field>}
                       <Field label="Reference">
                         <Input value={reference} onChange={(e) => setReference(e.target.value)} />
                       </Field>
@@ -406,7 +449,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
                         <Input type="date" value={paidAt} onChange={(e) => setPaidAt(e.target.value)} />
                       </Field>
                       <HStack gap={2} wrap>
-                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt || (manual.paymentType === "mess" && !catererId)} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, ...(manual.paymentType === "mess" ? { catererId } : {}), ...h4BillAction(manual) })}>Paid</Button>
+                        <Button size="sm" disabled={busy || !reason || !reference || !paidAt || (needsCaterer(manual) && !catererId)} onClick={() => save("settle", { action: "mark_paid", reference, paidAt, reason, ...(needsCaterer(manual) ? { catererId } : {}), ...h4BillAction(manual) })}>Paid</Button>
                         <Button size="sm" variant="secondary" disabled={busy || !reason || !reference || !paidAt} onClick={() => save("settle", { action: "correct", reference, paidAt, reason, ...h4BillAction(manual) })}>Correct</Button>
                         <Button size="sm" variant="danger" disabled={busy || !reason} onClick={() => save("settle", { action: "mark_unpaid", reason, ...h4BillAction(manual) })}>Unpaid</Button>
                       </HStack>
@@ -443,7 +486,7 @@ export default function H4Detail({ request: r, options, onClose, onRefresh, onEd
 
             {(creator || faculty || office) && !["Draft", "Rejected", "Cancelled"].includes(r.status) && (
               <Button variant="secondary" size="sm" loading={busy} onClick={() => save("resend")}>
-                <Mail size={16} /> Resend links
+                <Mail size={16} /> Resend student email
               </Button>
             )}
 

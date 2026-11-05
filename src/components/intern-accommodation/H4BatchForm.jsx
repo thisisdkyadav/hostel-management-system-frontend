@@ -34,7 +34,6 @@ const blank = () => ({
   instituteAddress: "",
   course: "",
   department: "",
-  payerType: "intern",
   stay: { fromDate: "", toDate: "", purpose: "" },
 })
 const fromRequest = (r) => ({
@@ -48,15 +47,10 @@ const fromRequest = (r) => ({
   instituteAddress: r.h4.instituteAddress,
   course: r.h4.course,
   department: r.h4.department,
-  payerType: r.h4.payer.type,
   stay: { ...r.stay, fromDate: r.stay.fromDate?.slice(0, 10) || "", toDate: r.stay.toDate?.slice(0, 10) || "" },
 })
 const LOCKED_HINT = "Charges issued — use Change dates for date changes."
 const genderOptions = ["Male", "Female", "Other"].map((value) => ({ value, label: value }))
-const payerOptions = [
-  { value: "intern", label: "Student" },
-  { value: "faculty", label: "Faculty (from project funds)" },
-]
 const CSV_HEADERS = [
   "name",
   "gender",
@@ -67,7 +61,6 @@ const CSV_HEADERS = [
   "instituteAddress",
   "course",
   "department",
-  "payerType",
   "fromDate",
   "toDate",
   "purpose",
@@ -75,7 +68,7 @@ const CSV_HEADERS = [
 const template = () => {
   const csv = Papa.unparse({
     fields: CSV_HEADERS,
-    data: [["", "Male", "intern", "", "", "", "", "", "", "intern", "", "", ""]],
+    data: [["", "Male", "intern", "", "", "", "", "", "", "", "", ""]],
   })
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }))
   const a = document.createElement("a")
@@ -156,7 +149,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
     setBusy(true)
     setError("")
     try {
-      if (!draft && !confirmed) throw new Error("Confirm the student details and payer before submitting")
+      if (!draft && !confirmed) throw new Error("Confirm the student details before submitting")
       const body = existing && office ? { facultyUserId, students } : { facultyUserId, students, draft, recommend }
       const result = existing
         ? await h4Api.edit(existing._id, { ...body, student: students[0], revision: existing.h4.revision })
@@ -262,7 +255,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
             </Field>
             {locked && <Text size="xs" color="muted">{LOCKED_HINT}</Text>}
             <Surface bg="secondary" padding={3} radius="md">
-              <Text size="sm">Faculty → Office → Chief Warden → Payment → Room</Text>
+              <Text size="sm">Faculty → Office → Chief Warden → Student pays → Room</Text>
             </Surface>
           </VStack>
         )}
@@ -283,7 +276,6 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                         instituteAddress: student.instituteAddress,
                         course: student.course,
                         department: student.department,
-                        payerType: student.payerType,
                       },
                     ])
                     setActive(students.length)
@@ -371,19 +363,19 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                   maxLength={20}
                 />
               </Field>
-              <Field label="Accommodation payer" required>
-                <Select
-                  value={student.payerType}
-                  options={payerOptions}
-                  onChange={(e) => update("payerType", e.target.value)}
-                  disabled={locked}
+              <Field label="Student's institute name" required>
+                <Input
+                  value={student.institute}
+                  onChange={(e) => update("institute", e.target.value)}
+                  placeholder="College or university the student comes from"
                 />
               </Field>
-              <Field label="Institute / organisation" required>
-                <Input value={student.institute} onChange={(e) => update("institute", e.target.value)} />
-              </Field>
-              <Field label="Institute address" required>
-                <Input value={student.instituteAddress} onChange={(e) => update("instituteAddress", e.target.value)} />
+              <Field label="Student's institute address" required>
+                <Input
+                  value={student.instituteAddress}
+                  onChange={(e) => update("instituteAddress", e.target.value)}
+                  placeholder="Address of that institute"
+                />
               </Field>
               <Field label="Course" required>
                 <Input value={student.course} onChange={(e) => update("course", e.target.value)} />
@@ -430,7 +422,6 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                     <Text size="sm">
                       {date(s.stay.fromDate)} – {date(s.stay.toDate)}
                     </Text>
-                    <Text size="xs">Payer: {s.payerType === "faculty" ? selectedFaculty?.name : s.name}</Text>
                   </VStack>
                   <Button
                     size="sm"
@@ -448,7 +439,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
             <Checkbox
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
-              label="Details and payer verified"
+              label="Student details verified"
             />
           </VStack>
         )}

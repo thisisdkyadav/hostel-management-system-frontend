@@ -1,15 +1,17 @@
 const steps = {
-  submit: { title: "Submit request", role: "Requester", icon: "submit", note: "Complete student details and confirm the payer." },
-  faculty: { title: "Faculty recommendation", role: "Faculty", icon: "faculty", note: "Verify the stay and who pays the accommodation charge." },
+  submit: { title: "Submit request", role: "Requester", icon: "submit", note: "Complete the student's details." },
+  faculty: { title: "Faculty recommendation", role: "Faculty", icon: "faculty", note: "Verify the stay and recommend it." },
   office: { title: "CW Office availability review", role: "CW Office", icon: "office", note: "Check availability and recommend accommodation." },
   chief: { title: "Chief Warden approval", role: "Chief Warden", icon: "chief", note: "Approve the accommodation request." },
-  charges: { title: "Hostel, mess and charges", role: "CW Office", icon: "charges", note: "Choose the hostel, mess option and accommodation charge." },
-  payment: { title: "Payment proof", role: "Payer", icon: "payment", note: "Submit payment proof and the payment reference." },
+  charges: { title: "Hostel, mess and charges", role: "CW Office", icon: "charges", note: "Choose the hostel, mess option and charges." },
+  payment: { title: "Payment proof", role: "Student", icon: "payment", note: "Pay accommodation and mess in one payment, then submit the UTR and screenshot." },
   verification: { title: "Payment verification", role: "Accounts", icon: "payment", note: "Verify payment before room assignment and check-in." },
+  mess: { title: "Mess assignment", role: "Accounts", icon: "mess", note: "Pick the student's mess, seeing each mess's numbers this month." },
+  photo: { title: "Mess photo", role: "Student / CW Office", icon: "photo", note: "The student uploads a face photo; CW Office checks it." },
   room: { title: "Room assignment", role: "Hostel Supervisor", icon: "room", note: "Check room conflicts and record any override reason." },
   checkin: { title: "Check-in", role: "Hostel Gate / Supervisor", icon: "checkin", note: "Record the intern’s arrival." },
   checkout: { title: "Check-out", role: "Hostel Gate / Supervisor", icon: "checkout", note: "Close the stay and release the reservation." },
-  invoice: { title: "Accommodation invoice", role: "System", icon: "invoice", note: "Generate the payer’s invoice after check-out and verified payment." },
+  invoice: { title: "Invoice", role: "System", icon: "invoice", note: "Generate the student’s invoice after check-out and verified payment." },
 }
 const order = Object.keys(steps)
 const nextStep = {
@@ -34,15 +36,13 @@ const actorName = (request, entry, role, approval) => {
   if (entry.by?.name) return entry.by.name
   if (entry.by && userId(entry.by) === userId(request.h4?.facultyUserId)) return request.h4?.facultyName || ""
   if (entry.by && userId(entry.by) === userId(request.requesterUserId)) return request.h4?.creatorName || ""
-  if (!entry.by && role === "Payer") return request.h4?.payer?.name || ""
-  if (!entry.by && role === "Intern") return request.applicantName || ""
+  if (!entry.by && ["Payer", "Intern", "Student"].includes(role)) return request.applicantName || ""
   return approval?.actorEmail || entry.by?.email || ""
 }
 const eventDetails = (entry, request, index, context) => {
   const note = String(entry.note || "").trim()
-  const messEvent = /^mess payment|^accounts mess /i.test(note)
-  const lower = note.toLowerCase().replace(/^mess /, "")
-  const payerRole = messEvent && !entry.by ? "Intern" : !entry.by || (userId(entry.by) === userId(request.h4?.facultyUserId) && request.h4?.payer?.type === "faculty") ? "Payer" : "Requester"
+  const lower = note.toLowerCase()
+  const payerRole = entry.by ? "Requester" : "Student"
   const change = context.change || (request.scheduleChanges || []).filter((c) => timestamp(c.requestedAt) !== null
     && timestamp(c.requestedAt) <= timestamp(entry.at) && (!c.decidedAt || timestamp(entry.at) <= timestamp(c.decidedAt) + 2000))
     .sort((a, b) => timestamp(b.requestedAt) - timestamp(a.requestedAt))[0]
@@ -56,7 +56,14 @@ const eventDetails = (entry, request, index, context) => {
     && (!expectedStage || a.stage === expectedStage) && (!expectedAction || a.action === expectedAction))
   let approval = nearest(approvals, entry, "at", true)
   let title, role, icon, tone = "success"
-  if (/^date change/.test(lower)) {
+  if (/^mess caterer assigned/.test(lower)) {
+    title = "Mess assigned"; role = "Accounts"; icon = "mess"; approval = null
+  } else if (/^mess photo/.test(lower)) {
+    icon = "photo"; approval = null
+    if (lower.includes("submitted")) { title = "Mess photo uploaded"; role = "Student" }
+    else if (lower.includes("approved")) { title = "Mess photo approved"; role = "CW Office" }
+    else { title = "Mess photo rejected"; role = "CW Office"; tone = "warning" }
+  } else if (/^date change/.test(lower)) {
     icon = "dates"
     if (lower.includes("submitted")) {
       title = change?.type === "extend" ? "Stay extension requested" : change?.type === "postpone" ? "Stay postponement requested" : "Date change requested"
@@ -94,18 +101,18 @@ const eventDetails = (entry, request, index, context) => {
       Draft: [lower.includes("updated") ? "Draft updated" : "Draft saved", "Requester", "submit"],
       Submitted: ["Request submitted", "Requester", "submit"],
       "Pending FA Recommendation": ["Request submitted for faculty review", "Requester", "submit"],
-      "Pending CWO Capacity Check": [lower.includes("submitted and recommended") ? "Submitted and recommended by faculty" : "Faculty recommended · payer confirmed", "Faculty", "faculty"],
+      "Pending CWO Capacity Check": [lower.includes("submitted and recommended") ? "Submitted and recommended by faculty" : "Faculty recommended", "Faculty", "faculty"],
       "Pending CW Approval": ["CW Office recommended · availability checked", "CW Office", "office"],
       "CW Approved": ["Chief Warden approved", "Chief Warden", "chief"],
       "Payment Requested": ["Hostel, mess and charges issued", "CW Office", "charges"],
-      "Payment Submitted": ["Payment proof submitted", "Payer", "payment"],
-      "Payment Deferred": ["Payment deferred", "Payer", "payment"],
+      "Payment Submitted": ["Payment proof submitted", "Student", "payment"],
+      "Payment Deferred": ["Payment deferred", "Student", "payment"],
       "Payment Verified": ["Payment verified", "Accounts", "payment"],
       "Hostel Allotted": ["Hostel allotted", "CW Office", "charges"],
       "Rooms Assigned": ["Room assigned", "Hostel Supervisor", "room"],
       "Checked In": ["Checked in", "Hostel Gate / Supervisor", "checkin"],
       "Checked Out": [lower.includes("scheduled stay end") ? "Stay ended · reservation released" : "Checked out · reservation released", entry.by ? "Hostel Gate / Supervisor" : "System", "checkout"],
-      Invoiced: ["Accommodation invoice generated", "System", "invoice"],
+      Invoiced: ["Invoice generated", "System", "invoice"],
       Cancelled: ["Request cancelled", "Requester / CW Office", "cancel"],
       Rejected: ["Request rejected", steps[approval?.stage]?.role || "Reviewer", "cancel"],
       "Returned to Student": ["Returned for correction", steps[approval?.stage]?.role || "Reviewer", "return"],
@@ -116,8 +123,7 @@ const eventDetails = (entry, request, index, context) => {
     // A submission can happen milliseconds before self-recommendation; it is not an approval.
     if (!["Pending CWO Capacity Check", "Pending CW Approval", "CW Approved", "Rejected", "Returned to Student"].includes(entry.status)) approval = null
   }
-  if (messEvent) title = `Mess · ${title}`
-  const readableNote = routineNotes.has(note) || (change && lower.startsWith("date change approved:")) ? "" : note.replace(/^Accounts\s+(?:mess\s+)?(?:mark_paid|mark_unpaid|correct):\s*/i, "")
+  const readableNote = routineNotes.has(note) || (change && lower.startsWith("date change approved:")) ? "" : note.replace(/^Accounts\s+(?:mark_paid|mark_unpaid|correct):\s*/i, "").replace(/^Mess photo rejected:\s*/i, "")
   const changedStay = lower.startsWith("date change") && change && timestamp(change.requestedToDate) !== null
     ? `${lower.includes("approved") ? "Approved" : "Requested"} stay: ${date(change.requestedFromDate)} → ${date(change.requestedToDate)}` : ""
   const details = [...new Set([readableNote, changedStay, lower.startsWith("date change") && lower.includes("submitted") ? change?.reason : "", approval?.reason].filter(Boolean))].filter((text) => text.toLowerCase() !== title.toLowerCase())
@@ -149,11 +155,26 @@ export const buildH4Timeline = (request = {}) => {
     pending[0] = { ...pending[0], title: "Correct and resubmit request", note: "Update the returned details and submit for fresh faculty review." }
   }
   // Additional payments retain the operational status; never mistake them for check-in or room events.
-  const outstanding = [request.payment, request.h4?.messPayment, ...(request.additionalPayments || [])].filter((p) => p?.amount > 0 && p.status !== "Verified")
+  const outstanding = [request.payment, ...(request.additionalPayments || [])].filter((p) => p?.amount > 0 && p.status !== "Verified")
   if (outstanding.length && ["Payment Verified", "Hostel Allotted", "Rooms Assigned", "Checked In", "Checked Out"].includes(request.status)) {
     const proofsNeeded = outstanding.some((p) => p.status !== "Submitted")
     const financial = (proofsNeeded ? ["payment", "verification"] : ["verification"]).map((key) => ({ ...steps[key], id: `next-${key}`, title: key === "payment" ? "Outstanding payment proof" : "Outstanding payment verification" }))
     pending = [...financial, ...pending]
+  }
+  // With mess, the hostel allots a room only after the mess is picked and the photo approved.
+  const roomAt = pending.findIndex((row) => row.id === "next-room")
+  if (request.h4?.mess === "with" && roomAt >= 0 && !request.rooms?.length && request.h4?.messPhoto?.status !== "Approved") {
+    const photo = request.h4.messPhoto?.status
+    const messSteps = [
+      ...(!request.h4.caterer ? [{ ...steps.mess, id: "next-mess" }] : []),
+      {
+        ...steps.photo,
+        id: "next-photo",
+        ...(photo === "Submitted" ? { title: "Mess photo review", role: "CW Office", note: "Check the photo is clear and shows the student's face." }
+          : request.h4.caterer ? { title: photo === "Rejected" ? "Upload a new mess photo" : "Upload mess photo", role: "Student", note: "Upload a face photo from the link in the email." } : {}),
+      },
+    ]
+    pending = [...pending.slice(0, roomAt), ...messSteps, ...pending.slice(roomAt)]
   }
   const stage = request.h4?.amendment?.stage
   if (["faculty", "office", "chief"].includes(stage)) {
@@ -169,9 +190,10 @@ export const buildH4Timeline = (request = {}) => {
 import { date } from "./h4.format.js"
 
 const routineNotes = new Set([
-  "Draft saved", "Submitted for faculty recommendation", "Submitted and recommended; payer confirmed",
-  "Faculty recommended; payer confirmed", "CW Office checked availability", "Chief Warden approved",
-  "Hostel, mess and accommodation charges issued to intern and payer", "Payment proof submitted by payer",
+  "Draft saved", "Submitted for faculty recommendation", "Submitted and recommended",
+  "Faculty recommended", "CW Office checked availability", "Chief Warden approved",
+  "Hostel, mess and charges issued to the student", "Payment proof submitted by the student",
+  "Mess photo submitted by the student", "Mess photo approved",
   "Payment proof submitted through an IIT requester", "Payment verified", "Room assigned", "Room changed during stay",
   "Checked in", "Stay closed; H4 reservation released", "Accommodation invoice generated",
 ])

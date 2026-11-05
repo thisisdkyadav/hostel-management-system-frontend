@@ -4,8 +4,8 @@ import { API_BACKENDS, getApiBaseUrl } from "@/config/apiConfig"
 const path = "/intern-accommodation"
 export const h4FileUrl = (id, suffix = "invoice", params = {}) =>
   `${getApiBaseUrl(API_BACKENDS.NODE)}${path}/requests/${id}/${suffix}?${new URLSearchParams(params)}`
-export const h4AccessFileUrl = (token, suffix = "invoice") =>
-  `${getApiBaseUrl(API_BACKENDS.NODE)}${path}/access/${encodeURIComponent(token)}/${suffix}`
+export const h4AccessFileUrl = (token, suffix = "invoice", params = {}) =>
+  `${getApiBaseUrl(API_BACKENDS.NODE)}${path}/access/${encodeURIComponent(token)}/${suffix}${Object.keys(params).length ? `?${new URLSearchParams(params)}` : ""}`
 export const h4Api = {
   options: () => apiClient.get(`${path}/options`),
   list: (params) => apiClient.get(`${path}/requests`, { params }),
@@ -21,6 +21,7 @@ export const h4Api = {
   access: (token) => apiClient.get(`${path}/access/${encodeURIComponent(token)}`),
   accessAction: (token, action, body) => apiClient.post(`${path}/access/${encodeURIComponent(token)}/${action}`, body),
   accessUpload: (token, form) => apiClient.upload(`${path}/access/${encodeURIComponent(token)}/proof`, form),
+  accessPhoto: (token, form) => apiClient.upload(`${path}/access/${encodeURIComponent(token)}/photo`, form),
   export: async (params) => {
     const response = await apiClient.download(`${path}/invoices/export?${new URLSearchParams(params)}`)
     return response.blob()

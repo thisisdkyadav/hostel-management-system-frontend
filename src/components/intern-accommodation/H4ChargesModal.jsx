@@ -112,7 +112,7 @@ export default function H4ChargesModal({ ids, requests, options, onClose, onDone
       footer={
         <HStack justify="between" align="center" wrap gap={2}>
           <VStack gap={1}>
-            <Text size="sm" weight="semibold">Total {money(accWithGst + messTotal)}</Text>
+            <Text size="sm" weight="semibold">Students pay {money(accWithGst + messTotal)}</Text>
             <Text size="xs" color="muted">
               Accommodation {money(accTotal)}{gst ? ` + ${gst}% GST` : ""}{anyMess ? ` · Mess ${money(messTotal)}` : ""}
             </Text>
@@ -156,12 +156,12 @@ export default function H4ChargesModal({ ids, requests, options, onClose, onDone
                 <Input type="number" min="0" step="0.01" value={def.messRate} onChange={(e) => setDefault({ messRate: e.target.value })} />
               </Field>
             )}
-            <Field label="Note for payer">
+            <Field label="Note for student">
               <Input value={def.remarks} onChange={(e) => setDefault({ remarks: e.target.value })} />
             </Field>
           </Grid>
           {waiver && <Text size="xs" color="muted">Waivers need a reason — issue those one by one from the request.</Text>}
-          <Text size="xs" color="muted">Charge days exclude the departure day. Payment links are managed in Settings → Intern Accommodation.</Text>
+          <Text size="xs" color="muted">Each student pays accommodation (with GST) and mess together in one payment. Charge days exclude the departure day. The payment link is managed in Settings → Intern Accommodation.</Text>
         </VStack>
         <DataTable data={rows} columns={columns} getRowId={(r) => r._id} />
       </VStack>

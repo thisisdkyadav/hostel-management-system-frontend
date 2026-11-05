@@ -1,9 +1,9 @@
 import { Badge, Text } from "hzero"
-import { BedDouble, CalendarClock, CreditCard, FileCheck2, FileText, LogIn, LogOut, Receipt, RotateCcw, SearchCheck, ShieldCheck, UserCheck, X } from "lucide-react"
+import { BedDouble, CalendarClock, Camera, CreditCard, FileCheck2, FileText, LogIn, LogOut, Receipt, RotateCcw, SearchCheck, ShieldCheck, UserCheck, Utensils, X } from "lucide-react"
 import { buildH4Timeline } from "./h4.timeline"
 import "./h4.css"
 
-const icons = { submit: FileText, faculty: UserCheck, office: SearchCheck, chief: ShieldCheck, charges: Receipt, payment: CreditCard, room: BedDouble, checkin: LogIn, checkout: LogOut, invoice: FileCheck2, dates: CalendarClock, cancel: X, return: RotateCcw }
+const icons = { submit: FileText, faculty: UserCheck, office: SearchCheck, chief: ShieldCheck, charges: Receipt, payment: CreditCard, room: BedDouble, checkin: LogIn, checkout: LogOut, invoice: FileCheck2, dates: CalendarClock, cancel: X, return: RotateCcw, mess: Utensils, photo: Camera }
 const eventTime = (value) => {
   if (!value || !Number.isFinite(+new Date(value))) return null
   const date = new Date(value)

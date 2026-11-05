@@ -26,6 +26,9 @@ const readViewMode = () => {
   }
 }
 
+const CLOSED = ["Cancelled", "Rejected", "Checked Out", "Invoiced"]
+// With mess, the hostel allots a room once Accounts picks the caterer and CW Office approves the photo.
+const messReady = (r) => r.h4.mess !== "with" || (!!r.h4.caterer && r.h4.messPhoto?.status === "Approved")
 const stageFor = (r) => r.h4.amendment?.stage || r.currentStage
 const isMe = (r, user) => String(r.requesterUserId) === String(user._id || user.id)
 const isMyFacultyQueue = (r, user) =>
@@ -41,6 +44,8 @@ const lanesFor = (user, options) => {
     lanes.push(l("office", "Office review", (r) => stageFor(r) === "office"))
   if (options.role === "Admin" && options.subRole === "Chief Warden Office")
     lanes.push(l("charges", "Issue charges", (r) => r.status === "CW Approved"))
+  if (options.role === "Admin" && options.subRole === "Chief Warden Office")
+    lanes.push(l("photos", "Mess photos", (r) => r.h4.messPhoto?.status === "Submitted" && !CLOSED.includes(r.status)))
   if (options.role === "Admin" && options.subRole === "Chief Warden")
     lanes.push(l("chief", "Chief Warden", (r) => stageFor(r) === "chief"))
   if (options.role === "Admin" && options.subRole === "Accountant")
@@ -48,13 +53,18 @@ const lanesFor = (user, options) => {
       l(
         "payments",
         "Verify payment",
-        (r) => r.payment?.status === "Submitted" || r.h4.messPayment?.status === "Submitted" || (r.additionalPayments || []).some((p) => p.status === "Submitted"),
+        (r) => r.payment?.status === "Submitted" || (r.additionalPayments || []).some((p) => p.status === "Submitted"),
+      ),
+      l(
+        "mess",
+        "Assign mess",
+        (r) => r.h4.mess === "with" && !r.h4.caterer && r.payment?.status === "Verified" && !CLOSED.includes(r.status),
       ),
     )
   if (options.role === "Hostel Supervisor")
     lanes.push(
       l("rooms", "Assign rooms", (r) =>
-        ["Payment Verified", "Rooms Assigned", "Checked In"].includes(r.status),
+        ["Payment Verified", "Rooms Assigned", "Checked In"].includes(r.status) && (messReady(r) || r.rooms?.length > 0),
       ),
     )
   return lanes
@@ -62,8 +72,8 @@ const lanesFor = (user, options) => {
 
 const subtitleFor = (options) => {
   if (options.subRole === "Chief Warden") return "Review intern stay requests."
-  if (options.subRole === "Chief Warden Office") return "Check capacity, set charges, allot hostels."
-  if (options.subRole === "Accountant") return "Verify intern accommodation payments."
+  if (options.subRole === "Chief Warden Office") return "Check capacity, set charges, allot hostels, review mess photos."
+  if (options.subRole === "Accountant") return "Verify intern payments and assign their mess."
   if (options.role === "Hostel Supervisor") return "Assign rooms for intern stays."
   return "Intern and unregistered-student stays."
 }
@@ -272,7 +282,6 @@ export default function InternAccommodationPage() {
         stage: reviewStage,
         action: batchAction,
         reason,
-        confirmPayer: batchConfirmed,
         confirmAvailability: batchConfirmed,
         requests: reviewList.map((r) => ({ id: r._id, revision: r.h4.revision })),
       })
@@ -569,11 +578,11 @@ export default function InternAccommodationPage() {
                 onChange={(e) => setBatchAction(e.target.value)}
               />
             </Field>
-            {batchAction === "approve" && reviewStage !== "chief" && (
+            {batchAction === "approve" && reviewStage === "office" && (
               <Checkbox
                 checked={batchConfirmed}
                 onChange={(e) => setBatchConfirmed(e.target.checked)}
-                label={reviewStage === "faculty" ? "Payers verified" : "Availability checked"}
+                label="Availability checked"
               />
             )}
             <Field label={batchAction === "approve" ? "Note" : "Reason (required)"}>
@@ -585,7 +594,7 @@ export default function InternAccommodationPage() {
                 busy ||
                 !reviewList.length ||
                 (batchAction !== "approve" && !reason.trim()) ||
-                (batchAction === "approve" && reviewStage !== "chief" && !batchConfirmed)
+                (batchAction === "approve" && reviewStage === "office" && !batchConfirmed)
               }
               onClick={applyBatch}
             >
