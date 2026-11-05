@@ -287,7 +287,7 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                 <Button variant="ghost" size="sm" onClick={template}>
                   <Download size={16} /> CSV template
                 </Button>
-                <label>
+                <label style={{ cursor: "pointer" }}>
                   <HStack gap={2}>
                     <Upload size={16} />
                     <Text size="sm">Import CSV</Text>
@@ -295,7 +295,11 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
                       aria-label="Import students CSV"
                       type="file"
                       accept=".csv,text/csv"
-                      onChange={(e) => importCsv(e.target.files[0])}
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        importCsv(e.target.files[0])
+                        e.target.value = ""
+                      }}
                     />
                   </HStack>
                 </label>
