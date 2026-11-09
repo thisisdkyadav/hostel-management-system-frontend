@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
-import { Alert, Button, DetailSection, HStack, Text, VStack } from "hzero"
-import { BedDouble, CalendarDays, CreditCard, Download, RefreshCw, Utensils } from "lucide-react"
+import { Alert, Button, DetailSection, FileInput, HStack, Text, VStack } from "hzero"
+import { BedDouble, CalendarDays, CreditCard, Download, RefreshCw, Upload, Utensils } from "lucide-react"
 import { h4Api, h4AccessFileUrl } from "@/service/modules/intern-accommodation.api"
 import { H4Status, H4Journey, H4StayDetails } from "@/components/intern-accommodation/H4Kit"
 import { date, money } from "@/components/intern-accommodation/h4.format"
@@ -12,18 +12,38 @@ import { h4Bills, h4BillParts } from "@/components/intern-accommodation/h4.payme
 import "@/components/intern-accommodation/h4.css"
 
 const PHOTO_STEP = {
-  Pending: { type: "info", text: "Upload a clear photo of your face. The Chief Warden Office will check it, and then your hostel will allot your room." },
-  Submitted: { type: "info", text: "Your photo is with the Chief Warden Office for review. You can replace it until it is reviewed." },
-  Rejected: { type: "warning", text: "Your photo was not accepted. Upload a new one." },
+  Pending: { type: "info", text: "Upload a clear photo of your face. It is used to identify you at the mess. The Chief Warden Office will check it, and then your hostel will allot your room." },
+  Submitted: { type: "info", text: "Your photo has been submitted and is with the Chief Warden Office for review. You can replace it until it is reviewed." },
+  Rejected: { type: "warning", text: "Your photo was not accepted. Please choose a new photo and submit it." },
   Approved: { type: "success", text: "Your photo is approved. Your hostel will allot your room." },
 }
+const PHOTO_TIPS = [
+  "A recent photo facing the camera, with your full face visible",
+  "Good light and a plain background",
+  "No sunglasses, cap or mask; only you in the photo",
+  "PNG or JPG, up to 5 MB",
+]
 
 function MessPhoto({ request: r, token, onSaved }) {
   const photo = r.h4.messPhoto || { status: "Pending" }
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState("")
+  const fileRef = useRef(null)
   const step = PHOTO_STEP[photo.status] || PHOTO_STEP.Pending
-  const upload = async (file) => {
+  useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview])
+  const choose = (e) => {
+    const picked = e.target.files?.[0]
+    e.target.value = ""
+    if (!picked) return
+    setError("")
+    if (!["image/png", "image/jpeg"].includes(picked.type)) return setError("Choose a PNG or JPG image.")
+    if (picked.size > 5 * 1024 * 1024) return setError("The photo is larger than 5 MB. Choose a smaller one.")
+    setFile(picked)
+    setPreview(URL.createObjectURL(picked))
+  }
+  const submit = async () => {
     if (!file) return
     setBusy(true)
     setError("")
@@ -32,6 +52,8 @@ function MessPhoto({ request: r, token, onSaved }) {
       form.append("image", file)
       form.append("revision", String(r.h4.revision))
       await h4Api.accessPhoto(token, form)
+      setFile(null)
+      setPreview("")
       await onSaved()
     } catch (e) {
       setError(e.message)
@@ -40,6 +62,7 @@ function MessPhoto({ request: r, token, onSaved }) {
       setBusy(false)
     }
   }
+  const canUpload = photo.status !== "Approved"
   return (
     <VStack gap={3}>
       <Text size="sm">
@@ -50,27 +73,38 @@ function MessPhoto({ request: r, token, onSaved }) {
         {photo.status === "Rejected" && photo.note ? ` Reason: ${photo.note}` : ""}
       </Alert>
       {error && <Alert type="error">{error}</Alert>}
-      {photo.hasFile && (
-        <img
-          src={h4AccessFileUrl(token, "photo", { v: r.h4.revision })}
-          alt="Your mess photo"
-          style={{ width: 160, maxWidth: "100%", borderRadius: "var(--radius-md)" }}
-        />
+      {(preview || photo.hasFile) && (
+        <VStack gap={1}>
+          <Text size="xs" color="muted">{preview ? "Selected photo (not submitted yet)" : "Submitted photo"}</Text>
+          <img
+            src={preview || h4AccessFileUrl(token, "photo", { v: r.h4.revision })}
+            alt={preview ? "Selected photo" : "Your mess photo"}
+            style={{ width: 160, maxWidth: "100%", borderRadius: "var(--radius-md)" }}
+          />
+        </VStack>
       )}
-      {photo.status !== "Approved" && (
-        <label>
+      {canUpload && (
+        <>
           <VStack gap={1}>
-            <Text size="sm" weight="semibold">{photo.hasFile ? "Replace photo" : "Upload photo"} · PNG / JPG, 5 MB max</Text>
-            <input
-              aria-label="Upload your mess photo"
-              type="file"
-              accept="image/png,image/jpeg"
-              disabled={busy}
-              onChange={(e) => upload(e.target.files[0])}
-            />
-            {busy && <Text size="xs" color="muted">Uploading…</Text>}
+            <Text size="sm" weight="semibold">Photo guidelines</Text>
+            <ul style={{ margin: 0, paddingLeft: 20, listStyle: "disc" }}>
+              {PHOTO_TIPS.map((tip) => (
+                <li key={tip}><Text size="sm" color="muted">{tip}</Text></li>
+              ))}
+            </ul>
           </VStack>
-        </label>
+          <FileInput ref={fileRef} accept="image/png,image/jpeg" onChange={choose} disabled={busy} hidden />
+          <HStack gap={2} wrap>
+            <Button variant="secondary" onClick={() => fileRef.current?.click()} disabled={busy}>
+              <Upload size={16} />
+              {file ? "Choose another photo" : photo.hasFile ? "Choose a new photo" : "Choose photo"}
+            </Button>
+            <Button onClick={submit} loading={busy} disabled={!file || busy}>
+              Submit photo
+            </Button>
+          </HStack>
+          {!file && <Text size="xs" color="muted">Choose a photo, check the preview, then select Submit photo.</Text>}
+        </>
       )}
     </VStack>
   )

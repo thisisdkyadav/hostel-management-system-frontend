@@ -6,8 +6,6 @@
  * a handleLogout callback and optionally user data for dynamic paths.
  */
 
-import { canAccessInternAccommodation } from "@/utils/internAccommodationAccess"
-
 import {
   LayoutDashboard,
   Building2,
@@ -270,9 +268,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   }
 
   navItems.push(createProfileItem("/admin"))
-  if (canAccessInternAccommodation(user)) {
-    navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true })
-  }
+  // Shown by route access like every other tab (all admins by default).
+  navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true })
   navItems.push(createLogoutItem(handleLogout))
 
   return navItems

@@ -146,7 +146,8 @@ export default function InternAccommodationPage() {
   const lanes = useMemo(() => lanesFor(user, options), [user, options])
   const subtitle = useMemo(() => subtitleFor(options), [options])
   const isAccountant = options.role === "Admin" && options.subRole === "Accountant"
-  const isDesk = options.role === "Admin" && ["Chief Warden Office", "Chief Warden", "Accountant"].includes(options.subRole)
+  // Every admin sees all requests and the header counts.
+  const isDesk = options.role === "Admin"
 
   const statsQuery = useQuery({
     queryKey: queryKeys.h4.stats(),
