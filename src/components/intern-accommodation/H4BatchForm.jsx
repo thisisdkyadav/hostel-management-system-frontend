@@ -221,16 +221,14 @@ export default function H4BatchForm({ options, existing, onClose, onSaved }) {
             {step < 2 ? (
               <Button onClick={next}>Continue</Button>
             ) : (
-              <>
-                <Button onClick={() => submit()} loading={busy} disabled={!confirmed || busy}>
-                  {existing && office ? "Save changes" : `Submit${students.length > 1 ? ` ${students.length} students` : " request"}`}
-                </Button>
-                {ownFaculty && !(existing && office) && (
-                  <Button onClick={() => submit(false, true)} disabled={!confirmed || busy}>
-                    Submit & recommend
-                  </Button>
-                )}
-              </>
+              // The professor's own request is submitted already recommended — one Submit button.
+              <Button
+                onClick={() => submit(false, ownFaculty && !(existing && office))}
+                loading={busy}
+                disabled={!confirmed || busy}
+              >
+                {existing && office ? "Save changes" : `Submit${students.length > 1 ? ` ${students.length} students` : ""}`}
+              </Button>
             )}
           </HStack>
         </HStack>
