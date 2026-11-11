@@ -26,15 +26,17 @@
   --v5-page-left: #FFFFFF;
   --v5-selected-ink: #1360AB;
   --v5-panel-ink: #0A1628;
-  /* Stage panel: light category tints so the three layers read separately —
-     white icon rail | tinted sidebar | near-page canvas. */
-  --v5-panel-home: color-mix(in srgb, #1360AB 22%, white);
-  --v5-panel-hostels: color-mix(in srgb, #1360AB 22%, white);
-  --v5-panel-student-affairs: color-mix(in srgb, #D97706 24%, white);
-  --v5-panel-staff: color-mix(in srgb, #0284C7 22%, white);
-  --v5-panel-dining: color-mix(in srgb, #059669 22%, white);
+  /* Stage panel: a quiet cool-grey surface with only a hint of the category,
+     so the layers read as white rail | soft panel | white page and the
+     category shows up as an accent (icon, title, selected ink), not a wash. */
+  --v5-panel-base: #EEF2F7;
+  --v5-panel-home: color-mix(in srgb, #1360AB 4%, var(--v5-panel-base));
+  --v5-panel-hostels: color-mix(in srgb, #1360AB 4%, var(--v5-panel-base));
+  --v5-panel-student-affairs: color-mix(in srgb, #D97706 5%, var(--v5-panel-base));
+  --v5-panel-staff: color-mix(in srgb, #0284C7 4%, var(--v5-panel-base));
+  --v5-panel-dining: color-mix(in srgb, #059669 4%, var(--v5-panel-base));
   --v5-panel-fill: var(--v5-panel-home);
-  --v5-selected-fill: color-mix(in srgb, #1360AB 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #1360AB 3%, var(--v5-page-left));
 }
 [data-theme="dark"] {
   --color-cat-home: #5B9FE8;
@@ -48,37 +50,38 @@ html[data-admin-sidebar="v5"][data-theme="dark"] {
   --v5-page-pin: #0D0D0D;
   --v5-page-left: #0D0D0D;
   --v5-panel-ink: #F5F5F5;
-  --v5-panel-home: color-mix(in srgb, #5B9FE8 30%, #1A1A1A);
-  --v5-panel-hostels: color-mix(in srgb, #5B9FE8 30%, #1A1A1A);
-  --v5-panel-student-affairs: color-mix(in srgb, #FBBF24 30%, #1A1A1A);
-  --v5-panel-staff: color-mix(in srgb, #38BDF8 30%, #1A1A1A);
-  --v5-panel-dining: color-mix(in srgb, #34D399 30%, #1A1A1A);
+  --v5-panel-base: #202226;
+  --v5-panel-home: color-mix(in srgb, #5B9FE8 7%, var(--v5-panel-base));
+  --v5-panel-hostels: color-mix(in srgb, #5B9FE8 7%, var(--v5-panel-base));
+  --v5-panel-student-affairs: color-mix(in srgb, #FBBF24 6%, var(--v5-panel-base));
+  --v5-panel-staff: color-mix(in srgb, #38BDF8 7%, var(--v5-panel-base));
+  --v5-panel-dining: color-mix(in srgb, #34D399 6%, var(--v5-panel-base));
 }
 
 html[data-admin-sidebar="v5"][data-admin-category="home"] {
   --v5-panel-fill: var(--v5-panel-home);
   --v5-selected-ink: #1360AB;
-  --v5-selected-fill: color-mix(in srgb, #1360AB 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #1360AB 3%, var(--v5-page-left));
 }
 html[data-admin-sidebar="v5"][data-admin-category="hostels"] {
   --v5-panel-fill: var(--v5-panel-hostels);
   --v5-selected-ink: #1360AB;
-  --v5-selected-fill: color-mix(in srgb, #1360AB 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #1360AB 3%, var(--v5-page-left));
 }
 html[data-admin-sidebar="v5"][data-admin-category="student-affairs"] {
   --v5-panel-fill: var(--v5-panel-student-affairs);
   --v5-selected-ink: #D97706;
-  --v5-selected-fill: color-mix(in srgb, #D97706 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #D97706 3%, var(--v5-page-left));
 }
 html[data-admin-sidebar="v5"][data-admin-category="staff"] {
   --v5-panel-fill: var(--v5-panel-staff);
   --v5-selected-ink: #0284C7;
-  --v5-selected-fill: color-mix(in srgb, #0284C7 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #0284C7 3%, var(--v5-page-left));
 }
 html[data-admin-sidebar="v5"][data-admin-category="dining"] {
   --v5-panel-fill: var(--v5-panel-dining);
   --v5-selected-ink: #059669;
-  --v5-selected-fill: color-mix(in srgb, #059669 5%, var(--v5-page-pin));
+  --v5-selected-fill: color-mix(in srgb, #059669 3%, var(--v5-page-left));
 }
 
 html[data-admin-sidebar="v5"][data-theme="dark"][data-admin-category="home"],
@@ -100,20 +103,24 @@ html[data-admin-sidebar="v5"] .layout-content {
   transition: background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* V4/V5: the main panel sits above the icon rail and casts this shadow left
+   onto it (no divider line), so the rail reads as running underneath. The
+   selected rail icon's tab is painted above the shadow and joins the panel. */
+.rail-panel {
+  position: relative;
+  box-shadow: -10px 0 14px -6px rgb(10 22 40 / 16%);
+}
+
+[data-theme="dark"] .rail-panel {
+  box-shadow: -10px 0 14px -6px rgb(0 0 0 / 50%);
+}
+
 .v5-panel {
   --color-text-body: var(--v5-panel-ink);
   --color-text-primary: var(--v5-panel-ink);
   --color-text-heading: var(--v5-panel-ink);
-  --color-text-secondary: color-mix(in srgb, var(--v5-panel-ink) 92%, transparent);
-  --color-text-muted: color-mix(in srgb, var(--v5-panel-ink) 82%, transparent);
-  position: relative;
-  /* The panel sits above the icon rail and casts this shadow left onto the
-     rail — same on-top recipe as the page over the sidebar. */
-  box-shadow: -10px 0 14px -6px rgb(10 22 40 / 22%);
-}
-
-html[data-admin-sidebar="v5"][data-theme="dark"] .v5-panel {
-  box-shadow: -10px 0 14px -6px rgb(0 0 0 / 50%);
+  --color-text-secondary: color-mix(in srgb, var(--v5-panel-ink) 80%, transparent);
+  --color-text-muted: color-mix(in srgb, var(--v5-panel-ink) 62%, transparent);
 }
 
 /* The page sits above the main sidebar. Keeping this shade inside the sidebar
@@ -152,15 +159,15 @@ html[data-admin-sidebar="v5"] .sidebar-list-in {
 
 /* The panel shadow sits behind this join, so the selected rail icon and the
    panel read as one raised surface with a single curved outer silhouette. */
-.v5-rail-active-join {
+.rail-active-join {
   overflow: visible;
 }
 
-.v5-rail-active-shadow {
-  filter: drop-shadow(-3px 0 5px rgb(10 22 40 / 14%));
+.rail-active-shadow {
+  filter: drop-shadow(-3px 0 5px rgb(10 22 40 / 12%));
 }
 
-html[data-admin-sidebar="v5"][data-theme="dark"] .v5-rail-active-shadow {
+[data-theme="dark"] .rail-active-shadow {
   filter: drop-shadow(-3px 0 5px rgb(0 0 0 / 35%));
 }
 

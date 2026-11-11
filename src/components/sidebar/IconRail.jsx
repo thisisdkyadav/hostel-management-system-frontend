@@ -46,7 +46,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
       <svg
         viewBox="0 0 50 70"
         preserveAspectRatio="none"
-        className={`absolute ${elevated ? "v5-rail-active-join" : ""}`}
+        className={`absolute ${elevated ? "rail-active-join" : ""}`}
         style={{
           left: "var(--spacing-2)",
           width: "calc(100% - var(--spacing-2) + 2 * var(--spacing-px))",
@@ -67,7 +67,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
         </defs>
         {elevated && (
           <g clipPath={`url(#${shadowClipId})`}>
-            <path d={TAB_PATH} fill={panelColor} className="v5-rail-active-shadow" />
+            <path d={TAB_PATH} fill={panelColor} className="rail-active-shadow" />
           </g>
         )}
         <path
@@ -171,7 +171,9 @@ const RailAvatar = ({ user, isActive }) => {
 }
 
 /**
- * V4 left icon column. Same categories as V2's bottom bar, with theme,
+ * V4/V5 left icon column. It sits under the main panel: no edge line, the
+ * panel casts its shadow onto it and the selected icon's tab joins the panel.
+ * Same categories as V2's bottom bar, with theme,
  * logout and profile moved here so the main panel is only the tab list.
  */
 const IconRail = ({
@@ -191,10 +193,6 @@ const IconRail = ({
 }) => {
   return (
     <div className="relative w-14 shrink-0 h-full flex flex-col items-center">
-      {!stagePanelColor && (
-        <span aria-hidden className="absolute inset-y-0 right-0 w-px bg-[var(--color-border-primary)] pointer-events-none" />
-      )}
-
       <div className="relative z-10 h-16 shrink-0 flex items-center justify-center">
         <button
           type="button"
@@ -210,7 +208,7 @@ const IconRail = ({
       <nav aria-label="Categories" className="relative z-10 flex-1 min-h-0 w-full flex flex-col items-center py-[var(--radius-xl)]">
         <RailActiveJoin
           index={Math.max(0, ADMIN_NAV_CATEGORIES.findIndex((category) => category.id === activeCategory))}
-          elevated={Boolean(stagePanelColor)}
+          elevated
           panelColor={
             stagePanelColor
               || (activeCategory === ADMIN_NAV_CATEGORY_HOME

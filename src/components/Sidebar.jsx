@@ -381,7 +381,7 @@ const Sidebar = ({ navItems }) => {
     : null
   const headerTitle = activeCategoryConfig?.name || "SMS"
   const headerTitleColor = isV5Mode
-    ? "var(--v5-panel-ink)"
+    ? "var(--v5-selected-ink)"
     : (activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)")
 
   const renderPlainList = (items, { withPins = false, accent, tintBg } = {}) => (
@@ -490,7 +490,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           <div
-            className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
+            className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isRailMode ? "rail-panel" : ""} ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
             style={{
               backgroundColor: v5PanelFill,
               transition: "background-color 320ms cubic-bezier(0.22, 1, 0.36, 1)",
