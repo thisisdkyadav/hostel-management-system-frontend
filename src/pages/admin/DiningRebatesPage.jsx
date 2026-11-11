@@ -179,7 +179,7 @@ const DiningRebatesPage = () => {
           </Button>
         </div>
       </PageHeader>
-      <Page.Body>
+      <Page.Body className="rb-page">
         <div className="rb" ref={fitRef}>
           <aside className="rb-side">
             <div className="rb-filters">
@@ -278,6 +278,7 @@ const DiningRebatesPage = () => {
                         role="option"
                         aria-selected={String(rebate.id) === String(selected?.id)}
                         data-state={state}
+                        data-tone={STATES[state].tone}
                         onMouseEnter={() => hoverTo(rebate.id)}
                         onMouseLeave={() => clearTimeout(hoverTimer.current)}
                         onClick={() => choose(rebate.id)}

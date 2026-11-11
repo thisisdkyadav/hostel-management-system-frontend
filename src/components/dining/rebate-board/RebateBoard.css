@@ -37,12 +37,15 @@
 }
 
 .rb {
-  --rb-ink: color-mix(in oklab, var(--color-primary-darker) 52%, black);
-  --rb-ink-2: color-mix(in oklab, var(--color-primary-darker) 72%, black);
+  /* The period console: brand navy, a step lighter than near-black. */
+  --rb-ink: color-mix(in oklab, var(--color-primary-darker) 80%, black);
+  --rb-ink-2: color-mix(in oklab, var(--color-primary) 62%, var(--color-primary-darker));
   --rb-line: color-mix(in oklab, white 12%, transparent);
   --rb-fg: color-mix(in oklab, white 94%, var(--color-primary));
-  --rb-fg-dim: color-mix(in oklab, white 62%, var(--rb-ink));
-  --rb-glow: color-mix(in oklab, var(--color-primary) 55%, white);
+  --rb-fg-dim: color-mix(in oklab, white 74%, var(--rb-ink));
+  --rb-glow: color-mix(in oklab, var(--color-primary) 32%, white);
+  --rb-panel-border: color-mix(in oklab, var(--color-primary) 22%, var(--color-border-primary));
+  --rb-panel-shadow: 0 1px 2px color-mix(in oklab, var(--color-primary-darker) 10%, transparent), 0 6px 18px -8px color-mix(in oklab, var(--color-primary-darker) 22%, transparent);
   --rb-gap: clamp(12px, 1.2vw, 20px);
   --rb-pad: clamp(14px, 1.5vw, 24px);
 
@@ -50,6 +53,17 @@
   grid-template-columns: clamp(330px, 30vw, 460px) minmax(0, 1fr);
   gap: var(--rb-gap);
   min-height: 0;
+}
+
+/* Dark theme: the brand blue is already light there, so keep the console deep. */
+:root[data-theme="dark"] .rb {
+  --rb-ink: color-mix(in oklab, var(--color-primary-darker) 52%, black);
+  --rb-ink-2: color-mix(in oklab, var(--color-primary-darker) 72%, black);
+}
+
+.rb-page {
+  /* A tinted canvas so the three panels stand off it. */
+  background: color-mix(in oklab, var(--color-primary) 12%, var(--color-bg-page));
 }
 
 /* ---------------------------------------------------------------- */
@@ -199,9 +213,10 @@
   gap: var(--spacing-3);
   min-height: 0;
   padding: var(--rb-pad);
-  border: var(--border-1) solid var(--color-border-primary);
+  border: var(--border-1) solid var(--rb-panel-border);
   border-radius: var(--radius-card-lg);
   background: var(--color-bg-primary);
+  box-shadow: var(--rb-panel-shadow);
 }
 .rb-filters {
   display: flex;
@@ -395,8 +410,9 @@
   column-gap: var(--spacing-3);
   row-gap: 7px;
   align-items: center;
-  padding: 10px var(--spacing-3) 11px;
+  padding: 10px var(--spacing-3) 11px 15px;
   border-bottom: var(--border-1) solid var(--color-border-light);
+  box-shadow: inset 4px 0 0 var(--t, transparent);
   cursor: pointer;
 }
 .rb-row:hover {
@@ -405,7 +421,9 @@
 .rb-row[aria-selected="true"] {
   border-bottom-color: color-mix(in oklab, var(--color-primary) 25%, transparent);
   background: var(--color-primary-bg);
-  box-shadow: inset 4px 0 0 var(--color-primary);
+  box-shadow:
+    inset 4px 0 0 var(--t, var(--color-primary)),
+    inset 0 0 0 2px var(--color-primary);
 }
 .rb-row[aria-selected="true"] .rb-row__who strong {
   color: var(--color-primary);
@@ -468,9 +486,12 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background: var(--t-bg);
   color: var(--t-text);
   font-size: var(--font-size-2xs);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   white-space: nowrap;
 }
 .rb-row__days small::before {
@@ -581,12 +602,8 @@
   container: rbmain / inline-size;
   display: flex;
   flex-direction: column;
+  gap: var(--rb-gap);
   min-height: 0;
-  border: var(--border-1) solid var(--color-border-primary);
-  border-radius: var(--radius-card-lg);
-  background: var(--color-bg-primary);
-  overflow: hidden auto;
-  scroll-padding-top: var(--spacing-2);
 }
 .rb-console {
   position: relative;
@@ -595,8 +612,11 @@
   gap: var(--rb-gap);
   flex: none;
   padding: var(--rb-pad);
+  border-radius: var(--radius-card-lg);
+  overflow: hidden;
+  box-shadow: var(--rb-panel-shadow);
   background:
-    radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--color-primary) 38%, transparent), transparent 55%),
+    radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--color-primary) 45%, transparent), transparent 55%),
     radial-gradient(80% 120% at 100% 100%, color-mix(in oklab, var(--color-warning) 12%, transparent), transparent 60%),
     linear-gradient(160deg, var(--rb-ink-2), var(--rb-ink));
   color: var(--rb-fg);
@@ -878,7 +898,13 @@
 
 .rb-detail {
   container: rbcard / inline-size;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  border: var(--border-1) solid var(--rb-panel-border);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-bg-primary);
+  box-shadow: var(--rb-panel-shadow);
+  overflow: hidden auto;
 }
 .rb-empty--detail {
   display: grid;
@@ -894,15 +920,33 @@
   flex-direction: column;
   --rc-pad-y: var(--rb-pad);
   background: var(--color-bg-secondary);
-  gap: clamp(10px, 1.4vh, 16px);
+  gap: clamp(8px, 1.2vh, 14px);
   min-height: 100%;
   padding: var(--rc-pad-y) var(--rb-pad);
 }
+.rc[data-state="pending"] {
+  --rc-t: var(--color-warning);
+  --rc-tint: var(--color-warning-bg);
+}
+.rc[data-state="approved"] {
+  --rc-t: var(--color-success);
+  --rc-tint: var(--color-success-bg);
+}
+.rc[data-state="rejected"] {
+  --rc-t: var(--color-danger);
+  --rc-tint: var(--color-danger-bg);
+}
+.rc[data-state="archived"] {
+  --rc-t: var(--color-border-dark);
+  --rc-tint: var(--color-bg-tertiary);
+}
+/* The header carries the rebate's status as a light tint with a solid top edge. */
 .rc-head {
   margin: calc(-1 * var(--rc-pad-y)) calc(-1 * var(--rb-pad)) 0;
   padding: var(--spacing-3) var(--rb-pad);
-  border-bottom: var(--border-1) solid var(--color-border-primary);
-  background: var(--color-bg-primary);
+  border-bottom: var(--border-1) solid color-mix(in oklab, var(--rc-t, var(--color-border-primary)) 40%, var(--color-border-primary));
+  background: color-mix(in oklab, var(--rc-tint, var(--color-bg-primary)) 70%, var(--color-bg-primary));
+  box-shadow: inset 0 4px 0 var(--rc-t, transparent);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -915,6 +959,7 @@
   height: 52px;
   border-radius: var(--radius-full);
   background: var(--color-bg-tertiary);
+  box-shadow: 0 0 0 3px var(--color-bg-primary);
   color: var(--color-text-muted);
   font-weight: var(--font-weight-semibold);
   overflow: hidden;
@@ -957,13 +1002,18 @@
   font-weight: var(--font-weight-semibold);
   white-space: nowrap;
 }
+.rc-head .rc-tag {
+  background: var(--color-bg-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--t, var(--color-border-dark)) 55%, transparent);
+}
 .rc-big {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   padding: var(--spacing-2) var(--spacing-4);
+  border: var(--border-1) solid color-mix(in oklab, var(--t) 50%, transparent);
   border-radius: var(--radius-lg);
-  background: var(--t-bg);
+  background: var(--color-bg-primary);
   color: var(--t-text);
   line-height: 1.1;
   text-align: right;
@@ -1650,7 +1700,7 @@
   }
   .rc {
     --rc-pad-y: 12px;
-    gap: 10px;
+    gap: 7px;
   }
   .rc-ribbon {
     gap: 4px;

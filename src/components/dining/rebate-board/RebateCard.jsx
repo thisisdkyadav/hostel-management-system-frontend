@@ -196,7 +196,7 @@ const RebateCard = ({ rebate, period, today, onDone }) => {
   const factRows = facts(rebate, period, placement)
 
   return (
-    <article className="rc" aria-label={`${rebate.student?.name || rebate.rollNumber}'s rebate`}>
+    <article className="rc" data-state={state} aria-label={`${rebate.student?.name || rebate.rollNumber}'s rebate`}>
       <header className="rc-head">
         <Photo name={rebate.student?.name} image={rebate.student?.profileImage} className="rc-photo" />
         <div className="rc-who">
@@ -354,11 +354,11 @@ const RebateCard = ({ rebate, period, today, onDone }) => {
                   </Button>
                   {rebate.status === "pending" && (
                     <>
-                      <Button variant="secondary" size="sm" onClick={() => setDialog("reject")}>
+                      <Button variant="danger" size="sm" onClick={() => setDialog("reject")}>
                         <XCircle size={15} /> Reject
                       </Button>
                       <Button
-                        variant="primary"
+                        variant="success"
                         size="sm"
                         onClick={() => {
                           setFormChecked(false)
