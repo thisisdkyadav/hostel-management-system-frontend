@@ -73,7 +73,6 @@ const DiningRebatesPage = () => {
   const periodParam = params.get("period") || ""
   const [filter, setFilter] = useState("all")
   const [type, setType] = useState("")
-  const [sort, setSort] = useState("start")
   const [day, setDay] = useState("")
   const [searchInput, setSearchInput] = useState("")
   const [page, setPage] = useState(1)
@@ -93,7 +92,7 @@ const DiningRebatesPage = () => {
   const period = scope === "outside" ? null : overview.data?.period || null
   const today = overview.data?.today || ""
 
-  const listParams = { periodId, status: filter, type, search, day, sort, page, limit: PAGE_SIZE }
+  const listParams = { periodId, status: filter, type, search, day, page, limit: PAGE_SIZE }
   const list = useQuery({
     queryKey: queryKeys.diningRebateBoard.list(listParams),
     queryFn: () => diningRebateBoardApi.list(listParams),
@@ -197,13 +196,15 @@ const DiningRebatesPage = () => {
                       reset()
                     }}
                   >
-                    {f.tone && <i aria-hidden="true" />}
-                    {f.label}
+                    <span className="rb-states__name">
+                      {f.tone && <i aria-hidden="true" />}
+                      {f.label}
+                    </span>
                     <small>{list.data ? number(counts[f.value]) : ""}</small>
                   </button>
                 ))}
               </div>
-              <div className="rb-chips" role="group" aria-label="Type and order">
+              <div className="rb-chips" role="group" aria-label="Length">
                 {[
                   ["", "Any length"],
                   ["short-term", "Short-term"],
@@ -221,18 +222,6 @@ const DiningRebatesPage = () => {
                     {text}
                   </button>
                 ))}
-                <span className="rb-chips__sep" aria-hidden="true" />
-                <button
-                  type="button"
-                  aria-pressed={sort === "newest"}
-                  onClick={() => {
-                    setSort((s) => (s === "newest" ? "start" : "newest"))
-                    reset()
-                  }}
-                  title="Order by when the rebate was asked for"
-                >
-                  Newest first
-                </button>
                 {day && (
                   <button
                     type="button"

@@ -14,8 +14,8 @@ const periodLine = (period, today) => {
   return `Ended ${longDate(period.endDate)} · ${days(period.days)}`
 }
 
-const Tile = ({ label, value, sub, tone, className = "" }) => (
-  <div className={`rb-tile ${className}`} data-tone={tone}>
+const Tile = ({ label, value, sub, tone, hint, className = "" }) => (
+  <div className={`rb-tile ${className}`} data-tone={tone} title={hint}>
     <span className="rb-label">{label}</span>
     <b>
       {value}
@@ -133,8 +133,8 @@ const PeriodConsole = ({ overview, day, onDay, status, onDismissStatus }) => {
           <Tile className="rb-tile--away" label={outside ? "Days off" : "Busiest day"} value={outside ? value(stats?.approvedDays) : busiest ? number(busiest.approved) : value(0)} sub={!outside && busiest ? shortDate(busiest.date) : ""} />
         )}
         <Tile label="Rebates" value={value((stats?.approved || 0) + (stats?.pending || 0))} sub={stats ? `${number(stats.students)} ${stats.students === 1 ? "student" : "students"}` : ""} />
-        <Tile label="Waiting approval" tone="warn" value={value(stats?.pending)} />
-        <Tile label={outside ? "Long-term" : "Run into another period"} tone="none" value={value(outside ? stats?.longTerm : stats?.crossing)} />
+        <Tile label="Pending" hint="Waiting for approval" tone="warn" value={value(stats?.pending)} />
+        <Tile label={outside ? "Long-term" : "Spanning"} hint={outside ? undefined : "Rebates that run into another dining period"} tone="none" value={value(outside ? stats?.longTerm : stats?.crossing)} />
       </div>
 
       {outside ? (

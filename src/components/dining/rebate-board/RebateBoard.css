@@ -211,37 +211,60 @@
 }
 .rb-states {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, auto));
-  justify-content: stretch;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
   padding: 3px;
-  border-radius: var(--radius-full);
-  background: var(--color-bg-tertiary);
+  border: var(--border-1) solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
 }
 .rb-states button {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 1px;
   min-width: 0;
-  height: 32px;
-  padding: 0 var(--spacing-2);
+  padding: 5px 2px;
   border: 0;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;
   transition: background 120ms ease;
+}
+.rb-states__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .rb-states button:hover {
   color: var(--color-text-heading);
 }
 .rb-states button[aria-selected="true"] {
-  background: var(--color-bg-primary);
-  color: var(--color-text-heading);
-  box-shadow: var(--shadow-sm);
+  background: var(--t-bg, var(--color-primary));
+  color: var(--t-text, var(--color-on-accent));
+  box-shadow: inset 0 0 0 2px var(--t, var(--color-primary));
+  font-weight: var(--font-weight-bold);
+}
+.rb-states button[aria-selected="true"] i {
+  display: none;
+}
+.rb-states button[aria-selected="true"] small {
+  color: inherit;
+  font-weight: var(--font-weight-bold);
+}
+.rb-states button[data-tone="none"][aria-selected="true"] {
+  --t: var(--color-text-muted);
+  --t-bg: var(--color-bg-primary);
+  --t-text: var(--color-text-heading);
 }
 .rb-states i,
 .rb-chips i {
@@ -252,8 +275,9 @@
   background: var(--t);
 }
 .rb-states small {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-2xs);
+  color: var(--color-text-heading);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
 .rb-chips {
@@ -268,10 +292,10 @@
   gap: 5px;
   height: 26px;
   padding: 0 9px;
-  border: var(--border-1) solid var(--color-border-primary);
+  border: var(--border-1) solid var(--color-border-light);
   border-radius: var(--radius-full);
-  background: var(--color-bg-primary);
-  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
@@ -280,15 +304,10 @@
   border-color: var(--color-border-hover);
 }
 .rb-chips button[aria-pressed="true"] {
-  border-color: var(--color-text-heading);
-  background: var(--color-text-heading);
-  color: var(--color-bg-primary);
-}
-.rb-chips__sep {
-  width: 1px;
-  height: 16px;
-  margin: 0 2px;
-  background: var(--color-border-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 22%, transparent);
 }
 .rb-chips .rb-daychip {
   border-color: var(--color-primary);
@@ -620,9 +639,10 @@
   min-width: 0;
 }
 .rb-period b {
-  font-size: clamp(1.4rem, 5.4cqi, 2.4rem);
+  font-size: clamp(1.2rem, 3.6cqi, 1.7rem);
   font-weight: var(--font-weight-bold);
-  line-height: 1.05;
+  line-height: 1.1;
+  white-space: nowrap;
   letter-spacing: -0.02em;
   text-shadow: 0 0 24px color-mix(in oklab, var(--rb-glow) 45%, transparent);
 }
@@ -654,20 +674,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--spacing-2);
+  gap: 6px;
   min-width: 0;
-  padding: clamp(8px, 1.4vh, 14px) var(--spacing-3);
+  padding: clamp(6px, 1vh, 10px) var(--spacing-3);
   border: var(--border-1) solid var(--rb-line);
   border-radius: var(--radius-lg);
   background: color-mix(in oklab, white 5%, transparent);
 }
 .rb-tile .rb-label {
   display: block;
-  min-height: 2.6em;
   overflow: hidden;
   line-height: 1.3;
-  letter-spacing: 0.1em;
-  white-space: normal;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
 }
 .rb-tile[data-tone] .rb-label::before {
   content: "";
@@ -681,7 +700,7 @@
   box-shadow: 0 0 8px var(--t);
 }
 .rb-tile b {
-  font-size: clamp(1.2rem, 3.8cqi, 1.8rem);
+  font-size: clamp(1.1rem, 3.2cqi, 1.5rem);
   font-weight: var(--font-weight-bold);
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -702,7 +721,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding-top: clamp(10px, 1.6vh, 16px);
+  padding-top: clamp(8px, 1.2vh, 12px);
   border-top: var(--border-1) solid var(--rb-line);
 }
 .rb-chart__head {
@@ -732,7 +751,7 @@
   grid-auto-flow: column;
   gap: 2px;
   align-items: end;
-  height: clamp(52px, 8.5vh, 92px);
+  height: clamp(40px, 6.5vh, 72px);
 }
 .rb-bars button {
   position: relative;
@@ -867,7 +886,7 @@
 .rc {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 1.8vh, 20px);
+  gap: clamp(10px, 1.4vh, 16px);
   min-height: 100%;
   padding: var(--rb-pad);
 }
@@ -938,7 +957,7 @@
   text-align: right;
 }
 .rc-big b {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
@@ -1531,7 +1550,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@container rbcard (max-width: 620px) {
+@container rbcard (max-width: 520px) {
   .rc-head {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -1576,6 +1595,42 @@
   .rb-states {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     border-radius: var(--radius-lg);
+  }
+}
+/* Short screens (laptops): fit the card without scrolling. */
+@media (max-height: 820px) {
+  .rb-period {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: baseline;
+    column-gap: var(--spacing-3);
+    row-gap: 2px;
+  }
+  .rb-period > .rb-label {
+    display: none;
+  }
+  .rb-period .rb-progress {
+    flex-basis: 100%;
+  }
+  .rc-legend {
+    display: none;
+  }
+  .rb-console {
+    row-gap: 10px;
+    padding-block: 12px;
+  }
+  .rb-tile {
+    gap: 2px;
+    padding-block: 6px;
+  }
+  .rc {
+    gap: 10px;
+    padding-block: 12px;
+  }
+  .rc-ribbon {
+    gap: 4px;
+    padding-block: var(--spacing-2) 6px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
