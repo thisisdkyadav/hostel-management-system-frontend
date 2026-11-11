@@ -74,6 +74,13 @@ export const queryKeys = {
     activity: (sn) => [...queryKeys.faceMachines.all, "activity", sn],
     roster: (sn) => [...queryKeys.faceMachines.all, "roster", sn],
   },
+  diningRebateBoard: {
+    all: ["dining-rebate-board"],
+    overview: (periodId) => [...queryKeys.diningRebateBoard.all, "overview", periodId ?? ""],
+    list: (params) => [...queryKeys.diningRebateBoard.all, "list", params ?? {}],
+    students: (params) => [...queryKeys.diningRebateBoard.all, "students", params ?? {}],
+    history: (id) => [...queryKeys.diningRebateBoard.all, "history", id ?? ""],
+  },
   diningScannerUsers: {
     all: ["dining-scanner-users"],
     list: (params) => [...queryKeys.diningScannerUsers.all, "list", params ?? {}],
