@@ -5,7 +5,7 @@
  * v2 — "Categories": bottom category bar + pinned Home (default)
  * v3 — "Workspace": quick jump + pinned + recents + collapsible categories
  * v4 — "Icon rail": v2 categories/pins, with the bar + profile in a left rail
- * v5 — "Stage": v4 rail under a soft neutral panel; the selected tab flows into the page
+ * v5 — "Dock": navy icon rail, white panel; the selected tab flows into the page
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -55,8 +55,8 @@ export const SIDEBAR_MODE_OPTIONS = [
   {
     id: SIDEBAR_MODE_STAGE,
     label: "V5",
-    name: "Stage",
-    description: "Soft panel over the rail; the selected tab flows into the page",
+    name: "Dock",
+    description: "Dock: navy icon rail, white panel; the selected tab flows into the page",
   },
 ]
 

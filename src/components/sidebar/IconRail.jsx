@@ -101,6 +101,7 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       title={accessibleLabel}
       aria-label={accessibleLabel}
       aria-pressed={pressed}
+      data-rail-kind={isCategory ? "category" : "tool"}
       onMouseDown={isCategory ? (event) => event.preventDefault() : undefined}
       onClick={onClick}
       className={`
@@ -192,14 +193,14 @@ const IconRail = ({
   stagePanelColor,
 }) => {
   return (
-    <div className="relative w-14 shrink-0 h-full flex flex-col items-center">
+    <div className="icon-rail relative w-14 shrink-0 h-full flex flex-col items-center">
       <div className="relative z-10 h-16 shrink-0 flex items-center justify-center">
         <button
           type="button"
           onClick={onLogoClick}
           title="SMS"
           aria-label="SMS home"
-          className="text-[length:var(--font-size-xs)] font-bold tracking-wider leading-none text-[var(--color-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40 rounded-[var(--radius-sm)] hover:opacity-70 transition-opacity duration-200 motion-reduce:transition-none"
+          className="icon-rail-logo text-[length:var(--font-size-xs)] font-bold tracking-wider leading-none text-[var(--color-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40 rounded-[var(--radius-sm)] hover:opacity-70 transition-opacity duration-200 motion-reduce:transition-none"
         >
           SMS
         </button>

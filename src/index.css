@@ -23,18 +23,20 @@
   /* Gradient endpoints: pure white at the tab/page seam, easing into the
      5% category tint at the far right. Tab fill reads this token so the
      selected pill and the page's left edge are identical by construction. */
-  --v5-page-left: #FFFFFF;
+  --v5-page-left: #EEF2F7;
   --v5-selected-ink: #1360AB;
   --v5-panel-ink: #0A1628;
   /* Stage panel: a quiet cool-grey surface with only a hint of the category,
      so the layers read as white rail | soft panel | white page and the
      category shows up as an accent (icon, title, selected ink), not a wash. */
-  --v5-panel-base: #EEF2F7;
-  --v5-panel-home: color-mix(in srgb, #1360AB 4%, var(--v5-panel-base));
-  --v5-panel-hostels: color-mix(in srgb, #1360AB 4%, var(--v5-panel-base));
-  --v5-panel-student-affairs: color-mix(in srgb, #D97706 5%, var(--v5-panel-base));
-  --v5-panel-staff: color-mix(in srgb, #0284C7 4%, var(--v5-panel-base));
-  --v5-panel-dining: color-mix(in srgb, #059669 4%, var(--v5-panel-base));
+  --v5-panel-base: #FFFFFF;
+  --v5-panel-home: var(--v5-panel-base);
+  --v5-panel-hostels: var(--v5-panel-base);
+  --v5-panel-student-affairs: var(--v5-panel-base);
+  --v5-panel-staff: var(--v5-panel-base);
+  --v5-panel-dining: var(--v5-panel-base);
+  --v5-rail: #0E2240;
+  --v5-rail-ink: rgb(214 226 242 / 72%);
   --v5-panel-fill: var(--v5-panel-home);
   --v5-selected-fill: color-mix(in srgb, #1360AB 3%, var(--v5-page-left));
 }
@@ -50,12 +52,8 @@ html[data-admin-sidebar="v5"][data-theme="dark"] {
   --v5-page-pin: #0D0D0D;
   --v5-page-left: #0D0D0D;
   --v5-panel-ink: #F5F5F5;
-  --v5-panel-base: #202226;
-  --v5-panel-home: color-mix(in srgb, #5B9FE8 7%, var(--v5-panel-base));
-  --v5-panel-hostels: color-mix(in srgb, #5B9FE8 7%, var(--v5-panel-base));
-  --v5-panel-student-affairs: color-mix(in srgb, #FBBF24 6%, var(--v5-panel-base));
-  --v5-panel-staff: color-mix(in srgb, #38BDF8 7%, var(--v5-panel-base));
-  --v5-panel-dining: color-mix(in srgb, #34D399 6%, var(--v5-panel-base));
+  --v5-panel-base: #1B1D21;
+  --v5-rail: #0A1320;
 }
 
 html[data-admin-sidebar="v5"][data-admin-category="home"] {
@@ -108,11 +106,17 @@ html[data-admin-sidebar="v5"] .layout-content {
    selected rail icon's tab is painted above the shadow and joins the panel. */
 .rail-panel {
   position: relative;
-  box-shadow: -10px 0 14px -6px rgb(10 22 40 / 16%);
+  box-shadow: -3px 0 6px -4px rgb(10 22 40 / 7%);
 }
 
 [data-theme="dark"] .rail-panel {
-  box-shadow: -10px 0 14px -6px rgb(0 0 0 / 50%);
+  box-shadow: -4px 0 8px -5px rgb(0 0 0 / 45%);
+}
+
+/* The rail is a step cooler than the panel, so "underneath" reads from the
+   surfaces themselves and the shadow only has to hint at the edge. */
+.icon-rail {
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg-secondary));
 }
 
 .v5-panel {
@@ -164,7 +168,7 @@ html[data-admin-sidebar="v5"] .sidebar-list-in {
 }
 
 .rail-active-shadow {
-  filter: drop-shadow(-3px 0 5px rgb(10 22 40 / 12%));
+  filter: drop-shadow(-2px 0 3px rgb(10 22 40 / 8%));
 }
 
 [data-theme="dark"] .rail-active-shadow {
@@ -245,6 +249,33 @@ html[data-admin-sidebar="v5"][data-theme="dark"] .v5-page-active-shadow {
   html[data-admin-sidebar="v5"] .layout-content::before {
     transition: none;
   }
+}
+
+/* V5 "Dock": the icon rail is a deep navy strip; the white panel sits on it
+   and the selected category's tab is cut out of the navy in panel white. */
+html[data-admin-sidebar="v5"] .icon-rail {
+  background: var(--v5-rail);
+}
+html[data-admin-sidebar="v5"] .icon-rail-logo {
+  color: #FFFFFF;
+}
+html[data-admin-sidebar="v5"] .icon-rail [data-rail-kind="category"][aria-pressed="false"],
+html[data-admin-sidebar="v5"] .icon-rail [data-rail-kind="tool"] {
+  color: var(--v5-rail-ink) !important;
+}
+html[data-admin-sidebar="v5"] .icon-rail [data-rail-kind]:not([aria-pressed="true"]):hover {
+  background: rgb(255 255 255 / 9%);
+  color: #FFFFFF !important;
+}
+html[data-admin-sidebar="v5"] .icon-rail [data-rail-kind="tool"][aria-pressed="true"] {
+  background: rgb(255 255 255 / 14%) !important;
+  color: #FFFFFF !important;
+}
+html[data-admin-sidebar="v5"] .rail-panel {
+  box-shadow: none;
+}
+html[data-admin-sidebar="v5"] .rail-active-shadow {
+  filter: none;
 }
 
 html[data-admin-sidebar="v5"] .v5-sidebar-edge {
