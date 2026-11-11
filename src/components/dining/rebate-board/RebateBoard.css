@@ -361,8 +361,9 @@
   align-items: center;
   justify-content: space-between;
   margin: 0;
-  padding: 0 var(--spacing-1);
-  color: var(--color-text-muted);
+  padding: var(--spacing-2) var(--spacing-1) 0;
+  border-top: var(--border-1) solid var(--color-border-primary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.06em;
@@ -376,6 +377,7 @@
   flex: 1;
   min-height: 0;
   margin: 0 calc(-1 * var(--spacing-2));
+  border-top: var(--border-1) solid var(--color-border-primary);
   overflow-y: auto;
 }
 .rb-list[data-stale] {
@@ -393,16 +395,20 @@
   column-gap: var(--spacing-3);
   row-gap: 7px;
   align-items: center;
-  padding: 9px var(--spacing-2) 10px;
-  border-radius: var(--radius-md);
+  padding: 10px var(--spacing-3) 11px;
+  border-bottom: var(--border-1) solid var(--color-border-light);
   cursor: pointer;
 }
 .rb-row:hover {
   background: var(--color-bg-hover);
 }
 .rb-row[aria-selected="true"] {
+  border-bottom-color: color-mix(in oklab, var(--color-primary) 25%, transparent);
   background: var(--color-primary-bg);
-  box-shadow: inset 3px 0 0 var(--color-primary);
+  box-shadow: inset 4px 0 0 var(--color-primary);
+}
+.rb-row[aria-selected="true"] .rb-row__who strong {
+  color: var(--color-primary);
 }
 .rb-row[data-state="archived"] .rb-row__who {
   opacity: 0.6;
@@ -485,7 +491,7 @@
   display: block;
   height: 8px;
   border-radius: var(--radius-full);
-  background-color: var(--color-bg-tertiary);
+  background-color: color-mix(in oklab, var(--color-bg-tertiary) 55%, var(--color-border-primary));
   /* Day ticks; --rb-cell is only set for short periods, otherwise this is invalid and draws nothing. */
   background-image: repeating-linear-gradient(90deg, transparent 0 calc(var(--rb-cell) - 1px), color-mix(in oklab, var(--color-border-primary) 70%, transparent) calc(var(--rb-cell) - 1px) var(--rb-cell));
 }
@@ -886,11 +892,17 @@
 .rc {
   display: flex;
   flex-direction: column;
+  --rc-pad-y: var(--rb-pad);
+  background: var(--color-bg-secondary);
   gap: clamp(10px, 1.4vh, 16px);
   min-height: 100%;
-  padding: var(--rb-pad);
+  padding: var(--rc-pad-y) var(--rb-pad);
 }
 .rc-head {
+  margin: calc(-1 * var(--rc-pad-y)) calc(-1 * var(--rb-pad)) 0;
+  padding: var(--spacing-3) var(--rb-pad);
+  border-bottom: var(--border-1) solid var(--color-border-primary);
+  background: var(--color-bg-primary);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -986,11 +998,14 @@
   flex-direction: column;
   gap: var(--spacing-2);
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  border: var(--border-1) solid var(--color-border-light);
+  border: var(--border-1) solid var(--color-border-primary);
   border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-sm);
 }
 .rc-ribbon__cap {
+  padding-bottom: 6px;
+  border-bottom: var(--border-1) solid var(--color-border-light);
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -1062,10 +1077,10 @@
   position: relative;
   grid-row: 2;
   border-radius: 3px;
-  background: var(--color-bg-tertiary);
+  background: color-mix(in oklab, var(--color-bg-tertiary) 80%, var(--color-border-primary));
 }
 .rc-day[data-weekend] {
-  background: color-mix(in oklab, var(--color-bg-tertiary) 60%, var(--color-border-primary));
+  background: var(--color-border-primary);
 }
 .rc-day[data-on] {
   background: var(--t);
@@ -1121,16 +1136,17 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
-  border: var(--border-1) solid var(--color-border-light);
+  border: var(--border-1) solid var(--color-border-primary);
   border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-sm);
 }
 .rc-facts div {
   min-width: 0;
   padding: var(--spacing-2) var(--spacing-3);
 }
 .rc-facts div + div {
-  border-left: var(--border-1) solid var(--color-border-light);
+  border-left: var(--border-1) solid var(--color-border-primary);
 }
 .rc-facts dt {
   color: var(--color-text-muted);
@@ -1142,8 +1158,9 @@
 .rc-facts dd {
   margin: 2px 0 0;
   overflow: hidden;
-  color: var(--color-text-primary);
+  color: var(--color-text-heading);
   font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -1167,8 +1184,13 @@
 .rc-note {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
+  padding: 6px var(--spacing-3) var(--spacing-2);
+  border: var(--border-1) solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-sm);
 }
 .rc-note h3 {
   margin: 0;
@@ -1180,9 +1202,8 @@
 }
 .rc-note p {
   margin: 0;
-  padding: var(--spacing-2) var(--spacing-3);
-  border-left: 3px solid var(--color-border-primary);
-  color: var(--color-text-primary);
+  padding: 0;
+  color: var(--color-text-heading);
   font-size: var(--font-size-sm);
   white-space: pre-wrap;
   word-break: break-word;
@@ -1209,7 +1230,7 @@
   gap: var(--spacing-2);
   margin-top: auto;
   padding-top: var(--spacing-3);
-  border-top: var(--border-1) solid var(--color-border-light);
+  border-top: var(--border-1) solid var(--color-border-primary);
 }
 .rc-actions__end {
   display: flex;
@@ -1597,6 +1618,12 @@
     border-radius: var(--radius-lg);
   }
 }
+/* Laptop heights: the day strip explains itself; drop its legend. */
+@media (max-height: 920px) {
+  .rc-legend {
+    display: none;
+  }
+}
 /* Short screens (laptops): fit the card without scrolling. */
 @media (max-height: 820px) {
   .rb-period {
@@ -1613,9 +1640,6 @@
   .rb-period .rb-progress {
     flex-basis: 100%;
   }
-  .rc-legend {
-    display: none;
-  }
   .rb-console {
     row-gap: 10px;
     padding-block: 12px;
@@ -1625,8 +1649,8 @@
     padding-block: 6px;
   }
   .rc {
+    --rc-pad-y: 12px;
     gap: 10px;
-    padding-block: 12px;
   }
   .rc-ribbon {
     gap: 4px;
