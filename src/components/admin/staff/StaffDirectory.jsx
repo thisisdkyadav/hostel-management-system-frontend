@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Eye, Pencil, Plus, SearchX } from "lucide-react"
+import { Eye, Pencil, Plus, SearchX, Upload } from "lucide-react"
 import { Badge, Button, EmptyState, ErrorState, FilterTabs, Grid, HStack, Page, ProfileCard, SearchInput, Skeleton, StatCards } from "hzero"
 import PageHeader from "../../common/PageHeader"
 import StaffFormModal from "./StaffFormModal"
@@ -31,6 +31,7 @@ const StaffDirectory = ({ type }) => {
   // { mode: "create" } or { mode: "edit", staff }
   const [form, setForm] = useState(null)
   const [viewing, setViewing] = useState(null)
+  const [importing, setImporting] = useState(false)
   const [gymkhanaCategories, setGymkhanaCategories] = useState([])
 
   const ctx = useMemo(() => ({ hostelList, gymkhanaCategories }), [hostelList, gymkhanaCategories])
@@ -93,6 +94,7 @@ const StaffDirectory = ({ type }) => {
 
   const Icon = config.icon
   const Details = config.detailsModal
+  const BulkModal = config.bulkModal
 
   // The config keeps icons as component references so it can stay pure data;
   // StatCards wants elements.
@@ -167,6 +169,11 @@ const StaffDirectory = ({ type }) => {
   return (
     <Page>
       <PageHeader title={config.plural}>
+        {BulkModal && (
+          <Button variant="secondary" onClick={() => setImporting(true)}>
+            <Upload /> Import CSV
+          </Button>
+        )}
         <Button variant="primary" onClick={() => setForm({ mode: "create" })}>
           <Plus /> Add {config.title.toLowerCase()}
         </Button>
@@ -214,6 +221,8 @@ const StaffDirectory = ({ type }) => {
             onSaved={load}
           />
         )}
+
+        {importing && BulkModal && <BulkModal onClose={() => setImporting(false)} onSaved={load} />}
 
         {viewing && Details && <Details staff={viewing} onClose={() => setViewing(null)} {...config.detailsProps} />}
       </Page.Body>

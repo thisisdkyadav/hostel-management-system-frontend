@@ -461,6 +461,14 @@ export const adminApi = {
   },
 
   /**
+   * Bulk-add Academics users from a CSV import (all or nothing on validation)
+   * @param {Array<Object>} users - { name, email, academicCategory, subRole, password }
+   */
+  addAcademicsBulk: (users) => {
+    return apiClient.post("/admin/academics/bulk", { users })
+  },
+
+  /**
    * Update Academics user
    * @param {string} id - Academics user ID
    * @param {Object} data - Updated data

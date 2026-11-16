@@ -10,6 +10,7 @@ import {
 } from "../constants/adminConstants"
 import { HCU_MANAGED_SUBROLES, HCU_MANAGED_SUBROLE_OPTIONS } from "../constants/adminSubRoles"
 import StaffAttendanceModal from "../components/admin/staff/StaffAttendanceModal"
+import AcademicsBulkImportModal from "../components/admin/staff/AcademicsBulkImportModal"
 
 /**
  * Every staff directory in the admin area, described rather than built.
@@ -296,20 +297,24 @@ export const STAFF_TYPES = {
     extraCard: (s) => [{ label: "Categories", value: categoryText(s) || "Not assigned" }],
   }),
 
-  academics: subRoleRole({
-    key: "academics",
-    title: "Academics",
-    plural: "Academics users",
-    api: { list: adminApi.getAllAcademicsUsers, create: adminApi.addAcademics, update: adminApi.updateAcademics, remove: adminApi.deleteAcademics },
-    subRoles: [{ value: "", label: "None" }, ...ACADEMICS_SUBROLE_OPTIONS],
-    subRoleRequired: false,
-    extraFields: [{
-      name: "academicCategory", label: "Account category", type: "select", required: true,
-      defaultValue: "personal",
-      options: [{ value: "personal", label: "Personal" }, { value: "office", label: "Office" }],
-    }],
-    extraCard: (s) => [{ label: "Account category", value: s.academicCategory === "office" ? "Office" : "Personal" }],
-  }),
+  academics: {
+    ...subRoleRole({
+      key: "academics",
+      title: "Academics",
+      plural: "Academics users",
+      api: { list: adminApi.getAllAcademicsUsers, create: adminApi.addAcademics, update: adminApi.updateAcademics, remove: adminApi.deleteAcademics },
+      subRoles: [{ value: "", label: "None" }, ...ACADEMICS_SUBROLE_OPTIONS],
+      subRoleRequired: false,
+      extraFields: [{
+        name: "academicCategory", label: "Account category", type: "select", required: true,
+        defaultValue: "personal",
+        options: [{ value: "personal", label: "Personal" }, { value: "office", label: "Office" }],
+      }],
+      extraCard: (s) => [{ label: "Account category", value: s.academicCategory === "office" ? "Office" : "Personal" }],
+    }),
+    // CSV upload of many logins at once; StaffDirectory shows an Import CSV button.
+    bulkModal: AcademicsBulkImportModal,
+  },
 
   security: {
     key: "security",
