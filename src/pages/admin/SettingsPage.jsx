@@ -827,7 +827,7 @@ const SettingsPage = () => {
       group: "System",
       items: [
         { key: "systemSettings", label: "System Settings", icon: HiAdjustments, description: "Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface." },
-        { key: "internAccommodation", label: "Intern Accommodation", icon: HiOfficeBuilding, description: "Payment links, GST and daily accommodation and mess rates." },
+        { key: "internAccommodation", label: "Intern Accommodation", icon: HiOfficeBuilding, description: "Payment QR and link, GST and daily accommodation and mess rates." },
         { key: "accommodation", label: "Accommodation", icon: HiOfficeBuilding, description: "Visitor accommodation: payment QR image, three preset prices per person, three GST % options (Chief Warden Office selects per guest), and GSTIN for invoices." },
       ],
     },
