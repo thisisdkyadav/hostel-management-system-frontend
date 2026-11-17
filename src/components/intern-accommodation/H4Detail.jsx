@@ -109,8 +109,13 @@ function OfferForm({ request, options, save, busy }) {
       <Field label="Note for student">
         <Textarea rows={2} value={remarks} onChange={(e) => setRemarks(e.target.value)} />
       </Field>
-      {!config.paymentLink && <Text size="xs" color="muted">No payment link configured.</Text>}
-      <Text size="xs" color="muted">The payment link is managed in Settings → Intern Accommodation.</Text>
+      {config.hasPaymentQr || config.paymentLink ? (
+        <Text size="xs" color="muted">
+          The student pays by {config.hasPaymentQr ? "scanning the payment QR" : "the payment link"} on their accommodation page. Managed in Settings → Intern Accommodation.
+        </Text>
+      ) : (
+        <Alert type="warning">No payment QR is set. Upload one in Settings → Intern Accommodation so the student can pay.</Alert>
+      )}
       <Button
         disabled={busy || !hostelId || price === "" || dailyRate === "" || (mess === "with" && (messAmount === "" || messDailyRate === ""))}
         loading={busy}

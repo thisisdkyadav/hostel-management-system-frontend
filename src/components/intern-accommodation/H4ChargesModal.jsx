@@ -161,7 +161,7 @@ export default function H4ChargesModal({ ids, requests, options, onClose, onDone
             </Field>
           </Grid>
           {waiver && <Text size="xs" color="muted">Waivers need a reason — issue those one by one from the request.</Text>}
-          <Text size="xs" color="muted">Each student pays accommodation (with GST) and mess together in one payment. Charge days exclude the departure day. The payment link is managed in Settings → Intern Accommodation.</Text>
+          <Text size="xs" color="muted">Each student pays accommodation (with GST) and mess together in one payment. Charge days exclude the departure day. The payment QR is managed in Settings → Intern Accommodation.</Text>
         </VStack>
         <DataTable data={rows} columns={columns} getRowId={(r) => r._id} />
       </VStack>
