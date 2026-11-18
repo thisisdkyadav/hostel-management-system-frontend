@@ -1,8 +1,11 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
+import { CheckCircle2, ImageUp } from "lucide-react"
 import { Alert, Button, DatePicker, Field, HStack, Input, Select, Text, VStack } from "hzero"
 import { h4Api, h4FileUrl } from "@/service/modules/intern-accommodation.api"
 import { money, today } from "./h4.format"
 import { h4Bills, h4BillAction, h4BillParts } from "./h4.payments"
+
+const MAX_MB = 5
 
 export default function H4PaymentForm({ request, token, onSaved }) {
   const bills = h4Bills(request).filter((p) => p.amount > 0 && ["Pending", "Deferred", "Rejected"].includes(p.status))
@@ -14,18 +17,24 @@ export default function H4PaymentForm({ request, token, onSaved }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [uploadedRevision, setUploadedRevision] = useState(null)
+  const [fileName, setFileName] = useState("")
+  const fileInput = useRef(null)
   const run = (action, body) =>
     token ? h4Api.accessAction(token, action, body) : h4Api.action(request._id, action, body)
   const upload = async (file) => {
     if (!file) return
-    setBusy(true)
     setError("")
+    if (!["image/png", "image/jpeg"].includes(file.type)) return setError("The payment proof must be a PNG or JPG image.")
+    if (file.size > MAX_MB * 1024 * 1024)
+      return setError(`The image is ${(file.size / 1048576).toFixed(1)} MB. Upload one up to ${MAX_MB} MB.`)
+    setBusy(true)
     try {
       const form = new FormData()
       form.append("image", file)
       form.append("revision", String(request.h4.revision))
       const result = token ? await h4Api.accessUpload(token, form) : await h4Api.upload(request._id, form)
       setRef(result.data.fileRef)
+      setFileName(file.name)
       setUploadedRevision(result.data.revision)
       await onSaved()
     } catch (e) {
@@ -46,6 +55,7 @@ export default function H4PaymentForm({ request, token, onSaved }) {
         screenshotFileRef: fileRef,
       })
       setRef("")
+      setFileName("")
       setUploadedRevision(null)
       await onSaved()
     } catch (e) {
@@ -118,19 +128,52 @@ export default function H4PaymentForm({ request, token, onSaved }) {
       <Field label="Payment date" required>
         <DatePicker value={paidAt} max={today()} onChange={(e) => setPaidAt(e.target.value)} />
       </Field>
-      <Field label="Payment proof · PNG / JPG, 5 MB max" required>
+      <Field label="Payment proof (screenshot)" required>
         <input
+          ref={fileInput}
           aria-label="Upload payment proof"
           type="file"
           accept="image/png,image/jpeg"
           disabled={busy}
-          onChange={(e) => upload(e.target.files[0])}
+          style={{ display: "none" }}
+          onChange={(e) => {
+            upload(e.target.files[0])
+            e.target.value = ""
+          }}
         />
-        {fileRef && (
-          <Text size="xs" color="success">
-            Proof uploaded
-          </Text>
-        )}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--spacing-3)",
+            flexWrap: "wrap",
+            padding: "var(--spacing-3)",
+            border: `var(--border-1) ${fileRef ? "solid" : "dashed"} var(--color-border-primary)`,
+            borderRadius: "var(--radius-lg)",
+            background: "var(--color-bg-secondary)",
+          }}
+        >
+          {fileRef ? (
+            <CheckCircle2 size={22} color="var(--color-success)" aria-hidden />
+          ) : (
+            <ImageUp size={22} color="var(--color-text-muted)" aria-hidden />
+          )}
+          <VStack gap={0} style={{ flex: "1 1 10rem", minWidth: 0 }}>
+            <Text size="sm" weight="medium" style={{ overflowWrap: "anywhere" }}>
+              {fileRef ? `Uploaded: ${fileName || "payment proof"}` : "No file chosen"}
+            </Text>
+            <Text size="xs" color="muted">PNG or JPG image · up to {MAX_MB} MB</Text>
+          </VStack>
+          <Button
+            variant={fileRef ? "secondary" : "primary"}
+            size="sm"
+            loading={busy && !fileRef}
+            disabled={busy}
+            onClick={() => fileInput.current?.click()}
+          >
+            <ImageUp size={16} /> {fileRef ? "Change file" : "Choose file"}
+          </Button>
+        </div>
       </Field>
       <HStack gap={2} wrap>
         <Button
