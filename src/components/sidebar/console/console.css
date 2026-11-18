@@ -5,13 +5,15 @@
    ============================================================ */
 
 html[data-admin-sidebar="v7"] {
-  --cn-shell: #0f1626;
+  /* Mid navy, lighter than V6; the gradient + grid sit on top (see .layout-container). */
+  --cn-shell: #1a3050;
+  --cn-shell-deep: #142640;
   --cn-ink: #e8ecf4;
   --cn-ink-2: rgb(222 229 242 / 74%);
   --cn-ink-3: rgb(200 210 230 / 50%);
-  --cn-line: rgb(255 255 255 / 8%);
-  --cn-hover: rgb(255 255 255 / 5%);
-  --cn-raise: rgb(255 255 255 / 8%);
+  --cn-line: rgb(255 255 255 / 10%);
+  --cn-hover: rgb(255 255 255 / 7%);
+  --cn-raise: rgb(255 255 255 / 11%);
   --cn-red: #ef5a6f;
   --cn-green: #4fd18b;
   --cn-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -27,16 +29,37 @@ html[data-admin-sidebar="v7"] {
 /* ---------- Shell + the page as a raised sheet ---------- */
 @media (min-width: 768px) {
   html[data-admin-sidebar="v7"] .layout-container {
+    position: relative;
     height: 100vh;
     overflow: hidden;
-    background: var(--cn-shell);
+    isolation: isolate;
+    /* Same recipe as the Rebate board's header panel: a blue glow top-left,
+       a faint green glow bottom-right, over a navy slope. */
+    background:
+      radial-gradient(70% 60% at 0% 0%, rgb(43 125 214 / 55%), transparent 70%),
+      radial-gradient(60% 50% at 100% 100%, rgb(79 209 139 / 12%), transparent 70%),
+      linear-gradient(165deg, var(--cn-shell), var(--cn-shell-deep));
+  }
+  /* A faint grid behind the sidebar, fading out towards the page. */
+  html[data-admin-sidebar="v7"] .layout-container::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 420px;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(90deg, black 30%, transparent 90%);
   }
   html[data-admin-sidebar="v7"] .layout-content {
     height: calc(100vh - 16px);
     margin: 8px 8px 8px 0;
     border-radius: 14px;
     background-color: var(--color-bg-page);
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 4%), 0 2px 10px rgb(0 0 0 / 28%);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 6%), 0 4px 18px rgb(6 18 38 / 30%);
     scrollbar-gutter: stable;
   }
 }
@@ -48,8 +71,9 @@ html[data-admin-sidebar="v7"] {
   width: 288px;
   flex: 0 0 288px;
   height: 100vh;
+  overflow: hidden;
   color: var(--cn-ink);
-  background: var(--cn-shell);
+  background: transparent;
 }
 .cn button { font: inherit; color: inherit; }
 .cn kbd, .cnj kbd {
@@ -67,6 +91,7 @@ html[data-admin-sidebar="v7"] {
 }
 
 .cn-head {
+  flex: none; /* keeps its height when the page list is long */
   display: flex;
   align-items: center;
   gap: 10px;
@@ -92,7 +117,7 @@ html[data-admin-sidebar="v7"] {
   font-weight: 800;
   font-size: var(--font-size-sm);
   color: white;
-  background: #1360ab;
+  background: #2b7dd6;
 }
 .cn-brand__word { font-weight: 700; font-size: var(--font-size-md); letter-spacing: 0.06em; }
 .cn-brand:hover .cn-brand__word { color: white; }
@@ -117,6 +142,7 @@ html[data-admin-sidebar="v7"] {
   min-height: 0;
   display: grid;
   grid-template-columns: 60px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr); /* only the page list scrolls */
 }
 
 /* ---------- Category column ---------- */
@@ -177,7 +203,7 @@ html[data-admin-sidebar="v7"] {
   line-height: 1;
   color: white;
   background: var(--cn-red);
-  box-shadow: 0 0 0 2px var(--cn-shell);
+  box-shadow: 0 0 0 2px var(--cn-shell-deep);
 }
 .cn-cat__new {
   position: absolute;
@@ -187,7 +213,7 @@ html[data-admin-sidebar="v7"] {
   height: 7px;
   border-radius: 50%;
   background: var(--cn-green);
-  box-shadow: 0 0 0 2px var(--cn-shell);
+  box-shadow: 0 0 0 2px var(--cn-shell-deep);
 }
 .cn-cat__label {
   position: absolute;
@@ -202,8 +228,8 @@ html[data-admin-sidebar="v7"] {
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--cn-ink);
-  background: #1c2539;
-  border: 1px solid var(--cn-line);
+  background: #203a60;
+  border: 1px solid rgb(255 255 255 / 14%);
   box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
   opacity: 0;
   transform: translate(-4px, -50%);
@@ -218,9 +244,11 @@ html[data-admin-sidebar="v7"] {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
   padding: 0 8px 0 8px;
 }
 .cn-title {
+  flex: none;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -235,6 +263,8 @@ html[data-admin-sidebar="v7"] {
   list-style: none;
   margin: 0;
   padding: 0 0 16px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -351,6 +381,7 @@ html[data-admin-sidebar="v7"] {
 
 /* ---------- Footer ---------- */
 .cn-foot {
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -404,7 +435,7 @@ html[data-admin-sidebar="v7"] {
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: white;
-  background: #1360ab;
+  background: #2b7dd6;
 }
 .cn-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .cn-me__text { min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
