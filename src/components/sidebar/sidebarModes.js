@@ -7,6 +7,7 @@
  * v4 — "Icon rail": v2 categories/pins, with the bar + profile in a left rail
  * v5 — "Dock": navy icon rail, white panel; the selected tab flows into the page
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
+ * v8 — "Trail": v4, plus the open page's sections listed under its row (v7 was retired)
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -14,6 +15,7 @@ export const SIDEBAR_MODE_WORKSPACE = "v3"
 export const SIDEBAR_MODE_RAIL = "v4"
 export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
+export const SIDEBAR_MODE_TRAIL = "v8"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -65,6 +67,12 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V6",
     name: "Orbit",
     description: "Deep-space console: planet categories, a lens list, Ctrl+K to warp anywhere",
+  },
+  {
+    id: SIDEBAR_MODE_TRAIL,
+    label: "V8",
+    name: "Trail",
+    description: "V4, and the page you're on opens up to list its sections (hostels, complaint statuses…)",
   },
 ]
 

@@ -13,6 +13,7 @@ import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
 import CategoryBar from "./sidebar/CategoryBar"
 import IconRail from "./sidebar/IconRail"
+import useNavTrail from "./sidebar/navTrail"
 import { getCategoryDarkTint, getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
@@ -25,6 +26,7 @@ import {
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_ORBIT,
+  SIDEBAR_MODE_TRAIL,
   SIDEBAR_MODE_STORAGE_KEY,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
@@ -143,8 +145,9 @@ const Sidebar = ({ navItems }) => {
   })
   // V6 is desktop-only; on phones it falls back to the V4 drawer.
   const isOrbitMode = isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile
+  const isTrailMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TRAIL
   const isRailMode = isAdminNav && (
-    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
+    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || sidebarMode === SIDEBAR_MODE_TRAIL || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
   )
   const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode)
@@ -165,6 +168,12 @@ const Sidebar = ({ navItems }) => {
     return ids
   }, [mainNavItems])
   const { categoryCounts, itemCounts } = useAdminCategoryCounts(isAdminNav)
+  // V8: the open page's sections, listed under its row.
+  const trailFor = useNavTrail({
+    enabled: isTrailMode,
+    pathname: location.pathname,
+    search: location.search,
+  })
   const countedNavItems = useMemo(
     () => mainNavItems.map((item) => {
       const count = itemCounts[item.path]
@@ -218,9 +227,10 @@ const Sidebar = ({ navItems }) => {
   }, [location.pathname, navItems])
 
   // V6: the dock always shows the open page's planet, so the comet has a tab to sit on.
+  // V8: likewise, so the open page's row (and its sections) is always in view.
   // Home keeps the page if it is pinned there.
   useEffect(() => {
-    if (!isOrbitMode) return
+    if (!isOrbitMode && !isTrailMode) return
     const currentItem = mainNavItems.find((item) => item.path && isNavItemActive(item, location.pathname))
     if (!currentItem) return
     const ownCategory = currentItem.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS
@@ -230,7 +240,7 @@ const Sidebar = ({ navItems }) => {
       if (category === ADMIN_NAV_CATEGORY_HOME && shownOnHome) return category
       return ownCategory
     })
-  }, [isOrbitMode, location.pathname, mainNavItems, pinnedAdminPaths])
+  }, [isOrbitMode, isTrailMode, location.pathname, mainNavItems, pinnedAdminPaths])
 
   // Track recent visits so the Workspace (V3) layout can surface them
   useEffect(() => {
@@ -473,6 +483,11 @@ const Sidebar = ({ navItems }) => {
       }
       onNavigate={handleNavigation}
       onTogglePin={togglePinnedItem}
+      trailFor={trailFor}
+      onOpenTrail={(to) => {
+        navigate(to)
+        if (window.innerWidth < 768) setIsOpen(false)
+      }}
     />
   )
 

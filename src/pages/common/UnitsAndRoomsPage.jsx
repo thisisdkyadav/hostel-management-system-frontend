@@ -19,7 +19,7 @@ import { hostelApi } from "../../service"
 import { Button, Card, Checkbox, Divider, Grid, HStack, IconCircle, Input, Label, Spinner, Text, VStack } from "hzero"
 import { MdMeetingRoom } from "react-icons/md"
 
-const UnitsAndRoomsPage = () => {
+const UnitsAndRoomsView = () => {
   const { user, getHomeRoute } = useAuth()
   const navigate = useNavigate()
   const { hostelList, fetchHostelList } = useGlobal()
@@ -436,6 +436,13 @@ const UnitsAndRoomsPage = () => {
       </div>
     </div>
   )
+}
+
+// The view reads its hostel once on mount, so moving straight from one hostel to
+// another (e.g. from the sidebar) remounts it with fresh state.
+const UnitsAndRoomsPage = () => {
+  const { hostelName } = useParams()
+  return <UnitsAndRoomsView key={hostelName} />
 }
 
 export default UnitsAndRoomsPage

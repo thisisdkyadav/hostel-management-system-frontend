@@ -2,6 +2,7 @@ import { Pin } from "lucide-react"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "./NewBadge"
 import CategoryCountBadge from "./CategoryCountBadge"
+import SidebarTrail from "./SidebarTrail"
 import LiveTag from "./LiveTag"
 import { SIDEBAR_MOTION_CURVE } from "./motion"
 
@@ -28,6 +29,8 @@ const SidebarNavItem = ({
   accent,
   sharedFill = false,
   lightFill = false,
+  trail = null,
+  onOpenTrail,
 }) => {
   const useAccent = !!accent
   const isLive = item.accent === "success"
@@ -97,7 +100,8 @@ const SidebarNavItem = ({
   }
 
   return (
-    <li className={`group relative ${isLive ? "sidebar-accent-success" : ""}`}>
+    <li className={`relative ${isLive ? "sidebar-accent-success" : ""}`}>
+      <div className="group relative">
       <button
         type="button"
         onClick={() => onNavigate(item)}
@@ -180,6 +184,8 @@ const SidebarNavItem = ({
           <Pin size={13} strokeWidth={2} className={isPinned ? "fill-current" : ""} />
         </button>
       )}
+      </div>
+      {isActive && trail && <SidebarTrail entries={trail} accent={accent} onOpen={onOpenTrail} />}
     </li>
   )
 }
