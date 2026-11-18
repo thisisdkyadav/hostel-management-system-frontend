@@ -119,6 +119,62 @@ html[data-admin-sidebar="v5"] .layout-content {
   background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg-secondary));
 }
 
+/* ---------- V8 "Cards": V4's rail and list as two floating cards ---------- */
+.sb-cards { background: transparent; overflow: visible; }
+.sb-cards__row {
+  gap: 8px;
+  padding: 10px 0 10px 10px;
+}
+.sb-card {
+  border-radius: 18px;
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%), 0 8px 24px -12px rgb(15 23 42 / 14%);
+  overflow: hidden;
+}
+[data-theme="dark"] .sb-card { box-shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 28px -14px rgb(0 0 0 / 60%); }
+.sb-card--rail {
+  width: 78px;
+  background: var(--color-bg-primary);
+}
+.sb-card--rail nav { gap: 4px; padding-top: 6px; }
+.sb-card--panel { position: relative; }
+.sb-card--panel > :first-child { border-top-left-radius: inherit; border-top-right-radius: inherit; }
+
+/* Rail categories: icon in a soft tile with its name under it. */
+.rail-captioned {
+  width: calc(100% - 12px) !important;
+  flex-direction: column;
+  gap: 5px;
+  padding: 9px 2px 8px;
+  border-radius: 14px !important;
+  transition: background-color 180ms, color 180ms;
+}
+.rail-captioned:hover { background: color-mix(in srgb, var(--rail-accent) 9%, transparent); }
+.rail-captioned[data-pressed] { background: color-mix(in srgb, var(--rail-accent) 14%, transparent); }
+.rail-captioned[data-pressed]::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--rail-accent);
+}
+.rail-caption {
+  max-width: 100%;
+  font-size: 10.5px;
+  line-height: 1.15;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+.rail-captioned:hover .rail-caption { color: var(--color-text-secondary); }
+.rail-captioned[data-pressed] .rail-caption { color: var(--rail-accent); font-weight: 700; }
+html[data-admin-sidebar="v8"] .icon-rail-logo { font-size: var(--font-size-sm); letter-spacing: 0.08em; }
+
 .v5-panel {
   --color-text-body: var(--v5-panel-ink);
   --color-text-primary: var(--v5-panel-ink);

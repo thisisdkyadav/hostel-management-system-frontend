@@ -13,7 +13,6 @@ import SidebarModeSwitcher from "./sidebar/SidebarModeSwitcher"
 import ProfileCard from "./sidebar/SidebarProfileCard"
 import CategoryBar from "./sidebar/CategoryBar"
 import IconRail from "./sidebar/IconRail"
-import useNavTrail from "./sidebar/navTrail"
 import { getCategoryDarkTint, getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
@@ -26,7 +25,7 @@ import {
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_ORBIT,
-  SIDEBAR_MODE_TRAIL,
+  SIDEBAR_MODE_CARDS,
   SIDEBAR_MODE_STORAGE_KEY,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
@@ -145,10 +144,11 @@ const Sidebar = ({ navItems }) => {
   })
   // V6 is desktop-only; on phones it falls back to the V4 drawer.
   const isOrbitMode = isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile
-  const isTrailMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TRAIL
   const isRailMode = isAdminNav && (
-    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || sidebarMode === SIDEBAR_MODE_TRAIL || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
+    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || sidebarMode === SIDEBAR_MODE_CARDS || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
   )
+  // V8: V4's rail and list as two floating cards. Phones keep the V4 drawer.
+  const isCardsMode = isAdminNav && sidebarMode === SIDEBAR_MODE_CARDS && !isMobile
   const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode)
 
@@ -168,12 +168,6 @@ const Sidebar = ({ navItems }) => {
     return ids
   }, [mainNavItems])
   const { categoryCounts, itemCounts } = useAdminCategoryCounts(isAdminNav)
-  // V8: the open page's sections, listed under its row.
-  const trailFor = useNavTrail({
-    enabled: isTrailMode,
-    pathname: location.pathname,
-    search: location.search,
-  })
   const countedNavItems = useMemo(
     () => mainNavItems.map((item) => {
       const count = itemCounts[item.path]
@@ -198,8 +192,8 @@ const Sidebar = ({ navItems }) => {
     } else {
       root.removeAttribute("data-admin-category")
     }
-    if (isV5Mode || isOrbitMode) {
-      root.setAttribute("data-admin-sidebar", isOrbitMode ? "v6" : "v5")
+    if (isV5Mode || isOrbitMode || isCardsMode) {
+      root.setAttribute("data-admin-sidebar", isCardsMode ? "v8" : isOrbitMode ? "v6" : "v5")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -207,7 +201,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode])
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isCardsMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -227,10 +221,9 @@ const Sidebar = ({ navItems }) => {
   }, [location.pathname, navItems])
 
   // V6: the dock always shows the open page's planet, so the comet has a tab to sit on.
-  // V8: likewise, so the open page's row (and its sections) is always in view.
   // Home keeps the page if it is pinned there.
   useEffect(() => {
-    if (!isOrbitMode && !isTrailMode) return
+    if (!isOrbitMode) return
     const currentItem = mainNavItems.find((item) => item.path && isNavItemActive(item, location.pathname))
     if (!currentItem) return
     const ownCategory = currentItem.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS
@@ -240,7 +233,7 @@ const Sidebar = ({ navItems }) => {
       if (category === ADMIN_NAV_CATEGORY_HOME && shownOnHome) return category
       return ownCategory
     })
-  }, [isOrbitMode, isTrailMode, location.pathname, mainNavItems, pinnedAdminPaths])
+  }, [isOrbitMode, location.pathname, mainNavItems, pinnedAdminPaths])
 
   // Track recent visits so the Workspace (V3) layout can surface them
   useEffect(() => {
@@ -483,11 +476,6 @@ const Sidebar = ({ navItems }) => {
       }
       onNavigate={handleNavigation}
       onTogglePin={togglePinnedItem}
-      trailFor={trailFor}
-      onOpenTrail={(to) => {
-        navigate(to)
-        if (window.innerWidth < 768) setIsOpen(false)
-      }}
     />
   )
 
@@ -544,11 +532,11 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isCardsMode ? "w-[348px] max-w-full" : isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
       {/* V5 has no edge stroke; its selected SVG is measured and painted inside
           the full-width list wrapper. */}
-      <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
-        <div className={`flex h-full ${isV5Mode ? "overflow-visible" : ""} ${isRailMode ? "flex-row" : "flex-col"}`}>
+      <Surface shadow={isV5Mode || isCardsMode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out ${isCardsMode ? "sb-cards" : "bg-[var(--color-bg-primary)]"} ${isV5Mode ? "overflow-visible border-0 outline-none" : isCardsMode ? "border-0" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
+        <div className={`flex h-full ${isV5Mode ? "overflow-visible" : ""} ${isRailMode ? "flex-row" : "flex-col"} ${isCardsMode ? "sb-cards__row" : ""}`}>
           {isRailMode && (
             <IconRail
               activeCategory={activeAdminCategory}
@@ -564,11 +552,12 @@ const Sidebar = ({ navItems }) => {
               newCategoryIds={newCategoryIds}
               categoryCounts={categoryCounts}
               stagePanelColor={v5PanelFill}
+              cards={isCardsMode}
             />
           )}
 
           <div
-            className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isRailMode ? "rail-panel" : ""} ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
+            className={`flex flex-col h-full min-w-0 flex-1 motion-reduce:!transition-none ${isCardsMode ? "sb-card sb-card--panel" : isRailMode ? "rail-panel" : ""} ${isV5Mode ? "v5-panel overflow-visible" : ""}`}
             style={{
               backgroundColor: v5PanelFill,
               transition: "background-color 320ms cubic-bezier(0.22, 1, 0.36, 1)",

@@ -104,8 +104,6 @@ const SidebarTabList = ({
   activeSignal,
   onNavigate,
   onTogglePin,
-  trailFor,
-  onOpenTrail,
 }) => {
   const uid = useId().replace(/:/g, "")
   const pageShadowClipId = `sidebar-page-shadow-clip-${uid}`
@@ -174,8 +172,6 @@ const SidebarTabList = ({
           lightFill={lightFill}
           onNavigate={onNavigate}
           onTogglePin={onTogglePin}
-          trail={trailFor ? trailFor(item) : null}
-          onOpenTrail={onOpenTrail}
         />
       ))}
       {lightFill && showPinControl && items.length === 0 && emptyMessage && (
