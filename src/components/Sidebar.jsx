@@ -17,6 +17,7 @@ import { getCategoryDarkTint, getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
 import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
+import Workbench from "./sidebar/workbench/Workbench"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
   SIDEBAR_MODE_FLAT,
@@ -25,6 +26,7 @@ import {
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_ORBIT,
+  SIDEBAR_MODE_WORKBENCH,
   SIDEBAR_MODE_STORAGE_KEY,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
@@ -141,13 +143,15 @@ const Sidebar = ({ navItems }) => {
     dbMode: user?.sidebarMode,
     storedMode: readLocalSidebarMode(),
   })
-  // V6 is desktop-only; on phones it falls back to the V4 drawer.
+  // V6 and V7 are desktop-only; on phones they fall back to the V4 drawer.
   const isOrbitMode = isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile
+  const isWorkbenchMode = isAdminNav && sidebarMode === SIDEBAR_MODE_WORKBENCH && !isMobile
+  const isDesktopOnlyMode = sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_WORKBENCH
   const isRailMode = isAdminNav && (
-    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
+    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || (isDesktopOnlyMode && isMobile)
   )
   const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
-  const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode)
+  const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode || isWorkbenchMode)
 
   const mainNavItems = useMemo(
     () => (Array.isArray(navItems) ? navItems.filter((item) => item.section === "main") : []),
@@ -189,8 +193,8 @@ const Sidebar = ({ navItems }) => {
     } else {
       root.removeAttribute("data-admin-category")
     }
-    if (isV5Mode || isOrbitMode) {
-      root.setAttribute("data-admin-sidebar", isOrbitMode ? "v6" : "v5")
+    if (isV5Mode || isOrbitMode || isWorkbenchMode) {
+      root.setAttribute("data-admin-sidebar", isWorkbenchMode ? "v7" : isOrbitMode ? "v6" : "v5")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -198,7 +202,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode])
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isWorkbenchMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -218,19 +222,19 @@ const Sidebar = ({ navItems }) => {
   }, [location.pathname, navItems])
 
   // V6: the dock always shows the open page's planet, so the comet has a tab to sit on.
-  // Home keeps the page if it is pinned there.
+  // Home keeps the page if it is pinned there. V7: the theme always follows the page.
   useEffect(() => {
-    if (!isOrbitMode) return
+    if (!isOrbitMode && !isWorkbenchMode) return
     const currentItem = mainNavItems.find((item) => item.path && isNavItemActive(item, location.pathname))
     if (!currentItem) return
     const ownCategory = currentItem.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS
     const shownOnHome = currentItem.alwaysPinned || pinnedAdminPaths.includes(currentItem.path)
     setActiveAdminCategory((category) => {
       if (category === ownCategory) return category
-      if (category === ADMIN_NAV_CATEGORY_HOME && shownOnHome) return category
+      if (isOrbitMode && category === ADMIN_NAV_CATEGORY_HOME && shownOnHome) return category
       return ownCategory
     })
-  }, [isOrbitMode, location.pathname, mainNavItems, pinnedAdminPaths])
+  }, [isOrbitMode, isWorkbenchMode, location.pathname, mainNavItems, pinnedAdminPaths])
 
   // Track recent visits so the Workspace (V3) layout can surface them
   useEffect(() => {
@@ -402,6 +406,33 @@ const Sidebar = ({ navItems }) => {
           ...countedNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path) && !item.alwaysPinned),
         ]
       : countedNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === categoryId)
+
+  if (isWorkbenchMode) {
+    return (
+      <Workbench
+        user={user}
+        categories={ADMIN_NAV_CATEGORIES}
+        navItems={countedNavItems}
+        pinnedPaths={[...new Set([...alwaysPinnedPaths, ...pinnedAdminPaths])]}
+        isPinned={(item) => !!item.path && (item.alwaysPinned || pinnedAdminPaths.includes(item.path))}
+        pinLocked={(item) => Boolean(item.alwaysPinned)}
+        onTogglePin={togglePinnedItem}
+        categoryCounts={categoryCounts}
+        newCategoryIds={newCategoryIds}
+        currentCategory={activeAdminCategory}
+        pathname={location.pathname}
+        currentUrl={`${location.pathname}${location.search}`}
+        navigate={navigate}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
+        profileItem={profileItem}
+        logoutItem={logoutItem}
+        onNavigate={handleNavigation}
+        sidebarMode={sidebarMode}
+        onModeChange={handleSidebarModeChange}
+      />
+    )
+  }
 
   if (isOrbitMode) {
     const isItemActive = (item) => isNavItemActive(item, location.pathname) || active === navItemKey(item)

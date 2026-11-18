@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CornerDownLeft, Pin } from "lucide-react"
 import { ADMIN_NAV_CATEGORY_HOSTELS } from "../../../constants/navigationConfig"
+import { scoreNavName as scoreItem } from "../navSearch"
 
 /**
  * Warp: a full-screen jump to any tab. Type to filter; arrows move; Enter jumps.
@@ -11,24 +12,6 @@ const JUMP_MS = 260
 const MAX_RESULTS = 9
 
 const categoryOf = (item) => item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS
-
-/** Higher is better; 0 means no match. Whole-name prefix > word prefix > substring > initials > in-order letters. */
-const scoreItem = (name, query) => {
-  const hay = name.toLowerCase()
-  if (!query) return 1
-  if (hay.startsWith(query)) return 100 - hay.length / 100
-  const words = hay.split(/[\s/&-]+/)
-  if (words.some((word) => word.startsWith(query))) return 80
-  if (hay.includes(query)) return 60
-  if (words.map((word) => word[0]).join("").startsWith(query)) return 50
-  let at = 0
-  for (const char of query) {
-    at = hay.indexOf(char, at)
-    if (at === -1) return 0
-    at += 1
-  }
-  return 20
-}
 
 const OrbitWarp = ({ items, categories, isPinned, onClose, onNavigate }) => {
   const [query, setQuery] = useState("")
