@@ -17,6 +17,7 @@ import { getCategoryDarkTint, getCategoryTint } from "./sidebar/categoryStyles"
 import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
 import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
+import ConsoleSidebar from "./sidebar/console/ConsoleSidebar"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
   SIDEBAR_MODE_FLAT,
@@ -25,6 +26,7 @@ import {
   SIDEBAR_MODE_RAIL,
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_ORBIT,
+  SIDEBAR_MODE_CONSOLE,
   SIDEBAR_MODE_STORAGE_KEY,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
@@ -142,9 +144,12 @@ const Sidebar = ({ navItems }) => {
     storedMode: readLocalSidebarMode(),
   })
   // V6 is desktop-only; on phones it falls back to the V4 drawer.
-  const isOrbitMode = isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile
+  // V7 shares V6's structure (and is desktop-only too).
+  const isConsoleMode = isAdminNav && sidebarMode === SIDEBAR_MODE_CONSOLE && !isMobile
+  const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode
   const isRailMode = isAdminNav && (
-    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE || (sidebarMode === SIDEBAR_MODE_ORBIT && isMobile)
+    sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE
+    || ((sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_CONSOLE) && isMobile)
   )
   const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode)
@@ -190,7 +195,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
     }
     if (isV5Mode || isOrbitMode) {
-      root.setAttribute("data-admin-sidebar", isOrbitMode ? "v6" : "v5")
+      root.setAttribute("data-admin-sidebar", isConsoleMode ? "v7" : isOrbitMode ? "v6" : "v5")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -198,7 +203,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode])
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -405,8 +410,9 @@ const Sidebar = ({ navItems }) => {
 
   if (isOrbitMode) {
     const isItemActive = (item) => isNavItemActive(item, location.pathname) || active === navItemKey(item)
+    const Shell = isConsoleMode ? ConsoleSidebar : OrbitSidebar
     return (
-      <OrbitSidebar
+      <Shell
         user={user}
         categories={ADMIN_NAV_CATEGORIES}
         activeCategory={activeAdminCategory}
