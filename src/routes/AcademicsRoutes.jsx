@@ -3,7 +3,8 @@ import { lazy, Suspense } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import AcademicsLayout from "../layouts/AcademicsLayout"
 
-const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestPerformerPage"))
+// TEMP: Best Performer hidden from Academics (see route below).
+// const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestPerformerPage"))
 const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 
 import NotFoundPage from "../pages/NotFoundPage"
@@ -13,7 +14,6 @@ import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 import useBackgroundPrefetch from "../hooks/useBackgroundPrefetch"
 
 const academicsPrefetchLoaders = [
-  () => import("../pages/common/OverallBestPerformerPage"),
   () => import("../pages/common/ProfilePage"),
 ]
 
@@ -29,15 +29,17 @@ const AcademicsRoutes = () => (
       <Routes>
         <Route element={<AcademicsLayout />}>
           <Route path="intern-accommodation" element={<RouteAccessGuard routeKey="route.academics.internAccommodation" fallback={<NotFoundPage />}><InternAccommodationPage /></RouteAccessGuard>} />
-          <Route index element={<Navigate to="overall-best-performer" replace />} />
-          <Route
+          {/* TEMP: Best Performer hidden from Academics; home goes to Intern Accommodation.
+              Restore the route below and the nav item in navigationConfig.js to bring it back. */}
+          <Route index element={<Navigate to="intern-accommodation" replace />} />
+          {/* <Route
             path="overall-best-performer"
             element={(
               <RouteAccessGuard routeKey="route.academics.bestPerformer" fallback={<NotFoundPage />}>
                 <OverallBestPerformerPage />
               </RouteAccessGuard>
             )}
-          />
+          /> */}
           <Route
             path="profile"
             element={(

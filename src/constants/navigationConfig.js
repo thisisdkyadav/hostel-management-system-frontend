@@ -527,7 +527,9 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
 // ============================================
 
 export const getAcademicsNavItems = (handleLogout) => [
-  { name: "Best Performer", icon: Trophy, section: "main", path: "/academics/overall-best-performer", routeKey: "route.academics.bestPerformer" },
+  // TEMP: Best Performer hidden from Academics. Restore this line (and the route
+  // in routes/AcademicsRoutes.jsx) to bring it back.
+  // { name: "Best Performer", icon: Trophy, section: "main", path: "/academics/overall-best-performer", routeKey: "route.academics.bestPerformer" },
   createProfileItem("/academics"),
   { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/academics/intern-accommodation", routeKey: "route.academics.internAccommodation" },
   createLogoutItem(handleLogout),
