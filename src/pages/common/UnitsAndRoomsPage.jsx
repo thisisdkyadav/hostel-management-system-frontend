@@ -439,7 +439,7 @@ const UnitsAndRoomsView = () => {
 }
 
 // The view reads its hostel once on mount, so moving straight from one hostel to
-// another (e.g. from the sidebar) remounts it with fresh state.
+// another remounts it with fresh state.
 const UnitsAndRoomsPage = () => {
   const { hostelName } = useParams()
   return <UnitsAndRoomsView key={hostelName} />

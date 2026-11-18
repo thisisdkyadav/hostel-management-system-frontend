@@ -87,7 +87,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
   )
 }
 
-const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, onFill = false, caption, children }) => {
+const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, onFill = false, children }) => {
   const isCategory = !!accent
   const accessibleLabel = [
     label,
@@ -104,9 +104,8 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       data-rail-kind={isCategory ? "category" : "tool"}
       onMouseDown={isCategory ? (event) => event.preventDefault() : undefined}
       onClick={onClick}
-      data-pressed={pressed || undefined}
       className={`
-        relative z-10 flex items-center justify-center shrink-0 ${caption ? "rail-captioned" : ""}
+        relative z-10 flex items-center justify-center shrink-0
         transition-all duration-200 motion-reduce:transition-none
         outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
         ${isCategory
@@ -118,9 +117,8 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       style={
         isCategory
           ? {
-              "--rail-accent": accent,
               color: pressed && onFill ? "var(--v5-selected-ink)" : accent,
-              height: caption ? undefined : TAB_SIZE,
+              height: TAB_SIZE,
             }
           : pressed
             ? { backgroundColor: "var(--color-bg-hover)", color: "var(--color-text-primary)" }
@@ -143,7 +141,6 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
           />
         )}
       </span>
-      {caption && <span className="rail-caption">{caption}</span>}
     </button>
   )
 
@@ -194,10 +191,9 @@ const IconRail = ({
   newCategoryIds,
   categoryCounts,
   stagePanelColor,
-  cards = false,
 }) => {
   return (
-    <div className={`icon-rail relative shrink-0 h-full flex flex-col items-center ${cards ? "sb-card sb-card--rail" : "w-14"}`}>
+    <div className="icon-rail relative w-14 shrink-0 h-full flex flex-col items-center">
       <div className="relative z-10 h-16 shrink-0 flex items-center justify-center">
         <button
           type="button"
@@ -211,7 +207,7 @@ const IconRail = ({
       </div>
 
       <nav aria-label="Categories" className="relative z-10 flex-1 min-h-0 w-full flex flex-col items-center py-[var(--radius-xl)]">
-        {!cards && <RailActiveJoin
+        <RailActiveJoin
           index={Math.max(0, ADMIN_NAV_CATEGORIES.findIndex((category) => category.id === activeCategory))}
           elevated
           panelColor={
@@ -221,7 +217,7 @@ const IconRail = ({
                 : panelColorFor(activeCategory))
           }
           fadeTo={!stagePanelColor && activeCategory === ADMIN_NAV_CATEGORY_HOME ? "var(--color-bg-primary)" : undefined}
-        />}
+        />
         {ADMIN_NAV_CATEGORIES.map((category) => {
           const isActiveCategory = activeCategory === category.id
           const accent = `var(${category.colorVar})`
@@ -235,7 +231,6 @@ const IconRail = ({
               hasNew={Boolean(newCategoryIds?.has(category.id))}
               count={categoryCounts?.[category.id] || 0}
               onClick={() => onCategoryChange(category.id)}
-              caption={cards ? category.name : undefined}
             >
               <category.icon size={18} strokeWidth={isActiveCategory ? 2.2 : 1.8} />
             </RailButton>

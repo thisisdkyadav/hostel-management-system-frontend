@@ -7,7 +7,6 @@
  * v4 — "Icon rail": v2 categories/pins, with the bar + profile in a left rail
  * v5 — "Dock": navy icon rail, white panel; the selected tab flows into the page
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
- * v8 — "Cards": v4's rail and list as two floating cards, rail icons labelled (v7 retired)
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -15,7 +14,6 @@ export const SIDEBAR_MODE_WORKSPACE = "v3"
 export const SIDEBAR_MODE_RAIL = "v4"
 export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
-export const SIDEBAR_MODE_CARDS = "v8"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -67,12 +65,6 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V6",
     name: "Orbit",
     description: "Deep-space console: planet categories, a lens list, Ctrl+K to warp anywhere",
-  },
-  {
-    id: SIDEBAR_MODE_CARDS,
-    label: "V8",
-    name: "Cards",
-    description: "V4 as two floating cards: a labelled category rail and the tab list",
   },
 ]
 
