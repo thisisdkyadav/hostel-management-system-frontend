@@ -48,7 +48,7 @@ const shrinkPhoto = async (file) => {
     canvas.width = Math.round(image.naturalWidth * scale)
     canvas.height = Math.round(image.naturalHeight * scale)
     const context = canvas.getContext("2d")
-    context.fillStyle = "#fff" // transparent PNGs would turn black in JPEG
+    context.fillStyle = "white" // paper colour: transparent PNGs would turn black in JPEG
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.drawImage(image, 0, 0, canvas.width, canvas.height)
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85))
