@@ -27,6 +27,11 @@ const PdfUploadField = ({
   acceptHint = "PDF only",
   validateType,
   fileTypeHint,
+  // Optional async (file) => File that checks/normalises the picked file; throw an Error to reject it.
+  // When given it replaces the built-in type and size checks.
+  prepareFile,
+  // Upload straight after a file is picked instead of waiting for an Upload click.
+  autoUpload = false,
 }) => {
   const resolvedFileTypeHint =
     fileTypeHint ||
@@ -63,25 +68,41 @@ const PdfUploadField = ({
     return null
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleFileChange = async (event) => {
+    const picked = event.target.files?.[0]
+    // Clear the input so picking the same file again still fires onChange.
+    event.target.value = ""
+    if (!picked) return
 
-    const validationError = validateFile(file)
-    if (validationError) {
-      toast.error(validationError)
-      return
+    let file = picked
+    if (prepareFile) {
+      try {
+        setUploading(true)
+        file = await prepareFile(picked)
+      } catch (error) {
+        toast.error(error.message || "That file can't be used")
+        return
+      } finally {
+        setUploading(false)
+      }
+    } else {
+      const validationError = validateFile(file)
+      if (validationError) {
+        toast.error(validationError)
+        return
+      }
     }
 
     applySelectedFile(file)
+    if (autoUpload) await handleUpload(file)
   }
 
-  const handleUpload = async () => {
-    if (!selectedFile || !onUpload) return
+  const handleUpload = async (file = selectedFile) => {
+    if (!file || !onUpload) return
 
     try {
       setUploading(true)
-      const response = await onUpload(selectedFile)
+      const response = await onUpload(file)
       const uploadedUrl = resolveUploadedUrl(response)
 
       if (!uploadedUrl) {
@@ -134,7 +155,7 @@ const PdfUploadField = ({
                     <Button size="sm" variant="secondary" onClick={() => applySelectedFile(null)}>
                       Remove
                     </Button>
-                    <Button size="sm" onClick={handleUpload} loading={uploading}>
+                    <Button size="sm" onClick={() => handleUpload()} loading={uploading}>
                       <Upload size={14} /> Upload
                     </Button>
                   </HStack>
@@ -151,10 +172,11 @@ const PdfUploadField = ({
                       type="file"
                       accept={accept}
                       onChange={handleFileChange}
+                      disabled={uploading}
                       style={{ display: "none" }}
                     />
-                    <Surface as="span" bg="var(--button-primary-bg)" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="var(--color-white)" size="sm" style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
-                      <Upload size={14} /> Select File
+                    <Surface as="span" bg="var(--button-primary-bg)" padding="var(--spacing-2) var(--spacing-3)" radius="md" color="var(--color-white)" size="sm" style={{ cursor: uploading ? "progress" : "pointer", display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", opacity: uploading ? 0.7 : 1 }}>
+                      <Upload size={14} /> {uploading ? "Uploading…" : "Select File"}
                     </Surface>
                   </label>
                 )}

@@ -8,6 +8,7 @@ import { getMediaDownloadUrl } from "@/utils/mediaUtils"
 import { catererInitials, formatRange, getErrorMessage, localTodayKey } from "../caterer/catererHelpers"
 import { DEFAULT_MAX_ADVANCE_MONTHS, addMonthsToDayKey, periodRangeLabel } from "../diningPeriodHelpers"
 import useRebatePreview from "./useRebatePreview"
+import { REBATE_FORM_MAX_MB, prepareRebateFormFile } from "./rebateFormFile"
 import { REGISTRATION_ACK_TEXT, blockedPeriodFor, needsRegistrationAck, unregisteredRebateMessage } from "./studentDiningHelpers"
 
 const uploadFilledForm = (file) => {
@@ -15,9 +16,6 @@ const uploadFilledForm = (file) => {
   formData.append("file", file)
   return uploadApi.uploadDiningRebateForm(formData)
 }
-
-const isPdfOrImage = (file) =>
-  file.type === "application/pdf" || file.type?.startsWith("image/") || file.name.toLowerCase().endsWith(".pdf")
 
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`
 
@@ -268,16 +266,18 @@ export const AwayModal = ({ onClose, onSubmit, isSubmitting, longTermForm = null
               onUpload={handleUploadForm}
               onPendingFileChange={setPendingFile}
               required
-              maxSizeMb={10}
-              accept=".pdf,image/*"
-              acceptHint="PDF or image"
-              validateType={isPdfOrImage}
+              maxSizeMb={REBATE_FORM_MAX_MB}
+              // MIME types as well as the extension: Android in-app browsers only understand MIME types.
+              accept="application/pdf,.pdf,image/*"
+              acceptHint="PDF or photo"
+              prepareFile={prepareRebateFormFile}
+              autoUpload
               uploadedText={filled.name ? `${filled.name} uploaded` : "Form uploaded"}
               viewerTitle="Filled rebate form"
               viewerSubtitle="The form you will submit"
               downloadFileName={filled.name || "rebate-form.pdf"}
             />
-            {pendingFile && !filled.ref && <p className="sd-form__note">Press Upload to attach the selected file.</p>}
+            {pendingFile && !filled.ref && <p className="sd-form__note">The file isn&apos;t attached yet. If the upload failed, press Upload to try again.</p>}
           </div>
         )}
       </form>
