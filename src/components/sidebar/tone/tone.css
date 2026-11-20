@@ -33,13 +33,11 @@ html[data-admin-sidebar="v8"] {
   --tone-edge: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 72%, #FFFFFF) 60%, transparent);
   --tone-low: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 86%, #000000) 45%, transparent);
   --tone-sheen: rgb(255 255 255 / 10%);
-  --tone-page-base: color-mix(in srgb, var(--tone-theme) 4%, #F4F6FA);
-  --tone-page-top: color-mix(in srgb, var(--tone-theme) 11%, #F4F6FA);
-  --tone-page-glow: color-mix(in srgb, var(--tone-theme) 24%, transparent);
-  --tone-page-glow-2: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 55%, #FFFFFF) 34%, transparent);
-  --tone-page-glow-3: color-mix(in srgb, var(--tone-theme) 9%, transparent);
-  --tone-page-header: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 5%, #FFFFFF) 68%, transparent);
-  --tone-page-header-line: color-mix(in srgb, var(--tone-theme) 16%, transparent);
+  --tone-page-top: color-mix(in srgb, var(--tone-theme) 2%, #FAFBFD);
+  --tone-page-mid: color-mix(in srgb, var(--tone-theme) 6%, #F3F5F9);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 11%, #EEF1F6);
+  --tone-page-blob: color-mix(in srgb, var(--tone-theme) 32%, transparent);
+  --tone-page-blob-2: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 70%, #FFFFFF) 42%, transparent);
   --tone-page-border: color-mix(in srgb, var(--tone-theme) 12%, #E2E8F0);
   --tone-page-border-light: color-mix(in srgb, var(--tone-theme) 8%, #F1F5F9);
   --tone-page-card-shadow: 0 1px 3px 0 color-mix(in srgb, var(--tone-theme) 10%, transparent), 0 1px 2px -1px rgb(0 0 0 / 4%);
@@ -79,13 +77,11 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   --tone-edge: color-mix(in srgb, var(--tone-theme) 26%, transparent);
   --tone-low: color-mix(in srgb, #101418 30%, transparent);
   --tone-sheen: rgb(255 255 255 / 5%);
-  --tone-page-base: color-mix(in srgb, var(--tone-theme) 3%, #0D0D0D);
-  --tone-page-top: color-mix(in srgb, var(--tone-theme) 8%, #0D0D0D);
-  --tone-page-glow: color-mix(in srgb, var(--tone-theme) 14%, transparent);
-  --tone-page-glow-2: color-mix(in srgb, var(--tone-theme) 8%, transparent);
-  --tone-page-glow-3: color-mix(in srgb, var(--tone-theme) 5%, transparent);
-  --tone-page-header: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 6%, #111111) 72%, transparent);
-  --tone-page-header-line: color-mix(in srgb, var(--tone-theme) 18%, transparent);
+  --tone-page-top: color-mix(in srgb, var(--tone-theme) 2%, #111111);
+  --tone-page-mid: color-mix(in srgb, var(--tone-theme) 4%, #0E0E0E);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 8%, #0D0D0D);
+  --tone-page-blob: color-mix(in srgb, var(--tone-theme) 18%, transparent);
+  --tone-page-blob-2: color-mix(in srgb, var(--tone-theme) 12%, transparent);
   --tone-page-border: color-mix(in srgb, var(--tone-theme) 10%, #2E2E2E);
   --tone-page-border-light: color-mix(in srgb, var(--tone-theme) 7%, #222222);
   --tone-page-card-shadow: 0 1px 3px 0 rgb(0 0 0 / 30%);
@@ -103,6 +99,16 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   --tone-menu-muted: #A3A3A3;
 }
 
+@keyframes tone-blob-a {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.75; }
+  50% { transform: translate(14%, -12%) scale(1.06); opacity: 1; }
+  100% { transform: translate(28%, 4%) scale(0.94); opacity: 0.85; }
+}
+@keyframes tone-blob-b {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  50% { transform: translate(-18%, -14%) scale(1.07); opacity: 0.7; }
+  100% { transform: translate(-30%, 2%) scale(0.95); opacity: 0.95; }
+}
 @keyframes tone-drift {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
   50%  { transform: translate3d(18px, 14px, 0) scale(1.04); }
@@ -157,37 +163,55 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     position: relative;
     z-index: 1;
     min-width: 0;
-    height: calc(100vh - 20px);
-    margin: 10px 10px 10px 0;
-    border-radius: 18px;
+    height: calc(100vh - 8px);
+    margin: 4px 4px 4px 0;
+    border-radius: 14px;
+    /* Near-white under the (white) page header, deepening into the section's
+       colour further down; two soft blobs (::before/::after) drift over it. */
     background-color: var(--tone-page-base);
-    /* The sheet carries a quiet wash of the section's colour: light pooling
-       from the top-left (under the page title), a second glow bottom-right,
-       on a base that's barely tinted. It stays put while the page scrolls. */
-    background-image:
-      radial-gradient(1300px 520px at 12% -140px, var(--tone-page-glow), transparent 70%),
-      radial-gradient(900px 460px at 88% -120px, var(--tone-page-glow-2), transparent 70%),
-      radial-gradient(1000px 760px at 100% 110%, var(--tone-page-glow-3), transparent 70%),
-      linear-gradient(180deg, var(--tone-page-top), var(--tone-page-base) 560px);
+    background-image: linear-gradient(180deg, var(--tone-page-top) 0, var(--tone-page-top) 72px, var(--tone-page-mid) 38%, var(--tone-page-base) 100%);
     /* Borders and card shadows on the sheet pick up a hint of the section. */
     --color-border-primary: var(--tone-page-border);
     --color-border-light: var(--tone-page-border-light);
     --shadow-card: var(--tone-page-card-shadow);
     box-shadow: 0 1px 2px rgb(0 0 0 / 14%), 0 18px 44px -18px rgb(0 0 0 / 48%);
-    scrollbar-gutter: stable;
+  }
+  /* Living blobs, like the landing page: slow drift + breathe. Kept inside the
+     sheet's box (even at full travel) so they never add scroll overflow. */
+  html[data-admin-sidebar="v8"] .layout-content::before,
+  html[data-admin-sidebar="v8"] .layout-content::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    will-change: transform, opacity;
+  }
+  html[data-admin-sidebar="v8"] .layout-content::before {
+    left: 3%;
+    top: 30%;
+    width: 50%;
+    height: 62%;
+    background: radial-gradient(closest-side, var(--tone-page-blob), transparent);
+    animation: tone-blob-a 24s ease-in-out infinite alternate;
+  }
+  html[data-admin-sidebar="v8"] .layout-content::after {
+    right: 2%;
+    top: 38%;
+    width: 46%;
+    height: 56%;
+    background: radial-gradient(closest-side, var(--tone-page-blob-2), transparent);
+    animation: tone-blob-b 30s ease-in-out infinite alternate;
+  }
+  /* The sheet is the canvas in V8: page bodies that paint their own
+     (e.g. the rebate board) let the wash and blobs show through. */
+  html[data-admin-sidebar="v8"] .layout-content .rb-page {
+    background: transparent;
   }
   html[data-admin-sidebar="v8"][data-theme="dark"] .layout-content {
     box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), 0 12px 32px -14px rgb(0 0 0 / 65%);
   }
 
-  /* Page title bar: frosted glass instead of solid white, so the section
-     glow shows behind the title and content blurs beneath it on scroll. */
-  html[data-admin-sidebar="v8"] .layout-content .page-header {
-    background-color: var(--tone-page-header) !important;
-    border-bottom-color: var(--tone-page-header-line) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
-  }
 
   /* Strip the outer Surface chrome: the rail keeps its own crisp surface
      and the panel shows the field painted on .layout-container. */
@@ -333,7 +357,9 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html[data-admin-sidebar="v8"] .layout-container::before {
+  html[data-admin-sidebar="v8"] .layout-container::before,
+  html[data-admin-sidebar="v8"] .layout-content::before,
+  html[data-admin-sidebar="v8"] .layout-content::after {
     animation: none;
     transition: none;
   }
