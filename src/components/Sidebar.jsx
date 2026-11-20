@@ -18,6 +18,7 @@ import FlatGroupedNav from "./sidebar/FlatGroupedNav"
 import WorkspaceNav from "./sidebar/WorkspaceNav"
 import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
 import ConsoleSidebar from "./sidebar/console/ConsoleSidebar"
+import "./sidebar/tone/tone.css"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
   SIDEBAR_MODE_FLAT,
@@ -27,6 +28,7 @@ import {
   SIDEBAR_MODE_STAGE,
   SIDEBAR_MODE_ORBIT,
   SIDEBAR_MODE_CONSOLE,
+  SIDEBAR_MODE_TONE,
   SIDEBAR_MODE_STORAGE_KEY,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
@@ -147,7 +149,10 @@ const Sidebar = ({ navItems }) => {
   // V7 shares V6's structure (and is desktop-only too).
   const isConsoleMode = isAdminNav && sidebarMode === SIDEBAR_MODE_CONSOLE && !isMobile
   const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode
+  // V8 is V4 on a category-coloured frame (desktop only; plain V4 on phones).
+  const isToneMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TONE && !isMobile
   const isRailMode = isAdminNav && (
+    sidebarMode === SIDEBAR_MODE_TONE ||
     sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE
     || ((sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_CONSOLE) && isMobile)
   )
@@ -194,8 +199,8 @@ const Sidebar = ({ navItems }) => {
     } else {
       root.removeAttribute("data-admin-category")
     }
-    if (isV5Mode || isOrbitMode) {
-      root.setAttribute("data-admin-sidebar", isConsoleMode ? "v7" : isOrbitMode ? "v6" : "v5")
+    if (isV5Mode || isOrbitMode || isToneMode) {
+      root.setAttribute("data-admin-sidebar", isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : "v5")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -203,7 +208,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode])
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -447,15 +452,19 @@ const Sidebar = ({ navItems }) => {
     )
   }
 
-  const headerTint = isV5Mode
-    ? getCategoryDarkTint(activeAdminCategory)
-    : (isCategorizedMode ? getCategoryTint(activeAdminCategory) : undefined)
+  const headerTint = isToneMode
+    ? "transparent"
+    : isV5Mode
+      ? getCategoryDarkTint(activeAdminCategory)
+      : (isCategorizedMode ? getCategoryTint(activeAdminCategory) : undefined)
   const v5PanelFill = isV5Mode ? getCategoryDarkTint(activeAdminCategory) : undefined
   const activeCategoryConfig = isCategorizedMode
     ? ADMIN_NAV_CATEGORIES.find((category) => category.id === activeAdminCategory)
     : null
   const headerTitle = activeCategoryConfig?.name || "SMS"
-  const headerTitleColor = isV5Mode
+  const headerTitleColor = isToneMode
+    ? "var(--tone-ink-strong, var(--color-text-primary))"
+    : isV5Mode
     ? "var(--v5-selected-ink)"
     : (activeCategoryConfig ? `var(${activeCategoryConfig.colorVar})` : "var(--color-text-primary)")
 
@@ -517,8 +526,9 @@ const Sidebar = ({ navItems }) => {
 
     return renderPlainList(categoryItems, {
       withPins: true,
-      accent: categoryAccent,
-      tintBg: isV5Mode ? undefined : getCategoryTint(activeAdminCategory),
+      // V8: the selected page is a light tile on the coloured frame.
+      accent: isToneMode ? "var(--tone-pill, var(--color-white))" : categoryAccent,
+      tintBg: isToneMode ? "transparent" : isV5Mode ? undefined : getCategoryTint(activeAdminCategory),
     })
   }
 
@@ -535,7 +545,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`${isToneMode ? "tone-shell " : ""}fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
       {/* V5 has no edge stroke; its selected SVG is measured and painted inside
           the full-width list wrapper. */}
       <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>

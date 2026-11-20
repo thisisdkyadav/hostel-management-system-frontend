@@ -8,6 +8,7 @@
  * v5 — "Dock": navy icon rail, white panel; the selected tab flows into the page
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
  * v7 — "Console": v6's layout with a calm, professional look
+ * v8 — "Tone": v4's layout on a mid-tone frame in the category colour; the page floats on it
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -16,6 +17,7 @@ export const SIDEBAR_MODE_RAIL = "v4"
 export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
 export const SIDEBAR_MODE_CONSOLE = "v7"
+export const SIDEBAR_MODE_TONE = "v8"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -76,6 +78,12 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V7",
     name: "Console",
     description: "V6's layout with a calm, professional look: category column, page list, Ctrl+K to go to any page",
+  },
+  {
+    id: SIDEBAR_MODE_TONE,
+    label: "V8",
+    name: "Tone",
+    description: "V4's layout on a colour frame that follows the category; the page floats on it",
   },
 ]
 

@@ -1,0 +1,132 @@
+/* ============================================================
+   V8 "Tone": V4's layout on a mid-tone frame in the category colour.
+   Sidebar.jsx sets html[data-admin-sidebar="v8"] (desktop) and
+   data-admin-category, and puts .tone-shell on the sidebar's box.
+   The rail and page list are one surface; the page floats on it.
+   ============================================================ */
+
+/* Per-category frame. Mid-tones: dark ink reads on them in light mode,
+   light ink in dark mode. */
+html[data-admin-sidebar="v8"] {
+  --tone-surface: #A9B9CD;
+  --tone-ink: #13253D;
+  --tone-ink-strong: #0D3A6B;
+  --tone-pill: #FFFFFF;
+  --tone-pill-ink: var(--tone-ink-strong);
+  --tone-line: rgb(15 30 50 / 12%);
+  --tone-hover: rgb(255 255 255 / 30%);
+}
+html[data-admin-sidebar="v8"][data-admin-category="hostels"] {
+  --tone-surface: #DCA78E;
+  --tone-ink: #3A1B0F;
+  --tone-ink-strong: #85361A;
+}
+html[data-admin-sidebar="v8"][data-admin-category="student-affairs"] {
+  --tone-surface: #B4A5E3;
+  --tone-ink: #24174A;
+  --tone-ink-strong: #5532A8;
+}
+html[data-admin-sidebar="v8"][data-admin-category="staff"] {
+  --tone-surface: #8CC6E2;
+  --tone-ink: #0B2A3B;
+  --tone-ink-strong: #04618F;
+}
+html[data-admin-sidebar="v8"][data-admin-category="dining"] {
+  --tone-surface: #84C07A;
+  --tone-ink: #12301A;
+  --tone-ink-strong: #1C6528;
+}
+
+html[data-admin-sidebar="v8"][data-theme="dark"] {
+  --tone-surface: #2E3A4B;
+  --tone-ink: #E6ECF4;
+  --tone-ink-strong: #FFFFFF;
+  --tone-pill: rgb(255 255 255 / 16%);
+  --tone-pill-ink: #FFFFFF;
+  --tone-line: rgb(255 255 255 / 10%);
+  --tone-hover: rgb(255 255 255 / 8%);
+}
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="hostels"] { --tone-surface: #573428; }
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="student-affairs"] { --tone-surface: #3D3366; }
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="staff"] { --tone-surface: #1E4A60; }
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="dining"] { --tone-surface: #2C4E2A; }
+
+@media (min-width: 768px) {
+  /* The frame fills the window; the page is a rounded sheet on it. */
+  html[data-admin-sidebar="v8"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background: var(--tone-surface);
+    transition: background-color 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html[data-admin-sidebar="v8"] .layout-content {
+    position: relative;
+    min-width: 0;
+    height: calc(100vh - 20px);
+    margin: 10px 10px 10px 0;
+    border-radius: 18px;
+    background-color: var(--color-bg-page);
+    box-shadow: 0 1px 2px rgb(15 30 50 / 8%), 0 10px 30px -16px rgb(15 30 50 / 35%);
+    scrollbar-gutter: stable;
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .layout-content {
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 6%), 0 10px 30px -14px rgb(0 0 0 / 60%);
+  }
+
+  /* Re-theme everything inside the sidebar for the coloured frame. */
+  .tone-shell {
+    --color-bg-primary: var(--tone-surface);
+    --color-bg-secondary: var(--tone-surface);
+    --color-bg-tertiary: var(--tone-hover);
+    --color-bg-hover: var(--tone-hover);
+    --color-border-primary: var(--tone-line);
+    --color-border-light: var(--tone-line);
+    --color-text-primary: var(--tone-ink);
+    --color-text-heading: var(--tone-ink);
+    --color-text-body: var(--tone-ink);
+    --color-text-secondary: color-mix(in srgb, var(--tone-ink) 80%, transparent);
+    --color-text-muted: color-mix(in srgb, var(--tone-ink) 68%, transparent);
+    --color-on-accent: var(--tone-pill-ink);
+    color: var(--tone-ink);
+  }
+  .tone-shell > * {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  .tone-shell .icon-rail,
+  .tone-shell .rail-panel {
+    background: transparent;
+    box-shadow: none;
+  }
+  .tone-shell .icon-rail-logo {
+    color: var(--tone-ink-strong);
+  }
+
+  /* Rail: no tab-to-panel join (it's one surface); the selected category is
+     a light tile, the others sit in the frame's ink. */
+  .tone-shell .rail-join {
+    display: none;
+  }
+  .tone-shell [data-rail-kind="category"] {
+    width: 40px !important;
+    height: 40px !important;
+    color: color-mix(in srgb, var(--tone-ink) 78%, transparent) !important;
+  }
+  .tone-shell [data-rail-kind="category"]:hover {
+    background: var(--tone-hover);
+  }
+  .tone-shell [data-rail-kind="category"][aria-pressed="true"] {
+    background: var(--tone-pill);
+    color: var(--tone-ink-strong) !important;
+    box-shadow: 0 1px 2px rgb(15 30 50 / 12%);
+  }
+  .tone-shell nav[aria-label="Categories"] {
+    gap: 6px;
+  }
+
+  /* Selected page tile: drop the coloured glow under the light pill. */
+  .tone-shell .sidebar-list-in > [aria-hidden] {
+    box-shadow: 0 1px 2px rgb(15 30 50 / 12%) !important;
+  }
+}

@@ -35,7 +35,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
   return (
     <div
       aria-hidden
-      className="absolute left-0 right-0 z-0 pointer-events-none motion-reduce:!transition-none"
+      className="rail-join absolute left-0 right-0 z-0 pointer-events-none motion-reduce:!transition-none"
       style={{
         top: "var(--radius-xl)",
         height: TAB_SIZE,
