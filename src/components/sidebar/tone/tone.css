@@ -33,6 +33,10 @@ html[data-admin-sidebar="v8"] {
   --tone-edge: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 72%, #FFFFFF) 60%, transparent);
   --tone-low: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 86%, #000000) 45%, transparent);
   --tone-sheen: rgb(255 255 255 / 10%);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 6%, #F3F5F9);
+  --tone-page-top: color-mix(in srgb, var(--tone-theme) 10%, #F3F5F9);
+  --tone-page-glow: color-mix(in srgb, var(--tone-theme) 17%, transparent);
+  --tone-page-glow-2: color-mix(in srgb, var(--tone-theme) 12%, transparent);
 
   --tone-ink: #FFFFFF;
   --tone-ink-soft: rgb(255 255 255 / 88%);
@@ -69,6 +73,10 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   --tone-edge: color-mix(in srgb, var(--tone-theme) 26%, transparent);
   --tone-low: color-mix(in srgb, #101418 30%, transparent);
   --tone-sheen: rgb(255 255 255 / 5%);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 3%, #0D0D0D);
+  --tone-page-top: color-mix(in srgb, var(--tone-theme) 6%, #0D0D0D);
+  --tone-page-glow: color-mix(in srgb, var(--tone-theme) 10%, transparent);
+  --tone-page-glow-2: color-mix(in srgb, var(--tone-theme) 6%, transparent);
   --tone-pill: #F4F6FA;
   --tone-pill-ink: color-mix(in srgb, var(--tone-theme) 55%, #000000);
   --tone-line: rgb(255 255 255 / 12%);
@@ -140,7 +148,14 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     height: calc(100vh - 20px);
     margin: 10px 10px 10px 0;
     border-radius: 18px;
-    background-color: var(--color-bg-page);
+    background-color: var(--tone-page-base);
+    /* The sheet carries a quiet wash of the section's colour: light pooling
+       from the top-left (under the page title), a second glow bottom-right,
+       on a base that's barely tinted. It stays put while the page scrolls. */
+    background-image:
+      radial-gradient(1100px 620px at 0% 0%, var(--tone-page-glow), transparent 68%),
+      radial-gradient(900px 700px at 100% 100%, var(--tone-page-glow-2), transparent 70%),
+      linear-gradient(180deg, var(--tone-page-top), var(--tone-page-base) 420px);
     box-shadow: 0 1px 2px rgb(0 0 0 / 14%), 0 18px 44px -18px rgb(0 0 0 / 48%);
     scrollbar-gutter: stable;
   }
