@@ -8,8 +8,6 @@
  * v5 — "Dock": navy icon rail, white panel; the selected tab flows into the page
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
  * v7 — "Console": v6's layout with a calm, professional look
- * v8 — "Layers": v4's layout as three stacked planes (rail, panel, page)
- * v9 — "Frame": v4's layout; rail + panel form one frame, the page floats on it
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -18,8 +16,6 @@ export const SIDEBAR_MODE_RAIL = "v4"
 export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
 export const SIDEBAR_MODE_CONSOLE = "v7"
-export const SIDEBAR_MODE_LAYERS = "v8"
-export const SIDEBAR_MODE_FRAME = "v9"
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -41,18 +37,21 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V1",
     name: "All tabs",
     description: "Everything in one grouped list with a quick filter",
+    hidden: true,
   },
   {
     id: SIDEBAR_MODE_CATEGORIES,
     label: "V2",
     name: "Categories",
     description: "Category bar at the bottom, pinned tabs on Home",
+    hidden: true,
   },
   {
     id: SIDEBAR_MODE_WORKSPACE,
     label: "V3",
     name: "Workspace",
     description: "Pinned, recents and Ctrl+K quick jump",
+    hidden: true,
   },
   {
     id: SIDEBAR_MODE_RAIL,
@@ -77,18 +76,6 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V7",
     name: "Console",
     description: "V6's layout with a calm, professional look: category column, page list, Ctrl+K to go to any page",
-  },
-  {
-    id: SIDEBAR_MODE_LAYERS,
-    label: "V8",
-    name: "Layers",
-    description: "V4's layout in three layers: the rail, the sidebar on top of it, the page on top of both",
-  },
-  {
-    id: SIDEBAR_MODE_FRAME,
-    label: "V9",
-    name: "Frame",
-    description: "V4's layout; rail and sidebar form one frame and the page floats on it",
   },
 ]
 

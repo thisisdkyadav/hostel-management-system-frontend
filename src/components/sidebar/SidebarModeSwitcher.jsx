@@ -59,7 +59,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
           className="absolute right-0 top-full mt-1.5 w-56 p-1.5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] z-50 animate-fadeIn"
           style={{ boxShadow: "var(--shadow-dropdown)" }}
         >
-          {SIDEBAR_MODE_OPTIONS.map((option) => {
+          {SIDEBAR_MODE_OPTIONS.filter((option) => !option.hidden || option.id === mode).map((option) => {
             const isActiveOption = option.id === mode
             return (
               <button
