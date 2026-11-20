@@ -1,0 +1,129 @@
+/* ============================================================
+   V8 "Layers" and V9 "Frame": V4's layout with new surfaces.
+   Sidebar.jsx sets html[data-admin-sidebar="v8" | "v9"] on desktop
+   and puts .rail-shell on the sidebar's outer box in rail modes.
+   Nothing here changes what the sidebar contains or how it works.
+   ============================================================ */
+
+@media (min-width: 768px) {
+  /* ---------- Shared: the page becomes a floating sheet ---------- */
+  html[data-admin-sidebar="v8"] .layout-container,
+  html[data-admin-sidebar="v9"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background: var(--ly-base);
+  }
+  html[data-admin-sidebar="v8"] .layout-content,
+  html[data-admin-sidebar="v9"] .layout-content {
+    position: relative;
+    z-index: 31; /* above the sidebar box (z-30) so the sheet sits on top of it */
+    min-width: 0;
+    height: calc(100vh - 2 * var(--ly-gap));
+    margin: var(--ly-gap) var(--ly-gap) var(--ly-gap) var(--ly-tuck);
+    border-radius: var(--ly-sheet-radius);
+    background-color: var(--color-bg-page);
+    box-shadow: var(--ly-sheet-shadow);
+    scrollbar-gutter: stable;
+  }
+
+  /* The sidebar's own box goes transparent: its parts are the surfaces now. */
+  html[data-admin-sidebar="v8"] .rail-shell > *,
+  html[data-admin-sidebar="v9"] .rail-shell > * {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  html[data-admin-sidebar="v8"] .icon-rail,
+  html[data-admin-sidebar="v9"] .icon-rail {
+    background: transparent;
+  }
+
+  /* ---------- V8 "Layers": base → sidebar panel → page ---------- */
+  html[data-admin-sidebar="v8"] {
+    --ly-base: #dbe3ed;
+    --ly-gap: 8px;
+    --ly-tuck: -12px; /* the page overlaps the panel's right edge */
+    --ly-sheet-radius: 16px;
+    --ly-sheet-shadow:
+      0 0 0 1px rgb(16 32 58 / 6%),
+      -12px 0 28px -12px rgb(16 32 58 / 34%),
+      0 12px 32px -18px rgb(16 32 58 / 34%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] {
+    --ly-base: #07090d;
+    --ly-sheet-shadow:
+      0 0 0 1px rgb(255 255 255 / 7%),
+      -10px 0 26px -10px rgb(0 0 0 / 70%),
+      0 12px 32px -16px rgb(0 0 0 / 70%);
+  }
+  /* Panel is wider by the overlap, so its visible width matches V4. */
+  html[data-admin-sidebar="v8"] .rail-shell {
+    width: 320px;
+  }
+  /* Middle layer: inset from top and bottom, rounded where it meets the rail,
+     casting a soft shadow down onto the rail. */
+  html[data-admin-sidebar="v8"] .rail-panel {
+    margin-block: var(--ly-gap);
+    border-radius: 14px 0 0 14px;
+    background: var(--color-bg-primary);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgb(16 32 58 / 6%),
+      -8px 0 20px -10px rgb(16 32 58 / 34%),
+      0 8px 22px -14px rgb(16 32 58 / 30%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .rail-panel {
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 6%),
+      -6px 0 18px -8px rgb(0 0 0 / 65%);
+  }
+  /* The list reaches the page's overlap: keep its right edge clear of it. */
+  html[data-admin-sidebar="v8"] .rail-panel .sidebar-scrollbar {
+    padding-right: calc(1rem + 12px);
+  }
+  html[data-admin-sidebar="v8"] .rail-panel > :first-child > div {
+    padding-right: calc(1.25rem + 12px);
+  }
+
+  /* ---------- V9 "Frame": rail + sidebar are one frame, the page floats ---------- */
+  html[data-admin-sidebar="v9"] {
+    --ly-base: #1b2d4a;
+    --ly-gap: 10px;
+    --ly-tuck: 0px;
+    --ly-sheet-radius: 16px;
+    --ly-sheet-shadow: 0 0 0 1px rgb(255 255 255 / 8%), 0 6px 22px -10px rgb(4 12 26 / 55%);
+  }
+  html[data-admin-sidebar="v9"][data-theme="dark"] {
+    --ly-base: #121924;
+    --ly-sheet-shadow: 0 0 0 1px rgb(255 255 255 / 8%), 0 6px 22px -10px rgb(0 0 0 / 70%);
+  }
+  /* Re-theme the sidebar for the frame: every colour inside it reads these. */
+  html[data-admin-sidebar="v9"] .rail-shell {
+    --color-bg-primary: var(--ly-base);
+    --color-bg-secondary: var(--ly-base);
+    --color-bg-tertiary: rgb(255 255 255 / 6%);
+    --color-bg-hover: rgb(255 255 255 / 8%);
+    --color-border-primary: rgb(255 255 255 / 10%);
+    --color-border-light: rgb(255 255 255 / 8%);
+    --color-text-primary: #f1f5fb;
+    --color-text-heading: #f1f5fb;
+    --color-text-body: #dde5f0;
+    --color-text-secondary: rgb(221 229 240 / 80%);
+    --color-text-muted: rgb(205 216 232 / 60%);
+    --color-primary: #5b9fe8;
+    --color-cat-home: #4f95e3;
+    --color-cat-hostels: #4f95e3;
+    color: var(--color-text-body);
+  }
+  /* One surface: no shadow between rail and panel. */
+  html[data-admin-sidebar="v9"] .rail-panel {
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .icon-rail-logo {
+    color: #ffffff;
+  }
+  html[data-admin-sidebar="v9"] .sidebar-mode-button {
+    background: rgb(255 255 255 / 8%) !important;
+    color: var(--color-text-secondary) !important;
+  }
+}
