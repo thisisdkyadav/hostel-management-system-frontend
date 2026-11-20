@@ -1,0 +1,907 @@
+/* ============================================================
+   V14 "Metro" (Lab) — the admin shell as a transit map.
+   Sidebar sets html[data-admin-sidebar="v14"] + data-admin-category.
+   Every class and keyframe is prefixed lx-metro-.
+   ============================================================ */
+
+html[data-admin-sidebar="v14"] {
+  --lx-metro-w: 300px;
+  --lx-metro-paper: #f3f0e8;
+  --lx-metro-paper-2: #e9e4d8;
+  --lx-metro-card: #fffdf8;
+  --lx-metro-ink: #16181d;
+  --lx-metro-ink-2: #474b55;
+  --lx-metro-ink-3: #7d818b;
+  --lx-metro-rule: rgb(22 24 29 / 12%);
+  --lx-metro-grid: rgb(22 24 29 / 4.5%);
+  --lx-metro-stn: #ffffff;
+  --lx-metro-ring: #16181d;
+  --lx-metro-board: #0c0d10;
+  --lx-metro-board-2: #17191e;
+  --lx-metro-board-edge: #2a2d33;
+  --lx-metro-led: #ffb02e;
+  --lx-metro-led-dim: rgb(255 176 46 / 45%);
+  --lx-metro-led-glow: rgb(255 150 20 / 55%);
+  --lx-metro-tile: #e9e6de;
+  --lx-metro-exit: #0f8a4c;
+  --lx-metro-exit-ink: #ffffff;
+  --lx-metro-new: #ffd23f;
+  --lx-metro-new-ink: #1b1a14;
+  --lx-metro-live: #16a34a;
+  --lx-metro-alert: #d92d20;
+  --lx-metro-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-metro-rail-ease: cubic-bezier(0.45, 0, 0.2, 1);
+  --lx-metro-sign: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --lx-metro-led-font: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Courier New", monospace;
+  --lx-metro-c: var(--color-cat-home, #1360ab);
+}
+html[data-admin-sidebar="v14"][data-theme="dark"] {
+  --lx-metro-paper: #111318;
+  --lx-metro-paper-2: #191c22;
+  --lx-metro-card: #1b1e25;
+  --lx-metro-ink: #eceef2;
+  --lx-metro-ink-2: #b6bac4;
+  --lx-metro-ink-3: #7f8490;
+  --lx-metro-rule: rgb(236 238 242 / 11%);
+  --lx-metro-grid: rgb(236 238 242 / 3.5%);
+  --lx-metro-stn: #111318;
+  --lx-metro-ring: #eceef2;
+  --lx-metro-board: #07080a;
+  --lx-metro-board-edge: #24272d;
+  --lx-metro-tile: #d9d6ce;
+  --lx-metro-exit: #14a35c;
+  --lx-metro-alert: #f04438;
+}
+
+/* Line colours. The html flag tints the page frame; data-cat tints the dock
+   and each badge keeps its own colour. */
+html[data-admin-sidebar="v14"][data-admin-category="home"], .lx-metro [data-cat="home"], .lx-metro[data-cat="home"] { --lx-metro-c: var(--color-cat-home, #1360ab); }
+html[data-admin-sidebar="v14"][data-admin-category="hostels"], .lx-metro [data-cat="hostels"], .lx-metro[data-cat="hostels"] { --lx-metro-c: var(--color-cat-hostels, #0284c7); }
+html[data-admin-sidebar="v14"][data-admin-category="student-affairs"], .lx-metro [data-cat="student-affairs"], .lx-metro[data-cat="student-affairs"] { --lx-metro-c: var(--color-cat-student-affairs, #db2777); }
+html[data-admin-sidebar="v14"][data-admin-category="staff"], .lx-metro [data-cat="staff"], .lx-metro[data-cat="staff"] { --lx-metro-c: var(--color-cat-staff, #7048c8); }
+html[data-admin-sidebar="v14"][data-admin-category="dining"], .lx-metro [data-cat="dining"], .lx-metro[data-cat="dining"] { --lx-metro-c: var(--color-cat-dining, #059669); }
+
+.lx-metro [data-branch="home"] { --lx-metro-b: var(--color-cat-home, #1360ab); }
+.lx-metro [data-branch="hostels"] { --lx-metro-b: var(--color-cat-hostels, #0284c7); }
+.lx-metro [data-branch="student-affairs"] { --lx-metro-b: var(--color-cat-student-affairs, #db2777); }
+.lx-metro [data-branch="staff"] { --lx-metro-b: var(--color-cat-staff, #7048c8); }
+.lx-metro [data-branch="dining"] { --lx-metro-b: var(--color-cat-dining, #059669); }
+
+/* ---------- The map paper behind everything ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v14"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--lx-metro-paper);
+    background-image:
+      linear-gradient(var(--lx-metro-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-metro-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* The page: a platform, its edge painted in the line colour. */
+  html[data-admin-sidebar="v14"] .layout-content {
+    position: relative;
+    height: calc(100vh - 20px);
+    margin: 10px 10px 10px 0;
+    border-radius: 14px;
+    border: 1px solid var(--lx-metro-rule);
+    border-top: 5px solid var(--lx-metro-c);
+    background-color: var(--color-bg-page);
+    box-shadow: 0 1px 0 var(--lx-metro-rule), 0 18px 50px -24px rgb(0 0 0 / 35%);
+    scrollbar-gutter: stable;
+    transition: border-color 500ms var(--lx-metro-ease);
+  }
+}
+
+/* ---------- Dock ---------- */
+.lx-metro {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: var(--lx-metro-w, 300px);
+  flex: 0 0 var(--lx-metro-w, 300px);
+  height: 100vh;
+  padding: 10px 10px 10px 10px;
+  color: var(--lx-metro-ink);
+  font-family: var(--lx-metro-sign);
+}
+:where(.lx-metro) button { font-family: inherit; color: inherit; cursor: pointer; }
+.lx-metro button:focus-visible {
+  outline: 2px solid var(--lx-metro-c);
+  outline-offset: 2px;
+}
+.lx-metro-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Departure board ---------- */
+.lx-metro-board {
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--lx-metro-board-2), var(--lx-metro-board));
+  border: 1px solid var(--lx-metro-board-edge);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 10px 24px -14px rgb(0 0 0 / 60%);
+  color: var(--lx-metro-led);
+  overflow: visible;
+}
+.lx-metro-board__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 7px 10px;
+  border-bottom: 1px solid var(--lx-metro-board-edge);
+}
+.lx-metro-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 6px;
+}
+.lx-metro-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--lx-metro-c);
+  transition: background-color 500ms var(--lx-metro-ease);
+}
+/* An original mark: a station dot sitting on a short rail. */
+.lx-metro-brand__mark > span {
+  position: relative;
+  width: 16px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--lx-metro-card);
+}
+.lx-metro-brand__mark > span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--lx-metro-c);
+  border: 2.5px solid var(--lx-metro-card);
+  box-sizing: border-box;
+}
+.lx-metro-brand__word {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  color: var(--lx-metro-tile);
+  font-weight: 800;
+  font-size: var(--font-size-md);
+  letter-spacing: 0.08em;
+  text-align: left;
+}
+.lx-metro-brand__word small {
+  margin-top: 2px;
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--lx-metro-led-dim);
+}
+
+/* Flip clock */
+.lx-metro-clock {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  perspective: 300px;
+}
+.lx-metro-clock__tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 24px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #2b2e35 0 50%, #22252b 50% 100%);
+  color: var(--lx-metro-tile);
+  font-family: var(--lx-metro-sign);
+  font-weight: 800;
+  font-size: var(--font-size-lg);
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 50%), 0 1px 0 rgb(255 255 255 / 5%);
+  transform-origin: 50% 50%;
+  animation: lx-metro-flip 520ms var(--lx-metro-ease) both;
+}
+.lx-metro-clock__tile::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgb(0 0 0 / 70%);
+}
+.lx-metro-clock__colon {
+  width: 6px;
+  text-align: center;
+  font-weight: 800;
+  color: var(--lx-metro-led);
+  text-shadow: 0 0 6px var(--lx-metro-led-glow);
+  animation: lx-metro-blink 2s steps(1) infinite;
+}
+.lx-metro-mode .sidebar-mode-button {
+  height: 26px !important;
+  background: var(--lx-metro-board-2) !important;
+  color: var(--lx-metro-led) !important;
+  border: 1px solid var(--lx-metro-board-edge);
+  font-family: var(--lx-metro-led-font);
+}
+.lx-metro-mode .sidebar-mode-button:hover { border-color: var(--lx-metro-led-dim); }
+
+/* The LED screen: amber dot-matrix text over a fine dot mesh. */
+.lx-metro-board__screen {
+  position: relative;
+  padding: 7px 10px 0;
+  font-family: var(--lx-metro-led-font);
+  text-transform: uppercase;
+  overflow: hidden;
+  border-radius: 0 0 11px 11px;
+}
+.lx-metro-board__screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 38%) 55%);
+  background-size: 3px 3px;
+}
+.lx-metro-board__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  min-height: 20px;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 6px var(--lx-metro-led-glow);
+  white-space: nowrap;
+}
+.lx-metro-board__row--dim { min-height: 18px; color: var(--lx-metro-led-dim); text-shadow: none; font-size: var(--font-size-sm); }
+.lx-metro-board__label {
+  flex: 0 0 34px;
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.14em;
+  color: var(--lx-metro-led-dim);
+  text-shadow: none;
+}
+.lx-metro-board__plat {
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: var(--lx-metro-c);
+  color: var(--lx-metro-card);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.04em;
+  text-shadow: none;
+}
+.lx-metro-flap {
+  display: inline-flex;
+  min-width: 0;
+  overflow: hidden;
+  perspective: 200px;
+}
+.lx-metro-flap__ch {
+  display: inline-block;
+  transform-origin: 50% 0;
+  animation: lx-metro-flip 360ms var(--lx-metro-ease) both;
+  animation-delay: calc(var(--d, 0) * 22ms);
+}
+
+.lx-metro-ticker {
+  position: relative;
+  margin: 5px -10px 0;
+  padding: 4px 0 5px;
+  border-top: 1px dashed var(--lx-metro-board-edge);
+  overflow: hidden;
+  color: var(--lx-metro-led-dim);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.lx-metro-ticker__track {
+  display: inline-flex;
+  animation: lx-metro-ticker 48s linear infinite;
+}
+.lx-metro-ticker__track > span { padding-right: 48px; }
+.lx-metro-ticker:hover .lx-metro-ticker__track { animation-play-state: paused; }
+
+/* ---------- Line badges ---------- */
+.lx-metro-lines {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 4px 0 0;
+}
+.lx-metro-lines__track {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, var(--lx-metro-rule) 0 8px, transparent 8px 12px);
+}
+.lx-metro-badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 0 2px;
+  border: 0;
+  background: none;
+  border-radius: 10px;
+}
+.lx-metro-badge__disc {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--lx-metro-paper);
+  color: var(--lx-metro-c);
+  border: 3px solid var(--lx-metro-c);
+  box-shadow: 0 0 0 3px var(--lx-metro-paper);
+  transition: transform 300ms var(--lx-metro-ease), background-color 200ms, color 200ms;
+}
+.lx-metro-badge:hover .lx-metro-badge__disc { transform: translateY(-2px); }
+.lx-metro-badge[data-active] .lx-metro-badge__disc {
+  background: var(--lx-metro-c);
+  color: var(--lx-metro-card);
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px var(--lx-metro-paper), 0 0 0 5px var(--lx-metro-c);
+}
+.lx-metro-badge__code {
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--lx-metro-ink-3);
+}
+.lx-metro-badge[data-active] .lx-metro-badge__code { color: var(--lx-metro-ink); }
+.lx-metro-badge__count {
+  position: absolute;
+  top: -4px;
+  left: calc(50% + 8px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--lx-metro-alert);
+  color: var(--lx-metro-exit-ink);
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 2px var(--lx-metro-paper);
+}
+.lx-metro-badge__new {
+  position: absolute;
+  top: -1px;
+  left: calc(50% + 11px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lx-metro-new);
+  box-shadow: 0 0 0 2px var(--lx-metro-paper);
+  animation: lx-metro-ping 1.8s ease-out infinite;
+}
+
+/* ---------- Platform sign ---------- */
+.lx-metro-sign {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--lx-metro-card);
+  border: 1px solid var(--lx-metro-rule);
+  border-left: 6px solid var(--lx-metro-c);
+  animation: lx-metro-slide-in 420ms var(--lx-metro-ease) both;
+}
+.lx-metro-sign__num {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--lx-metro-c);
+  color: var(--lx-metro-card);
+  font-weight: 800;
+  font-size: var(--font-size-lg);
+}
+.lx-metro-sign__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lx-metro-sign__name {
+  font-weight: 800;
+  font-size: var(--font-size-md);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lx-metro-sign__sub {
+  font-size: var(--font-size-xs);
+  color: var(--lx-metro-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lx-metro-sign__sub strong { color: var(--lx-metro-ink-2); font-weight: 700; }
+
+/* ---------- The route ---------- */
+.lx-metro-map {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -4px;
+  padding: 0 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lx-metro-rule) transparent;
+}
+.lx-metro-route {
+  --lx-metro-x: 28px;
+  --lx-metro-row: 38px;
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 10px 0 14px;
+}
+/* The line itself, cap to cap. */
+.lx-metro-route::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--lx-metro-x) - 4px);
+  top: calc(10px + var(--lx-metro-row) / 2 - 10px);
+  bottom: calc(14px + var(--lx-metro-row) / 2 - 10px);
+  width: 8px;
+  border-radius: 4px;
+  background: var(--lx-metro-c);
+  transition: background-color 500ms var(--lx-metro-ease);
+  animation: lx-metro-draw 520ms var(--lx-metro-ease) both;
+  transform-origin: 50% 0;
+}
+.lx-metro-route[data-empty]::before { display: none; }
+
+.lx-metro-stop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--lx-metro-row);
+  animation: lx-metro-stop-in 380ms var(--lx-metro-ease) both;
+  animation-delay: calc(var(--i, 0) * 28ms + 80ms);
+}
+.lx-metro-stop__go {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px 0 calc(var(--lx-metro-x) + 22px);
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  text-align: left;
+  transition: background-color 160ms;
+}
+.lx-metro-stop__go:hover { background: color-mix(in oklab, var(--lx-metro-c) 9%, transparent); }
+.lx-metro-stop[data-active] .lx-metro-stop__go {
+  background: color-mix(in oklab, var(--lx-metro-c) 15%, var(--lx-metro-card));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lx-metro-c) 35%, transparent);
+}
+
+/* Station markers: a coloured-rim dot; interchanges get the black ring. */
+.lx-metro-stop__marker {
+  position: absolute;
+  left: calc(var(--lx-metro-x) - 7px);
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--lx-metro-stn);
+  border: 3px solid var(--lx-metro-c);
+  box-sizing: border-box;
+  z-index: 2;
+  transition: transform 220ms var(--lx-metro-ease);
+}
+.lx-metro-stop[data-terminus] .lx-metro-stop__marker {
+  left: calc(var(--lx-metro-x) - 9px);
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-width: 4px;
+}
+.lx-metro-stop[data-interchange] .lx-metro-stop__marker {
+  left: calc(var(--lx-metro-x) - 9px);
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border: 3px solid var(--lx-metro-ring);
+  box-shadow: 0 0 0 2px var(--lx-metro-stn);
+}
+/* The stub of the connecting line, leaving the trunk to the left. */
+.lx-metro-stop__branch {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: calc(var(--lx-metro-x) - 8px);
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 3px 0 0 3px;
+  background: var(--lx-metro-b);
+  z-index: 1;
+}
+.lx-metro-stop__go:hover .lx-metro-stop__marker { transform: scale(1.18); }
+.lx-metro-stop[data-active] .lx-metro-stop__marker {
+  background: var(--lx-metro-c);
+  border-color: var(--lx-metro-stn);
+  box-shadow: 0 0 0 3px var(--lx-metro-c);
+  animation: lx-metro-arrive 900ms var(--lx-metro-ease) 420ms both;
+}
+
+.lx-metro-stop__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--lx-metro-ink-2);
+  transition: transform 200ms var(--lx-metro-ease), color 160ms;
+}
+.lx-metro-stop__go:hover .lx-metro-stop__name { color: var(--lx-metro-ink); transform: translateX(2px); }
+.lx-metro-stop[data-active] .lx-metro-stop__name { color: var(--lx-metro-ink); font-weight: 800; }
+.lx-metro-stop[data-interchange] .lx-metro-stop__name { color: var(--lx-metro-ink); }
+
+.lx-metro-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.lx-metro-chip--count { background: var(--lx-metro-ink); color: var(--lx-metro-paper); letter-spacing: 0; }
+.lx-metro-chip--new { background: var(--lx-metro-new); color: var(--lx-metro-new-ink); }
+.lx-metro-chip--live {
+  gap: 4px;
+  background: color-mix(in oklab, var(--lx-metro-live) 16%, transparent);
+  color: var(--lx-metro-live);
+}
+.lx-metro-chip--live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.lx-metro-chip--live[data-pulse]::before { animation: lx-metro-blink 1.2s steps(1) infinite; }
+
+.lx-metro-stop__pin {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-left: 2px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--lx-metro-ink-3);
+  opacity: 0;
+  transition: opacity 150ms, background-color 150ms, color 150ms;
+}
+.lx-metro-stop:hover .lx-metro-stop__pin,
+.lx-metro-stop:focus-within .lx-metro-stop__pin,
+.lx-metro-stop__pin[data-pinned] { opacity: 1; }
+.lx-metro-stop__pin:hover { background: var(--lx-metro-paper-2); color: var(--lx-metro-ink); }
+.lx-metro-stop__pin[data-pinned] { color: var(--color-cat-home, #1360ab); }
+.lx-metro-stop__pin[data-pinned] svg { fill: currentColor; }
+
+.lx-metro-empty {
+  padding: 18px 12px;
+  border: 2px dashed var(--lx-metro-rule);
+  border-radius: 10px;
+  color: var(--lx-metro-ink-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+/* ---------- The train ---------- */
+.lx-metro-train {
+  position: absolute;
+  left: calc(var(--lx-metro-x) - 11px);
+  top: -21px;
+  z-index: 3;
+  width: 22px;
+  height: 42px;
+  pointer-events: none;
+  transition-property: transform, opacity;
+  transition-timing-function: var(--lx-metro-rail-ease), ease;
+  will-change: transform;
+}
+.lx-metro-train[data-hidden="true"] { opacity: 0; }
+.lx-metro-train__car {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 42px;
+  transition: transform 320ms var(--lx-metro-ease);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 35%));
+}
+.lx-metro-train[data-dir="up"] .lx-metro-train__car { transform: rotate(180deg); }
+.lx-metro-train__car svg { display: block; overflow: visible; }
+/* Headlight beam ahead of the nose. */
+.lx-metro-train__car::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 38px;
+  width: 26px;
+  height: 26px;
+  transform: translateX(-50%);
+  background: radial-gradient(60% 100% at 50% 0%, rgb(255 225 120 / 70%), transparent 72%);
+  pointer-events: none;
+}
+.lx-metro-train__body { fill: var(--lx-metro-card); stroke: var(--lx-metro-ink); stroke-width: 1.4; }
+.lx-metro-train__stripe { fill: var(--lx-metro-c); }
+.lx-metro-train__glass { fill: var(--lx-metro-ink); opacity: 0.85; }
+.lx-metro-train__lamp { fill: #ffe27a; }
+
+/* ---------- Footer: the pass + service controls ---------- */
+.lx-metro-foot { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; }
+.lx-metro-pass {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px 8px 0;
+  border: 1px solid var(--lx-metro-rule);
+  border-radius: 10px;
+  background: var(--lx-metro-card);
+  text-align: left;
+  overflow: hidden;
+  transition: border-color 160ms, transform 200ms var(--lx-metro-ease);
+}
+/* Ticket notches. */
+.lx-metro-pass::before,
+.lx-metro-pass::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lx-metro-paper);
+  border: 1px solid var(--lx-metro-rule);
+}
+.lx-metro-pass::before { top: -6px; }
+.lx-metro-pass::after { bottom: -6px; }
+.lx-metro-pass:hover { border-color: var(--lx-metro-c); transform: translateY(-1px); }
+.lx-metro-pass[data-active] { border-color: var(--lx-metro-c); box-shadow: inset 0 0 0 1px var(--lx-metro-c); }
+.lx-metro-pass__band {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  margin: -8px 0;
+  background: var(--lx-metro-c);
+  color: var(--lx-metro-card);
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  transition: background-color 500ms var(--lx-metro-ease);
+}
+.lx-metro-avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-left: 6px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--lx-metro-paper-2);
+  color: var(--lx-metro-ink);
+  font-weight: 800;
+  border: 2px solid var(--lx-metro-c);
+}
+.lx-metro-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.lx-metro-pass__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lx-metro-pass__name { font-weight: 800; font-size: var(--font-size-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lx-metro-pass__mail { font-size: var(--font-size-xs); color: var(--lx-metro-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.lx-metro-foot__row { display: flex; gap: 8px; }
+.lx-metro-service,
+.lx-metro-exit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  border-radius: 8px;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 160ms var(--lx-metro-ease), background-color 160ms, border-color 160ms;
+}
+.lx-metro-service {
+  flex: 1 1 auto;
+  border: 1px solid var(--lx-metro-rule);
+  background: var(--lx-metro-card);
+  color: var(--lx-metro-ink-2);
+}
+.lx-metro-service:hover { border-color: var(--lx-metro-ink-3); color: var(--lx-metro-ink); }
+/* A green exit sign, as on every platform. */
+.lx-metro-exit {
+  flex: 0 0 auto;
+  padding: 0 12px;
+  border: 0;
+  background: var(--lx-metro-exit);
+  color: var(--lx-metro-exit-ink);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 25%);
+}
+.lx-metro-exit svg { transition: transform 200ms var(--lx-metro-ease); }
+.lx-metro-exit:hover svg { transform: translateX(3px); }
+.lx-metro-service:active,
+.lx-metro-exit:active { transform: scale(0.97); }
+
+/* ---------- Doors over the page ---------- */
+.lx-metro-doors {
+  position: fixed;
+  top: 10px;
+  bottom: 10px;
+  left: var(--lx-metro-w, 300px);
+  right: 10px;
+  z-index: 60;
+  display: none;
+  overflow: hidden;
+  border-radius: 14px;
+  pointer-events: none;
+}
+.lx-metro-doors.is-opening { display: block; }
+.lx-metro-doors__leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--lx-metro-c) 78%, black), var(--lx-metro-c) 40%, color-mix(in oklab, var(--lx-metro-c) 88%, white));
+}
+/* Window and grab bar on each leaf, both close to the seam. */
+.lx-metro-doors__leaf::before,
+.lx-metro-doors__leaf::after {
+  content: "";
+  position: absolute;
+}
+.lx-metro-doors__leaf::before {
+  top: 12%;
+  height: 36%;
+  width: min(42%, 220px);
+  border-radius: 22px;
+  background: linear-gradient(160deg, color-mix(in oklab, var(--lx-metro-paper) 80%, transparent), color-mix(in oklab, var(--lx-metro-paper) 45%, transparent));
+  box-shadow: inset 0 0 0 7px color-mix(in oklab, var(--lx-metro-ink) 70%, transparent);
+}
+.lx-metro-doors__leaf::after {
+  top: 54%;
+  height: 16%;
+  width: 7px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--lx-metro-paper) 75%, transparent);
+}
+.lx-metro-doors__leaf--l {
+  left: 0;
+  border-right: 3px solid var(--lx-metro-ink);
+  animation: lx-metro-door-l 500ms var(--lx-metro-rail-ease) both;
+}
+.lx-metro-doors__leaf--l::before { right: 9%; }
+.lx-metro-doors__leaf--l::after { right: 3%; }
+.lx-metro-doors__leaf--r {
+  right: 0;
+  border-left: 3px solid var(--lx-metro-ink);
+  animation: lx-metro-door-r 500ms var(--lx-metro-rail-ease) both;
+}
+.lx-metro-doors__leaf--r::before { left: 9%; }
+.lx-metro-doors__leaf--r::after { left: 3%; }
+
+/* ---------- Keyframes ---------- */
+@keyframes lx-metro-flip {
+  from { transform: rotateX(-90deg); opacity: 0.2; }
+  60% { transform: rotateX(12deg); opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes lx-metro-blink {
+  50% { opacity: 0.25; }
+}
+@keyframes lx-metro-ticker {
+  to { transform: translateX(-50%); }
+}
+@keyframes lx-metro-ping {
+  0% { box-shadow: 0 0 0 2px var(--lx-metro-paper), 0 0 0 2px var(--lx-metro-new); }
+  100% { box-shadow: 0 0 0 2px var(--lx-metro-paper), 0 0 0 9px transparent; }
+}
+@keyframes lx-metro-slide-in {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lx-metro-draw {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes lx-metro-stop-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lx-metro-arrive {
+  0% { box-shadow: 0 0 0 3px var(--lx-metro-c), 0 0 0 3px color-mix(in oklab, var(--lx-metro-c) 50%, transparent); }
+  100% { box-shadow: 0 0 0 3px var(--lx-metro-c), 0 0 0 14px transparent; }
+}
+@keyframes lx-metro-door-l {
+  0%, 16% { transform: translateX(0); }
+  100% { transform: translateX(-104%); }
+}
+@keyframes lx-metro-door-r {
+  0%, 16% { transform: translateX(0); }
+  100% { transform: translateX(104%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-metro-clock__tile,
+  .lx-metro-clock__colon,
+  .lx-metro-flap__ch,
+  .lx-metro-ticker__track,
+  .lx-metro-badge__new,
+  .lx-metro-sign,
+  .lx-metro-route::before,
+  .lx-metro-stop,
+  .lx-metro-stop[data-active] .lx-metro-stop__marker,
+  .lx-metro-chip--live[data-pulse]::before { animation: none; }
+  .lx-metro-ticker__track > span + span { display: none; }
+  .lx-metro-ticker__track { display: block; overflow: hidden; text-overflow: ellipsis; }
+  .lx-metro-train,
+  .lx-metro-train__car,
+  .lx-metro-badge__disc,
+  .lx-metro-stop__name,
+  .lx-metro-stop__marker { transition: none; }
+  .lx-metro-doors { display: none !important; }
+}

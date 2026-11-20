@@ -1,0 +1,830 @@
+/* ============================================================
+   Lab V18 "Filing Cabinet": the admin shell as a records-office desk.
+   Sidebar sets html[data-admin-sidebar="v18"] + data-admin-category.
+   Every class and keyframe is prefixed lx-cabinet-.
+   ============================================================ */
+
+html[data-admin-sidebar="v18"] {
+  /* Desk */
+  --lx-cabinet-wood: #a8743f;
+  --lx-cabinet-wood-2: #8f5e2f;
+  --lx-cabinet-wood-3: #c18a52;
+  --lx-cabinet-grain: rgb(70 36 10 / 16%);
+  --lx-cabinet-grain-hi: rgb(255 228 190 / 10%);
+  /* Steel */
+  --lx-cabinet-steel: #c4cad1;
+  --lx-cabinet-steel-2: #a9b0b8;
+  --lx-cabinet-steel-hi: #e3e7eb;
+  --lx-cabinet-steel-lo: #7f8790;
+  --lx-cabinet-brush: rgb(255 255 255 / 9%);
+  --lx-cabinet-front: #d3d8dd;
+  --lx-cabinet-front-2: #b8bfc6;
+  --lx-cabinet-front-ink: #4a525b;
+  --lx-cabinet-well: #555b63;
+  --lx-cabinet-well-2: #3a3f46;
+  /* Paper */
+  --lx-cabinet-manila: #f0d9a2;
+  --lx-cabinet-manila-2: #e2c483;
+  --lx-cabinet-manila-edge: #c9a868;
+  --lx-cabinet-manila-hi: #fbedc6;
+  --lx-cabinet-paper-ink: #3b2c12;
+  --lx-cabinet-paper-ink-2: #6e5a35;
+  --lx-cabinet-card: #fdfaf1;
+  --lx-cabinet-note: #ffe36e;
+  --lx-cabinet-note-2: #f4cf3f;
+  --lx-cabinet-note-ink: #4a3500;
+  --lx-cabinet-clip: #8b939c;
+  --lx-cabinet-clip-hi: #dfe4e9;
+  --lx-cabinet-red: #c2362b;
+  --lx-cabinet-green: #1f8a4c;
+  /* Brass */
+  --lx-cabinet-brass: #d9b45a;
+  --lx-cabinet-brass-2: #a77f2b;
+  --lx-cabinet-brass-ink: #4b3609;
+  --lx-cabinet-shadow: rgb(40 22 6 / 45%);
+  --lx-cabinet-focus: #1d6fe0;
+  --lx-cabinet-lamp-glow: rgb(255 196 104 / 0%);
+  --lx-cabinet-lamp-dim: rgb(255 196 104 / 0%);
+  --lx-cabinet-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-cabinet-spring: cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+html[data-admin-sidebar="v18"][data-theme="dark"] {
+  --lx-cabinet-wood: #3a2414;
+  --lx-cabinet-wood-2: #2a190d;
+  --lx-cabinet-wood-3: #4a3019;
+  --lx-cabinet-grain: rgb(0 0 0 / 28%);
+  --lx-cabinet-grain-hi: rgb(255 200 140 / 5%);
+  --lx-cabinet-steel: #30353c;
+  --lx-cabinet-steel-2: #23272d;
+  --lx-cabinet-steel-hi: #4a5059;
+  --lx-cabinet-steel-lo: #121417;
+  --lx-cabinet-brush: rgb(255 255 255 / 3%);
+  --lx-cabinet-front: #3b4148;
+  --lx-cabinet-front-2: #2c3137;
+  --lx-cabinet-front-ink: #aab3bd;
+  --lx-cabinet-well: #1b1e22;
+  --lx-cabinet-well-2: #0e1012;
+  --lx-cabinet-manila: #dcc28a;
+  --lx-cabinet-manila-2: #c9ab6c;
+  --lx-cabinet-manila-edge: #9c8048;
+  --lx-cabinet-manila-hi: #ecd8a6;
+  --lx-cabinet-paper-ink: #2a1e08;
+  --lx-cabinet-paper-ink-2: #5a4826;
+  --lx-cabinet-card: #e8e0c8;
+  --lx-cabinet-note: #f2d45e;
+  --lx-cabinet-note-2: #d9b632;
+  --lx-cabinet-clip: #9aa3ad;
+  --lx-cabinet-clip-hi: #e6ebf0;
+  --lx-cabinet-brass: #c9a24c;
+  --lx-cabinet-brass-2: #8a6620;
+  --lx-cabinet-shadow: rgb(0 0 0 / 65%);
+  --lx-cabinet-focus: #7fb2ff;
+  --lx-cabinet-lamp-glow: rgb(255 186 90 / 50%);
+  --lx-cabinet-lamp-dim: rgb(255 170 80 / 16%);
+}
+
+/* ---------- The desk under everything; the page is a sheet of paper ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v18"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 40% at 30% 18%, var(--lx-cabinet-grain-hi), transparent 70%),
+      repeating-linear-gradient(93deg, transparent 0 7px, var(--lx-cabinet-grain) 7px 8px, transparent 8px 19px, var(--lx-cabinet-grain) 19px 21px, transparent 21px 34px),
+      repeating-linear-gradient(91deg, var(--lx-cabinet-wood) 0 46px, var(--lx-cabinet-wood-3) 46px 70px, var(--lx-cabinet-wood-2) 70px 84px, var(--lx-cabinet-wood) 84px 130px),
+      var(--lx-cabinet-wood);
+  }
+  /* Lamp pool at night (transparent by day). */
+  html[data-admin-sidebar="v18"] .layout-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(38% 46% at 20% 4%, var(--lx-cabinet-lamp-glow), transparent 72%),
+      radial-gradient(90% 70% at 100% 100%, rgb(0 0 0 / 0%), transparent);
+  }
+  html[data-admin-sidebar="v18"][data-theme="dark"] .layout-container::before {
+    background:
+      radial-gradient(42% 50% at 18% 2%, var(--lx-cabinet-lamp-glow), transparent 72%),
+      radial-gradient(90% 80% at 100% 100%, rgb(0 0 0 / 45%), transparent 70%);
+    animation: lx-cabinet-lamp-on 1100ms steps(1, end) both;
+  }
+
+  html[data-admin-sidebar="v18"] .layout-content {
+    position: relative;
+    height: calc(100vh - 20px);
+    margin: 10px 10px 10px 2px;
+    border-radius: 3px 3px 6px 6px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 30%) inset,
+      0 2px 3px var(--lx-cabinet-shadow),
+      0 22px 40px -18px var(--lx-cabinet-shadow);
+    scrollbar-gutter: stable;
+  }
+
+  /* A big paper clip holding the page to the desk. */
+  html[data-admin-sidebar="v18"] .layout-container::after {
+    content: "";
+    position: absolute;
+    top: 78px;
+    left: 309px;
+    width: 16px;
+    height: 40px;
+    z-index: 40;
+    pointer-events: none;
+    background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 32'%3E%3Cpath d='M5 9v13a2.5 2.5 0 0 0 5 0V6.5a4 4 0 0 0-8 0V23a5 5 0 0 0 10 0V10' fill='none' stroke='%237d8791' stroke-width='1.7' stroke-linecap='round'/%3E%3Cpath d='M5 9v13a2.5 2.5 0 0 0 5 0V6.5a4 4 0 0 0-8 0V23a5 5 0 0 0 10 0V10' fill='none' stroke='%23eef2f6' stroke-width='0.6' stroke-linecap='round' transform='translate(-0.4 -0.4)'/%3E%3C/svg%3E");
+    filter: drop-shadow(1px 2px 1px rgb(0 0 0 / 35%));
+    transform: rotate(-84deg);
+  }
+}
+
+@keyframes lx-cabinet-lamp-on {
+  0% { opacity: 0; }
+  12% { opacity: 0.8; }
+  20% { opacity: 0.1; }
+  32% { opacity: 1; }
+  40% { opacity: 0.35; }
+  52%, 100% { opacity: 1; }
+}
+
+/* ---------- Shell ---------- */
+.lx-cabinet {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  flex: 0 0 300px;
+  height: 100vh;
+  padding: 10px 6px 10px 12px;
+  gap: 10px;
+  color: var(--lx-cabinet-paper-ink);
+  font-family: inherit;
+}
+.lx-cabinet button { font: inherit; color: inherit; cursor: pointer; }
+.lx-cabinet button:focus-visible {
+  outline: 2px solid var(--lx-cabinet-focus);
+  outline-offset: 2px;
+}
+
+/* Warm lamp light washing over the cabinet at night. */
+.lx-cabinet-lamp {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(70% 38% at 78% 0%, var(--lx-cabinet-lamp-glow), transparent 80%),
+    radial-gradient(120% 70% at 60% 10%, var(--lx-cabinet-lamp-dim), transparent 85%);
+  mix-blend-mode: screen;
+}
+/* Night: the far corners fall into shadow outside the lamp's pool. */
+.lx-cabinet[data-dark]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(140% 90% at 70% 0%, transparent 55%, rgb(0 0 0 / 30%) 100%);
+}
+.lx-cabinet[data-dark] .lx-cabinet-lamp {
+  opacity: 1;
+  animation: lx-cabinet-lamp-on 1100ms steps(1, end) both;
+}
+
+/* ---------- Header: brass plate, date stamp, mode switch ---------- */
+.lx-cabinet-head {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+}
+.lx-cabinet-plate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--lx-cabinet-brass-ink) !important;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 10%) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--lx-cabinet-brass) 0%, color-mix(in oklab, var(--lx-cabinet-brass) 70%, white) 38%, var(--lx-cabinet-brass) 60%, var(--lx-cabinet-brass-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 50%),
+    inset 0 -1px 0 rgb(0 0 0 / 25%),
+    0 2px 3px var(--lx-cabinet-shadow);
+  transition: transform 160ms var(--lx-cabinet-ease), filter 160ms;
+}
+.lx-cabinet-plate:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.lx-cabinet-plate__screw {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 44%, rgb(0 0 0 / 45%) 45% 55%, transparent 56%),
+    radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--lx-cabinet-brass) 60%, white), var(--lx-cabinet-brass-2));
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 18%);
+}
+.lx-cabinet-plate__text { white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.05; }
+.lx-cabinet-plate__word {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: var(--font-size-lg, 1.125rem);
+  letter-spacing: 0.14em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 45%);
+}
+.lx-cabinet-plate__sub {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.lx-cabinet-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1px 5px;
+  margin-left: auto;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  color: color-mix(in oklab, var(--lx-cabinet-red) 88%, transparent);
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: 700;
+  line-height: 1.1;
+  transform: rotate(-7deg);
+  mask-image: radial-gradient(circle at 30% 40%, black 60%, rgb(0 0 0 / 70%) 61%, black 75%);
+  user-select: none;
+}
+html[data-theme="dark"] .lx-cabinet-stamp { color: color-mix(in oklab, #f06a5c 85%, transparent); }
+.lx-cabinet-stamp__top { font-size: var(--font-size-xs, 0.75rem); letter-spacing: 0.06em; text-transform: uppercase; }
+.lx-cabinet-stamp__date { white-space: nowrap; font-size: var(--font-size-xs, 0.75rem); letter-spacing: 0.04em; }
+.lx-cabinet-mode { flex: 0 0 auto; }
+/* The shared mode pill, re-cut as a little steel tag. */
+.lx-cabinet-mode .sidebar-mode-button {
+  color: var(--lx-cabinet-front-ink) !important;
+  background: linear-gradient(180deg, var(--lx-cabinet-front), var(--lx-cabinet-front-2)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%), 0 0 0 1px rgb(0 0 0 / 22%), 0 2px 3px var(--lx-cabinet-shadow);
+}
+.lx-cabinet-mode .sidebar-mode-button:hover { filter: brightness(1.08); }
+
+/* ---------- The cabinet ---------- */
+.lx-cabinet-body {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 8px 10px;
+  border-radius: 7px 7px 4px 4px;
+  background:
+    repeating-linear-gradient(0deg, var(--lx-cabinet-brush) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, var(--lx-cabinet-steel-2), var(--lx-cabinet-steel) 18%, var(--lx-cabinet-steel-hi) 50%, var(--lx-cabinet-steel) 82%, var(--lx-cabinet-steel-2));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 35%),
+    inset 0 0 0 1px rgb(0 0 0 / 14%),
+    0 3px 0 var(--lx-cabinet-steel-lo),
+    0 16px 26px -10px var(--lx-cabinet-shadow);
+}
+.lx-cabinet-drawer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+.lx-cabinet-drawer[data-open] {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Drawer front */
+.lx-cabinet-front {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 46px;
+  padding: 0 10px 0 8px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--lx-cabinet-front-ink) !important;
+  background:
+    repeating-linear-gradient(0deg, var(--lx-cabinet-brush) 0 1px, transparent 1px 2px),
+    linear-gradient(180deg, var(--lx-cabinet-front) 0%, var(--lx-cabinet-front-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 45%),
+    inset 0 -2px 0 rgb(0 0 0 / 14%),
+    0 0 0 1px rgb(0 0 0 / 16%),
+    0 2px 2px rgb(0 0 0 / 18%);
+  text-align: left;
+  transition: transform 180ms var(--lx-cabinet-ease), box-shadow 180ms var(--lx-cabinet-ease);
+}
+html[data-theme="dark"] .lx-cabinet-front {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 9%),
+    inset 0 -2px 0 rgb(0 0 0 / 30%),
+    0 0 0 1px rgb(0 0 0 / 40%),
+    0 2px 3px rgb(0 0 0 / 40%);
+}
+.lx-cabinet-drawer:not([data-open]) .lx-cabinet-front:hover {
+  transform: translateY(1px) scale(1.012);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 45%),
+    inset 0 -2px 0 rgb(0 0 0 / 14%),
+    0 0 0 1px rgb(0 0 0 / 16%),
+    0 6px 10px -2px rgb(0 0 0 / 30%);
+}
+.lx-cabinet-drawer[data-open] .lx-cabinet-front {
+  cursor: default;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 45%),
+    inset 0 -2px 0 rgb(0 0 0 / 14%),
+    0 0 0 1px rgb(0 0 0 / 22%),
+    0 9px 14px -4px rgb(0 0 0 / 45%);
+  animation: lx-cabinet-thunk 520ms var(--lx-cabinet-ease) both;
+}
+.lx-cabinet-front[data-closing] { animation: lx-cabinet-slam 360ms var(--lx-cabinet-ease) both; }
+@keyframes lx-cabinet-thunk {
+  0% { transform: translateY(-10px); }
+  55% { transform: translateY(2px); }
+  75% { transform: translateY(-1px); }
+  100% { transform: none; }
+}
+@keyframes lx-cabinet-slam {
+  0% { transform: translateY(-3px) scale(1.02); }
+  40% { transform: translateY(1px) scale(0.99); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+  100% { transform: none; }
+}
+
+.lx-cabinet-front__no {
+  flex: 0 0 auto;
+  width: 14px;
+  font-family: Georgia, serif;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  text-align: center;
+  opacity: 0.7;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 40%);
+}
+html[data-theme="dark"] .lx-cabinet-front__no { text-shadow: 0 -1px 0 rgb(0 0 0 / 60%); }
+
+/* Label holder: a pressed steel frame holding a coloured card. */
+.lx-cabinet-holder {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--lx-cabinet-steel-lo), var(--lx-cabinet-steel-2) 30%, var(--lx-cabinet-steel-hi));
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 40%), 0 1px 0 rgb(255 255 255 / 35%);
+}
+.lx-cabinet-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 8px 0 6px;
+  border-radius: 1px;
+  border-left: 5px solid var(--cat, var(--color-cat-home));
+  color: var(--lx-cabinet-paper-ink);
+  background:
+    linear-gradient(180deg, transparent 0 19px, color-mix(in oklab, var(--cat, var(--color-cat-home)) 30%, transparent) 19px 20px, transparent 20px),
+    linear-gradient(180deg, color-mix(in oklab, var(--cat, var(--color-cat-home)) 20%, var(--lx-cabinet-card)), color-mix(in oklab, var(--cat, var(--color-cat-home)) 12%, var(--lx-cabinet-card)));
+}
+.lx-cabinet-card svg { flex: 0 0 auto; color: color-mix(in oklab, var(--cat, var(--color-cat-home)) 80%, black); }
+.lx-cabinet-card__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* Recessed pull handle */
+.lx-cabinet-handle {
+  flex: 0 0 auto;
+  position: relative;
+  width: 40px;
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, var(--lx-cabinet-steel-lo), var(--lx-cabinet-steel-2) 60%, var(--lx-cabinet-steel-hi));
+  box-shadow: inset 0 2px 3px rgb(0 0 0 / 45%), 0 1px 0 rgb(255 255 255 / 40%);
+}
+.lx-cabinet-handle::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 3px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--lx-cabinet-steel-hi), var(--lx-cabinet-steel));
+  box-shadow: 0 2px 2px rgb(0 0 0 / 35%);
+  transition: transform 180ms var(--lx-cabinet-ease);
+}
+.lx-cabinet-front:hover .lx-cabinet-handle::after { transform: translateY(1px); }
+
+/* ---------- Sticky notes + stamps ---------- */
+.lx-cabinet-note {
+  position: absolute;
+  z-index: 3;
+  top: -7px;
+  right: 6px;
+  min-width: 28px;
+  height: 22px;
+  padding: 3px 5px 0;
+  display: grid;
+  place-items: center;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  color: var(--lx-cabinet-note-ink);
+  background: linear-gradient(170deg, var(--lx-cabinet-note), var(--lx-cabinet-note-2));
+  box-shadow: 1px 2px 3px rgb(0 0 0 / 28%);
+  transform: rotate(5deg);
+  transform-origin: 50% 0;
+  transition: transform 220ms var(--lx-cabinet-spring);
+}
+.lx-cabinet-note__clip {
+  position: absolute;
+  top: -8px;
+  left: 4px;
+  width: 7px;
+  height: 17px;
+  color: var(--lx-cabinet-clip);
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 25%));
+}
+.lx-cabinet-front:hover .lx-cabinet-note { transform: rotate(-3deg); }
+.lx-cabinet-note--sm {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex: 0 0 auto;
+  min-width: 24px;
+  height: 19px;
+  padding-top: 2px;
+  transform: rotate(-4deg);
+}
+.lx-cabinet-note--sm .lx-cabinet-note__clip { top: -7px; height: 14px; width: 6px; }
+.lx-cabinet-folder__go:hover .lx-cabinet-note--sm { transform: rotate(3deg); }
+
+.lx-cabinet-stamp-new {
+  position: absolute;
+  top: -5px;
+  right: 6px;
+  z-index: 3;
+  padding: 0 4px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lx-cabinet-red);
+  background: color-mix(in oklab, var(--lx-cabinet-card) 80%, transparent);
+  transform: rotate(-8deg);
+}
+.lx-cabinet-stamp-new--sm {
+  position: static;
+  flex: 0 0 auto;
+  background: transparent;
+  line-height: 1.25;
+}
+
+/* ---------- The open drawer's well ---------- */
+.lx-cabinet-well {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0 5px -4px;
+  padding: 6px 7px 12px;
+  border-radius: 4px 4px 0 0;
+  background:
+    linear-gradient(90deg, var(--lx-cabinet-steel-2) 0 4px, transparent 4px calc(100% - 4px), var(--lx-cabinet-steel-2) calc(100% - 4px)),
+    linear-gradient(180deg, var(--lx-cabinet-well-2), var(--lx-cabinet-well) 60%);
+  box-shadow:
+    inset 0 10px 14px -6px rgb(0 0 0 / 55%),
+    inset 0 0 0 1px rgb(0 0 0 / 30%);
+  transform-origin: 50% 100%;
+  animation: lx-cabinet-slide-out 480ms var(--lx-cabinet-ease) both;
+}
+@keyframes lx-cabinet-slide-out {
+  from { clip-path: inset(100% 0 0 0); transform: translateY(12px); }
+  to { clip-path: inset(0 0 0 0); transform: none; }
+}
+
+/* Pressboard divider in the category colour */
+.lx-cabinet-divider {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 26px;
+  margin: 0 2px 2px;
+  padding: 0 4px 0 0;
+  border-bottom: 5px solid color-mix(in oklab, var(--cat, var(--color-cat-home)) 75%, black);
+}
+.lx-cabinet-divider__tab {
+  padding: 2px 12px 1px;
+  border-radius: 5px 5px 0 0;
+  color: white;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 5%) 0 2px, transparent 2px 4px),
+    color-mix(in oklab, var(--cat, var(--color-cat-home)) 75%, black);
+}
+.lx-cabinet-divider__meta {
+  padding-bottom: 3px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgb(235 238 242 / 70%);
+}
+
+.lx-cabinet-folders {
+  list-style: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 6px 6px 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 25%) transparent;
+}
+.lx-cabinet-empty {
+  margin: 10px 4px;
+  padding: 14px 12px;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.4;
+  color: var(--lx-cabinet-paper-ink);
+  background: var(--lx-cabinet-card);
+  box-shadow: 1px 2px 4px rgb(0 0 0 / 35%);
+  transform: rotate(-1.2deg);
+}
+
+/* Manila folder: a tab cut at one of three positions, then the body. */
+.lx-cabinet-folder {
+  position: relative;
+  margin-top: 9px;
+  animation: lx-cabinet-file-in 420ms var(--lx-cabinet-ease) both;
+  animation-delay: calc(80ms + var(--i, 0) * 26ms);
+  transition: transform 200ms var(--lx-cabinet-spring);
+}
+.lx-cabinet-folder:first-child { margin-top: 0; }
+@keyframes lx-cabinet-file-in {
+  from { opacity: 0; transform: translateY(22px); }
+}
+.lx-cabinet-folder::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -9px;
+  left: calc(6px + var(--tab, 0) * 31%);
+  width: 34%;
+  height: 11px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, var(--lx-cabinet-manila-hi), var(--lx-cabinet-manila));
+  box-shadow: inset 0 0 0 1px var(--lx-cabinet-manila-edge);
+  clip-path: inset(-2px -2px 1px -2px);
+}
+.lx-cabinet-folder__go {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 30px 5px 10px;
+  border: 0;
+  border-radius: 2px 3px 2px 2px;
+  color: var(--lx-cabinet-paper-ink) !important;
+  text-align: left;
+  background:
+    linear-gradient(180deg, var(--lx-cabinet-manila) 0%, var(--lx-cabinet-manila-2) 100%);
+  box-shadow:
+    inset 0 1px 0 var(--lx-cabinet-manila-hi),
+    inset 0 0 0 1px var(--lx-cabinet-manila-edge),
+    0 -1px 0 rgb(0 0 0 / 8%),
+    0 3px 4px -2px rgb(0 0 0 / 45%);
+  transition: background-color 160ms, box-shadow 200ms;
+}
+.lx-cabinet-folder:hover { transform: translateY(-3px); }
+.lx-cabinet-folder__icon { flex: 0 0 auto; color: var(--lx-cabinet-paper-ink-2); }
+.lx-cabinet-folder__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+}
+
+/* The open tab's folder pops up out of the stack, its tab in the drawer colour. */
+.lx-cabinet-folder[data-active] {
+  z-index: 2;
+  transform: translate(3px, -6px) rotate(-0.8deg);
+}
+.lx-cabinet-folder[data-active]:hover { transform: translate(3px, -7px) rotate(-0.8deg); }
+.lx-cabinet-folder[data-active]::before {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--cat, var(--color-cat-home)) 55%, white), color-mix(in oklab, var(--cat, var(--color-cat-home)) 30%, var(--lx-cabinet-manila-hi)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--cat, var(--color-cat-home)) 70%, black);
+}
+.lx-cabinet-folder[data-active] .lx-cabinet-folder__go {
+  background: linear-gradient(180deg, var(--lx-cabinet-manila-hi), var(--lx-cabinet-manila));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cat, var(--color-cat-home)) 60%, var(--lx-cabinet-manila-edge)),
+    inset 4px 0 0 var(--cat, var(--color-cat-home)),
+    0 10px 16px -6px rgb(0 0 0 / 60%);
+}
+.lx-cabinet-folder[data-active] .lx-cabinet-folder__name { font-weight: 700; }
+.lx-cabinet-folder[data-active] .lx-cabinet-folder__icon { color: color-mix(in oklab, var(--cat, var(--color-cat-home)) 80%, black); }
+
+/* Live: a green rubber stamp with a blinking dot. */
+.lx-cabinet-live {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lx-cabinet-green);
+  transform: rotate(-4deg);
+}
+.lx-cabinet-live[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: lx-cabinet-blink 1.4s ease-in-out infinite;
+}
+@keyframes lx-cabinet-blink { 50% { opacity: 0.2; } }
+.lx-cabinet-folder[data-live] .lx-cabinet-folder__go {
+  background:
+    linear-gradient(90deg, transparent calc(100% - 4px), color-mix(in oklab, var(--lx-cabinet-green) 60%, transparent) calc(100% - 4px)),
+    linear-gradient(180deg, var(--lx-cabinet-manila) 0%, var(--lx-cabinet-manila-2) 100%);
+}
+
+/* Paper clip pin, clipped over the folder's top-right edge. */
+.lx-cabinet-clip {
+  position: absolute;
+  z-index: 3;
+  top: -11px;
+  right: 7px;
+  width: 18px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--lx-cabinet-paper-ink-2) !important;
+  opacity: 0;
+  transform: translateY(-4px) rotate(8deg);
+  transition: opacity 160ms, transform 220ms var(--lx-cabinet-spring);
+}
+.lx-cabinet-clip svg { width: 100%; height: 100%; display: block; }
+.lx-cabinet-clip svg path { stroke-dasharray: 3 2.2; }
+.lx-cabinet-folder:hover .lx-cabinet-clip,
+.lx-cabinet-clip:focus-visible { opacity: 0.75; transform: translateY(-1px) rotate(4deg); }
+.lx-cabinet-clip[data-pinned] {
+  opacity: 1;
+  transform: none;
+  color: color-mix(in oklab, var(--cat, var(--color-cat-home)) 85%, black) !important;
+  filter: drop-shadow(1px 1px 0 rgb(0 0 0 / 30%));
+}
+.lx-cabinet-clip[data-pinned] svg path { stroke-dasharray: none; stroke-width: 2.2; }
+.lx-cabinet-drawer[data-cat="home"] .lx-cabinet-clip[data-pinned] { color: var(--lx-cabinet-clip) !important; }
+.lx-cabinet-clip[data-pinned]:hover { transform: translateY(-3px) rotate(-6deg); }
+
+/* ---------- Desk: name badge, lamp, clock-out ---------- */
+.lx-cabinet-desk {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+}
+.lx-cabinet-badge {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 52px;
+  padding: 6px 10px 6px 7px;
+  border: 0;
+  border-radius: 5px;
+  text-align: left;
+  color: var(--lx-cabinet-paper-ink) !important;
+  background:
+    linear-gradient(180deg, transparent 0 9px, color-mix(in oklab, var(--color-cat-home, #1360ab) 80%, transparent) 9px 11px, transparent 11px),
+    var(--lx-cabinet-card);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 12%), 1px 3px 5px var(--lx-cabinet-shadow);
+  transform: rotate(-1deg);
+  transition: transform 220ms var(--lx-cabinet-spring);
+}
+.lx-cabinet-badge:hover { transform: rotate(0deg) translateY(-2px); }
+.lx-cabinet-badge[data-active] { box-shadow: 0 0 0 2px var(--color-cat-home, #1360ab), 1px 3px 5px var(--lx-cabinet-shadow); }
+.lx-cabinet-badge__photo {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--lx-cabinet-steel-hi), var(--lx-cabinet-steel));
+  color: var(--lx-cabinet-front-ink);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 15%);
+}
+.lx-cabinet-badge__photo img { width: 100%; height: 100%; object-fit: cover; }
+.lx-cabinet-badge__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lx-cabinet-badge__name,
+.lx-cabinet-badge__mail { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.lx-cabinet-badge__name { font-size: var(--font-size-sm, 0.875rem); font-weight: 700; }
+.lx-cabinet-badge__mail { font-size: var(--font-size-xs, 0.75rem); color: var(--lx-cabinet-paper-ink-2); }
+
+.lx-cabinet-tool {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: var(--lx-cabinet-front-ink) !important;
+  background:
+    radial-gradient(circle at 35% 30%, var(--lx-cabinet-steel-hi), var(--lx-cabinet-steel) 55%, var(--lx-cabinet-steel-2));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 40%), 0 0 0 1px rgb(0 0 0 / 18%), 0 3px 5px var(--lx-cabinet-shadow);
+  transition: transform 160ms var(--lx-cabinet-ease), color 160ms, box-shadow 200ms;
+}
+.lx-cabinet-tool:hover { transform: translateY(-2px); }
+.lx-cabinet-tool:active { transform: translateY(1px); }
+.lx-cabinet-tool--lamp[data-on] {
+  color: var(--lx-cabinet-note) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 15%), 0 0 0 1px rgb(0 0 0 / 40%), 0 0 18px 2px var(--lx-cabinet-lamp-glow), 0 3px 5px var(--lx-cabinet-shadow);
+}
+.lx-cabinet-tool--out:hover { color: var(--lx-cabinet-red) !important; }
+html[data-theme="dark"] .lx-cabinet-tool--out:hover { color: #f06a5c !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-admin-sidebar="v18"][data-theme="dark"] .layout-container::before,
+  .lx-cabinet[data-dark] .lx-cabinet-lamp,
+  .lx-cabinet-drawer[data-open] .lx-cabinet-front,
+  .lx-cabinet-front[data-closing],
+  .lx-cabinet-well,
+  .lx-cabinet-folder,
+  .lx-cabinet-live[data-pulse]::before { animation: none; }
+  .lx-cabinet-front,
+  .lx-cabinet-folder,
+  .lx-cabinet-note,
+  .lx-cabinet-clip,
+  .lx-cabinet-badge,
+  .lx-cabinet-tool,
+  .lx-cabinet-plate,
+  .lx-cabinet-handle::after { transition: none; }
+}

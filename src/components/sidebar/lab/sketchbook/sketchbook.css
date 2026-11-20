@@ -1,0 +1,1011 @@
+/* ============================================================
+   Lab X3 "Sketchbook" (v11): a spiral-bound notebook.
+   Light = cream ruled paper on a kraft desk; dark = chalkboard in a
+   wooden frame. Everything is prefixed lx-sketchbook-.
+   ============================================================ */
+
+.lx-sketchbook {
+  --lx-sketchbook-hand: "Ink Free", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", "Comic Neue", cursive;
+  --lx-sketchbook-paper: #fffdf4;
+  --lx-sketchbook-paper-2: #f7f0dc;
+  --lx-sketchbook-rule: rgb(74 132 204 / 26%);
+  --lx-sketchbook-margin: rgb(226 82 82 / 55%);
+  --lx-sketchbook-ink: #262b38;
+  --lx-sketchbook-ink-2: #545b6b;
+  --lx-sketchbook-pencil: #8c909a;
+  --lx-sketchbook-blue-ink: #1f3f94;
+  --lx-sketchbook-red-pen: #d33a3a;
+  --lx-sketchbook-green-ink: #1f8a4c;
+  --lx-sketchbook-orange: #e0580c;
+  --lx-sketchbook-note-base: #fff4b0;
+  --lx-sketchbook-tack: #e0463f;
+  --lx-sketchbook-tack-dark: #a52a24;
+  --lx-sketchbook-needle: #6f7480;
+  --lx-sketchbook-shadow: rgb(60 42 12 / 22%);
+  --lx-sketchbook-hover: rgb(255 214 64 / 22%);
+  --lx-sketchbook-c: var(--color-cat-home, #1360ab);
+  --lx-sketchbook-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-sketchbook-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --lx-sketchbook-pencil-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M3 21 L5 15 L16 4 L20 8 L9 19 Z' fill='%23f6c443' stroke='%23333' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M16 4 L17.5 2.5 L21.5 6.5 L20 8 Z' fill='%23ef8f9a' stroke='%23333' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M3 21 L5 15 L9 19 Z' fill='%23f3dcb0' stroke='%23333' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M3 21 L3.9 18.3 L5.7 20.1 Z' fill='%23333'/%3E%3C/svg%3E") 3 21;
+
+  position: relative;
+  z-index: 30;
+  display: flex;
+  width: 318px;
+  flex: 0 0 318px;
+  height: 100vh;
+  padding: 12px 0 12px 12px;
+  color: var(--lx-sketchbook-ink);
+}
+html[data-theme="dark"] .lx-sketchbook {
+  --lx-sketchbook-paper: #24332b;
+  --lx-sketchbook-paper-2: #1d2a23;
+  --lx-sketchbook-rule: rgb(235 240 230 / 8%);
+  --lx-sketchbook-margin: rgb(255 150 150 / 30%);
+  --lx-sketchbook-ink: #eef1e8;
+  --lx-sketchbook-ink-2: rgb(232 238 226 / 74%);
+  --lx-sketchbook-pencil: rgb(232 238 226 / 50%);
+  --lx-sketchbook-blue-ink: #1f3f94;
+  --lx-sketchbook-red-pen: #ff9a9a;
+  --lx-sketchbook-green-ink: #8ef0b0;
+  --lx-sketchbook-orange: #ffc06a;
+  --lx-sketchbook-shadow: rgb(0 0 0 / 45%);
+  --lx-sketchbook-hover: rgb(255 255 255 / 6%);
+  --lx-sketchbook-pencil-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M3 21 L5.5 16 L15 6.5 L18.5 10 L9 19.5 Z' fill='%23f7f7f2' stroke='%23222' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M3 21 L5.5 16 L9 19.5 Z' fill='%23dedcd2' stroke='%23222' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 3 21;
+}
+
+.lx-sketchbook button {
+  font: inherit;
+  color: inherit;
+  cursor: var(--lx-sketchbook-pencil-cursor), pointer;
+}
+.lx-sketchbook button:focus-visible {
+  outline: 2px dashed var(--lx-sketchbook-c);
+  outline-offset: 2px;
+}
+.lx-sketchbook-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Doodles: lucide strokes run through a turbulence filter so they wobble. */
+.lx-sketchbook-doodle svg,
+svg.lx-sketchbook-doodle {
+  filter: url(#lx-sketchbook-ink-0);
+}
+
+/* ---------- Desk + facing page ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v11"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background-color: #d6c4a0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.25  0 0 0 0 0.12  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(120% 90% at 30% 10%, #e3d4b4, #c9b48c);
+  }
+  html[data-admin-sidebar="v11"][data-theme="dark"] .layout-container {
+    background-color: #121514;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(120% 90% at 30% 10%, #1d2220, #0d0f0e);
+  }
+
+  /* The page is the facing sheet: same paper, lifted off the desk. */
+  html[data-admin-sidebar="v11"] .layout-content {
+    position: relative;
+    height: calc(100vh - 24px);
+    margin: 12px 12px 12px 0;
+    border-radius: 3px 8px 8px 3px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 1px 0 rgb(0 0 0 / 6%),
+      inset 10px 0 14px -12px rgb(60 42 12 / 35%),
+      6px 10px 24px -10px rgb(60 42 12 / 45%);
+    scrollbar-gutter: stable;
+  }
+  html[data-admin-sidebar="v11"][data-theme="dark"] .layout-content {
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 5%), 8px 14px 30px -10px rgb(0 0 0 / 70%);
+  }
+  html[data-admin-sidebar="v11"] .layout-content.lx-sketchbook-turn > * {
+    animation: lx-sketchbook-turn 520ms var(--lx-sketchbook-ease, ease) both;
+  }
+}
+
+/* Geometry stays put (pages measure themselves on mount): clip-path only. */
+@keyframes lx-sketchbook-turn {
+  from { clip-path: polygon(0 0, 0 0, -25% 100%, 0 100%); opacity: 0.4; }
+  to { clip-path: polygon(0 0, 125% 0, 100% 100%, 0 100%); opacity: 1; }
+}
+
+/* ---------- Paper ---------- */
+.lx-sketchbook-paper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 24px;
+  border-radius: 7px 3px 3px 7px;
+  background-color: var(--lx-sketchbook-paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.2  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, var(--lx-sketchbook-paper) 85%, var(--lx-sketchbook-paper-2));
+  box-shadow:
+    0 1px 0 rgb(0 0 0 / 5%),
+    -4px 8px 22px -10px var(--lx-sketchbook-shadow),
+    inset 0 0 0 1px rgb(120 96 50 / 8%);
+}
+/* Red margin line (a double rule, like the real thing). */
+.lx-sketchbook-paper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40px;
+  width: 4px;
+  border-left: 1.5px solid var(--lx-sketchbook-margin);
+  border-right: 1px solid var(--lx-sketchbook-margin);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+html[data-theme="dark"] .lx-sketchbook-paper {
+  margin-right: 12px;
+  border: 8px solid transparent;
+  border-radius: 6px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") padding-box,
+    radial-gradient(70% 40% at 30% 20%, rgb(255 255 255 / 5%), transparent 70%) padding-box,
+    radial-gradient(60% 30% at 70% 75%, rgb(255 255 255 / 4%), transparent 70%) padding-box,
+    linear-gradient(var(--lx-sketchbook-paper), var(--lx-sketchbook-paper-2)) padding-box,
+    linear-gradient(135deg, #8a6237, #5e3f20 30%, #7c5630 55%, #4f341a 80%, #6e4b28) border-box;
+  box-shadow:
+    inset 0 0 18px rgb(0 0 0 / 40%),
+    0 10px 28px -8px rgb(0 0 0 / 70%);
+}
+html[data-theme="dark"] .lx-sketchbook-paper::before {
+  left: 32px;
+}
+/* Chalk tray with two sticks and an eraser, resting on the frame. */
+html[data-theme="dark"] .lx-sketchbook-paper::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -12px;
+  height: 9px;
+  border-radius: 2px 2px 4px 4px;
+  background:
+    linear-gradient(#f4f1e6, #d9d5c7) 58% 1px / 22px 4px no-repeat,
+    linear-gradient(#f6b8c4, #dc93a2) 72% 1px / 16px 4px no-repeat,
+    linear-gradient(90deg, #3b4a6b 0 30%, #d9c9a3 30%) 18% 0 / 34px 7px no-repeat,
+    linear-gradient(#7c5630, #4a3018);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 50%);
+  pointer-events: none;
+}
+
+/* Spiral binding: holes on the paper edge, wire tucking behind the facing page. */
+.lx-sketchbook-spiral {
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  right: 0;
+  width: 34px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='22' viewBox='0 0 34 22'%3E%3Cellipse cx='5' cy='14' rx='2.7' ry='2.9' fill='%23453d30' fill-opacity='0.8'/%3E%3Cpath d='M5.5 14.5 C 5 4.5, 25 2.5, 34 9' fill='none' stroke='%23767b84' stroke-width='2.8' stroke-linecap='round'/%3E%3Cpath d='M6.5 11.5 C 8 5.5, 23 4, 32 8' fill='none' stroke='%23eef0f3' stroke-width='0.9' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 34px 22px repeat-y;
+  filter: drop-shadow(1px 2px 1px rgb(60 42 12 / 30%));
+}
+html[data-theme="dark"] .lx-sketchbook-spiral {
+  display: none;
+}
+
+/* ---------- Header ---------- */
+.lx-sketchbook-head {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 4px 12px;
+}
+.lx-sketchbook-brand {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+}
+.lx-sketchbook-brand__word {
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--lx-sketchbook-blue-ink);
+  transform: rotate(-4deg);
+}
+html[data-theme="dark"] .lx-sketchbook-brand__word {
+  color: var(--lx-sketchbook-ink);
+  text-shadow: 0 0 1px rgb(255 255 255 / 60%);
+}
+.lx-sketchbook-brand__star {
+  width: 15px;
+  height: 15px;
+  margin-top: -4px;
+  fill: #ffd23f;
+  stroke: #c98a00;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  animation: lx-sketchbook-twinkle 4s ease-in-out infinite;
+}
+.lx-sketchbook-brand:hover .lx-sketchbook-brand__star {
+  animation-duration: 0.9s;
+}
+@keyframes lx-sketchbook-twinkle {
+  0%, 100% { transform: rotate(-10deg) scale(1); }
+  50% { transform: rotate(14deg) scale(1.15); }
+}
+
+.lx-sketchbook-date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+  padding: 0 4px 1px;
+  border-bottom: 1.5px dotted var(--lx-sketchbook-pencil);
+  font-family: var(--lx-sketchbook-hand);
+  white-space: nowrap;
+}
+.lx-sketchbook-date__label {
+  font-size: 11px;
+  color: var(--lx-sketchbook-pencil);
+}
+.lx-sketchbook-date__value {
+  font-size: 14px;
+  color: var(--lx-sketchbook-ink-2);
+}
+.lx-sketchbook-mode {
+  margin-left: auto;
+}
+.lx-sketchbook-mode .sidebar-mode-button {
+  font-family: var(--lx-sketchbook-hand) !important;
+  font-size: 12px !important;
+  background: transparent !important;
+  color: var(--lx-sketchbook-ink-2) !important;
+  border: 1.5px solid currentColor;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
+}
+.lx-sketchbook-mode .sidebar-mode-button:hover {
+  background: var(--lx-sketchbook-hover) !important;
+  color: var(--lx-sketchbook-ink) !important;
+}
+
+/* ---------- Sticky notes ---------- */
+.lx-sketchbook-notes {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 12px 18px 10px 10px;
+}
+.lx-sketchbook-note {
+  --lx-sketchbook-note-fill: color-mix(in oklab, var(--lx-sketchbook-c) 24%, var(--lx-sketchbook-note-base));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 62px;
+  padding: 8px 2px 4px;
+  border: 0;
+  border-radius: 1px 1px 2px 10px / 1px 1px 2px 6px;
+  background:
+    linear-gradient(170deg, rgb(255 255 255 / 22%), transparent 40%),
+    linear-gradient(-30deg, rgb(0 0 0 / 7%), transparent 26%),
+    var(--lx-sketchbook-note-fill);
+  color: color-mix(in oklab, var(--lx-sketchbook-c) 72%, #1d2030);
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 8%),
+    2px 5px 7px -3px rgb(60 42 12 / 30%);
+  transform: rotate(var(--lx-sketchbook-tilt, 0deg));
+  transition: transform 260ms var(--lx-sketchbook-spring), box-shadow 200ms ease;
+}
+.lx-sketchbook-note:hover {
+  transform: rotate(calc(var(--lx-sketchbook-tilt, 0deg) * 0.3)) translateY(-3px) scale(1.05);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 8%), 3px 9px 12px -4px rgb(60 42 12 / 32%);
+}
+.lx-sketchbook-note[data-active] {
+  z-index: 2;
+  transform: rotate(0deg) translateY(2px) scale(1.1);
+  --lx-sketchbook-note-fill: color-mix(in oklab, var(--lx-sketchbook-c) 36%, var(--lx-sketchbook-note-base));
+  box-shadow: 0 1px 1px rgb(0 0 0 / 10%), 1px 3px 4px -2px rgb(60 42 12 / 28%);
+  animation: lx-sketchbook-slap 420ms var(--lx-sketchbook-spring);
+}
+@keyframes lx-sketchbook-slap {
+  0% { transform: rotate(var(--lx-sketchbook-tilt, 0deg)) translateY(-8px) scale(1.18); }
+  60% { transform: rotate(-1deg) translateY(3px) scale(1.08); }
+  100% { transform: rotate(0deg) translateY(2px) scale(1.1); }
+}
+.lx-sketchbook-note__tape {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 32px;
+  height: 12px;
+  translate: -50% 0;
+  rotate: -4deg;
+  background:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 45%) 0 3px, transparent 3px 7px),
+    color-mix(in oklab, var(--lx-sketchbook-c) 45%, rgb(255 255 255 / 70%));
+  opacity: 0;
+  clip-path: polygon(0 0, 100% 0, 96% 25%, 100% 50%, 96% 75%, 100% 100%, 0 100%, 4% 75%, 0 50%, 4% 25%);
+  transition: opacity 180ms ease;
+}
+.lx-sketchbook-note[data-active] .lx-sketchbook-note__tape {
+  opacity: 0.85;
+}
+.lx-sketchbook-note__icon {
+  display: grid;
+  place-items: center;
+  height: 20px;
+}
+.lx-sketchbook-note__label {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-width: 100%;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.lx-sketchbook-note__count {
+  position: absolute;
+  top: -9px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 20px;
+  padding: 0 4px;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--lx-sketchbook-red-pen);
+  background: var(--lx-sketchbook-paper);
+  border-radius: 50%;
+  transform: rotate(6deg);
+}
+.lx-sketchbook-note__new {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  font-size: 15px;
+  line-height: 1;
+  color: #f5b000;
+  text-shadow: 0 1px 0 rgb(120 80 0 / 40%);
+}
+
+/* Red-pen circle around a number. */
+.lx-sketchbook-pen-circle {
+  position: absolute;
+  inset: -1px -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  fill: none;
+  stroke: var(--lx-sketchbook-red-pen);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.lx-sketchbook-pen-circle path {
+  vector-effect: non-scaling-stroke;
+}
+.lx-sketchbook-note__count > span,
+.lx-sketchbook-count > span {
+  position: relative;
+}
+
+/* ---------- Page: title + ruled list ---------- */
+.lx-sketchbook-page {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.lx-sketchbook-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 14px 8px 52px;
+  font-weight: inherit;
+}
+html[data-theme="dark"] .lx-sketchbook-title {
+  padding-left: 44px;
+}
+.lx-sketchbook-title__name {
+  position: relative;
+  min-width: 0;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--lx-sketchbook-ink);
+  white-space: nowrap;
+  overflow: visible;
+}
+.lx-sketchbook-title__scribble {
+  position: absolute;
+  left: -6px;
+  right: -8px;
+  bottom: -7px;
+  width: calc(100% + 14px);
+  height: 11px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--lx-sketchbook-c);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.lx-sketchbook-title__scribble path {
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lx-sketchbook-draw 700ms 120ms var(--lx-sketchbook-ease) forwards;
+}
+.lx-sketchbook-title__meta {
+  flex: none;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 12px;
+  color: var(--lx-sketchbook-pencil);
+}
+
+@keyframes lx-sketchbook-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.lx-sketchbook-lines {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 4px 8px 8px 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lx-sketchbook-pencil) transparent;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 33px, var(--lx-sketchbook-rule) 33px 34px);
+  background-position: 0 4px;
+  background-attachment: local;
+}
+
+.lx-sketchbook-row {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 34px;
+  animation: lx-sketchbook-write 460ms calc(min(var(--lx-sketchbook-i, 0), 16) * 32ms) var(--lx-sketchbook-ease) both;
+}
+@keyframes lx-sketchbook-write {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.3; }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+
+.lx-sketchbook-row__go {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 6px;
+  padding: 0 2px 0 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--lx-sketchbook-ink);
+}
+.lx-sketchbook-row__go:focus-visible {
+  outline-offset: -2px;
+}
+.lx-sketchbook-row__margin {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 100%;
+}
+html[data-theme="dark"] .lx-sketchbook-row__margin {
+  width: 32px;
+}
+.lx-sketchbook-row__icon {
+  display: grid;
+  place-items: center;
+  color: var(--lx-sketchbook-ink-2);
+  transition: transform 200ms var(--lx-sketchbook-spring), color 160ms ease;
+}
+.lx-sketchbook-row__go:hover .lx-sketchbook-row__icon {
+  transform: rotate(-10deg) scale(1.12);
+  color: var(--lx-sketchbook-ink);
+}
+.lx-sketchbook-row[data-active] .lx-sketchbook-row__icon {
+  color: color-mix(in oklab, var(--lx-sketchbook-c) 80%, var(--lx-sketchbook-ink));
+}
+.lx-sketchbook-row[data-active] .lx-sketchbook-row__icon svg,
+.lx-sketchbook-note[data-active] .lx-sketchbook-note__icon svg,
+.lx-sketchbook-tool:hover svg,
+.lx-sketchbook-brand:hover .lx-sketchbook-brand__star {
+  animation-name: lx-sketchbook-boil;
+  animation-duration: 0.45s;
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+}
+.lx-sketchbook-brand:hover .lx-sketchbook-brand__star {
+  animation-name: lx-sketchbook-boil, lx-sketchbook-twinkle;
+  animation-duration: 0.45s, 0.9s;
+  animation-timing-function: steps(1, end), ease-in-out;
+}
+@keyframes lx-sketchbook-boil {
+  0% { filter: url(#lx-sketchbook-ink-0); }
+  33% { filter: url(#lx-sketchbook-ink-1); }
+  66% { filter: url(#lx-sketchbook-ink-2); }
+  100% { filter: url(#lx-sketchbook-ink-0); }
+}
+.lx-sketchbook-row__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 31px;
+  translate: -50% -50%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--lx-sketchbook-c);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.lx-sketchbook-row__ring path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lx-sketchbook-draw 520ms 380ms var(--lx-sketchbook-ease) forwards;
+}
+
+.lx-sketchbook-row__label {
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 0 4px 0 6px;
+}
+.lx-sketchbook-row__label + * {
+  margin-left: auto;
+}
+.lx-sketchbook-row__text {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding-top: 5px;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 15px;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Pencil underline on hover: a dashed stroke that slides in. */
+.lx-sketchbook-row__label::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 4px;
+  bottom: 2px;
+  border-bottom: 1.5px dashed var(--lx-sketchbook-pencil);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms var(--lx-sketchbook-ease);
+}
+.lx-sketchbook-row__go:hover .lx-sketchbook-row__label::after {
+  transform: scaleX(1);
+}
+.lx-sketchbook-row[data-active] .lx-sketchbook-row__label::after {
+  display: none;
+}
+.lx-sketchbook-row[data-active] .lx-sketchbook-row__text {
+  font-weight: 700;
+}
+html[data-theme="dark"] .lx-sketchbook-row__text,
+html[data-theme="dark"] .lx-sketchbook-title__name {
+  text-shadow: 0 0 1px rgb(255 255 255 / 45%);
+}
+
+/* The marker swipe that draws itself behind the open tab. */
+.lx-sketchbook-marker {
+  position: absolute;
+  top: 2px;
+  bottom: -1px;
+  left: 0;
+  width: calc(100% + 4px);
+  height: calc(100% + 3px);
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  filter: url(#lx-sketchbook-rough);
+}
+.lx-sketchbook-marker path {
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.lx-sketchbook-marker__swipe {
+  stroke: color-mix(in oklab, var(--lx-sketchbook-c) 34%, #fff27a);
+  stroke-width: 17px;
+  opacity: 0.85;
+  animation: lx-sketchbook-draw 460ms 60ms cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.lx-sketchbook-marker__line {
+  stroke: var(--lx-sketchbook-c);
+  stroke-width: 2px;
+  animation: lx-sketchbook-draw 380ms 460ms var(--lx-sketchbook-ease) forwards;
+}
+html[data-theme="dark"] .lx-sketchbook-marker {
+  mix-blend-mode: normal;
+  filter: url(#lx-sketchbook-chalk);
+}
+html[data-theme="dark"] .lx-sketchbook-marker__swipe {
+  stroke: color-mix(in oklab, var(--lx-sketchbook-c) 45%, transparent);
+  opacity: 0.9;
+}
+
+/* Tags: Live is a rubber stamp, New is scribbled, counts are circled. */
+.lx-sketchbook-stamp {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 15px;
+  text-transform: uppercase;
+  color: var(--lx-sketchbook-green-ink);
+  transform: rotate(-7deg);
+  opacity: 0.9;
+}
+.lx-sketchbook-stamp[data-pulse]::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: lx-sketchbook-pulse 1.4s ease-in-out infinite;
+}
+@keyframes lx-sketchbook-pulse {
+  50% { opacity: 0.2; transform: scale(0.6); }
+}
+.lx-sketchbook-new {
+  flex: none;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--lx-sketchbook-orange);
+  transform: rotate(-9deg);
+  padding: 0 2px;
+  background: linear-gradient(transparent 55%, rgb(255 214 64 / 55%) 55% 90%, transparent 90%);
+}
+html[data-theme="dark"] .lx-sketchbook-new {
+  background: none;
+  text-decoration: underline wavy;
+  text-underline-offset: 3px;
+}
+.lx-sketchbook-count {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 5px;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lx-sketchbook-red-pen);
+}
+
+/* Thumbtack pins. */
+.lx-sketchbook-row__pin {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  border: 0;
+  background: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.lx-sketchbook-row__pin[data-pinned],
+.lx-sketchbook-row:hover .lx-sketchbook-row__pin,
+.lx-sketchbook-row:focus-within .lx-sketchbook-row__pin {
+  opacity: 1;
+}
+.lx-sketchbook-tack {
+  width: 21px;
+  height: 21px;
+  overflow: visible;
+  transform: rotate(40deg) translate(1px, 2px) scale(0.92);
+  transition: transform 320ms var(--lx-sketchbook-spring);
+}
+.lx-sketchbook-row__pin:hover .lx-sketchbook-tack {
+  transform: rotate(12deg) translateY(-3px);
+}
+.lx-sketchbook-tack[data-pinned] {
+  transform: rotate(8deg) translateY(1px);
+}
+.lx-sketchbook-row__pin:hover .lx-sketchbook-tack[data-pinned] {
+  transform: rotate(-18deg) translateY(-4px);
+}
+.lx-sketchbook-tack__shadow {
+  fill: rgb(40 30 10 / 22%);
+  opacity: 0;
+}
+.lx-sketchbook-tack__needle {
+  fill: none;
+  stroke: var(--lx-sketchbook-needle);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.lx-sketchbook-tack__body,
+.lx-sketchbook-tack__cap {
+  fill: none;
+  stroke: var(--lx-sketchbook-pencil);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.lx-sketchbook-tack__shine {
+  fill: rgb(255 255 255 / 70%);
+  opacity: 0;
+}
+.lx-sketchbook-tack[data-pinned] .lx-sketchbook-tack__shadow,
+.lx-sketchbook-tack[data-pinned] .lx-sketchbook-tack__shine {
+  opacity: 1;
+}
+.lx-sketchbook-tack[data-pinned] .lx-sketchbook-tack__body {
+  fill: var(--lx-sketchbook-tack-dark);
+  stroke: var(--lx-sketchbook-tack-dark);
+}
+.lx-sketchbook-tack[data-pinned] .lx-sketchbook-tack__cap {
+  fill: var(--lx-sketchbook-tack);
+  stroke: var(--lx-sketchbook-tack-dark);
+}
+.lx-sketchbook-tack[data-pinned] .lx-sketchbook-tack__needle {
+  opacity: 0;
+}
+html[data-theme="dark"] .lx-sketchbook-tack__shadow {
+  fill: rgb(0 0 0 / 45%);
+}
+
+.lx-sketchbook-empty {
+  padding: 6px 16px 6px 52px;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 14px;
+  line-height: 34px;
+  color: var(--lx-sketchbook-ink-2);
+}
+html[data-theme="dark"] .lx-sketchbook-empty {
+  padding-left: 44px;
+}
+
+/* Doodle of the day, drawn once in the bottom margin. */
+.lx-sketchbook-endnote {
+  display: flex;
+  justify-content: flex-end;
+  height: 68px;
+  padding: 8px 22px 0 0;
+}
+.lx-sketchbook-endnote__doodle {
+  width: 60px;
+  height: 56px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--lx-sketchbook-pencil);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(-6deg);
+  filter: url(#lx-sketchbook-rough);
+}
+.lx-sketchbook-endnote__doodle path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lx-sketchbook-draw 2.2s 700ms ease-in-out forwards;
+}
+
+/* ---------- Footer ---------- */
+.lx-sketchbook-foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 14px 14px;
+  border-top: 1.5px dashed var(--lx-sketchbook-rule);
+}
+.lx-sketchbook-nametag {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  width: 140px;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 10%), 2px 4px 8px -3px rgb(60 42 12 / 35%);
+  transform: rotate(-2.5deg);
+  transition: transform 260ms var(--lx-sketchbook-spring);
+}
+.lx-sketchbook-nametag:hover {
+  transform: rotate(0deg) translateY(-2px);
+}
+.lx-sketchbook-nametag[data-active] {
+  box-shadow: 0 0 0 2px var(--lx-sketchbook-c), 2px 4px 8px -3px rgb(60 42 12 / 35%);
+}
+html[data-theme="dark"] .lx-sketchbook-nametag {
+  background: #f1efe6;
+}
+.lx-sketchbook-nametag__band {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 0 2px;
+  background: #d8393a;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  line-height: 1;
+}
+.lx-sketchbook-nametag__band strong {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+.lx-sketchbook-nametag__band span {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  opacity: 0.92;
+}
+.lx-sketchbook-nametag__name {
+  align-self: stretch;
+  text-align: center;
+  overflow: hidden;
+  padding: 2px 8px 4px;
+  font-family: var(--lx-sketchbook-hand);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #1f3f94;
+}
+.lx-sketchbook-tools {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.lx-sketchbook-tool {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1.5px solid var(--lx-sketchbook-pencil);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  background: none;
+  color: var(--lx-sketchbook-ink-2);
+  transition: transform 220ms var(--lx-sketchbook-spring), color 160ms ease, background-color 160ms ease;
+}
+.lx-sketchbook-tool:hover {
+  color: var(--lx-sketchbook-ink);
+  background: var(--lx-sketchbook-hover);
+  transform: rotate(-6deg);
+}
+.lx-sketchbook-tool--exit:hover {
+  color: var(--lx-sketchbook-red-pen);
+  border-color: currentColor;
+  transform: rotate(6deg);
+}
+.lx-sketchbook-tool > span {
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- Chalkboard: sticky notes become chalk boxes with magnets ---------- */
+html[data-theme="dark"] .lx-sketchbook-notes {
+  padding-inline: 6px 8px;
+}
+html[data-theme="dark"] .lx-sketchbook-note {
+  background: color-mix(in oklab, var(--lx-sketchbook-c) 12%, transparent);
+  color: color-mix(in oklab, var(--lx-sketchbook-c) 55%, #f4f6ee);
+  box-shadow: none;
+}
+html[data-theme="dark"] .lx-sketchbook-note::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid color-mix(in oklab, var(--lx-sketchbook-c) 70%, #f4f6ee);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  filter: url(#lx-sketchbook-chalk);
+  opacity: 0.85;
+  pointer-events: none;
+}
+html[data-theme="dark"] .lx-sketchbook-note:hover {
+  box-shadow: none;
+  background: color-mix(in oklab, var(--lx-sketchbook-c) 20%, transparent);
+}
+html[data-theme="dark"] .lx-sketchbook-note[data-active] {
+  background: color-mix(in oklab, var(--lx-sketchbook-c) 30%, transparent);
+  color: #f6f8f0;
+  box-shadow: none;
+}
+/* The tape becomes a round magnet holding the open note. */
+html[data-theme="dark"] .lx-sketchbook-note__tape {
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  rotate: 0deg;
+  clip-path: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 12%, var(--lx-sketchbook-c) 45%, color-mix(in oklab, var(--lx-sketchbook-c) 60%, #000) 100%);
+  box-shadow: 0 2px 3px rgb(0 0 0 / 55%);
+}
+html[data-theme="dark"] .lx-sketchbook-note[data-active] .lx-sketchbook-note__tape {
+  opacity: 1;
+}
+html[data-theme="dark"] .lx-sketchbook-note__count {
+  background: var(--lx-sketchbook-paper);
+}
+html[data-theme="dark"] .lx-sketchbook-pen-circle,
+html[data-theme="dark"] .lx-sketchbook-title__scribble,
+html[data-theme="dark"] .lx-sketchbook-row__ring,
+html[data-theme="dark"] .lx-sketchbook-endnote__doodle {
+  filter: url(#lx-sketchbook-chalk);
+}
+html[data-theme="dark"] .lx-sketchbook-foot {
+  margin-bottom: 4px;
+}
+
+/* ---------- Reduced motion: everything already drawn, nothing moves ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lx-sketchbook *,
+  .lx-sketchbook *::before,
+  .lx-sketchbook *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lx-sketchbook path {
+    stroke-dashoffset: 0 !important;
+  }
+  html[data-admin-sidebar="v11"] .layout-content.lx-sketchbook-turn > * {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,807 @@
+/* ============================================================
+   V16 "Synthwave" — the admin shell as an 80s neon night drive.
+   Sidebar sets html[data-admin-sidebar="v16"] + data-admin-category.
+   Dark = neon night; light = pastel vaporwave dusk.
+   Prefix: lx-synthwave- (classes + keyframes).
+   ============================================================ */
+
+/* ---------- Palette ---------- */
+html[data-admin-sidebar="v16"] {
+  /* pastel vaporwave (light) */
+  --lx-sw-sky-top: #fde7f3;
+  --lx-sw-sky-mid: #ecdcff;
+  --lx-sw-sky-low: #ffc7e6;
+  --lx-sw-haze: rgb(255 148 214 / 55%);
+  --lx-sw-ink: #2a1145;
+  --lx-sw-ink-2: #4c2c6e;
+  --lx-sw-ink-3: #7b5c99;
+  --lx-sw-line: rgb(122 64 170 / 22%);
+  --lx-sw-glass: rgb(255 255 255 / 58%);
+  --lx-sw-glass-line: rgb(214 120 210 / 45%);
+  --lx-sw-hover: rgb(255 255 255 / 55%);
+  --lx-sw-pink: #e0218a;
+  --lx-sw-cyan: #0a8fb5;
+  --lx-sw-green: #0f9d63;
+  --lx-sw-count-bg: #ff4fa8;
+  --lx-sw-count-ink: #ffffff;
+  --lx-sw-sun-1: #fff6b0;
+  --lx-sw-sun-2: #ffc9a3;
+  --lx-sw-sun-3: #ff94c6;
+  --lx-sw-sun-4: #b994ff;
+  --lx-sw-sun-glow: rgb(255 160 200 / 70%);
+  --lx-sw-floor-top: #f7d6ff;
+  --lx-sw-floor-bottom: #c9b8ff;
+  --lx-sw-grid: rgb(255 79 168 / 80%);
+  --lx-sw-grid-2: rgb(0 170 220 / 55%);
+  --lx-sw-mtn-far: #d9b8f5;
+  --lx-sw-mtn-far-edge: #33b9e0;
+  --lx-sw-mtn-near: #c49df0;
+  --lx-sw-mtn-near-edge: #ff5fb4;
+  --lx-sw-star: rgb(255 255 255 / 0%);
+  --lx-sw-scan: rgb(120 60 170 / 4%);
+  --lx-sw-chrome: linear-gradient(180deg, #5b2a9e 0%, #2c62c9 44%, #1b1250 50%, #ff4fa8 53%, #ff9fd0 76%, #7a3fd0 100%);
+  --lx-sw-chrome-edge: rgb(255 255 255 / 85%);
+  --lx-sw-chrome-depth: #ff86c8;
+  --lx-sw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-sw-cat: var(--color-cat-home, #1360ab);
+}
+html[data-admin-sidebar="v16"][data-theme="dark"] {
+  /* neon night (dark) */
+  --lx-sw-sky-top: #07021a;
+  --lx-sw-sky-mid: #170733;
+  --lx-sw-sky-low: #4b0f5c;
+  --lx-sw-haze: rgb(255 46 160 / 50%);
+  --lx-sw-ink: #f7ecff;
+  --lx-sw-ink-2: rgb(236 220 255 / 84%);
+  --lx-sw-ink-3: rgb(214 186 255 / 58%);
+  --lx-sw-line: rgb(255 120 230 / 18%);
+  --lx-sw-glass: rgb(16 4 38 / 66%);
+  --lx-sw-glass-line: rgb(255 70 200 / 38%);
+  --lx-sw-hover: rgb(255 255 255 / 6%);
+  --lx-sw-pink: #ff4fb8;
+  --lx-sw-cyan: #4ff0ff;
+  --lx-sw-green: #5dffa8;
+  --lx-sw-count-bg: #ff2a9d;
+  --lx-sw-count-ink: #ffffff;
+  --lx-sw-sun-1: #ffeb5c;
+  --lx-sw-sun-2: #ff9b3d;
+  --lx-sw-sun-3: #ff2f8a;
+  --lx-sw-sun-4: #b62aa8;
+  --lx-sw-sun-glow: rgb(255 70 140 / 75%);
+  --lx-sw-floor-top: #1a0632;
+  --lx-sw-floor-bottom: #090117;
+  --lx-sw-grid: rgb(255 60 200 / 95%);
+  --lx-sw-grid-2: rgb(80 220 255 / 70%);
+  --lx-sw-mtn-far: #2a0c4a;
+  --lx-sw-mtn-far-edge: #3fd9ff;
+  --lx-sw-mtn-near: #14052b;
+  --lx-sw-mtn-near-edge: #ff3ec8;
+  --lx-sw-star: rgb(255 255 255 / 85%);
+  --lx-sw-scan: rgb(0 0 0 / 22%);
+  --lx-sw-chrome: linear-gradient(180deg, #f4fbff 0%, #a9dcff 38%, #2a3a8c 49%, #12093a 51%, #ff5fc4 54%, #ffd0f0 78%, #ffffff 100%);
+  --lx-sw-chrome-edge: #ff6be0;
+  --lx-sw-chrome-depth: #3b0f63;
+}
+html[data-admin-sidebar="v16"][data-admin-category="hostels"] { --lx-sw-cat: var(--color-cat-hostels, #0284c7); }
+html[data-admin-sidebar="v16"][data-admin-category="student-affairs"] { --lx-sw-cat: var(--color-cat-student-affairs, #db2777); }
+html[data-admin-sidebar="v16"][data-admin-category="staff"] { --lx-sw-cat: var(--color-cat-staff, #7048c8); }
+html[data-admin-sidebar="v16"][data-admin-category="dining"] { --lx-sw-cat: var(--color-cat-dining, #059669); }
+
+/* Each tube / sign keeps its own category colour. */
+.lx-synthwave [data-cat="home"], .lx-synthwave[data-cat="home"] { --n: var(--color-cat-home, #1360ab); }
+.lx-synthwave [data-cat="hostels"], .lx-synthwave[data-cat="hostels"] { --n: var(--color-cat-hostels, #0284c7); }
+.lx-synthwave [data-cat="student-affairs"], .lx-synthwave[data-cat="student-affairs"] { --n: var(--color-cat-student-affairs, #db2777); }
+.lx-synthwave [data-cat="staff"], .lx-synthwave[data-cat="staff"] { --n: var(--color-cat-staff, #7048c8); }
+.lx-synthwave [data-cat="dining"], .lx-synthwave[data-cat="dining"] { --n: var(--color-cat-dining, #059669); }
+
+/* Neon recipe. Light: the tube is the deep category colour with a soft halo.
+   Dark: a near-white core wrapped in the category glow. */
+.lx-synthwave, .lx-synthwave [data-cat] {
+  --n-core: var(--n);
+  --n-text: var(--n);
+  --n-glow: 0 0 10px color-mix(in oklab, var(--n) 38%, transparent);
+  --n-halo: color-mix(in oklab, var(--n) 30%, transparent);
+}
+.lx-synthwave[data-dark], .lx-synthwave[data-dark] [data-cat] {
+  --n-core: color-mix(in oklab, var(--n) 55%, white);
+  --n-text: color-mix(in oklab, var(--n) 30%, white);
+  --n-glow: 0 0 2px var(--n), 0 0 8px var(--n), 0 0 18px color-mix(in oklab, var(--n) 65%, transparent);
+  --n-halo: color-mix(in oklab, var(--n) 60%, transparent);
+}
+
+/* ---------- The world around the page ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v16"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 40% at 0% 100%, var(--lx-sw-haze), transparent 70%),
+      linear-gradient(180deg, var(--lx-sw-sky-top), var(--lx-sw-sky-mid) 60%, var(--lx-sw-sky-low));
+  }
+  html[data-admin-sidebar="v16"] .layout-content {
+    position: relative;
+    height: calc(100vh - 20px);
+    margin: 10px 10px 10px 0;
+    border-radius: 16px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 0 0 1.5px color-mix(in oklab, var(--lx-sw-cat) 70%, transparent),
+      0 0 22px -2px color-mix(in oklab, var(--lx-sw-cat) 55%, transparent),
+      0 0 60px -10px var(--lx-sw-haze);
+    transition: box-shadow 600ms var(--lx-sw-ease);
+    scrollbar-gutter: stable;
+  }
+}
+
+/* ---------- Dock ---------- */
+.lx-synthwave {
+  position: relative;
+  z-index: 30;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 288px;
+  flex: 0 0 288px;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--lx-sw-ink);
+  font-family: inherit;
+}
+.lx-synthwave button { font: inherit; color: inherit; }
+.lx-synthwave button:focus-visible {
+  outline: 2px solid var(--lx-sw-cyan);
+  outline-offset: 2px;
+}
+
+.lx-synthwave-sky {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 34% at 50% calc(100% - 112px), var(--lx-sw-haze), transparent 72%),
+    linear-gradient(180deg, var(--lx-sw-sky-top), var(--lx-sw-sky-mid) 52%, var(--lx-sw-sky-low));
+}
+/* Stars that twinkle (dark only; the light palette makes them transparent). */
+.lx-synthwave-sky::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 40% 0;
+  background-image:
+    radial-gradient(1px 1px at 18px 24px, var(--lx-sw-star), transparent 60%),
+    radial-gradient(1px 1px at 122px 70px, var(--lx-sw-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 210px 40px, var(--lx-sw-star), transparent 60%),
+    radial-gradient(1px 1px at 64px 140px, var(--lx-sw-star), transparent 60%),
+    radial-gradient(1px 1px at 250px 160px, var(--lx-sw-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 160px 210px, var(--lx-sw-star), transparent 60%);
+  background-size: 288px 240px;
+  animation: lx-synthwave-twinkle 5s ease-in-out infinite alternate;
+}
+/* CRT scanlines, behind the content so text stays crisp. */
+.lx-synthwave-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, var(--lx-sw-scan) 0 1px, transparent 1px 3px);
+}
+
+/* ---------- Header: VCR clock, chrome title ---------- */
+.lx-synthwave-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  row-gap: 2px;
+  padding: 12px 14px 4px 16px;
+}
+.lx-synthwave-osd {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--lx-sw-cyan);
+  text-shadow: 0 0 6px color-mix(in oklab, var(--lx-sw-cyan) 60%, transparent);
+}
+.lx-synthwave-osd__play { animation: lx-synthwave-blink 1.6s steps(1) infinite; }
+.lx-synthwave-osd__time { color: var(--lx-sw-ink-2); text-shadow: none; }
+.lx-synthwave-mode { justify-self: end; }
+.lx-synthwave-mode .sidebar-mode-button {
+  background: var(--lx-sw-glass);
+  color: var(--lx-sw-ink-2);
+  border: 1px solid var(--lx-sw-glass-line);
+}
+
+.lx-synthwave-brand {
+  grid-column: 1 / -1;
+  justify-self: start;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 2px 4px 6px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.lx-synthwave-brand__chrome {
+  display: block;
+  font-size: 2.75rem;
+  line-height: 1;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  background: var(--lx-sw-chrome);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0.6px var(--lx-sw-chrome-edge);
+  filter: drop-shadow(0 3px 0 var(--lx-sw-chrome-depth)) drop-shadow(0 0 10px color-mix(in oklab, var(--lx-sw-pink) 45%, transparent));
+  transform: skewX(-6deg);
+}
+.lx-synthwave-brand__script {
+  position: relative;
+  bottom: 2px;
+  font-family: "Brush Script MT", "Segoe Script", "Lucida Handwriting", "URW Chancery L", cursive;
+  font-size: 1.375rem;
+  font-style: italic;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--lx-sw-pink);
+  text-shadow: 0 0 1px var(--lx-sw-pink), 0 0 10px color-mix(in oklab, var(--lx-sw-pink) 70%, transparent);
+  transform: rotate(-7deg);
+  transform-origin: left bottom;
+}
+.lx-synthwave[data-dark] .lx-synthwave-brand__script {
+  color: color-mix(in oklab, var(--lx-sw-pink) 40%, white);
+  text-shadow: 0 0 2px var(--lx-sw-pink), 0 0 9px var(--lx-sw-pink), 0 0 20px var(--lx-sw-pink);
+}
+
+/* ---------- Category tubes ---------- */
+.lx-synthwave-tubes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 10px 16px 12px;
+}
+.lx-synthwave-tube {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+}
+.lx-synthwave-tube__glass {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklab, var(--n) 45%, transparent);
+  color: color-mix(in oklab, var(--n) 70%, var(--lx-sw-ink-3));
+  background: color-mix(in oklab, var(--n) 6%, transparent);
+  transition: border-color 200ms, color 200ms, box-shadow 250ms, background-color 200ms, transform 200ms var(--lx-sw-ease);
+}
+.lx-synthwave-tube:hover .lx-synthwave-tube__glass {
+  border-color: var(--n);
+  color: var(--n-core);
+  transform: translateY(-1px);
+}
+.lx-synthwave-tube[data-active] .lx-synthwave-tube__glass {
+  border-color: var(--n-core);
+  color: var(--n-core);
+  background: color-mix(in oklab, var(--n) 16%, transparent);
+  box-shadow: 0 0 8px var(--n-halo), inset 0 0 10px var(--n-halo);
+  animation: lx-synthwave-hum 7s linear infinite;
+}
+.lx-synthwave-tube[data-active] svg {
+  filter: drop-shadow(0 0 4px var(--n));
+}
+/* A reflection on the wet street under the lit tube. */
+.lx-synthwave-tube[data-active]::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -7px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--n);
+  filter: blur(2px);
+  opacity: 0.7;
+}
+.lx-synthwave-tube__count {
+  position: absolute;
+  top: -6px;
+  right: -5px;
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-size: var(--font-size-2xs, 0.6875rem);
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--lx-sw-count-ink);
+  background: var(--lx-sw-count-bg);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--lx-sw-count-bg) 70%, transparent);
+}
+.lx-synthwave-tube__new {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--lx-sw-cyan);
+  box-shadow: 0 0 8px var(--lx-sw-cyan);
+  animation: lx-synthwave-pulse 1.8s ease-in-out infinite;
+}
+
+/* ---------- Category sign ---------- */
+.lx-synthwave-sign {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 18px 8px;
+  animation: lx-synthwave-power-on 900ms linear both;
+}
+.lx-synthwave-sign__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  color: var(--n-text);
+  text-shadow: var(--n-glow);
+}
+.lx-synthwave-sign__meta {
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lx-sw-ink-3);
+}
+
+/* ---------- Tabs as neon signs ---------- */
+.lx-synthwave-list {
+  flex: 0 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 2px 12px 10px;
+  list-style: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--lx-sw-pink) 55%, transparent) transparent;
+}
+.lx-synthwave-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+  border-radius: 10px;
+  animation: lx-synthwave-row-in 420ms var(--lx-sw-ease) both;
+  animation-delay: calc(var(--i, 0) * 22ms);
+}
+.lx-synthwave-row__go {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 34px 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--lx-sw-ink-2);
+  transition: background-color 160ms, color 160ms;
+}
+.lx-synthwave-row__icon {
+  flex: 0 0 auto;
+  color: color-mix(in oklab, var(--n) 75%, var(--lx-sw-ink-3));
+  transition: color 160ms, filter 160ms;
+}
+.lx-synthwave-row__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.lx-synthwave-row__go:hover {
+  background: var(--lx-sw-hover);
+  color: var(--n-text);
+}
+.lx-synthwave-row__go:hover .lx-synthwave-row__name { text-shadow: 0 0 8px var(--n-halo); }
+.lx-synthwave-row__go:hover .lx-synthwave-row__icon { color: var(--n-core); }
+
+/* The open tab: a lit tube that buzzes now and then. */
+.lx-synthwave-row[data-active]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  pointer-events: none;
+  border: 1.5px solid var(--n-core);
+  background: color-mix(in oklab, var(--n) 13%, transparent);
+  box-shadow: 0 0 10px var(--n-halo), inset 0 0 12px var(--n-halo);
+  animation: lx-synthwave-flicker 9s linear infinite;
+}
+.lx-synthwave-row[data-active] .lx-synthwave-row__go { color: var(--n-text); }
+.lx-synthwave-row[data-active] .lx-synthwave-row__name {
+  font-weight: 750;
+  text-shadow: var(--n-glow);
+  animation: lx-synthwave-flicker-text 9s linear infinite;
+}
+.lx-synthwave-row[data-active] .lx-synthwave-row__icon {
+  color: var(--n-core);
+  filter: drop-shadow(0 0 4px var(--n));
+}
+
+.lx-synthwave-row__count,
+.lx-synthwave-row__tag,
+.lx-synthwave-row__new {
+  flex: 0 0 auto;
+  font-size: var(--font-size-2xs, 0.6875rem);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+}
+.lx-synthwave-row__count {
+  min-width: 20px;
+  padding: 1px 6px;
+  text-align: center;
+  color: var(--lx-sw-count-ink);
+  background: var(--lx-sw-count-bg);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--lx-sw-count-bg) 60%, transparent);
+}
+.lx-synthwave-row__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 7px;
+  text-transform: uppercase;
+  color: var(--lx-sw-green);
+  border: 1px solid var(--lx-sw-green);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--lx-sw-green) 45%, transparent);
+}
+.lx-synthwave-row__tag[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lx-sw-green);
+  box-shadow: 0 0 6px var(--lx-sw-green);
+  animation: lx-synthwave-pulse 1.4s ease-in-out infinite;
+}
+.lx-synthwave-row__new {
+  padding: 1px 7px;
+  text-transform: uppercase;
+  color: var(--lx-sw-cyan);
+  border: 1px solid var(--lx-sw-cyan);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--lx-sw-cyan) 45%, transparent);
+}
+.lx-synthwave-row[data-live] .lx-synthwave-row__icon { color: var(--lx-sw-green); }
+
+.lx-synthwave-row__pin {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  color: var(--lx-sw-ink-3);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 150ms, color 150ms, background-color 150ms;
+}
+.lx-synthwave-row:hover .lx-synthwave-row__pin,
+.lx-synthwave-row:focus-within .lx-synthwave-row__pin,
+.lx-synthwave-row__pin[data-pinned] { opacity: 1; }
+.lx-synthwave-row__pin:hover { background: var(--lx-sw-hover); color: var(--lx-sw-pink); }
+.lx-synthwave-row__pin[data-pinned] {
+  color: var(--lx-sw-pink);
+  filter: drop-shadow(0 0 4px color-mix(in oklab, var(--lx-sw-pink) 70%, transparent));
+}
+.lx-synthwave-row__pin[data-pinned] svg { fill: currentColor; }
+
+.lx-synthwave-empty {
+  padding: 14px 10px;
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--lx-sw-ink-3);
+}
+
+/* ---------- Ground: sunset, mountains, grid ---------- */
+.lx-synthwave-ground {
+  --horizon: 104px;
+  position: relative;
+  flex: 1 0 200px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.lx-synthwave-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lx-synthwave-sun {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--horizon) - 44px);
+  width: 140px;
+  height: 140px;
+  transform: translateX(-50%);
+}
+.lx-synthwave-sun::before {
+  content: "";
+  position: absolute;
+  inset: -26px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--lx-sw-sun-glow), transparent);
+  animation: lx-synthwave-glow 4s ease-in-out infinite alternate;
+}
+.lx-synthwave-sun__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--lx-sw-sun-1) 8%, var(--lx-sw-sun-2) 42%, var(--lx-sw-sun-3) 70%, var(--lx-sw-sun-4));
+  -webkit-mask-image: linear-gradient(180deg,
+    #000 0 36%, transparent 36% 38.5%,
+    #000 38.5% 46%, transparent 46% 49.5%,
+    #000 49.5% 56%, transparent 56% 60.5%,
+    #000 60.5% 66%, transparent 66% 71.5%,
+    #000 71.5% 76%, transparent 76% 83%,
+    #000 83%);
+  mask-image: linear-gradient(180deg,
+    #000 0 36%, transparent 36% 38.5%,
+    #000 38.5% 46%, transparent 46% 49.5%,
+    #000 49.5% 56%, transparent 56% 60.5%,
+    #000 60.5% 66%, transparent 66% 71.5%,
+    #000 71.5% 76%, transparent 76% 83%,
+    #000 83%);
+}
+.lx-synthwave-mountains {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--horizon) - 1px);
+  width: 100%;
+  height: 34px;
+}
+.lx-synthwave-mountains__far {
+  fill: var(--lx-sw-mtn-far);
+  stroke: var(--lx-sw-mtn-far-edge);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+.lx-synthwave-mountains__near {
+  fill: var(--lx-sw-mtn-near);
+  stroke: var(--lx-sw-mtn-near-edge);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+
+.lx-synthwave-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--horizon);
+  overflow: hidden;
+  perspective: 200px;
+  perspective-origin: 50% 0;
+  background: linear-gradient(180deg, var(--lx-sw-floor-top), var(--lx-sw-floor-bottom));
+  border-top: 1.5px solid var(--lx-sw-grid);
+  box-shadow: 0 -2px 14px color-mix(in oklab, var(--lx-sw-grid) 60%, transparent);
+}
+/* The far edge melts into haze, so the dense lines never alias. */
+.lx-synthwave-floor::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 34px;
+  background: linear-gradient(180deg, var(--lx-sw-floor-top), transparent);
+}
+.lx-synthwave-floor__plane {
+  position: absolute;
+  top: 0;
+  left: -60%;
+  right: -60%;
+  height: 176px;
+  transform-origin: 50% 0;
+  transform: rotateX(80deg);
+  overflow: hidden;
+}
+.lx-synthwave-floor__lines {
+  position: absolute;
+  inset: -24px 0 0;
+  background-image:
+    linear-gradient(180deg, var(--lx-sw-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--lx-sw-grid-2) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0, 50% 0;
+  animation: lx-synthwave-roll 1.1s linear infinite;
+  will-change: transform;
+}
+
+/* ---------- Footer ---------- */
+.lx-synthwave-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 10px 10px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--lx-sw-glass);
+  border: 1px solid var(--lx-sw-glass-line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lx-synthwave-me {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms;
+}
+.lx-synthwave-me:hover { background: var(--lx-sw-hover); }
+.lx-synthwave-me[data-active] { box-shadow: inset 0 0 0 1.5px var(--lx-sw-pink), 0 0 10px color-mix(in oklab, var(--lx-sw-pink) 40%, transparent); }
+.lx-synthwave-me__text { min-width: 0; display: flex; flex-direction: column; }
+.lx-synthwave-me__name,
+.lx-synthwave-me__mail {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.lx-synthwave-me__name { font-size: var(--font-size-sm, 0.875rem); font-weight: 700; color: var(--lx-sw-ink); }
+.lx-synthwave-me__mail { font-size: var(--font-size-xs, 0.75rem); color: var(--lx-sw-ink-3); }
+
+.lx-synthwave-avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  font-weight: 800;
+  color: var(--lx-sw-count-ink);
+  background: linear-gradient(180deg, var(--lx-sw-sun-2), var(--lx-sw-sun-3) 60%, var(--lx-sw-sun-4));
+  box-shadow: 0 0 0 1.5px var(--lx-sw-glass), 0 0 10px color-mix(in oklab, var(--lx-sw-pink) 50%, transparent);
+}
+.lx-synthwave-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.lx-synthwave-icon-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  color: var(--lx-sw-ink-2);
+  transition: background-color 160ms, color 160ms, filter 160ms;
+}
+.lx-synthwave-icon-btn:hover {
+  background: var(--lx-sw-hover);
+  color: var(--lx-sw-cyan);
+  filter: drop-shadow(0 0 5px color-mix(in oklab, var(--lx-sw-cyan) 70%, transparent));
+}
+.lx-synthwave-icon-btn--exit:hover {
+  color: var(--lx-sw-pink);
+  filter: drop-shadow(0 0 5px color-mix(in oklab, var(--lx-sw-pink) 70%, transparent));
+}
+
+/* ---------- Motion ---------- */
+@keyframes lx-synthwave-roll {
+  to { transform: translateY(24px); }
+}
+@keyframes lx-synthwave-twinkle {
+  from { opacity: 0.45; }
+  to { opacity: 1; }
+}
+@keyframes lx-synthwave-glow {
+  from { opacity: 0.65; }
+  to { opacity: 1; }
+}
+@keyframes lx-synthwave-blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.25; }
+}
+@keyframes lx-synthwave-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes lx-synthwave-row-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+/* A tube that mostly holds, then stutters for a moment. */
+@keyframes lx-synthwave-flicker {
+  0%, 88%, 100% { opacity: 1; }
+  89% { opacity: 0.35; }
+  90% { opacity: 1; }
+  91.5% { opacity: 0.15; }
+  92.5% { opacity: 0.9; }
+  93.5% { opacity: 0.4; }
+  95% { opacity: 1; }
+}
+@keyframes lx-synthwave-flicker-text {
+  0%, 88%, 100% { opacity: 1; }
+  89% { opacity: 0.7; }
+  90% { opacity: 1; }
+  91.5% { opacity: 0.6; }
+  92.5% { opacity: 1; }
+  93.5% { opacity: 0.75; }
+  95% { opacity: 1; }
+}
+@keyframes lx-synthwave-hum {
+  0%, 94%, 100% { opacity: 1; }
+  95% { opacity: 0.55; }
+  96% { opacity: 1; }
+  97% { opacity: 0.7; }
+}
+/* The sign catching as it powers up. */
+@keyframes lx-synthwave-power-on {
+  0% { opacity: 0.08; }
+  12% { opacity: 1; }
+  18% { opacity: 0.2; }
+  28% { opacity: 1; }
+  36% { opacity: 0.45; }
+  46%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-synthwave-sky::before,
+  .lx-synthwave-osd__play,
+  .lx-synthwave-tube[data-active] .lx-synthwave-tube__glass,
+  .lx-synthwave-tube__new,
+  .lx-synthwave-sign,
+  .lx-synthwave-row,
+  .lx-synthwave-row[data-active]::before,
+  .lx-synthwave-row[data-active] .lx-synthwave-row__name,
+  .lx-synthwave-row__tag[data-pulse]::before,
+  .lx-synthwave-sun::before,
+  .lx-synthwave-floor__lines { animation: none; }
+  .lx-synthwave-tube__glass,
+  .lx-synthwave-row__go,
+  html[data-admin-sidebar="v16"] .layout-content { transition: none; }
+}

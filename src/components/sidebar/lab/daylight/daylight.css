@@ -1,0 +1,845 @@
+/* ============================================================
+   Lab V15 "Daylight": a live sky over campus.
+   Sidebar sets html[data-admin-sidebar="v15"] + data-admin-category.
+   SkyWindow writes on .lx-daylight:
+     --lx-daylight-w-<phase>  weight of each sky layer (0..1)
+     --lx-daylight-stars      how much night there is (0..1)
+     data-phase  dominant phase   data-glass  day | night
+     data-birds  1 | 0            data-scrubbing  1 | 0
+   ============================================================ */
+
+/* Registered so colours glide between phases and categories. */
+@property --lx-daylight-cat {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1360ab;
+}
+@property --lx-daylight-cloud {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(255 255 255 / 90%);
+}
+@property --lx-daylight-sun-core {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff6d5;
+}
+@property --lx-daylight-sun-glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffd75a;
+}
+
+/* ---------- Page: a sheet held up against the sky ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v15"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background: #5ea8ec;
+  }
+  html[data-admin-sidebar="v15"] .layout-content {
+    position: relative;
+    height: calc(100vh - 20px);
+    margin: 10px 10px 10px 0;
+    border-radius: 20px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 35%),
+      0 0 0 6px rgb(255 255 255 / 8%),
+      0 30px 90px -30px rgb(8 16 48 / 60%);
+    scrollbar-gutter: stable;
+  }
+  html[data-admin-sidebar="v15"][data-theme="dark"] .layout-content {
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 12%),
+      0 30px 90px -30px rgb(0 0 0 / 80%);
+  }
+}
+
+/* ---------- Root ---------- */
+.lx-daylight {
+  /* Light glass (bright sky). */
+  --lx-daylight-glass: rgb(255 255 255 / 60%);
+  --lx-daylight-glass-edge: rgb(255 255 255 / 80%);
+  --lx-daylight-ink: #12203b;
+  --lx-daylight-ink-2: #34445f;
+  --lx-daylight-ink-3: #56647d;
+  --lx-daylight-hover: rgb(255 255 255 / 58%);
+  --lx-daylight-on: rgb(255 255 255 / 95%);
+  --lx-daylight-chip: rgb(255 255 255 / 70%);
+  --lx-daylight-accent: color-mix(in oklab, var(--lx-daylight-cat) 85%, black);
+  --lx-daylight-land: color-mix(in oklab, var(--lx-daylight-cat) 28%, #34466b);
+  --lx-daylight-shadow: 0 14px 34px -16px rgb(20 40 90 / 45%);
+  --lx-daylight-red: #e11d48;
+  --lx-daylight-green: #16a34a;
+  --lx-daylight-amber: #b45309;
+  --lx-daylight-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-daylight-fade: 1400ms;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+  flex: 0 0 300px;
+  height: 100vh;
+  padding: 0 12px 12px;
+  overflow: hidden;
+  color: var(--lx-daylight-ink);
+  font-family: inherit;
+  transition:
+    --lx-daylight-cat 900ms var(--lx-daylight-ease),
+    --lx-daylight-cloud var(--lx-daylight-fade) ease,
+    --lx-daylight-sun-core var(--lx-daylight-fade) ease,
+    --lx-daylight-sun-glow var(--lx-daylight-fade) ease,
+    color 600ms ease;
+}
+.lx-daylight[data-scrubbing="1"] { --lx-daylight-fade: 160ms; }
+.lx-daylight button { font: inherit; color: inherit; }
+.lx-daylight :focus-visible {
+  outline: 2px solid var(--lx-daylight-accent);
+  outline-offset: 2px;
+}
+
+/* Dark glass (night sky, or dark theme at any hour). */
+.lx-daylight[data-glass="night"] {
+  --lx-daylight-glass: rgb(14 18 46 / 56%);
+  --lx-daylight-glass-edge: rgb(190 200 255 / 20%);
+  --lx-daylight-ink: #f2f5ff;
+  --lx-daylight-ink-2: rgb(224 230 255 / 80%);
+  --lx-daylight-ink-3: rgb(200 210 245 / 62%);
+  --lx-daylight-hover: rgb(255 255 255 / 9%);
+  --lx-daylight-on: rgb(255 255 255 / 17%);
+  --lx-daylight-chip: rgb(14 18 46 / 60%);
+  --lx-daylight-accent: color-mix(in oklab, var(--lx-daylight-cat) 50%, white);
+  --lx-daylight-land: color-mix(in oklab, var(--lx-daylight-cat) 18%, #090d22);
+  --lx-daylight-shadow: 0 14px 34px -16px rgb(0 0 0 / 60%);
+  --lx-daylight-red: #fb7185;
+  --lx-daylight-green: #4ade80;
+  --lx-daylight-amber: #fbbf24;
+}
+
+/* Sun and cloud colours follow the dominant phase. */
+.lx-daylight[data-phase="day"] { --lx-daylight-cloud: rgb(255 255 255 / 88%); --lx-daylight-sun-core: #fff8de; --lx-daylight-sun-glow: #ffd75a; }
+.lx-daylight[data-phase="morning"] { --lx-daylight-cloud: rgb(255 244 234 / 88%); --lx-daylight-sun-core: #fff1c9; --lx-daylight-sun-glow: #ffb347; }
+.lx-daylight[data-phase="golden"] { --lx-daylight-cloud: rgb(255 222 192 / 85%); --lx-daylight-sun-core: #ffe6b0; --lx-daylight-sun-glow: #ff9636; }
+.lx-daylight[data-phase="dawn"] { --lx-daylight-cloud: rgb(246 190 200 / 72%); --lx-daylight-sun-core: #ffcaa0; --lx-daylight-sun-glow: #ff7a5c; }
+.lx-daylight[data-phase="dusk"] { --lx-daylight-cloud: rgb(200 140 175 / 62%); --lx-daylight-sun-core: #ffbf96; --lx-daylight-sun-glow: #ff5f5f; }
+.lx-daylight[data-phase="night"] { --lx-daylight-cloud: rgb(70 80 130 / 45%); --lx-daylight-sun-core: #ffcaa0; --lx-daylight-sun-glow: #ff7a5c; }
+
+/* ---------- The sky (fixed, behind the page sheet) ---------- */
+.lx-daylight-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.lx-daylight-layer,
+.lx-daylight-starfield,
+.lx-daylight-horizon,
+.lx-daylight-sky::after {
+  position: absolute;
+  inset: 0;
+}
+.lx-daylight-layer { transition: opacity var(--lx-daylight-fade) ease; }
+.lx-daylight-layer--night { opacity: var(--lx-daylight-w-night, 0); background: linear-gradient(#060a1d 0%, #0e1637 45%, #1b2350 80%, #2a2c5c 100%); }
+.lx-daylight-layer--dawn { opacity: var(--lx-daylight-w-dawn, 0); background: linear-gradient(#1d2356 0%, #4d3e86 30%, #ae608f 62%, #ef8e7c 84%, #ffc996 100%); }
+.lx-daylight-layer--morning { opacity: var(--lx-daylight-w-morning, 0); background: linear-gradient(#5a97de 0%, #98c3ee 45%, #d6e7f4 75%, #ffe1ba 100%); }
+.lx-daylight-layer--day { opacity: var(--lx-daylight-w-day, 1); background: linear-gradient(#2c7cd4 0%, #5aa5eb 40%, #9bcdf6 75%, #d6edfc 100%); }
+.lx-daylight-layer--golden { opacity: var(--lx-daylight-w-golden, 0); background: linear-gradient(#4774bd 0%, #8c9cc3 30%, #e7ae7e 62%, #ffc46d 84%, #ffa85a 100%); }
+.lx-daylight-layer--dusk { opacity: var(--lx-daylight-w-dusk, 0); background: linear-gradient(#131945 0%, #3a2e71 32%, #894987 58%, #d6647a 82%, #f59a6a 100%); }
+
+.lx-daylight-starfield {
+  opacity: var(--lx-daylight-stars, 0);
+  transition: opacity var(--lx-daylight-fade) ease;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgb(255 255 255 / 85%), transparent 60%),
+    radial-gradient(1px 1px at 140px 90px, rgb(255 255 255 / 60%), transparent 60%),
+    radial-gradient(1.5px 1.5px at 75px 160px, rgb(220 230 255 / 80%), transparent 60%),
+    radial-gradient(1px 1px at 210px 210px, rgb(255 255 255 / 50%), transparent 60%),
+    radial-gradient(1px 1px at 260px 60px, rgb(255 240 220 / 70%), transparent 60%);
+  background-size: 290px 270px;
+  mask-image: linear-gradient(#000 40%, transparent 90%);
+}
+
+/* The category colour pools along the horizon. */
+.lx-daylight-horizon {
+  background:
+    radial-gradient(120% 34% at 0% 100%, color-mix(in oklab, var(--lx-daylight-cat) 55%, transparent), transparent 72%),
+    linear-gradient(to top, color-mix(in oklab, var(--lx-daylight-cat) 26%, transparent), transparent 38%);
+}
+/* Dark theme: the same sky through sunglasses. */
+.lx-daylight[data-theme="dark"] .lx-daylight-sky::after {
+  content: "";
+  background: rgb(3 6 20 / 34%);
+}
+
+/* ---------- Clouds (inside the sidebar column) ---------- */
+.lx-daylight-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lx-daylight-cloud {
+  position: absolute;
+  left: 0;
+  width: 110px;
+  height: 32px;
+  border-radius: 32px;
+  background: var(--lx-daylight-cloud);
+  scale: var(--lx-daylight-scale, 1);
+  animation: lx-daylight-drift 160s linear infinite;
+  will-change: transform;
+}
+.lx-daylight-cloud::before,
+.lx-daylight-cloud::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+.lx-daylight-cloud::before { width: 46px; height: 46px; left: 16px; top: -22px; }
+.lx-daylight-cloud::after { width: 58px; height: 58px; left: 42px; top: -30px; }
+@keyframes lx-daylight-drift {
+  from { transform: translateX(-150px); }
+  to { transform: translateX(330px); }
+}
+
+/* ---------- Skyline (bottom of the column) ---------- */
+.lx-daylight-skyline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  height: 118px;
+  pointer-events: none;
+}
+.lx-daylight-land { fill: var(--lx-daylight-land); transition: fill 1200ms ease; }
+.lx-daylight-window {
+  fill: #ffd27a;
+  opacity: calc(var(--lx-daylight-stars, 0) * 0.95);
+  transition: opacity var(--lx-daylight-fade) ease;
+}
+.lx-daylight-window[data-off] { opacity: calc(var(--lx-daylight-stars, 0) * 0.12); }
+.lx-daylight-window[data-flicker] { animation: lx-daylight-flicker 7s steps(1, end) infinite; }
+@keyframes lx-daylight-flicker {
+  0%, 62%, 70%, 100% { fill: #ffd27a; }
+  64%, 68% { fill: #6b5a3a; }
+}
+
+/* ---------- Sky window (top) ---------- */
+.lx-daylight-skywin {
+  position: relative;
+  z-index: 4; /* the mode menu drops over the cards */
+  flex: 0 0 auto;
+  height: 166px;
+  margin: 0 -12px;
+}
+.lx-daylight-skytop {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.lx-daylight-skytop > * { pointer-events: auto; }
+.lx-daylight-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--lx-daylight-glass-edge);
+  background: var(--lx-daylight-chip);
+  backdrop-filter: blur(10px) saturate(1.3);
+  box-shadow: var(--lx-daylight-shadow);
+  font-weight: 800;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.24em;
+  cursor: pointer;
+  transition: transform 200ms var(--lx-daylight-ease), background-color 200ms ease;
+}
+.lx-daylight-brand svg { color: var(--lx-daylight-sun-glow); }
+.lx-daylight-brand:hover { transform: translateY(-1px); }
+.lx-daylight-mode .sidebar-mode-button {
+  background: var(--lx-daylight-chip) !important;
+  color: var(--lx-daylight-ink-2) !important;
+  border: 1px solid var(--lx-daylight-glass-edge);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--lx-daylight-shadow);
+}
+.lx-daylight-mode .sidebar-mode-button:hover { color: var(--lx-daylight-ink) !important; }
+
+/* Dial: the arc band you drag to time-travel. */
+.lx-daylight-dial {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 122px;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 0 0 24px 24px;
+  outline: none;
+}
+.lx-daylight[data-scrubbing="1"] .lx-daylight-dial { cursor: grabbing; }
+.lx-daylight-dial:focus-visible { box-shadow: inset 0 0 0 2px var(--lx-daylight-glass-edge); }
+.lx-daylight-arc {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 300px;
+  height: 120px;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+}
+.lx-daylight-arc path {
+  stroke: rgb(255 255 255 / 55%);
+  stroke-width: 1.4;
+  stroke-dasharray: 2 6;
+}
+.lx-daylight-arc line {
+  stroke: rgb(255 255 255 / 45%);
+  stroke-width: 1;
+}
+.lx-daylight[data-glass="night"] .lx-daylight-arc path { stroke: rgb(200 210 255 / 32%); }
+.lx-daylight[data-glass="night"] .lx-daylight-arc line { stroke: rgb(200 210 255 / 22%); }
+
+/* Bodies sink behind the horizon line. */
+.lx-daylight-orbit {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 116px;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(#000 calc(100% - 8px), transparent);
+}
+.lx-daylight-sun,
+.lx-daylight-moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition:
+    transform 1600ms var(--lx-daylight-ease),
+    opacity 900ms ease;
+}
+.lx-daylight[data-scrubbing="1"] .lx-daylight-sun,
+.lx-daylight[data-scrubbing="1"] .lx-daylight-moon { transition: opacity 300ms ease; }
+.lx-daylight-sun[data-up],
+.lx-daylight-moon[data-up] { opacity: 1; }
+
+.lx-daylight-sun { width: 34px; height: 34px; }
+.lx-daylight-sun__core {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 36%, #fffdf3, var(--lx-daylight-sun-core) 45%, var(--lx-daylight-sun-glow) 100%);
+  box-shadow:
+    0 0 14px 3px color-mix(in oklab, var(--lx-daylight-sun-glow) 75%, transparent),
+    0 0 46px 16px color-mix(in oklab, var(--lx-daylight-sun-glow) 35%, transparent);
+}
+.lx-daylight-sun__rays {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, color-mix(in oklab, var(--lx-daylight-sun-glow) 70%, transparent) 0 5deg, transparent 5deg 30deg);
+  mask-image: radial-gradient(circle, transparent 46%, #000 50%, transparent 72%);
+  animation: lx-daylight-spin 60s linear infinite;
+}
+@keyframes lx-daylight-spin { to { transform: rotate(360deg); } }
+
+.lx-daylight-moon { width: 28px; height: 28px; filter: drop-shadow(0 0 10px rgb(220 230 255 / 55%)); }
+.lx-daylight-moon svg { width: 100%; height: 100%; display: block; }
+.lx-daylight-moon__dark { fill: rgb(150 165 220 / 22%); }
+.lx-daylight-moon__lit { fill: #f4f1e4; }
+
+/* Twinkling stars in the window, plus the odd shooting star. */
+.lx-daylight-stars {
+  position: absolute;
+  inset: 0;
+  opacity: var(--lx-daylight-stars, 0);
+  transition: opacity var(--lx-daylight-fade) ease;
+  pointer-events: none;
+}
+.lx-daylight-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px rgb(255 255 255 / 80%);
+  animation: lx-daylight-twinkle 3.4s ease-in-out infinite;
+}
+.lx-daylight-star:nth-child(3n) { width: 2px; height: 2px; animation-duration: 4.6s; }
+.lx-daylight-star:nth-child(4n) { background: #ffe9c4; }
+@keyframes lx-daylight-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(0.55); }
+}
+.lx-daylight-shooting {
+  position: absolute;
+  top: 18px;
+  left: 60px;
+  width: 70px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(to left, #fff, transparent);
+  opacity: 0;
+  transform: rotate(-24deg);
+  animation: lx-daylight-shoot 17s ease-in infinite 4s;
+}
+@keyframes lx-daylight-shoot {
+  0% { opacity: 0; transform: rotate(-24deg) translateX(0); }
+  2% { opacity: 1; }
+  6% { opacity: 0; transform: rotate(-24deg) translateX(150px) translateY(8px); }
+  100% { opacity: 0; transform: rotate(-24deg) translateX(150px) translateY(8px); }
+}
+
+/* Birds cross the window by day. */
+.lx-daylight-birds {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  width: 40px;
+  height: 16px;
+  opacity: 0;
+  pointer-events: none;
+  animation: lx-daylight-flock 34s linear infinite 3s;
+}
+.lx-daylight[data-birds="1"] .lx-daylight-birds { visibility: visible; }
+.lx-daylight[data-birds="0"] .lx-daylight-birds { visibility: hidden; }
+.lx-daylight-birds svg { width: 100%; height: 100%; overflow: visible; }
+.lx-daylight-bird {
+  fill: none;
+  stroke: rgb(30 40 70 / 70%);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: lx-daylight-flap 0.7s ease-in-out infinite alternate;
+}
+.lx-daylight-bird--b { animation-delay: -0.35s; }
+@keyframes lx-daylight-flap { to { transform: scaleY(0.35); } }
+@keyframes lx-daylight-flock {
+  0% { opacity: 0; transform: translate(-50px, 10px); }
+  3% { opacity: 1; }
+  33% { opacity: 1; transform: translate(320px, -14px); }
+  34%, 100% { opacity: 0; transform: translate(320px, -14px); }
+}
+
+/* Clock row under the horizon. */
+.lx-daylight-skyfoot {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  pointer-events: none;
+}
+.lx-daylight-skyfoot > * { pointer-events: auto; }
+.lx-daylight-suntime {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--lx-daylight-ink-2);
+  background: var(--lx-daylight-chip);
+  border: 1px solid var(--lx-daylight-glass-edge);
+  backdrop-filter: blur(8px);
+}
+.lx-daylight-clock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 118px;
+  padding: 4px 14px 5px;
+  border-radius: 16px;
+  background: var(--lx-daylight-chip);
+  border: 1px solid var(--lx-daylight-glass-edge);
+  backdrop-filter: blur(12px) saturate(1.3);
+  box-shadow: var(--lx-daylight-shadow);
+  line-height: 1.15;
+}
+.lx-daylight-clock__time {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.lx-daylight-clock__phase {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--lx-daylight-ink-2);
+  white-space: nowrap;
+}
+.lx-daylight-clock[data-preview] { border-style: dashed; border-color: var(--lx-daylight-accent); }
+.lx-daylight-clock[data-preview] .lx-daylight-clock__phase { color: var(--lx-daylight-accent); }
+.lx-daylight-clock__now {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  color: #fff !important;
+  background: var(--lx-daylight-accent);
+  box-shadow: var(--lx-daylight-shadow);
+}
+
+/* ---------- Frosted cloud-glass cards ---------- */
+.lx-daylight-glass {
+  position: relative;
+  z-index: 2;
+  border-radius: 20px;
+  background: var(--lx-daylight-glass);
+  border: 1px solid var(--lx-daylight-glass-edge);
+  backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: var(--lx-daylight-shadow), inset 0 1px 0 rgb(255 255 255 / 25%);
+  transition: background-color 900ms ease, border-color 900ms ease, box-shadow 900ms ease;
+}
+
+/* Categories */
+.lx-daylight-cats {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-items: center;
+  padding: 9px 6px;
+}
+.lx-daylight-cat {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.lx-daylight-cat__disc {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--lx-daylight-ink-2);
+  background: var(--lx-daylight-hover);
+  transition: transform 300ms var(--lx-daylight-ease), background-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
+}
+.lx-daylight-cat:hover .lx-daylight-cat__disc {
+  color: var(--lx-daylight-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--lx-daylight-c) 55%, transparent);
+}
+.lx-daylight-cat[data-active] .lx-daylight-cat__disc {
+  color: #fff;
+  background: var(--lx-daylight-c);
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--lx-daylight-c) 30%, transparent),
+    0 8px 20px -6px color-mix(in oklab, var(--lx-daylight-c) 80%, transparent);
+}
+.lx-daylight-cat:focus-visible { outline-offset: 3px; border-radius: 50%; }
+.lx-daylight-cat__count {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  z-index: 1;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  background: var(--lx-daylight-red);
+  box-shadow: 0 0 0 2px var(--lx-daylight-on);
+}
+.lx-daylight-cat__new {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lx-daylight-green);
+  box-shadow: 0 0 0 2px var(--lx-daylight-on);
+  animation: lx-daylight-pulse 1.8s ease-in-out infinite;
+}
+@keyframes lx-daylight-pulse { 50% { transform: scale(0.65); opacity: 0.6; } }
+
+/* Tabs card. */
+.lx-daylight-tabs {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lx-daylight-tabs__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px 6px;
+  animation: lx-daylight-arrive 520ms var(--lx-daylight-ease) both;
+}
+.lx-daylight-tabs__name {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--lx-daylight-accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lx-daylight-tabs__meta {
+  flex: none;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--lx-daylight-ink-3);
+}
+@keyframes lx-daylight-arrive {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+
+.lx-daylight-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  list-style: none;
+  margin: 0;
+  padding: 2px 8px 10px;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--lx-daylight-ink) 25%, transparent) transparent;
+  mask-image: linear-gradient(to bottom, transparent, #000 8px, #000 calc(100% - 14px), transparent);
+}
+.lx-daylight-empty {
+  padding: 18px 10px;
+  font-size: var(--font-size-sm);
+  color: var(--lx-daylight-ink-2);
+  text-align: center;
+}
+.lx-daylight-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  animation: lx-daylight-row-in 420ms var(--lx-daylight-ease) both;
+  animation-delay: calc(min(var(--lx-daylight-i, 0), 14) * 22ms);
+  transition: background-color 180ms ease;
+}
+@keyframes lx-daylight-row-in {
+  from { opacity: 0; transform: translateY(5px); }
+}
+.lx-daylight-row:hover { background: var(--lx-daylight-hover); }
+.lx-daylight-row[data-active] {
+  background: var(--lx-daylight-on);
+  box-shadow: 0 6px 16px -10px rgb(10 20 60 / 50%);
+}
+/* The open tab gets a little sunbeam. */
+.lx-daylight-row[data-active]::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--lx-daylight-cat);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--lx-daylight-cat) 80%, transparent);
+}
+.lx-daylight-row__go {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 6px 8px 6px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.lx-daylight-row__go:focus-visible { outline-offset: -2px; }
+.lx-daylight-row__icon {
+  flex: none;
+  color: var(--lx-daylight-ink-3);
+  transition: color 180ms ease;
+}
+.lx-daylight-row:hover .lx-daylight-row__icon { color: var(--lx-daylight-ink-2); }
+.lx-daylight-row[data-active] .lx-daylight-row__icon { color: var(--lx-daylight-accent); }
+.lx-daylight-row__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--lx-daylight-ink-2);
+}
+.lx-daylight-row:hover .lx-daylight-row__name { color: var(--lx-daylight-ink); }
+.lx-daylight-row[data-active] .lx-daylight-row__name { color: var(--lx-daylight-ink); font-weight: 700; }
+.lx-daylight-row[data-live] .lx-daylight-row__icon { color: var(--lx-daylight-green); }
+
+.lx-daylight-row__count,
+.lx-daylight-row__tag,
+.lx-daylight-row__new {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+}
+.lx-daylight-row__count { color: #fff; background: var(--lx-daylight-red); }
+.lx-daylight-row__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  color: var(--lx-daylight-green);
+  background: color-mix(in oklab, var(--lx-daylight-green) 16%, transparent);
+}
+.lx-daylight-row__tag[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+  animation: lx-daylight-pulse 1.6s ease-in-out infinite;
+}
+.lx-daylight-row__new {
+  text-transform: uppercase;
+  color: var(--lx-daylight-amber);
+  background: color-mix(in oklab, var(--lx-daylight-amber) 16%, transparent);
+}
+
+.lx-daylight-row__pin {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--lx-daylight-ink-3);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+.lx-daylight-row:hover .lx-daylight-row__pin,
+.lx-daylight-row__pin:focus-visible,
+.lx-daylight-row__pin[data-pinned] { opacity: 1; }
+.lx-daylight-row__pin:hover { background: var(--lx-daylight-hover); color: var(--lx-daylight-ink); }
+.lx-daylight-row__pin[data-pinned] { color: var(--lx-daylight-accent); }
+.lx-daylight-row__pin[data-pinned] svg { fill: currentcolor; }
+
+/* Footer: sits on the skyline, rooftops peeking above it. */
+.lx-daylight-foot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 40px;
+  padding: 7px;
+  border-radius: 18px;
+}
+.lx-daylight-me {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+.lx-daylight-me:hover,
+.lx-daylight-me[data-active] { background: var(--lx-daylight-hover); }
+.lx-daylight-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  background: var(--lx-daylight-cat);
+  box-shadow: 0 0 0 2px var(--lx-daylight-on);
+}
+.lx-daylight-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.lx-daylight-me__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.lx-daylight-me__name,
+.lx-daylight-me__mail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lx-daylight-me__name { font-size: var(--font-size-sm); font-weight: 700; }
+.lx-daylight-me__mail { font-size: var(--font-size-xs); color: var(--lx-daylight-ink-3); }
+.lx-daylight-icon-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--lx-daylight-ink-2);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+.lx-daylight-icon-btn:hover { background: var(--lx-daylight-hover); color: var(--lx-daylight-ink); }
+.lx-daylight-icon-btn--exit:hover { color: var(--lx-daylight-red); }
+
+/* ---------- Reduced motion: a still sky ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lx-daylight,
+  .lx-daylight * { transition: none !important; }
+  .lx-daylight-cloud { animation: none; transform: translateX(var(--lx-daylight-rest, 0)); }
+  .lx-daylight-sun__rays,
+  .lx-daylight-star,
+  .lx-daylight-window[data-flicker],
+  .lx-daylight-cat__new,
+  .lx-daylight-row__tag[data-pulse]::before,
+  .lx-daylight-tabs__head,
+  .lx-daylight-row { animation: none; }
+  .lx-daylight-shooting,
+  .lx-daylight-birds { display: none; }
+}

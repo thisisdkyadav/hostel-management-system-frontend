@@ -1,0 +1,1201 @@
+/* ============================================================
+   Lab X4 "Aquarium" (mode v12): the admin shell as a fish tank.
+   Sidebar sets html[data-admin-sidebar="v12"] + data-admin-category.
+   Light = shallow tropical lagoon, dark = deep sea with bioluminescence.
+   Every class and keyframe is prefixed lx-aquarium-.
+   ============================================================ */
+
+/* Registered so the water can change colour slowly instead of snapping. */
+@property --lx-aquarium-hue {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1d74d0;
+}
+
+html[data-admin-sidebar="v12"] {
+  --lx-aquarium-hue: #1d74d0;
+  --lx-aquarium-surface: #d4f8f1;
+  --lx-aquarium-shallow: #7ddbd8;
+  --lx-aquarium-deep: #38b3c4;
+  --lx-aquarium-ink: #03303f;
+  --lx-aquarium-ink-2: rgb(3 48 63 / 74%);
+  --lx-aquarium-ink-3: rgb(3 48 63 / 50%);
+  --lx-aquarium-glass: rgb(255 255 255 / 56%);
+  --lx-aquarium-glass-hi: rgb(255 255 255 / 80%);
+  --lx-aquarium-glass-edge: rgb(255 255 255 / 78%);
+  --lx-aquarium-glass-shadow: rgb(0 70 90 / 14%);
+  --lx-aquarium-active-fill: color-mix(in oklab, var(--lx-aquarium-hue) 12%, #ffffff);
+  --lx-aquarium-ray: rgb(255 255 255 / 60%);
+  --lx-aquarium-caustic: rgb(255 255 255 / 60%);
+  --lx-aquarium-mote: rgb(255 255 255 / 75%);
+  --lx-aquarium-bubble-edge: rgb(255 255 255 / 80%);
+  --lx-aquarium-bubble-shine: rgb(255 255 255 / 95%);
+  --lx-aquarium-sand: #f4e2b4;
+  --lx-aquarium-sand-2: #e6cb8e;
+  --lx-aquarium-sand-dot: rgb(160 120 50 / 28%);
+  --lx-aquarium-weed: #2f9e5e;
+  --lx-aquarium-weed-2: #6cc46f;
+  --lx-aquarium-rock: #9fb2b8;
+  --lx-aquarium-rock-2: #6f858d;
+  --lx-aquarium-coral: #f0503f;
+  --lx-aquarium-live: #12a150;
+  --lx-aquarium-new: #ffd23f;
+  --lx-aquarium-new-ink: #4f3500;
+  --lx-aquarium-deepen: rgb(0 50 80 / 38%);
+  --lx-aquarium-focus: #03303f;
+  --lx-aquarium-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-aquarium-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: --lx-aquarium-hue 1100ms var(--lx-aquarium-ease);
+}
+html[data-admin-sidebar="v12"][data-admin-category="hostels"] { --lx-aquarium-hue: #0ea5e9; }
+html[data-admin-sidebar="v12"][data-admin-category="student-affairs"] { --lx-aquarium-hue: #e8458f; }
+html[data-admin-sidebar="v12"][data-admin-category="staff"] { --lx-aquarium-hue: #7c5ce6; }
+html[data-admin-sidebar="v12"][data-admin-category="dining"] { --lx-aquarium-hue: #10a676; }
+
+/* Deep sea. */
+html[data-admin-sidebar="v12"][data-theme="dark"] {
+  --lx-aquarium-hue: #5aa2f5;
+  --lx-aquarium-surface: #0d3555;
+  --lx-aquarium-shallow: #072441;
+  --lx-aquarium-deep: #020a17;
+  --lx-aquarium-ink: #e3f8ff;
+  --lx-aquarium-ink-2: rgb(205 236 255 / 74%);
+  --lx-aquarium-ink-3: rgb(190 225 250 / 50%);
+  --lx-aquarium-glass: rgb(130 205 255 / 11%);
+  --lx-aquarium-glass-hi: rgb(140 215 255 / 16%);
+  --lx-aquarium-glass-edge: rgb(150 220 255 / 20%);
+  --lx-aquarium-glass-shadow: rgb(0 0 0 / 35%);
+  --lx-aquarium-active-fill: color-mix(in oklab, var(--lx-aquarium-hue) 24%, #051628);
+  --lx-aquarium-ray: color-mix(in oklab, var(--lx-aquarium-hue) 40%, rgb(255 255 255 / 30%));
+  --lx-aquarium-caustic: color-mix(in oklab, var(--lx-aquarium-hue) 50%, rgb(255 255 255 / 30%));
+  --lx-aquarium-mote: #7dffe2;
+  --lx-aquarium-bubble-edge: rgb(140 230 255 / 50%);
+  --lx-aquarium-bubble-shine: rgb(190 245 255 / 80%);
+  --lx-aquarium-sand: #13283b;
+  --lx-aquarium-sand-2: #0a1726;
+  --lx-aquarium-sand-dot: rgb(120 255 225 / 18%);
+  --lx-aquarium-weed: #0f5a4f;
+  --lx-aquarium-weed-2: #1d8a72;
+  --lx-aquarium-rock: #24384a;
+  --lx-aquarium-rock-2: #142434;
+  --lx-aquarium-coral: #ff6b5c;
+  --lx-aquarium-live: #2fd27a;
+  --lx-aquarium-deepen: rgb(0 0 8 / 55%);
+  --lx-aquarium-focus: #7dffe2;
+}
+html[data-admin-sidebar="v12"][data-theme="dark"][data-admin-category="hostels"] { --lx-aquarium-hue: #38bdf8; }
+html[data-admin-sidebar="v12"][data-theme="dark"][data-admin-category="student-affairs"] { --lx-aquarium-hue: #f472b6; }
+html[data-admin-sidebar="v12"][data-theme="dark"][data-admin-category="staff"] { --lx-aquarium-hue: #a78bfa; }
+html[data-admin-sidebar="v12"][data-theme="dark"][data-admin-category="dining"] { --lx-aquarium-hue: #34d399; }
+
+/* Each shell keeps its own colour, whichever reef is open. */
+.lx-aquarium-shell[data-cat="home"] { --s: #1d74d0; }
+.lx-aquarium-shell[data-cat="hostels"] { --s: #0e9bd8; }
+.lx-aquarium-shell[data-cat="student-affairs"] { --s: #e8458f; }
+.lx-aquarium-shell[data-cat="staff"] { --s: #7c5ce6; }
+.lx-aquarium-shell[data-cat="dining"] { --s: #f08a3c; }
+html[data-theme="dark"] .lx-aquarium-shell[data-cat="home"] { --s: #4f94ec; }
+html[data-theme="dark"] .lx-aquarium-shell[data-cat="hostels"] { --s: #22b0ec; }
+html[data-theme="dark"] .lx-aquarium-shell[data-cat="student-affairs"] { --s: #f0609f; }
+html[data-theme="dark"] .lx-aquarium-shell[data-cat="staff"] { --s: #9a7ff5; }
+html[data-theme="dark"] .lx-aquarium-shell[data-cat="dining"] { --s: #f59a52; }
+
+/* ---------- The tank and the glass the page sits behind ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v12"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 40% at 20% 0%, rgb(255 255 255 / 22%), transparent 70%),
+      /* The category tints the lagoon as glows rather than a mix, so a pink or
+         violet reef doesn't grey the turquoise out. */
+      radial-gradient(90% 45% at 0% 35%, color-mix(in srgb, var(--lx-aquarium-hue) 26%, transparent), transparent 75%),
+      radial-gradient(80% 50% at 100% 100%, color-mix(in srgb, var(--lx-aquarium-hue) 34%, transparent), transparent 75%),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--lx-aquarium-hue) 8%, var(--lx-aquarium-surface)) 0%,
+        color-mix(in oklab, var(--lx-aquarium-hue) 10%, var(--lx-aquarium-shallow)) 48%,
+        color-mix(in oklab, var(--lx-aquarium-hue) 14%, var(--lx-aquarium-deep)) 100%
+      );
+  }
+  html[data-admin-sidebar="v12"][data-theme="dark"] .layout-container {
+    background:
+      radial-gradient(60% 35% at 15% 0%, color-mix(in oklab, var(--lx-aquarium-hue) 22%, transparent), transparent 70%),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--lx-aquarium-hue) 14%, var(--lx-aquarium-surface)) 0%,
+        color-mix(in oklab, var(--lx-aquarium-hue) 10%, var(--lx-aquarium-shallow)) 40%,
+        var(--lx-aquarium-deep) 100%
+      );
+  }
+
+  /* The page: behind thick aquarium glass. */
+  html[data-admin-sidebar="v12"] .layout-content {
+    position: relative;
+    height: calc(100vh - 24px);
+    margin: 12px 12px 12px 0;
+    border-radius: 20px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 90%),
+      0 0 0 6px rgb(255 255 255 / 24%),
+      0 0 0 7px rgb(255 255 255 / 55%),
+      0 26px 60px -18px rgb(0 60 80 / 50%);
+    scrollbar-gutter: stable;
+  }
+  html[data-admin-sidebar="v12"][data-theme="dark"] .layout-content {
+    box-shadow:
+      0 0 0 1px rgb(150 220 255 / 30%),
+      0 0 0 6px rgb(120 200 255 / 6%),
+      0 0 0 7px rgb(150 220 255 / 16%),
+      0 0 40px -6px color-mix(in oklab, var(--lx-aquarium-hue) 35%, transparent),
+      0 30px 80px -20px rgb(0 0 0 / 90%);
+  }
+
+  /* A soft reflection on the glass. Painted above the page but transparent to
+     the pointer, and faint enough never to sit between the eye and the text. */
+  html[data-admin-sidebar="v12"] .layout-container::after {
+    content: "";
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    bottom: 12px;
+    left: 300px;
+    z-index: 40;
+    border-radius: 20px;
+    pointer-events: none;
+    background:
+      linear-gradient(112deg, transparent 0 63%, rgb(255 255 255 / 9%) 64.5%, rgb(255 255 255 / 3%) 69%, transparent 69.5%),
+      linear-gradient(112deg, transparent 0 73%, rgb(255 255 255 / 6%) 73.6%, transparent 76%),
+      linear-gradient(180deg, rgb(255 255 255 / 7%), transparent 9%);
+  }
+  html[data-admin-sidebar="v12"][data-theme="dark"] .layout-container::after {
+    background:
+      linear-gradient(112deg, transparent 0 63%, rgb(170 225 255 / 4.5%) 64.5%, rgb(170 225 255 / 1.5%) 69%, transparent 69.5%),
+      linear-gradient(112deg, transparent 0 73%, rgb(170 225 255 / 3%) 73.6%, transparent 76%),
+      linear-gradient(180deg, rgb(170 225 255 / 4%), transparent 9%);
+  }
+
+  html[data-admin-sidebar="v12"] .layout-content.lx-aquarium-surface-in > * {
+    animation: lx-aquarium-surface 620ms var(--lx-aquarium-ease) both;
+  }
+}
+
+/* Opacity + blur only: pages measure themselves on mount, so no transforms. */
+@keyframes lx-aquarium-surface {
+  from { opacity: 0; filter: blur(6px) saturate(1.3); }
+  to { opacity: 1; filter: none; }
+}
+
+/* ---------- Sidebar frame ---------- */
+.lx-aquarium {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  flex: 0 0 300px;
+  height: 100vh;
+  color: var(--lx-aquarium-ink);
+  font-family: inherit;
+}
+.lx-aquarium button {
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.lx-aquarium button:focus-visible {
+  outline: 2px solid var(--lx-aquarium-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Water (decoration, behind everything) ---------- */
+.lx-aquarium-water {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lx-aquarium-deepen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 10%, var(--lx-aquarium-deepen));
+  opacity: calc(var(--lx-aquarium-depth, 0) * 0.85);
+  transition: opacity 1400ms var(--lx-aquarium-ease);
+}
+
+/* Light shafts from the surface. */
+.lx-aquarium-rays {
+  position: absolute;
+  inset: -20px 0 30% 0;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+}
+.lx-aquarium-rays i {
+  position: absolute;
+  top: -10%;
+  height: 125%;
+  width: 34px;
+  background: linear-gradient(180deg, var(--lx-aquarium-ray), transparent 85%);
+  filter: blur(7px);
+  transform-origin: 50% 0;
+  animation: lx-aquarium-ray 11s ease-in-out infinite alternate;
+}
+.lx-aquarium-rays i:nth-child(1) { left: 8%; width: 26px; animation-duration: 9s; }
+.lx-aquarium-rays i:nth-child(2) { left: 34%; width: 52px; animation-duration: 13s; animation-delay: -4s; }
+.lx-aquarium-rays i:nth-child(3) { left: 61%; width: 20px; animation-duration: 10s; animation-delay: -7s; }
+.lx-aquarium-rays i:nth-child(4) { left: 82%; width: 40px; animation-duration: 12s; animation-delay: -2s; }
+html[data-theme="dark"] .lx-aquarium-rays { opacity: 0.35; }
+
+@keyframes lx-aquarium-ray {
+  from { transform: rotate(12deg); opacity: 0.35; }
+  to { transform: rotate(22deg); opacity: 0.8; }
+}
+
+/* Caustics: two lattices of soft rings drifting against each other. */
+.lx-aquarium-caustics {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 55%) 40%, transparent 80%);
+  mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 55%) 40%, transparent 80%);
+}
+.lx-aquarium-caustics::before,
+.lx-aquarium-caustics::after {
+  content: "";
+  position: absolute;
+  inset: -80px;
+  background-image:
+    radial-gradient(closest-side, transparent 68%, var(--lx-aquarium-caustic) 86%, transparent 100%),
+    radial-gradient(closest-side, transparent 70%, var(--lx-aquarium-caustic) 88%, transparent 100%);
+  background-size: 66px 50px, 94px 72px;
+  background-position: 0 0, 33px 21px;
+  filter: blur(1.4px);
+  animation: lx-aquarium-caustic-a 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.lx-aquarium-caustics::after {
+  background-size: 82px 60px, 56px 78px;
+  background-position: 17px 9px, 0 30px;
+  opacity: 0.8;
+  animation-name: lx-aquarium-caustic-b;
+  animation-duration: 21s;
+}
+html[data-theme="dark"] .lx-aquarium-caustics { opacity: 0.16; }
+
+@keyframes lx-aquarium-caustic-a {
+  from { transform: translate3d(-24px, -10px, 0) rotate(0deg); }
+  to { transform: translate3d(22px, 16px, 0) rotate(3deg); }
+}
+@keyframes lx-aquarium-caustic-b {
+  from { transform: translate3d(20px, 12px, 0) rotate(4deg); }
+  to { transform: translate3d(-26px, -14px, 0) rotate(-2deg); }
+}
+
+/* Motes in the lagoon; glowing plankton in the deep. */
+.lx-aquarium-plankton {
+  position: absolute;
+  inset: 0 0 -180px 0;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(1.4px 1.4px at 22px 34px, var(--lx-aquarium-mote), transparent 70%),
+    radial-gradient(1px 1px at 96px 70px, var(--lx-aquarium-mote), transparent 70%),
+    radial-gradient(1.8px 1.8px at 60px 128px, var(--lx-aquarium-mote), transparent 70%),
+    radial-gradient(1.2px 1.2px at 140px 160px, var(--lx-aquarium-mote), transparent 70%),
+    radial-gradient(1px 1px at 170px 24px, var(--lx-aquarium-mote), transparent 70%);
+  background-size: 180px 180px;
+  animation: lx-aquarium-plankton 46s linear infinite;
+  will-change: transform;
+}
+html[data-theme="dark"] .lx-aquarium-plankton {
+  opacity: 0.85;
+  filter: drop-shadow(0 0 2px var(--lx-aquarium-mote));
+}
+@keyframes lx-aquarium-plankton {
+  to { transform: translate3d(0, -180px, 0); }
+}
+
+/* ---------- Fish ---------- */
+.lx-aquarium-fish {
+  position: absolute;
+  left: 0;
+  width: 36px;
+  animation: lx-aquarium-swim 32s linear infinite;
+  will-change: transform;
+}
+.lx-aquarium-fish--minnow { top: 13%; width: 22px; animation-duration: 23s; animation-delay: -6s; opacity: 0.85; }
+.lx-aquarium-fish--clown { top: 36%; width: 34px; animation-duration: 31s; animation-delay: -3s; }
+.lx-aquarium-fish--tang { top: 62%; width: 44px; animation-duration: 41s; animation-delay: -27s; }
+.lx-aquarium-fish__bob {
+  display: block;
+  animation: lx-aquarium-bob 3.4s ease-in-out infinite;
+}
+.lx-aquarium-fish--tang .lx-aquarium-fish__bob { animation-duration: 4.4s; }
+.lx-aquarium-fish__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.lx-aquarium-fish__tail {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: lx-aquarium-wag 0.42s ease-in-out infinite alternate;
+}
+.lx-aquarium-fish--tang .lx-aquarium-fish__tail { animation-duration: 0.6s; }
+.lx-aquarium-fish__eye { fill: #0b1b2b; }
+.lx-aquarium-fish__glint { fill: #ffffff; }
+.lx-aquarium-fish--clown .lx-aquarium-fish__body { fill: #ff7a1f; }
+.lx-aquarium-fish--clown .lx-aquarium-fish__tail,
+.lx-aquarium-fish--clown .lx-aquarium-fish__fin { fill: #ff8f3d; stroke: #3a1a05; stroke-width: 0.8; }
+.lx-aquarium-fish--clown .lx-aquarium-fish__stripe { fill: #ffffff; stroke: #3a1a05; stroke-width: 0.7; }
+.lx-aquarium-fish--tang .lx-aquarium-fish__body { fill: #2f6fe0; }
+.lx-aquarium-fish--tang .lx-aquarium-fish__fin { fill: #1d4fb8; }
+.lx-aquarium-fish--tang .lx-aquarium-fish__tail { fill: #ffd23f; }
+.lx-aquarium-fish--tang .lx-aquarium-fish__stripe { fill: #0b2a6b; }
+.lx-aquarium-fish--minnow .lx-aquarium-fish__body { fill: #ffd23f; }
+.lx-aquarium-fish--minnow .lx-aquarium-fish__tail,
+.lx-aquarium-fish--minnow .lx-aquarium-fish__fin { fill: #ffb21a; }
+
+/* Deep-sea fish: dark silhouettes with glowing eyes and markings. */
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__body,
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__fin,
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__tail {
+  fill: #12324d;
+  stroke: rgb(125 255 226 / 45%);
+  stroke-width: 0.7;
+}
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__stripe { fill: #7dffe2; stroke: none; }
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__eye { fill: #7dffe2; }
+html[data-theme="dark"] .lx-aquarium-fish .lx-aquarium-fish__glint { fill: #ffffff; }
+html[data-theme="dark"] .lx-aquarium-fish--tang .lx-aquarium-fish__stripe { fill: #ffb86b; }
+html[data-theme="dark"] .lx-aquarium-fish__art { filter: drop-shadow(0 0 3px rgb(125 255 226 / 55%)); }
+
+/* Fish face left. Swim right (flipped), turn off-stage, swim back. */
+@keyframes lx-aquarium-swim {
+  0% { transform: translate3d(-60px, 0, 0) scaleX(-1); }
+  46% { transform: translate3d(330px, 14px, 0) scaleX(-1); }
+  50% { transform: translate3d(330px, 14px, 0) scaleX(1); }
+  96% { transform: translate3d(-60px, 0, 0) scaleX(1); }
+  100% { transform: translate3d(-60px, 0, 0) scaleX(-1); }
+}
+@keyframes lx-aquarium-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes lx-aquarium-wag {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(14deg); }
+}
+
+/* ---------- Jellyfish ---------- */
+.lx-aquarium-jelly {
+  position: absolute;
+  left: 72%;
+  bottom: -90px;
+  width: 28px;
+  animation: lx-aquarium-jelly-rise 52s linear infinite;
+  animation-delay: -30s;
+  will-change: transform;
+}
+.lx-aquarium-jelly__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 20%;
+  animation: lx-aquarium-pulse 2.6s ease-in-out infinite;
+}
+.lx-aquarium-jelly__bell { fill: rgb(255 190 220 / 60%); stroke: rgb(255 255 255 / 70%); stroke-width: 0.8; }
+.lx-aquarium-jelly__shine { fill: rgb(255 255 255 / 70%); }
+.lx-aquarium-jelly__tentacles path { fill: none; stroke: rgb(255 170 210 / 65%); stroke-width: 1.4; stroke-linecap: round; }
+html[data-theme="dark"] .lx-aquarium-jelly__bell { fill: rgb(190 130 255 / 35%); stroke: rgb(220 180 255 / 80%); }
+html[data-theme="dark"] .lx-aquarium-jelly__tentacles path { stroke: rgb(205 160 255 / 70%); }
+html[data-theme="dark"] .lx-aquarium-jelly__art { filter: drop-shadow(0 0 6px rgb(190 130 255 / 80%)); }
+
+@keyframes lx-aquarium-jelly-rise {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-18px, -28vh, 0); }
+  50% { transform: translate3d(6px, -56vh, 0); }
+  75% { transform: translate3d(-12px, -84vh, 0); }
+  100% { transform: translate3d(0, -118vh, 0); }
+}
+@keyframes lx-aquarium-pulse {
+  0%, 100% { transform: scale(1, 1); }
+  40% { transform: scale(1.08, 0.88); }
+}
+
+/* ---------- Bubbles ---------- */
+.lx-aquarium-bubbles {
+  position: absolute;
+  inset: 0;
+}
+.lx-aquarium-bubbles--extra {
+  opacity: 0;
+  transition: opacity 700ms var(--lx-aquarium-ease);
+}
+.lx-aquarium:hover .lx-aquarium-bubbles--extra { opacity: 1; }
+.lx-aquarium-bubble {
+  position: absolute;
+  bottom: -16px;
+  border-radius: 50%;
+  border: 1px solid var(--lx-aquarium-bubble-edge);
+  background: radial-gradient(circle at 32% 30%, var(--lx-aquarium-bubble-shine) 0 14%, rgb(255 255 255 / 14%) 32%, rgb(255 255 255 / 4%) 70%);
+  animation: lx-aquarium-rise 14s linear infinite;
+  will-change: transform;
+}
+@keyframes lx-aquarium-rise {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  8% { opacity: 0.9; }
+  30% { transform: translate3d(var(--sway, 6px), -30vh, 0); }
+  62% { transform: translate3d(calc(var(--sway, 6px) * -0.6), -63vh, 0); }
+  90% { opacity: 0.85; }
+  100% { transform: translate3d(var(--sway, 6px), -104vh, 0); opacity: 0; }
+}
+
+/* A puff when a pebble is pressed. */
+.lx-aquarium-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.lx-aquarium-burst i {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--lx-aquarium-bubble-edge);
+  background: radial-gradient(circle at 32% 30%, var(--lx-aquarium-bubble-shine) 0 16%, rgb(255 255 255 / 12%) 40%);
+  animation: lx-aquarium-puff 1.3s var(--lx-aquarium-ease) forwards;
+}
+.lx-aquarium-burst i:nth-child(1) { --dx: -16px; --up: -90px; }
+.lx-aquarium-burst i:nth-child(2) { --dx: 10px; --up: -120px; width: 11px; height: 11px; animation-delay: 60ms; }
+.lx-aquarium-burst i:nth-child(3) { --dx: 26px; --up: -70px; width: 6px; height: 6px; animation-delay: 30ms; }
+.lx-aquarium-burst i:nth-child(4) { --dx: -4px; --up: -140px; width: 5px; height: 5px; animation-delay: 120ms; }
+.lx-aquarium-burst i:nth-child(5) { --dx: -30px; --up: -60px; width: 7px; height: 7px; animation-delay: 90ms; }
+.lx-aquarium-burst i:nth-child(6) { --dx: 40px; --up: -105px; width: 9px; height: 9px; animation-delay: 150ms; }
+@keyframes lx-aquarium-puff {
+  0% { transform: translate3d(0, 0, 0) scale(0.3); opacity: 1; }
+  100% { transform: translate3d(var(--dx), var(--up), 0) scale(1.15); opacity: 0; }
+}
+
+/* ---------- Header ---------- */
+.lx-aquarium-head {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 4px 14px;
+}
+.lx-aquarium-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 2px 8px 2px 2px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
+}
+.lx-aquarium-porthole {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 4px solid #c99a3c;
+  box-shadow:
+    inset 0 0 0 1px #f6dc93,
+    0 0 0 1px #84601a,
+    0 4px 10px rgb(0 50 70 / 30%);
+  background: radial-gradient(circle at 50% 120%, color-mix(in oklab, var(--lx-aquarium-hue) 60%, #063a52), #7fe0e0 140%);
+  overflow: hidden;
+  transition: transform 500ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-porthole::before {
+  /* rivets */
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 3px, #f6dc93 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 50% calc(100% - 3px), #f6dc93 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 3px 50%, #f6dc93 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at calc(100% - 3px) 50%, #f6dc93 0 1.4px, transparent 1.8px);
+  z-index: 2;
+}
+.lx-aquarium-porthole__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgb(255 255 255 / 55%) 0 22%, transparent 23% 60%, rgb(255 255 255 / 18%) 61% 66%, transparent 67%);
+}
+.lx-aquarium-porthole__glass::after {
+  content: "";
+  position: absolute;
+  left: 58%;
+  bottom: -6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 85%);
+  animation: lx-aquarium-porthole-bubble 3.2s ease-in infinite;
+}
+.lx-aquarium-brand:hover .lx-aquarium-porthole { transform: rotate(-18deg) scale(1.05); }
+@keyframes lx-aquarium-porthole-bubble {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-34px) translateX(-4px); opacity: 0; }
+}
+.lx-aquarium-brand__text { display: grid; line-height: 1.05; text-align: left; }
+.lx-aquarium-brand__word {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 0.04em;
+}
+.lx-aquarium-brand__sub {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: var(--font-size-xs);
+  color: var(--lx-aquarium-ink-2);
+}
+
+/* The dive computer: yellow rim, LCD readout. Same device in both themes. */
+.lx-aquarium-dive {
+  margin-left: auto;
+  display: grid;
+  justify-items: end;
+  gap: 1px;
+  min-width: 62px;
+  padding: 4px 8px 4px 9px;
+  border-radius: 10px;
+  border: 2px solid #f5c431;
+  background: linear-gradient(180deg, #0d2a3c, #071a27);
+  box-shadow: inset 0 0 8px rgb(0 0 0 / 60%), 0 3px 8px rgb(0 40 60 / 28%);
+  color: #7dffe2;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  line-height: 1.1;
+  text-shadow: 0 0 6px rgb(125 255 226 / 55%);
+}
+.lx-aquarium-dive__time { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+.lx-aquarium-dive__depth { font-size: var(--font-size-2xs); letter-spacing: 0.04em; color: #ffd76a; text-shadow: 0 0 6px rgb(255 215 106 / 45%); }
+
+.lx-aquarium-mode .sidebar-mode-button {
+  background: var(--lx-aquarium-glass) !important;
+  color: var(--lx-aquarium-ink) !important;
+  border: 1px solid var(--lx-aquarium-glass-edge);
+  border-radius: 999px !important;
+  backdrop-filter: blur(6px);
+}
+.lx-aquarium-mode .sidebar-mode-button:hover { background: var(--lx-aquarium-glass-hi) !important; }
+
+/* ---------- Reef: category shells ---------- */
+.lx-aquarium-reef {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 18px 8px;
+}
+.lx-aquarium-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  cursor: pointer;
+}
+.lx-aquarium-shell::after {
+  /* resting shadow on the sand */
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 1px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 50 70 / 28%), transparent);
+  transition: transform 400ms var(--lx-aquarium-spring), opacity 400ms;
+}
+html[data-theme="dark"] .lx-aquarium-shell::after { background: radial-gradient(closest-side, rgb(0 0 0 / 60%), transparent); }
+.lx-aquarium-shell__art {
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+  filter: saturate(0.8) drop-shadow(0 2px 2px rgb(0 50 70 / 25%));
+  transition: transform 450ms var(--lx-aquarium-spring), filter 300ms;
+}
+.lx-aquarium-shell__fill { fill: var(--s); }
+.lx-aquarium-shell__fill--round { stroke: var(--s); stroke-width: 3.5; stroke-linejoin: round; }
+.lx-aquarium-shell__ribs { fill: none; stroke: rgb(255 255 255 / 34%); stroke-width: 1.3; stroke-linecap: round; }
+.lx-aquarium-shell__shine { fill: rgb(255 255 255 / 45%); }
+.lx-aquarium-shell__dots circle { fill: rgb(255 255 255 / 60%); }
+.lx-aquarium-shell__spikes line { stroke: var(--s); stroke-width: 2.2; stroke-linecap: round; }
+.lx-aquarium-shell__pearl { fill: #fff7ea; stroke: rgb(120 80 40 / 25%); stroke-width: 0.6; }
+.lx-aquarium-shell__icon {
+  position: absolute;
+  inset: 0 0 2px 0;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 40%));
+  transition: transform 450ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-shell__halo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--s) 45%, transparent), transparent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 400ms, transform 500ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-shell:hover .lx-aquarium-shell__art { transform: translateY(-3px) rotate(-7deg); filter: saturate(1) drop-shadow(0 4px 3px rgb(0 50 70 / 25%)); }
+.lx-aquarium-shell:hover .lx-aquarium-shell__icon { transform: translateY(-3px); }
+.lx-aquarium-shell[data-active] .lx-aquarium-shell__art {
+  transform: translateY(-5px) scale(1.14);
+  filter: saturate(1.1) drop-shadow(0 0 8px color-mix(in oklab, var(--s) 70%, transparent));
+}
+.lx-aquarium-shell[data-active] .lx-aquarium-shell__icon { transform: translateY(-5px) scale(1.1); }
+.lx-aquarium-shell[data-active] .lx-aquarium-shell__halo {
+  opacity: 1;
+  transform: scale(1);
+  animation: lx-aquarium-halo 3.2s ease-in-out infinite;
+}
+.lx-aquarium-shell[data-active]::after { transform: scaleX(0.75); opacity: 0.6; }
+@keyframes lx-aquarium-halo {
+  50% { transform: scale(1.18); opacity: 0.65; }
+}
+
+/* A thin stream of bubbles from the open shell. */
+.lx-aquarium-shell__stream {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.lx-aquarium-shell__stream i {
+  position: absolute;
+  left: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--lx-aquarium-bubble-edge);
+  opacity: 0;
+  animation: lx-aquarium-stream 2.4s ease-in infinite;
+}
+.lx-aquarium-shell__stream i:nth-child(2) { animation-delay: 0.8s; left: 1px; width: 4px; height: 4px; }
+.lx-aquarium-shell__stream i:nth-child(3) { animation-delay: 1.6s; left: -5px; width: 6px; height: 6px; }
+@keyframes lx-aquarium-stream {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translate3d(4px, -26px, 0); opacity: 0; }
+}
+
+.lx-aquarium-shell__count {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--lx-aquarium-coral);
+  color: #ffffff;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  box-shadow: 0 0 0 2px var(--lx-aquarium-glass-hi), 0 2px 4px rgb(0 0 0 / 20%);
+}
+.lx-aquarium-shell__new {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--lx-aquarium-new);
+  box-shadow: 0 0 0 2px var(--lx-aquarium-glass-hi);
+  animation: lx-aquarium-blink 1.8s ease-in-out infinite;
+}
+@keyframes lx-aquarium-blink {
+  50% { opacity: 0.35; }
+}
+
+/* ---------- Pool: the tabs ---------- */
+.lx-aquarium-pool {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lx-aquarium-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 18px 8px 22px;
+}
+.lx-aquarium-title.is-arriving { animation: lx-aquarium-title-in 600ms var(--lx-aquarium-ease) both; }
+.lx-aquarium-title__name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: -0.02em;
+}
+.lx-aquarium-title__meta {
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs);
+  color: var(--lx-aquarium-ink-2);
+}
+@keyframes lx-aquarium-title-in {
+  from { opacity: 0; transform: translateY(10px); filter: blur(3px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+.lx-aquarium-pebbles {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 6px 14px 26px 32px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lx-aquarium-glass-edge) transparent;
+  /* No mask here: a masked parent becomes the backdrop root, and the pebbles'
+     glass would stop blurring the fish and bubbles swimming behind them. */
+}
+
+.lx-aquarium-pebble {
+  --shape: 18px 15px 17px 14px / 15px 18px 14px 17px;
+  position: relative;
+  flex: 0 0 auto;
+  animation:
+    lx-aquarium-pebble-in 560ms var(--lx-aquarium-spring) backwards,
+    lx-aquarium-float 6.5s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 32ms), calc(var(--i, 0) * -0.8s);
+}
+.lx-aquarium-pebble:nth-child(3n) { --shape: 15px 19px 14px 18px / 18px 14px 19px 15px; }
+.lx-aquarium-pebble:nth-child(3n + 1) { --shape: 17px 14px 19px 16px / 14px 17px 16px 19px; }
+.lx-aquarium-pebbles:hover .lx-aquarium-pebble,
+.lx-aquarium-pebbles:focus-within .lx-aquarium-pebble { animation-play-state: running, paused; }
+
+@keyframes lx-aquarium-pebble-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+/* `translate`, not `transform`, so it stacks with the entrance and hover moves. */
+@keyframes lx-aquarium-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -2px; }
+}
+
+.lx-aquarium-pebble__go {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--lx-aquarium-glass-edge);
+  border-radius: var(--shape);
+  background: var(--lx-aquarium-glass);
+  -webkit-backdrop-filter: blur(9px) saturate(1.4);
+  backdrop-filter: blur(9px) saturate(1.4);
+  box-shadow: 0 2px 7px var(--lx-aquarium-glass-shadow), inset 0 1px 0 rgb(255 255 255 / 55%);
+  color: var(--lx-aquarium-ink);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 260ms var(--lx-aquarium-spring),
+    background-color 200ms,
+    border-color 200ms,
+    box-shadow 260ms;
+}
+.lx-aquarium-pebble[data-pinnable] .lx-aquarium-pebble__go { padding-right: 36px; }
+html[data-theme="dark"] .lx-aquarium-pebble__go { box-shadow: 0 2px 8px var(--lx-aquarium-glass-shadow), inset 0 1px 0 rgb(180 230 255 / 10%); }
+
+/* Specular glint, the bit that makes it read as glass. */
+.lx-aquarium-pebble__go::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  left: 8px;
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 75%), transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+html[data-theme="dark"] .lx-aquarium-pebble__go::before { opacity: 0.1; }
+
+.lx-aquarium-pebble__go:hover {
+  transform: translateX(3px);
+  background: var(--lx-aquarium-glass-hi);
+}
+.lx-aquarium-pebble__go:active { transform: translateX(3px) scale(0.98); }
+
+.lx-aquarium-pebble__icon { flex: 0 0 auto; color: var(--lx-aquarium-ink-2); transition: color 200ms; }
+.lx-aquarium-pebble__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* The open tab glows. */
+.lx-aquarium-pebble[data-active] .lx-aquarium-pebble__go {
+  background: var(--lx-aquarium-active-fill);
+  border-color: color-mix(in oklab, var(--lx-aquarium-hue) 70%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--lx-aquarium-hue) 22%, transparent),
+    0 8px 22px -6px color-mix(in oklab, var(--lx-aquarium-hue) 55%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 70%);
+}
+.lx-aquarium-pebble[data-active] .lx-aquarium-pebble__go::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: inset 0 0 14px color-mix(in oklab, var(--lx-aquarium-hue) 35%, transparent);
+  animation: lx-aquarium-glow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+html[data-theme="dark"] .lx-aquarium-pebble[data-active] .lx-aquarium-pebble__go {
+  color: #ffffff;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--lx-aquarium-hue) 60%, transparent),
+    0 0 22px -2px color-mix(in oklab, var(--lx-aquarium-hue) 70%, transparent),
+    inset 0 1px 0 rgb(200 240 255 / 15%);
+}
+html[data-theme="dark"] .lx-aquarium-pebble[data-active] .lx-aquarium-pebble__go::after {
+  box-shadow: inset 0 0 18px color-mix(in oklab, var(--lx-aquarium-hue) 55%, transparent);
+}
+.lx-aquarium-pebble[data-active] .lx-aquarium-pebble__icon { color: color-mix(in oklab, var(--lx-aquarium-hue) 85%, var(--lx-aquarium-ink)); }
+html[data-theme="dark"] .lx-aquarium-pebble[data-active] .lx-aquarium-pebble__icon { color: var(--lx-aquarium-hue); }
+.lx-aquarium-pebble[data-active] .lx-aquarium-pebble__name { font-weight: var(--font-weight-bold); }
+@keyframes lx-aquarium-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.lx-aquarium-pebble__tag {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--lx-aquarium-live);
+  color: #ffffff;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.lx-aquarium-pebble__tag[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: lx-aquarium-blink 1.4s ease-in-out infinite;
+}
+.lx-aquarium-pebble[data-live] .lx-aquarium-pebble__icon { color: var(--lx-aquarium-live); }
+.lx-aquarium-pebble__count {
+  flex: 0 0 auto;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--lx-aquarium-coral);
+  color: #ffffff;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  box-shadow: inset 0 -2px 0 rgb(0 0 0 / 12%), inset 0 1px 0 rgb(255 255 255 / 35%);
+}
+.lx-aquarium-pebble__new {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--lx-aquarium-new);
+  color: var(--lx-aquarium-new-ink);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.lx-aquarium-pebble__pin {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  margin-top: -13px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--lx-aquarium-ink-3);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 160ms, background-color 160ms, color 160ms, transform 260ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-pebble:hover .lx-aquarium-pebble__pin,
+.lx-aquarium-pebble:focus-within .lx-aquarium-pebble__pin,
+.lx-aquarium-pebble__pin[data-pinned] { opacity: 1; }
+.lx-aquarium-pebble:hover .lx-aquarium-pebble__pin { transform: translateX(3px); }
+.lx-aquarium-pebble__pin:hover { background: var(--lx-aquarium-glass-hi); color: var(--lx-aquarium-ink); }
+.lx-aquarium-pebble__pin[data-pinned] { color: color-mix(in oklab, var(--lx-aquarium-hue) 85%, var(--lx-aquarium-ink)); }
+.lx-aquarium-pebble__pin[data-pinned] svg { fill: currentColor; }
+
+.lx-aquarium-empty {
+  padding: 14px;
+  border: 1px dashed var(--lx-aquarium-glass-edge);
+  border-radius: 18px;
+  background: var(--lx-aquarium-glass);
+  color: var(--lx-aquarium-ink-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+/* The pilot fish that swims to the open tab. */
+.lx-aquarium-pilot {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 22px;
+  height: 14px;
+  margin-top: -7px;
+  pointer-events: none;
+  transition: transform 700ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-pilot__swim {
+  display: block;
+  animation: lx-aquarium-nudge 1.6s ease-in-out infinite;
+}
+.lx-aquarium-pilot__art { display: block; width: 100%; height: auto; overflow: visible; }
+.lx-aquarium-pilot__body { fill: color-mix(in oklab, var(--lx-aquarium-hue) 85%, #000000); }
+.lx-aquarium-pilot__tail {
+  fill: color-mix(in oklab, var(--lx-aquarium-hue) 70%, #ffffff);
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: lx-aquarium-wag 0.35s ease-in-out infinite alternate;
+}
+.lx-aquarium-pilot__eye { fill: #ffffff; }
+html[data-theme="dark"] .lx-aquarium-pilot__body { fill: var(--lx-aquarium-hue); }
+html[data-theme="dark"] .lx-aquarium-pilot__eye { fill: #04121f; }
+html[data-theme="dark"] .lx-aquarium-pilot__art { filter: drop-shadow(0 0 4px var(--lx-aquarium-hue)); }
+@keyframes lx-aquarium-nudge {
+  0%, 100% { transform: translateX(-1px) rotate(-3deg); }
+  50% { transform: translateX(2px) rotate(3deg); }
+}
+
+/* ---------- Seabed ---------- */
+.lx-aquarium-bed {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  padding: 34px 12px 12px;
+}
+.lx-aquarium-bed::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 38px;
+  bottom: 0;
+  background:
+    radial-gradient(1.2px 1.2px at 12px 10px, var(--lx-aquarium-sand-dot), transparent 80%),
+    radial-gradient(1px 1px at 34px 26px, var(--lx-aquarium-sand-dot), transparent 80%),
+    radial-gradient(1.4px 1.4px at 52px 6px, var(--lx-aquarium-sand-dot), transparent 80%),
+    linear-gradient(180deg, var(--lx-aquarium-sand), var(--lx-aquarium-sand-2));
+  background-size: 64px 34px, 64px 34px, 64px 34px, auto;
+}
+.lx-aquarium-sand {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 40px;
+  fill: var(--lx-aquarium-sand);
+}
+.lx-aquarium-weed {
+  position: absolute;
+  bottom: 30px;
+  height: 120px;
+  width: 30px;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  animation: lx-aquarium-sway 5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.lx-aquarium-weed path { fill: none; stroke: var(--lx-aquarium-weed); stroke-width: 6; stroke-linecap: round; }
+.lx-aquarium-weed--a { left: 2px; height: 128px; }
+.lx-aquarium-weed--b { left: 22px; height: 86px; animation-duration: 4.2s; animation-delay: -1.5s; }
+.lx-aquarium-weed--b path,
+.lx-aquarium-weed--d path { stroke: var(--lx-aquarium-weed-2); stroke-width: 5; }
+.lx-aquarium-weed--c { right: 0; height: 138px; animation-duration: 5.6s; animation-delay: -2.4s; }
+.lx-aquarium-weed--d { right: 22px; height: 92px; animation-duration: 4.6s; animation-delay: -0.6s; }
+html[data-theme="dark"] .lx-aquarium-weed { filter: drop-shadow(0 0 4px rgb(60 255 200 / 35%)); }
+@keyframes lx-aquarium-sway {
+  from { transform: rotate(-5deg) skewX(5deg); }
+  to { transform: rotate(5deg) skewX(-5deg); }
+}
+
+.lx-aquarium-rock {
+  position: absolute;
+  bottom: 6px;
+  border-radius: 55% 45% 40% 50% / 60% 55% 45% 40%;
+  background: radial-gradient(circle at 35% 30%, var(--lx-aquarium-rock), var(--lx-aquarium-rock-2));
+  pointer-events: none;
+}
+.lx-aquarium-rock--a { left: 8px; width: 34px; height: 20px; }
+.lx-aquarium-rock--b { right: 10px; width: 24px; height: 15px; }
+
+.lx-aquarium-diver {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--lx-aquarium-glass-edge);
+  border-radius: 18px;
+  background: var(--lx-aquarium-glass-hi);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px -6px rgb(0 40 60 / 35%);
+}
+html[data-theme="dark"] .lx-aquarium-diver { background: rgb(8 28 46 / 72%); }
+.lx-aquarium-diver__me {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms;
+}
+.lx-aquarium-diver__me:hover,
+.lx-aquarium-diver__me[data-active] { background: var(--lx-aquarium-glass); }
+.lx-aquarium-avatar {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--lx-aquarium-hue);
+  color: #ffffff;
+  font-weight: var(--font-weight-bold);
+  box-shadow: 0 0 0 2px var(--lx-aquarium-glass-edge);
+}
+.lx-aquarium-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.lx-aquarium-diver__text { display: grid; min-width: 0; line-height: 1.2; }
+.lx-aquarium-diver__name,
+.lx-aquarium-diver__mail { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.lx-aquarium-diver__name { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+.lx-aquarium-diver__mail { font-size: var(--font-size-xs); color: var(--lx-aquarium-ink-2); }
+
+.lx-aquarium-icon-btn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--lx-aquarium-glass-edge);
+  border-radius: 50%;
+  background: var(--lx-aquarium-glass);
+  color: var(--lx-aquarium-ink-2);
+  cursor: pointer;
+  transition: background-color 160ms, color 160ms, transform 300ms var(--lx-aquarium-spring);
+}
+.lx-aquarium-icon-btn:hover { background: var(--lx-aquarium-glass-hi); color: var(--lx-aquarium-ink); transform: translateY(-2px); }
+.lx-aquarium-icon-btn--exit:hover { color: var(--lx-aquarium-coral); }
+
+/* ---------- Still water ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lx-aquarium-rays i,
+  .lx-aquarium-caustics::before,
+  .lx-aquarium-caustics::after,
+  .lx-aquarium-plankton,
+  .lx-aquarium-fish,
+  .lx-aquarium-fish__bob,
+  .lx-aquarium-fish__tail,
+  .lx-aquarium-jelly,
+  .lx-aquarium-jelly__art,
+  .lx-aquarium-bubble,
+  .lx-aquarium-burst i,
+  .lx-aquarium-porthole__glass::after,
+  .lx-aquarium-shell__halo,
+  .lx-aquarium-shell__stream i,
+  .lx-aquarium-shell__new,
+  .lx-aquarium-title.is-arriving,
+  .lx-aquarium-pebble,
+  .lx-aquarium-pebble__go::after,
+  .lx-aquarium-pebble__tag[data-pulse]::before,
+  .lx-aquarium-pilot__swim,
+  .lx-aquarium-pilot__tail,
+  .lx-aquarium-weed { animation: none; }
+  /* Without motion the swimmers and bubbles would freeze mid-stroke; hide them. */
+  .lx-aquarium-fish,
+  .lx-aquarium-jelly,
+  .lx-aquarium-bubbles,
+  .lx-aquarium-burst { display: none; }
+  .lx-aquarium-deepen,
+  .lx-aquarium-pilot,
+  .lx-aquarium-pebble__go,
+  .lx-aquarium-shell__art,
+  .lx-aquarium-shell__icon,
+  .lx-aquarium-shell__halo,
+  .lx-aquarium-porthole { transition: none; }
+}

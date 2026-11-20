@@ -1,0 +1,972 @@
+/* ============================================================
+   V17 "Blueprint" — the admin shell as an architect's drawing.
+   Sidebar sets html[data-admin-sidebar="v17"] + data-admin-category.
+   Light = whiteprint (drafting paper, blue + red ink).
+   Dark  = blueprint (cyan-white lines on Prussian blue).
+   Prefix: lx-blueprint-
+   ============================================================ */
+
+html[data-admin-sidebar="v17"] {
+  --lx-bp-w: 316px;
+  --lx-bp-gap: 18px;
+  --lx-bp-sheet-left: calc(var(--lx-bp-w) + 8px);
+  --lx-bp-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  --lx-bp-hand: "Segoe Print", "Bradley Hand", "Chalkboard SE", "Comic Neue", cursive;
+  --lx-bp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lx-bp-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --lx-bp-table: #f3f6fb;
+  --lx-bp-table-2: #e9eff8;
+  --lx-bp-grid-minor: rgb(37 99 235 / 8%);
+  --lx-bp-grid-major: rgb(37 99 235 / 19%);
+  --lx-bp-ink: #1b3c8a;
+  --lx-bp-ink-2: #3c5c9e;
+  --lx-bp-ink-3: #6f87b8;
+  --lx-bp-line: rgb(27 60 138 / 42%);
+  --lx-bp-line-faint: rgb(27 60 138 / 18%);
+  --lx-bp-red: #cf3328;
+  --lx-bp-red-line: rgb(207 51 40 / 55%);
+  --lx-bp-red-soft: rgb(207 51 40 / 10%);
+  --lx-bp-fill: rgb(27 60 138 / 7%);
+  --lx-bp-panel: rgb(255 255 255 / 78%);
+  --lx-bp-on-ink: #ffffff;
+  --lx-bp-green: #157a3c;
+  --lx-bp-pin: #d8342a;
+  --lx-bp-pin-dark: #8e1a14;
+  --lx-bp-pin-shine: rgb(255 255 255 / 85%);
+  --lx-bp-shadow: rgb(16 36 84 / 22%);
+}
+
+html[data-theme="dark"][data-admin-sidebar="v17"] {
+  --lx-bp-table: #143c78;
+  --lx-bp-table-2: #0c2a58;
+  --lx-bp-grid-minor: rgb(255 255 255 / 6%);
+  --lx-bp-grid-major: rgb(255 255 255 / 13%);
+  --lx-bp-ink: #eef5ff;
+  --lx-bp-ink-2: rgb(222 235 255 / 82%);
+  --lx-bp-ink-3: rgb(198 218 255 / 58%);
+  --lx-bp-line: rgb(225 238 255 / 48%);
+  --lx-bp-line-faint: rgb(225 238 255 / 20%);
+  --lx-bp-red: #ffa08f;
+  --lx-bp-red-line: rgb(255 160 143 / 60%);
+  --lx-bp-red-soft: rgb(255 160 143 / 14%);
+  --lx-bp-fill: rgb(255 255 255 / 9%);
+  --lx-bp-panel: rgb(9 33 72 / 62%);
+  --lx-bp-on-ink: #143c78;
+  --lx-bp-green: #74e8a6;
+  --lx-bp-pin: #ff6a5c;
+  --lx-bp-pin-dark: #9c1d14;
+  --lx-bp-shadow: rgb(0 0 0 / 45%);
+}
+
+/* Each section marker keeps its own category colour. */
+.lx-blueprint-marker[data-cat="home"] { --lx-bp-cat: var(--color-cat-home, #1360ab); }
+.lx-blueprint-marker[data-cat="hostels"] { --lx-bp-cat: var(--color-cat-hostels, #0284c7); }
+.lx-blueprint-marker[data-cat="student-affairs"] { --lx-bp-cat: var(--color-cat-student-affairs, #db2777); }
+.lx-blueprint-marker[data-cat="staff"] { --lx-bp-cat: var(--color-cat-staff, #7048c8); }
+.lx-blueprint-marker[data-cat="dining"] { --lx-bp-cat: var(--color-cat-dining, #059669); }
+
+/* ---------- The drafting table and the pinned sheet ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v17"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--lx-bp-table);
+    background-image:
+      linear-gradient(var(--lx-bp-grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-bp-grid-major) 1px, transparent 1px),
+      linear-gradient(var(--lx-bp-grid-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-bp-grid-minor) 1px, transparent 1px),
+      radial-gradient(120% 90% at 30% 20%, var(--lx-bp-table), var(--lx-bp-table-2));
+    background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px, 100% 100%;
+    background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px, 0 0;
+  }
+
+  html[data-admin-sidebar="v17"] .layout-content {
+    position: relative;
+    height: calc(100vh - 2 * var(--lx-bp-gap));
+    margin: var(--lx-bp-gap) var(--lx-bp-gap) var(--lx-bp-gap) 8px;
+    border-radius: 2px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 0 0 1px var(--lx-bp-line),
+      0 0 0 4px var(--lx-bp-table),
+      0 0 0 5px var(--lx-bp-line-faint),
+      6px 10px 26px -6px var(--lx-bp-shadow);
+    scrollbar-gutter: stable;
+  }
+}
+
+/* ---------- Panel ---------- */
+.lx-blueprint {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: var(--lx-bp-w, 316px);
+  flex: 0 0 var(--lx-bp-w, 316px);
+  height: 100vh;
+  padding-right: 20px;
+  overflow: hidden;
+  color: var(--lx-bp-ink);
+  cursor: crosshair;
+}
+.lx-blueprint button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.lx-blueprint button:focus-visible {
+  outline: 1.5px dashed var(--lx-bp-red);
+  outline-offset: 2px;
+}
+
+/* Red double margin line, like a drafting sheet's border. */
+.lx-blueprint::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 17px;
+  width: 4px;
+  border-left: 1px solid var(--lx-bp-red-line);
+  border-right: 1px solid var(--lx-bp-red-line);
+  pointer-events: none;
+}
+
+/* Vertical ruler on the panel's edge. */
+.lx-blueprint-ruler {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, var(--lx-bp-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--lx-bp-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--lx-bp-ink-2) 1px, transparent 1px);
+  background-size: 5px 10px, 9px 50px, 16px 100px;
+  background-repeat: repeat-y;
+  background-position: right top;
+}
+.lx-blueprint-ruler__num {
+  position: absolute;
+  left: 0;
+  margin-top: 3px;
+  writing-mode: vertical-rl;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  line-height: 1;
+  color: var(--lx-bp-ink-3);
+}
+.lx-blueprint-ruler__num:first-child { display: none; }
+.lx-blueprint-ruler__mark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 0;
+  border-top: 2px solid var(--lx-bp-red);
+  transform: translateY(var(--lx-bp-cy, -10px));
+  opacity: 0;
+  transition: opacity 160ms;
+}
+.lx-blueprint[data-cross="on"] .lx-blueprint-ruler__mark { opacity: 1; }
+
+/* CAD crosshair. */
+.lx-blueprint-cross {
+  position: absolute;
+  inset: 0 20px 0 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms;
+}
+.lx-blueprint[data-cross="on"] .lx-blueprint-cross { opacity: 1; }
+.lx-blueprint-cross__h,
+.lx-blueprint-cross__v {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.55;
+}
+.lx-blueprint-cross__h {
+  right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--lx-bp-red) 0 6px, transparent 6px 10px);
+  transform: translateY(var(--lx-bp-cy, 0));
+}
+.lx-blueprint-cross__v {
+  bottom: 0;
+  width: 1px;
+  background: repeating-linear-gradient(180deg, var(--lx-bp-red) 0 6px, transparent 6px 10px);
+  transform: translateX(var(--lx-bp-cx, 0));
+}
+.lx-blueprint-cross__readout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1px 5px;
+  border: 1px solid var(--lx-bp-red-line);
+  border-radius: 2px;
+  background: var(--lx-bp-panel);
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  color: var(--lx-bp-red);
+  white-space: pre;
+  transform: translate(min(calc(var(--lx-bp-cx, 0px) + 12px), 170px), calc(var(--lx-bp-cy, 0px) - 22px));
+}
+
+/* ---------- Header ---------- */
+.lx-blueprint-head {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 6px 8px 14px;
+}
+.lx-blueprint-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 6px 2px 2px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  text-align: left;
+}
+.lx-blueprint-brand:hover .lx-blueprint-brand__word { color: var(--lx-bp-red); }
+.lx-blueprint-brand__compass {
+  display: block;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  transform: rotate(var(--lx-bp-heading, 0deg));
+  transition: transform 1100ms var(--lx-bp-spring);
+}
+.lx-blueprint-north { width: 100%; height: 100%; overflow: visible; }
+.lx-blueprint-north__ring { fill: none; stroke: var(--lx-bp-ink); stroke-width: 1.4; }
+.lx-blueprint-north__ring--thin { stroke: var(--lx-bp-line); stroke-width: 1; stroke-dasharray: 2 2; }
+.lx-blueprint-north__solid { fill: var(--lx-bp-ink); }
+.lx-blueprint-north__hollow { fill: none; stroke: var(--lx-bp-ink); stroke-width: 1; }
+.lx-blueprint-north text {
+  font-family: var(--lx-bp-mono);
+  font-size: 7px;
+  font-weight: 700;
+  fill: var(--lx-bp-red);
+}
+.lx-blueprint-brand__text { display: flex; flex-direction: column; line-height: 1.1; }
+.lx-blueprint-brand__word {
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  transition: color 160ms;
+}
+.lx-blueprint-brand__dwg {
+  margin-top: 2px;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lx-bp-ink-3);
+}
+.lx-blueprint-mode .sidebar-mode-button {
+  border: 1px solid var(--lx-bp-line) !important;
+  border-radius: 3px !important;
+  background: var(--lx-bp-panel) !important;
+  color: var(--lx-bp-ink-2) !important;
+  font-family: var(--lx-bp-mono);
+}
+.lx-blueprint-mode .sidebar-mode-button:hover {
+  border-color: var(--lx-bp-red) !important;
+  color: var(--lx-bp-red) !important;
+}
+
+/* ---------- Section markers ---------- */
+.lx-blueprint-markers {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+  padding: 8px 0 4px 8px;
+  border-top: 1px solid var(--lx-bp-line-faint);
+  border-bottom: 1px solid var(--lx-bp-line-faint);
+  margin: 0 0 0 14px;
+}
+.lx-blueprint-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 2px 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+}
+.lx-blueprint-marker__sym {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.lx-blueprint-marker__flag {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 520ms var(--lx-bp-spring);
+}
+.lx-blueprint-marker__flag path {
+  fill: transparent;
+  stroke: var(--lx-bp-line);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transition: fill 260ms, stroke 260ms;
+}
+.lx-blueprint-marker__disc {
+  position: absolute;
+  inset: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: 1.5px solid var(--lx-bp-ink-2);
+  border-radius: 50%;
+  background: var(--lx-bp-table);
+  color: var(--lx-bp-ink-2);
+  transition: border-color 220ms, color 220ms, box-shadow 220ms;
+}
+.lx-blueprint-marker__disc::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+.lx-blueprint-marker__letter {
+  margin-top: 1px;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  line-height: 1;
+}
+.lx-blueprint-marker__icon { display: flex; line-height: 0; margin-bottom: 1px; }
+.lx-blueprint-marker__icon svg { width: 12px; height: 12px; }
+.lx-blueprint-marker__count {
+  position: absolute;
+  top: -1px;
+  right: -4px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--lx-bp-red);
+  color: var(--lx-bp-on-ink);
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+}
+.lx-blueprint-marker__new {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lx-bp-red);
+  box-shadow: 0 0 0 2px var(--lx-bp-table);
+}
+.lx-blueprint-marker__name {
+  max-width: 100%;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--lx-bp-ink-3);
+  transition: color 200ms;
+}
+.lx-blueprint-marker:hover .lx-blueprint-marker__disc { border-color: var(--lx-bp-red); color: var(--lx-bp-red); }
+.lx-blueprint-marker:hover .lx-blueprint-marker__flag path { stroke: var(--lx-bp-red); }
+.lx-blueprint-marker:hover .lx-blueprint-marker__name { color: var(--lx-bp-ink); }
+
+.lx-blueprint-marker[data-active] .lx-blueprint-marker__flag { transform: rotate(90deg); }
+.lx-blueprint-marker[data-active] .lx-blueprint-marker__flag path {
+  fill: var(--lx-bp-cat);
+  stroke: var(--lx-bp-cat);
+}
+.lx-blueprint-marker[data-active] .lx-blueprint-marker__disc {
+  border: 2px solid var(--lx-bp-cat);
+  color: var(--lx-bp-ink);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--lx-bp-cat) 18%, transparent);
+}
+.lx-blueprint-marker[data-active] .lx-blueprint-marker__name {
+  color: var(--lx-bp-ink);
+  font-weight: 700;
+}
+
+/* ---------- Section title ---------- */
+.lx-blueprint-section {
+  padding: 10px 6px 6px 14px;
+}
+.lx-blueprint-section__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lx-blueprint-section__cut {
+  flex: none;
+  padding: 1px 6px;
+  border: 1.5px solid var(--lx-bp-red);
+  border-radius: 2px;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--lx-bp-red);
+}
+.lx-blueprint-section__name {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lx-bp-ink);
+  animation: lx-blueprint-letter 620ms steps(14, end) both;
+}
+.lx-blueprint-section__dim {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  color: var(--lx-bp-ink-2);
+  transform-origin: left center;
+  animation: lx-blueprint-draw 700ms var(--lx-bp-ease) 120ms both;
+}
+.lx-blueprint-section__line { flex: 1; height: 1px; background: var(--lx-bp-line); }
+.lx-blueprint-section__val {
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lx-blueprint-tick {
+  flex: none;
+  width: 1px;
+  height: 10px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+/* ---------- Callouts ---------- */
+.lx-blueprint-sheet {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+/* The wall the callouts point at: a hatched section cut. */
+.lx-blueprint-hatch {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 16px;
+  width: 10px;
+  border-left: 1.5px solid var(--lx-bp-ink-2);
+  border-right: 1.5px solid var(--lx-bp-ink-2);
+  background: repeating-linear-gradient(-45deg, var(--lx-bp-line) 0 1px, transparent 1px 6px);
+  pointer-events: none;
+}
+.lx-blueprint-callouts {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 4px 4px 14px 27px;
+  list-style: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lx-bp-line) transparent;
+}
+.lx-blueprint-empty {
+  margin: 12px 8px 0 18px;
+  padding: 10px 12px;
+  border: 1px dashed var(--lx-bp-line);
+  border-radius: 3px;
+  background: var(--lx-bp-panel);
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  color: var(--lx-bp-ink-2);
+}
+
+.lx-blueprint-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 3px;
+}
+.lx-blueprint-row__go {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 5px 4px 5px 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+}
+.lx-blueprint-row__leader {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 1px;
+  background: var(--lx-bp-line);
+  transform-origin: left center;
+  transition: background-color 160ms;
+  animation: lx-blueprint-draw 380ms var(--lx-bp-ease) both;
+  animation-delay: min(calc(var(--lx-bp-i, 0) * 32ms), 520ms);
+}
+.lx-blueprint-row__leader::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: inherit;
+}
+.lx-blueprint-row__bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 1.25px solid var(--lx-bp-line);
+  border-radius: 50%;
+  background: var(--lx-bp-panel);
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  color: var(--lx-bp-ink-2);
+  transition: border-color 160ms, color 160ms, background-color 160ms;
+  animation: lx-blueprint-pop 340ms var(--lx-bp-spring) both;
+  animation-delay: min(calc(var(--lx-bp-i, 0) * 32ms + 120ms), 640ms);
+}
+.lx-blueprint-row__icon {
+  flex: none;
+  color: var(--lx-bp-ink-3);
+  transition: color 160ms;
+}
+.lx-blueprint-row__labelwrap {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-width: 0;
+  animation: lx-blueprint-fade 320ms var(--lx-bp-ease) both;
+  animation-delay: min(calc(var(--lx-bp-i, 0) * 32ms + 160ms), 680ms);
+}
+.lx-blueprint-row__label {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--lx-bp-ink);
+}
+.lx-blueprint-row__ext {
+  flex: 1 1 10px;
+  min-width: 8px;
+  height: 0;
+  border-top: 1px dashed transparent;
+  transition: border-color 160ms;
+}
+
+/* Dimension line under the open tab. */
+.lx-blueprint-row__dim {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 72px;
+  margin-top: 3px;
+  color: var(--lx-bp-red);
+  transform-origin: left center;
+  animation: lx-blueprint-draw 560ms var(--lx-bp-ease) 80ms both;
+}
+.lx-blueprint-row__dimline { flex: 1; min-width: 4px; height: 1px; background: currentColor; }
+.lx-blueprint-row__dimval {
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  animation: lx-blueprint-fade 260ms ease 480ms both;
+}
+
+/* Hover: redline the callout. */
+.lx-blueprint-row:hover .lx-blueprint-row__leader { background: var(--lx-bp-red); }
+.lx-blueprint-row:hover .lx-blueprint-row__bubble { border-color: var(--lx-bp-red); color: var(--lx-bp-red); }
+.lx-blueprint-row:hover .lx-blueprint-row__icon { color: var(--lx-bp-red); }
+.lx-blueprint-row:hover .lx-blueprint-row__ext { border-top-color: var(--lx-bp-red-line); }
+
+/* Active: the dimensioned callout. */
+.lx-blueprint-row[data-active] {
+  background: linear-gradient(90deg, var(--lx-bp-fill), transparent 92%);
+}
+.lx-blueprint-row[data-active] .lx-blueprint-row__leader {
+  height: 2px;
+  background: var(--lx-bp-ink);
+}
+.lx-blueprint-row[data-active] .lx-blueprint-row__leader::before { top: -2px; width: 6px; height: 6px; left: -3px; }
+.lx-blueprint-row[data-active] .lx-blueprint-row__bubble {
+  border-color: var(--lx-bp-ink);
+  background: var(--lx-bp-ink);
+  color: var(--lx-bp-on-ink);
+}
+.lx-blueprint-row[data-active] .lx-blueprint-row__icon { color: var(--lx-bp-ink); }
+.lx-blueprint-row[data-active] .lx-blueprint-row__label { font-weight: 700; }
+.lx-blueprint-row[data-active]::after {
+  /* A bracket on the right edge, closing the dimensioned row. */
+  content: "";
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  right: 0;
+  width: 5px;
+  border: 1.5px solid var(--lx-bp-red);
+  border-left: 0;
+  transform-origin: right center;
+  animation: lx-blueprint-drawy 420ms var(--lx-bp-ease) 200ms both;
+  pointer-events: none;
+}
+
+/* Badges. */
+.lx-blueprint-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  height: 19px;
+  padding: 0 5px;
+  border: 1px solid var(--lx-bp-red);
+  border-radius: 2px;
+  background: var(--lx-bp-red-soft);
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  color: var(--lx-bp-red);
+}
+.lx-blueprint-count svg { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.lx-blueprint-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 19px;
+  padding: 0 5px;
+  border: 1px solid var(--lx-bp-green);
+  border-radius: 2px;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lx-bp-green);
+}
+.lx-blueprint-tag[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: lx-blueprint-blink 1.4s ease-in-out infinite;
+}
+.lx-blueprint-new {
+  flex: none;
+  padding: 0 4px;
+  border: 1px dashed var(--lx-bp-red);
+  border-radius: 2px;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lx-bp-red);
+  transform: rotate(-6deg);
+}
+.lx-blueprint-row__pin {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-right: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--lx-bp-ink-3);
+  opacity: 0;
+  transition: opacity 140ms, color 140ms, background-color 140ms;
+}
+.lx-blueprint-row:hover .lx-blueprint-row__pin,
+.lx-blueprint-row:focus-within .lx-blueprint-row__pin,
+.lx-blueprint-row__pin[data-pinned] { opacity: 1; }
+.lx-blueprint-row__pin:hover { color: var(--lx-bp-red); background: var(--lx-bp-red-soft); }
+.lx-blueprint-row__pin[data-pinned] { color: var(--lx-bp-pin); }
+.lx-blueprint-row__pin[data-pinned] svg { fill: currentColor; }
+
+/* ---------- Title block ---------- */
+.lx-blueprint-titleblock {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    "project project sheet"
+    "drawn drawn date"
+    "print rev exit";
+  gap: 1px;
+  margin: 0 6px 14px 14px;
+  border: 1.5px solid var(--lx-bp-ink);
+  background: var(--lx-bp-line);
+  box-shadow: 3px 3px 0 var(--lx-bp-line-faint);
+}
+.lx-blueprint-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 5px 8px 6px;
+  border: 0;
+  border-radius: 0;
+  background: var(--lx-bp-table);
+  text-align: left;
+}
+.lx-blueprint-cell--project { grid-area: project; }
+.lx-blueprint-cell--sheet { grid-area: sheet; }
+.lx-blueprint-cell--drawn { grid-area: drawn; }
+.lx-blueprint-cell--date { grid-area: date; }
+.lx-blueprint-cell--print { grid-area: print; }
+.lx-blueprint-cell--rev { grid-area: rev; }
+.lx-blueprint-cell--exit { grid-area: exit; }
+.lx-blueprint-cell__k {
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lx-bp-ink-3);
+}
+.lx-blueprint-cell__v {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--lx-bp-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--lx-bp-ink);
+}
+.lx-blueprint-cell__v--big {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.lx-blueprint-cell__v--sign {
+  display: block;
+  font-family: var(--lx-bp-hand);
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  color: var(--lx-bp-ink);
+}
+.lx-blueprint-cell__v[data-hot] { color: var(--lx-bp-red); }
+button.lx-blueprint-cell { transition: background-color 140ms; }
+button.lx-blueprint-cell:hover { background: color-mix(in oklab, var(--lx-bp-table), var(--lx-bp-red) 10%); }
+button.lx-blueprint-cell:hover .lx-blueprint-cell__v { color: var(--lx-bp-red); }
+button.lx-blueprint-cell:focus-visible { outline-offset: -3px; }
+.lx-blueprint-cell--drawn[data-active] {
+  background: color-mix(in oklab, var(--lx-bp-table), var(--lx-bp-ink) 10%);
+}
+.lx-blueprint-cell--drawn[data-active] .lx-blueprint-cell__k::after { content: " ●"; color: var(--lx-bp-red); }
+
+/* ---------- Table furniture: zone marks, pins, plotter ---------- */
+.lx-blueprint-table { display: none; }
+
+@media (min-width: 768px) {
+  .lx-blueprint-table { display: block; }
+
+  .lx-blueprint-zones {
+    position: fixed;
+    z-index: 1;
+    display: flex;
+    pointer-events: none;
+    font-family: var(--lx-bp-mono);
+    font-size: var(--font-size-2xs);
+    color: var(--lx-bp-ink-3);
+  }
+  .lx-blueprint-zones span {
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+  .lx-blueprint-zones--top {
+    top: 0;
+    left: var(--lx-bp-sheet-left, 324px);
+    right: var(--lx-bp-gap, 18px);
+    height: var(--lx-bp-gap, 18px);
+  }
+  .lx-blueprint-zones--top span + span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 3px;
+    height: 6px;
+    border-left: 1px solid var(--lx-bp-line);
+  }
+  .lx-blueprint-zones--side {
+    top: var(--lx-bp-gap, 18px);
+    right: 0;
+    bottom: var(--lx-bp-gap, 18px);
+    width: var(--lx-bp-gap, 18px);
+    flex-direction: column;
+  }
+  .lx-blueprint-zones--side span + span::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 3px;
+    width: 6px;
+    border-top: 1px solid var(--lx-bp-line);
+  }
+
+  .lx-blueprint-pin {
+    position: fixed;
+    z-index: 26;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle at 34% 30%, var(--lx-bp-pin-shine) 0 1.5px, var(--lx-bp-pin) 3px, var(--lx-bp-pin-dark) 100%);
+    box-shadow: 2px 3px 3px var(--lx-bp-shadow);
+  }
+  .lx-blueprint-pin--tl { top: calc(var(--lx-bp-gap, 18px) - 3px); left: calc(var(--lx-bp-sheet-left, 324px) - 3px); }
+  .lx-blueprint-pin--tr { top: calc(var(--lx-bp-gap, 18px) - 3px); right: calc(var(--lx-bp-gap, 18px) - 3px); }
+  .lx-blueprint-pin--bl { bottom: calc(var(--lx-bp-gap, 18px) - 3px); left: calc(var(--lx-bp-sheet-left, 324px) - 3px); }
+  .lx-blueprint-pin--br { bottom: calc(var(--lx-bp-gap, 18px) - 3px); right: calc(var(--lx-bp-gap, 18px) - 3px); }
+
+  /* Plotter: a pen carriage sweeps down the sheet on every route change. */
+  .lx-blueprint-plot {
+    position: fixed;
+    z-index: 25;
+    top: var(--lx-bp-gap, 18px);
+    right: var(--lx-bp-gap, 18px);
+    bottom: var(--lx-bp-gap, 18px);
+    left: var(--lx-bp-sheet-left, 324px);
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .lx-blueprint-plot__bar {
+    position: absolute;
+    inset: 0;
+    border-bottom: 1.5px solid var(--lx-bp-red);
+    background: linear-gradient(to bottom, transparent 80%, var(--lx-bp-red-soft));
+    transform: translateY(-100%);
+    animation: lx-blueprint-plot 950ms var(--lx-bp-ease) forwards;
+  }
+  .lx-blueprint-plot__bar::after {
+    /* The pen head riding the carriage. */
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 22px;
+    height: 10px;
+    border: 1.5px solid var(--lx-bp-red);
+    border-radius: 2px;
+    background: var(--lx-bp-panel);
+    animation: lx-blueprint-pen 950ms ease-in-out forwards;
+  }
+}
+
+/* ---------- Motion ---------- */
+@keyframes lx-blueprint-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes lx-blueprint-drawy {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+@keyframes lx-blueprint-pop {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes lx-blueprint-fade {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lx-blueprint-letter {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes lx-blueprint-blink {
+  50% { opacity: 0.25; }
+}
+@keyframes lx-blueprint-plot {
+  0% { transform: translateY(-100%); opacity: 1; }
+  80% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+@keyframes lx-blueprint-pen {
+  0% { left: 0; }
+  20% { left: calc(100% - 22px); }
+  40% { left: 0; }
+  60% { left: calc(100% - 22px); }
+  80% { left: 30%; }
+  100% { left: 30%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-blueprint *,
+  .lx-blueprint *::before,
+  .lx-blueprint *::after,
+  .lx-blueprint-row[data-active]::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lx-blueprint-plot { display: none !important; }
+}
+
+/* Keep the crosshair out of the header so it never sits over the mode menu. */
+.lx-blueprint:has(.lx-blueprint-head:hover) .lx-blueprint-cross,
+.lx-blueprint:has(.lx-blueprint-head:hover) .lx-blueprint-ruler__mark { opacity: 0; }

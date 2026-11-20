@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
@@ -19,6 +19,7 @@ import WorkspaceNav from "./sidebar/WorkspaceNav"
 import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
 import ConsoleSidebar from "./sidebar/console/ConsoleSidebar"
 import "./sidebar/tone/tone.css"
+import { LAB_SIDEBARS } from "./sidebar/lab/registry"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
   SIDEBAR_MODE_FLAT,
@@ -30,6 +31,8 @@ import {
   SIDEBAR_MODE_CONSOLE,
   SIDEBAR_MODE_TONE,
   SIDEBAR_MODE_STORAGE_KEY,
+  isLabSidebarMode,
+  readSidebarPreviewMode,
   enforceSidebarStableVersion,
   isSidebarModeAtLeastStable,
   isSidebarStableVersionActive,
@@ -141,20 +144,23 @@ const Sidebar = ({ navItems }) => {
     persistSidebarMode(allowedMode)
   }, [persistSidebarMode])
   const stableModeSavedRef = useRef(false)
-  const sidebarMode = pickedSidebarMode ?? resolveSidebarMode({
+  const [previewSidebarMode] = useState(readSidebarPreviewMode)
+  const sidebarMode = previewSidebarMode ?? pickedSidebarMode ?? resolveSidebarMode({
     dbMode: user?.sidebarMode,
     storedMode: readLocalSidebarMode(),
   })
   // V6 is desktop-only; on phones it falls back to the V4 drawer.
   // V7 shares V6's structure (and is desktop-only too).
   const isConsoleMode = isAdminNav && sidebarMode === SIDEBAR_MODE_CONSOLE && !isMobile
-  const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode
+  // Lab (V9–V18) shells take V6's props; desktop only, V4 on phones.
+  const isLabMode = isAdminNav && isLabSidebarMode(sidebarMode) && !isMobile
+  const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode || isLabMode
   // V8 is V4 on a category-coloured frame (desktop only; plain V4 on phones).
   const isToneMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TONE && !isMobile
   const isRailMode = isAdminNav && (
     sidebarMode === SIDEBAR_MODE_TONE ||
     sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE
-    || ((sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_CONSOLE) && isMobile)
+    || ((sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_CONSOLE || isLabSidebarMode(sidebarMode)) && isMobile)
   )
   const isV5Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_STAGE
   const isCategorizedMode = isAdminNav && (sidebarMode === SIDEBAR_MODE_CATEGORIES || isRailMode || isOrbitMode)
@@ -200,7 +206,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
     }
     if (isV5Mode || isOrbitMode || isToneMode) {
-      root.setAttribute("data-admin-sidebar", isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : "v5")
+      root.setAttribute("data-admin-sidebar", isLabMode ? sidebarMode : isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : "v5")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -208,7 +214,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode])
+  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode, isLabMode, sidebarMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -250,9 +256,9 @@ const Sidebar = ({ navItems }) => {
   }, [isAdminNav, location.pathname, mainNavItems, recordVisit])
 
   useEffect(() => {
-    if (!isAdminNav || typeof window === "undefined") return
+    if (!isAdminNav || previewSidebarMode || typeof window === "undefined") return
     window.localStorage.setItem(SIDEBAR_MODE_STORAGE_KEY, sidebarMode)
-  }, [isAdminNav, sidebarMode])
+  }, [isAdminNav, previewSidebarMode, sidebarMode])
 
   useEffect(() => {
     if (!isAdminNav || !isSidebarStableVersionActive() || !user?._id) return
@@ -415,9 +421,10 @@ const Sidebar = ({ navItems }) => {
 
   if (isOrbitMode) {
     const isItemActive = (item) => isNavItemActive(item, location.pathname) || active === navItemKey(item)
-    const Shell = isConsoleMode ? ConsoleSidebar : OrbitSidebar
-    return (
+    const Shell = isLabMode ? LAB_SIDEBARS[sidebarMode] : isConsoleMode ? ConsoleSidebar : OrbitSidebar
+    const shell = (
       <Shell
+        modeId={sidebarMode}
         user={user}
         categories={ADMIN_NAV_CATEGORIES}
         activeCategory={activeAdminCategory}
@@ -450,6 +457,7 @@ const Sidebar = ({ navItems }) => {
         onHome={() => handleCategoryChange(ADMIN_NAV_CATEGORY_HOME)}
       />
     )
+    return isLabMode ? <Suspense fallback={null}>{shell}</Suspense> : shell
   }
 
   const headerTint = isToneMode

@@ -9,6 +9,7 @@
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
  * v7 — "Console": v6's layout with a calm, professional look
  * v8 — "Tone": v4's layout on a mid-tone frame in the category colour; the page floats on it
+ * v9–v18 — "Lab": experimental, just-for-fun shells (sidebar/lab/*); desktop only
  */
 export const SIDEBAR_MODE_FLAT = "v1"
 export const SIDEBAR_MODE_CATEGORIES = "v2"
@@ -18,6 +19,9 @@ export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
 export const SIDEBAR_MODE_CONSOLE = "v7"
 export const SIDEBAR_MODE_TONE = "v8"
+
+/** Lab: experimental shells, one folder each under sidebar/lab (see lab/registry.js). */
+export const SIDEBAR_LAB_MODE_IDS = ["v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18"]
 
 export const SIDEBAR_MODE_STORAGE_KEY = "admin_sidebar_mode"
 export const SIDEBAR_DEFAULT_MODE = SIDEBAR_MODE_RAIL
@@ -85,7 +89,19 @@ export const SIDEBAR_MODE_OPTIONS = [
     name: "Tone",
     description: "V4's layout on a colour frame that follows the category; the page floats on it",
   },
+  { id: "v9", label: "X1", name: "Terminal", description: "Green-phosphor CRT shell: tabs as directories, scanlines and a blinking cursor", lab: true },
+  { id: "v10", label: "X2", name: "Arcade", description: "8-bit game cabinet: categories are worlds, tabs are levels", lab: true },
+  { id: "v11", label: "X3", name: "Sketchbook", description: "Hand-drawn notebook: ruled paper, doodled underlines, sticky-note tabs", lab: true },
+  { id: "v12", label: "X4", name: "Aquarium", description: "Underwater: caustic light, rising bubbles, tabs drift like fish", lab: true },
+  { id: "v13", label: "X5", name: "Jukebox", description: "Record player: categories are records on a turntable, tabs are tracks", lab: true },
+  { id: "v14", label: "X6", name: "Metro", description: "Transit map: categories are lines, tabs are stations, a train rides to your stop", lab: true },
+  { id: "v15", label: "X7", name: "Daylight", description: "A live sky that follows the time in India: sun, moon, drifting clouds", lab: true },
+  { id: "v16", label: "X8", name: "Synthwave", description: "Neon signs over a retro grid horizon, with a little flicker", lab: true },
+  { id: "v17", label: "X9", name: "Blueprint", description: "Technical drawing: drafting grid, dimension lines and annotations", lab: true },
+  { id: "v18", label: "X10", name: "Filing Cabinet", description: "Desk skeuomorph: drawers for categories, manila folders for tabs", lab: true },
 ]
+
+export const isLabSidebarMode = (mode) => SIDEBAR_LAB_MODE_IDS.includes(mode)
 
 export const isValidSidebarMode = (value) => SIDEBAR_MODE_OPTIONS.some((option) => option.id === value)
 
@@ -139,3 +155,22 @@ export const resolveSidebarMode = ({ dbMode, storedMode, now } = {}) => enforceS
 )
 
 export const readStoredSidebarMode = () => resolveSidebarMode({ storedMode: readLocalSidebarMode() })
+
+const SIDEBAR_PREVIEW_KEY = "admin_sidebar_preview"
+
+/**
+ * Dev-only preview: open any page with ?sidebarPreview=v12 to show that layout
+ * for this tab (sessionStorage) without saving it. ?sidebarPreview=off clears it.
+ */
+export const readSidebarPreviewMode = () => {
+  if (!import.meta.env.DEV || typeof window === "undefined") return null
+  try {
+    const param = new URLSearchParams(window.location.search).get("sidebarPreview")
+    if (param === "off") window.sessionStorage.removeItem(SIDEBAR_PREVIEW_KEY)
+    else if (isValidSidebarMode(param)) window.sessionStorage.setItem(SIDEBAR_PREVIEW_KEY, param)
+    const stored = window.sessionStorage.getItem(SIDEBAR_PREVIEW_KEY)
+    return isValidSidebarMode(stored) ? stored : null
+  } catch {
+    return null
+  }
+}

@@ -1,0 +1,621 @@
+/* ============================================================
+   Lab V9 "Terminal" — a phosphor CRT in a chunky monitor case.
+   Sidebar sets html[data-admin-sidebar="v9"] + data-admin-category.
+   Light = PAPER (ink on cream, e-ink calm). Dark = PHOSPHOR (glowing).
+   Prefix: lx-terminal-.
+   ============================================================ */
+
+html[data-admin-sidebar="v9"] {
+  /* Paper inks, one per directory. */
+  --lx-terminal-home: #1d6b35;
+  --lx-terminal-hostels: #0b6383;
+  --lx-terminal-student-affairs: #a01e63;
+  --lx-terminal-staff: #5338a3;
+  --lx-terminal-dining: #93520a;
+  --lx-terminal-p: var(--lx-terminal-home);
+
+  --lx-terminal-case-1: #e6dfcc;
+  --lx-terminal-case-2: #cfc6af;
+  --lx-terminal-case-ink: #8a8069;
+  --lx-terminal-case-hi: rgb(255 255 255 / 60%);
+  --lx-terminal-case-lo: rgb(90 76 46 / 28%);
+  --lx-terminal-bezel: #b1a78f;
+  --lx-terminal-bezel-hi: #8f856d;
+  --lx-terminal-scr: #f6f0dd;
+  --lx-terminal-scr-edge: #e3d9bd;
+  --lx-terminal-on-p: #f6f0dd;
+  --lx-terminal-alert: #b3261e;
+  --lx-terminal-scan: rgb(80 60 20 / 5%);
+  --lx-terminal-vignette: rgb(120 92 40 / 22%);
+  --lx-terminal-led-off: #8f8670;
+  --lx-terminal-power: #2fbf57;
+  --lx-terminal-disk: #e08a00;
+  --lx-terminal-font: ui-monospace, "Cascadia Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  --lx-terminal-glow-k: 0;
+}
+
+html[data-admin-sidebar="v9"][data-theme="dark"] {
+  /* Phosphors. */
+  --lx-terminal-home: #5dff8f;
+  --lx-terminal-hostels: #5fe3ff;
+  --lx-terminal-student-affairs: #ff8dd0;
+  --lx-terminal-staff: #bba8ff;
+  --lx-terminal-dining: #ffb340;
+
+  --lx-terminal-case-1: #2c2d30;
+  --lx-terminal-case-2: #18191b;
+  --lx-terminal-case-ink: #6d7076;
+  --lx-terminal-case-hi: rgb(255 255 255 / 8%);
+  --lx-terminal-case-lo: rgb(0 0 0 / 55%);
+  --lx-terminal-bezel: #0c0d0e;
+  --lx-terminal-bezel-hi: #3a3b3f;
+  --lx-terminal-scr: #050906;
+  --lx-terminal-scr-edge: #010201;
+  --lx-terminal-on-p: #031208;
+  --lx-terminal-alert: #ff7a66;
+  --lx-terminal-scan: rgb(0 0 0 / 28%);
+  --lx-terminal-vignette: rgb(0 0 0 / 70%);
+  --lx-terminal-led-off: #3b3420;
+  --lx-terminal-power: #46ff7a;
+  --lx-terminal-disk: #ffb000;
+  --lx-terminal-glow-k: 1;
+}
+
+html[data-admin-sidebar="v9"][data-admin-category="hostels"] { --lx-terminal-p: var(--lx-terminal-hostels); }
+html[data-admin-sidebar="v9"][data-admin-category="student-affairs"] { --lx-terminal-p: var(--lx-terminal-student-affairs); }
+html[data-admin-sidebar="v9"][data-admin-category="staff"] { --lx-terminal-p: var(--lx-terminal-staff); }
+html[data-admin-sidebar="v9"][data-admin-category="dining"] { --lx-terminal-p: var(--lx-terminal-dining); }
+
+/* ---------- The case around everything; the page is the second screen ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v9"] .layout-container {
+    height: 100vh;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 2px, var(--lx-terminal-case-hi) 2px 3px, transparent 3px 5px),
+      linear-gradient(170deg, var(--lx-terminal-case-1), var(--lx-terminal-case-2));
+    background-blend-mode: soft-light, normal;
+  }
+
+  html[data-admin-sidebar="v9"] .layout-content {
+    position: relative;
+    height: calc(100vh - 44px);
+    margin: 22px 22px 22px 10px;
+    border-radius: 14px;
+    background-color: var(--color-bg-page);
+    box-shadow:
+      0 0 0 8px var(--lx-terminal-bezel),
+      0 0 0 9px var(--lx-terminal-bezel-hi),
+      0 0 0 11px var(--lx-terminal-case-hi),
+      0 18px 36px -10px var(--lx-terminal-case-lo),
+      0 0 40px 4px color-mix(in oklab, var(--lx-terminal-p) calc(var(--lx-terminal-glow-k) * 14%), transparent);
+    scrollbar-gutter: stable;
+  }
+
+  html[data-admin-sidebar="v9"] .layout-content.lx-terminal-refresh > * {
+    animation: lx-terminal-refresh 420ms ease-out both;
+  }
+}
+
+@keyframes lx-terminal-refresh {
+  0% { opacity: 0.25; filter: brightness(1.35) contrast(0.9); }
+  35% { opacity: 0.85; }
+  100% { opacity: 1; filter: none; }
+}
+
+/* ---------- Shell ---------- */
+.lx-terminal {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 328px;
+  flex: 0 0 328px;
+  height: 100vh;
+  padding: 10px 10px 10px 22px;
+  font-family: var(--lx-terminal-font);
+  color: var(--lx-terminal-p);
+}
+/* Reset only our own buttons (zero specificity), never the mode menu's. */
+:where(.lx-terminal-glass, .lx-terminal-case-bottom) button,
+:where(button.lx-terminal-badge) {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.lx-terminal ul { list-style: none; margin: 0; padding: 0; }
+.lx-terminal-mode [role="menu"] { font-family: var(--font-family-primary, sans-serif); text-shadow: none; }
+:where(.lx-terminal-glass, .lx-terminal-case-bottom) button:focus-visible,
+.lx-terminal-badge:focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: -2px;
+}
+
+/* Case top: badge + mode switcher (sits above the screen so its menu can drop over it). */
+.lx-terminal-case-top {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 2px 0 4px;
+  margin-bottom: 8px;
+}
+.lx-terminal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-family: var(--lx-terminal-font);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--lx-terminal-case-ink);
+  text-shadow: 0 1px 0 var(--lx-terminal-case-hi), 0 -1px 0 var(--lx-terminal-case-lo);
+}
+.lx-terminal-badge__model { font-weight: 500; opacity: 0.75; }
+.lx-terminal-badge__mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--lx-terminal-home) 0 20%,
+    var(--lx-terminal-hostels) 20% 40%,
+    var(--lx-terminal-student-affairs) 40% 60%,
+    var(--lx-terminal-staff) 60% 80%,
+    var(--lx-terminal-dining) 80% 100%
+  );
+  box-shadow: inset 0 0 0 1px var(--lx-terminal-case-lo);
+}
+.lx-terminal-mode .sidebar-mode-button {
+  font-family: var(--lx-terminal-font);
+  color: var(--lx-terminal-case-ink);
+  background: var(--lx-terminal-case-2);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px var(--lx-terminal-case-lo), 0 1px 0 var(--lx-terminal-case-hi);
+}
+.lx-terminal-mode .sidebar-mode-button:hover,
+.lx-terminal-mode .sidebar-mode-button[aria-expanded="true"] {
+  color: var(--lx-terminal-p);
+  background: var(--lx-terminal-scr);
+}
+
+/* ---------- The tube ---------- */
+.lx-terminal-screen {
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  min-height: 0;
+  margin: 8px;
+  border-radius: 22px / 26px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 45%, color-mix(in oklab, var(--lx-terminal-p) calc(var(--lx-terminal-glow-k) * 9% + 2%), var(--lx-terminal-scr)) 0%, var(--lx-terminal-scr) 62%, var(--lx-terminal-scr-edge) 100%);
+  box-shadow:
+    0 0 0 8px var(--lx-terminal-bezel),
+    0 0 0 9px var(--lx-terminal-bezel-hi),
+    0 0 0 11px var(--lx-terminal-case-hi),
+    0 14px 26px -8px var(--lx-terminal-case-lo);
+  transition: background 600ms ease;
+}
+/* Vignette + glare: the glass bulges toward you. */
+.lx-terminal-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(70% 40% at 22% 6%, rgb(255 255 255 / 9%), transparent 70%),
+    radial-gradient(ellipse at 50% 50%, transparent 58%, var(--lx-terminal-vignette) 100%);
+  box-shadow: inset 0 0 26px 4px var(--lx-terminal-vignette);
+}
+/* Scanlines. */
+.lx-terminal-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(180deg, var(--lx-terminal-scan) 0 1px, transparent 1px 3px);
+}
+
+.lx-terminal-glass {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  padding: 16px 14px 12px 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-shadow:
+    0 0 calc(var(--lx-terminal-glow-k) * 2px + 0.4px) color-mix(in oklab, currentColor 70%, transparent),
+    0 0 calc(var(--lx-terminal-glow-k) * 9px) color-mix(in oklab, currentColor calc(var(--lx-terminal-glow-k) * 40%), transparent);
+}
+/* The rolling refresh band. */
+.lx-terminal-glass::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 90px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--lx-terminal-p) calc(var(--lx-terminal-glow-k) * 5% + 2%), transparent), transparent);
+  animation: lx-terminal-roll 9s linear infinite;
+}
+@keyframes lx-terminal-roll {
+  from { transform: translateY(-100px); }
+  to { transform: translateY(100vh); }
+}
+
+.lx-terminal-screen.is-degauss .lx-terminal-glass {
+  animation: lx-terminal-degauss 560ms ease-out;
+}
+@keyframes lx-terminal-degauss {
+  0% { filter: brightness(1.8) hue-rotate(0deg) blur(1px); transform: scale(1.03, 0.94) skewX(3deg); }
+  25% { filter: brightness(1.3) hue-rotate(80deg); transform: scale(0.98, 1.03) skewX(-2deg); }
+  50% { filter: brightness(1.1) hue-rotate(-50deg); transform: scale(1.01, 0.99) skewX(1deg); }
+  75% { filter: hue-rotate(15deg); transform: skewX(-0.4deg); }
+  100% { filter: none; transform: none; }
+}
+
+/* ---------- Text ---------- */
+.lx-terminal-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lx-terminal-dim { color: color-mix(in oklab, var(--lx-terminal-p) 58%, transparent); }
+.lx-terminal-ps1 { color: color-mix(in oklab, var(--lx-terminal-p) 72%, transparent); font-weight: 700; }
+.lx-terminal-out { font-weight: 700; letter-spacing: 0.02em; }
+
+.lx-terminal-head {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 30%, transparent);
+}
+
+.lx-terminal-typed {
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+  white-space: nowrap;
+  width: calc(var(--n) * 1ch);
+  animation-name: lx-terminal-type;
+  animation-fill-mode: both;
+}
+@keyframes lx-terminal-type {
+  from { width: 0; }
+}
+
+.lx-terminal-cursor {
+  display: inline-block;
+  width: 0.62em;
+  height: 1.1em;
+  margin-left: 4px;
+  vertical-align: -0.2em;
+  background: currentColor;
+  box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 8px) currentColor;
+  animation: lx-terminal-blink 1.05s steps(1, end) infinite;
+}
+.lx-terminal-cursor--idle { margin-left: 0; }
+@keyframes lx-terminal-blink {
+  50% { opacity: 0; }
+}
+
+/* ---------- Directories ---------- */
+.lx-terminal-block { display: flex; flex-direction: column; gap: 4px; }
+.lx-terminal-dirs { display: flex; flex-direction: column; }
+.lx-terminal-dir[data-cat="home"] { --lx-terminal-c: var(--lx-terminal-home); }
+.lx-terminal-dir[data-cat="hostels"] { --lx-terminal-c: var(--lx-terminal-hostels); }
+.lx-terminal-dir[data-cat="student-affairs"] { --lx-terminal-c: var(--lx-terminal-student-affairs); }
+.lx-terminal-dir[data-cat="staff"] { --lx-terminal-c: var(--lx-terminal-staff); }
+.lx-terminal-dir[data-cat="dining"] { --lx-terminal-c: var(--lx-terminal-dining); }
+.lx-terminal-dir {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  width: 100%;
+  padding: 2px 6px;
+  border-radius: 2px;
+  text-align: left;
+  color: var(--lx-terminal-c, var(--lx-terminal-p));
+  font-weight: 700;
+}
+.lx-terminal-dir__perm {
+  font-weight: 400;
+  color: color-mix(in oklab, currentColor 55%, transparent);
+}
+.lx-terminal-dir__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lx-terminal-dir__new { color: var(--lx-terminal-alert); }
+.lx-terminal-dir__count {
+  min-width: 3ch;
+  text-align: right;
+  color: var(--lx-terminal-alert);
+}
+.lx-terminal-dir:hover { background: color-mix(in oklab, var(--lx-terminal-c) 14%, transparent); }
+.lx-terminal-dir[data-active] {
+  background: var(--lx-terminal-c);
+  color: var(--lx-terminal-on-p);
+  text-shadow: none;
+  box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 14px) color-mix(in oklab, var(--lx-terminal-c) 55%, transparent);
+}
+.lx-terminal-dir[data-active] .lx-terminal-dir__perm,
+.lx-terminal-dir[data-active] .lx-terminal-dir__count,
+.lx-terminal-dir[data-active] .lx-terminal-dir__new { color: var(--lx-terminal-on-p); }
+
+/* ---------- Files (tabs) ---------- */
+.lx-terminal-files {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+}
+.lx-terminal-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--lx-terminal-p) 40%, transparent) transparent;
+  margin-right: -6px;
+  padding-right: 4px;
+}
+.lx-terminal-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  animation: lx-terminal-print 150ms steps(8, end) backwards;
+  animation-delay: calc(var(--i, 0) * 30ms + 320ms);
+}
+@keyframes lx-terminal-print {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.lx-terminal-idle {
+  padding: 3px 6px;
+  animation: lx-terminal-print 1ms steps(1, end) backwards;
+  animation-delay: calc(var(--i, 0) * 30ms + 360ms);
+}
+.lx-terminal-empty { padding: 3px 6px; white-space: normal; }
+
+.lx-terminal-go {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  text-align: left;
+}
+.lx-terminal-go__mark {
+  width: 1ch;
+  flex: none;
+  color: color-mix(in oklab, currentColor 45%, transparent);
+}
+.lx-terminal-go__icon { flex: none; opacity: 0.85; }
+.lx-terminal-go__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lx-terminal-row:hover { background: color-mix(in oklab, var(--lx-terminal-p) 13%, transparent); }
+.lx-terminal-row:hover .lx-terminal-go__mark { color: currentColor; }
+
+.lx-terminal-row[data-active] {
+  background: var(--lx-terminal-p);
+  color: var(--lx-terminal-on-p);
+  text-shadow: none;
+  font-weight: 700;
+  box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 16px) color-mix(in oklab, var(--lx-terminal-p) 50%, transparent);
+}
+.lx-terminal-row[data-active] .lx-terminal-go__mark { color: var(--lx-terminal-on-p); }
+.lx-terminal-row[data-active] .lx-terminal-cursor { box-shadow: none; }
+
+.lx-terminal-tag {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  line-height: 1.4;
+}
+.lx-terminal-tag[data-pulse]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: lx-terminal-blink 1.2s steps(1, end) infinite;
+}
+.lx-terminal-row[data-live]:not([data-active]) .lx-terminal-tag { color: var(--lx-terminal-home); }
+.lx-terminal-count {
+  flex: none;
+  font-weight: 700;
+  color: var(--lx-terminal-alert);
+}
+.lx-terminal-row[data-active] .lx-terminal-count { color: var(--lx-terminal-on-p); }
+.lx-terminal-new {
+  flex: none;
+  padding: 0 4px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  border-radius: 2px;
+  background: var(--lx-terminal-alert);
+  color: var(--lx-terminal-on-p);
+  text-shadow: none;
+}
+
+.lx-terminal-pin {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 2px;
+  border-radius: 2px;
+  opacity: 0;
+  color: color-mix(in oklab, currentColor 70%, transparent);
+  transition: opacity 120ms ease;
+}
+.lx-terminal-pin[data-pinned] { opacity: 1; color: currentColor; }
+.lx-terminal-pin[data-pinned] svg { fill: currentColor; }
+.lx-terminal-row:hover .lx-terminal-pin,
+.lx-terminal-row:focus-within .lx-terminal-pin { opacity: 1; }
+.lx-terminal-pin:hover { background: color-mix(in oklab, currentColor 18%, transparent); }
+
+/* ---------- Footer ---------- */
+.lx-terminal-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 30%, transparent);
+}
+.lx-terminal-tip { font-style: italic; }
+.lx-terminal-foot__row { display: flex; align-items: stretch; gap: 8px; }
+.lx-terminal-cmdbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 40%, transparent);
+}
+.lx-terminal-cmdbtn:hover { background: color-mix(in oklab, var(--lx-terminal-p) 14%, transparent); }
+.lx-terminal-whoami { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 0; }
+.lx-terminal-whoami__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+}
+.lx-terminal-whoami[data-active] {
+  background: var(--lx-terminal-p);
+  color: var(--lx-terminal-on-p);
+  text-shadow: none;
+}
+.lx-terminal-whoami[data-active] .lx-terminal-dim { color: var(--lx-terminal-on-p); opacity: 0.7; }
+.lx-terminal-exit { font-weight: 700; }
+.lx-terminal-exit:hover { color: var(--lx-terminal-alert); }
+
+/* ---------- Boot ---------- */
+.lx-terminal-boot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 18px 16px;
+  background: var(--lx-terminal-scr);
+  font-size: 11.5px;
+  line-height: 1.7;
+  text-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 6px) color-mix(in oklab, var(--lx-terminal-p) 60%, transparent);
+  animation: lx-terminal-boot-out 300ms ease-in 1.6s forwards;
+}
+.lx-terminal-boot__line {
+  white-space: pre;
+  overflow: hidden;
+  animation: lx-terminal-print 120ms steps(10, end) backwards;
+  animation-delay: calc(var(--i) * 165ms + 80ms);
+}
+@keyframes lx-terminal-boot-out {
+  to { opacity: 0; filter: brightness(2); }
+}
+
+/* ---------- Case bottom: LEDs, grille, theme rocker ---------- */
+.lx-terminal-case-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  margin-top: 8px;
+  padding: 0 4px 0 8px;
+}
+.lx-terminal-leds { display: inline-flex; gap: 8px; }
+.lx-terminal-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lx-terminal-led-off);
+  box-shadow: inset 0 1px 1px var(--lx-terminal-case-lo), 0 1px 0 var(--lx-terminal-case-hi);
+}
+.lx-terminal-led--power {
+  background: var(--lx-terminal-power);
+  box-shadow: 0 0 6px var(--lx-terminal-power), 0 1px 0 var(--lx-terminal-case-hi);
+}
+.lx-terminal-led--disk { animation: lx-terminal-disk 700ms steps(1, end); }
+@keyframes lx-terminal-disk {
+  0%, 20%, 45%, 70% { background: var(--lx-terminal-disk); box-shadow: 0 0 7px var(--lx-terminal-disk); }
+  10%, 35%, 60%, 100% { background: var(--lx-terminal-led-off); box-shadow: none; }
+}
+.lx-terminal-vents {
+  flex: 1;
+  height: 12px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, var(--lx-terminal-case-lo) 0 2px, transparent 2px 6px);
+  opacity: 0.8;
+}
+.lx-terminal-rocker {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--lx-terminal-case-2);
+  box-shadow: inset 0 1px 3px var(--lx-terminal-case-lo), 0 1px 0 var(--lx-terminal-case-hi);
+}
+.lx-terminal-rocker__side {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lx-terminal-case-ink);
+  transition: background 160ms ease, color 160ms ease;
+}
+.lx-terminal-rocker__side[data-on] {
+  background: var(--lx-terminal-case-1);
+  color: var(--lx-terminal-p);
+  box-shadow: 0 1px 2px var(--lx-terminal-case-lo), inset 0 1px 0 var(--lx-terminal-case-hi);
+}
+.lx-terminal-rocker:hover .lx-terminal-rocker__side:not([data-on]) { color: var(--lx-terminal-p); }
+
+/* ---------- Motion off ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lx-terminal,
+  .lx-terminal *,
+  .lx-terminal *::before,
+  .lx-terminal *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lx-terminal-glass::after,
+  .lx-terminal-boot { display: none; }
+  html[data-admin-sidebar="v9"] .layout-content.lx-terminal-refresh > * { animation: none; }
+}
