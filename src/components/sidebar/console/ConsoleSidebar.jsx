@@ -14,7 +14,8 @@ import "./console.css"
  * version), a column of category buttons, the selected category's pages with a
  * marker that slides to the open page, and a footer with "Go to page" (Ctrl+K),
  * profile, theme and logout. The page sits on the shell as a raised sheet.
- * No decorative motion: no stars, glows, orbits or blur.
+ * The frame is a dusk sky; a row of hostel blocks stands on the footer, their
+ * windows lit by India time. No decorative motion.
  */
 
 const IST_FORMAT = new Intl.DateTimeFormat("en-IN", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" })
@@ -31,6 +32,51 @@ const useClock = () => {
 
 const isTypingTarget = (target) =>
   target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
+
+const HOUR_FORMAT = new Intl.DateTimeFormat("en-IN", { hour: "numeric", hour12: false, timeZone: "Asia/Kolkata" })
+
+/* Hostel blocks along the bottom of the sidebar: [x, width, height] in a 288×104 box. */
+const BACK_BLOCKS = [[0, 30, 62], [26, 24, 78], [48, 40, 54], [86, 26, 86], [110, 34, 66], [142, 24, 94], [164, 42, 60], [204, 28, 80], [230, 34, 64], [262, 30, 88]]
+const FRONT_BLOCKS = [[0, 44, 42], [42, 30, 58], [70, 52, 36], [120, 36, 66], [154, 48, 44], [200, 30, 56], [228, 38, 40], [264, 28, 52]]
+const SKY_H = 104
+
+/** Share of windows lit by IST hour: most in the evening, a few at night, almost none by day. */
+const litShare = (hour) => (hour >= 18 && hour <= 23 ? 45 : hour >= 17 ? 25 : hour < 6 ? 12 : hour < 9 ? 8 : 4)
+
+const Skyline = ({ hour }) => {
+  const share = litShare(hour)
+  const windows = []
+  FRONT_BLOCKS.forEach(([x, w, h], b) => {
+    let k = 0
+    for (let wy = SKY_H - h + 7; wy < SKY_H - 6; wy += 9) {
+      for (let wx = x + 6; wx < x + w - 6; wx += 7) {
+        k += 1
+        const lit = (b * 73 + k * 151 + wx * 7 + wy * 3) % 100 < share
+        windows.push(<rect key={`${b}-${k}`} x={wx} y={wy} width="3" height="4" rx="0.5" className={lit ? "cn-win cn-win--lit" : "cn-win"} />)
+      }
+    }
+  })
+  return (
+    <div className="cn-skyline" aria-hidden="true">
+      <svg viewBox={`0 0 288 ${SKY_H}`} preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <radialGradient id="cn-horizon" cx="50%" cy="100%" r="75%" fy="100%">
+            <stop offset="0%" stopColor="var(--cn-horizon)" stopOpacity="0.38" />
+            <stop offset="100%" stopColor="var(--cn-horizon)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect x="0" y="0" width="288" height={SKY_H} fill="url(#cn-horizon)" />
+        {BACK_BLOCKS.map(([x, w, h]) => (
+          <rect key={`b${x}`} x={x} y={SKY_H - h} width={w} height={h} className="cn-block cn-block--back" />
+        ))}
+        {FRONT_BLOCKS.map(([x, w, h]) => (
+          <rect key={`f${x}`} x={x} y={SKY_H - h} width={w} height={h} className="cn-block" />
+        ))}
+        {windows}
+      </svg>
+    </div>
+  )
+}
 
 const formatCount = (count) => (count > 99 ? "99+" : String(count))
 
@@ -226,6 +272,7 @@ const ConsoleSidebar = ({
         </div>
 
         <footer className="cn-foot">
+          <Skyline hour={Number(HOUR_FORMAT.format(now)) % 24} />
           <button type="button" className="cn-go" onClick={() => setJumpOpen(true)}>
             <Search size={15} aria-hidden="true" />
             <span>Go to page</span>

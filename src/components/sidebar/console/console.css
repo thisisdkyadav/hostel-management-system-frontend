@@ -4,20 +4,14 @@
    Prefixes: cn- (shell), cnj- (Go to page dialog).
    ============================================================ */
 
-/* Category glow colour, animatable so switching category fades it. */
-@property --cn-glow {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #4a98ec;
-}
-html[data-admin-sidebar="v7"][data-admin-category="student-affairs"] { --cn-glow: #f2b84b; }
-html[data-admin-sidebar="v7"][data-admin-category="staff"] { --cn-glow: #4cc3d9; }
-html[data-admin-sidebar="v7"][data-admin-category="dining"] { --cn-glow: #4fd18b; }
-
 html[data-admin-sidebar="v7"] {
-  /* Mid navy, lighter than V6; the colour mesh sits on top (see .layout-container). */
-  --cn-shell: #1a3050;
-  --cn-shell-deep: #162d50;
+  /* Dusk over the hostel blocks: sky, horizon glow, buildings, lit windows. */
+  --cn-sky-top: #213d68;
+  --cn-sky-mid: #2b4a7c;
+  --cn-sky-low: #3f6197;
+  --cn-ground: #172f52;
+  --cn-horizon: #f2b77a;
+  --cn-shell-deep: #22406c; /* ring behind count badges on the category column */
   --cn-ink: #e8ecf4;
   --cn-ink-2: rgb(222 229 242 / 74%);
   --cn-ink-3: rgb(200 210 230 / 50%);
@@ -39,33 +33,10 @@ html[data-admin-sidebar="v7"] {
 /* ---------- Shell + the page as a raised sheet ---------- */
 @media (min-width: 768px) {
   html[data-admin-sidebar="v7"] .layout-container {
-    position: relative;
     height: 100vh;
     overflow: hidden;
-    isolation: isolate;
-    /* Soft colour mesh: sky blue from the top-left, a touch of violet top-right,
-       the selected category's colour rising from the bottom-left, teal bottom-right. */
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 5%), transparent 22%),
-      radial-gradient(55% 45% at 12% 0%, rgb(74 152 236 / 50%), transparent 72%),
-      radial-gradient(45% 40% at 92% 6%, rgb(124 110 230 / 22%), transparent 70%),
-      radial-gradient(50% 55% at 0% 100%, color-mix(in srgb, var(--cn-glow) 38%, transparent), transparent 70%),
-      radial-gradient(45% 45% at 100% 100%, rgb(46 184 166 / 16%), transparent 70%),
-      linear-gradient(160deg, #1f3d6a 0%, #19335a 45%, #142a4b 100%);
-    transition: --cn-glow 600ms ease;
-  }
-  /* Thin flowing lines behind the lower half of the sidebar. */
-  html[data-admin-sidebar="v7"] .layout-container::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 300px;
-    height: 70%;
-    z-index: -1;
-    pointer-events: none;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 600' preserveAspectRatio='none' fill='none' stroke='white' stroke-width='1'%3E%3Cpath d='M-20 120 C 80 60, 160 200, 320 110' opacity='.10'/%3E%3Cpath d='M-20 190 C 90 120, 170 270, 320 180' opacity='.08'/%3E%3Cpath d='M-20 260 C 100 190, 180 340, 320 250' opacity='.07'/%3E%3Cpath d='M-20 330 C 110 260, 190 410, 320 320' opacity='.06'/%3E%3Cpath d='M-20 400 C 120 330, 200 480, 320 390' opacity='.05'/%3E%3Cpath d='M-20 470 C 130 400, 210 550, 320 460' opacity='.04'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
-    mask-image: linear-gradient(180deg, transparent, black 35%);
+    /* Dusk sky: deeper at the top, lighter towards the horizon. */
+    background: linear-gradient(180deg, var(--cn-sky-top) 0%, var(--cn-sky-mid) 55%, var(--cn-sky-low) 100%);
   }
   html[data-admin-sidebar="v7"] .layout-content {
     height: calc(100vh - 16px);
@@ -151,6 +122,8 @@ html[data-admin-sidebar="v7"] {
 .cn-mode .sidebar-mode-button:hover { background: rgb(255 255 255 / 11%) !important; color: var(--cn-ink) !important; }
 
 .cn-body {
+  position: relative;
+  z-index: 1; /* pages and categories sit in front of the skyline */
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
@@ -167,7 +140,8 @@ html[data-admin-sidebar="v7"] {
   align-items: center;
   gap: 6px;
   padding-top: 14px;
-  border-right: 1px solid var(--cn-line);
+  border-right: 1px solid transparent;
+  border-image: linear-gradient(180deg, var(--cn-line) 70%, transparent calc(100% - 40px)) 1; /* fades before the skyline */
 }
 .cn-cat {
   position: relative;
@@ -392,14 +366,31 @@ html[data-admin-sidebar="v7"] {
 
 .cn-empty { padding: 10px 12px; font-size: var(--font-size-sm); color: var(--cn-ink-3); }
 
+/* ---------- Skyline: the hostel blocks stand on the footer ---------- */
+.cn-skyline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 1px);
+  height: 104px;
+  z-index: 0;
+  pointer-events: none;
+}
+.cn-skyline svg { display: block; width: 100%; height: 100%; }
+.cn-block { fill: var(--cn-ground); }
+.cn-block--back { fill: #24426e; }
+.cn-win { fill: rgb(255 255 255 / 7%); }
+.cn-win--lit { fill: #ffd28a; fill-opacity: 0.75; }
+
 /* ---------- Footer ---------- */
 .cn-foot {
+  position: relative;
   flex: none;
+  background: var(--cn-ground);
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px 12px;
-  border-top: 1px solid var(--cn-line);
 }
 .cn-go {
   display: flex;
