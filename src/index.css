@@ -12,9 +12,11 @@
    rail icons. Pin them to the brand blue so they stay put. */
 :root {
   --color-cat-home: #1360AB;
-  /* Hostels: brick, so it no longer shares Home's blue. Student Affairs: violet. */
-  --color-cat-hostels: #B4532F;
-  --color-cat-student-affairs: #7048C8;
+  /* Hostels: sky blue (formerly Staff). Staff: violet (formerly Student Affairs).
+     Student Affairs: rose-berry. */
+  --color-cat-hostels: #0284C7;
+  --color-cat-student-affairs: #C43668;
+  --color-cat-staff: #7048C8;
   --color-v5-ink: var(--v5-selected-ink);
   /* Pinned page/ink contributions for the selected-fill mixing effect. The
      v5 panel forces data-theme="dark" on its subtree while the join nose
@@ -44,8 +46,9 @@
 }
 [data-theme="dark"] {
   --color-cat-home: #5B9FE8;
-  --color-cat-hostels: #E58A63;
-  --color-cat-student-affairs: #A98BF0;
+  --color-cat-hostels: #38BDF8;
+  --color-cat-student-affairs: #F472B6;
+  --color-cat-staff: #A98BF0;
 }
 
 /* User dark mode: keep the pinned mixing colors on the dark page so the

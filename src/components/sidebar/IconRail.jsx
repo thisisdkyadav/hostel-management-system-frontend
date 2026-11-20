@@ -87,7 +87,7 @@ const RailActiveJoin = ({ panelColor, fadeTo, index, elevated = false }) => {
   )
 }
 
-const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, onFill = false, children }) => {
+const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0, onFill = false, activeIconColor, children }) => {
   const isCategory = !!accent
   const accessibleLabel = [
     label,
@@ -117,7 +117,7 @@ const RailButton = ({ label, pressed, onClick, accent, hasNew = false, count = 0
       style={
         isCategory
           ? {
-              color: pressed && onFill ? "var(--v5-selected-ink)" : accent,
+              color: pressed && onFill ? (activeIconColor || "var(--v5-selected-ink)") : accent,
               height: TAB_SIZE,
             }
           : pressed
@@ -191,6 +191,7 @@ const IconRail = ({
   newCategoryIds,
   categoryCounts,
   stagePanelColor,
+  stageActiveIconColor,
 }) => {
   return (
     <div className="icon-rail relative w-14 shrink-0 h-full flex flex-col items-center">
@@ -228,6 +229,7 @@ const IconRail = ({
               pressed={isActiveCategory}
               accent={accent}
               onFill={Boolean(stagePanelColor)}
+              activeIconColor={stageActiveIconColor}
               hasNew={Boolean(newCategoryIds?.has(category.id))}
               count={categoryCounts?.[category.id] || 0}
               onClick={() => onCategoryChange(category.id)}

@@ -1,63 +1,118 @@
 /* ============================================================
-   V8 "Tone": V4's layout on a mid-tone frame in the category colour.
+   V8 "Tone": V4's layered icon-rail layout on a rich mid-tone
+   category panel with a subtle vertical gradient, flowing into
+   the outer frame behind the floating rounded page sheet.
+
    Sidebar.jsx sets html[data-admin-sidebar="v8"] (desktop) and
    data-admin-category, and puts .tone-shell on the sidebar's box.
-   The rail and page list are one surface; the page floats on it.
+   - Left icon rail stays V4's crisp light/dark surface with
+     category-colored icons and V4's elevated curved tab join.
+   - Main sidebar panel sits above the icon rail (casting V4's
+     left shadow onto it) in the category gradient.
+   - Main page floats as a rounded white sheet on the same frame.
    ============================================================ */
 
-/* Per-category frame. Mid-tones: dark ink reads on them in light mode,
-   light ink in dark mode. */
+/* Per-category frame & main panel tones.
+   Brightness/saturation matched to the reference light-green frame
+   (OKLCH L ~ 0.69 top -> 0.64 bottom) for a fresh, cohesive feel. */
 html[data-admin-sidebar="v8"] {
-  --tone-surface: #A9B9CD;
-  --tone-ink: #13253D;
-  --tone-ink-strong: #0D3A6B;
+  --tone-surface: #68A3DF;
+  --tone-bottom: #4E8ED0;
+  --tone-bg: linear-gradient(180deg, var(--tone-surface) 0%, var(--tone-surface) 34%, var(--tone-bottom) 100%);
+  --tone-ink: #0B203B;
+  --tone-ink-strong: #082E5C;
+  --tone-rail-active-ink: #082342;
   --tone-pill: #FFFFFF;
-  --tone-pill-ink: var(--tone-ink-strong);
-  --tone-line: rgb(15 30 50 / 12%);
-  --tone-hover: rgb(255 255 255 / 30%);
-}
-html[data-admin-sidebar="v8"][data-admin-category="hostels"] {
-  --tone-surface: #DCA78E;
-  --tone-ink: #3A1B0F;
-  --tone-ink-strong: #85361A;
-}
-html[data-admin-sidebar="v8"][data-admin-category="student-affairs"] {
-  --tone-surface: #B4A5E3;
-  --tone-ink: #24174A;
-  --tone-ink-strong: #5532A8;
-}
-html[data-admin-sidebar="v8"][data-admin-category="staff"] {
-  --tone-surface: #8CC6E2;
-  --tone-ink: #0B2A3B;
-  --tone-ink-strong: #04618F;
-}
-html[data-admin-sidebar="v8"][data-admin-category="dining"] {
-  --tone-surface: #84C07A;
-  --tone-ink: #12301A;
-  --tone-ink-strong: #1C6528;
+  --tone-pill-ink: #0D4A8F;
+  --tone-line: rgb(10 25 45 / 12%);
+  --tone-hover: rgb(255 255 255 / 26%);
+  --tone-hover-strong: rgb(255 255 255 / 42%);
+  --tone-menu-bg: #FFFFFF;
+  --tone-menu-hover: #F1F5F9;
+  --tone-menu-tertiary: #F8FAFC;
+  --tone-menu-border: #E2E8F0;
+  --tone-menu-text: #0A1628;
+  --tone-menu-muted: #64748B;
 }
 
+html[data-admin-sidebar="v8"][data-admin-category="hostels"] {
+  --tone-surface: #48AED6;
+  --tone-bottom: #2D98C4;
+  --tone-ink: #072436;
+  --tone-ink-strong: #053A57;
+  --tone-rail-active-ink: #062436;
+  --tone-pill-ink: #0369A1;
+}
+
+html[data-admin-sidebar="v8"][data-admin-category="student-affairs"] {
+  --tone-surface: #DE7A9E;
+  --tone-bottom: #C96289;
+  --tone-ink: #380E1E;
+  --tone-ink-strong: #5E1432;
+  --tone-rail-active-ink: #380E1E;
+  --tone-pill-ink: #A62655;
+}
+
+html[data-admin-sidebar="v8"][data-admin-category="staff"] {
+  --tone-surface: #9C8FE0;
+  --tone-bottom: #8777D2;
+  --tone-ink: #1F1147;
+  --tone-ink-strong: #371E78;
+  --tone-rail-active-ink: #1F1147;
+  --tone-pill-ink: #5B37B0;
+}
+
+html[data-admin-sidebar="v8"][data-admin-category="dining"] {
+  --tone-surface: #66B564;
+  --tone-bottom: #4FA351;
+  --tone-ink: #0D2B14;
+  --tone-ink-strong: #10421C;
+  --tone-rail-active-ink: #0D2B14;
+  --tone-pill-ink: #14632B;
+}
+
+/* Dark mode: rich deep-jewel category gradient; crisp light ink. */
 html[data-admin-sidebar="v8"][data-theme="dark"] {
-  --tone-surface: #2E3A4B;
-  --tone-ink: #E6ECF4;
+  --tone-surface: #213E63;
+  --tone-bottom: #162B47;
+  --tone-ink: #E8F0FA;
   --tone-ink-strong: #FFFFFF;
+  --tone-rail-active-ink: #FFFFFF;
   --tone-pill: rgb(255 255 255 / 16%);
   --tone-pill-ink: #FFFFFF;
-  --tone-line: rgb(255 255 255 / 10%);
-  --tone-hover: rgb(255 255 255 / 8%);
+  --tone-line: rgb(255 255 255 / 12%);
+  --tone-hover: rgb(255 255 255 / 10%);
+  --tone-hover-strong: rgb(255 255 255 / 18%);
+  --tone-menu-bg: #171717;
+  --tone-menu-hover: #262626;
+  --tone-menu-tertiary: #222222;
+  --tone-menu-border: #2E2E2E;
+  --tone-menu-text: #F5F5F5;
+  --tone-menu-muted: #A3A3A3;
 }
-html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="hostels"] { --tone-surface: #573428; }
-html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="student-affairs"] { --tone-surface: #3D3366; }
-html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="staff"] { --tone-surface: #1E4A60; }
-html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="dining"] { --tone-surface: #2C4E2A; }
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="hostels"] {
+  --tone-surface: #15455C;
+  --tone-bottom: #0E3346;
+}
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="student-affairs"] {
+  --tone-surface: #5B243B;
+  --tone-bottom: #45192B;
+}
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="staff"] {
+  --tone-surface: #3A2F66;
+  --tone-bottom: #2B214F;
+}
+html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="dining"] {
+  --tone-surface: #214B29;
+  --tone-bottom: #16381D;
+}
 
 @media (min-width: 768px) {
-  /* The frame fills the window; the page is a rounded sheet on it. */
+  /* Outer frame carries the category gradient; the page floats as a rounded sheet. */
   html[data-admin-sidebar="v8"] .layout-container {
     height: 100vh;
     overflow: hidden;
-    background: var(--tone-surface);
-    transition: background-color 450ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: var(--tone-bg);
   }
   html[data-admin-sidebar="v8"] .layout-content {
     position: relative;
@@ -66,67 +121,167 @@ html[data-admin-sidebar="v8"][data-theme="dark"][data-admin-category="dining"] {
     margin: 10px 10px 10px 0;
     border-radius: 18px;
     background-color: var(--color-bg-page);
-    box-shadow: 0 1px 2px rgb(15 30 50 / 8%), 0 10px 30px -16px rgb(15 30 50 / 35%);
+    box-shadow: 0 1px 2px rgb(15 30 50 / 10%), 0 12px 32px -14px rgb(15 30 50 / 34%);
     scrollbar-gutter: stable;
   }
   html[data-admin-sidebar="v8"][data-theme="dark"] .layout-content {
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 6%), 0 10px 30px -14px rgb(0 0 0 / 60%);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), 0 12px 32px -14px rgb(0 0 0 / 65%);
   }
 
-  /* Re-theme everything inside the sidebar for the coloured frame. */
-  .tone-shell {
-    --color-bg-primary: var(--tone-surface);
-    --color-bg-secondary: var(--tone-surface);
-    --color-bg-tertiary: var(--tone-hover);
-    --color-bg-hover: var(--tone-hover);
-    --color-border-primary: var(--tone-line);
-    --color-border-light: var(--tone-line);
-    --color-text-primary: var(--tone-ink);
-    --color-text-heading: var(--tone-ink);
-    --color-text-body: var(--tone-ink);
-    --color-text-secondary: color-mix(in srgb, var(--tone-ink) 80%, transparent);
-    --color-text-muted: color-mix(in srgb, var(--tone-ink) 68%, transparent);
-    --color-on-accent: var(--tone-pill-ink);
-    color: var(--tone-ink);
-  }
+  /* Strip the outer Surface chrome so the rail stays crisp V4 light/dark
+     and the main panel merges seamlessly into the colored outer frame. */
   .tone-shell > * {
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
   }
-  .tone-shell .icon-rail,
-  .tone-shell .rail-panel {
-    background: transparent;
-    box-shadow: none;
+
+  /* Keep V4's crisp white/light icon rail (and neutral dark rail in dark mode)
+     with its original category-colored icons and elevated curved tab join. */
+  .tone-shell .icon-rail {
+    background: var(--color-bg-primary);
   }
-  .tone-shell .icon-rail-logo {
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .icon-rail {
+    background: var(--color-bg-secondary);
+  }
+
+  /* Main sidebar panel sits ABOVE the icon rail (just like V4), casting a soft
+     shadow left onto the crisp rail, while carrying the category gradient. */
+  .tone-shell .rail-panel {
+    background: var(--tone-bg);
+    box-shadow: -4px 0 10px -4px rgb(10 22 40 / 16%);
+    --color-bg-primary: transparent;
+    --color-bg-secondary: transparent;
+    --color-bg-tertiary: var(--tone-hover);
+    --color-bg-hover: var(--tone-hover-strong);
+    --color-border-primary: var(--tone-line);
+    --color-border-light: var(--tone-line);
+    --color-border-dark: rgb(10 25 45 / 26%);
+    --color-text-primary: var(--tone-ink);
+    --color-text-heading: var(--tone-ink);
+    --color-text-body: var(--tone-ink);
+    --color-text-secondary: color-mix(in srgb, var(--tone-ink) 84%, transparent);
+    --color-text-muted: color-mix(in srgb, var(--tone-ink) 74%, transparent);
+    color: var(--tone-ink);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel {
+    box-shadow: -5px 0 12px -4px rgb(0 0 0 / 50%);
+    --color-border-dark: rgb(255 255 255 / 24%);
+  }
+
+  /* Match the curved tab join's shadow to the elevated colored main panel. */
+  .tone-shell .rail-active-shadow {
+    filter: drop-shadow(-3px 0 4px rgb(10 22 40 / 14%));
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-active-shadow {
+    filter: drop-shadow(-3px 0 5px rgb(0 0 0 / 42%));
+  }
+
+  /* Active nav item: crisp white pill with deep category-colored ink & icon. */
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden] {
+    box-shadow: 0 2px 8px rgb(10 25 45 / 12%), 0 1px 2px rgb(10 25 45 / 8%) !important;
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-list-in > [aria-hidden] {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 28%) !important;
+  }
+  .tone-shell .rail-panel [data-sidebar-active="true"] {
+    color: var(--tone-pill-ink) !important;
+  }
+
+  /* Inactive nav item hover: translucent white lift with strong dark ink (never white-on-light). */
+  .tone-shell .rail-panel .sidebar-list-in li > button:first-child:not([data-sidebar-active="true"]):hover {
+    background-color: var(--tone-hover) !important;
+    color: var(--tone-ink-strong) !important;
+  }
+
+  /* Pin buttons: legible on both the white active pill and the colored panel. */
+  .tone-shell .rail-panel .sidebar-list-in li:has([data-sidebar-active="true"]) > button:last-child {
+    color: var(--tone-pill-ink) !important;
+    background-color: color-mix(in srgb, var(--tone-pill-ink) 12%, transparent) !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:has([data-sidebar-active="true"]) > button:last-child:hover {
+    background-color: color-mix(in srgb, var(--tone-pill-ink) 20%, transparent) !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:not(:has([data-sidebar-active="true"])) > button:last-child {
+    color: var(--tone-ink) !important;
+    background-color: var(--tone-hover) !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:not(:has([data-sidebar-active="true"])) > button:last-child:hover {
+    color: var(--tone-ink-strong) !important;
+    background-color: var(--tone-hover-strong) !important;
+  }
+
+  /* Mode switcher button (frosted pill on colored header) + crisp solid dropdown menu. */
+  .tone-shell .rail-panel .sidebar-mode-button {
+    background-color: var(--tone-hover);
     color: var(--tone-ink-strong);
   }
+  .tone-shell .rail-panel .sidebar-mode-button:hover {
+    background-color: var(--tone-hover-strong);
+    color: var(--tone-ink-strong);
+  }
+  .tone-shell .rail-panel [role="menu"] {
+    --color-bg-primary: var(--tone-menu-bg);
+    --color-bg-hover: var(--tone-menu-hover);
+    --color-bg-tertiary: var(--tone-menu-tertiary);
+    --color-border-primary: var(--tone-menu-border);
+    --color-text-primary: var(--tone-menu-text);
+    --color-text-muted: var(--tone-menu-muted);
+    background-color: var(--tone-menu-bg);
+    border-color: var(--tone-menu-border);
+    color: var(--tone-menu-text);
+  }
 
-  /* Rail: no tab-to-panel join (it's one surface); the selected category is
-     a light tile, the others sit in the frame's ink. */
-  .tone-shell .rail-join {
-    display: none;
+  /* Live row on colored panel: keep icon, accent bar, and Live pill crisp even on green Dining. */
+  .tone-shell .rail-panel .sidebar-accent-success {
+    --sidebar-live-bg: rgb(255 255 255 / 22%);
   }
-  .tone-shell [data-rail-kind="category"] {
-    width: 40px !important;
-    height: 40px !important;
-    color: color-mix(in srgb, var(--tone-ink) 78%, transparent) !important;
+  .tone-shell .rail-panel .sidebar-accent-success:hover {
+    --sidebar-live-bg: rgb(255 255 255 / 34%);
   }
-  .tone-shell [data-rail-kind="category"]:hover {
-    background: var(--tone-hover);
+  .tone-shell .rail-panel .sidebar-accent-success::before {
+    background: rgb(255 255 255 / 88%);
   }
-  .tone-shell [data-rail-kind="category"][aria-pressed="true"] {
-    background: var(--tone-pill);
+  .tone-shell .rail-panel .sidebar-accent-success > button:first-child:not([data-sidebar-active="true"]) svg {
     color: var(--tone-ink-strong) !important;
-    box-shadow: 0 1px 2px rgb(15 30 50 / 12%);
   }
-  .tone-shell nav[aria-label="Categories"] {
-    gap: 6px;
+  .tone-shell .rail-panel .sidebar-live-tag {
+    background: rgb(255 255 255 / 86%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-accent-success {
+    --sidebar-live-bg: rgb(255 255 255 / 9%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-accent-success:hover {
+    --sidebar-live-bg: rgb(255 255 255 / 15%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-accent-success::before {
+    background: #86EFAC;
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-accent-success > button:first-child:not([data-sidebar-active="true"]) svg {
+    color: #86EFAC !important;
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-live-tag {
+    background: rgb(0 0 0 / 34%);
   }
 
-  /* Selected page tile: drop the coloured glow under the light pill. */
-  .tone-shell .sidebar-list-in > [aria-hidden] {
-    box-shadow: 0 1px 2px rgb(15 30 50 / 12%) !important;
+  /* "New" rows on colored panel: soft frosted border instead of a clashing neon ring. */
+  .tone-shell .rail-panel li:has(.sidebar-new-tag) > button:first-child:not([data-sidebar-active="true"]) {
+    border-color: rgb(255 255 255 / 42%) !important;
+    background-color: rgb(255 255 255 / 14%) !important;
+  }
+  .tone-shell .rail-panel li:has(.sidebar-new-tag) > button:first-child:not([data-sidebar-active="true"]):hover {
+    border-color: rgb(255 255 255 / 62%) !important;
+    background-color: var(--tone-hover) !important;
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel li:has(.sidebar-new-tag) > button:first-child:not([data-sidebar-active="true"]) {
+    border-color: rgb(255 255 255 / 20%) !important;
+    background-color: rgb(255 255 255 / 7%) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-admin-sidebar="v8"] .layout-container,
+  .tone-shell .rail-panel {
+    transition: none;
   }
 }

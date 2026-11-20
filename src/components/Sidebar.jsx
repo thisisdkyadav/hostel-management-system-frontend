@@ -564,7 +564,8 @@ const Sidebar = ({ navItems }) => {
               onNavigate={handleNavigation}
               newCategoryIds={newCategoryIds}
               categoryCounts={categoryCounts}
-              stagePanelColor={v5PanelFill}
+              stagePanelColor={isToneMode ? "var(--tone-surface)" : v5PanelFill}
+              stageActiveIconColor={isToneMode ? "var(--tone-rail-active-ink)" : undefined}
             />
           )}
 
