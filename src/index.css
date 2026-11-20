@@ -13,9 +13,9 @@
 :root {
   --color-cat-home: #1360AB;
   /* Hostels: sky blue (formerly Staff). Staff: violet (formerly Student Affairs).
-     Student Affairs: rose-berry. */
+     Student Affairs: bright pink. */
   --color-cat-hostels: #0284C7;
-  --color-cat-student-affairs: #C43668;
+  --color-cat-student-affairs: #DB2777;
   --color-cat-staff: #7048C8;
   --color-v5-ink: var(--v5-selected-ink);
   /* Pinned page/ink contributions for the selected-fill mixing effect. The

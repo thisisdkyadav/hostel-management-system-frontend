@@ -51,6 +51,10 @@ html[data-admin-sidebar="v8"] {
   --tone-menu-text: #0A1628;
   --tone-menu-muted: #64748B;
 }
+/* Home is opened first every day: a brighter azure than the brand blue
+   (#1360AB reads too dark as a whole field), still clearly apart from
+   Hostels' sky. Light mode only; dark mode uses the category colour. */
+html[data-admin-sidebar="v8"][data-admin-category="home"]:not([data-theme="dark"]) { --tone-theme: #2A6FDB; }
 html[data-admin-sidebar="v8"][data-admin-category="hostels"] { --tone-theme: var(--color-cat-hostels); }
 html[data-admin-sidebar="v8"][data-admin-category="student-affairs"] { --tone-theme: var(--color-cat-student-affairs); }
 html[data-admin-sidebar="v8"][data-admin-category="staff"] { --tone-theme: var(--color-cat-staff); }
