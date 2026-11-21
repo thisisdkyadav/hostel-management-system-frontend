@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { Button } from "hzero"
 import { CalendarRange, ChevronLeft, ChevronRight, UtensilsCrossed } from "lucide-react"
 import { localTodayKey } from "../caterer/catererHelpers"
-import { DietLegend, ItemList } from "../menu/MenuBits"
+import { DietLegend, ItemList, LastWeekTurnout } from "../menu/MenuBits"
 import {
   addDays,
   clock12,
@@ -107,6 +107,7 @@ const MenuCard = () => {
                       {timeSpan(meal) && <span className="sm-meal__time">{timeSpan(meal)}</span>}
                       {state === "now" && <span className="sm-meal__tag">Now</span>}
                       {state === "next" && <span className="sm-meal__tag">Up next</span>}
+                      <LastWeekTurnout meal={meal} mealName={meal.name.toLowerCase()} />
                     </div>
                     <div className="sm-meal__body">
                       {meal.served === false ? (

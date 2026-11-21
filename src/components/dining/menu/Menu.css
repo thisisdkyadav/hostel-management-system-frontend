@@ -1785,3 +1785,42 @@ button.dm-cell:focus-visible {
     color: #444;
   }
 }
+
+/* Student menu: share of students who ate this meal on the same weekday last week */
+
+.dm-turnout {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1-5);
+  align-self: flex-start;
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.dm-turnout__bar {
+  position: relative;
+  flex: none;
+  width: var(--spacing-10);
+  height: var(--spacing-1);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-border-primary);
+}
+
+.dm-turnout__bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--meal, var(--color-primary));
+}
+
+.dm-turnout[data-compact] {
+  margin-top: var(--spacing-0-5);
+  font-size: var(--font-size-2xs);
+}
+
+.dm-turnout[data-compact] .dm-turnout__bar {
+  width: var(--spacing-6);
+}

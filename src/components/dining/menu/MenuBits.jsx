@@ -32,3 +32,33 @@ export const DietLegend = () => (
     </span>
   </div>
 )
+
+/**
+ * Student menu only: how many of the caterer's students ate this meal on the same weekday last
+ * week (`meal.lastWeek = { date, percent }`, null when there is no figure).
+ */
+export const LastWeekTurnout = ({ meal, mealName, compact = false }) => {
+  const turnout = meal?.lastWeek
+  if (!turnout || typeof turnout.percent !== "number") return null
+  const percent = Math.max(0, Math.min(100, turnout.percent))
+  const when = fmtTurnoutDay(turnout.date)
+  const title = `${percent}% of students at this mess ate ${mealName || "this meal"} on ${when.long}.`
+  return (
+    <span className="dm-turnout" data-compact={compact || undefined} title={title} role="img" aria-label={title}>
+      <span className="dm-turnout__bar" aria-hidden="true">
+        <span style={{ width: `${percent}%` }} />
+      </span>
+      <span className="dm-turnout__text">
+        {percent}% ate{compact ? "" : ` last ${when.weekday}`}
+      </span>
+    </span>
+  )
+}
+
+const fmtTurnoutDay = (key) => {
+  const date = new Date(`${key}T00:00:00`)
+  return {
+    weekday: date.toLocaleDateString(undefined, { weekday: "short" }),
+    long: date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "short" }),
+  }
+}

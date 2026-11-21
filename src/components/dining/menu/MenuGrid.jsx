@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react"
-import { ItemList } from "./MenuBits"
+import { ItemList, LastWeekTurnout } from "./MenuBits"
 import { mealVarsFor, timeSpan } from "./menuHelpers"
 
 const sourceBadge = (cell) => {
@@ -38,6 +38,7 @@ const CellBody = ({ cell, row, selectable, showName, showTime }) => {
         </span>
       )}
       {cell.note && <p className="dm-cell__note">{cell.note}</p>}
+      <LastWeekTurnout meal={cell} mealName={String(row.name || "").toLowerCase()} compact />
     </>
   )
 }
