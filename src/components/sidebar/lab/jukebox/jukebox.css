@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab v13 "Jukebox": a walnut-and-chrome diner record player.
    Dark mode is the night-club version (neon on black).
@@ -999,4 +1001,134 @@ html[data-theme="dark"] .lx-jukebox-knob--exit { color: var(--lx-jukebox-red); b
   .lx-jukebox-sleeve__jacket,
   .lx-jukebox-sleeve__peek,
   .lx-jukebox-knob { transition: none; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X5 "Jukebox" (v13)
+   Light = 1950s walnut/chrome diner cream, Georgia italic
+   marquee headers & chrome bevels. Dark = neon night-club
+   velvet with hot-pink / electric-teal / category rim glows.
+   ============================================================ */
+
+html[data-admin-sidebar="v13"] {
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: Georgia, "Times New Roman", serif;
+  --lab-accent: var(--lx-jukebox-hue);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fdf6e7;
+  --lab-accent-2: var(--lx-jukebox-red);
+  --lab-danger: var(--lx-jukebox-red);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-jukebox-teal);
+  --lab-warning: #b8760a;
+  --lab-info: var(--lx-jukebox-hue);
+
+  --lab-page: #f5e8cc;
+  --lab-surface: var(--lx-jukebox-paper);
+  --lab-surface-2: var(--lx-jukebox-paper-2);
+  --lab-surface-3: #e8d5ad;
+  --lab-hover: #f7ebc9;
+  --lab-input: #fffaf0;
+
+  --lab-ink: var(--lx-jukebox-ink);
+  --lab-ink-2: var(--lx-jukebox-ink-2);
+  --lab-ink-muted: #7f634a;
+
+  --lab-border: #cbb48f;
+  --lab-border-soft: rgb(120 80 40 / 16%);
+  --lab-border-strong: #8d949c;
+  --lab-border-w: 1px;
+  --lab-divider-style: dashed;
+
+  --lab-r-xs: 6px;
+  --lab-r-sm: 8px;
+  --lab-r: 10px;
+  --lab-r-lg: 14px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 1px 2px rgb(60 30 10 / 12%);
+  --lab-shadow-card: 0 4px 12px -4px rgb(60 30 10 / 18%), inset 0 1px 0 rgb(255 255 255 / 78%);
+  --lab-shadow-card-hover: 0 8px 20px -6px rgb(60 30 10 / 26%), inset 0 1px 0 rgb(255 255 255 / 90%);
+  --lab-shadow-btn: 0 2px 4px rgb(60 30 10 / 20%), inset 0 1px 0 rgb(255 255 255 / 45%);
+  --lab-shadow-dropdown: 0 14px 28px -8px rgb(60 30 10 / 28%);
+  --lab-shadow-modal: 0 24px 48px -12px rgb(60 30 10 / 38%);
+
+  --lab-scroll: #b59a72;
+  --lab-scroll-hover: #6b3b1f;
+}
+
+html[data-admin-sidebar="v13"][data-theme="dark"] {
+  --lab-accent: var(--lx-jukebox-hue);
+  --lab-on-accent: #0e061c;
+  --lab-accent-mix: #170c29;
+  --lab-accent-2: var(--lx-jukebox-red);
+  --lab-danger: var(--lx-jukebox-red);
+  --lab-on-danger: #1a0010;
+  --lab-success: var(--lx-jukebox-teal);
+  --lab-warning: var(--lx-jukebox-gold);
+  --lab-info: var(--lx-jukebox-teal);
+
+  --lab-page: #0d0618;
+  --lab-surface: #170d29;
+  --lab-surface-2: #211338;
+  --lab-surface-3: #2b1947;
+  --lab-hover: #341f57;
+  --lab-input: #120921;
+
+  --lab-ink: var(--lx-jukebox-ink);
+  --lab-ink-2: #d8c4f2;
+  --lab-ink-muted: #9f88bf;
+
+  --lab-border: rgb(200 160 255 / 22%);
+  --lab-border-soft: rgb(200 160 255 / 12%);
+  --lab-border-strong: rgb(255 62 165 / 48%);
+
+  --lab-shadow-sm: 0 2px 6px rgb(0 0 0 / 45%);
+  --lab-shadow-card: 0 8px 24px -8px rgb(0 0 0 / 65%), 0 0 0 1px rgb(200 160 255 / 10%);
+  --lab-shadow-card-hover: 0 10px 28px -8px color-mix(in oklab, var(--lx-jukebox-red) 35%, rgb(0 0 0 / 70%));
+  --lab-shadow-btn: 0 2px 10px -2px color-mix(in oklab, var(--lx-jukebox-hue) 45%, rgb(0 0 0 / 50%));
+  --lab-shadow-dropdown: 0 16px 36px -8px rgb(0 0 0 / 78%);
+  --lab-shadow-modal: 0 26px 56px -12px rgb(0 0 0 / 88%);
+
+  --lab-scroll: #563585;
+  --lab-scroll-hover: #ff3ea5;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v13"] .layout-content {
+    background-image:
+      radial-gradient(60% 35% at 15% 0%, color-mix(in oklab, var(--lx-jukebox-gold) 14%, transparent), transparent 65%),
+      linear-gradient(180deg, #f8edd6 0%, #f2e2c2 100%);
+  }
+  html[data-admin-sidebar="v13"][data-theme="dark"] .layout-content {
+    background-image:
+      radial-gradient(50% 35% at 12% 0%, color-mix(in oklab, var(--lx-jukebox-red) 14%, transparent), transparent 68%),
+      radial-gradient(45% 40% at 92% 100%, color-mix(in oklab, var(--lx-jukebox-teal) 10%, transparent), transparent 72%),
+      linear-gradient(180deg, #120820 0%, #0b0515 100%);
+  }
+
+  /* Marquee serif italic display titles */
+  html[data-admin-sidebar="v13"] :is(.page-header h1, .hz-panel-title, .hz-modal-title) {
+    font-style: italic;
+  }
+  html[data-admin-sidebar="v13"][data-theme="dark"] .page-header h1 {
+    text-shadow: 0 0 14px color-mix(in oklab, var(--lx-jukebox-red) 45%, transparent);
+  }
+
+  /* Record-sleeve top stripe on panels (mirrors .lx-jukebox-notes) */
+  html[data-admin-sidebar="v13"] .hz-panel:not(.hz-panel-bare) {
+    border-top: 3px solid var(--lx-jukebox-hue);
+  }
+
+  /* Chrome selector buttons in light mode; neon-lit buttons in dark mode */
+  html[data-admin-sidebar="v13"] .hz-btn-white {
+    background: linear-gradient(180deg, #ffffff, #eceff2);
+    border-color: var(--lx-jukebox-chrome-lo);
+  }
+  html[data-admin-sidebar="v13"][data-theme="dark"] .hz-btn-primary {
+    box-shadow: 0 0 14px -2px color-mix(in oklab, var(--lx-jukebox-hue) 60%, transparent);
+  }
+  html[data-admin-sidebar="v13"][data-theme="dark"] :is(.hz-tabs-pills .hz-tabs-trigger[aria-selected="true"], .hz-filter-btn[aria-pressed="true"], .hz-filter-btn[aria-selected="true"]) {
+    box-shadow: 0 0 12px -2px color-mix(in oklab, var(--lx-jukebox-hue) 65%, transparent);
+  }
 }

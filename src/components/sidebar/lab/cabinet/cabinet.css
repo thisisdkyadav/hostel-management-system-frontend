@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab V18 "Filing Cabinet": the admin shell as a records-office desk.
    Sidebar sets html[data-admin-sidebar="v18"] + data-admin-category.
@@ -827,4 +829,141 @@ html[data-theme="dark"] .lx-cabinet-tool--out:hover { color: #f06a5c !important;
   .lx-cabinet-tool,
   .lx-cabinet-plate,
   .lx-cabinet-handle::after { transition: none; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X10 "Filing Cabinet" (v18)
+   Light = archival cream bond paper, manila folder tabs, red
+   rubber stamps & brass trim. Dark = late-night desk-lamp
+   steel office with warm amber parchment & aged brass accents.
+   ============================================================ */
+
+html[data-admin-sidebar="v18"] {
+  --lx-cab-cat: var(--color-cat-home, #1360ab);
+  --lx-cab-type: "Courier New", ui-monospace, monospace;
+
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: Georgia, "Times New Roman", serif;
+  --lab-accent: var(--lx-cab-cat);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fdfaf1;
+  --lab-accent-2: #a77f2b;
+  --lab-danger: var(--lx-cabinet-red);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-cabinet-green);
+  --lab-warning: #9a6700;
+  --lab-info: var(--lx-cab-cat);
+
+  --lab-page: #f5ecda;
+  --lab-surface: var(--lx-cabinet-card);
+  --lab-surface-2: #f4e6c6;
+  --lab-surface-3: #ead5a8;
+  --lab-hover: #f8ebc8;
+  --lab-input: #fffdf7;
+
+  --lab-ink: var(--lx-cabinet-paper-ink);
+  --lab-ink-2: #584523;
+  --lab-ink-muted: #7c6742;
+
+  --lab-border: #cbb381;
+  --lab-border-soft: rgb(90 65 25 / 16%);
+  --lab-border-strong: #9c824e;
+  --lab-border-w: 1px;
+  --lab-divider-style: dashed;
+
+  --lab-r-xs: 3px;
+  --lab-r-sm: 4px;
+  --lab-r: 5px;
+  --lab-r-lg: 6px;
+  --lab-r-pill: 4px;
+
+  --lab-shadow-sm: 0 1px 2px rgb(40 22 6 / 12%);
+  --lab-shadow-card: 1px 2px 5px rgb(40 22 6 / 14%);
+  --lab-shadow-card-hover: 2px 5px 12px rgb(40 22 6 / 20%);
+  --lab-shadow-btn: 0 1px 3px rgb(40 22 6 / 18%);
+  --lab-shadow-dropdown: 2px 10px 24px rgb(40 22 6 / 24%);
+  --lab-shadow-modal: 4px 18px 40px rgb(40 22 6 / 34%);
+
+  --lab-scroll: #b59e72;
+  --lab-scroll-hover: #6e5a35;
+}
+
+html[data-admin-sidebar="v18"][data-admin-category="hostels"] { --lx-cab-cat: var(--color-cat-hostels, #0284c7); }
+html[data-admin-sidebar="v18"][data-admin-category="student-affairs"] { --lx-cab-cat: var(--color-cat-student-affairs, #db2777); }
+html[data-admin-sidebar="v18"][data-admin-category="staff"] { --lx-cab-cat: var(--color-cat-staff, #7048c8); }
+html[data-admin-sidebar="v18"][data-admin-category="dining"] { --lx-cab-cat: var(--color-cat-dining, #059669); }
+
+html[data-admin-sidebar="v18"][data-theme="dark"] {
+  --lab-accent: var(--lx-cabinet-brass);
+  --lab-on-accent: #1d1504;
+  --lab-accent-mix: #252a32;
+  --lab-accent-2: var(--lx-cab-cat);
+  --lab-danger: #f06a5c;
+  --lab-on-danger: #1f0806;
+  --lab-success: #56cc86;
+  --lab-warning: #f2d45e;
+  --lab-info: #8bb8f8;
+
+  --lab-page: #191d23;
+  --lab-surface: #242931;
+  --lab-surface-2: #2d333c;
+  --lab-surface-3: #373f4a;
+  --lab-hover: #3e4754;
+  --lab-input: #1d2128;
+
+  --lab-ink: #f2e7ce;
+  --lab-ink-2: #d4c6a7;
+  --lab-ink-muted: #9e9684;
+
+  --lab-border: rgb(217 180 90 / 24%);
+  --lab-border-soft: rgb(255 255 255 / 10%);
+  --lab-border-strong: rgb(217 180 90 / 48%);
+
+  --lab-shadow-sm: 0 1px 3px rgb(0 0 0 / 38%);
+  --lab-shadow-card: 0 4px 12px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 6%);
+  --lab-shadow-card-hover: 0 8px 20px rgb(0 0 0 / 54%), inset 0 1px 0 rgb(217 180 90 / 22%);
+  --lab-shadow-btn: 0 2px 4px rgb(0 0 0 / 44%);
+  --lab-shadow-dropdown: 0 14px 32px rgb(0 0 0 / 64%);
+  --lab-shadow-modal: 0 24px 54px rgb(0 0 0 / 78%);
+
+  --lab-scroll: #545d6b;
+  --lab-scroll-hover: #d9b45a;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v18"] .layout-content {
+    background-image:
+      linear-gradient(180deg, #faf3e4 0%, #f3e8d2 100%);
+  }
+  html[data-admin-sidebar="v18"][data-theme="dark"] .layout-content {
+    background-image:
+      radial-gradient(50% 42% at 10% 0%, rgb(255 186 90 / 12%), transparent 70%),
+      linear-gradient(180deg, #1d2128 0%, #16191e 100%);
+  }
+
+  /* Archival folder label-holder stripe on StatCards (mirrors .lx-cabinet-card) */
+  html[data-admin-sidebar="v18"] .hz-statcard {
+    border-left: 5px solid var(--lab-accent) !important;
+  }
+
+  /* Typewriter monospace metadata, headers, stamps & counts */
+  html[data-admin-sidebar="v18"] :is(.hz-table-head .hz-table-cell, .hz-statcard-label-text, .hz-badge, .hz-status, .hz-panel-count) {
+    font-family: var(--lx-cab-type);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Rubber-stamp outline on status & danger badges */
+  html[data-admin-sidebar="v18"] :is(.hz-badge, .hz-status) {
+    border: 1.5px solid currentColor;
+  }
+
+  /* Manila-folder tab bar on enclosed tabs */
+  html[data-admin-sidebar="v18"] .hz-tabs-enclosed .hz-tabs-list {
+    background: var(--lab-surface-2);
+    border-color: var(--lab-border-strong);
+  }
+  html[data-admin-sidebar="v18"] .hz-btn-white {
+    background: linear-gradient(180deg, var(--lab-surface), var(--lab-surface-2));
+  }
 }

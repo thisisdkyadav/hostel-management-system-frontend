@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    V16 "Synthwave" — the admin shell as an 80s neon night drive.
    Sidebar sets html[data-admin-sidebar="v16"] + data-admin-category.
@@ -804,4 +806,143 @@ html[data-admin-sidebar="v16"][data-admin-category="dining"] { --lx-sw-cat: var(
   .lx-synthwave-tube__glass,
   .lx-synthwave-row__go,
   html[data-admin-sidebar="v16"] .layout-content { transition: none; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X8 "Synthwave" (v16)
+   Light = pastel vaporwave dusk. Dark = 80s neon night drive
+   with CRT scanlines, neon-tube borders & laser gradients.
+   ============================================================ */
+
+html[data-admin-sidebar="v16"] {
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: "Google Sans", "Roboto", sans-serif;
+  --lab-accent: var(--lx-sw-cat);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fdf4fc;
+  --lab-accent-2: var(--lx-sw-pink);
+  --lab-danger: var(--lx-sw-pink);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-sw-green);
+  --lab-warning: #c85a17;
+  --lab-info: var(--lx-sw-cyan);
+
+  --lab-page: #f8eafb;
+  --lab-surface: rgb(255 255 255 / 80%);
+  --lab-surface-2: rgb(248 234 254 / 82%);
+  --lab-surface-3: rgb(238 219 252 / 84%);
+  --lab-hover: rgb(255 255 255 / 95%);
+  --lab-input: rgb(255 255 255 / 90%);
+
+  --lab-ink: var(--lx-sw-ink);
+  --lab-ink-2: var(--lx-sw-ink-2);
+  --lab-ink-muted: var(--lx-sw-ink-3);
+
+  --lab-border: rgb(190 95 190 / 28%);
+  --lab-border-soft: rgb(190 95 190 / 15%);
+  --lab-border-strong: rgb(224 33 138 / 50%);
+  --lab-border-w: 1.5px;
+  --lab-divider-style: solid;
+
+  --lab-r-xs: 6px;
+  --lab-r-sm: 8px;
+  --lab-r: 10px;
+  --lab-r-lg: 14px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 2px 6px rgb(122 64 170 / 10%);
+  --lab-shadow-card: 0 6px 18px -6px rgb(180 70 170 / 18%), inset 0 1px 0 rgb(255 255 255 / 85%);
+  --lab-shadow-card-hover: 0 10px 24px -6px color-mix(in oklab, var(--lx-sw-pink) 34%, transparent);
+  --lab-shadow-btn: 0 3px 12px -3px color-mix(in oklab, var(--lx-sw-pink) 34%, transparent);
+  --lab-shadow-dropdown: 0 14px 32px -8px rgb(120 40 140 / 26%);
+  --lab-shadow-modal: 0 24px 54px -12px rgb(90 25 120 / 34%);
+
+  --lab-scroll: #cc80c9;
+  --lab-scroll-hover: #e0218a;
+}
+
+html[data-admin-sidebar="v16"][data-theme="dark"] {
+  --lab-accent: var(--lx-sw-cat);
+  --lab-on-accent: #0b031f;
+  --lab-accent-mix: #160731;
+  --lab-accent-2: var(--lx-sw-pink);
+  --lab-danger: var(--lx-sw-pink);
+  --lab-on-danger: #180212;
+  --lab-success: var(--lx-sw-green);
+  --lab-warning: #ffeb5c;
+  --lab-info: var(--lx-sw-cyan);
+
+  --lab-page: #0b031f;
+  --lab-surface: rgb(22 7 48 / 86%);
+  --lab-surface-2: rgb(31 11 66 / 88%);
+  --lab-surface-3: rgb(42 16 88 / 90%);
+  --lab-hover: rgb(54 22 108 / 92%);
+  --lab-input: rgb(14 4 34 / 92%);
+
+  --lab-ink: var(--lx-sw-ink);
+  --lab-ink-2: #e2caf9;
+  --lab-ink-muted: #ac8fcd;
+
+  --lab-border: rgb(255 79 184 / 32%);
+  --lab-border-soft: rgb(255 79 184 / 16%);
+  --lab-border-strong: rgb(79 240 255 / 55%);
+
+  --lab-shadow-sm: 0 2px 8px rgb(0 0 0 / 48%);
+  --lab-shadow-card: 0 8px 24px -8px rgb(0 0 0 / 72%), 0 0 14px -4px rgb(255 79 184 / 22%);
+  --lab-shadow-card-hover: 0 10px 28px -6px rgb(0 0 0 / 78%), 0 0 20px -2px color-mix(in oklab, var(--lx-sw-cyan) 42%, transparent);
+  --lab-shadow-btn: 0 0 14px -2px color-mix(in oklab, var(--lx-sw-pink) 52%, transparent);
+  --lab-shadow-dropdown: 0 16px 38px -8px rgb(0 0 0 / 82%), 0 0 18px -4px rgb(255 79 184 / 28%);
+  --lab-shadow-modal: 0 26px 60px -12px rgb(0 0 0 / 90%), 0 0 32px -6px rgb(255 79 184 / 36%);
+
+  --lab-scroll: #762596;
+  --lab-scroll-hover: #ff4fb8;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v16"] .layout-content {
+    background-image:
+      radial-gradient(60% 35% at 15% 0%, rgb(255 255 255 / 60%), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgb(255 148 214 / 24%), transparent 72%),
+      linear-gradient(180deg, #fef0f7 0%, #f3e8ff 58%, #fce1f2 100%);
+  }
+  html[data-admin-sidebar="v16"][data-theme="dark"] .layout-content {
+    background-image:
+      repeating-linear-gradient(180deg, rgb(0 0 0 / 16%) 0 1px, transparent 1px 3px),
+      radial-gradient(55% 35% at 12% 0%, rgb(255 46 160 / 16%), transparent 70%),
+      radial-gradient(45% 40% at 90% 100%, rgb(79 240 255 / 12%), transparent 72%),
+      linear-gradient(180deg, #0b031f 0%, #150630 58%, #240942 100%);
+  }
+
+  /* Retro-futuristic italic headings & neon bloom */
+  html[data-admin-sidebar="v16"] :is(.page-header h1, .hz-panel-title, .hz-modal-title) {
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+  html[data-admin-sidebar="v16"][data-theme="dark"] .page-header h1 {
+    text-shadow: 0 0 12px color-mix(in oklab, var(--lx-sw-pink) 65%, transparent), 0 0 24px color-mix(in oklab, var(--lx-sw-cyan) 35%, transparent);
+  }
+
+  /* Dual-tone laser gradient on primary actions & progress bars */
+  html[data-admin-sidebar="v16"] .hz-btn-primary {
+    background: linear-gradient(135deg, var(--lx-sw-cat), var(--lx-sw-pink));
+    color: #ffffff;
+    border-color: transparent;
+  }
+  html[data-admin-sidebar="v16"][data-theme="dark"] .hz-btn-primary {
+    background: linear-gradient(135deg, color-mix(in oklab, var(--lx-sw-cat) 74%, #12042b), #d91c82);
+    color: #ffffff;
+  }
+  html[data-admin-sidebar="v16"] .hz-btn-primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow: 0 0 18px -2px color-mix(in oklab, var(--lx-sw-pink) 65%, transparent);
+  }
+  html[data-admin-sidebar="v16"] .hz-progress-fill {
+    background: linear-gradient(90deg, var(--lx-sw-cyan), var(--lx-sw-pink));
+  }
+
+  /* Neon-lit focus rings */
+  html[data-admin-sidebar="v16"][data-theme="dark"] :is(.hz-input-field:focus, .hz-textarea:focus, .hz-select-field:focus) {
+    border-color: var(--lx-sw-cyan);
+    box-shadow: 0 0 0 2px rgb(79 240 255 / 26%), 0 0 14px rgb(79 240 255 / 24%);
+  }
 }

@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab V10 "Arcade" — an original 8-bit game cabinet.
    Sidebar sets html[data-admin-sidebar="v10"] + data-admin-category.
@@ -879,4 +881,178 @@ html[data-theme="dark"] .lx-arcade-player__tag { color: var(--lx-arcade-gold-hi)
     transition: none !important;
   }
   .lx-arcade-ticker__press[data-delayed] { opacity: 0; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X2 "Arcade" (v10)
+   Sharp 0px pixel geometry, 2px chunky borders, hard offset
+   drop shadows, 3D arcade push-buttons, stepped progress bars.
+   ============================================================ */
+
+html[data-admin-sidebar="v10"] {
+  --lab-font: var(--lx-arcade-font);
+  --lab-font-display: var(--lx-arcade-font);
+  --lab-accent: var(--lx-arcade-w);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fffaf0;
+  --lab-accent-2: #d99100;
+  --lab-danger: var(--lx-arcade-red);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-arcade-green);
+  --lab-warning: #b86f00;
+  --lab-info: var(--lx-arcade-w);
+
+  --lab-page: #edf6ff;
+  --lab-surface: var(--lx-arcade-panel);
+  --lab-surface-2: #f4ebd4;
+  --lab-surface-3: #e8dab8;
+  --lab-hover: #efe1be;
+  --lab-input: #ffffff;
+
+  --lab-ink: var(--lx-arcade-ink);
+  --lab-ink-2: var(--lx-arcade-ink-2);
+  --lab-ink-muted: var(--lx-arcade-ink-3);
+
+  --lab-border: #1b1730;
+  --lab-border-soft: #c7b088;
+  --lab-border-strong: #1b1730;
+  --lab-border-w: 2px;
+  --lab-divider-style: dashed;
+
+  --lab-r-xs: 0px;
+  --lab-r-sm: 0px;
+  --lab-r: 0px;
+  --lab-r-lg: 0px;
+  --lab-r-pill: 0px;
+
+  --lab-shadow-sm: 2px 2px 0 rgb(20 24 58 / 22%);
+  --lab-shadow-card: 3px 3px 0 rgb(20 24 58 / 24%);
+  --lab-shadow-card-hover: 4px 4px 0 var(--lx-arcade-w);
+  --lab-shadow-btn: 3px 3px 0 rgb(20 24 58 / 28%);
+  --lab-shadow-dropdown: 5px 5px 0 rgb(20 24 58 / 32%);
+  --lab-shadow-modal: 6px 6px 0 #1b1730;
+
+  --lab-scroll: #7a83ad;
+  --lab-scroll-hover: #1b1730;
+}
+
+html[data-admin-sidebar="v10"][data-theme="dark"] {
+  --lab-accent: var(--lx-arcade-w);
+  --lab-on-accent: #070b1e;
+  --lab-accent-mix: #151e48;
+  --lab-accent-2: #ffd447;
+  --lab-danger: #ff5e62;
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-arcade-green);
+  --lab-warning: #ffd447;
+  --lab-info: #6ec1ff;
+
+  --lab-page: #080d24;
+  --lab-surface: #141c44;
+  --lab-surface-2: #1b2456;
+  --lab-surface-3: #24306e;
+  --lab-hover: #2c3a82;
+  --lab-input: #0e1433;
+
+  --lab-ink: var(--lx-arcade-ink);
+  --lab-ink-2: var(--lx-arcade-ink-2);
+  --lab-ink-muted: var(--lx-arcade-ink-3);
+
+  --lab-border: #43539e;
+  --lab-border-soft: #293572;
+  --lab-border-strong: #6c7fd8;
+
+  --lab-shadow-sm: 2px 2px 0 #05040c;
+  --lab-shadow-card: 3px 3px 0 #05040c;
+  --lab-shadow-card-hover: 4px 4px 0 var(--lx-arcade-w);
+  --lab-shadow-btn: 3px 3px 0 #05040c;
+  --lab-shadow-dropdown: 5px 5px 0 #05040c;
+  --lab-shadow-modal: 6px 6px 0 #05040c;
+
+  --lab-scroll: #4b5db0;
+  --lab-scroll-hover: #ffe27a;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v10"] .layout-content {
+    background-image:
+      radial-gradient(circle at 2px 2px, color-mix(in oklab, var(--lx-arcade-w) 12%, transparent) 1px, transparent 1.5px);
+    background-size: 16px 16px;
+  }
+  html[data-admin-sidebar="v10"][data-theme="dark"] .layout-content {
+    background-image:
+      repeating-linear-gradient(180deg, transparent 0 3px, rgb(0 0 0 / 16%) 3px 4px);
+    background-size: auto;
+  }
+
+  /* 8-bit uppercase titles with crisp hard drop shadow */
+  html[data-admin-sidebar="v10"] .page-header h1 {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-shadow: 2px 2px 0 color-mix(in oklab, var(--lx-arcade-w) 32%, transparent);
+  }
+  html[data-admin-sidebar="v10"] :is(.hz-panel-title, .hz-card-title, .hz-modal-title, .hz-table-head .hz-table-cell) {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Chunky beveled arcade push buttons */
+  html[data-admin-sidebar="v10"] .hz-btn {
+    border: 2px solid var(--lab-border-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 800;
+    box-shadow:
+      inset 2px 2px 0 rgb(255 255 255 / 32%),
+      inset -2px -2px 0 rgb(0 0 0 / 24%),
+      3px 3px 0 var(--lx-arcade-drop);
+    transition: transform 80ms steps(2, end), box-shadow 80ms steps(2, end), background-color 120ms;
+  }
+  html[data-admin-sidebar="v10"] .hz-btn:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow:
+      inset 2px 2px 0 rgb(255 255 255 / 40%),
+      inset -2px -2px 0 rgb(0 0 0 / 28%),
+      4px 4px 0 var(--lx-arcade-drop);
+  }
+  html[data-admin-sidebar="v10"] .hz-btn:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow:
+      inset 2px 2px 0 rgb(0 0 0 / 26%),
+      inset -1px -1px 0 rgb(255 255 255 / 20%),
+      0 0 0 var(--lx-arcade-drop);
+  }
+  html[data-admin-sidebar="v10"] .hz-btn-ghost,
+  html[data-admin-sidebar="v10"] .hz-btn-link {
+    border-color: transparent;
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v10"] .hz-btn-ghost:hover:not(:disabled) {
+    border-color: var(--lab-border);
+    box-shadow: 2px 2px 0 var(--lx-arcade-drop);
+  }
+
+  /* Stepped 8-bit pixel health-bar progress fill */
+  html[data-admin-sidebar="v10"] .hz-progress-track {
+    border: 2px solid var(--lab-border-strong);
+  }
+  html[data-admin-sidebar="v10"] .hz-progress-fill {
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0 6px,
+      rgb(0 0 0 / 22%) 6px 8px
+    );
+  }
+
+  /* Pixel badges & focus rings */
+  html[data-admin-sidebar="v10"] :is(.hz-badge, .hz-status, .hz-tag) {
+    border: 2px solid currentColor;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  html[data-admin-sidebar="v10"] .layout-content :focus-visible {
+    outline: 2px dashed var(--lx-arcade-w);
+    outline-offset: 2px;
+  }
 }

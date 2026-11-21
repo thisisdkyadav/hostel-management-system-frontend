@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab X3 "Sketchbook" (v11): a spiral-bound notebook.
    Light = cream ruled paper on a kraft desk; dark = chalkboard in a
@@ -1007,5 +1009,158 @@ html[data-theme="dark"] .lx-sketchbook-foot {
   }
   html[data-admin-sidebar="v11"] .layout-content.lx-sketchbook-turn > * {
     animation: none !important;
+  }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X3 "Sketchbook" (v11)
+   Light = ruled cream notebook paper, charcoal ink, hand-drawn
+   wobbly radii, highlighter swipes. Dark = classroom chalkboard
+   with dusty chalk outlines and warm wooden tones.
+   ============================================================ */
+
+html[data-admin-sidebar="v11"] {
+  --lx-sb-c: var(--color-cat-home, #1360ab);
+  --lx-sb-hand: "Ink Free", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", "Comic Neue", cursive;
+
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: var(--lx-sb-hand);
+  --lab-accent: var(--lx-sb-c);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fffdf4;
+  --lab-accent-2: #1f3f94;
+  --lab-danger: #d33a3a;
+  --lab-on-danger: #ffffff;
+  --lab-success: #1f8a4c;
+  --lab-warning: #c8580c;
+  --lab-info: #1f3f94;
+
+  --lab-page: #faf4e1;
+  --lab-surface: #fffdf4;
+  --lab-surface-2: #f7f0dc;
+  --lab-surface-3: #efe5c8;
+  --lab-hover: #fff4b0;
+  --lab-input: #fffef9;
+
+  --lab-ink: #262b38;
+  --lab-ink-2: #434a5c;
+  --lab-ink-muted: #707685;
+
+  --lab-border: rgb(38 43 56 / 28%);
+  --lab-border-soft: rgb(74 132 204 / 22%);
+  --lab-border-strong: rgb(38 43 56 / 54%);
+  --lab-border-w: 1.5px;
+  --lab-divider-style: dashed;
+
+  --lab-r-xs: 4px;
+  --lab-r-sm: 6px;
+  --lab-r: 9px;
+  --lab-r-lg: 11px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 1px 2px 0 rgb(60 42 12 / 12%);
+  --lab-shadow-card: 2px 3px 0 rgb(60 42 12 / 14%);
+  --lab-shadow-card-hover: 3px 5px 0 rgb(60 42 12 / 22%);
+  --lab-shadow-btn: 2px 2px 0 rgb(60 42 12 / 18%);
+  --lab-shadow-dropdown: 3px 6px 14px rgb(60 42 12 / 20%);
+  --lab-shadow-modal: 5px 8px 20px rgb(60 42 12 / 26%);
+
+  --lab-scroll: #b8aa8a;
+  --lab-scroll-hover: #545b6b;
+}
+
+html[data-admin-sidebar="v11"][data-admin-category="hostels"] { --lx-sb-c: var(--color-cat-hostels, #0284c7); }
+html[data-admin-sidebar="v11"][data-admin-category="student-affairs"] { --lx-sb-c: var(--color-cat-student-affairs, #db2777); }
+html[data-admin-sidebar="v11"][data-admin-category="staff"] { --lx-sb-c: var(--color-cat-staff, #7048c8); }
+html[data-admin-sidebar="v11"][data-admin-category="dining"] { --lx-sb-c: var(--color-cat-dining, #059669); }
+
+html[data-admin-sidebar="v11"][data-theme="dark"] {
+  --lab-accent: color-mix(in oklab, var(--lx-sb-c) 68%, #ffffff);
+  --lab-on-accent: #18231c;
+  --lab-accent-mix: #24332b;
+  --lab-accent-2: #ffc06a;
+  --lab-danger: #ff9a9a;
+  --lab-on-danger: #261414;
+  --lab-success: #8ef0b0;
+  --lab-warning: #ffc06a;
+  --lab-info: #9bc8ff;
+
+  --lab-page: #1b2721;
+  --lab-surface: #24332b;
+  --lab-surface-2: #1e2b24;
+  --lab-surface-3: #2d3e35;
+  --lab-hover: #33473d;
+  --lab-input: #1d2a23;
+
+  --lab-ink: #eef1e8;
+  --lab-ink-2: #d0d8ca;
+  --lab-ink-muted: #98a695;
+
+  --lab-border: rgb(238 241 232 / 24%);
+  --lab-border-soft: rgb(238 241 232 / 12%);
+  --lab-border-strong: rgb(238 241 232 / 48%);
+
+  --lab-shadow-sm: 1px 2px 0 rgb(0 0 0 / 32%);
+  --lab-shadow-card: 2px 3px 0 rgb(0 0 0 / 36%);
+  --lab-shadow-card-hover: 3px 5px 0 rgb(0 0 0 / 48%);
+  --lab-shadow-btn: 2px 2px 0 rgb(0 0 0 / 38%);
+  --lab-shadow-dropdown: 4px 8px 18px rgb(0 0 0 / 48%);
+  --lab-shadow-modal: 6px 10px 26px rgb(0 0 0 / 60%);
+
+  --lab-scroll: #546e5f;
+  --lab-scroll-hover: #eef1e8;
+}
+
+@media (min-width: 768px) {
+  /* Ruled notebook lines on light facing sheet; dusty chalk lines on chalkboard */
+  html[data-admin-sidebar="v11"] .layout-content {
+    background-image:
+      repeating-linear-gradient(to bottom, transparent 0 33px, rgb(74 132 204 / 15%) 33px 34px);
+    background-attachment: local;
+  }
+  html[data-admin-sidebar="v11"][data-theme="dark"] .layout-content {
+    background-image:
+      radial-gradient(70% 45% at 25% 15%, rgb(255 255 255 / 4%), transparent 70%),
+      repeating-linear-gradient(to bottom, transparent 0 33px, rgb(235 240 230 / 5%) 33px 34px);
+    background-attachment: local;
+  }
+
+  /* Organic hand-drawn asymmetric corners on cards, panels, buttons & inputs */
+  html[data-admin-sidebar="v11"] :is(.hz-card, .hz-panel, .hz-statcard, .hz-modal, .hz-drawer, .hz-table-wrap, .hz-datatable) {
+    border-radius: 14px 4px 12px 5px / 5px 12px 4px 14px;
+  }
+  html[data-admin-sidebar="v11"] :is(.hz-btn, .hz-filter-btn, .hz-tabs-pills .hz-tabs-trigger, .hz-input-field, .hz-textarea, .hz-select-field, .hz-dp-trigger) {
+    border-radius: 18px 4px 16px 5px / 5px 14px 4px 16px;
+  }
+  html[data-admin-sidebar="v11"] .hz-btn {
+    font-family: var(--lx-sb-hand);
+    font-weight: 700;
+    border-width: 1.5px;
+    box-shadow: var(--lab-shadow-btn);
+  }
+  html[data-admin-sidebar="v11"] .hz-btn-ghost,
+  html[data-admin-sidebar="v11"] .hz-btn-link {
+    box-shadow: none;
+  }
+
+  /* Highlighter swipe accent under the main page heading */
+  html[data-admin-sidebar="v11"] .page-header h1 {
+    display: inline-block;
+    padding: 0 4px;
+    background: linear-gradient(transparent 62%, color-mix(in oklab, var(--lx-sb-c) 26%, #fff27a) 62% 94%, transparent 94%);
+  }
+  html[data-admin-sidebar="v11"][data-theme="dark"] .page-header h1 {
+    background: linear-gradient(transparent 66%, color-mix(in oklab, var(--lx-sb-c) 38%, transparent) 66% 94%, transparent 94%);
+    text-shadow: 0 0 1px rgb(255 255 255 / 40%);
+  }
+
+  /* Rubber-stamp badges */
+  html[data-admin-sidebar="v11"] :is(.hz-badge, .hz-status) {
+    border: 1.5px solid currentColor;
+    border-radius: 6px 3px 7px 4px / 4px 6px 3px 6px;
+  }
+  html[data-admin-sidebar="v11"] .layout-content :focus-visible {
+    outline: 2px dashed var(--lab-accent);
+    outline-offset: 2px;
   }
 }

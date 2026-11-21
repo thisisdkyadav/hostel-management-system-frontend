@@ -1,0 +1,567 @@
+/* ============================================================
+   Shared hzero Theme Adapter for Sidebar Lab (X2–X10 / v10–v18).
+   Each lab stylesheet imports this file and sets --lab-* tokens
+   for light & dark modes plus any bespoke component details.
+
+   Cascade guarantee:
+   - Fallback --lab-* defaults live in html:where(...) -> (0,0,1),
+     so per-theme html[data-admin-sidebar="vXX"] -> (0,1,1) ALWAYS
+     wins regardless of CSS chunk order or duplicate imports.
+   - hzero token mappings live in html:is(...) -> (0,1,1), which
+     cleanly beats hzero's :root, [data-theme="dark"], and
+     [data-admin-category="..."] rules with zero leakage outside Lab.
+   ============================================================ */
+
+html:where(
+  [data-admin-sidebar="v10"],
+  [data-admin-sidebar="v11"],
+  [data-admin-sidebar="v12"],
+  [data-admin-sidebar="v13"],
+  [data-admin-sidebar="v14"],
+  [data-admin-sidebar="v15"],
+  [data-admin-sidebar="v16"],
+  [data-admin-sidebar="v17"],
+  [data-admin-sidebar="v18"]
+) {
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: var(--lab-font);
+  --lab-accent: #1360ab;
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: var(--lab-surface);
+  --lab-hover-mix: #000000;
+  --lab-accent-2: var(--lab-accent);
+  --lab-danger: #d92d20;
+  --lab-on-danger: #ffffff;
+  --lab-success: #15803d;
+  --lab-warning: #b45309;
+  --lab-info: var(--lab-accent);
+
+  --lab-page: #f5f5f5;
+  --lab-surface: #ffffff;
+  --lab-surface-2: #f0f0f0;
+  --lab-surface-3: #e8e8e8;
+  --lab-hover: #e2e2e2;
+  --lab-input: var(--lab-surface);
+
+  --lab-ink: #111111;
+  --lab-ink-2: #333333;
+  --lab-ink-muted: #666666;
+
+  --lab-border: rgb(0 0 0 / 16%);
+  --lab-border-soft: rgb(0 0 0 / 9%);
+  --lab-border-strong: rgb(0 0 0 / 32%);
+  --lab-border-w: 1px;
+  --lab-divider-style: solid;
+
+  --lab-r-xs: 4px;
+  --lab-r-sm: 6px;
+  --lab-r: 8px;
+  --lab-r-lg: 12px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
+  --lab-shadow-card: 0 2px 8px rgb(0 0 0 / 8%);
+  --lab-shadow-card-hover: 0 6px 16px rgb(0 0 0 / 12%);
+  --lab-shadow-btn: 0 1px 2px rgb(0 0 0 / 10%);
+  --lab-shadow-dropdown: 0 10px 24px rgb(0 0 0 / 16%);
+  --lab-shadow-modal: 0 20px 44px rgb(0 0 0 / 28%);
+
+  --lab-scroll: #9ca3af;
+  --lab-scroll-hover: #6b7280;
+}
+
+html:where(
+  [data-admin-sidebar="v10"][data-theme="dark"],
+  [data-admin-sidebar="v11"][data-theme="dark"],
+  [data-admin-sidebar="v12"][data-theme="dark"],
+  [data-admin-sidebar="v13"][data-theme="dark"],
+  [data-admin-sidebar="v14"][data-theme="dark"],
+  [data-admin-sidebar="v15"][data-theme="dark"],
+  [data-admin-sidebar="v16"][data-theme="dark"],
+  [data-admin-sidebar="v17"][data-theme="dark"],
+  [data-admin-sidebar="v18"][data-theme="dark"]
+) {
+  --lab-hover-mix: #ffffff;
+}
+
+html:is(
+  [data-admin-sidebar="v10"],
+  [data-admin-sidebar="v11"],
+  [data-admin-sidebar="v12"],
+  [data-admin-sidebar="v13"],
+  [data-admin-sidebar="v14"],
+  [data-admin-sidebar="v15"],
+  [data-admin-sidebar="v16"],
+  [data-admin-sidebar="v17"],
+  [data-admin-sidebar="v18"]
+) {
+  /* ---- Map --lab-* onto every hzero base & component token ---- */
+  --font-family-primary: var(--lab-font);
+
+  --radius-xs: var(--lab-r-xs);
+  --radius-sm: var(--lab-r-sm);
+  --radius-md: var(--lab-r);
+  --radius-lg: var(--lab-r);
+  --radius-xl: var(--lab-r-lg);
+  --radius-2xl: var(--lab-r-lg);
+  --radius-3xl: var(--lab-r-lg);
+  --radius-4xl: var(--lab-r-lg);
+
+  --radius-card: var(--lab-r-lg);
+  --radius-card-sm: var(--lab-r);
+  --radius-card-lg: var(--lab-r-lg);
+  --radius-button: var(--lab-r);
+  --radius-button-sm: var(--lab-r-sm);
+  --radius-button-md: var(--lab-r);
+  --radius-button-lg: var(--lab-r);
+  --radius-button-pill: var(--lab-r-pill);
+  --radius-modal: var(--lab-r-lg);
+  --radius-input: var(--lab-r-sm);
+  --radius-badge: var(--lab-r-xs);
+  --radius-badge-pill: var(--lab-r-pill);
+  --radius-icon: var(--lab-r-sm);
+  --radius-avatar: var(--lab-r-pill);
+  --radius-chip: var(--lab-r-sm);
+  --radius-tag: var(--lab-r-sm);
+  --radius-tab: var(--lab-r-sm);
+  --radius-tooltip: var(--lab-r-sm);
+  --radius-dropdown: var(--lab-r);
+
+  --btn-radius: var(--lab-r);
+  --btn-radius-sm: var(--lab-r-sm);
+  --btn-radius-md: var(--lab-r);
+  --btn-radius-lg: var(--lab-r);
+  --btn-focus-ring-color: var(--lab-accent);
+  --card-radius: var(--lab-r-lg);
+  --input-radius: var(--lab-r-sm);
+  --modal-radius: var(--lab-r-lg);
+  --panel-radius: var(--lab-r-lg);
+  --panel-chip-radius: var(--lab-r-sm);
+  --statcard-radius: var(--lab-r-lg);
+  --statpill-radius: var(--lab-r);
+  --stattile-radius: var(--lab-r);
+  --statrow-radius: var(--lab-r-sm);
+  --statusbadge-radius: var(--lab-r-pill);
+  --badge-radius: var(--lab-r-xs);
+  --checkbox-radius: var(--lab-r-xs);
+  --alert-radius: var(--lab-r);
+  --filter-radius: var(--lab-r-sm);
+  --filter-chip-radius: var(--lab-r-sm);
+  --select-radius: var(--lab-r-sm);
+  --select-menu-radius: var(--lab-r);
+  --select-item-radius: var(--lab-r-xs);
+  --tabs-trigger-radius: var(--lab-r-sm);
+  --tabs-pills-radius: var(--lab-r-sm);
+  --tabs-count-radius: var(--lab-r-xs);
+  --tabs-enclosed-list-radius: var(--lab-r);
+  --tabs-enclosed-trigger-radius: var(--lab-r-sm);
+  --table-radius: var(--lab-r);
+  --datatable-radius: var(--lab-r);
+  --detail-radius: var(--lab-r);
+  --toast-radius: var(--lab-r);
+  --popover-radius: var(--lab-r);
+  --tooltip-radius: var(--lab-r-sm);
+
+  /* Primary palette derived from --lab-accent */
+  --admin-accent: var(--lab-accent);
+  --admin-mix-surface: var(--lab-accent-mix);
+  --color-primary: var(--lab-accent);
+  --color-primary-hover: color-mix(in oklab, var(--lab-accent) 85%, var(--lab-hover-mix));
+  --color-primary-active: color-mix(in oklab, var(--lab-accent) 74%, var(--lab-hover-mix));
+  --color-primary-dark: color-mix(in oklab, var(--lab-accent) 82%, #000000);
+  --color-primary-darker: color-mix(in oklab, var(--lab-accent) 64%, #000000);
+  --color-primary-light: color-mix(in oklab, var(--lab-accent) 78%, var(--lab-accent-mix));
+  --color-primary-lighter: color-mix(in oklab, var(--lab-accent) 56%, var(--lab-accent-mix));
+  --color-primary-muted: color-mix(in oklab, var(--lab-accent) 42%, var(--lab-accent-mix));
+  --color-primary-pale: color-mix(in oklab, var(--lab-accent) 22%, var(--lab-accent-mix));
+  --color-primary-bg: color-mix(in oklab, var(--lab-accent) 14%, var(--lab-accent-mix));
+  --color-primary-bg-hover: color-mix(in oklab, var(--lab-accent) 23%, var(--lab-accent-mix));
+  --color-primary-bg-light: color-mix(in oklab, var(--lab-accent) 8%, var(--lab-accent-mix));
+
+  --color-white: var(--lab-on-accent);
+  --color-on-accent: var(--lab-on-accent);
+
+  /* Surfaces */
+  --color-bg-page: var(--lab-page);
+  --color-bg-primary: var(--lab-surface);
+  --color-bg-secondary: var(--lab-surface-2);
+  --color-bg-tertiary: var(--lab-surface-3);
+  --color-bg-hover: var(--lab-hover);
+  --color-bg-muted: var(--lab-surface-3);
+  --color-bg-disabled: var(--lab-surface-2);
+
+  /* Ink */
+  --color-text-primary: var(--lab-ink);
+  --color-text-heading: var(--lab-ink);
+  --color-text-secondary: var(--lab-ink);
+  --color-text-body: var(--lab-ink-2);
+  --color-text-tertiary: var(--lab-ink-2);
+  --color-text-muted: var(--lab-ink-muted);
+  --color-text-placeholder: var(--lab-ink-muted);
+  --color-text-light: var(--lab-ink-muted);
+  --color-text-disabled: color-mix(in oklab, var(--lab-ink-muted) 65%, transparent);
+
+  /* Borders */
+  --color-border-light: var(--lab-border-soft);
+  --color-border-primary: var(--lab-border);
+  --color-border-secondary: var(--lab-border);
+  --color-border-focus: var(--lab-accent);
+  --color-border-hover: var(--lab-border-strong);
+  --color-border-input: var(--lab-border-strong);
+  --color-border-gray: var(--lab-border);
+  --color-border-dark: var(--lab-border-strong);
+
+  /* Theme-locked semantic & categorical tones */
+  --color-success: var(--lab-success);
+  --color-success-hover: color-mix(in oklab, var(--lab-success) 85%, var(--lab-hover-mix));
+  --color-success-active: color-mix(in oklab, var(--lab-success) 72%, var(--lab-hover-mix));
+  --color-success-light: color-mix(in oklab, var(--lab-success) 68%, var(--lab-accent-mix));
+  --color-success-bg: color-mix(in oklab, var(--lab-success) 15%, var(--lab-accent-mix));
+  --color-success-bg-light: color-mix(in oklab, var(--lab-success) 8%, var(--lab-accent-mix));
+  --color-success-text: var(--lab-success);
+  --color-success-border: color-mix(in oklab, var(--lab-success) 42%, var(--lab-accent-mix));
+
+  --color-warning: var(--lab-warning);
+  --color-warning-hover: color-mix(in oklab, var(--lab-warning) 85%, var(--lab-hover-mix));
+  --color-warning-active: color-mix(in oklab, var(--lab-warning) 72%, var(--lab-hover-mix));
+  --color-warning-light: color-mix(in oklab, var(--lab-warning) 68%, var(--lab-accent-mix));
+  --color-warning-bg: color-mix(in oklab, var(--lab-warning) 15%, var(--lab-accent-mix));
+  --color-warning-bg-light: color-mix(in oklab, var(--lab-warning) 8%, var(--lab-accent-mix));
+  --color-warning-text: var(--lab-warning);
+  --color-warning-border: color-mix(in oklab, var(--lab-warning) 42%, var(--lab-accent-mix));
+
+  --color-info: var(--lab-info);
+  --color-info-hover: color-mix(in oklab, var(--lab-info) 85%, var(--lab-hover-mix));
+  --color-info-active: color-mix(in oklab, var(--lab-info) 72%, var(--lab-hover-mix));
+  --color-info-light: color-mix(in oklab, var(--lab-info) 68%, var(--lab-accent-mix));
+  --color-info-bg: color-mix(in oklab, var(--lab-info) 15%, var(--lab-accent-mix));
+  --color-info-bg-light: color-mix(in oklab, var(--lab-info) 8%, var(--lab-accent-mix));
+  --color-info-text: var(--lab-info);
+  --color-info-border: color-mix(in oklab, var(--lab-info) 42%, var(--lab-accent-mix));
+
+  --color-danger: var(--lab-danger);
+  --color-danger-hover: color-mix(in oklab, var(--lab-danger) 85%, var(--lab-hover-mix));
+  --color-danger-active: color-mix(in oklab, var(--lab-danger) 72%, var(--lab-hover-mix));
+  --color-danger-light: color-mix(in oklab, var(--lab-danger) 68%, var(--lab-accent-mix));
+  --color-danger-bg: color-mix(in oklab, var(--lab-danger) 15%, var(--lab-accent-mix));
+  --color-danger-bg-light: color-mix(in oklab, var(--lab-danger) 8%, var(--lab-accent-mix));
+  --color-danger-text: var(--lab-danger);
+  --color-danger-border: color-mix(in oklab, var(--lab-danger) 44%, var(--lab-accent-mix));
+
+  --color-boys-bg: color-mix(in oklab, var(--lab-accent) 13%, var(--lab-accent-mix));
+  --color-boys-text: var(--lab-accent);
+  --color-boys-hover-bg: var(--lab-accent);
+  --color-boys-hover-text: var(--lab-on-accent);
+  --color-girls-bg: color-mix(in oklab, var(--lab-accent-2) 13%, var(--lab-accent-mix));
+  --color-girls-text: var(--lab-accent-2);
+  --color-girls-hover-bg: var(--lab-accent-2);
+  --color-girls-hover-text: var(--lab-on-accent);
+  --color-coed-bg: color-mix(in oklab, var(--lab-accent) 13%, var(--lab-accent-mix));
+  --color-coed-text: var(--lab-accent);
+  --color-coed-hover-bg: var(--lab-accent);
+  --color-coed-hover-text: var(--lab-on-accent);
+
+  --color-purple-bg: color-mix(in oklab, var(--lab-accent-2) 13%, var(--lab-accent-mix));
+  --color-purple-light-bg: color-mix(in oklab, var(--lab-accent-2) 18%, var(--lab-accent-mix));
+  --color-purple-text: var(--lab-accent-2);
+  --color-orange-bg: color-mix(in oklab, var(--lab-warning) 13%, var(--lab-accent-mix));
+  --color-orange-text: var(--lab-warning);
+  --color-teal-bg: color-mix(in oklab, var(--lab-accent) 13%, var(--lab-accent-mix));
+  --color-teal-text: var(--lab-accent);
+
+  --color-series-1: var(--lab-accent);
+  --color-series-2: var(--lab-accent-2);
+  --color-series-3: var(--lab-info);
+  --color-series-4: var(--lab-warning);
+  --color-series-5: var(--lab-accent-2);
+  --color-series-6: var(--lab-success);
+  --color-series-7: var(--lab-danger);
+  --color-series-8: var(--lab-ink-muted);
+  --color-series-1-bg: color-mix(in oklab, var(--lab-accent) 14%, var(--lab-accent-mix));
+  --color-series-2-bg: color-mix(in oklab, var(--lab-accent-2) 14%, var(--lab-accent-mix));
+  --color-series-3-bg: color-mix(in oklab, var(--lab-info) 14%, var(--lab-accent-mix));
+  --color-series-4-bg: color-mix(in oklab, var(--lab-warning) 14%, var(--lab-accent-mix));
+  --color-series-5-bg: color-mix(in oklab, var(--lab-accent-2) 14%, var(--lab-accent-mix));
+  --color-series-6-bg: color-mix(in oklab, var(--lab-success) 14%, var(--lab-accent-mix));
+  --color-series-7-bg: color-mix(in oklab, var(--lab-danger) 14%, var(--lab-accent-mix));
+  --color-series-8-bg: var(--lab-surface-3);
+
+  /* Shadows */
+  --shadow-xs: var(--lab-shadow-sm);
+  --shadow-sm: var(--lab-shadow-sm);
+  --shadow-md: var(--lab-shadow-card);
+  --shadow-lg: var(--lab-shadow-card-hover);
+  --shadow-xl: var(--lab-shadow-modal);
+  --shadow-card: var(--lab-shadow-card);
+  --shadow-card-hover: var(--lab-shadow-card-hover);
+  --shadow-button: var(--lab-shadow-btn);
+  --shadow-button-primary: var(--lab-shadow-btn);
+  --shadow-button-primary-hover: var(--lab-shadow-card-hover);
+  --shadow-focus: 0 0 0 3px color-mix(in oklab, var(--lab-accent) 28%, transparent);
+  --shadow-focus-primary: 0 0 0 3px color-mix(in oklab, var(--lab-accent) 28%, transparent);
+  --shadow-focus-danger: 0 0 0 3px color-mix(in oklab, var(--lab-danger) 28%, transparent);
+  --shadow-dropdown: var(--lab-shadow-dropdown);
+  --shadow-modal: var(--lab-shadow-modal);
+
+  /* Button tokens */
+  --btn-primary-bg: var(--lab-accent);
+  --btn-primary-fg: var(--lab-on-accent);
+  --btn-primary-hover-bg: var(--color-primary-hover);
+  --btn-secondary-bg: var(--color-primary-bg);
+  --btn-secondary-fg: var(--lab-accent);
+  --btn-secondary-hover-bg: var(--color-primary-bg-hover);
+  --btn-outline-bg: transparent;
+  --btn-outline-fg: var(--lab-accent);
+  --btn-outline-border: var(--lab-border-w) solid var(--lab-accent);
+  --btn-outline-hover-bg: var(--color-primary-bg);
+  --btn-white-bg: var(--lab-surface);
+  --btn-white-fg: var(--lab-ink);
+  --btn-white-border: var(--lab-border-w) solid var(--lab-border-strong);
+  --btn-white-hover-bg: var(--lab-hover);
+  --btn-white-hover-fg: var(--lab-ink);
+  --btn-ghost-bg: transparent;
+  --btn-ghost-fg: var(--lab-ink-2);
+  --btn-ghost-hover-bg: var(--lab-hover);
+  --btn-ghost-hover-fg: var(--lab-accent);
+  --btn-success-bg: var(--lab-success);
+  --btn-success-fg: var(--lab-on-accent);
+  --btn-success-hover-bg: var(--color-success-hover);
+  --btn-warning-bg: var(--lab-warning);
+  --btn-warning-fg: var(--lab-on-accent);
+  --btn-warning-hover-bg: var(--color-warning-hover);
+  --btn-info-bg: var(--lab-info);
+  --btn-info-fg: var(--lab-on-accent);
+  --btn-info-hover-bg: var(--color-info-hover);
+  --btn-danger-bg: var(--lab-danger);
+  --btn-danger-fg: var(--lab-on-danger);
+  --btn-danger-hover-bg: var(--color-danger-hover);
+  --btn-gradient-bg: linear-gradient(135deg, var(--lab-accent), var(--lab-accent-2));
+  --btn-gradient-fg: var(--lab-on-accent);
+  --btn-gradient-hover-bg: linear-gradient(135deg, var(--color-primary-hover), var(--lab-accent));
+  --btn-link-fg: var(--lab-accent);
+
+  /* Component surface hooks (overrides theme.css dark literals too) */
+  --card-bg: var(--lab-surface);
+  --card-border: var(--lab-border);
+  --card-border-hover: var(--lab-border-strong);
+  --panel-bg: var(--lab-surface);
+  --panel-border: var(--lab-border);
+  --panel-shadow: var(--lab-shadow-card);
+  --panel-title-color: var(--lab-ink);
+  --panel-subtitle-color: var(--lab-ink-muted);
+  --panel-chip-bg: var(--lab-surface-2);
+  --panel-count-bg: var(--lab-surface-3);
+  --panel-count-color: var(--lab-ink-2);
+  --statrow-bg: var(--lab-surface-2);
+  --statrow-hover-bg: var(--lab-hover);
+  --input-bg: var(--lab-input);
+  --input-border: var(--lab-border-strong);
+  --input-border-focus: var(--lab-accent);
+  --input-focus-ring: 0 0 0 2px color-mix(in oklab, var(--lab-accent) 28%, transparent);
+  --modal-bg: var(--lab-surface);
+  --modal-title-color: var(--lab-accent);
+  --popover-bg: var(--lab-surface);
+  --tooltip-bg: var(--lab-ink);
+  --tooltip-fg: var(--lab-surface);
+  --table-header-bg: var(--lab-surface-2);
+  --table-header-text: var(--lab-ink-muted);
+  --table-row-hover: var(--lab-hover);
+  --table-border: var(--lab-border);
+  --table-stripe-bg: color-mix(in oklab, var(--lab-accent) 5%, var(--lab-accent-mix));
+  --table-foot-bg: var(--lab-surface-2);
+  --table-foot-border: var(--lab-border-strong);
+  --tabs-count-bg: var(--lab-surface-3);
+  --tabs-count-fg: var(--lab-ink-2);
+  --tabs-count-active-bg: color-mix(in oklab, var(--lab-on-accent) 22%, transparent);
+  --tabs-count-active-fg: var(--lab-on-accent);
+  --switch-bg: var(--lab-surface-3);
+  --switch-bg-checked: var(--lab-accent);
+  --switch-thumb-bg: var(--lab-surface);
+  --checkbox-bg: var(--lab-input);
+  --checkbox-border: var(--lab-border-strong);
+  --checkbox-bg-checked: var(--lab-accent);
+  --checkbox-mark-color: var(--lab-on-accent);
+  --radio-bg: var(--lab-input);
+  --radio-border: var(--lab-border-strong);
+  --radio-checked: var(--lab-accent);
+  --divider-color: var(--lab-border);
+  --avatar-fallback-bg: var(--color-primary-bg);
+  --avatar-fallback-fg: var(--lab-accent);
+  --skeleton-base: var(--lab-surface-2);
+  --skeleton-highlight: var(--lab-surface-3);
+  --occupancy-ring-bg: var(--lab-surface-3);
+  --scrollbar-thumb: var(--lab-scroll);
+  --scrollbar-thumb-active: var(--lab-scroll-hover);
+  --gradient-primary: linear-gradient(135deg, var(--lab-accent), var(--lab-accent-2));
+  --gradient-primary-hover: linear-gradient(135deg, var(--color-primary-hover), var(--lab-accent));
+}
+
+/* ---------- Shared component rules for all Lab themes (X2–X10) ---------- */
+@media (min-width: 768px) {
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content {
+    font-family: var(--lab-font);
+    color: var(--color-text-body);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content,
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content * {
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content::-webkit-scrollbar-thumb,
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--lab-r-xs);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content::-webkit-scrollbar-thumb:hover,
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content *::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-active);
+  }
+
+  /* Portals inherit theme typography */
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-modal, .hz-drawer, .hz-popover, .hz-tooltip, .hz-select-menu, .hz-dp-popover, .hz-toast) {
+    font-family: var(--lab-font);
+    color: var(--color-text-body);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.page-header h1, .hz-panel-title, .hz-card-title, .hz-modal-title, .hz-statcard-value) {
+    font-family: var(--lab-font-display);
+  }
+
+  /* Strip inline rainbow StatCard backgrounds so every StatCard obeys the active theme */
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard {
+    background: var(--card-bg) !important;
+    border: var(--lab-border-w) solid var(--card-border) !important;
+    border-radius: var(--statcard-radius);
+    box-shadow: var(--shadow-card) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard:hover {
+    border-color: var(--lab-accent) !important;
+    box-shadow: var(--shadow-card-hover) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-statcard-floor, .hz-statcard-wash) {
+    display: none;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-dot {
+    background: var(--lab-accent) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-label-text {
+    color: var(--color-text-muted) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-value {
+    color: var(--lab-ink) !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-subtitle {
+    color: var(--color-text-muted) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-chip {
+    background: var(--color-primary-bg) !important;
+    border: var(--lab-border-w) solid var(--card-border) !important;
+    color: var(--lab-accent) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-statcard-watermark {
+    color: var(--lab-accent) !important;
+    opacity: 0.14;
+  }
+
+  /* Unified border thickness & divider style across cards, panels, tables, inputs, modals */
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-card, .hz-panel, .hz-detail, .hz-profilecard, .hz-modal, .hz-drawer, .hz-popover, .hz-select-menu, .hz-dp-popover, .hz-table-wrap, .hz-datatable, .hz-statpill, .hz-stattile) {
+    border-width: var(--lab-border-w);
+    border-color: var(--card-border);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-panel-bare {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-panel-columns > * + * {
+    border-top: var(--lab-border-w) var(--lab-divider-style) var(--panel-border);
+  }
+  @media (min-width: 80rem) {
+    html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-panel-columns > * + * {
+      border-top: none;
+      border-left: var(--lab-border-w) var(--lab-divider-style) var(--panel-border);
+    }
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-panel-head, .hz-card-header, .hz-modal-header, .hz-drawer-header) {
+    border-bottom: 1px var(--lab-divider-style) var(--color-border-primary);
+    padding-bottom: var(--spacing-2);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-card-footer, .hz-modal-footer, .hz-drawer-footer) {
+    border-top: 1px var(--lab-divider-style) var(--color-border-primary);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-divider {
+    border-style: var(--lab-divider-style);
+  }
+
+  /* Buttons, toggles, tabs, inputs, badges, progress, alerts, tables, empty states */
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-btn, .hz-iconbtn, .hz-toggle-btn, .hz-tabs-trigger, .hz-filter-btn, .hz-input-field, .hz-textarea, .hz-select-field, .hz-dp-trigger, .hz-pagination-btn) {
+    font-family: var(--lab-font);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-input-field, .hz-textarea, .hz-select-field, .hz-dp-trigger) {
+    border-width: var(--lab-border-w);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-toggle-group {
+    border-radius: var(--lab-r);
+    border: var(--lab-border-w) solid var(--color-border-primary);
+    background: var(--lab-surface-2);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-toggle-group .hz-toggle-btn {
+    border-radius: var(--lab-r-sm);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-toggle-group .hz-toggle-btn[aria-pressed="true"] {
+    background: var(--lab-accent);
+    color: var(--lab-on-accent);
+    font-weight: 600;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-tabs-pills .hz-tabs-trigger, .hz-filter-btn) {
+    border: var(--lab-border-w) solid var(--color-border-primary);
+    background: var(--lab-surface);
+    color: var(--lab-ink-2);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-tabs-pills .hz-tabs-trigger[aria-selected="true"], .hz-tabs-enclosed .hz-tabs-trigger[aria-selected="true"], .hz-filter-btn[aria-pressed="true"], .hz-filter-btn[aria-selected="true"]) {
+    background: var(--lab-accent);
+    color: var(--lab-on-accent);
+    border-color: var(--lab-accent);
+    font-weight: 600;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) :is(.hz-state-chip, .hz-dt-empty-icon) {
+    border-radius: var(--lab-r);
+    border: var(--lab-border-w) var(--lab-divider-style) var(--color-border-primary);
+    background: var(--lab-surface-2);
+    color: var(--lab-accent);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-panel-count {
+    border-radius: var(--lab-r-xs);
+    background-color: var(--color-primary-bg) !important;
+    color: var(--lab-accent) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-panel-danger .hz-panel-count {
+    background-color: var(--color-danger-bg) !important;
+    color: var(--lab-danger) !important;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-table-head .hz-table-cell {
+    border-bottom: var(--lab-border-w) solid var(--color-border-primary);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-table-body .hz-table-cell {
+    border-bottom: 1px var(--lab-divider-style) var(--color-border-light);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-table-body .hz-table-row:last-child .hz-table-cell {
+    border-bottom: none;
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-alert {
+    border-width: var(--lab-border-w);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-progress-track {
+    background: var(--lab-surface-3);
+    border-radius: var(--lab-r-xs);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .hz-progress-fill {
+    border-radius: var(--lab-r-xs);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content .page-header {
+    border-bottom: var(--lab-border-w) var(--lab-divider-style) var(--color-border-primary);
+  }
+  html:is([data-admin-sidebar="v10"],[data-admin-sidebar="v11"],[data-admin-sidebar="v12"],[data-admin-sidebar="v13"],[data-admin-sidebar="v14"],[data-admin-sidebar="v15"],[data-admin-sidebar="v16"],[data-admin-sidebar="v17"],[data-admin-sidebar="v18"]) .layout-content .admin-dashboard-kpi:not(:first-child) {
+    border-left-style: var(--lab-divider-style);
+  }
+}

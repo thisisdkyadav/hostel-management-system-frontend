@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab X4 "Aquarium" (mode v12): the admin shell as a fish tank.
    Sidebar sets html[data-admin-sidebar="v12"] + data-admin-category.
@@ -1198,4 +1200,129 @@ html[data-theme="dark"] .lx-aquarium-diver { background: rgb(8 28 46 / 72%); }
   .lx-aquarium-shell__icon,
   .lx-aquarium-shell__halo,
   .lx-aquarium-porthole { transition: none; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X4 "Aquarium" (v12)
+   Shallow tropical lagoon (light) / bioluminescent abyss (dark),
+   sea-glass cards with specular rims, bubble-pill controls.
+   ============================================================ */
+
+html[data-admin-sidebar="v12"] {
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: "Google Sans", "Roboto", sans-serif;
+  --lab-accent: var(--lx-aquarium-hue);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #ecfbfb;
+  --lab-accent-2: #0e9bd8;
+  --lab-danger: var(--lx-aquarium-coral);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-aquarium-live);
+  --lab-warning: #c67d00;
+  --lab-info: #0e9bd8;
+
+  --lab-page: #e4f8f7;
+  --lab-surface: rgb(255 255 255 / 80%);
+  --lab-surface-2: rgb(225 247 248 / 78%);
+  --lab-surface-3: rgb(204 238 242 / 80%);
+  --lab-hover: rgb(255 255 255 / 94%);
+  --lab-input: rgb(255 255 255 / 88%);
+
+  --lab-ink: var(--lx-aquarium-ink);
+  --lab-ink-2: #154b5d;
+  --lab-ink-muted: #457485;
+
+  --lab-border: rgb(14 120 144 / 20%);
+  --lab-border-soft: rgb(14 120 144 / 11%);
+  --lab-border-strong: rgb(14 120 144 / 36%);
+  --lab-border-w: 1px;
+  --lab-divider-style: solid;
+
+  --lab-r-xs: 8px;
+  --lab-r-sm: 10px;
+  --lab-r: 14px;
+  --lab-r-lg: 18px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 2px 6px rgb(0 70 90 / 8%);
+  --lab-shadow-card: 0 6px 18px -6px rgb(0 70 90 / 14%), inset 0 1px 0 rgb(255 255 255 / 85%);
+  --lab-shadow-card-hover: 0 12px 26px -8px color-mix(in oklab, var(--lx-aquarium-hue) 26%, rgb(0 70 90 / 18%)), inset 0 1px 0 rgb(255 255 255 / 92%);
+  --lab-shadow-btn: 0 3px 10px -3px rgb(0 70 90 / 18%);
+  --lab-shadow-dropdown: 0 14px 32px -10px rgb(0 60 80 / 26%);
+  --lab-shadow-modal: 0 24px 56px -16px rgb(0 50 70 / 36%);
+
+  --lab-scroll: #6bc4d1;
+  --lab-scroll-hover: #1a889e;
+}
+
+html[data-admin-sidebar="v12"][data-theme="dark"] {
+  --lab-accent: var(--lx-aquarium-hue);
+  --lab-on-accent: #041322;
+  --lab-accent-mix: #082038;
+  --lab-accent-2: #7dffe2;
+  --lab-danger: var(--lx-aquarium-coral);
+  --lab-on-danger: #1f0604;
+  --lab-success: var(--lx-aquarium-live);
+  --lab-warning: #ffd23f;
+  --lab-info: #7dffe2;
+
+  --lab-page: #051628;
+  --lab-surface: rgb(11 35 60 / 84%);
+  --lab-surface-2: rgb(16 46 76 / 86%);
+  --lab-surface-3: rgb(22 59 94 / 88%);
+  --lab-hover: rgb(29 74 114 / 90%);
+  --lab-input: rgb(8 26 46 / 90%);
+
+  --lab-ink: var(--lx-aquarium-ink);
+  --lab-ink-2: #b5dcf0;
+  --lab-ink-muted: #76a8c6;
+
+  --lab-border: rgb(125 220 255 / 20%);
+  --lab-border-soft: rgb(125 220 255 / 11%);
+  --lab-border-strong: rgb(125 255 226 / 38%);
+
+  --lab-shadow-sm: 0 2px 8px rgb(0 0 0 / 35%);
+  --lab-shadow-card: 0 10px 26px -10px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(150 220 255 / 18%);
+  --lab-shadow-card-hover: 0 12px 30px -8px color-mix(in oklab, var(--lx-aquarium-hue) 34%, rgb(0 0 0 / 60%)), inset 0 1px 0 rgb(125 255 226 / 34%);
+  --lab-shadow-btn: 0 4px 14px -4px rgb(0 0 0 / 50%);
+  --lab-shadow-dropdown: 0 16px 38px -10px rgb(0 0 0 / 72%);
+  --lab-shadow-modal: 0 28px 64px -16px rgb(0 0 0 / 85%);
+
+  --lab-scroll: #285d85;
+  --lab-scroll-hover: #7dffe2;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v12"] .layout-content {
+    background-image:
+      radial-gradient(60% 35% at 15% 0%, rgb(255 255 255 / 55%), transparent 68%),
+      radial-gradient(50% 40% at 95% 100%, color-mix(in oklab, var(--lx-aquarium-hue) 14%, transparent), transparent 72%),
+      linear-gradient(180deg, #effcfb 0%, #ddf4f5 55%, #d0ecf2 100%);
+  }
+  html[data-admin-sidebar="v12"][data-theme="dark"] .layout-content {
+    background-image:
+      radial-gradient(55% 35% at 12% 0%, color-mix(in oklab, var(--lx-aquarium-hue) 18%, transparent), transparent 70%),
+      radial-gradient(45% 40% at 90% 100%, rgb(125 255 226 / 8%), transparent 72%),
+      linear-gradient(180deg, #09223c 0%, #051629 52%, #030d1b 100%);
+  }
+
+  /* Sea-glass translucent blur + top specular edge */
+  html[data-admin-sidebar="v12"] :is(.hz-card, .hz-panel, .hz-statcard, .hz-modal, .hz-drawer, .hz-popover, .hz-select-menu, .hz-dp-popover, .hz-table-wrap, .hz-datatable) {
+    backdrop-filter: blur(10px) saturate(1.25);
+    -webkit-backdrop-filter: blur(10px) saturate(1.25);
+  }
+
+  /* Bubble-pill buttons & filter pills */
+  html[data-admin-sidebar="v12"] :is(.hz-btn, .hz-filter-btn, .hz-tabs-pills .hz-tabs-trigger, .hz-badge, .hz-status) {
+    border-radius: 9999px;
+  }
+  html[data-admin-sidebar="v12"] .hz-btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 18px -4px color-mix(in oklab, var(--lx-aquarium-hue) 52%, transparent);
+  }
+
+  /* Bioluminescent focus glow in dark mode */
+  html[data-admin-sidebar="v12"][data-theme="dark"] :is(.hz-input-field:focus, .hz-textarea:focus, .hz-select-field:focus) {
+    border-color: #7dffe2;
+    box-shadow: 0 0 0 2px rgb(125 255 226 / 26%), 0 0 14px rgb(125 255 226 / 18%);
+  }
 }

@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    V14 "Metro" (Lab) — the admin shell as a transit map.
    Sidebar sets html[data-admin-sidebar="v14"] + data-admin-category.
@@ -904,4 +906,134 @@ html[data-admin-sidebar="v14"][data-admin-category="dining"], .lx-metro [data-ca
   .lx-metro-stop__name,
   .lx-metro-stop__marker { transition: none; }
   .lx-metro-doors { display: none !important; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X6 "Metro" (v14)
+   Swiss transit signage, 24px transit map grid, bold 4px
+   transit-line accent bars, black-and-amber LED count badges.
+   ============================================================ */
+
+html[data-admin-sidebar="v14"] {
+  --lab-font: var(--lx-metro-sign);
+  --lab-font-display: var(--lx-metro-sign);
+  --lab-accent: var(--lx-metro-c);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #fffdf8;
+  --lab-accent-2: #16181d;
+  --lab-danger: var(--lx-metro-alert);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-metro-exit);
+  --lab-warning: #b86c00;
+  --lab-info: var(--lx-metro-c);
+
+  --lab-page: var(--lx-metro-paper);
+  --lab-surface: var(--lx-metro-card);
+  --lab-surface-2: var(--lx-metro-paper-2);
+  --lab-surface-3: #e0dad0;
+  --lab-hover: #eae5da;
+  --lab-input: #ffffff;
+
+  --lab-ink: var(--lx-metro-ink);
+  --lab-ink-2: var(--lx-metro-ink-2);
+  --lab-ink-muted: #696e78;
+
+  --lab-border: rgb(22 24 29 / 18%);
+  --lab-border-soft: rgb(22 24 29 / 10%);
+  --lab-border-strong: rgb(22 24 29 / 38%);
+  --lab-border-w: 1.5px;
+  --lab-divider-style: solid;
+
+  --lab-r-xs: 4px;
+  --lab-r-sm: 6px;
+  --lab-r: 7px;
+  --lab-r-lg: 10px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 1px 0 rgb(22 24 29 / 8%);
+  --lab-shadow-card: 0 2px 6px rgb(22 24 29 / 7%);
+  --lab-shadow-card-hover: 0 6px 16px -4px rgb(22 24 29 / 14%);
+  --lab-shadow-btn: 0 1px 2px rgb(22 24 29 / 12%);
+  --lab-shadow-dropdown: 0 12px 26px -6px rgb(22 24 29 / 20%);
+  --lab-shadow-modal: 0 22px 44px -10px rgb(22 24 29 / 32%);
+
+  --lab-scroll: #a39e94;
+  --lab-scroll-hover: #16181d;
+}
+
+html[data-admin-sidebar="v14"][data-theme="dark"] {
+  --lab-accent: var(--lx-metro-c);
+  --lab-on-accent: #0d1016;
+  --lab-accent-mix: #1b1e25;
+  --lab-accent-2: var(--lx-metro-led);
+  --lab-danger: var(--lx-metro-alert);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-metro-exit);
+  --lab-warning: var(--lx-metro-led);
+  --lab-info: var(--lx-metro-c);
+
+  --lab-page: var(--lx-metro-paper);
+  --lab-surface: var(--lx-metro-card);
+  --lab-surface-2: #232730;
+  --lab-surface-3: #2c313d;
+  --lab-hover: #323846;
+  --lab-input: #14171d;
+
+  --lab-ink: var(--lx-metro-ink);
+  --lab-ink-2: var(--lx-metro-ink-2);
+  --lab-ink-muted: var(--lx-metro-ink-3);
+
+  --lab-border: rgb(236 238 242 / 15%);
+  --lab-border-soft: rgb(236 238 242 / 9%);
+  --lab-border-strong: rgb(236 238 242 / 32%);
+
+  --lab-shadow-sm: 0 1px 2px rgb(0 0 0 / 35%);
+  --lab-shadow-card: 0 4px 12px rgb(0 0 0 / 36%);
+  --lab-shadow-card-hover: 0 8px 22px rgb(0 0 0 / 50%);
+  --lab-shadow-btn: 0 2px 4px rgb(0 0 0 / 40%);
+  --lab-shadow-dropdown: 0 14px 32px rgb(0 0 0 / 62%);
+  --lab-shadow-modal: 0 24px 52px rgb(0 0 0 / 76%);
+
+  --lab-scroll: #444a57;
+  --lab-scroll-hover: #ffb02e;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v14"] .layout-content {
+    background-image:
+      linear-gradient(var(--lx-metro-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-metro-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Transit-line colored structural stripes on StatCards & Panels */
+  html[data-admin-sidebar="v14"] .hz-statcard {
+    border-left: 5px solid var(--lx-metro-c) !important;
+  }
+  html[data-admin-sidebar="v14"] .hz-panel:not(.hz-panel-bare) {
+    border-top: 3px solid var(--lx-metro-c);
+  }
+
+  /* Departure-board LED styling on count badges & table headers */
+  html[data-admin-sidebar="v14"] .hz-panel-count {
+    background-color: var(--lx-metro-board) !important;
+    color: var(--lx-metro-led) !important;
+    font-family: var(--lx-metro-led-font);
+    letter-spacing: 0.04em;
+    border: 1px solid var(--lx-metro-board-edge);
+  }
+  html[data-admin-sidebar="v14"] .hz-panel-danger .hz-panel-count {
+    background-color: var(--lx-metro-alert) !important;
+    color: #ffffff !important;
+    border-color: var(--lx-metro-alert);
+  }
+  html[data-admin-sidebar="v14"] :is(.hz-table-head .hz-table-cell, .hz-statcard-label-text) {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+  }
+  html[data-admin-sidebar="v14"] .hz-btn {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
 }

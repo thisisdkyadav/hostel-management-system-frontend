@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    Lab V15 "Daylight": a live sky over campus.
    Sidebar sets html[data-admin-sidebar="v15"] + data-admin-category.
@@ -842,4 +844,128 @@
   .lx-daylight-row { animation: none; }
   .lx-daylight-shooting,
   .lx-daylight-birds { display: none; }
+}
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X7 "Daylight" (v15)
+   Sunlit cloud-glass (light) & starlight twilight glass (dark),
+   airy 16–20px rounded surfaces with crisp frosted specular rims.
+   ============================================================ */
+
+html[data-admin-sidebar="v15"] {
+  --lx-dl-cat: var(--color-cat-home, #1360ab);
+
+  --lab-font: "Google Sans", "Roboto", sans-serif;
+  --lab-font-display: "Google Sans", "Roboto", sans-serif;
+  --lab-accent: var(--lx-dl-cat);
+  --lab-on-accent: #ffffff;
+  --lab-accent-mix: #f0f7ff;
+  --lab-accent-2: #d97706;
+  --lab-danger: #e11d48;
+  --lab-on-danger: #ffffff;
+  --lab-success: #16a34a;
+  --lab-warning: #b45309;
+  --lab-info: #2563eb;
+
+  --lab-page: #e5f1fe;
+  --lab-surface: rgb(255 255 255 / 80%);
+  --lab-surface-2: rgb(235 245 255 / 82%);
+  --lab-surface-3: rgb(219 236 254 / 84%);
+  --lab-hover: rgb(255 255 255 / 95%);
+  --lab-input: rgb(255 255 255 / 88%);
+
+  --lab-ink: #12203b;
+  --lab-ink-2: #314361;
+  --lab-ink-muted: #586985;
+
+  --lab-border: rgb(30 78 148 / 15%);
+  --lab-border-soft: rgb(30 78 148 / 9%);
+  --lab-border-strong: rgb(30 78 148 / 28%);
+  --lab-border-w: 1px;
+  --lab-divider-style: solid;
+
+  --lab-r-xs: 8px;
+  --lab-r-sm: 11px;
+  --lab-r: 14px;
+  --lab-r-lg: 18px;
+  --lab-r-pill: 9999px;
+
+  --lab-shadow-sm: 0 2px 6px rgb(20 40 90 / 8%);
+  --lab-shadow-card: 0 8px 22px -10px rgb(20 40 90 / 16%), inset 0 1px 0 rgb(255 255 255 / 85%);
+  --lab-shadow-card-hover: 0 14px 28px -10px color-mix(in oklab, var(--lx-dl-cat) 26%, rgb(20 40 90 / 20%)), inset 0 1px 0 rgb(255 255 255 / 94%);
+  --lab-shadow-btn: 0 3px 10px -3px rgb(20 40 90 / 16%);
+  --lab-shadow-dropdown: 0 16px 36px -10px rgb(20 40 90 / 24%);
+  --lab-shadow-modal: 0 26px 60px -16px rgb(16 32 76 / 34%);
+
+  --lab-scroll: #8ab8e8;
+  --lab-scroll-hover: #2c7cd4;
+}
+
+html[data-admin-sidebar="v15"][data-admin-category="hostels"] { --lx-dl-cat: var(--color-cat-hostels, #0284c7); }
+html[data-admin-sidebar="v15"][data-admin-category="student-affairs"] { --lx-dl-cat: var(--color-cat-student-affairs, #db2777); }
+html[data-admin-sidebar="v15"][data-admin-category="staff"] { --lx-dl-cat: var(--color-cat-staff, #7048c8); }
+html[data-admin-sidebar="v15"][data-admin-category="dining"] { --lx-dl-cat: var(--color-cat-dining, #059669); }
+
+html[data-admin-sidebar="v15"][data-theme="dark"] {
+  --lab-accent: color-mix(in oklab, var(--lx-dl-cat) 62%, #ffffff);
+  --lab-on-accent: #090e24;
+  --lab-accent-mix: #12183a;
+  --lab-accent-2: #ffd75a;
+  --lab-danger: #fb7185;
+  --lab-on-danger: #240710;
+  --lab-success: #4ade80;
+  --lab-warning: #fbbf24;
+  --lab-info: #93c5fd;
+
+  --lab-page: #0a1026;
+  --lab-surface: rgb(18 24 58 / 84%);
+  --lab-surface-2: rgb(25 33 74 / 86%);
+  --lab-surface-3: rgb(34 44 94 / 88%);
+  --lab-hover: rgb(42 54 112 / 90%);
+  --lab-input: rgb(12 17 42 / 90%);
+
+  --lab-ink: #f2f5ff;
+  --lab-ink-2: #cdd6f5;
+  --lab-ink-muted: #8f9cc7;
+
+  --lab-border: rgb(190 200 255 / 18%);
+  --lab-border-soft: rgb(190 200 255 / 10%);
+  --lab-border-strong: rgb(190 200 255 / 34%);
+
+  --lab-shadow-sm: 0 2px 8px rgb(0 0 0 / 35%);
+  --lab-shadow-card: 0 12px 28px -12px rgb(0 0 0 / 60%), inset 0 1px 0 rgb(210 220 255 / 14%);
+  --lab-shadow-card-hover: 0 14px 32px -10px color-mix(in oklab, var(--lx-dl-cat) 34%, rgb(0 0 0 / 68%)), inset 0 1px 0 rgb(210 220 255 / 26%);
+  --lab-shadow-btn: 0 4px 12px -4px rgb(0 0 0 / 50%);
+  --lab-shadow-dropdown: 0 18px 40px -10px rgb(0 0 0 / 74%);
+  --lab-shadow-modal: 0 28px 66px -16px rgb(0 0 0 / 85%);
+
+  --lab-scroll: #3b4a85;
+  --lab-scroll-hover: #a5b4fc;
+}
+
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v15"] .layout-content {
+    background-image:
+      radial-gradient(65% 40% at 15% 0%, rgb(255 255 255 / 72%), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, color-mix(in oklab, var(--lx-dl-cat) 14%, transparent), transparent 72%),
+      linear-gradient(180deg, #f3f9ff 0%, #e3f1fe 58%, #d4e8fc 100%);
+  }
+  html[data-admin-sidebar="v15"][data-theme="dark"] .layout-content {
+    background-image:
+      radial-gradient(55% 35% at 12% 0%, color-mix(in oklab, var(--lx-dl-cat) 18%, transparent), transparent 70%),
+      radial-gradient(45% 40% at 88% 100%, rgb(255 215 90 / 7%), transparent 72%),
+      linear-gradient(180deg, #0c1434 0%, #090e24 55%, #12183a 100%);
+  }
+
+  /* Frosted cloud-glass surfaces */
+  html[data-admin-sidebar="v15"] :is(.hz-card, .hz-panel, .hz-statcard, .hz-modal, .hz-drawer, .hz-popover, .hz-select-menu, .hz-dp-popover, .hz-table-wrap, .hz-datatable) {
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  }
+  html[data-admin-sidebar="v15"] :is(.hz-btn, .hz-filter-btn, .hz-tabs-pills .hz-tabs-trigger) {
+    border-radius: 9999px;
+  }
+  html[data-admin-sidebar="v15"] .hz-btn-primary {
+    box-shadow: 0 6px 18px -6px color-mix(in oklab, var(--lx-dl-cat) 58%, transparent);
+  }
 }

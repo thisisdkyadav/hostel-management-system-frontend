@@ -1,3 +1,5 @@
+@import "../lab-hzero.css";
+
 /* ============================================================
    V17 "Blueprint" — the admin shell as an architect's drawing.
    Sidebar sets html[data-admin-sidebar="v17"] + data-admin-category.
@@ -970,3 +972,143 @@ button.lx-blueprint-cell:focus-visible { outline-offset: -3px; }
 /* Keep the crosshair out of the header so it never sits over the mode menu. */
 .lx-blueprint:has(.lx-blueprint-head:hover) .lx-blueprint-cross,
 .lx-blueprint:has(.lx-blueprint-head:hover) .lx-blueprint-ruler__mark { opacity: 0; }
+
+/* ============================================================
+   hzero Main-Area Theme Adapter — Lab X9 "Blueprint" (v17)
+   Light = whiteprint drafting paper (Prussian blue + redline).
+   Dark  = cyanotype blueprint (cyan-white linework on Prussian
+   blue drafting grid, coral-red revision marks).
+   ============================================================ */
+
+html[data-admin-sidebar="v17"] {
+  --lab-font: var(--lx-bp-mono);
+  --lab-font-display: var(--lx-bp-mono);
+  --lab-accent: var(--lx-bp-ink);
+  --lab-on-accent: var(--lx-bp-on-ink);
+  --lab-accent-mix: #f8fbff;
+  --lab-accent-2: var(--lx-bp-red);
+  --lab-danger: var(--lx-bp-red);
+  --lab-on-danger: #ffffff;
+  --lab-success: var(--lx-bp-green);
+  --lab-warning: #b45309;
+  --lab-info: var(--lx-bp-ink);
+
+  --lab-page: var(--lx-bp-table);
+  --lab-surface: #fafcff;
+  --lab-surface-2: #edf2fa;
+  --lab-surface-3: #e1eaf7;
+  --lab-hover: #e5eefb;
+  --lab-input: #ffffff;
+
+  --lab-ink: var(--lx-bp-ink);
+  --lab-ink-2: var(--lx-bp-ink-2);
+  --lab-ink-muted: #5f78ad;
+
+  --lab-border: rgb(27 60 138 / 34%);
+  --lab-border-soft: rgb(27 60 138 / 16%);
+  --lab-border-strong: rgb(27 60 138 / 60%);
+  --lab-border-w: 1px;
+  --lab-divider-style: dashed;
+
+  --lab-r-xs: 2px;
+  --lab-r-sm: 2px;
+  --lab-r: 2px;
+  --lab-r-lg: 3px;
+  --lab-r-pill: 2px;
+
+  --lab-shadow-sm: 2px 2px 0 rgb(27 60 138 / 12%);
+  --lab-shadow-card: 3px 3px 0 rgb(27 60 138 / 14%);
+  --lab-shadow-card-hover: 4px 4px 0 rgb(207 51 40 / 28%);
+  --lab-shadow-btn: 2px 2px 0 rgb(27 60 138 / 18%);
+  --lab-shadow-dropdown: 4px 4px 0 rgb(27 60 138 / 20%);
+  --lab-shadow-modal: 6px 6px 0 rgb(27 60 138 / 26%);
+
+  --lab-scroll: #7e97c9;
+  --lab-scroll-hover: #1b3c8a;
+}
+
+html[data-admin-sidebar="v17"][data-theme="dark"] {
+  --lab-accent: var(--lx-bp-ink);
+  --lab-on-accent: #0f3369;
+  --lab-accent-mix: #133b77;
+  --lab-accent-2: var(--lx-bp-red);
+  --lab-danger: var(--lx-bp-red);
+  --lab-on-danger: #0f3369;
+  --lab-success: var(--lx-bp-green);
+  --lab-warning: #ffd479;
+  --lab-info: #93c5fd;
+
+  --lab-page: #0f3369;
+  --lab-surface: #133b77;
+  --lab-surface-2: #0d2d5e;
+  --lab-surface-3: #18468a;
+  --lab-hover: #1e529e;
+  --lab-input: #0c2a58;
+
+  --lab-ink: var(--lx-bp-ink);
+  --lab-ink-2: #c9dfff;
+  --lab-ink-muted: #93b7ec;
+
+  --lab-border: rgb(225 238 255 / 38%);
+  --lab-border-soft: rgb(225 238 255 / 18%);
+  --lab-border-strong: rgb(225 238 255 / 70%);
+
+  --lab-shadow-sm: 2px 2px 0 rgb(0 0 0 / 26%);
+  --lab-shadow-card: 3px 3px 0 rgb(0 0 0 / 30%);
+  --lab-shadow-card-hover: 4px 4px 0 rgb(255 160 143 / 38%);
+  --lab-shadow-btn: 2px 2px 0 rgb(0 0 0 / 30%);
+  --lab-shadow-dropdown: 4px 4px 0 rgb(0 0 0 / 38%);
+  --lab-shadow-modal: 6px 6px 0 rgb(0 0 0 / 48%);
+
+  --lab-scroll: #4e7bc0;
+  --lab-scroll-hover: #eef5ff;
+}
+
+@media (min-width: 768px) {
+  /* Architectural 60px major / 12px minor drafting grid on the sheet */
+  html[data-admin-sidebar="v17"] .layout-content {
+    background-image:
+      linear-gradient(var(--lx-bp-grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-bp-grid-major) 1px, transparent 1px),
+      linear-gradient(var(--lx-bp-grid-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--lx-bp-grid-minor) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px;
+    background-position: -1px -1px;
+  }
+
+  /* Technical drafting lettering */
+  html[data-admin-sidebar="v17"] :is(.page-header h1, .hz-panel-title, .hz-card-title, .hz-modal-title, .hz-table-head .hz-table-cell, .hz-statcard-label-text) {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Drafting title-block framing on panels & statcards */
+  html[data-admin-sidebar="v17"] :is(.hz-panel:not(.hz-panel-bare), .hz-statcard) {
+    border-color: var(--lab-border-strong) !important;
+  }
+  html[data-admin-sidebar="v17"] .hz-statcard:hover {
+    border-color: var(--lx-bp-red) !important;
+  }
+
+  /* Crisp engineering buttons with redline hover */
+  html[data-admin-sidebar="v17"] .hz-btn {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+  html[data-admin-sidebar="v17"] :is(.hz-btn-outline, .hz-btn-white):hover:not(:disabled) {
+    border-color: var(--lx-bp-red);
+    color: var(--lx-bp-red);
+  }
+
+  /* Redline badges & dashed engineering focus ring */
+  html[data-admin-sidebar="v17"] :is(.hz-badge, .hz-status) {
+    border: 1px solid currentColor;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  html[data-admin-sidebar="v17"] .layout-content :focus-visible {
+    outline: 1.5px dashed var(--lx-bp-red);
+    outline-offset: 2px;
+  }
+}

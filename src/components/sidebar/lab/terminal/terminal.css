@@ -66,6 +66,496 @@ html[data-admin-sidebar="v9"][data-admin-category="student-affairs"] { --lx-term
 html[data-admin-sidebar="v9"][data-admin-category="staff"] { --lx-terminal-p: var(--lx-terminal-staff); }
 html[data-admin-sidebar="v9"][data-admin-category="dining"] { --lx-terminal-p: var(--lx-terminal-dining); }
 
+/* ============================================================
+   HZERO COMPLETE THEME ADAPTATION (Second CRT Screen)
+   Strictly themes EVERY hzero token and component under
+   html[data-admin-sidebar="v9"] to match the HMS-9000 Terminal
+   sidebar — single-phosphor / single-ink discipline per active
+   directory (--lx-terminal-p), with --lx-terminal-alert reserved
+   only for danger/errors. Zero edits to hzero or pages, and zero
+   leakage when leaving V9.
+   ============================================================ */
+
+html[data-admin-sidebar="v9"] {
+  /* Typography: crisp monospace everywhere */
+  --font-family-primary: var(--lx-terminal-font);
+
+  /* Geometry: sharp terminal corners across every hzero family */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-2xl: 2px;
+  --radius-3xl: 3px;
+  --radius-4xl: 3px;
+
+  --radius-card: 2px;
+  --radius-card-sm: 2px;
+  --radius-card-lg: 3px;
+  --radius-button: 2px;
+  --radius-button-sm: 2px;
+  --radius-button-md: 2px;
+  --radius-button-lg: 2px;
+  --radius-button-pill: 2px;
+  --radius-modal: 3px;
+  --radius-input: 2px;
+  --radius-badge: 2px;
+  --radius-badge-pill: 2px;
+  --radius-icon: 2px;
+  --radius-avatar: 2px;
+  --radius-chip: 2px;
+  --radius-tag: 2px;
+  --radius-tab: 2px;
+  --radius-tooltip: 2px;
+  --radius-dropdown: 2px;
+
+  --btn-radius: 2px;
+  --btn-radius-sm: 2px;
+  --btn-radius-md: 2px;
+  --btn-radius-lg: 2px;
+  --btn-press-scale: 1;
+  --btn-focus-ring-color: var(--lx-terminal-p);
+  --card-radius: 2px;
+  --input-radius: 2px;
+  --modal-radius: 3px;
+  --panel-radius: 2px;
+  --panel-chip-radius: 2px;
+  --statcard-radius: 2px;
+  --statpill-radius: 2px;
+  --stattile-radius: 2px;
+  --statrow-radius: 2px;
+  --statusbadge-radius: 2px;
+  --badge-radius: 2px;
+  --checkbox-radius: 1px;
+  --checkbox-border-width: 1px;
+  --checkbox-press-scale: 1;
+  --radio-border-width: 1px;
+  --radio-press-scale: 1;
+  --alert-radius: 2px;
+  --filter-radius: 2px;
+  --filter-chip-radius: 2px;
+  --select-radius: 2px;
+  --select-menu-radius: 2px;
+  --select-item-radius: 2px;
+  --tabs-trigger-radius: 2px;
+  --tabs-pills-radius: 2px;
+  --tabs-count-radius: 2px;
+  --tabs-enclosed-list-radius: 2px;
+  --tabs-enclosed-trigger-radius: 2px;
+  --table-radius: 2px;
+  --datatable-radius: 2px;
+  --detail-radius: 2px;
+  --toast-radius: 2px;
+  --popover-radius: 2px;
+  --tooltip-radius: 2px;
+
+  /* ── LIGHT = PAPER (monochrome directory ink on warm vintage cream) ── */
+  --admin-accent: var(--lx-terminal-p);
+  --admin-mix-surface: var(--lx-terminal-scr);
+
+  --color-primary: var(--lx-terminal-p);
+  --color-primary-hover: color-mix(in oklab, var(--lx-terminal-p) 84%, #000000);
+  --color-primary-active: color-mix(in oklab, var(--lx-terminal-p) 72%, #000000);
+  --color-primary-dark: color-mix(in oklab, var(--lx-terminal-p) 82%, #000000);
+  --color-primary-darker: color-mix(in oklab, var(--lx-terminal-p) 62%, #000000);
+  --color-primary-light: color-mix(in oklab, var(--lx-terminal-p) 78%, var(--lx-terminal-scr));
+  --color-primary-lighter: color-mix(in oklab, var(--lx-terminal-p) 56%, var(--lx-terminal-scr));
+  --color-primary-muted: color-mix(in oklab, var(--lx-terminal-p) 40%, var(--lx-terminal-scr));
+  --color-primary-pale: color-mix(in oklab, var(--lx-terminal-p) 20%, var(--lx-terminal-scr));
+  --color-primary-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --color-primary-bg-hover: color-mix(in oklab, var(--lx-terminal-p) 20%, var(--lx-terminal-scr));
+  --color-primary-bg-light: color-mix(in oklab, var(--lx-terminal-p) 6%, var(--lx-terminal-scr));
+
+  --color-white: var(--lx-terminal-on-p);
+  --color-on-accent: var(--lx-terminal-on-p);
+
+  --color-bg-page: #f2ebd6;
+  --color-bg-primary: #faf5e5;
+  --color-bg-secondary: color-mix(in oklab, var(--lx-terminal-p) 5%, #f0e8d0);
+  --color-bg-tertiary: color-mix(in oklab, var(--lx-terminal-p) 8%, #ece3c9);
+  --color-bg-hover: color-mix(in oklab, var(--lx-terminal-p) 14%, #ede4cb);
+  --color-bg-muted: color-mix(in oklab, var(--lx-terminal-p) 10%, #e9dfc3);
+  --color-bg-disabled: #ece4cd;
+
+  /* Ink hierarchy strictly tinted in the active directory's ink */
+  --color-text-primary: color-mix(in oklab, var(--lx-terminal-p) 72%, #11100a);
+  --color-text-secondary: color-mix(in oklab, var(--lx-terminal-p) 82%, #18160e);
+  --color-text-body: color-mix(in oklab, var(--lx-terminal-p) 78%, #262217);
+  --color-text-tertiary: color-mix(in oklab, var(--lx-terminal-p) 66%, #453f2f);
+  --color-text-muted: color-mix(in oklab, var(--lx-terminal-p) 56%, #615843);
+  --color-text-placeholder: color-mix(in oklab, var(--lx-terminal-p) 42%, #877d64);
+  --color-text-light: color-mix(in oklab, var(--lx-terminal-p) 46%, #7d745c);
+  --color-text-disabled: color-mix(in oklab, var(--lx-terminal-p) 32%, #998f76);
+
+  --color-border-light: color-mix(in oklab, var(--lx-terminal-p) 18%, var(--lx-terminal-scr));
+  --color-border-primary: color-mix(in oklab, var(--lx-terminal-p) 34%, var(--lx-terminal-scr));
+  --color-border-secondary: color-mix(in oklab, var(--lx-terminal-p) 46%, var(--lx-terminal-scr));
+  --color-border-focus: var(--lx-terminal-p);
+  --color-border-hover: color-mix(in oklab, var(--lx-terminal-p) 68%, var(--lx-terminal-scr));
+  --color-border-input: color-mix(in oklab, var(--lx-terminal-p) 44%, var(--lx-terminal-scr));
+  --color-border-gray: color-mix(in oklab, var(--lx-terminal-p) 28%, var(--lx-terminal-scr));
+  --color-border-dark: color-mix(in oklab, var(--lx-terminal-p) 62%, var(--lx-terminal-scr));
+
+  /* Strict terminal monochrome theme: all non-error accents follow --lx-terminal-p,
+     while danger/error keeps --lx-terminal-alert (just like the sidebar). */
+  --color-success: var(--lx-terminal-p);
+  --color-success-hover: var(--color-primary-hover);
+  --color-success-active: var(--color-primary-active);
+  --color-success-light: var(--color-primary-light);
+  --color-success-bg: color-mix(in oklab, var(--lx-terminal-p) 11%, var(--lx-terminal-scr));
+  --color-success-bg-light: color-mix(in oklab, var(--lx-terminal-p) 6%, var(--lx-terminal-scr));
+  --color-success-text: var(--lx-terminal-p);
+  --color-success-border: color-mix(in oklab, var(--lx-terminal-p) 42%, var(--lx-terminal-scr));
+
+  --color-warning: color-mix(in oklab, var(--lx-terminal-p) 88%, #000000);
+  --color-warning-hover: var(--color-primary-hover);
+  --color-warning-active: var(--color-primary-active);
+  --color-warning-light: var(--color-primary-light);
+  --color-warning-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --color-warning-bg-light: color-mix(in oklab, var(--lx-terminal-p) 6%, var(--lx-terminal-scr));
+  --color-warning-text: color-mix(in oklab, var(--lx-terminal-p) 88%, #000000);
+  --color-warning-border: color-mix(in oklab, var(--lx-terminal-p) 44%, var(--lx-terminal-scr));
+
+  --color-info: var(--lx-terminal-p);
+  --color-info-hover: var(--color-primary-hover);
+  --color-info-active: var(--color-primary-active);
+  --color-info-light: var(--color-primary-light);
+  --color-info-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-info-bg-light: color-mix(in oklab, var(--lx-terminal-p) 5%, var(--lx-terminal-scr));
+  --color-info-text: var(--lx-terminal-p);
+  --color-info-border: color-mix(in oklab, var(--lx-terminal-p) 38%, var(--lx-terminal-scr));
+
+  --color-danger: var(--lx-terminal-alert);
+  --color-danger-hover: color-mix(in oklab, var(--lx-terminal-alert) 84%, #000000);
+  --color-danger-active: color-mix(in oklab, var(--lx-terminal-alert) 70%, #000000);
+  --color-danger-light: color-mix(in oklab, var(--lx-terminal-alert) 65%, var(--lx-terminal-scr));
+  --color-danger-bg: color-mix(in oklab, var(--lx-terminal-alert) 12%, var(--lx-terminal-scr));
+  --color-danger-bg-light: color-mix(in oklab, var(--lx-terminal-alert) 6%, var(--lx-terminal-scr));
+  --color-danger-text: var(--lx-terminal-alert);
+  --color-danger-border: color-mix(in oklab, var(--lx-terminal-alert) 48%, var(--lx-terminal-scr));
+
+  --color-boys-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-boys-text: var(--lx-terminal-p);
+  --color-boys-hover-bg: var(--lx-terminal-p);
+  --color-boys-hover-text: var(--lx-terminal-on-p);
+  --color-girls-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-girls-text: color-mix(in oklab, var(--lx-terminal-p) 80%, #000000);
+  --color-girls-hover-bg: var(--lx-terminal-p);
+  --color-girls-hover-text: var(--lx-terminal-on-p);
+  --color-coed-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-coed-text: var(--lx-terminal-p);
+  --color-coed-hover-bg: var(--lx-terminal-p);
+  --color-coed-hover-text: var(--lx-terminal-on-p);
+  --color-boys-card-tint: color-mix(in oklab, var(--lx-terminal-p) 5%, transparent);
+  --color-girls-card-tint: color-mix(in oklab, var(--lx-terminal-p) 5%, transparent);
+  --color-coed-card-tint: color-mix(in oklab, var(--lx-terminal-p) 5%, transparent);
+
+  --color-purple-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-purple-light-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, var(--lx-terminal-scr));
+  --color-purple-text: var(--lx-terminal-p);
+  --color-orange-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-orange-text: var(--lx-terminal-p);
+  --color-teal-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-teal-text: var(--lx-terminal-p);
+
+  /* Series palette: tonal steps of the active terminal ink */
+  --color-series-1: var(--lx-terminal-p);
+  --color-series-2: color-mix(in oklab, var(--lx-terminal-p) 85%, #000000);
+  --color-series-3: color-mix(in oklab, var(--lx-terminal-p) 78%, var(--lx-terminal-scr));
+  --color-series-4: color-mix(in oklab, var(--lx-terminal-p) 68%, #000000);
+  --color-series-5: color-mix(in oklab, var(--lx-terminal-p) 90%, #000000);
+  --color-series-6: var(--lx-terminal-p);
+  --color-series-7: var(--lx-terminal-alert);
+  --color-series-8: var(--color-text-muted);
+  --color-series-1-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --color-series-2-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, var(--lx-terminal-scr));
+  --color-series-3-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-series-4-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --color-series-5-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, var(--lx-terminal-scr));
+  --color-series-6-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --color-series-7-bg: color-mix(in oklab, var(--lx-terminal-alert) 12%, var(--lx-terminal-scr));
+  --color-series-8-bg: var(--color-bg-muted);
+
+  /* Crisp flat vintage print shadows */
+  --shadow-xs: 1px 1px 0 color-mix(in oklab, var(--lx-terminal-p) 14%, transparent);
+  --shadow-sm: 2px 2px 0 color-mix(in oklab, var(--lx-terminal-p) 16%, transparent);
+  --shadow-md: 3px 3px 0 color-mix(in oklab, var(--lx-terminal-p) 18%, transparent);
+  --shadow-lg: 4px 4px 0 color-mix(in oklab, var(--lx-terminal-p) 22%, transparent);
+  --shadow-xl: 5px 5px 0 color-mix(in oklab, var(--lx-terminal-p) 24%, transparent);
+  --shadow-card: 2px 2px 0 color-mix(in oklab, var(--lx-terminal-p) 14%, transparent);
+  --shadow-card-hover: 3px 3px 0 color-mix(in oklab, var(--lx-terminal-p) 26%, transparent);
+  --shadow-button: 2px 2px 0 color-mix(in oklab, var(--lx-terminal-p) 18%, transparent);
+  --shadow-button-primary: 2px 2px 0 color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+  --shadow-button-primary-hover: 3px 3px 0 color-mix(in oklab, var(--lx-terminal-p) 48%, transparent);
+  --shadow-focus: 0 0 0 2px color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  --shadow-focus-primary: 0 0 0 2px color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  --shadow-focus-danger: 0 0 0 2px color-mix(in oklab, var(--lx-terminal-alert) 35%, transparent);
+  --shadow-dropdown: 4px 4px 0 color-mix(in oklab, var(--lx-terminal-p) 22%, transparent);
+  --shadow-modal: 6px 6px 0 color-mix(in oklab, var(--lx-terminal-p) 28%, transparent);
+
+  /* Button tokens: match .lx-terminal-cmdbtn & inverse-video active */
+  --btn-primary-bg: var(--lx-terminal-p);
+  --btn-primary-fg: var(--lx-terminal-on-p);
+  --btn-primary-hover-bg: var(--color-primary-hover);
+  --btn-secondary-bg: transparent;
+  --btn-secondary-fg: var(--lx-terminal-p);
+  --btn-secondary-hover-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, transparent);
+  --btn-outline-bg: transparent;
+  --btn-outline-fg: var(--lx-terminal-p);
+  --btn-outline-border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 55%, transparent);
+  --btn-outline-hover-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, transparent);
+  --btn-white-bg: var(--color-bg-primary);
+  --btn-white-fg: var(--lx-terminal-p);
+  --btn-white-border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  --btn-white-hover-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, transparent);
+  --btn-white-hover-fg: var(--lx-terminal-p);
+  --btn-ghost-bg: transparent;
+  --btn-ghost-fg: color-mix(in oklab, var(--lx-terminal-p) 80%, transparent);
+  --btn-ghost-hover-bg: color-mix(in oklab, var(--lx-terminal-p) 13%, transparent);
+  --btn-ghost-hover-fg: var(--lx-terminal-p);
+  --btn-success-bg: var(--lx-terminal-p);
+  --btn-success-fg: var(--lx-terminal-on-p);
+  --btn-success-hover-bg: var(--color-primary-hover);
+  --btn-warning-bg: var(--lx-terminal-p);
+  --btn-warning-fg: var(--lx-terminal-on-p);
+  --btn-warning-hover-bg: var(--color-primary-hover);
+  --btn-info-bg: var(--lx-terminal-p);
+  --btn-info-fg: var(--lx-terminal-on-p);
+  --btn-info-hover-bg: var(--color-primary-hover);
+  --btn-danger-bg: var(--lx-terminal-alert);
+  --btn-danger-fg: var(--lx-terminal-on-p);
+  --btn-danger-hover-bg: var(--color-danger-hover);
+  --btn-gradient-bg: var(--lx-terminal-p);
+  --btn-gradient-fg: var(--lx-terminal-on-p);
+  --btn-gradient-hover-bg: var(--color-primary-hover);
+  --btn-link-fg: var(--lx-terminal-p);
+
+  /* Component surface hooks */
+  --card-bg: var(--color-bg-primary);
+  --card-border: var(--color-border-primary);
+  --card-border-hover: var(--color-border-hover);
+  --panel-bg: var(--color-bg-primary);
+  --panel-border: var(--color-border-primary);
+  --panel-shadow: var(--shadow-card);
+  --panel-title-color: var(--lx-terminal-p);
+  --panel-subtitle-color: var(--color-text-muted);
+  --panel-chip-bg: color-mix(in oklab, var(--lx-terminal-p) 9%, var(--lx-terminal-scr));
+  --panel-count-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --panel-count-color: var(--lx-terminal-p);
+  --statrow-bg: transparent;
+  --statrow-hover-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, transparent);
+  --input-bg: var(--lx-terminal-scr);
+  --input-border: var(--color-border-input);
+  --input-border-focus: var(--lx-terminal-p);
+  --input-focus-ring: 0 0 0 1px var(--lx-terminal-p);
+  --modal-bg: var(--lx-terminal-scr);
+  --modal-title-color: var(--lx-terminal-p);
+  --popover-bg: var(--lx-terminal-scr);
+  --table-header-bg: color-mix(in oklab, var(--lx-terminal-p) 8%, var(--lx-terminal-scr));
+  --table-header-text: var(--lx-terminal-p);
+  --table-row-hover: color-mix(in oklab, var(--lx-terminal-p) 12%, transparent);
+  --table-border: var(--color-border-primary);
+  --table-stripe-bg: color-mix(in oklab, var(--lx-terminal-p) 4%, transparent);
+  --table-foot-bg: color-mix(in oklab, var(--lx-terminal-p) 10%, var(--lx-terminal-scr));
+  --table-foot-border: var(--lx-terminal-p);
+  --tabs-count-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, transparent);
+  --tabs-count-fg: var(--lx-terminal-p);
+  --tabs-count-active-bg: color-mix(in oklab, var(--lx-terminal-on-p) 22%, transparent);
+  --tabs-count-active-fg: var(--lx-terminal-on-p);
+  --switch-bg: var(--lx-terminal-scr);
+  --switch-bg-checked: var(--lx-terminal-p);
+  --switch-thumb-bg: var(--lx-terminal-p);
+  --checkbox-bg: var(--lx-terminal-scr);
+  --checkbox-border: var(--lx-terminal-p);
+  --checkbox-bg-checked: var(--lx-terminal-p);
+  --checkbox-mark-color: var(--lx-terminal-on-p);
+  --radio-bg: var(--lx-terminal-scr);
+  --radio-border: var(--lx-terminal-p);
+  --radio-checked: var(--lx-terminal-p);
+  --divider-color: color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  --avatar-fallback-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, var(--lx-terminal-scr));
+  --avatar-fallback-fg: var(--lx-terminal-p);
+  --skeleton-base: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr));
+  --skeleton-highlight: color-mix(in oklab, var(--lx-terminal-p) 22%, var(--lx-terminal-scr));
+  --occupancy-ring-bg: color-mix(in oklab, var(--lx-terminal-p) 16%, var(--lx-terminal-scr));
+  --scrollbar-thumb: #9e9172;
+  --scrollbar-thumb-active: var(--lx-terminal-p);
+  --tooltip-bg: var(--lx-terminal-p);
+  --tooltip-fg: var(--lx-terminal-on-p);
+  --gradient-primary: linear-gradient(135deg, var(--lx-terminal-p), var(--lx-terminal-p));
+  --gradient-primary-hover: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary-hover));
+}
+
+html[data-admin-sidebar="v9"][data-theme="dark"] {
+  /* ── DARK = PHOSPHOR (monochrome glowing CRT console, inverse-video controls) ── */
+  --admin-accent: var(--lx-terminal-p);
+  --admin-mix-surface: #050906;
+
+  --color-primary: var(--lx-terminal-p);
+  --color-primary-hover: color-mix(in oklab, var(--lx-terminal-p) 86%, #ffffff);
+  --color-primary-active: color-mix(in oklab, var(--lx-terminal-p) 78%, #000000);
+  --color-primary-dark: color-mix(in oklab, var(--lx-terminal-p) 78%, #000000);
+  --color-primary-darker: color-mix(in oklab, var(--lx-terminal-p) 56%, #000000);
+  --color-primary-light: color-mix(in oklab, var(--lx-terminal-p) 82%, #ffffff);
+  --color-primary-lighter: color-mix(in oklab, var(--lx-terminal-p) 64%, #ffffff);
+  --color-primary-muted: color-mix(in oklab, var(--lx-terminal-p) 34%, #050906);
+  --color-primary-pale: color-mix(in oklab, var(--lx-terminal-p) 20%, #050906);
+  --color-primary-bg: color-mix(in oklab, var(--lx-terminal-p) 13%, #050906);
+  --color-primary-bg-hover: color-mix(in oklab, var(--lx-terminal-p) 22%, #050906);
+  --color-primary-bg-light: color-mix(in oklab, var(--lx-terminal-p) 7%, #050906);
+
+  /* Inverse-video text on glowing phosphor fills */
+  --color-white: var(--lx-terminal-on-p);
+  --color-on-accent: var(--lx-terminal-on-p);
+  --btn-primary-fg: var(--lx-terminal-on-p);
+  --btn-success-fg: var(--lx-terminal-on-p);
+  --btn-warning-fg: var(--lx-terminal-on-p);
+  --btn-info-fg: var(--lx-terminal-on-p);
+  --btn-danger-fg: #140403;
+  --tabs-count-active-bg: rgb(0 0 0 / 20%);
+  --tabs-count-active-fg: var(--lx-terminal-on-p);
+
+  --color-bg-page: #040805;
+  --color-bg-primary: color-mix(in oklab, var(--lx-terminal-p) 4%, #060b07);
+  --color-bg-secondary: color-mix(in oklab, var(--lx-terminal-p) 7%, #070e09);
+  --color-bg-tertiary: color-mix(in oklab, var(--lx-terminal-p) 10%, #08120a);
+  --color-bg-hover: color-mix(in oklab, var(--lx-terminal-p) 16%, #09150b);
+  --color-bg-muted: color-mix(in oklab, var(--lx-terminal-p) 13%, #09140b);
+  --color-bg-disabled: #060a07;
+
+  /* Phosphor text ramp: every level stays in the active phosphor hue */
+  --color-text-primary: var(--lx-terminal-p);
+  --color-text-secondary: color-mix(in oklab, var(--lx-terminal-p) 90%, #ffffff);
+  --color-text-body: color-mix(in oklab, var(--lx-terminal-p) 84%, #050906);
+  --color-text-tertiary: color-mix(in oklab, var(--lx-terminal-p) 68%, #050906);
+  --color-text-muted: color-mix(in oklab, var(--lx-terminal-p) 58%, #050906);
+  --color-text-placeholder: color-mix(in oklab, var(--lx-terminal-p) 40%, #050906);
+  --color-text-light: color-mix(in oklab, var(--lx-terminal-p) 44%, #050906);
+  --color-text-disabled: color-mix(in oklab, var(--lx-terminal-p) 28%, #050906);
+
+  --color-border-light: color-mix(in oklab, var(--lx-terminal-p) 18%, #050906);
+  --color-border-primary: color-mix(in oklab, var(--lx-terminal-p) 34%, #050906);
+  --color-border-secondary: color-mix(in oklab, var(--lx-terminal-p) 46%, #050906);
+  --color-border-focus: var(--lx-terminal-p);
+  --color-border-hover: color-mix(in oklab, var(--lx-terminal-p) 70%, #050906);
+  --color-border-input: color-mix(in oklab, var(--lx-terminal-p) 44%, #050906);
+  --color-border-gray: color-mix(in oklab, var(--lx-terminal-p) 28%, #050906);
+  --color-border-dark: color-mix(in oklab, var(--lx-terminal-p) 62%, #050906);
+
+  /* Pure single-phosphor semantic tokens (alert red kept only for danger) */
+  --color-success: var(--lx-terminal-p);
+  --color-success-hover: var(--color-primary-hover);
+  --color-success-active: var(--color-primary-active);
+  --color-success-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, #050906);
+  --color-success-bg-light: color-mix(in oklab, var(--lx-terminal-p) 8%, #050906);
+  --color-success-text: var(--lx-terminal-p);
+  --color-success-border: color-mix(in oklab, var(--lx-terminal-p) 45%, #050906);
+
+  --color-warning: color-mix(in oklab, var(--lx-terminal-p) 88%, #ffffff);
+  --color-warning-hover: var(--color-primary-hover);
+  --color-warning-active: var(--color-primary-active);
+  --color-warning-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, #050906);
+  --color-warning-bg-light: color-mix(in oklab, var(--lx-terminal-p) 8%, #050906);
+  --color-warning-text: color-mix(in oklab, var(--lx-terminal-p) 88%, #ffffff);
+  --color-warning-border: color-mix(in oklab, var(--lx-terminal-p) 45%, #050906);
+
+  --color-info: var(--lx-terminal-p);
+  --color-info-hover: var(--color-primary-hover);
+  --color-info-active: var(--color-primary-active);
+  --color-info-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-info-bg-light: color-mix(in oklab, var(--lx-terminal-p) 7%, #050906);
+  --color-info-text: var(--lx-terminal-p);
+  --color-info-border: color-mix(in oklab, var(--lx-terminal-p) 42%, #050906);
+
+  --color-danger: var(--lx-terminal-alert);
+  --color-danger-hover: color-mix(in oklab, var(--lx-terminal-alert) 84%, #ffffff);
+  --color-danger-active: color-mix(in oklab, var(--lx-terminal-alert) 78%, #000000);
+  --color-danger-bg: color-mix(in oklab, var(--lx-terminal-alert) 16%, #050906);
+  --color-danger-bg-light: color-mix(in oklab, var(--lx-terminal-alert) 9%, #050906);
+  --color-danger-text: var(--lx-terminal-alert);
+  --color-danger-border: color-mix(in oklab, var(--lx-terminal-alert) 50%, #050906);
+
+  --color-boys-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-boys-text: var(--lx-terminal-p);
+  --color-boys-hover-bg: var(--lx-terminal-p);
+  --color-boys-hover-text: var(--lx-terminal-on-p);
+  --color-girls-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-girls-text: color-mix(in oklab, var(--lx-terminal-p) 80%, #ffffff);
+  --color-girls-hover-bg: var(--lx-terminal-p);
+  --color-girls-hover-text: var(--lx-terminal-on-p);
+  --color-coed-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-coed-text: var(--lx-terminal-p);
+  --color-coed-hover-bg: var(--lx-terminal-p);
+  --color-coed-hover-text: var(--lx-terminal-on-p);
+
+  --color-purple-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-purple-light-bg: color-mix(in oklab, var(--lx-terminal-p) 18%, #050906);
+  --color-purple-text: var(--lx-terminal-p);
+  --color-orange-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-orange-text: var(--lx-terminal-p);
+  --color-teal-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-teal-text: var(--lx-terminal-p);
+
+  --color-series-1: var(--lx-terminal-p);
+  --color-series-2: color-mix(in oklab, var(--lx-terminal-p) 82%, #ffffff);
+  --color-series-3: color-mix(in oklab, var(--lx-terminal-p) 76%, #050906);
+  --color-series-4: color-mix(in oklab, var(--lx-terminal-p) 64%, #ffffff);
+  --color-series-5: color-mix(in oklab, var(--lx-terminal-p) 88%, #050906);
+  --color-series-6: var(--lx-terminal-p);
+  --color-series-7: var(--lx-terminal-alert);
+  --color-series-8: var(--color-text-muted);
+  --color-series-1-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, #050906);
+  --color-series-2-bg: color-mix(in oklab, var(--lx-terminal-p) 18%, #050906);
+  --color-series-3-bg: color-mix(in oklab, var(--lx-terminal-p) 11%, #050906);
+  --color-series-4-bg: color-mix(in oklab, var(--lx-terminal-p) 14%, #050906);
+  --color-series-5-bg: color-mix(in oklab, var(--lx-terminal-p) 16%, #050906);
+  --color-series-6-bg: color-mix(in oklab, var(--lx-terminal-p) 12%, #050906);
+  --color-series-7-bg: color-mix(in oklab, var(--lx-terminal-alert) 16%, #050906);
+  --color-series-8-bg: var(--color-bg-muted);
+
+  /* CRT phosphor glow shadows */
+  --shadow-xs: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 16%, transparent);
+  --shadow-sm: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 22%, transparent), 0 0 10px -4px color-mix(in oklab, var(--lx-terminal-p) 26%, transparent);
+  --shadow-md: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 28%, transparent), 0 0 18px -6px color-mix(in oklab, var(--lx-terminal-p) 30%, transparent);
+  --shadow-lg: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 38%, transparent), 0 0 26px -6px color-mix(in oklab, var(--lx-terminal-p) 36%, transparent);
+  --shadow-card: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 16%, transparent), 0 0 18px -8px color-mix(in oklab, var(--lx-terminal-p) 24%, transparent);
+  --shadow-card-hover: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 44%, transparent), 0 0 24px -6px color-mix(in oklab, var(--lx-terminal-p) 36%, transparent);
+  --shadow-button: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  --shadow-button-primary: 0 0 16px -2px color-mix(in oklab, var(--lx-terminal-p) 56%, transparent);
+  --shadow-button-primary-hover: 0 0 22px 0 color-mix(in oklab, var(--lx-terminal-p) 72%, transparent);
+  --shadow-focus: 0 0 0 2px color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  --shadow-focus-primary: 0 0 0 2px color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  --shadow-dropdown: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 45%, transparent), 0 14px 30px -6px rgb(0 0 0 / 88%), 0 0 24px -6px color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  --shadow-modal: 0 0 0 1px color-mix(in oklab, var(--lx-terminal-p) 50%, transparent), 0 24px 50px -10px rgb(0 0 0 / 92%), 0 0 38px -6px color-mix(in oklab, var(--lx-terminal-p) 36%, transparent);
+
+  /* Explicit dark component hooks (overrides theme.css dark literals) */
+  --input-bg: #040805;
+  --input-border: var(--color-border-input);
+  --input-focus-ring: 0 0 0 1px var(--lx-terminal-p), 0 0 12px -2px color-mix(in oklab, var(--lx-terminal-p) 42%, transparent);
+  --card-bg: var(--color-bg-primary);
+  --card-border: var(--color-border-primary);
+  --card-border-hover: var(--color-border-hover);
+  --modal-bg: #050a06;
+  --modal-title-color: var(--lx-terminal-p);
+  --popover-bg: #050a06;
+  --tooltip-bg: var(--lx-terminal-p);
+  --tooltip-fg: var(--lx-terminal-on-p);
+  --table-header-bg: color-mix(in oklab, var(--lx-terminal-p) 9%, #050906);
+  --table-row-hover: color-mix(in oklab, var(--lx-terminal-p) 15%, transparent);
+  --table-border: var(--color-border-primary);
+  --table-stripe-bg: color-mix(in oklab, var(--lx-terminal-p) 4%, #040805);
+  --table-foot-bg: color-mix(in oklab, var(--lx-terminal-p) 11%, #050906);
+  --table-foot-border: var(--lx-terminal-p);
+  --scrollbar-thumb: var(--lx-terminal-p);
+  --scrollbar-thumb-active: var(--lx-terminal-p);
+  --occupancy-ring-bg: color-mix(in oklab, var(--lx-terminal-p) 18%, #050906);
+  --skeleton-base: color-mix(in oklab, var(--lx-terminal-p) 10%, #050906);
+  --skeleton-highlight: color-mix(in oklab, var(--lx-terminal-p) 22%, #050906);
+  --gradient-primary: linear-gradient(135deg, var(--lx-terminal-p), var(--lx-terminal-p));
+  --gradient-primary-hover: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary-hover));
+}
+
 /* ---------- The case around everything; the page is the second screen ---------- */
 @media (min-width: 768px) {
   html[data-admin-sidebar="v9"] .layout-container {
@@ -82,14 +572,530 @@ html[data-admin-sidebar="v9"][data-admin-category="dining"] { --lx-terminal-p: v
     height: calc(100vh - 44px);
     margin: 22px 22px 22px 10px;
     border-radius: 14px;
+    font-family: var(--lx-terminal-font);
+    color: var(--color-text-body);
     background-color: var(--color-bg-page);
+    /* Second CRT tube: subtle scanlines + phosphor radial bloom */
+    background-image:
+      repeating-linear-gradient(180deg, color-mix(in oklab, var(--lx-terminal-scan) 46%, transparent) 0 1px, transparent 1px 3px),
+      radial-gradient(110% 80% at 50% 18%, color-mix(in oklab, var(--lx-terminal-p) calc(var(--lx-terminal-glow-k) * 8% + 2%), transparent), transparent 72%);
     box-shadow:
+      inset 0 0 28px 2px color-mix(in oklab, var(--lx-terminal-vignette) 45%, transparent),
       0 0 0 8px var(--lx-terminal-bezel),
       0 0 0 9px var(--lx-terminal-bezel-hi),
       0 0 0 11px var(--lx-terminal-case-hi),
       0 18px 36px -10px var(--lx-terminal-case-lo),
       0 0 40px 4px color-mix(in oklab, var(--lx-terminal-p) calc(var(--lx-terminal-glow-k) * 14%), transparent);
     scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  /* ── Typography & phosphor glow on headings & portals ── */
+  html[data-admin-sidebar="v9"] .hz-modal,
+  html[data-admin-sidebar="v9"] .hz-drawer,
+  html[data-admin-sidebar="v9"] .hz-popover,
+  html[data-admin-sidebar="v9"] .hz-tooltip,
+  html[data-admin-sidebar="v9"] .hz-select-menu,
+  html[data-admin-sidebar="v9"] .hz-dp-popover,
+  html[data-admin-sidebar="v9"] .hz-toast {
+    font-family: var(--lx-terminal-font);
+  }
+
+  html[data-admin-sidebar="v9"][data-theme="dark"] .layout-content .page-header h1,
+  html[data-admin-sidebar="v9"][data-theme="dark"] .hz-panel-title,
+  html[data-admin-sidebar="v9"][data-theme="dark"] .hz-card-title,
+  html[data-admin-sidebar="v9"][data-theme="dark"] .hz-statcard-value,
+  html[data-admin-sidebar="v9"][data-theme="dark"] .hz-modal-title {
+    text-shadow:
+      0 0 2px color-mix(in oklab, var(--lx-terminal-p) 60%, transparent),
+      0 0 10px color-mix(in oklab, var(--lx-terminal-p) 35%, transparent);
+  }
+
+  html[data-admin-sidebar="v9"] .layout-content,
+  html[data-admin-sidebar="v9"] .layout-content * {
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  /* ── PageHeader & Dashboard KPIs ── */
+  html[data-admin-sidebar="v9"] .layout-content .page-header {
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 5%, var(--lx-terminal-scr));
+    border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 42%, transparent);
+    box-shadow: none !important;
+  }
+  html[data-admin-sidebar="v9"] .layout-content .admin-dashboard-kpi:not(:first-child) {
+    border-left-style: dashed;
+  }
+  html[data-admin-sidebar="v9"] .layout-content .admin-dashboard-kpi-live {
+    box-shadow: 0 0 6px var(--lx-terminal-p);
+  }
+
+  /* ── Buttons & IconButtons (matches .lx-terminal-cmdbtn & inverse video) ── */
+  html[data-admin-sidebar="v9"] .hz-btn,
+  html[data-admin-sidebar="v9"] .hz-iconbtn {
+    font-family: var(--lx-terminal-font);
+    letter-spacing: 0.03em;
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 46%, transparent);
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-btn:active:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-iconbtn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn:focus-visible,
+  html[data-admin-sidebar="v9"] .hz-iconbtn:focus-visible {
+    outline: 2px dashed var(--lx-terminal-p);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-primary,
+  html[data-admin-sidebar="v9"] .hz-btn-gradient,
+  html[data-admin-sidebar="v9"] .hz-btn-success,
+  html[data-admin-sidebar="v9"] .hz-btn-warning,
+  html[data-admin-sidebar="v9"] .hz-btn-info,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-primary {
+    background: var(--lx-terminal-p);
+    color: var(--lx-terminal-on-p);
+    border-color: var(--lx-terminal-p);
+    font-weight: 700;
+    text-shadow: none;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 14px) color-mix(in oklab, var(--lx-terminal-p) 48%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-primary:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-gradient:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-success:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-warning:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-info:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-iconbtn-primary:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 20px) color-mix(in oklab, var(--lx-terminal-p) 62%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-secondary,
+  html[data-admin-sidebar="v9"] .hz-btn-outline,
+  html[data-admin-sidebar="v9"] .hz-btn-white,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-secondary,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-outline {
+    background: color-mix(in oklab, var(--lx-terminal-p) 5%, var(--lx-terminal-scr));
+    color: var(--lx-terminal-p);
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 50%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-secondary:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-outline:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-btn-white:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-iconbtn-secondary:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-iconbtn-outline:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--lx-terminal-p) 16%, var(--lx-terminal-scr));
+    border-color: var(--lx-terminal-p);
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-ghost,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-ghost {
+    border-color: transparent;
+    background: transparent;
+    color: color-mix(in oklab, var(--lx-terminal-p) 80%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-ghost:hover:not(:disabled),
+  html[data-admin-sidebar="v9"] .hz-iconbtn-ghost:hover:not(:disabled) {
+    border: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 55%, transparent);
+    background: color-mix(in oklab, var(--lx-terminal-p) 13%, transparent);
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-danger,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-danger {
+    background: var(--lx-terminal-alert);
+    color: var(--lx-terminal-on-p);
+    border-color: var(--lx-terminal-alert);
+    font-weight: 700;
+    text-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-link {
+    border-color: transparent;
+    text-decoration-style: dashed;
+  }
+  html[data-admin-sidebar="v9"] .hz-btn-rounded,
+  html[data-admin-sidebar="v9"] .hz-iconbtn-rounded {
+    border-radius: 2px;
+  }
+
+  /* ── ToggleButtonGroup (matches .lx-terminal-rocker hardware switch) ── */
+  html[data-admin-sidebar="v9"] .hz-toggle-group {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 44%, transparent);
+    background: var(--lx-terminal-scr);
+    padding: 2px;
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-toggle-group .hz-toggle-btn {
+    border-radius: 1px;
+    font-family: var(--lx-terminal-font);
+    color: color-mix(in oklab, var(--lx-terminal-p) 68%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-toggle-group .hz-toggle-btn:hover:not(:disabled):not([aria-pressed="true"]) {
+    background: color-mix(in oklab, var(--lx-terminal-p) 13%, transparent);
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-toggle-group .hz-toggle-btn[aria-pressed="true"] {
+    background: var(--lx-terminal-p);
+    color: var(--lx-terminal-on-p);
+    font-weight: 700;
+    text-shadow: none;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 10px) color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  }
+
+  /* ── Tabs & FilterTabs (inverse-video terminal tabs) ── */
+  html[data-admin-sidebar="v9"] .hz-tabs-list {
+    border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-tabs-enclosed .hz-tabs-list {
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 40%, transparent);
+    background: var(--lx-terminal-scr);
+  }
+  html[data-admin-sidebar="v9"] .hz-tabs-pills .hz-tabs-trigger,
+  html[data-admin-sidebar="v9"] .hz-filter-btn {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+    background: var(--lx-terminal-scr);
+    color: color-mix(in oklab, var(--lx-terminal-p) 80%, transparent);
+    font-family: var(--lx-terminal-font);
+  }
+  html[data-admin-sidebar="v9"] .hz-tabs-pills .hz-tabs-trigger:hover:not([aria-selected="true"]),
+  html[data-admin-sidebar="v9"] .hz-filter-btn:hover:not([aria-pressed="true"]):not([aria-selected="true"]) {
+    background: color-mix(in oklab, var(--lx-terminal-p) 14%, var(--lx-terminal-scr));
+    border-color: var(--lx-terminal-p);
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-tabs-pills .hz-tabs-trigger[aria-selected="true"],
+  html[data-admin-sidebar="v9"] .hz-tabs-enclosed .hz-tabs-trigger[aria-selected="true"],
+  html[data-admin-sidebar="v9"] .hz-filter-btn[aria-pressed="true"],
+  html[data-admin-sidebar="v9"] .hz-filter-btn[aria-selected="true"] {
+    background: var(--lx-terminal-p);
+    color: var(--lx-terminal-on-p);
+    border-color: var(--lx-terminal-p);
+    font-weight: 700;
+    text-shadow: none;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 14px) color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-tabs-trigger-count,
+  html[data-admin-sidebar="v9"] .hz-filter-count {
+    border-radius: 2px;
+  }
+
+  /* ── Cards, Panels, DetailSections, ProfileCards ── */
+  html[data-admin-sidebar="v9"] .hz-card,
+  html[data-admin-sidebar="v9"] .hz-panel,
+  html[data-admin-sidebar="v9"] .hz-detail,
+  html[data-admin-sidebar="v9"] .hz-profilecard {
+    border-radius: 2px;
+    border-color: color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+    background-color: var(--color-bg-primary);
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-bare {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-head,
+  html[data-admin-sidebar="v9"] .hz-card-header,
+  html[data-admin-sidebar="v9"] .hz-detail-head,
+  html[data-admin-sidebar="v9"] .hz-profilecard-head {
+    border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+    padding-bottom: var(--spacing-2);
+  }
+  html[data-admin-sidebar="v9"] .hz-card-footer,
+  html[data-admin-sidebar="v9"] .hz-profilecard-foot {
+    border-top: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 32%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-bar {
+    border-radius: 0;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 8px) var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-chip {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 36%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 9%, var(--lx-terminal-scr));
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-count {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 40%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 11%, var(--lx-terminal-scr)) !important;
+    color: var(--lx-terminal-p) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-danger .hz-panel-count {
+    border-color: color-mix(in oklab, var(--lx-terminal-alert) 50%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-alert) 14%, var(--lx-terminal-scr)) !important;
+    color: var(--lx-terminal-alert) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-panel-columns > * + * {
+    border-top: 1px dashed var(--panel-border);
+  }
+  @media (min-width: 80rem) {
+    html[data-admin-sidebar="v9"] .hz-panel-columns > * + * {
+      border-top: none;
+      border-left: 1px dashed var(--panel-border);
+    }
+  }
+
+  /* ── StatCard, StatPill, StatTile, StatRow (strip rainbow inline tints -> pure CRT readouts) ── */
+  html[data-admin-sidebar="v9"] .hz-statcard {
+    border-radius: 2px;
+    background: var(--color-bg-primary) !important;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 42%, transparent) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard:hover {
+    border-color: var(--lx-terminal-p) !important;
+    box-shadow: var(--shadow-card-hover) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-floor,
+  html[data-admin-sidebar="v9"] .hz-statcard-wash {
+    display: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-dot {
+    border-radius: 1px;
+    background: var(--lx-terminal-p) !important;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 6px) var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-label-text {
+    color: color-mix(in oklab, var(--lx-terminal-p) 80%, transparent) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-value {
+    color: var(--lx-terminal-p) !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-subtitle,
+  html[data-admin-sidebar="v9"] .hz-statcard-trend {
+    color: var(--color-text-muted) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-chip {
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--lx-terminal-p) 12%, var(--lx-terminal-scr)) !important;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 42%, transparent) !important;
+    color: var(--lx-terminal-p) !important;
+  }
+  html[data-admin-sidebar="v9"] .hz-statcard-watermark {
+    color: var(--lx-terminal-p) !important;
+    opacity: 0.14;
+  }
+
+  html[data-admin-sidebar="v9"] .hz-statpill,
+  html[data-admin-sidebar="v9"] .hz-stattile {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 40%, transparent);
+    background: var(--color-bg-primary);
+  }
+  html[data-admin-sidebar="v9"] .hz-statrow {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 20%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 4%, var(--lx-terminal-scr));
+  }
+  html[data-admin-sidebar="v9"] a.hz-statrow:hover,
+  html[data-admin-sidebar="v9"] button.hz-statrow:hover {
+    border-color: color-mix(in oklab, var(--lx-terminal-p) 55%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 13%, var(--lx-terminal-scr));
+  }
+  html[data-admin-sidebar="v9"] .hz-statrow-dot {
+    border-radius: 1px;
+  }
+
+  /* ── Tables, DataTables & Pagination ── */
+  html[data-admin-sidebar="v9"] .hz-table-wrap,
+  html[data-admin-sidebar="v9"] .hz-datatable {
+    border-radius: 2px;
+    border-color: color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-table-head {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    color: var(--lx-terminal-p);
+    border-bottom: 1px solid color-mix(in oklab, var(--lx-terminal-p) 48%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-table-body .hz-table-cell {
+    border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 26%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-table-body .hz-table-row:last-child .hz-table-cell {
+    border-bottom: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-table-foot {
+    border-top: 1px solid var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-dt-page-btn {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+    font-family: var(--lx-terminal-font);
+  }
+
+  /* ── Form Controls: Input, Textarea, Select, DatePicker, FileInput ── */
+  html[data-admin-sidebar="v9"] .hz-input-field,
+  html[data-admin-sidebar="v9"] .hz-textarea,
+  html[data-admin-sidebar="v9"] .hz-select-field,
+  html[data-admin-sidebar="v9"] .hz-dp-trigger,
+  html[data-admin-sidebar="v9"] .hz-fileinput {
+    font-family: var(--lx-terminal-font);
+    border-radius: 2px;
+    background-color: var(--lx-terminal-scr);
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+    color: var(--color-text-primary);
+    caret-color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-input-field:focus,
+  html[data-admin-sidebar="v9"] .hz-textarea:focus,
+  html[data-admin-sidebar="v9"] .hz-select-field[aria-expanded="true"],
+  html[data-admin-sidebar="v9"] .hz-select-field:focus-visible,
+  html[data-admin-sidebar="v9"] .hz-dp-trigger:focus-visible {
+    border-color: var(--lx-terminal-p);
+    box-shadow: var(--input-focus-ring);
+  }
+  html[data-admin-sidebar="v9"] .hz-select-menu,
+  html[data-admin-sidebar="v9"] .hz-dp-popover {
+    border-radius: 2px;
+    border: 1px solid var(--lx-terminal-p);
+    background-color: var(--lx-terminal-scr);
+    box-shadow: var(--shadow-dropdown);
+  }
+  html[data-admin-sidebar="v9"] .hz-select-option[aria-selected="true"],
+  html[data-admin-sidebar="v9"] .hz-dp-day[aria-selected="true"] {
+    background-color: var(--lx-terminal-p);
+    color: var(--lx-terminal-on-p);
+    font-weight: 700;
+  }
+  html[data-admin-sidebar="v9"] .hz-label {
+    font-family: var(--lx-terminal-font);
+    letter-spacing: 0.04em;
+    color: color-mix(in oklab, var(--lx-terminal-p) 82%, transparent);
+  }
+
+  /* ── Checkbox, Radio, Switch (mechanical rocker look) ── */
+  html[data-admin-sidebar="v9"] .hz-checkbox {
+    border-radius: 1px;
+    border: 1px solid var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-checkbox:checked {
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 8px) color-mix(in oklab, var(--lx-terminal-p) 55%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-switch {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 50%, transparent);
+    background-color: var(--lx-terminal-scr);
+  }
+  html[data-admin-sidebar="v9"] .hz-switch[aria-checked="true"] {
+    background-color: var(--lx-terminal-p);
+    border-color: var(--lx-terminal-p);
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 10px) color-mix(in oklab, var(--lx-terminal-p) 50%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-switch-thumb {
+    border-radius: 1px;
+    box-shadow: none;
+  }
+  html[data-admin-sidebar="v9"] .hz-switch[aria-checked="true"] .hz-switch-thumb {
+    background-color: var(--lx-terminal-on-p);
+  }
+
+  /* ── Badges, StatusBadges, Tags, CompactStudentTag (matches .lx-terminal-tag) ── */
+  html[data-admin-sidebar="v9"] .hz-badge,
+  html[data-admin-sidebar="v9"] .hz-statusbadge,
+  html[data-admin-sidebar="v9"] .hz-tag,
+  html[data-admin-sidebar="v9"] .hz-cst {
+    border-radius: 2px;
+    font-family: var(--lx-terminal-font);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: 1px solid color-mix(in oklab, currentColor 55%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-badge,
+  html[data-admin-sidebar="v9"] .hz-statusbadge {
+    text-transform: uppercase;
+  }
+  html[data-admin-sidebar="v9"] .hz-statusbadge-dot {
+    border-radius: 1px;
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 6px) currentColor;
+  }
+
+  /* ── Progress (CRT segmented block meter [████░░]), Alert, Toast, EmptyState ── */
+  html[data-admin-sidebar="v9"] .hz-progress {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 42%, transparent);
+    background-color: var(--lx-terminal-scr);
+  }
+  html[data-admin-sidebar="v9"] .hz-progress-fill {
+    border-radius: 1px;
+    background: repeating-linear-gradient(90deg, var(--lx-terminal-p) 0 6px, transparent 6px 8px);
+    box-shadow: 0 0 calc(var(--lx-terminal-glow-k) * 8px) color-mix(in oklab, var(--lx-terminal-p) 55%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-alert,
+  html[data-admin-sidebar="v9"] .hz-toast {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 46%, transparent);
+    border-left-width: 3px;
+    background-color: var(--lx-terminal-scr);
+  }
+  html[data-admin-sidebar="v9"] .hz-alert-danger,
+  html[data-admin-sidebar="v9"] .hz-toast-error {
+    border-color: var(--lx-terminal-alert);
+  }
+  html[data-admin-sidebar="v9"] .hz-state-chip,
+  html[data-admin-sidebar="v9"] .hz-dt-empty-icon {
+    border-radius: 2px;
+    border: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 48%, transparent);
+    background-color: color-mix(in oklab, var(--lx-terminal-p) 8%, var(--lx-terminal-scr));
+    color: var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-skeleton {
+    border-radius: 2px;
+  }
+
+  /* ── Modals, Drawers, Popovers, Tooltips, Dividers, Avatars, Steps ── */
+  html[data-admin-sidebar="v9"] .hz-modal,
+  html[data-admin-sidebar="v9"] .hz-drawer {
+    border-radius: 3px;
+    border: 1px solid var(--lx-terminal-p);
+    background-color: var(--lx-terminal-scr);
+    background-image: repeating-linear-gradient(180deg, color-mix(in oklab, var(--lx-terminal-scan) 42%, transparent) 0 1px, transparent 1px 3px);
+    box-shadow: var(--shadow-modal);
+  }
+  html[data-admin-sidebar="v9"] .hz-modal-header,
+  html[data-admin-sidebar="v9"] .hz-drawer-header {
+    border-bottom: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-modal-footer,
+  html[data-admin-sidebar="v9"] .hz-drawer-footer {
+    border-top: 1px dashed color-mix(in oklab, var(--lx-terminal-p) 38%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-popover,
+  html[data-admin-sidebar="v9"] .hz-tooltip {
+    border-radius: 2px;
+    border: 1px solid var(--lx-terminal-p);
+  }
+  html[data-admin-sidebar="v9"] .hz-divider {
+    border-style: dashed;
+  }
+  html[data-admin-sidebar="v9"] .hz-avatar {
+    border-radius: 2px;
+    border: 1px solid color-mix(in oklab, var(--lx-terminal-p) 45%, transparent);
+  }
+  html[data-admin-sidebar="v9"] .hz-step-dot {
+    border-radius: 2px;
+  }
+  html[data-admin-sidebar="v9"] .hz-step-connector {
+    border-style: dashed;
+  }
+  html[data-admin-sidebar="v9"] .hz-breadcrumb-link:hover {
+    text-decoration-style: dashed;
+  }
+
+  /* Match WebKit scrollbars inside the second screen (overrides index.css blue thumb) */
+  html[data-admin-sidebar="v9"] .layout-content::-webkit-scrollbar-thumb,
+  html[data-admin-sidebar="v9"] .layout-content *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 1px;
+  }
+  html[data-admin-sidebar="v9"] .layout-content::-webkit-scrollbar-thumb:hover,
+  html[data-admin-sidebar="v9"] .layout-content *::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-active);
   }
 
   html[data-admin-sidebar="v9"] .layout-content.lx-terminal-refresh > * {
