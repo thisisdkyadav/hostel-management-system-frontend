@@ -1,0 +1,422 @@
+/* ============================================================
+   V4 Dark Mode — "Warm Study" (Wooden Desk + Overhead Lamp).
+
+   Strictly scoped to html[data-admin-sidebar="v4"][data-theme="dark"]
+   so V4 light mode and all other sidebar modes remain untouched.
+
+   Design goals:
+   - Replace pitch-black (#0D0D0D / #1A1A1A) dark surfaces with a
+     lifted, warm charcoal-espresso palette that stays calm and
+     legible over long sessions.
+   - Frame both the V4 sidebar and the main workspace sheet on a
+     roasted walnut wooden board (inspired by Lab X10).
+   - Cast a single wide overhead desk-lamp pool across the full
+     viewport — bathing both the sidebar and main area in soft
+     warm light, with a subtle brushed-brass lamp rim at top center
+     and warm specular catch-lights along elevated surfaces.
+   ============================================================ */
+
+html[data-admin-sidebar="v4"][data-theme="dark"] {
+  /* Active category accent (tracks data-admin-category) */
+  --v4d-accent: #6bb0f5;
+
+  /* Walnut desk & overhead lamp tokens */
+  --v4d-wood-1: #412918;
+  --v4d-wood-2: #301d11;
+  --v4d-wood-3: #503420;
+  --v4d-grain: rgb(14 7 2 / 24%);
+  --v4d-grain-hi: rgb(255 214 154 / 9%);
+  --v4d-lamp-core: rgb(255 226 168 / 28%);
+  --v4d-lamp-cone: rgb(255 200 122 / 16%);
+  --v4d-lamp-soft: rgb(255 182 98 / 7.5%);
+  --v4d-lamp-rim: rgb(255 226 174 / 20%);
+  --v4d-lamp-rim-soft: rgb(255 226 174 / 10%);
+
+  /* Category accents — luminous & clean on warm charcoal */
+  --color-cat-home: #6bb0f5;
+  --color-cat-hostels: #4ec8f7;
+  --color-cat-student-affairs: #f47bb6;
+  --color-cat-staff: #b397f5;
+  --color-cat-dining: #4ade9a;
+
+  /* Primary palette derived from active category */
+  --admin-accent: var(--v4d-accent);
+  --admin-mix-surface: #292522;
+  --color-primary: var(--v4d-accent);
+  --color-primary-hover: color-mix(in oklab, var(--v4d-accent) 88%, #ffffff);
+  --color-primary-active: color-mix(in oklab, var(--v4d-accent) 78%, #ffffff);
+  --color-primary-dark: color-mix(in oklab, var(--v4d-accent) 82%, #181512);
+  --color-primary-darker: color-mix(in oklab, var(--v4d-accent) 62%, #181512);
+  --color-primary-light: color-mix(in oklab, var(--v4d-accent) 82%, #ffffff);
+  --color-primary-lighter: color-mix(in oklab, var(--v4d-accent) 62%, #ffffff);
+  --color-primary-muted: color-mix(in oklab, var(--v4d-accent) 44%, #292522);
+  --color-primary-pale: color-mix(in oklab, var(--v4d-accent) 24%, #292522);
+  --color-primary-bg: color-mix(in oklab, var(--v4d-accent) 15%, #292522);
+  --color-primary-bg-hover: color-mix(in oklab, var(--v4d-accent) 24%, #292522);
+  --color-primary-bg-light: color-mix(in oklab, var(--v4d-accent) 9%, #292522);
+
+  /* Ink on bright dark-mode accent fills */
+  --color-white: #161412;
+  --color-on-accent: #161412;
+
+  /* Warm lifted surfaces (no pitch-black #0D0D0D) */
+  --color-bg-page: #221f1c;
+  --color-bg-secondary: #27231f;
+  --color-bg-primary: #2d2925;
+  --color-bg-tertiary: #36312c;
+  --color-bg-hover: #3f3933;
+  --color-bg-muted: #453e38;
+  --color-bg-disabled: #292521;
+  --color-bg-modal-overlay: rgb(14 10 6 / 68%);
+
+  /* Warm parchment ink hierarchy */
+  --color-text-primary: #f5efe6;
+  --color-text-secondary: #e8e0d4;
+  --color-text-body: #d8cfc3;
+  --color-text-tertiary: #b8aea2;
+  --color-text-muted: #9c9184;
+  --color-text-placeholder: #7d7368;
+  --color-text-light: #7d7368;
+  --color-text-disabled: #60584f;
+
+  /* Warm bronze-stone borders catching the overhead lamp */
+  --color-border-light: #35302a;
+  --color-border-primary: #443e37;
+  --color-border-secondary: #524a42;
+  --color-border-focus: var(--v4d-accent);
+  --color-border-hover: #675d52;
+  --color-border-input: #4e473f;
+  --color-border-gray: #443e37;
+  --color-border-dark: #6e6357;
+
+  /* Semantic tones tuned for warm charcoal surfaces */
+  --color-success: #5ce091;
+  --color-success-hover: #47cc7d;
+  --color-success-active: #34b86a;
+  --color-success-bg: #203428;
+  --color-success-bg-light: #1c2c22;
+  --color-success-text: #6de89e;
+  --color-success-border: #2e553e;
+
+  --color-warning: #f5c156;
+  --color-warning-hover: #e5ad3c;
+  --color-warning-active: #cf9627;
+  --color-warning-bg: #362c1a;
+  --color-warning-bg-light: #2d2516;
+  --color-warning-text: #f7ca6b;
+  --color-warning-border: #5a4622;
+
+  --color-danger: #f87b75;
+  --color-danger-hover: #eb625c;
+  --color-danger-active: #d94d47;
+  --color-danger-bg: #382120;
+  --color-danger-bg-light: #2e1b1a;
+  --color-danger-text: #fa8e89;
+  --color-danger-border: #66302d;
+
+  --color-info: #6bb0f5;
+  --color-info-hover: #539ce6;
+  --color-info-active: #3d88d4;
+  --color-info-bg: #202d3b;
+  --color-info-bg-light: #1b2632;
+  --color-info-text: #7ec0fa;
+  --color-info-border: #304963;
+
+  /* Gender & categorical tones */
+  --color-boys-bg: #202d3b;
+  --color-boys-text: #85c2fa;
+  --color-boys-hover-bg: #6bb0f5;
+  --color-boys-hover-text: #161412;
+  --color-girls-bg: #36212c;
+  --color-girls-text: #f9a8d4;
+  --color-girls-hover-bg: #f47bb6;
+  --color-girls-hover-text: #161412;
+  --color-coed-bg: #2e2438;
+  --color-coed-text: #c2a8fa;
+  --color-coed-hover-bg: #b397f5;
+  --color-coed-hover-text: #161412;
+
+  --color-purple-bg: #2e2438;
+  --color-purple-light-bg: #372b44;
+  --color-purple-text: #cbaef9;
+  --color-orange-bg: #36281c;
+  --color-orange-text: #fb9e58;
+  --color-teal-bg: #1c3130;
+  --color-teal-text: #4ee0cc;
+
+  --color-series-1: #6bb0f5;
+  --color-series-2: #f47bb6;
+  --color-series-3: #4ee0cc;
+  --color-series-4: #f5c156;
+  --color-series-5: #b397f5;
+  --color-series-6: #5ce091;
+  --color-series-7: #f87b75;
+  --color-series-8: #a89f94;
+  --color-series-1-bg: #202d3b;
+  --color-series-2-bg: #36212c;
+  --color-series-3-bg: #1c3130;
+  --color-series-4-bg: #362c1a;
+  --color-series-5-bg: #2e2438;
+  --color-series-6-bg: #203428;
+  --color-series-7-bg: #382120;
+  --color-series-8-bg: #2f2b27;
+
+  /* Shadows — warm depth + top specular catch-light */
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 32%);
+  --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 36%), inset 0 1px 0 var(--v4d-lamp-rim-soft);
+  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 44%), inset 0 1px 0 var(--v4d-lamp-rim-soft);
+  --shadow-lg: 0 12px 28px -6px rgb(0 0 0 / 52%), inset 0 1px 0 var(--v4d-lamp-rim-soft);
+  --shadow-xl: 0 22px 46px -10px rgb(0 0 0 / 62%);
+  --shadow-card: 0 4px 14px -4px rgb(0 0 0 / 40%), inset 0 1px 0 var(--v4d-lamp-rim-soft);
+  --shadow-card-hover: 0 10px 24px -6px rgb(0 0 0 / 52%), inset 0 1px 0 var(--v4d-lamp-rim);
+  --shadow-button-primary: 0 3px 10px -2px color-mix(in oklab, var(--v4d-accent) 34%, rgb(0 0 0 / 45%));
+  --shadow-button-primary-hover: 0 6px 16px -2px color-mix(in oklab, var(--v4d-accent) 44%, rgb(0 0 0 / 50%));
+  --shadow-focus: 0 0 0 3px color-mix(in oklab, var(--v4d-accent) 30%, transparent);
+  --shadow-focus-primary: 0 0 0 3px color-mix(in oklab, var(--v4d-accent) 28%, transparent);
+  --shadow-focus-danger: 0 0 0 3px rgb(248 123 117 / 30%);
+  --shadow-dropdown: 0 14px 34px -6px rgb(0 0 0 / 60%), 0 0 0 1px rgb(255 224 170 / 9%);
+  --shadow-modal: 0 26px 58px -12px rgb(0 0 0 / 72%), 0 0 0 1px rgb(255 224 170 / 12%);
+
+  /* Component surface hooks */
+  --card-bg: #2d2925;
+  --card-border: #48413a;
+  --card-border-hover: #62584e;
+  --panel-bg: #2d2925;
+  --panel-border: #48413a;
+  --panel-shadow: var(--shadow-card);
+  --panel-title-color: #f5efe6;
+  --panel-subtitle-color: #a3988b;
+  --panel-chip-bg: #36312c;
+  --panel-count-bg: #3d3731;
+  --panel-count-color: #ece4d8;
+  --statrow-bg: #27231f;
+  --statrow-hover-bg: #39332d;
+  --input-bg: #24211d;
+  --input-border: #524b43;
+  --input-border-focus: var(--v4d-accent);
+  --input-focus-ring: 0 0 0 3px color-mix(in oklab, var(--v4d-accent) 24%, transparent);
+  --modal-bg: #2d2925;
+  --modal-title-color: var(--v4d-accent);
+  --popover-bg: #2f2b27;
+  --tooltip-bg: #423b34;
+  --tooltip-fg: #f5efe6;
+  --table-header-bg: #27231f;
+  --table-header-text: #b0a598;
+  --table-row-hover: #39332d;
+  --table-border: #423c35;
+  --table-stripe-bg: #292521;
+  --table-foot-bg: #27231f;
+  --table-foot-border: #524b43;
+  --switch-bg: #403933;
+  --switch-thumb-bg: #f5efe6;
+  --checkbox-bg: #221f1c;
+  --checkbox-border: #5c5349;
+  --radio-bg: #221f1c;
+  --radio-border: #5c5349;
+  --divider-color: #3d3731;
+  --skeleton-base: #312c27;
+  --skeleton-highlight: #3e3832;
+  --occupancy-ring-bg: #3c3630;
+  --scrollbar-thumb: #5c5349;
+  --scrollbar-thumb-active: #d9a962;
+
+  /* Button hooks tuned for warm charcoal */
+  --btn-white-bg: #302b27;
+  --btn-white-fg: #f5efe6;
+  --btn-white-border: 1px solid #4e473f;
+  --btn-white-hover-bg: #3b352f;
+  --btn-white-hover-fg: #ffffff;
+  --btn-ghost-fg: #d8cfc3;
+  --btn-ghost-hover-bg: #36302a;
+  --btn-ghost-hover-fg: #f5efe6;
+}
+
+html[data-admin-sidebar="v4"][data-theme="dark"][data-admin-category="hostels"] { --v4d-accent: #4ec8f7; }
+html[data-admin-sidebar="v4"][data-theme="dark"][data-admin-category="student-affairs"] { --v4d-accent: #f47bb6; }
+html[data-admin-sidebar="v4"][data-theme="dark"][data-admin-category="staff"] { --v4d-accent: #b397f5; }
+html[data-admin-sidebar="v4"][data-theme="dark"][data-admin-category="dining"] { --v4d-accent: #4ade9a; }
+
+/* ---------- Wooden Desk Frame + Full-Page Overhead Lamp ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background:
+      radial-gradient(64% 38% at 50% 0%, rgb(255 198 112 / 40%), rgb(255 170 76 / 12%) 46%, transparent 74%),
+      radial-gradient(120% 45% at 50% 10%, var(--v4d-grain-hi), transparent 68%),
+      repeating-linear-gradient(
+        92deg,
+        transparent 0 7px,
+        var(--v4d-grain) 7px 8px,
+        transparent 8px 21px,
+        var(--v4d-grain) 21px 23px,
+        transparent 23px 38px
+      ),
+      repeating-linear-gradient(
+        90.5deg,
+        var(--v4d-wood-1) 0 48px,
+        var(--v4d-wood-3) 48px 74px,
+        var(--v4d-wood-2) 74px 92px,
+        var(--v4d-wood-1) 92px 138px
+      ),
+      var(--v4d-wood-1);
+  }
+
+  /* Full-page overhead lamp light cone bathing BOTH sidebar and main workspace */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      /* Warm bright diffuser bloom right below the overhead lamp bar */
+      radial-gradient(36% 16% at 50% -1%, var(--v4d-lamp-core), transparent 76%),
+      /* Wide volumetric lamp cone covering sidebar + main content */
+      radial-gradient(96% 78% at 50% -4%, var(--v4d-lamp-cone) 0%, var(--v4d-lamp-soft) 52%, transparent 82%),
+      /* Soft top wash so the whole upper band feels gently illuminated */
+      linear-gradient(180deg, rgb(255 212 146 / 8.5%) 0%, transparent 48%);
+    animation: v4d-lamp-warm 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Architectural brushed-brass overhead lamp rim at top center + cozy edge vignette */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-container::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 46;
+    pointer-events: none;
+    background:
+      /* Glowing warm filament strip along the underside of the overhead lamp bar */
+      linear-gradient(90deg, transparent, rgb(255 234 186 / 92%) 22%, #fff5d8 50%, rgb(255 234 186 / 92%) 78%, transparent)
+        50% 4px / 240px 2px no-repeat,
+      /* Brushed-brass lamp hood edge peeking at top center */
+      linear-gradient(180deg, #75582c 0%, #d4ab60 45%, #8f6d36 100%)
+        50% 0 / 280px 4px no-repeat,
+      /* Soft outer desk shadow so the warm pool has genuine focus without darkening cards */
+      radial-gradient(135% 118% at 50% 6%, transparent 62%, rgb(10 6 3 / 24%) 100%);
+  }
+
+  /* Floating V4 sidebar on the wooden board */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .v4-shell {
+    height: calc(100vh - 20px);
+    margin: 10px 0 10px 10px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgb(255 218 164 / 12%),
+      0 18px 40px -12px rgb(0 0 0 / 68%);
+  }
+
+  html[data-admin-sidebar="v4"][data-theme="dark"] .v4-shell > * {
+    border-right: 0 !important;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 var(--v4d-lamp-rim);
+  }
+
+  /* Smoked espresso icon rail so the elevated warm-charcoal panel separates cleanly */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .v4-shell .icon-rail {
+    background: linear-gradient(180deg, #24201c 0%, #1e1b18 100%);
+  }
+
+  html[data-admin-sidebar="v4"][data-theme="dark"] .v4-shell .rail-panel {
+    box-shadow: -5px 0 14px -5px rgb(0 0 0 / 48%);
+  }
+
+  /* Warm dark floating workspace sheet beside the sidebar */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content {
+    position: relative;
+    min-width: 0;
+    height: calc(100vh - 20px);
+    margin: 10px;
+    border-radius: 14px;
+    background-color: #221f1c;
+    background-image:
+      radial-gradient(82% 48% at 44% 0%, rgb(255 206 134 / 11%), transparent 74%),
+      linear-gradient(180deg, #27231f 0%, #221f1c 48%, #1d1a18 100%);
+    box-shadow:
+      inset 0 1px 0 var(--v4d-lamp-rim),
+      0 0 0 1px rgb(255 218 164 / 12%),
+      0 20px 48px -14px rgb(0 0 0 / 66%);
+    scrollbar-gutter: stable;
+  }
+
+  /* Custom warm scrollbars (override index.css #a8c9fc blue) */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content,
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content * {
+    scrollbar-color: #5c5349 transparent;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content::-webkit-scrollbar-thumb,
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content *::-webkit-scrollbar-thumb {
+    background: #5c5349;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content::-webkit-scrollbar-thumb:hover,
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content *::-webkit-scrollbar-thumb:hover {
+    background: #d9a962;
+  }
+
+  /* Subtle warm translucent page header so the overhead light passes cleanly across it */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-content .page-header {
+    background-color: rgb(38 34 30 / 76%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom-color: rgb(255 220 170 / 12%);
+  }
+
+  /* Warm catch-light rim on elevated cards, panels, stat cards, tables, modals */
+  html[data-admin-sidebar="v4"][data-theme="dark"] :is(.hz-card, .hz-panel:not(.hz-panel-bare), .hz-table-wrap, .hz-datatable, .hz-modal, .hz-drawer) {
+    box-shadow: var(--shadow-card);
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-statcard {
+    background: linear-gradient(180deg, #322d28 0%, #2b2723 100%) !important;
+    border-color: #4b443c !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-statcard:hover {
+    border-color: color-mix(in oklab, var(--v4d-accent) 55%, #5c5349) !important;
+    box-shadow: var(--shadow-card-hover) !important;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] :is(.hz-statcard-floor, .hz-statcard-wash) {
+    opacity: 0.35;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-statcard-value {
+    color: #f5efe6 !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-statcard-label-text,
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-statcard-subtitle {
+    color: #a89d90 !important;
+  }
+
+  /* Crisp pill contrast on toggles & filter tabs */
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-toggle-group {
+    background: #231f1c;
+    border-color: #443e37;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] .hz-toggle-group .hz-toggle-btn[aria-pressed="true"] {
+    background: var(--v4d-accent);
+    color: #161412;
+    font-weight: 600;
+  }
+  html[data-admin-sidebar="v4"][data-theme="dark"] :is(.hz-tabs-pills .hz-tabs-trigger[aria-selected="true"], .hz-filter-btn[aria-pressed="true"], .hz-filter-btn[aria-selected="true"]) {
+    background: var(--v4d-accent);
+    color: #161412;
+    border-color: var(--v4d-accent);
+    font-weight: 600;
+  }
+}
+
+@keyframes v4d-lamp-warm {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-admin-sidebar="v4"][data-theme="dark"] .layout-container::before {
+    animation: none;
+  }
+}

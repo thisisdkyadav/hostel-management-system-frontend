@@ -19,6 +19,7 @@ import WorkspaceNav from "./sidebar/WorkspaceNav"
 import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
 import ConsoleSidebar from "./sidebar/console/ConsoleSidebar"
 import "./sidebar/tone/tone.css"
+import "./sidebar/v4/v4-dark.css"
 import { LAB_SIDEBARS } from "./sidebar/lab/registry"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
@@ -157,6 +158,7 @@ const Sidebar = ({ navItems }) => {
   const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode || isLabMode
   // V8 is V4 on a category-coloured frame (desktop only; plain V4 on phones).
   const isToneMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TONE && !isMobile
+  const isV4Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_RAIL && !isMobile
   const isRailMode = isAdminNav && (
     sidebarMode === SIDEBAR_MODE_TONE ||
     sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE
@@ -205,8 +207,8 @@ const Sidebar = ({ navItems }) => {
     } else {
       root.removeAttribute("data-admin-category")
     }
-    if (isV5Mode || isOrbitMode || isToneMode) {
-      root.setAttribute("data-admin-sidebar", isLabMode ? sidebarMode : isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : "v5")
+    if (isV4Mode || isV5Mode || isOrbitMode || isToneMode) {
+      root.setAttribute("data-admin-sidebar", isLabMode ? sidebarMode : isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : isV5Mode ? "v5" : "v4")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -214,7 +216,7 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode, isLabMode, sidebarMode])
+  }, [activeAdminCategory, isCategorizedMode, isV4Mode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode, isLabMode, sidebarMode])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -553,7 +555,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`${isToneMode ? "tone-shell " : ""}fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`${isToneMode ? "tone-shell " : isV4Mode ? "v4-shell " : ""}fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
       {/* V5 has no edge stroke; its selected SVG is measured and painted inside
           the full-width list wrapper. */}
       <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
