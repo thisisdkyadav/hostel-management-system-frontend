@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-import { Button, DatePicker, Field, Grid, HStack, IconButton, Input, Modal, Select, StepIndicator, Surface, Text, Textarea, ToggleButtonGroup, VStack } from "hzero"
+import { Button, DatePicker, Field, Grid, HStack, IconButton, Input, Select, StepIndicator, Surface, Text, Textarea, ToggleButtonGroup, VStack } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import { Plus, Trash2 } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { accommodationApi, studentApi } from "@/service"

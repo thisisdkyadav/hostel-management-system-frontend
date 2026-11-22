@@ -1,4 +1,5 @@
-import { Alert, Button, HStack, Modal, Surface, Text, VStack } from "hzero"
+import { Alert, Button, HStack, Surface, Text, VStack } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import {
   BadgeCheck,
   Building2,

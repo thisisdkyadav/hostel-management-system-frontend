@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, DatePicker, Field, HStack, Input, Modal, Surface, Text, Textarea, ToggleButtonGroup, useConfirm, VStack } from "hzero"
+import { Button, DatePicker, Field, HStack, Input, Surface, Text, Textarea, ToggleButtonGroup, useConfirm, VStack } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import { BedDouble, Users, Clock3, CreditCard, RotateCcw, FileText, Building2, Wallet, Eye, Download, CalendarRange } from "lucide-react"
 import { accommodationApi, uploadApi } from "@/service"
 import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"

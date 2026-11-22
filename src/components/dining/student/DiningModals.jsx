@@ -1,5 +1,6 @@
 import { useRef, useState } from "react"
-import { Alert, Button, Checkbox, ConfirmDialog, Field, Input, Modal, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
+import { Alert, Button, Checkbox, ConfirmDialog, Field, Input, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import { Download } from "lucide-react"
 import CapacityBar from "@/components/dining/CapacityBar"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
