@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react"
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Bell, ChevronRight, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
 import { Modal } from "hzero"
@@ -11,6 +11,7 @@ import QRCodeGenerator from "../QRCodeGenerator"
 import { setPhoneBeta } from "./phoneBeta"
 import useSheetDrag from "./kit/useSheetDrag"
 import useTabSwipe from "./kit/useTabSwipe"
+import usePhonePreload from "./usePhonePreload"
 import "./student-phone.css"
 import "./pages/phone-pages.css"
 
@@ -23,6 +24,9 @@ const PHONE_PAGES = {
   "/student/complaints": <PhoneComplaints />,
   "/student/dining": <PhoneDining />,
 }
+// What slides in beside the page during a swipe: the phone page, or the normal page for Events.
+const EventsPage = lazy(() => import("../../pages/common/EventsPage"))
+const PEEK_PAGES = { ...PHONE_PAGES, "/student/events": <EventsPage /> }
 const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === "/student/" ? "/student" : pathname.replace(/\/$/, "")] || null
 
 /**
@@ -93,12 +97,30 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const sheetHasNews = spotlight.length > 0 || gridItems.some((item) => isNavItemNew(item))
 
   const tabPaths = tabs.map((tab) => tab.path)
+  // Neighbouring page shown during a swipe; tied to the page it was opened from,
+  // so it disappears by itself once the swipe navigates.
+  const [peek, setPeek] = useState(null)
+  const peekRef = useRef(null)
+  const onPeek = useCallback((path) => setPeek(path ? { path, from: pathname } : null), [pathname])
+  const peekPage = peek && peek.from === pathname ? PEEK_PAGES[peek.path] : null
   const mainRef = useTabSwipe({
     paths: tabPaths,
     currentIndex: tabPaths.findIndex((path) => isActivePath(pathname, path)),
     onSwitch: navigate,
+    onPeek,
+    peekRef,
     active: !blocked,
   })
+  usePhonePreload(!blocked)
+
+  // New page: start at the top, and drop any swipe transform before it paints.
+  useLayoutEffect(() => {
+    const main = mainRef.current
+    if (!main) return
+    main.style.transition = "none"
+    main.style.transform = ""
+    main.scrollTop = 0
+  }, [pathname, mainRef])
   const closeSheet = useCallback(() => setSheetPath(null), [])
   const { sheetRef, backdropRef } = useSheetDrag(closeSheet, sheetOpen)
 
@@ -162,6 +184,18 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
           <Outlet />
         )}
       </main>
+      {peekPage && (
+        <div
+          ref={peekRef}
+          className="sp-main sp-peek"
+          data-side={tabPaths.indexOf(peek.path) > tabPaths.findIndex((path) => isActivePath(pathname, path)) ? "right" : "left"}
+          data-mpage={PHONE_PAGES[peek.path] ? "" : undefined}
+          aria-hidden="true"
+          inert
+        >
+          <Suspense fallback={null}>{peekPage}</Suspense>
+        </div>
+      )}
 
       <nav className="sp-bar" aria-label="Main">
         {tabs.map((tab) => {

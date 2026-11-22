@@ -1,5 +1,6 @@
 import { Page, Pagination, SearchInput, Tabs, Text } from "hzero"
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { FaCalendarAlt } from "react-icons/fa"
 import NoResults from "../../components/common/NoResults"
 import EventStats from "../../components/events/EventStats"
@@ -8,7 +9,7 @@ import AddEventModal from "../../components/events/AddEventModal"
 import EventsHeader from "../../components/headers/EventsHeader"
 import PageFooter from "../../components/common/PageFooter"
 import { useAuth } from "../../contexts/AuthProvider"
-import { eventsApi } from "../../service"
+import { eventsListQuery } from "./eventsQuery"
 
 const EVENT_FILTER_TABS = [
   { label: "All Events", value: "all", color: "primary" },
@@ -32,49 +33,25 @@ const EventsPage = () => {
   const [activeTab, setActiveTab] = useState("upcoming")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
-  const [events, setEvents] = useState([])
-  const [stats, setStats] = useState(null)
-  const [pagination, setPagination] = useState(DEFAULT_PAGINATION)
   const [currentPage, setCurrentPage] = useState(1)
-  const [loading, setLoading] = useState(false)
 
-  const fetchEvents = useCallback(async (page = currentPage) => {
-    if (!canViewEvents) return
+  // Cached so the phone app can preload it and keep it fresh in the background.
+  const eventsQuery = useQuery({
+    ...eventsListQuery({ page: currentPage, filter: activeTab, search: searchTerm.trim() }),
+    placeholderData: keepPreviousData,
+    enabled: canViewEvents,
+  })
+  const response = eventsQuery.isError && !eventsQuery.data ? null : eventsQuery.data
+  const events = response?.events || []
+  const stats = response?.stats || null
+  const pagination = response?.pagination || DEFAULT_PAGINATION
+  const loading = eventsQuery.isPending || (eventsQuery.isPlaceholderData && eventsQuery.isFetching)
+  const fetchEvents = () => eventsQuery.refetch()
 
-    setLoading(true)
-    try {
-      const response = await eventsApi.getAllEvents({
-        page,
-        limit: DEFAULT_PAGINATION.limit,
-        filter: activeTab,
-        search: searchTerm.trim(),
-      })
-
-      const apiPagination = response?.pagination || DEFAULT_PAGINATION
-      const totalPages = apiPagination.totalPages || 0
-
-      if (totalPages > 0 && page > totalPages) {
-        setCurrentPage(totalPages)
-        return
-      }
-
-      setEvents(response?.events || [])
-      setStats(response?.stats || null)
-      setPagination(apiPagination)
-    } catch (error) {
-      console.error("Error fetching events:", error)
-      setEvents([])
-      setStats(null)
-      setPagination(DEFAULT_PAGINATION)
-    } finally {
-      setLoading(false)
-    }
-  }, [activeTab, canViewEvents, currentPage, searchTerm])
-
-  useEffect(() => {
-    if (!canViewEvents) return
-    fetchEvents(currentPage)
-  }, [canViewEvents, currentPage, fetchEvents])
+  // Past the last page (an event was removed): step back to the last one.
+  if (pagination.totalPages > 0 && currentPage > pagination.totalPages && !eventsQuery.isPlaceholderData) {
+    setCurrentPage(pagination.totalPages)
+  }
 
   const handleTabChange = (nextTab) => {
     setCurrentPage(1)

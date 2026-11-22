@@ -14,7 +14,8 @@ import BioPhotoCard from "../../dining/student/BioPhotoCard"
 import { AwayModal, ChooseCatererModal, ConfirmCatererDialog } from "../../dining/student/DiningModals"
 import { autoAssignLine, issueLine, mealLine, needsResponse } from "../../dining/student/studentDiningHelpers"
 import useChooseCaterer from "../../dining/student/useChooseCaterer"
-import { studentDiningPortalQuery, studentDiningTagsQuery } from "../../dining/student/portalQuery"
+import { studentDiningPortalQuery } from "../../dining/student/portalQuery"
+import { diningBillingQuery, diningRebatesQuery, diningTagsQuery, mealsQuery as mealsQuery_ } from "../phoneQueries"
 import Segmented from "../kit/Segmented"
 import PhoneMenu from "./PhoneMenu"
 import "../../dining/student/StudentDining.css"
@@ -58,10 +59,10 @@ const PhoneDining = () => {
     ...studentDiningPortalQuery(),
     refetchInterval: (query) => (query.state.data?.canSelect ? SELECTING_REFRESH_MS : IDLE_REFRESH_MS),
   })
-  const mealsQuery = useQuery({ queryKey: queryKeys.dining.meals(), queryFn: () => studentApi.getDiningMeals(), refetchInterval: IDLE_REFRESH_MS })
-  const rebatesQuery = useQuery({ queryKey: queryKeys.dining.rebates(), queryFn: () => studentApi.getDiningRebates() })
-  const billingQuery = useQuery({ queryKey: queryKeys.dining.billing(), queryFn: () => studentApi.getDiningBilling(), retry: false })
-  const tagsQuery = useQuery({ ...studentDiningTagsQuery(), retry: false })
+  const mealsQuery = useQuery({ ...mealsQuery_(), refetchInterval: IDLE_REFRESH_MS })
+  const rebatesQuery = useQuery(diningRebatesQuery())
+  const billingQuery = useQuery(diningBillingQuery())
+  const tagsQuery = useQuery(diningTagsQuery())
 
   const portal = portalQuery.data || null
   const meals = mealsQuery.data || null
@@ -102,9 +103,10 @@ const PhoneDining = () => {
   })
 
   const caterer = meals?.caterer || currentAllocation?.caterer || null
-  const loadError = portalQuery.isError
+  // Only when there is nothing to show: a failed background refresh keeps the old data on screen.
+  const loadError = portalQuery.isError && !portalQuery.data
     ? getErrorMessage(portalQuery.error, "Couldn't load your dining details.")
-    : mealsQuery.isError
+    : mealsQuery.isError && !mealsQuery.data
       ? getErrorMessage(mealsQuery.error, "Couldn't load your meals.")
       : ""
   const loading = portalQuery.isLoading || mealsQuery.isLoading

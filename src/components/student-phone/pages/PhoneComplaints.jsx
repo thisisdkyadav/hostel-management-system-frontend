@@ -2,14 +2,12 @@ import { useMemo, useState } from "react"
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChevronRight, ClipboardCheck, Plus } from "lucide-react"
 import { useToast } from "hzero"
-import { adminApi, complaintApi } from "../../../service"
+import { complaintsListQuery, complaintStatsQuery } from "../phoneQueries"
 import { queryKeys } from "../../../lib/query"
 import Segmented from "../kit/Segmented"
 import ComplaintSheet from "./ComplaintSheet"
 import NewComplaintSheet from "./NewComplaintSheet"
 import { CategoryIcon, statusMeta, StatusTrack, timeAgo } from "./complaintBits"
-
-const PAGE_SIZE = 15
 
 const FILTERS = [
   { value: "all", label: "All", stat: "total" },
@@ -17,14 +15,6 @@ const FILTERS = [
   { value: "In Progress", label: "In progress", stat: "inProgress" },
   { value: "Resolved", label: "Resolved", stat: "resolved" },
 ]
-
-const fetchPage = (status, page) => {
-  const params = new URLSearchParams()
-  if (status !== "all") params.append("status", status)
-  params.append("page", page)
-  params.append("limit", PAGE_SIZE)
-  return adminApi.getAllComplaints(params.toString())
-}
 
 /** Students on a phone: their complaints as one list, a filter row, and a button to raise a new one. */
 const PhoneComplaints = () => {
@@ -34,19 +24,12 @@ const PhoneComplaints = () => {
   const [open, setOpen] = useState(null)
   const [creating, setCreating] = useState(false)
 
-  const listQuery = useInfiniteQuery({
-    queryKey: [...queryKeys.complaints.list({ status, phone: true })],
-    queryFn: ({ pageParam }) => fetchPage(status, pageParam),
-    initialPageParam: 1,
-    getNextPageParam: (last, pages) => {
-      const totalPages = last?.data?.pagination?.totalPages || 1
-      return pages.length < totalPages ? pages.length + 1 : undefined
-    },
-  })
-  const statsQuery = useQuery({ queryKey: queryKeys.complaints.stats(null), queryFn: () => complaintApi.getStats({}) })
+  const listQuery = useInfiniteQuery(complaintsListQuery(status))
+  const statsQuery = useQuery(complaintStatsQuery())
   const stats = statsQuery.data?.data || statsQuery.data || null
 
   const items = useMemo(() => (listQuery.data?.pages || []).flatMap((page) => page?.data?.items || []), [listQuery.data])
+  const openComplaint = open ? items.find((item) => item.id === open.id) || open : null
   const filters = FILTERS.map((filter) => ({ ...filter, count: stats ? stats[filter.stat] || 0 : undefined }))
 
   const refresh = () => {
@@ -70,7 +53,7 @@ const PhoneComplaints = () => {
         </ul>
       )
     }
-    if (listQuery.isError) {
+    if (listQuery.isError && !listQuery.data) {
       return (
         <div className="mk-empty">
           <p>Couldn&apos;t load your complaints.</p>
@@ -139,7 +122,7 @@ const PhoneComplaints = () => {
         <span>New</span>
       </button>
 
-      {open && <ComplaintSheet complaint={open} onClose={() => setOpen(null)} onChanged={refresh} />}
+      {openComplaint && <ComplaintSheet complaint={openComplaint} onClose={() => setOpen(null)} onChanged={refresh} />}
       {creating && (
         <NewComplaintSheet
           onClose={() => setCreating(false)}

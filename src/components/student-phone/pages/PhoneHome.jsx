@@ -4,28 +4,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { CalendarDays, Check, ChevronRight, Clock, Coffee, Cookie, FileSignature, Moon, Plane, Plus, ShieldCheck, Star, Sun, UtensilsCrossed, Vote, X } from "lucide-react"
 import { useToast } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { electionsApi, studentApi, undertakingApi } from "../../../service"
+import { dashboardQuery as dashboardQuery_, mealsQuery as mealsQuery_, readDashboardCache, undertakingsCountQuery, votingQuery as votingQuery_ } from "../phoneQueries"
 import { queryKeys } from "../../../lib/query"
 import { addDays, clock12, formatCountdown, mealPaletteFor, mealProgress, mealVarsFor, nowParts, slotKey, timeSpan, toMinutes, weekStartOf } from "../../dining/menu/menuHelpers"
 import { useNow, useStudentMenuWeek } from "../../dining/student/useStudentMenu"
 import ComplaintSheet from "./ComplaintSheet"
 import NewComplaintSheet from "./NewComplaintSheet"
 import { isOpenComplaint, statusMeta, StatusTrack, timeAgo } from "./complaintBits"
-
-const DASHBOARD_CACHE_KEY = "student_dashboard_data"
-
-const normalize = (payload) => {
-  const candidate = payload && typeof payload === "object" && payload.data && typeof payload.data === "object" ? payload.data : payload
-  return candidate && typeof candidate === "object" && candidate.profile ? candidate : null
-}
-
-const readCache = () => {
-  try {
-    return normalize(JSON.parse(localStorage.getItem(DASHBOARD_CACHE_KEY) || "null")?.data)
-  } catch {
-    return null
-  }
-}
 
 const greeting = (hour) => (hour < 5 ? "Good night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening")
 
@@ -149,38 +134,16 @@ const PhoneHome = () => {
   const [openComplaint, setOpenComplaint] = useState(null)
   const [creating, setCreating] = useState(false)
 
-  const dashboardQuery = useQuery({
-    queryKey: queryKeys.studentDashboard.data(),
-    queryFn: async () => {
-      const data = normalize(await studentApi.getStudentDashboard())
-      if (!data) throw new Error("Student dashboard response is missing profile data")
-      try {
-        localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({ data, timestamp: new Date().toISOString() }))
-      } catch {
-        /* storage full or blocked */
-      }
-      return data
-    },
-    enabled: isOnline,
-  })
-  const data = dashboardQuery.data ?? (dashboardQuery.isError || !isOnline ? readCache() : null)
+  const dashboardQuery = useQuery({ ...dashboardQuery_(), enabled: isOnline })
+  const data = dashboardQuery.data ?? (dashboardQuery.isError || !isOnline ? readDashboardCache() : null)
 
-  const mealsQuery = useQuery({ queryKey: queryKeys.dining.meals(), queryFn: () => studentApi.getDiningMeals(), retry: false })
+  const mealsQuery = useQuery(mealsQuery_())
   const todayMeals = mealsQuery.data?.period ? mealsQuery.data.todayMeals : []
 
-  const votingQuery = useQuery({
-    queryKey: queryKeys.studentDashboard.activeVotingElection(),
-    queryFn: () => electionsApi.getStudentCurrent(),
-    enabled: isOnline,
-  })
+  const votingQuery = useQuery({ ...votingQuery_(), enabled: isOnline })
   const voting = (votingQuery.data?.data?.elections || []).find((election) => election?.mode === "voting") || null
 
-  const undertakingsQuery = useQuery({
-    queryKey: ["undertakings", "pending-count"],
-    queryFn: () => undertakingApi.pendingUndertakingsCount(),
-    enabled: isOnline,
-    retry: false,
-  })
+  const undertakingsQuery = useQuery({ ...undertakingsCountQuery(), enabled: isOnline })
   const pendingUndertakings = undertakingsQuery.data?.count || 0
 
   const refresh = () => {

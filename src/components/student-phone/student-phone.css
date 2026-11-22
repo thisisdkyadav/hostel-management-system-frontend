@@ -157,6 +157,33 @@ html[data-theme="dark"] .sp-shell[data-scrolled] .sp-head {
   padding-bottom: calc(var(--sp-bar-space) + 8px);
 }
 
+/* The neighbouring page during a swipe: same box as .sp-main, beside it. */
+.sp-peek {
+  position: absolute;
+  top: calc(var(--sp-head-h) + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-bg-page);
+}
+
+.sp-peek[data-mpage] { background: var(--m-bg); }
+.sp-peek[data-side="right"] { transform: translate3d(100%, 0, 0); }
+.sp-peek[data-side="left"] { transform: translate3d(-100%, 0, 0); }
+
+/* Touch screens don't need scrollbars: hide them everywhere in the phone app. */
+html[data-student-phone="true"],
+html[data-student-phone="true"] * {
+  scrollbar-width: none;
+}
+
+html[data-student-phone="true"] ::-webkit-scrollbar {
+  display: none;
+}
+
 /* ---------- floating bottom bar ---------- */
 .sp-bar {
   position: absolute;
@@ -260,6 +287,7 @@ html[data-theme="dark"] .sp-bar {
   position: relative;
   max-height: calc(var(--sp-h, 100dvh) - 48px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
   border-radius: 28px 28px 0 0;
   background: var(--m-bg);
