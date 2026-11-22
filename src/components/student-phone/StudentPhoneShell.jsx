@@ -12,6 +12,8 @@ import { setPhoneBeta } from "./phoneBeta"
 import useSheetDrag from "./kit/useSheetDrag"
 import useTabSwipe from "./kit/useTabSwipe"
 import usePhonePreload from "./usePhonePreload"
+import RouteAccessGuard from "../authz/RouteAccessGuard"
+import NotFoundPage from "../../pages/NotFoundPage"
 import "./student-phone.css"
 import "./pages/phone-pages.css"
 
@@ -19,14 +21,38 @@ import "./pages/phone-pages.css"
 const PhoneHome = lazy(() => import("./pages/PhoneHome"))
 const PhoneComplaints = lazy(() => import("./pages/PhoneComplaints"))
 const PhoneDining = lazy(() => import("./pages/PhoneDining"))
+const PhoneEvents = lazy(() => import("./pages/PhoneEvents"))
+const PhoneNotifications = lazy(() => import("./pages/PhoneNotifications"))
+const PhoneLostFound = lazy(() => import("./pages/PhoneLostFound"))
+const PhoneFeedback = lazy(() => import("./pages/PhoneFeedback"))
+const PhoneIDCard = lazy(() => import("./pages/PhoneIDCard"))
+const PhoneSecurity = lazy(() => import("./pages/PhoneSecurity"))
+const PhoneUndertakings = lazy(() => import("./pages/PhoneUndertakings"))
+const PhoneVisitors = lazy(() => import("./pages/PhoneVisitors"))
+const PhoneProfile = lazy(() => import("./pages/PhoneProfile"))
+
+// Same access keys as the routes in StudentRoutes (the shell renders these in place of <Outlet/>).
+const guarded = (routeKey, page) => (
+  <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
+    {page}
+  </RouteAccessGuard>
+)
 const PHONE_PAGES = {
-  "/student": <PhoneHome />,
-  "/student/complaints": <PhoneComplaints />,
+  "/student": guarded("route.student.dashboard", <PhoneHome />),
+  "/student/complaints": guarded("route.student.complaints", <PhoneComplaints />),
   "/student/dining": <PhoneDining />,
+  "/student/events": guarded("route.student.events", <PhoneEvents />),
+  "/student/notifications": guarded("route.student.notifications", <PhoneNotifications />),
+  "/student/lost-and-found": guarded("route.student.lostAndFound", <PhoneLostFound />),
+  "/student/feedbacks": guarded("route.student.feedbacks", <PhoneFeedback />),
+  "/student/id-card": guarded("route.student.idCard", <PhoneIDCard />),
+  "/student/security": guarded("route.student.security", <PhoneSecurity />),
+  "/student/undertakings": guarded("route.student.undertakings", <PhoneUndertakings />),
+  "/student/visitors": guarded("route.student.visitors", <PhoneVisitors />),
+  "/student/profile": guarded("route.student.profile", <PhoneProfile />),
 }
-// What slides in beside the page during a swipe: the phone page, or the normal page for Events.
-const EventsPage = lazy(() => import("../../pages/common/EventsPage"))
-const PEEK_PAGES = { ...PHONE_PAGES, "/student/events": <EventsPage /> }
+// What slides in beside the page during a swipe.
+const PEEK_PAGES = PHONE_PAGES
 const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === "/student/" ? "/student" : pathname.replace(/\/$/, "")] || null
 
 /**

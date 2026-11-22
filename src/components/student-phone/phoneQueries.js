@@ -1,9 +1,8 @@
-import { electionsApi, adminApi, complaintApi, studentApi, undertakingApi } from "../../service"
+import { accommodationApi, adminApi, complaintApi, electionsApi, eventsApi, feedbackApi, idCardApi, lostAndFoundApi, notificationApi, securityApi, studentApi, studentProfileApi, undertakingApi } from "../../service"
 import { queryKeys } from "../../lib/query"
 import { studentDiningPortalQuery, studentDiningTagsQuery } from "../dining/student/portalQuery"
 import { addDays, weekStartOf } from "../dining/menu/menuHelpers"
 import { localTodayKey } from "../dining/caterer/catererHelpers"
-import { eventsListQuery } from "../../pages/common/eventsQuery"
 
 /**
  * Every query the phone pages use, in one place, so the pages and the
@@ -75,6 +74,66 @@ export const menuWeekQuery = (weekStart) => {
   return { queryKey: queryKeys.dining.menu(params), queryFn: () => studentApi.getDiningMenu(params), retry: false }
 }
 
+export const phoneEventsQuery = (filter = "upcoming") => ({
+  queryKey: ["events", "phone", filter],
+  queryFn: ({ pageParam }) => eventsApi.getAllEvents({ page: pageParam, limit: 20, filter, search: "" }),
+  initialPageParam: 1,
+  getNextPageParam: (last) => (last?.pagination?.hasMore ? (last.pagination.page || 1) + 1 : undefined),
+})
+
+// ---- pages in the More sheet ----
+
+export const notificationsQuery = (expiry = "active") => ({
+  queryKey: [...queryKeys.notifications.all, "phone", expiry],
+  queryFn: () => notificationApi.getNotifications(`page=1&limit=50${expiry === "all" ? "" : `&expiryStatus=${expiry}`}`),
+})
+
+export const lostFoundQuery = (status = "all") => ({
+  queryKey: [...queryKeys.lostAndFound.all, "phone", status],
+  queryFn: () => lostAndFoundApi.getAllLostItems({ page: 1, limit: 50, ...(status === "all" ? {} : { status }) }),
+})
+
+export const feedbacksQuery = () => ({
+  queryKey: [...queryKeys.feedback.all, "phone"],
+  queryFn: () => feedbackApi.getFeedbacks({ page: 1, limit: 50 }),
+})
+
+export const idCardQuery = (userId) => ({ queryKey: queryKeys.idCard.mine(userId), queryFn: () => idCardApi.getIDcard(userId) })
+
+export const securityEntriesQuery = () => ({
+  queryKey: [...queryKeys.securityEntries.all, "phone"],
+  queryFn: () => securityApi.getStudentEntries({ page: 1, limit: 40 }),
+})
+
+export const undertakingListsQuery = () => ({
+  queryKey: queryKeys.undertakings.studentLists(),
+  queryFn: async () => {
+    const [pending, accepted] = await Promise.all([undertakingApi.getPendingUndertakings(), undertakingApi.getAcceptedUndertakings()])
+    return { pendingUndertakings: pending.pendingUndertakings || [], acceptedUndertakings: accepted.acceptedUndertakings || [] }
+  },
+})
+
+export const visitorRequestsQuery = () => ({
+  queryKey: queryKeys.accommodationRequests.list({ limit: 100 }),
+  queryFn: () => accommodationApi.listRequests({ limit: 100 }),
+})
+
+export const myProfileQuery = () => ({ queryKey: ["student-phone", "profile"], queryFn: () => studentApi.getStudent() })
+export const myHealthQuery = () => ({ queryKey: ["student-phone", "health"], queryFn: () => studentProfileApi.getHealthDetails(), retry: false })
+
+/** The More-sheet pages: preloaded too, refreshed less often (usePhonePreload). */
+export const morePreloadQueries = (userId) => [
+  notificationsQuery(),
+  lostFoundQuery(),
+  feedbacksQuery(),
+  securityEntriesQuery(),
+  undertakingListsQuery(),
+  visitorRequestsQuery(),
+  myProfileQuery(),
+  myHealthQuery(),
+  ...(userId ? [idCardQuery(userId)] : []),
+]
+
 /** Everything the bottom-bar pages show on first paint. */
 export const preloadQueries = () => {
   const thisWeek = weekStartOf(localTodayKey())
@@ -90,6 +149,5 @@ export const preloadQueries = () => {
     diningTagsQuery(),
     menuWeekQuery(thisWeek),
     menuWeekQuery(addDays(thisWeek, 7)),
-    eventsListQuery(),
   ]
 }
