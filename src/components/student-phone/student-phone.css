@@ -1,6 +1,44 @@
 /* Student portal on a phone. Heights use --sp-h (set by phoneMode.js when the
    page is forced out of "Desktop site") and fall back to 100dvh, never vh. */
 
+/* Phone palette (Material 3 style): a bright page, tinted containers on it. */
+html[data-student-phone="true"] {
+  --m-bg: #FAFBFE;
+  --m-surface: #EEF2F9;
+  --m-surface-high: #E3E9F3;
+  --m-raised: #FFFFFF;
+  --m-outline: #C9D1DD;
+  --m-outline-soft: #E1E6EE;
+  --m-on: #161A22;
+  --m-on-2: #414753;
+  --m-muted: #6C7280;
+  --m-primary: #1360AB;
+  --m-on-primary: #FFFFFF;
+  --m-primary-container: #D5E3FF;
+  --m-on-primary-container: #082D57;
+  --m-secondary-container: #DCE4F4;
+  --m-on-secondary-container: #141C2B;
+  --m-font-display: "Plus Jakarta Sans", "Google Sans", "Roboto", sans-serif;
+}
+
+html[data-student-phone="true"][data-theme="dark"] {
+  --m-bg: #111318;
+  --m-surface: #1C1F26;
+  --m-surface-high: #262A32;
+  --m-raised: #2C3039;
+  --m-outline: #434955;
+  --m-outline-soft: #2F343D;
+  --m-on: #E4E5EB;
+  --m-on-2: #C3C7D0;
+  --m-muted: #8D929C;
+  --m-primary: #A9C7FF;
+  --m-on-primary: #072B55;
+  --m-primary-container: #12406F;
+  --m-on-primary-container: #D5E3FF;
+  --m-secondary-container: #2C3546;
+  --m-on-secondary-container: #DCE4F4;
+}
+
 .sp-shell {
   --sp-head-h: 56px;
   --sp-bar-h: 62px;
@@ -11,6 +49,9 @@
   overflow: hidden;
   background: var(--color-bg-page);
 }
+
+/* Pages with a phone design paint the whole shell in the phone palette. */
+.sp-shell[data-mpage] { background: var(--m-bg); }
 
 html[data-student-phone="true"],
 html[data-student-phone="true"] body {
@@ -25,8 +66,7 @@ html[data-student-phone="true"] body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--color-bg-primary);
-  border-bottom: 1px solid var(--color-border-primary);
+  background: var(--m-bg);
   position: relative;
   z-index: 30;
 }
@@ -35,10 +75,11 @@ html[data-student-phone="true"] body {
   border: 0;
   background: none;
   padding: 6px 4px;
-  font-size: 1.375rem;
+  font-family: var(--m-font-display);
+  font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--color-primary);
+  letter-spacing: -0.04em;
+  color: var(--m-primary);
   cursor: pointer;
 }
 
@@ -53,9 +94,9 @@ html[data-student-phone="true"] body {
   width: 44px;
   height: 44px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 50%;
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--m-on-2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -65,8 +106,8 @@ html[data-student-phone="true"] body {
 
 .sp-icon-btn:active,
 .sp-icon-btn[data-active] {
-  background: var(--color-primary-bg);
-  color: var(--color-primary);
+  background: var(--m-secondary-container);
+  color: var(--m-on-secondary-container);
 }
 
 .sp-dot-count {
@@ -83,7 +124,7 @@ html[data-student-phone="true"] body {
   font-weight: 700;
   line-height: 18px;
   text-align: center;
-  box-shadow: 0 0 0 2px var(--color-bg-primary);
+  box-shadow: 0 0 0 2px var(--m-bg);
 }
 
 /* ---------- page ---------- */
@@ -103,8 +144,7 @@ html[data-student-phone="true"] body {
   padding: 0 4px env(safe-area-inset-bottom);
   display: flex;
   align-items: stretch;
-  background: var(--color-bg-primary);
-  border-top: 1px solid var(--color-border-primary);
+  background: var(--m-surface);
   position: relative;
   z-index: 30;
 }
@@ -119,17 +159,17 @@ html[data-student-phone="true"] body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  color: var(--color-text-muted);
+  gap: 4px;
+  color: var(--m-on-2);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
 .sp-tab__icon {
   position: relative;
-  width: 56px;
-  height: 30px;
-  border-radius: 15px;
+  width: 60px;
+  height: 32px;
+  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -147,11 +187,12 @@ html[data-student-phone="true"] body {
 }
 
 .sp-tab[data-active] {
-  color: var(--color-primary);
+  color: var(--m-on);
 }
 
 .sp-tab[data-active] .sp-tab__icon {
-  background: var(--color-primary-bg);
+  background: var(--m-secondary-container);
+  color: var(--m-on-secondary-container);
 }
 
 .sp-tab[data-active] .sp-tab__label {
@@ -166,7 +207,7 @@ html[data-student-phone="true"] body {
   height: 8px;
   border-radius: 50%;
   background: var(--color-success);
-  box-shadow: 0 0 0 2px var(--color-bg-primary);
+  box-shadow: 0 0 0 2px var(--m-surface);
 }
 
 /* ---------- More sheet ---------- */
@@ -193,8 +234,8 @@ html[data-student-phone="true"] body {
   max-height: calc(var(--sp-h, 100dvh) - 48px);
   overflow-y: auto;
   padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
-  border-radius: 20px 20px 0 0;
-  background: var(--color-bg-primary);
+  border-radius: 28px 28px 0 0;
+  background: var(--m-bg);
   box-shadow: var(--shadow-lg);
   animation: sp-rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -221,12 +262,12 @@ html[data-student-phone="true"] body {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--color-border-primary);
-  border-radius: 16px;
-  background: var(--color-bg-tertiary);
+  border: 0;
+  border-radius: 24px;
+  background: var(--m-surface);
   text-align: left;
   cursor: pointer;
-  color: var(--color-text-primary);
+  color: var(--m-on);
 }
 
 .sp-me[data-active] {
@@ -326,10 +367,10 @@ html[data-student-phone="true"] body {
   align-items: center;
   gap: 8px;
   padding: 14px 6px 12px;
-  border: 1px solid var(--color-border-primary);
-  border-radius: 16px;
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  border: 0;
+  border-radius: 20px;
+  background: var(--m-surface);
+  color: var(--m-on);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -338,21 +379,22 @@ html[data-student-phone="true"] body {
   background: var(--color-bg-hover);
 }
 
+.sp-tile:active { background: var(--m-surface-high); }
+
 .sp-tile[data-active] {
-  border-color: var(--color-primary);
-  background: var(--color-primary-bg);
+  background: var(--m-secondary-container);
 }
 
 .sp-tile__icon {
   position: relative;
   width: 44px;
   height: 44px;
-  border-radius: 14px;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary-bg);
-  color: var(--color-primary);
+  background: var(--m-primary-container);
+  color: var(--m-on-primary-container);
 }
 
 .sp-tile__icon .sp-dot-count {
@@ -379,11 +421,11 @@ html[data-student-phone="true"] body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 46px;
-  border: 1px solid var(--color-border-primary);
-  border-radius: 14px;
-  background: var(--color-bg-primary);
-  color: var(--color-text-secondary);
+  height: 48px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--m-surface);
+  color: var(--m-on-2);
   font-weight: 600;
   cursor: pointer;
 }

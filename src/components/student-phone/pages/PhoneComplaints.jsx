@@ -57,7 +57,7 @@ const PhoneComplaints = () => {
   const renderList = () => {
     if (listQuery.isPending) {
       return (
-        <ul className="mc-list" aria-busy="true">
+        <ul className="mk-list" aria-busy="true">
           {[0, 1, 2, 3].map((n) => (
             <li key={n} className="mc-row mc-row--ghost">
               <span className="mk-shimmer mc-row__ghost-icon" />
@@ -93,7 +93,7 @@ const PhoneComplaints = () => {
     }
     return (
       <>
-        <ul className="mc-list">
+        <ul className="mk-list">
           {items.map((complaint) => {
             const meta = statusMeta(complaint.status)
             return (

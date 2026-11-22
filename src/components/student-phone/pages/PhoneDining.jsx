@@ -124,7 +124,7 @@ const PhoneDining = () => {
     return (
       <>
         <h2 className="mk-label">Today</h2>
-        <ul className="md-today">
+        <ul className="mk-list md-today">
           {(meals.todayMeals || []).map((meal) => {
             const Icon = MEAL_ICON[meal.status] || Clock
             const issue = issueLine(meal)

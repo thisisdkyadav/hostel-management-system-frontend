@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { CalendarDays, Check, ChevronRight, Clock, FileSignature, Plane, Plus, ShieldCheck, Star, Vote, X } from "lucide-react"
+import { CalendarDays, Check, ChevronRight, Clock, Coffee, Cookie, FileSignature, Moon, Plane, Plus, ShieldCheck, Star, Sun, UtensilsCrossed, Vote, X } from "lucide-react"
 import { useToast } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { electionsApi, studentApi, undertakingApi } from "../../../service"
@@ -32,6 +32,17 @@ const greeting = (hour) => (hour < 5 ? "Good night" : hour < 12 ? "Good morning"
 const isBirthday = (dob, now) => {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dob || ""))
   return Boolean(match) && Number(match[2]) === now.getMonth() + 1 && Number(match[3]) === now.getDate()
+}
+
+/** A big faint drawing for the meal block: coffee in the morning, sun at noon, moon at night. */
+const MealArt = ({ name = "" }) => {
+  const key = name.toLowerCase()
+  const props = { className: "mh-meal__art", size: 150, strokeWidth: 1.25, "aria-hidden": true }
+  if (key.includes("break")) return <Coffee {...props} />
+  if (key.includes("lunch")) return <Sun {...props} />
+  if (key.includes("snack") || key.includes("tea")) return <Cookie {...props} />
+  if (key.includes("dinner") || key.includes("supper")) return <Moon {...props} />
+  return <UtensilsCrossed {...props} />
 }
 
 const MEAL_ICON = { ate: Check, missed: X, away: Plane, upcoming: Clock }
@@ -74,6 +85,7 @@ const MealHero = ({ now, todayMeals }) => {
 
   return (
     <button type="button" className="mh-meal" data-state={focus.state} style={focus.vars} onClick={() => navigate("/student/dining")}>
+      <MealArt name={focus.meal?.name} />
       {focus.meal ? (
         <>
           <span className="mh-meal__top">
@@ -226,11 +238,11 @@ const PhoneHome = () => {
 
       <section className="mh-block" aria-label="Your complaints">
         <div className="mh-complaints">
-          <button type="button" className="mh-count" onClick={() => navigate("/student/complaints")}>
-            <span className="mh-count__n" data-zero={openCount === 0 || undefined}>
+          <button type="button" className="mh-count" data-zero={openCount === 0 || undefined} onClick={() => navigate("/student/complaints")}>
+            <span className="mh-count__n">
               {dashboardQuery.isPending && !data ? "–" : openCount}
             </span>
-            <span className="mh-count__label">{openCount === 1 ? "open complaint" : "open complaints"}</span>
+            <span className="mh-count__label">open</span>
           </button>
           <div className="mh-complaints__list">
             {active.slice(0, 2).map((complaint) => {
@@ -283,7 +295,7 @@ const PhoneHome = () => {
           {events.length > 0 && (
             <>
               <h2 className="mk-label">Coming up</h2>
-              <ul className="mh-events">
+              <ul className="mk-list">
                 {events.map((event) => {
                   const when = new Date(event.dateAndTime)
                   return (

@@ -48,6 +48,17 @@ const Avatar = ({ user }) => (
   </span>
 )
 
+// Display face for titles and numbers, loaded only for the phone shell.
+const DISPLAY_FONT_HREF = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+const useDisplayFont = () =>
+  useEffect(() => {
+    if (document.querySelector(`link[href="${DISPLAY_FONT_HREF}"]`)) return
+    const link = document.createElement("link")
+    link.rel = "stylesheet"
+    link.href = DISPLAY_FONT_HREF
+    document.head.appendChild(link)
+  }, [])
+
 const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -59,6 +70,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const sheetOpen = sheetPath === pathname
   const setSheetOpen = (open) => setSheetPath(open ? pathname : null)
   const [qrOpen, setQrOpen] = useState(false)
+  useDisplayFont()
   const phonePage = phonePageFor(pathname)
 
   const byPath = useMemo(() => new Map(navItems.filter((item) => item.path).map((item) => [item.path, item])), [navItems])
@@ -106,7 +118,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   }
 
   return (
-    <div className="sp-shell">
+    <div className="sp-shell" data-mpage={phonePage ? "" : undefined}>
       <header className="sp-head">
         <button type="button" className="sp-head__brand" onClick={() => navigate("/student")}>
           SMS
