@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react"
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Bell, ChevronRight, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
 import { Modal } from "hzero"
@@ -9,6 +9,8 @@ import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "../sidebar/NewBadge"
 import QRCodeGenerator from "../QRCodeGenerator"
 import { setPhoneBeta } from "./phoneBeta"
+import useSheetDrag from "./kit/useSheetDrag"
+import useTabSwipe from "./kit/useTabSwipe"
 import "./student-phone.css"
 import "./pages/phone-pages.css"
 
@@ -90,6 +92,16 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const sheetPageActive = !tabs.some((tab) => isActivePath(pathname, tab.path)) && !isActivePath(pathname, "/student/notifications")
   const sheetHasNews = spotlight.length > 0 || gridItems.some((item) => isNavItemNew(item))
 
+  const tabPaths = tabs.map((tab) => tab.path)
+  const mainRef = useTabSwipe({
+    paths: tabPaths,
+    currentIndex: tabPaths.findIndex((path) => isActivePath(pathname, path)),
+    onSwitch: navigate,
+    active: !blocked,
+  })
+  const closeSheet = useCallback(() => setSheetPath(null), [])
+  const { sheetRef, backdropRef } = useSheetDrag(closeSheet, sheetOpen)
+
   useEffect(() => {
     if (!sheetOpen) return undefined
     const onKey = (event) => event.key === "Escape" && setSheetPath(null)
@@ -143,7 +155,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
         </div>
       </header>
 
-      <main className="sp-main" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 4)}>
+      <main ref={mainRef} className="sp-main" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 4)}>
         {phonePage ? (
           <Suspense fallback={null}>{phonePage}</Suspense>
         ) : (
@@ -176,8 +188,8 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
       {sheetOpen && (
         <div className="sp-sheet-layer">
-          <button type="button" className="sp-sheet-backdrop" aria-label="Close menu" onClick={() => setSheetOpen(false)} />
-          <div className="sp-sheet" role="dialog" aria-modal="true" aria-label="More">
+          <button ref={backdropRef} type="button" className="sp-sheet-backdrop" aria-label="Close menu" onClick={() => setSheetOpen(false)} />
+          <div ref={sheetRef} className="sp-sheet" role="dialog" aria-modal="true" aria-label="More">
             <div className="sp-sheet__grip" aria-hidden="true" />
             <div className="sp-sheet__top">
               {profileItem ? (

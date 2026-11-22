@@ -1,13 +1,15 @@
 import { useEffect } from "react"
 import { createPortal } from "react-dom"
 import { X } from "lucide-react"
+import useSheetDrag from "./useSheetDrag"
 
 /**
  * A bottom sheet for the phone shell. `tall` makes it take most of the screen
- * (forms); otherwise it hugs its content. `footer` stays pinned under the
+ * (forms); otherwise it hugs its content. Drag it down to dismiss. `footer` stays pinned under the
  * scrolling body (submit buttons).
  */
 const PhoneSheet = ({ title, onClose, children, footer, tall = false, label }) => {
+  const { sheetRef, backdropRef } = useSheetDrag(onClose)
   useEffect(() => {
     const onKey = (event) => event.key === "Escape" && onClose?.()
     document.addEventListener("keydown", onKey)
@@ -16,8 +18,8 @@ const PhoneSheet = ({ title, onClose, children, footer, tall = false, label }) =
 
   return createPortal(
     <div className="mk-sheet-layer">
-      <button type="button" className="mk-sheet-backdrop" aria-label="Close" onClick={onClose} />
-      <div className="mk-sheet" data-tall={tall || undefined} role="dialog" aria-modal="true" aria-label={label || title}>
+      <button ref={backdropRef} type="button" className="mk-sheet-backdrop" aria-label="Close" onClick={onClose} />
+      <div ref={sheetRef} className="mk-sheet" data-tall={tall || undefined} role="dialog" aria-modal="true" aria-label={label || title}>
         <div className="mk-sheet__grip" aria-hidden="true" />
         {title !== undefined && (
           <div className="mk-sheet__head" data-bare={!title || undefined}>
