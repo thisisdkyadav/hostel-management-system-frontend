@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Bell, ChevronRight, LayoutGrid, LogOut, Moon, QrCode, Sun, X } from "lucide-react"
 import { Modal } from "hzero"
@@ -9,6 +9,18 @@ import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "../sidebar/NewBadge"
 import QRCodeGenerator from "../QRCodeGenerator"
 import "./student-phone.css"
+import "./pages/phone-pages.css"
+
+// Pages with their own phone design; every other route renders its normal page.
+const PhoneHome = lazy(() => import("./pages/PhoneHome"))
+const PhoneComplaints = lazy(() => import("./pages/PhoneComplaints"))
+const PhoneDining = lazy(() => import("./pages/PhoneDining"))
+const PHONE_PAGES = {
+  "/student": <PhoneHome />,
+  "/student/complaints": <PhoneComplaints />,
+  "/student/dining": <PhoneDining />,
+}
+const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === "/student/" ? "/student" : pathname.replace(/\/$/, "")] || null
 
 /**
  * The student portal on a phone: a slim header (SMS, campus QR, notifications),
@@ -47,6 +59,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const sheetOpen = sheetPath === pathname
   const setSheetOpen = (open) => setSheetPath(open ? pathname : null)
   const [qrOpen, setQrOpen] = useState(false)
+  const phonePage = phonePageFor(pathname)
 
   const byPath = useMemo(() => new Map(navItems.filter((item) => item.path).map((item) => [item.path, item])), [navItems])
   const tabs = TAB_PATHS.map((path) => byPath.get(path)).filter(Boolean)
@@ -117,7 +130,11 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
       </header>
 
       <main className="sp-main">
-        <Outlet />
+        {phonePage ? (
+          <Suspense fallback={null}>{phonePage}</Suspense>
+        ) : (
+          <Outlet />
+        )}
       </main>
 
       <nav className="sp-bar" aria-label="Main">
