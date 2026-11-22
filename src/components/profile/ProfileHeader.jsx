@@ -1,47 +1,9 @@
-import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
-import { Button, Heading, HStack, Surface, Text } from "hzero"
-import usePwaMobile from "../../hooks/usePwaMobile"
-import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
-
-const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
+import { Heading, HStack, Surface, Text } from "hzero"
 
 const ProfileHeader = ({ user, role, subtitle }) => {
-  const { isPwaMobile, isStandalone } = usePwaMobile()
-  const [layoutPreference, setLayoutPreference] = useState("sidebar") // Default to sidebar
-
-  // Load layout preference from localStorage on component mount
-  useEffect(() => {
-    try {
-      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
-      if (savedPreference && (savedPreference === "sidebar" || savedPreference === "bottombar")) {
-        setLayoutPreference(savedPreference)
-      }
-    } catch (error) {
-      console.error("Error loading layout preference:", error)
-    }
-  }, [])
-
-  // Toggle layout preference and save to localStorage
-  const toggleLayout = () => {
-    try {
-      const newPreference = layoutPreference === "sidebar" ? "bottombar" : "sidebar"
-      setLayoutPreference(newPreference)
-      localStorage.setItem(LAYOUT_PREFERENCE_KEY, newPreference)
-
-      // Show notification that requires app restart
-      alert("Layout preference saved. Please restart the app to apply changes.")
-    } catch (error) {
-      console.error("Error saving layout preference:", error)
-      alert("Failed to save layout preference. Please try again.")
-    }
-  }
-
-  // Only show layout toggle for students in PWA mode
-  const showLayoutToggle = role === "Student" && isPwaMobile && isStandalone
-
   return (
     <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-5">
       <ProfileAvatar user={user} size="large" />
@@ -61,11 +23,6 @@ const ProfileHeader = ({ user, role, subtitle }) => {
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />
 
-          {showLayoutToggle && (
-            <Button onClick={toggleLayout} variant="outline" size="sm">
-              {layoutPreference === "sidebar" ? <MdOutlineMenu /> : <MdOutlineViewSidebar />} {layoutPreference === "sidebar" ? "Switch to Bottom Bar" : "Switch to Sidebar"}
-            </Button>
-          )}
         </HStack>
       </div>
     </div>

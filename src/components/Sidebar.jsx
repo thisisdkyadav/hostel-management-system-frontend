@@ -3,8 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
 import { Moon, Sun } from "lucide-react"
-import usePwaMobile from "../hooks/usePwaMobile"
-import useLayoutPreference from "../hooks/useLayoutPreference"
 import useColorScheme from "../hooks/useColorScheme"
 import useAdminCategoryCounts from "../hooks/useAdminCategoryCounts"
 import HostelSwitcher from "./sidebar/HostelSwitcher"
@@ -126,8 +124,6 @@ const Sidebar = ({ navItems }) => {
   const location = useLocation()
   const { user } = useAuth()
   const { isDark, toggleTheme } = useColorScheme(user)
-  const { isPwaMobile } = usePwaMobile()
-  const { layoutPreference } = useLayoutPreference()
   const { recentPaths, recordVisit } = useRecentPaths()
 
   const isAdmin = user?.role === "Admin"
@@ -397,12 +393,6 @@ const Sidebar = ({ navItems }) => {
 
     return () => window.removeEventListener("resize", handleResize)
   }, [])
-
-  // Skip sidebar rendering for student PWA in mobile mode with bottombar preference.
-  // All hooks must run before this point (Rules of Hooks).
-  if (user?.role === "Student" && isPwaMobile && layoutPreference === "bottombar") {
-    return null
-  }
 
   if (!navItems || !Array.isArray(navItems) || navItems.length === 0) {
     return null

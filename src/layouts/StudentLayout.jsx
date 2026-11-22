@@ -1,28 +1,22 @@
 import Sidebar from "../components/Sidebar"
-import BottomBar from "../components/BottomBar"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import StudentPhoneShell from "../components/student-phone/StudentPhoneShell"
+import useStudentPhone from "../components/student-phone/useStudentPhone"
+import { Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthProvider"
 import { useEffect, useState } from "react"
 import { electionsApi, notificationApi, overallBestPerformerApi } from "../service"
 import { studentApi } from "../service/modules/student.api"
-import usePwaMobile from "../hooks/usePwaMobile"
-import { useLayoutPreference } from "../hooks/useLayoutPreference"
 import { useLogout } from "../hooks/useLogout"
-import {
-  getStudentNavItems,
-  getStudentPwaBottomBarMainItems,
-  getStudentPwaHiddenItems
-} from "../constants/navigationConfig"
+import { getStudentNavItems } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 import { Heading, Surface, Text } from "hzero"
 import DiningAllocationGate from "../components/dining/student/DiningAllocationGate"
 
 const StudentLayout = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
-  const { isPwaMobile, isMobile, isStandalone } = usePwaMobile()
-  const { layoutPreference, loading } = useLayoutPreference()
+  // Students on a phone get the phone layout, even with "Desktop site" on.
+  const phone = useStudentPhone(user?.role === "Student")
   const handleLogout = useLogout()
   const [notificationsCount, setNotificationsCount] = useState(0)
   const [showOverallBestPerformer, setShowOverallBestPerformer] = useState(false)
@@ -149,22 +143,10 @@ const StudentLayout = () => {
       electionPortalState
     )
   )
-  const pwaBottomBarMainItems = useAuthorizedNavItems(getStudentPwaBottomBarMainItems())
-  const pwaBottomBarHiddenItems = getStudentPwaHiddenItems(allNavItems)
-
-  // Navigation handler for bottom bar
-  const handleNavigation = (item) => {
-    if (item.action) {
-      item.action()
-    } else if (item.path) {
-      navigate(item.path)
-    }
-  }
-
   // If still loading, don't render anything yet to avoid flashing
-  if (loading || studentStatusLoading) {
+  if (studentStatusLoading) {
     return (
-      <Text as="div" color="primary" style={{ height: '100vh', backgroundColor: 'var(--color-bg-page)' }} className="flex items-center justify-center">
+      <Text as="div" color="primary" style={{ height: 'var(--sp-h, 100vh)', backgroundColor: 'var(--color-bg-page)' }} className="flex items-center justify-center">
         Loading...
       </Text>
     )
@@ -174,7 +156,7 @@ const StudentLayout = () => {
     return (
       <div
         style={{
-          minHeight: "100vh",
+          minHeight: "var(--sp-h, 100vh)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -198,31 +180,21 @@ const StudentLayout = () => {
     )
   }
 
-  // Determine which layout to show based on preferences and device
-  let showBottomBar = false
-
-  if (user && user.role === "Student" && isMobile) {
-    if (isStandalone) {
-      // For installed PWA, respect user preference
-      showBottomBar = layoutPreference === "bottombar"
-    } else if (isPwaMobile) {
-      // For mobile browser PWA view, always use bottom bar
-      showBottomBar = true
-    }
+  if (phone.isPhone) {
+    return (
+      <DiningAllocationGate>
+        <StudentPhoneShell navItems={allNavItems} notificationsCount={notificationsCount} blocked={phone.blocked} />
+      </DiningAllocationGate>
+    )
   }
-
-  const showSidebar = !showBottomBar
 
   return (
     <DiningAllocationGate>
-      <div className={`layout-container ${showBottomBar ? "pwa-container" : ""}`}>
-        {showSidebar && <Sidebar navItems={allNavItems} />}
-
-        <div className={`layout-content ${showBottomBar ? "pb-16 pwa-bottom-padding" : ""}`}>
+      <div className="layout-container">
+        <Sidebar navItems={allNavItems} />
+        <div className="layout-content">
           <Outlet />
         </div>
-
-        {showBottomBar && <BottomBar mainNavItems={pwaBottomBarMainItems} hiddenNavItems={pwaBottomBarHiddenItems} handleNavigation={handleNavigation} />}
       </div>
     </DiningAllocationGate>
   )

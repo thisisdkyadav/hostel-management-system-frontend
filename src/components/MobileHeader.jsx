@@ -4,8 +4,6 @@ import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { Moon, Sun } from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
-import usePwaMobile from "../hooks/usePwaMobile"
-import useLayoutPreference from "../hooks/useLayoutPreference"
 import { HStack } from "hzero"
 import { isNavItemNew } from "../constants/navigationConfig"
 import { NewTag } from "./sidebar/NewBadge"
@@ -13,8 +11,6 @@ import { NewTag } from "./sidebar/NewBadge"
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isDark, onToggleTheme }) => {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { isPwaMobile } = usePwaMobile()
-  const { layoutPreference } = useLayoutPreference()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -30,12 +26,6 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation, isD
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
-
-  // Hide the mobile header completely if we're in PWA mobile mode for students
-  // with bottombar preference. Must come after all hooks (Rules of Hooks).
-  if (isPwaMobile && user?.role === "Student" && layoutPreference === "bottombar") {
-    return null
-  }
 
   // Safety check - if bottomNavItems is not provided, use an empty array
   const safeBottomNavItems = bottomNavItems || []

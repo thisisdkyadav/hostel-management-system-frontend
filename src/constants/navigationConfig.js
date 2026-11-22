@@ -534,21 +534,3 @@ export const getAcademicsNavItems = (handleLogout) => [
   createLogoutItem(handleLogout),
 ]
 
-/**
- * PWA bottom bar main items (4 primary items shown in bottom bar)
- */
-export const getStudentPwaBottomBarMainItems = () => [
-  { name: "Home", icon: LayoutDashboard, path: "/student" },
-  { name: "Complaints", icon: ClipboardCheck, path: "/student/complaints" },
-  { name: "Lost & Found", icon: Search, path: "/student/lost-and-found" },
-  { name: "Events", icon: CalendarDays, path: "/student/events" },
-]
-
-/**
- * Get hidden items for PWA bottom bar dropdown
- * (all items except the main 4)
- */
-export const getStudentPwaHiddenItems = (allNavItems) => {
-  const mainItems = getStudentPwaBottomBarMainItems()
-  return allNavItems.filter((item) => !mainItems.some((mainItem) => mainItem.path === item.path))
-}

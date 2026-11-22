@@ -15,7 +15,6 @@ import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
 import { Button, Grid, Heading, HStack, Modal, Surface, Text, VStack } from "hzero"
-import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
 import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPopup"
 
@@ -82,7 +81,6 @@ const StatsShimmer = () => (
 
 const DashboardPage = () => {
   const { user, isOnline } = useAuth()
-  const { isPwaMobile } = usePwaMobile()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [showQRModal, setShowQRModal] = useState(false)
@@ -602,14 +600,14 @@ const DashboardPage = () => {
 
       {/* Only keep the mobile QR button and modal */}
       <Button onClick={() => setShowQRModal(true)}
-        className={`fixed md:hidden rounded-full ${isPwaMobile ? "bottom-20" : ""}`}
+        className="student-qr-fab fixed md:hidden rounded-full"
         variant="primary"
         icon={<QrCode size={24} />}
         style={{
           padding: 'var(--spacing-4)',
           boxShadow: 'var(--shadow-lg)',
           zIndex: 'var(--z-dropdown)',
-          bottom: isPwaMobile ? '5rem' : 'var(--spacing-6)',
+          bottom: 'var(--spacing-6)',
           right: 'var(--spacing-6)',
         }}
         aria-label="Show QR Code"

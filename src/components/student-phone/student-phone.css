@@ -1,0 +1,452 @@
+/* Student portal on a phone. Heights use --sp-h (set by phoneMode.js when the
+   page is forced out of "Desktop site") and fall back to 100dvh, never vh. */
+
+.sp-shell {
+  --sp-head-h: 56px;
+  --sp-bar-h: 62px;
+  display: flex;
+  flex-direction: column;
+  height: var(--sp-h, 100dvh);
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-bg-page);
+}
+
+html[data-student-phone="true"],
+html[data-student-phone="true"] body {
+  overscroll-behavior-y: none;
+}
+
+/* ---------- header ---------- */
+.sp-head {
+  flex: none;
+  height: calc(var(--sp-head-h) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 8px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-primary);
+  position: relative;
+  z-index: 30;
+}
+
+.sp-head__brand {
+  border: 0;
+  background: none;
+  padding: 6px 4px;
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.sp-head__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sp-icon-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sp-icon-btn:active,
+.sp-icon-btn[data-active] {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.sp-dot-count {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--color-danger);
+  color: var(--color-white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--color-bg-primary);
+}
+
+/* ---------- page ---------- */
+.sp-main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* ---------- bottom bar ---------- */
+.sp-bar {
+  flex: none;
+  height: calc(var(--sp-bar-h) + env(safe-area-inset-bottom));
+  padding: 0 4px env(safe-area-inset-bottom);
+  display: flex;
+  align-items: stretch;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-primary);
+  position: relative;
+  z-index: 30;
+}
+
+.sp-tab {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 7px 0 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sp-tab__icon {
+  position: relative;
+  width: 56px;
+  height: 30px;
+  border-radius: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.sp-tab__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-tab[data-active] {
+  color: var(--color-primary);
+}
+
+.sp-tab[data-active] .sp-tab__icon {
+  background: var(--color-primary-bg);
+}
+
+.sp-tab[data-active] .sp-tab__label {
+  font-weight: 700;
+}
+
+.sp-tab__dot {
+  position: absolute;
+  top: 3px;
+  right: 13px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 0 2px var(--color-bg-primary);
+}
+
+/* ---------- More sheet ---------- */
+.sp-sheet-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.sp-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgb(15 23 42 / 45%);
+  animation: sp-fade 180ms ease-out;
+}
+
+.sp-sheet {
+  position: relative;
+  max-height: calc(var(--sp-h, 100dvh) - 48px);
+  overflow-y: auto;
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+  border-radius: 20px 20px 0 0;
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-lg);
+  animation: sp-rise 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.sp-sheet__grip {
+  width: 40px;
+  height: 4px;
+  margin: 2px auto 10px;
+  border-radius: 2px;
+  background: var(--color-border-primary);
+}
+
+.sp-sheet__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sp-me {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 16px;
+  background: var(--color-bg-tertiary);
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.sp-me[data-active] {
+  border-color: var(--color-primary);
+}
+
+.sp-avatar {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.sp-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sp-me__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-me__name,
+.sp-me__mail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-me__name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.sp-me__mail {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.sp-me__chev {
+  flex: none;
+  color: var(--color-text-muted);
+}
+
+.sp-spotlight {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sp-spotlight__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-bg-primary));
+  color: var(--color-success);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sp-spotlight__name {
+  flex: 1;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.sp-spotlight__tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sp-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 6px 12px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 16px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sp-tile:active {
+  background: var(--color-bg-hover);
+}
+
+.sp-tile[data-active] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.sp-tile__icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.sp-tile__icon .sp-dot-count {
+  top: -6px;
+  right: -8px;
+}
+
+.sp-tile__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.sp-sheet__foot {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.sp-foot-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 14px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sp-foot-btn--danger {
+  color: var(--color-danger);
+}
+
+.sp-foot-btn--danger:active {
+  background: var(--color-danger-bg-light);
+}
+
+/* ---------- "Desktop site" fallback notice ----------
+   Only shown while the page is laid out ~980px wide on a phone, so sizes
+   scale with the layout width (vw) to stay readable after the browser shrinks it. */
+.sp-blocked {
+  min-height: 100%;
+  padding: 6vw;
+  background: var(--color-bg-page);
+  font-size: 4.6vw;
+  line-height: 1.5;
+}
+
+.sp-blocked__card {
+  padding: 7vw 6vw;
+  border-radius: 5vw;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+.sp-blocked__word {
+  font-size: 7vw;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.sp-blocked__card h1 {
+  margin: 3vw 0 2vw;
+  font-size: 6vw;
+}
+
+.sp-blocked__card p,
+.sp-blocked__card li {
+  color: var(--color-text-secondary);
+}
+
+@keyframes sp-rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes sp-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-sheet,
+  .sp-sheet-backdrop { animation: none; }
+}
+
+/* The dashboard's floating QR button; the phone header has the QR instead. */
+html[data-student-phone="true"] .student-qr-fab {
+  display: none !important;
+}
