@@ -1,25 +1,24 @@
 import { useSyncExternalStore } from "react"
 
 /**
- * Opt-in for the new phone app while it's in beta. Stored per device (it only
- * matters on a phone); off by default, so students keep the classic layout
- * until they switch it on from their profile.
+ * The phone app is the default on phones. Students can switch to the classic
+ * layout; that choice is stored per device ("0"). Anything else means on.
  */
 const KEY = "sms_phone_beta"
 const listeners = new Set()
 
 const read = () => {
   try {
-    return localStorage.getItem(KEY) === "1"
+    return localStorage.getItem(KEY) !== "0"
   } catch {
-    return false
+    return true
   }
 }
 
 export const setPhoneBeta = (on) => {
   try {
-    if (on) localStorage.setItem(KEY, "1")
-    else localStorage.removeItem(KEY)
+    if (on) localStorage.removeItem(KEY)
+    else localStorage.setItem(KEY, "0")
   } catch {
     /* storage blocked: the switch just won't stick */
   }
@@ -36,4 +35,4 @@ const subscribe = (listener) => {
   }
 }
 
-export const usePhoneBeta = () => useSyncExternalStore(subscribe, read, () => false)
+export const usePhoneBeta = () => useSyncExternalStore(subscribe, read, () => true)

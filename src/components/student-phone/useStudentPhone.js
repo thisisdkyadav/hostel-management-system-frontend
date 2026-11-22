@@ -9,7 +9,7 @@ import { canForce, disablePhoneMode, enablePhoneMode, isDesktopSiteOn, isPhoneDe
  * paint and undone when the student layout unmounts (logout).
  */
 const useStudentPhone = (enabled) => {
-  // While the phone app is in beta, only students who opted in get it.
+  // On by default; false only if the student chose the classic layout on this device.
   const beta = usePhoneBeta()
   const state = useMemo(() => {
     const isPhone = Boolean(enabled) && beta && isPhoneDevice()
