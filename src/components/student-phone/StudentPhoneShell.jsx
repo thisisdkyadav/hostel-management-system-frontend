@@ -71,6 +71,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const sheetOpen = sheetPath === pathname
   const setSheetOpen = (open) => setSheetPath(open ? pathname : null)
   const [qrOpen, setQrOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   useDisplayFont()
   const phonePage = phonePageFor(pathname)
 
@@ -119,7 +120,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   }
 
   return (
-    <div className="sp-shell" data-mpage={phonePage ? "" : undefined}>
+    <div className="sp-shell" data-mpage={phonePage ? "" : undefined} data-scrolled={scrolled || undefined}>
       <header className="sp-head">
         <button type="button" className="sp-head__brand" onClick={() => navigate("/student")}>
           SMS
@@ -142,7 +143,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
         </div>
       </header>
 
-      <main className="sp-main">
+      <main className="sp-main" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 4)}>
         {phonePage ? (
           <Suspense fallback={null}>{phonePage}</Suspense>
         ) : (

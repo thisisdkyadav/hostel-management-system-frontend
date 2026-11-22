@@ -41,7 +41,11 @@ html[data-student-phone="true"][data-theme="dark"] {
 
 .sp-shell {
   --sp-head-h: 56px;
-  --sp-bar-h: 62px;
+  --sp-bar-h: 64px;
+  --sp-bar-gap: 10px;
+  /* room the floating bar takes at the bottom of the page */
+  --sp-bar-space: calc(var(--sp-bar-h) + var(--sp-bar-gap) + env(safe-area-inset-bottom));
+  position: relative;
   display: flex;
   flex-direction: column;
   height: var(--sp-h, 100dvh);
@@ -67,8 +71,22 @@ html[data-student-phone="true"] body {
   align-items: center;
   justify-content: space-between;
   background: var(--m-bg);
+  border-bottom: 1px solid var(--m-outline-soft);
   position: relative;
   z-index: 30;
+  transition: background-color 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* Once the page scrolls under it, the header lifts: tinted, with a soft shadow. */
+.sp-shell[data-scrolled] .sp-head {
+  background: var(--m-raised);
+  border-bottom-color: transparent;
+  box-shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 14px rgb(16 24 40 / 7%);
+}
+
+html[data-theme="dark"] .sp-shell[data-scrolled] .sp-head {
+  background: var(--m-surface);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 35%);
 }
 
 .sp-head__brand {
@@ -135,50 +153,65 @@ html[data-student-phone="true"] body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   position: relative;
+  /* the bar floats over the page, so leave room under the last item */
+  padding-bottom: calc(var(--sp-bar-space) + 8px);
 }
 
-/* ---------- bottom bar ---------- */
+/* ---------- floating bottom bar ---------- */
 .sp-bar {
-  flex: none;
-  height: calc(var(--sp-bar-h) + env(safe-area-inset-bottom));
-  padding: 0 4px env(safe-area-inset-bottom);
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--sp-bar-gap) + env(safe-area-inset-bottom));
+  z-index: 30;
+  height: var(--sp-bar-h);
+  padding: 0 6px;
   display: flex;
   align-items: stretch;
-  background: var(--m-surface);
-  position: relative;
-  z-index: 30;
+  border: 1px solid var(--m-outline-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--m-raised) 95%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 2px 6px rgb(16 24 40 / 8%), 0 10px 28px rgb(16 24 40 / 14%);
+}
+
+html[data-theme="dark"] .sp-bar {
+  background: color-mix(in srgb, var(--m-surface-high) 96%, transparent);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 45%);
 }
 
 .sp-tab {
   flex: 1;
   min-width: 0;
+  margin: 6px 0;
   border: 0;
+  border-radius: 999px;
   background: none;
-  padding: 7px 0 6px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: var(--m-on-2);
+  gap: 3px;
+  color: var(--m-muted);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 200ms ease, color 200ms ease;
 }
+
+.sp-tab:active { transform: scale(0.96); }
 
 .sp-tab__icon {
   position: relative;
-  width: 60px;
-  height: 32px;
-  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .sp-tab__label {
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 0.6875rem;
+  font-weight: 600;
   line-height: 1;
   max-width: 100%;
   overflow: hidden;
@@ -187,27 +220,21 @@ html[data-student-phone="true"] body {
 }
 
 .sp-tab[data-active] {
-  color: var(--m-on);
-}
-
-.sp-tab[data-active] .sp-tab__icon {
   background: var(--m-secondary-container);
   color: var(--m-on-secondary-container);
 }
 
-.sp-tab[data-active] .sp-tab__label {
-  font-weight: 700;
-}
+.sp-tab[data-active] .sp-tab__label { font-weight: 800; }
 
 .sp-tab__dot {
   position: absolute;
-  top: 3px;
-  right: 13px;
+  top: -2px;
+  right: -4px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--color-success);
-  box-shadow: 0 0 0 2px var(--m-surface);
+  box-shadow: 0 0 0 2px var(--m-raised);
 }
 
 /* ---------- More sheet ---------- */

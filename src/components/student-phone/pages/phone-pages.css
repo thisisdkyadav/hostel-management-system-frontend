@@ -21,7 +21,7 @@
   color: var(--m-on-2);
 }
 
-.mk-page--fab { padding-bottom: 104px; }
+.mk-page--fab { padding-bottom: 80px; }
 
 .mk-title {
   margin: 8px 4px 0;
@@ -238,7 +238,7 @@
 .mk-fab {
   position: fixed;
   right: 16px;
-  bottom: calc(var(--sp-bar-h, 62px) + env(safe-area-inset-bottom) + 16px);
+  bottom: calc(var(--sp-bar-space, 74px) + 14px);
   z-index: 25;
   display: inline-flex;
   align-items: center;
