@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import { Bell, ChevronRight, LayoutGrid, LogOut, Moon, QrCode, Sun, X } from "lucide-react"
+import { Bell, ChevronRight, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
 import { Modal } from "hzero"
 import { useAuth } from "../../contexts/AuthProvider"
 import useColorScheme from "../../hooks/useColorScheme"
@@ -8,6 +8,7 @@ import { getMediaUrl } from "../../utils/mediaUtils"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "../sidebar/NewBadge"
 import QRCodeGenerator from "../QRCodeGenerator"
+import { setPhoneBeta } from "./phoneBeta"
 import "./student-phone.css"
 import "./pages/phone-pages.css"
 
@@ -230,6 +231,10 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
               <button type="button" className="sp-foot-btn" onClick={toggleTheme}>
                 {isDark ? <Sun size={18} /> : <Moon size={18} />}
                 {isDark ? "Light mode" : "Dark mode"}
+              </button>
+              <button type="button" className="sp-foot-btn" onClick={() => setPhoneBeta(false)}>
+                <Monitor size={18} />
+                Classic
               </button>
               {logoutItem && (
                 <button type="button" className="sp-foot-btn sp-foot-btn--danger" onClick={() => go(logoutItem)}>

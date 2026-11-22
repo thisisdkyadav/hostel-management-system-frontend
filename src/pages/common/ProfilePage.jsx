@@ -7,6 +7,7 @@ import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
 import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 import AcademicsProfile from "../../components/profile/AcademicsProfile"
 import SignatureSettingsCard from "../../components/profile/SignatureSettingsCard"
+import PhoneBetaCard from "../../components/student-phone/PhoneBetaCard"
 import { Heading, Surface, Text } from "hzero"
 
 const ProfilePage = () => {
@@ -44,6 +45,8 @@ const ProfilePage = () => {
           <Heading as="h1" size="2xl" weight="bold" color="secondary">My Profile</Heading>
           <Text color="muted">View and manage your profile information</Text>
         </div>
+
+        {user?.role === "Student" ? <PhoneBetaCard /> : null}
 
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
           <Surface padding={6}>{renderProfile()}</Surface>

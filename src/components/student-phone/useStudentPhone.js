@@ -1,4 +1,5 @@
 import { useLayoutEffect, useMemo } from "react"
+import { usePhoneBeta } from "./phoneBeta"
 import { canForce, disablePhoneMode, enablePhoneMode, isDesktopSiteOn, isPhoneDevice } from "./phoneMode"
 
 /**
@@ -8,11 +9,13 @@ import { canForce, disablePhoneMode, enablePhoneMode, isDesktopSiteOn, isPhoneDe
  * paint and undone when the student layout unmounts (logout).
  */
 const useStudentPhone = (enabled) => {
+  // While the phone app is in beta, only students who opted in get it.
+  const beta = usePhoneBeta()
   const state = useMemo(() => {
-    const isPhone = Boolean(enabled) && isPhoneDevice()
+    const isPhone = Boolean(enabled) && beta && isPhoneDevice()
     const desktopSite = isPhone && isDesktopSiteOn()
     return { isPhone, forced: desktopSite && canForce(), blocked: desktopSite && !canForce() }
-  }, [enabled])
+  }, [enabled, beta])
 
   useLayoutEffect(() => {
     if (!state.isPhone) return undefined
