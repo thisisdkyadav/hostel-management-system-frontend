@@ -81,6 +81,17 @@ export const answerWidthQueries = (text, w) =>
     })
 
 const VH_RE = /(-?[\d.]+)(?:d|s|l)?vh\b/g
+// vw has the same problem: 100vw is the 980px "Desktop site" width, so hzero's
+// modals (max-width: 100vw - gap) came out ~2.5x wider than the phone.
+const VW_RE = /(-?[\d.]+)(?:d|s|l)?vw\b/g
+const usesViewportUnits = (value) => {
+  const hit = VH_RE.test(value) || VW_RE.test(value)
+  VH_RE.lastIndex = 0
+  VW_RE.lastIndex = 0
+  return hit
+}
+const toPhoneUnits = (value) =>
+  value.replace(VH_RE, (_, n) => `calc(var(--sp-vh, 1vh) * ${n})`).replace(VW_RE, (_, n) => `calc(var(--sp-vw, 1vw) * ${n})`)
 const originalMedia = new WeakMap()
 const originalProps = new WeakMap()
 
@@ -91,19 +102,16 @@ const walkRules = (rules, w) => {
       const next = answerWidthQueries(originalMedia.get(rule), w)
       if (next !== rule.media.mediaText) rule.media.mediaText = next
     }
-    if (rule.style && rule.style.cssText.includes("vh") && !originalProps.has(rule)) {
+    if (rule.style && /v[hw]\b/.test(rule.style.cssText) && !originalProps.has(rule)) {
       const saved = []
       for (let i = 0; i < rule.style.length; i += 1) {
         const prop = rule.style[i]
         const value = rule.style.getPropertyValue(prop)
-        if (VH_RE.test(value)) saved.push([prop, value, rule.style.getPropertyPriority(prop)])
-        VH_RE.lastIndex = 0
+        if (usesViewportUnits(value)) saved.push([prop, value, rule.style.getPropertyPriority(prop)])
       }
       if (saved.length) {
         originalProps.set(rule, saved)
-        for (const [prop, value, priority] of saved) {
-          rule.style.setProperty(prop, value.replace(VH_RE, (_, n) => `calc(var(--sp-vh, 1vh) * ${n})`), priority)
-        }
+        for (const [prop, value, priority] of saved) rule.style.setProperty(prop, toPhoneUnits(value), priority)
       }
     }
     if (rule.cssRules?.length) walkRules(rule.cssRules, w)
@@ -147,6 +155,7 @@ const syncViewport = () => {
   const height = window.innerHeight / zoom
   root().style.setProperty("--sp-h", `${height}px`)
   root().style.setProperty("--sp-vh", `${height / 100}px`)
+  root().style.setProperty("--sp-vw", `${phoneWidth() / 100}px`)
 }
 
 const rewriteAll = () => {
@@ -207,6 +216,7 @@ const stopForcing = () => {
   root().style.zoom = ""
   root().style.removeProperty("--sp-h")
   root().style.removeProperty("--sp-vh")
+  root().style.removeProperty("--sp-vw")
   delete root().dataset.phoneForced
 }
 
