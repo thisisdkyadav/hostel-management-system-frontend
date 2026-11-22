@@ -11,6 +11,7 @@ import { getStudentNavItems } from "../constants/navigationConfig"
 import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 import { Heading, Surface, Text } from "hzero"
 import DiningAllocationGate from "../components/dining/student/DiningAllocationGate"
+import InstallAppPrompt from "../components/student-phone/install/InstallAppPrompt"
 
 const StudentLayout = () => {
   const location = useLocation()
@@ -184,6 +185,7 @@ const StudentLayout = () => {
     return (
       <DiningAllocationGate>
         <StudentPhoneShell navItems={allNavItems} notificationsCount={notificationsCount} blocked={phone.blocked} />
+        <InstallAppPrompt />
       </DiningAllocationGate>
     )
   }
@@ -196,6 +198,7 @@ const StudentLayout = () => {
           <Outlet />
         </div>
       </div>
+      <InstallAppPrompt />
     </DiningAllocationGate>
   )
 }

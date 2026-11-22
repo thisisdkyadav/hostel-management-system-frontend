@@ -121,6 +121,9 @@ export default defineConfig({
       includeAssets: [
         "favicon.ico",
         "apple-touch-icon.png",
+        "pwa-192.png",
+        "pwa-512.png",
+        "pwa-maskable-512.png",
         "masked-icon.svg",
       ],
 
@@ -130,6 +133,7 @@ export default defineConfig({
         description:
           "Student Management System for IIT Indore students and staff",
 
+        id: "/",
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -138,19 +142,15 @@ export default defineConfig({
         theme_color: "#1360AB",
 
         icons: [
-          {
-            src: "/hms-logo.svg",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-          {
-            src: "/hms-logo.svg",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
+          { src: "/pwa-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "/pwa-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: "/pwa-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
+
+        // Lets the site ask "is the app installed?" (navigator.getInstalledRelatedApps)
+        // so students in the browser get "Open in app" instead of "Install".
+        related_applications: [{ platform: "webapp", url: "/manifest.webmanifest" }],
+        launch_handler: { client_mode: ["navigate-existing", "auto"] },
       },
 
       /* Dev mode PWA */

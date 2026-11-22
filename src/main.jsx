@@ -12,6 +12,8 @@ window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault()
   window.deferredPrompt = e
 })
+// Tracks whether the app is installed (appinstalled, standalone launches).
+import("./components/student-phone/install/pwaInstall")
 
 /* -------------------------------
    Render app
