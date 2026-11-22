@@ -6,39 +6,23 @@ import { isPhoneDevice } from "../phoneMode"
 import { checkInstalled, installPrompt, isStandalone, onInstallChange, openInApp, platform, runInstall } from "./pwaInstall"
 import "./install-prompt.css"
 
-const SNOOZE_KEY = "sms_pwa_prompt_snooze"
-const SEEN_KEY = "sms_pwa_prompt_seen" // sessionStorage: once per browser session
-const SNOOZE_DAYS = 3
 const SHOW_AFTER_MS = 2500
+// Coming back to a tab left in the background this long counts as opening the site again
+// (Chrome restores old tabs without reloading them).
+const REOPEN_AFTER_MS = 30 * 60 * 1000
 
-const read = (storage, key) => {
-  try {
-    return window[storage].getItem(key)
-  } catch {
-    return null
-  }
-}
-const write = (storage, key, value) => {
-  try {
-    window[storage].setItem(key, value)
-  } catch {
-    /* ignore */
-  }
-}
+// Once per page load: moving between pages inside SMS doesn't bring it back.
+let shownThisLoad = false
 
-const shouldOffer = () => {
-  if (!isPhoneDevice() || isStandalone()) return false
-  if (read("sessionStorage", SEEN_KEY) === "1") return false
-  const until = Number(read("localStorage", SNOOZE_KEY) || 0)
-  return !(until && Date.now() < until)
-}
+const shouldOffer = () => isPhoneDevice() && !isStandalone()
 
 const appIcon = <img className="iap-icon" src="/pwa-192.png" alt="" width="56" height="56" />
 
 /**
  * Phones only, students only (mounted from StudentLayout): after login, offer to
  * install the SMS app, or, when it's already installed, to open this in the app.
- * Shown once per browser session; "Not now" hides it for a few days.
+ * Shown each time the site is opened (a page load, or returning to a tab that sat in
+ * the background for 30+ min); "Not now" only closes it for this visit.
  */
 const InstallAppPrompt = () => {
   const [open, setOpen] = useState(false)
@@ -50,14 +34,27 @@ const InstallAppPrompt = () => {
   useEffect(() => {
     if (!shouldOffer()) return undefined
     let alive = true
-    const timer = window.setTimeout(async () => {
-      const state = await checkInstalled()
-      if (!alive || !shouldOffer()) return
-      setInstalled(state)
-      setCanPrompt(Boolean(installPrompt()))
-      setOpen(true)
-      write("sessionStorage", SEEN_KEY, "1")
-    }, SHOW_AFTER_MS)
+    let timer = 0
+    const offer = () => {
+      window.clearTimeout(timer)
+      timer = window.setTimeout(async () => {
+        const state = await checkInstalled()
+        if (!alive || !shouldOffer()) return
+        shownThisLoad = true
+        setInstalled(state)
+        setCanPrompt(Boolean(installPrompt()))
+        setOpenTried(false)
+        setOpen(true)
+      }, SHOW_AFTER_MS)
+    }
+    if (!shownThisLoad) offer()
+
+    let hiddenAt = 0
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") hiddenAt = Date.now()
+      else if (hiddenAt && Date.now() - hiddenAt > REOPEN_AFTER_MS) offer()
+    }
+    document.addEventListener("visibilitychange", onVisibility)
     const off = onInstallChange(async () => {
       setCanPrompt(Boolean(installPrompt()))
       setInstalled(await checkInstalled())
@@ -65,15 +62,12 @@ const InstallAppPrompt = () => {
     return () => {
       alive = false
       window.clearTimeout(timer)
+      document.removeEventListener("visibilitychange", onVisibility)
       off()
     }
   }, [])
 
   const close = () => setOpen(false)
-  const snooze = () => {
-    write("localStorage", SNOOZE_KEY, String(Date.now() + SNOOZE_DAYS * 86400000))
-    close()
-  }
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
 
   if (!open) return null
@@ -113,7 +107,7 @@ const InstallAppPrompt = () => {
           ) : (
             <p className="iap-note">Open <b>SMS - IITI</b> from your home screen.</p>
           )}
-          <button type="button" className="iap-btn" onClick={snooze}>
+          <button type="button" className="iap-btn" onClick={close}>
             Stay in browser
           </button>
         </div>
@@ -156,7 +150,7 @@ const InstallAppPrompt = () => {
               <Download size={18} /> Install app
             </button>
           )}
-          <button type="button" className="iap-btn" onClick={snooze}>
+          <button type="button" className="iap-btn" onClick={close}>
             Not now
           </button>
           {os === "android" && installed === null && !canPrompt && (
