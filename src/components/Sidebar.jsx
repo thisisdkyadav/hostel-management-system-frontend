@@ -20,6 +20,7 @@ import OrbitSidebar from "./sidebar/orbit/OrbitSidebar"
 import ConsoleSidebar from "./sidebar/console/ConsoleSidebar"
 import "./sidebar/tone/tone.css"
 import "./sidebar/v4/v4-dark.css"
+import "./sidebar/torch/torch.css"
 import { LAB_SIDEBARS } from "./sidebar/lab/registry"
 import useRecentPaths from "./sidebar/useRecentPaths"
 import {
@@ -31,6 +32,7 @@ import {
   SIDEBAR_MODE_ORBIT,
   SIDEBAR_MODE_CONSOLE,
   SIDEBAR_MODE_TONE,
+  SIDEBAR_MODE_TORCH,
   SIDEBAR_MODE_STORAGE_KEY,
   isLabSidebarMode,
   readSidebarPreviewMode,
@@ -158,9 +160,11 @@ const Sidebar = ({ navItems }) => {
   const isOrbitMode = (isAdminNav && sidebarMode === SIDEBAR_MODE_ORBIT && !isMobile) || isConsoleMode || isLabMode
   // V8 is V4 on a category-coloured frame (desktop only; plain V4 on phones).
   const isToneMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TONE && !isMobile
+  const isTorchMode = isAdminNav && sidebarMode === SIDEBAR_MODE_TORCH
   const isV4Mode = isAdminNav && sidebarMode === SIDEBAR_MODE_RAIL && !isMobile
   const isRailMode = isAdminNav && (
     sidebarMode === SIDEBAR_MODE_TONE ||
+    sidebarMode === SIDEBAR_MODE_TORCH ||
     sidebarMode === SIDEBAR_MODE_RAIL || sidebarMode === SIDEBAR_MODE_STAGE
     || ((sidebarMode === SIDEBAR_MODE_ORBIT || sidebarMode === SIDEBAR_MODE_CONSOLE || isLabSidebarMode(sidebarMode)) && isMobile)
   )
@@ -207,8 +211,8 @@ const Sidebar = ({ navItems }) => {
     } else {
       root.removeAttribute("data-admin-category")
     }
-    if (isV4Mode || isV5Mode || isOrbitMode || isToneMode) {
-      root.setAttribute("data-admin-sidebar", isLabMode ? sidebarMode : isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : isV5Mode ? "v5" : "v4")
+    if (isTorchMode || isV4Mode || isV5Mode || isOrbitMode || isToneMode) {
+      root.setAttribute("data-admin-sidebar", isLabMode ? sidebarMode : isTorchMode ? "v19" : isConsoleMode ? "v7" : isOrbitMode ? "v6" : isToneMode ? "v8" : isV5Mode ? "v5" : "v4")
     } else {
       root.removeAttribute("data-admin-sidebar")
     }
@@ -216,7 +220,64 @@ const Sidebar = ({ navItems }) => {
       root.removeAttribute("data-admin-category")
       root.removeAttribute("data-admin-sidebar")
     }
-  }, [activeAdminCategory, isCategorizedMode, isV4Mode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode, isLabMode, sidebarMode])
+  }, [activeAdminCategory, isCategorizedMode, isTorchMode, isV4Mode, isV5Mode, isOrbitMode, isConsoleMode, isToneMode, isLabMode, sidebarMode])
+
+  // V9 "Torch": smooth weighted handheld flashlight tracking via CSS vars (zero React re-renders).
+  useEffect(() => {
+    if (!isTorchMode || isMobile || typeof window === "undefined") return undefined
+    const root = document.documentElement
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+    if (reduced) {
+      root.style.setProperty("--torch-x", "56vw")
+      root.style.setProperty("--torch-y", "34vh")
+      return () => {
+        root.style.removeProperty("--torch-x")
+        root.style.removeProperty("--torch-y")
+      }
+    }
+
+    let curX = window.innerWidth * 0.56
+    let curY = window.innerHeight * 0.34
+    let targetX = curX
+    let targetY = curY
+    let rafId = 0
+
+    const apply = () => {
+      root.style.setProperty("--torch-x", `${curX.toFixed(1)}px`)
+      root.style.setProperty("--torch-y", `${curY.toFixed(1)}px`)
+    }
+    apply()
+
+    const step = () => {
+      const dx = targetX - curX
+      const dy = targetY - curY
+      if (Math.hypot(dx, dy) < 0.35) {
+        curX = targetX
+        curY = targetY
+        apply()
+        rafId = 0
+        return
+      }
+      curX += dx * 0.16
+      curY += dy * 0.16
+      apply()
+      rafId = window.requestAnimationFrame(step)
+    }
+
+    const handlePointerMove = (event) => {
+      targetX = event.clientX
+      targetY = event.clientY
+      if (!rafId) rafId = window.requestAnimationFrame(step)
+    }
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove)
+      if (rafId) window.cancelAnimationFrame(rafId)
+      root.style.removeProperty("--torch-x")
+      root.style.removeProperty("--torch-y")
+    }
+  }, [isTorchMode, isMobile])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -555,7 +616,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`${isToneMode ? "tone-shell " : isV4Mode ? "v4-shell " : ""}fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`${isToneMode ? "tone-shell " : isTorchMode ? "torch-shell " : isV4Mode ? "v4-shell " : ""}fixed md:relative ${isV5Mode ? "z-30 md:z-auto v5-sidebar-edge overflow-visible" : "z-30"} ${isRailMode ? "w-[308px] max-w-full" : "w-[280px]"} ${isOpen ? "left-0" : "-left-full md:left-0"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
       {/* V5 has no edge stroke; its selected SVG is measured and painted inside
           the full-width list wrapper. */}
       <Surface shadow={isV5Mode ? "none" : "sm"} className={`h-full w-full transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] ${isV5Mode ? "overflow-visible border-0 outline-none" : "overflow-hidden border-r border-[var(--color-border-primary)]"}`}>
@@ -576,6 +637,7 @@ const Sidebar = ({ navItems }) => {
               categoryCounts={categoryCounts}
               stagePanelColor={isToneMode ? "var(--tone-surface)" : v5PanelFill}
               stageActiveIconColor={isToneMode ? "var(--tone-rail-active-ink)" : undefined}
+              hideThemeToggle={isTorchMode}
             />
           )}
 

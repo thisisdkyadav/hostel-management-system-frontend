@@ -192,6 +192,7 @@ const IconRail = ({
   categoryCounts,
   stagePanelColor,
   stageActiveIconColor,
+  hideThemeToggle = false,
 }) => {
   return (
     <div className="icon-rail relative w-14 shrink-0 h-full flex flex-col items-center">
@@ -241,12 +242,14 @@ const IconRail = ({
       </nav>
 
       <div className="relative z-10 shrink-0 w-full flex flex-col items-center gap-1.5 pb-3">
-        <RailButton
-          label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-          onClick={onToggleTheme}
-        >
-          {isDark ? <Sun size={18} strokeWidth={1.8} /> : <Moon size={18} strokeWidth={1.8} />}
-        </RailButton>
+        {!hideThemeToggle && (
+          <RailButton
+            label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={onToggleTheme}
+          >
+            {isDark ? <Sun size={18} strokeWidth={1.8} /> : <Moon size={18} strokeWidth={1.8} />}
+          </RailButton>
+        )}
 
         {logoutItem && (
           <RailButton label="Logout" onClick={() => onNavigate(logoutItem)}>

@@ -1,0 +1,428 @@
+/* ============================================================
+   V9 "Torch" (id: v19) — Single-mode Warm Study with Handheld Torch.
+
+   V4's icon-rail layout on a roasted walnut wooden board, lit by a
+   handheld warm torch in front of the screen that follows the cursor
+   (--torch-x / --torch-y written smoothly by Sidebar.jsx).
+
+   Single mode only: overrides hzero's :root AND [data-theme="dark"]
+   at specificity (0,1,1) so light/dark preference has no effect.
+   ============================================================ */
+
+html[data-admin-sidebar="v19"] {
+  /* Default torch position before pointer moves (or with reduced motion) */
+  --torch-x: 56vw;
+  --torch-y: 34vh;
+  --torch-accent: #6bb0f5;
+
+  /* Walnut desk & handheld torch optical tokens */
+  --torch-wood-1: #452c1a;
+  --torch-wood-2: #331f12;
+  --torch-wood-3: #563822;
+  --torch-grain: rgb(14 7 2 / 24%);
+  --torch-grain-hi: rgb(255 216 158 / 9%);
+  --torch-rim: rgb(255 228 176 / 18%);
+  --torch-rim-soft: rgb(255 226 172 / 9%);
+
+  /* Category accents — luminous & crisp on warm study surfaces */
+  --color-cat-home: #6bb0f5;
+  --color-cat-hostels: #4ec8f7;
+  --color-cat-student-affairs: #f47bb6;
+  --color-cat-staff: #b397f5;
+  --color-cat-dining: #4ade9a;
+
+  /* Primary palette derived from active category */
+  --admin-accent: var(--torch-accent);
+  --admin-mix-surface: #302b26;
+  --color-primary: var(--torch-accent);
+  --color-primary-hover: color-mix(in oklab, var(--torch-accent) 88%, #ffffff);
+  --color-primary-active: color-mix(in oklab, var(--torch-accent) 78%, #ffffff);
+  --color-primary-dark: color-mix(in oklab, var(--torch-accent) 82%, #1a1714);
+  --color-primary-darker: color-mix(in oklab, var(--torch-accent) 62%, #1a1714);
+  --color-primary-light: color-mix(in oklab, var(--torch-accent) 82%, #ffffff);
+  --color-primary-lighter: color-mix(in oklab, var(--torch-accent) 62%, #ffffff);
+  --color-primary-muted: color-mix(in oklab, var(--torch-accent) 44%, #302b26);
+  --color-primary-pale: color-mix(in oklab, var(--torch-accent) 24%, #302b26);
+  --color-primary-bg: color-mix(in oklab, var(--torch-accent) 16%, #302b26);
+  --color-primary-bg-hover: color-mix(in oklab, var(--torch-accent) 25%, #302b26);
+  --color-primary-bg-light: color-mix(in oklab, var(--torch-accent) 10%, #302b26);
+
+  /* Crisp dark ink on luminous accent fills */
+  --color-white: #161412;
+  --color-on-accent: #161412;
+
+  /* Lifted warm charcoal-espresso surfaces (calibrated so areas
+     outside the torch beam stay comfortably legible, never pitch black) */
+  --color-bg-page: #25211d;
+  --color-bg-secondary: #2a2622;
+  --color-bg-primary: #302b26;
+  --color-bg-tertiary: #3a342e;
+  --color-bg-hover: #443d36;
+  --color-bg-muted: #4a423b;
+  --color-bg-disabled: #2c2824;
+  --color-bg-modal-overlay: rgb(12 8 5 / 70%);
+
+  /* Warm parchment ink hierarchy */
+  --color-text-primary: #f7f2ea;
+  --color-text-secondary: #ebe3d7;
+  --color-text-body: #dfd6ca;
+  --color-text-tertiary: #c0b5a8;
+  --color-text-muted: #a69a8c;
+  --color-text-placeholder: #84796d;
+  --color-text-light: #84796d;
+  --color-text-disabled: #665e54;
+
+  /* Warm bronze-stone hairlines */
+  --color-border-light: #3b352f;
+  --color-border-primary: #4c453d;
+  --color-border-secondary: #5c534a;
+  --color-border-focus: var(--torch-accent);
+  --color-border-hover: #70655a;
+  --color-border-input: #574f46;
+  --color-border-gray: #4c453d;
+  --color-border-dark: #75695d;
+
+  /* Semantic tones tuned for warm study surfaces */
+  --color-success: #5ce091;
+  --color-success-hover: #47cc7d;
+  --color-success-active: #34b86a;
+  --color-success-bg: #23382b;
+  --color-success-bg-light: #1e3025;
+  --color-success-text: #74eba4;
+  --color-success-border: #335c44;
+
+  --color-warning: #f5c156;
+  --color-warning-hover: #e5ad3c;
+  --color-warning-active: #cf9627;
+  --color-warning-bg: #3b301c;
+  --color-warning-bg-light: #312817;
+  --color-warning-text: #f9ce70;
+  --color-warning-border: #614c25;
+
+  --color-danger: #f87b75;
+  --color-danger-hover: #eb625c;
+  --color-danger-active: #d94d47;
+  --color-danger-bg: #3d2422;
+  --color-danger-bg-light: #321d1c;
+  --color-danger-text: #fc948f;
+  --color-danger-border: #6d3431;
+
+  --color-info: #6bb0f5;
+  --color-info-hover: #539ce6;
+  --color-info-active: #3d88d4;
+  --color-info-bg: #233140;
+  --color-info-bg-light: #1d2936;
+  --color-info-text: #85c4fa;
+  --color-info-border: #344f6b;
+
+  /* Gender & categorical tones */
+  --color-boys-bg: #233140;
+  --color-boys-text: #8bc6fa;
+  --color-boys-hover-bg: #6bb0f5;
+  --color-boys-hover-text: #161412;
+  --color-girls-bg: #3b2430;
+  --color-girls-text: #fab0d7;
+  --color-girls-hover-bg: #f47bb6;
+  --color-girls-hover-text: #161412;
+  --color-coed-bg: #32273d;
+  --color-coed-text: #c7affa;
+  --color-coed-hover-bg: #b397f5;
+  --color-coed-hover-text: #161412;
+
+  --color-purple-bg: #32273d;
+  --color-purple-light-bg: #3c2f4a;
+  --color-purple-text: #d0b5fa;
+  --color-orange-bg: #3b2c1e;
+  --color-orange-text: #fca462;
+  --color-teal-bg: #1f3635;
+  --color-teal-text: #56e6d2;
+
+  --color-series-1: #6bb0f5;
+  --color-series-2: #f47bb6;
+  --color-series-3: #56e6d2;
+  --color-series-4: #f5c156;
+  --color-series-5: #b397f5;
+  --color-series-6: #5ce091;
+  --color-series-7: #f87b75;
+  --color-series-8: #b0a69b;
+  --color-series-1-bg: #233140;
+  --color-series-2-bg: #3b2430;
+  --color-series-3-bg: #1f3635;
+  --color-series-4-bg: #3b301c;
+  --color-series-5-bg: #32273d;
+  --color-series-6-bg: #23382b;
+  --color-series-7-bg: #3d2422;
+  --color-series-8-bg: #34302b;
+
+  /* Shadows — warm depth + soft specular edge */
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 32%);
+  --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 36%), inset 0 1px 0 var(--torch-rim-soft);
+  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 44%), inset 0 1px 0 var(--torch-rim-soft);
+  --shadow-lg: 0 12px 28px -6px rgb(0 0 0 / 52%), inset 0 1px 0 var(--torch-rim-soft);
+  --shadow-xl: 0 22px 46px -10px rgb(0 0 0 / 62%);
+  --shadow-card: 0 4px 14px -4px rgb(0 0 0 / 40%), inset 0 1px 0 var(--torch-rim-soft);
+  --shadow-card-hover: 0 10px 24px -6px rgb(0 0 0 / 52%), inset 0 1px 0 var(--torch-rim);
+  --shadow-button-primary: 0 3px 10px -2px color-mix(in oklab, var(--torch-accent) 34%, rgb(0 0 0 / 45%));
+  --shadow-button-primary-hover: 0 6px 16px -2px color-mix(in oklab, var(--torch-accent) 44%, rgb(0 0 0 / 50%));
+  --shadow-focus: 0 0 0 3px color-mix(in oklab, var(--torch-accent) 30%, transparent);
+  --shadow-focus-primary: 0 0 0 3px color-mix(in oklab, var(--torch-accent) 28%, transparent);
+  --shadow-focus-danger: 0 0 0 3px rgb(248 123 117 / 30%);
+  --shadow-dropdown: 0 14px 34px -6px rgb(0 0 0 / 62%), 0 0 0 1px rgb(255 224 170 / 10%);
+  --shadow-modal: 0 26px 58px -12px rgb(0 0 0 / 74%), 0 0 0 1px rgb(255 224 170 / 14%);
+
+  /* Component surface hooks */
+  --card-bg: #302b26;
+  --card-border: #4d463e;
+  --card-border-hover: #675d53;
+  --panel-bg: #302b26;
+  --panel-border: #4d463e;
+  --panel-shadow: var(--shadow-card);
+  --panel-title-color: #f7f2ea;
+  --panel-subtitle-color: #ab9f91;
+  --panel-chip-bg: #3a342e;
+  --panel-count-bg: #423c35;
+  --panel-count-color: #efe7dc;
+  --statrow-bg: #2a2622;
+  --statrow-hover-bg: #3d3731;
+  --input-bg: #27231f;
+  --input-border: #574f46;
+  --input-border-focus: var(--torch-accent);
+  --input-focus-ring: 0 0 0 3px color-mix(in oklab, var(--torch-accent) 24%, transparent);
+  --modal-bg: #302b26;
+  --modal-title-color: var(--torch-accent);
+  --popover-bg: #332e29;
+  --tooltip-bg: #474038;
+  --tooltip-fg: #f7f2ea;
+  --table-header-bg: #2a2622;
+  --table-header-text: #b8ad9f;
+  --table-row-hover: #3d3731;
+  --table-border: #474038;
+  --table-stripe-bg: #2c2823;
+  --table-foot-bg: #2a2622;
+  --table-foot-border: #574f46;
+  --switch-bg: #453e38;
+  --switch-thumb-bg: #f7f2ea;
+  --checkbox-bg: #27231f;
+  --checkbox-border: #645a50;
+  --radio-bg: #27231f;
+  --radio-border: #645a50;
+  --divider-color: #474038;
+  --skeleton-base: #36302b;
+  --skeleton-highlight: #443d36;
+  --occupancy-ring-bg: #423c35;
+  --scrollbar-thumb: #61574d;
+  --scrollbar-thumb-active: #dfa95c;
+
+  /* Button hooks tuned for warm study charcoal */
+  --btn-white-bg: #35302b;
+  --btn-white-fg: #f7f2ea;
+  --btn-white-border: 1px solid #574f46;
+  --btn-white-hover-bg: #423b34;
+  --btn-white-hover-fg: #ffffff;
+  --btn-ghost-fg: #dfd6ca;
+  --btn-ghost-hover-bg: #3b352f;
+  --btn-ghost-hover-fg: #f7f2ea;
+}
+
+html[data-admin-sidebar="v19"][data-admin-category="hostels"] { --torch-accent: #4ec8f7; }
+html[data-admin-sidebar="v19"][data-admin-category="student-affairs"] { --torch-accent: #f47bb6; }
+html[data-admin-sidebar="v19"][data-admin-category="staff"] { --torch-accent: #b397f5; }
+html[data-admin-sidebar="v19"][data-admin-category="dining"] { --torch-accent: #4ade9a; }
+
+/* ---------- Wooden Desk + Cursor-Tracked Handheld Torch ---------- */
+@media (min-width: 768px) {
+  html[data-admin-sidebar="v19"] .layout-container {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    overflow: hidden;
+    background:
+      /* Local honey-gold illumination on the walnut wood near the torch */
+      radial-gradient(480px circle at var(--torch-x) var(--torch-y), rgb(255 206 128 / 46%), rgb(255 178 86 / 14%) 52%, transparent 78%),
+      repeating-linear-gradient(
+        92deg,
+        transparent 0 7px,
+        var(--torch-grain) 7px 8px,
+        transparent 8px 21px,
+        var(--torch-grain) 21px 23px,
+        transparent 23px 38px
+      ),
+      repeating-linear-gradient(
+        90.5deg,
+        var(--torch-wood-1) 0 48px,
+        var(--torch-wood-3) 48px 74px,
+        var(--torch-wood-2) 74px 92px,
+        var(--torch-wood-1) 92px 138px
+      ),
+      var(--torch-wood-1);
+  }
+
+  /* Optical Layer A: Focused handheld torch beam held in front of the screen */
+  html[data-admin-sidebar="v19"] .layout-container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 46;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      /* Tight, focused incandescent hotspot right around the cursor */
+      radial-gradient(
+        175px circle at var(--torch-x) var(--torch-y),
+        rgb(255 238 198 / 24%) 0%,
+        rgb(255 214 146 / 13%) 46%,
+        transparent 100%
+      ),
+      /* Medium warm flashlight cone */
+      radial-gradient(
+        390px circle at var(--torch-x) var(--torch-y),
+        rgb(255 198 118 / 12%) 0%,
+        rgb(255 178 94 / 5%) 56%,
+        transparent 100%
+      ),
+      /* Subtle wide ambient spill */
+      radial-gradient(
+        680px circle at var(--torch-x) var(--torch-y),
+        rgb(255 186 102 / 4.5%) 0%,
+        transparent 100%
+      );
+  }
+
+  /* Optical Layer B: Natural falloff away from the torch (unlit desk shadow) */
+  html[data-admin-sidebar="v19"] .layout-container::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        circle at var(--torch-x) var(--torch-y),
+        transparent 0px,
+        transparent 175px,
+        rgb(10 6 3 / 11%) 330px,
+        rgb(8 5 2 / 27%) 560px,
+        rgb(6 4 2 / 44%) 920px
+      );
+  }
+
+  /* Floating V4-layout sidebar on the wooden desk */
+  html[data-admin-sidebar="v19"] .torch-shell {
+    height: calc(100vh - 20px);
+    margin: 10px 0 10px 10px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgb(255 220 166 / 12%),
+      0 18px 40px -12px rgb(0 0 0 / 66%);
+  }
+
+  html[data-admin-sidebar="v19"] .torch-shell > * {
+    border-right: 0 !important;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 var(--torch-rim-soft);
+  }
+
+  html[data-admin-sidebar="v19"] .torch-shell .icon-rail {
+    background: linear-gradient(180deg, #26221e 0%, #201d1a 100%);
+  }
+
+  html[data-admin-sidebar="v19"] .torch-shell .rail-panel {
+    box-shadow: -5px 0 14px -5px rgb(0 0 0 / 48%);
+  }
+
+  /* Floating warm study workspace sheet beside the sidebar */
+  html[data-admin-sidebar="v19"] .layout-content {
+    position: relative;
+    min-width: 0;
+    height: calc(100vh - 20px);
+    margin: 10px;
+    border-radius: 14px;
+    background-color: #25211d;
+    background-image:
+      radial-gradient(360px circle at var(--torch-x) var(--torch-y), rgb(255 212 146 / 8%), transparent 75%),
+      linear-gradient(180deg, #292521 0%, #24201c 55%, #201d1a 100%);
+    background-attachment: fixed, scroll;
+    box-shadow:
+      inset 0 1px 0 var(--torch-rim-soft),
+      0 0 0 1px rgb(255 220 166 / 12%),
+      0 20px 48px -14px rgb(0 0 0 / 66%);
+    scrollbar-gutter: stable;
+  }
+
+  /* Warm scrollbars (override index.css #a8c9fc blue) */
+  html[data-admin-sidebar="v19"] .layout-content,
+  html[data-admin-sidebar="v19"] .layout-content * {
+    scrollbar-color: #61574d transparent;
+  }
+  html[data-admin-sidebar="v19"] .layout-content::-webkit-scrollbar-thumb,
+  html[data-admin-sidebar="v19"] .layout-content *::-webkit-scrollbar-thumb {
+    background: #61574d;
+  }
+  html[data-admin-sidebar="v19"] .layout-content::-webkit-scrollbar-thumb:hover,
+  html[data-admin-sidebar="v19"] .layout-content *::-webkit-scrollbar-thumb:hover {
+    background: #dfa95c;
+  }
+
+  /* Subtle translucent page header so the torch beam sweeps seamlessly over it */
+  html[data-admin-sidebar="v19"] .layout-content .page-header {
+    background-color: rgb(42 38 33 / 78%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom-color: rgb(255 222 172 / 12%);
+  }
+
+  /* Localized specular gleam across cards, panels & stat cards as the torch passes */
+  html[data-admin-sidebar="v19"] :is(.hz-card, .hz-panel:not(.hz-panel-bare), .hz-table-wrap, .hz-datatable) {
+    background-image: radial-gradient(
+      300px circle at var(--torch-x) var(--torch-y),
+      rgb(255 226 172 / 7.5%),
+      transparent 72%
+    );
+    background-attachment: fixed;
+    box-shadow: var(--shadow-card);
+  }
+
+  html[data-admin-sidebar="v19"] .hz-statcard {
+    background-color: #312c27 !important;
+    background-image:
+      radial-gradient(280px circle at var(--torch-x) var(--torch-y), rgb(255 226 172 / 11%), transparent 72%),
+      linear-gradient(180deg, #35302a 0%, #2e2924 100%) !important;
+    background-attachment: fixed, scroll !important;
+    border-color: #504840 !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+  html[data-admin-sidebar="v19"] .hz-statcard:hover {
+    border-color: color-mix(in oklab, var(--torch-accent) 55%, #675d53) !important;
+    box-shadow: var(--shadow-card-hover) !important;
+  }
+  html[data-admin-sidebar="v19"] :is(.hz-statcard-floor, .hz-statcard-wash) {
+    opacity: 0.32;
+  }
+  html[data-admin-sidebar="v19"] .hz-statcard-value {
+    color: #f7f2ea !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
+  html[data-admin-sidebar="v19"] .hz-statcard-label-text,
+  html[data-admin-sidebar="v19"] .hz-statcard-subtitle {
+    color: #b0a496 !important;
+  }
+
+  /* Crisp pill contrast on toggles & filter tabs */
+  html[data-admin-sidebar="v19"] .hz-toggle-group {
+    background: #27231f;
+    border-color: #4c453d;
+  }
+  html[data-admin-sidebar="v19"] .hz-toggle-group .hz-toggle-btn[aria-pressed="true"] {
+    background: var(--torch-accent);
+    color: #161412;
+    font-weight: 600;
+  }
+  html[data-admin-sidebar="v19"] :is(.hz-tabs-pills .hz-tabs-trigger[aria-selected="true"], .hz-filter-btn[aria-pressed="true"], .hz-filter-btn[aria-selected="true"]) {
+    background: var(--torch-accent);
+    color: #161412;
+    border-color: var(--torch-accent);
+    font-weight: 600;
+  }
+}

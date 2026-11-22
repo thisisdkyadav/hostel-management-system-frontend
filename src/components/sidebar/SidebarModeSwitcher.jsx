@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
-import { SIDEBAR_MODE_OPTIONS } from "./sidebarModes"
+import { SIDEBAR_MODE_OPTIONS, SIDEBAR_MODE_RAIL } from "./sidebarModes"
+import { NewTag } from "./NewBadge"
 
 /**
  * Compact mode pill in the sidebar header. Shows the current mode (V1–V5)
@@ -11,6 +12,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
   const containerRef = useRef(null)
 
   const currentOption = SIDEBAR_MODE_OPTIONS.find((option) => option.id === mode) || SIDEBAR_MODE_OPTIONS[0]
+  const showNewBadge = mode === SIDEBAR_MODE_RAIL
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -37,8 +39,8 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
       <button
         type="button"
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        title="Sidebar layout"
-        aria-label={`Sidebar layout: ${currentOption.name}`}
+        title={showNewBadge ? "Sidebar layout — new themes available" : "Sidebar layout"}
+        aria-label={showNewBadge ? `Sidebar layout: ${currentOption.name} (new themes available)` : `Sidebar layout: ${currentOption.name}`}
         aria-haspopup="menu"
         aria-expanded={isMenuOpen}
         className={`sidebar-mode-button
@@ -46,10 +48,12 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
           transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/40
           ${isMenuOpen
             ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
-            : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"}
+            : showNewBadge
+              ? "sidebar-new-tag relative isolate overflow-hidden bg-[var(--color-success)] text-white hover:opacity-90"
+              : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"}
         `}
       >
-        {currentOption.label}
+        {showNewBadge ? "NEW" : currentOption.label}
         <ChevronDown size={12} strokeWidth={2.5} className={`transition-transform duration-200 ${isMenuOpen ? "rotate-180" : ""}`} />
       </button>
 
@@ -89,6 +93,7 @@ const SidebarModeSwitcher = ({ mode, onChange }) => {
                 <span className={`flex-1 min-w-0 truncate text-sm font-medium ${isActiveOption ? "text-[var(--color-primary)]" : "text-[var(--color-text-primary)]"}`}>
                   {option.name}
                 </span>
+                {option.isNew && <NewTag />}
                 {isActiveOption && <Check size={15} strokeWidth={2.5} className="text-[var(--color-primary)] shrink-0" />}
               </button>
             )

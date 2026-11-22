@@ -9,6 +9,7 @@
  * v6 — "Orbit": deep-space shell; planet categories, a lens thread of tabs, Warp jump
  * v7 — "Console": v6's layout with a calm, professional look
  * v8 — "Tone": v4's layout on a mid-tone frame in the category colour; the page floats on it
+ * v19 (V9) — "Torch": single-mode warm walnut study lit by a cursor-tracked handheld torch
  * v9–v18 — "Lab": experimental, just-for-fun shells (sidebar/lab/*); desktop only
  */
 export const SIDEBAR_MODE_FLAT = "v1"
@@ -19,6 +20,7 @@ export const SIDEBAR_MODE_STAGE = "v5"
 export const SIDEBAR_MODE_ORBIT = "v6"
 export const SIDEBAR_MODE_CONSOLE = "v7"
 export const SIDEBAR_MODE_TONE = "v8"
+export const SIDEBAR_MODE_TORCH = "v19"
 
 /** Lab: experimental shells, one folder each under sidebar/lab (see lab/registry.js). */
 export const SIDEBAR_LAB_MODE_IDS = ["v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18"]
@@ -88,6 +90,13 @@ export const SIDEBAR_MODE_OPTIONS = [
     label: "V8",
     name: "Tone",
     description: "V4's layout on a colour frame that follows the category; the page floats on it",
+  },
+  {
+    id: SIDEBAR_MODE_TORCH,
+    label: "V9",
+    name: "Torch",
+    description: "Single-mode warm study on walnut wood with a handheld torch beam that follows your cursor",
+    isNew: true,
   },
   { id: "v9", label: "X1", name: "Terminal", description: "Green-phosphor CRT shell: tabs as directories, scanlines and a blinking cursor", lab: true },
   { id: "v10", label: "X2", name: "Arcade", description: "8-bit game cabinet: categories are worlds, tabs are levels", lab: true },
