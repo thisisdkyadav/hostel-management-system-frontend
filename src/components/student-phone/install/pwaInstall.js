@@ -63,6 +63,12 @@ if (typeof window !== "undefined") {
   })
 }
 
+/** Fires when the browser finishes installing the app (from our button or its menu). */
+export const onAppInstalled = (fn) => {
+  window.addEventListener("appinstalled", fn)
+  return () => window.removeEventListener("appinstalled", fn)
+}
+
 /** Ask the browser whether this PWA is installed (Chrome Android). null = can't tell. */
 export const checkInstalled = async () => {
   if (installPrompt()) return false
@@ -88,7 +94,7 @@ export const runInstall = async () => {
   prompt.prompt()
   const { outcome } = await prompt.userChoice
   window.deferredPrompt = null
-  if (outcome === "accepted") store.set(INSTALLED_KEY, "1")
+  // Accepting only starts the install; `appinstalled` marks it done.
   changed()
   return outcome === "accepted"
 }

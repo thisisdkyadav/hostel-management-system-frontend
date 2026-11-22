@@ -114,9 +114,25 @@
 
 .iap-note { margin: 0; font-size: 0.85rem; line-height: 1.4; color: var(--color-text-muted); text-align: center; }
 
+.iap-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  border-radius: 16px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 650;
+}
+.iap-spin { animation: iap-spin 900ms linear infinite; }
+.iap-done { display: inline; vertical-align: -3px; color: var(--color-success); }
+
+@keyframes iap-spin { to { transform: rotate(360deg); } }
 @keyframes iap-up { from { transform: translateY(100%); } }
 @keyframes iap-fade { from { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .iap-sheet, .iap-backdrop { animation: none; }
 }
+.iap-text b, .iap-note b { white-space: nowrap; }
