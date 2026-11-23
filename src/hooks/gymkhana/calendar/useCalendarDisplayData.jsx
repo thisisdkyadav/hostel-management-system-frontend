@@ -20,6 +20,13 @@ import {
 import { CalendarDays, FileText } from "lucide-react"
 import { Badge, Text } from "hzero"
 
+// "Remaining" line on a budget stat card: budget minus submitted bills, red when overspent.
+const renderRemaining = (amount) => (
+  <span className="gymkhana-budget-remaining" data-overspent={amount < 0 || undefined}>
+    Remaining {formatINR(amount)}
+  </span>
+)
+
 export const useCalendarDisplayData = ({
   calendar,
   events,
@@ -136,7 +143,15 @@ export const useCalendarDisplayData = ({
       ...categoryDefinitions.map((definition) => ({
         title: `${definition.label} Budget`,
         value: formatINR(budgetSummary.byCategory[definition.key]),
-        subtitle: getBudgetStatSubtitle(definition.key),
+        subtitle: (
+          <>
+            {renderRemaining(
+              Number(budgetSummary.byCategory[definition.key] || 0) -
+                Number(calendar?.billedByCategory?.[definition.key] || 0)
+            )}
+            <span className="gymkhana-budget-billed">{getBudgetStatSubtitle(definition.key)}</span>
+          </>
+        ),
         icon: <CalendarDays size={16} />,
         color: getCategoryColor(definition.key, categoryOrder),
         tintBackground: true,
@@ -148,12 +163,7 @@ export const useCalendarDisplayData = ({
         // billedTotal comes from the calendar response.
         subtitle: (
           <>
-            <span
-              className="gymkhana-budget-remaining"
-              data-overspent={remainingBudget < 0 || undefined}
-            >
-              Remaining {formatINR(remainingBudget)}
-            </span>
+            {renderRemaining(remainingBudget)}
             <span className="gymkhana-budget-billed">
               {events.length} event(s) · {formatINR(billedTotal)} billed
             </span>
@@ -163,7 +173,7 @@ export const useCalendarDisplayData = ({
         color: "var(--color-primary)",
       },
     ],
-    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps, billedTotal, remainingBudget]
+    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps, billedTotal, remainingBudget, calendar?.billedByCategory]
   )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
