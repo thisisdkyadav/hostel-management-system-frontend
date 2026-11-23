@@ -753,6 +753,23 @@ body {
   background: var(--color-text-muted);
 }
 
+/* Gymkhana Total Budget card: "Remaining" sits on its own line under the total. */
+.gymkhana-budget-remaining,
+.gymkhana-budget-billed {
+  display: block;
+  /* The card row is seven columns wide on desktop; wrap rather than ellipsize the amount. */
+  white-space: normal;
+}
+
+.gymkhana-budget-remaining {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-success-text);
+}
+
+.gymkhana-budget-remaining[data-overspent] {
+  color: var(--color-danger-text);
+}
+
 /* Gymkhana list view: keep column widths identical across the three timeline tables. */
 .gymkhana-event-timeline-table .hz-table {
   table-layout: fixed;

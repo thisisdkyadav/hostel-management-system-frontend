@@ -128,6 +128,9 @@ export const useCalendarDisplayData = ({
     return `${budgetSummary.counts[category] || 0} event(s) · ${capLabel}`
   }
 
+  const billedTotal = Number(calendar?.billedTotal || 0)
+  const remainingBudget = budgetSummary.total - billedTotal
+
   const budgetStats = useMemo(
     () => [
       ...categoryDefinitions.map((definition) => ({
@@ -141,12 +144,26 @@ export const useCalendarDisplayData = ({
       {
         title: "Total Budget",
         value: formatINR(budgetSummary.total),
-        subtitle: `${events.length} event(s)`,
+        // Remaining = total budget minus every submitted (non-rejected) bill;
+        // billedTotal comes from the calendar response.
+        subtitle: (
+          <>
+            <span
+              className="gymkhana-budget-remaining"
+              data-overspent={remainingBudget < 0 || undefined}
+            >
+              Remaining {formatINR(remainingBudget)}
+            </span>
+            <span className="gymkhana-budget-billed">
+              {events.length} event(s) · {formatINR(billedTotal)} billed
+            </span>
+          </>
+        ),
         icon: <FileText size={16} />,
         color: "var(--color-primary)",
       },
     ],
-    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps]
+    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps, billedTotal, remainingBudget]
   )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
