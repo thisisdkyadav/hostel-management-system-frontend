@@ -44,6 +44,8 @@ const useSheetDrag = (onClose, active = true) => {
     let offset = 0
     let frame = 0
     let samples = [] // recent { y, t } for flick speed
+    let timer = 0
+    const tracked = (event) => Array.from(event.changedTouches || []).find((t) => t.identifier === start?.id) || null
 
     const paint = (animate) => {
       const backdrop = backdropRef.current
@@ -64,17 +66,19 @@ const useSheetDrag = (onClose, active = true) => {
     }
 
     const onStart = (event) => {
+      if (start && event.touches.length > 1) return // a second finger: keep tracking the first
       start = null
       if (event.touches.length !== 1) return
       const touch = event.touches[0]
-      start = { x: touch.clientX, y: touch.clientY, scroller: verticalScroller(event.target, sheet) }
+      start = { x: touch.clientX, y: touch.clientY, id: touch.identifier, scroller: verticalScroller(event.target, sheet) }
       dragging = false
       samples = [{ y: touch.clientY, t: event.timeStamp }]
     }
 
     const onMove = (event) => {
       if (!start) return
-      const touch = event.touches[0]
+      const touch = tracked(event)
+      if (!touch) return
       const dx = touch.clientX - start.x
       const dy = touch.clientY - start.y
       if (!dragging) {
@@ -100,8 +104,9 @@ const useSheetDrag = (onClose, active = true) => {
       schedule()
     }
 
-    const onEnd = () => {
-      if (!start || !dragging) {
+    const onEnd = (event) => {
+      if (!start || !tracked(event)) return
+      if (!dragging) {
         start = null
         return
       }
@@ -116,7 +121,7 @@ const useSheetDrag = (onClose, active = true) => {
       if (offset > Math.min(CLOSE_DISTANCE, height / 3) || (speed > CLOSE_SPEED && offset > 24)) {
         offset = height + 24
         paint(true)
-        window.setTimeout(() => onCloseRef.current?.(), 220)
+        timer = window.setTimeout(() => onCloseRef.current?.(), 220)
       } else {
         offset = 0
         paint(true)
@@ -129,6 +134,7 @@ const useSheetDrag = (onClose, active = true) => {
     sheet.addEventListener("touchcancel", onEnd)
     return () => {
       if (frame) window.cancelAnimationFrame(frame)
+      window.clearTimeout(timer)
       sheet.removeEventListener("touchstart", onStart)
       sheet.removeEventListener("touchmove", onMove)
       sheet.removeEventListener("touchend", onEnd)

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Button, Heading, HStack, IconCircle, Modal, Spinner, Surface, Text, VStack } from "hzero"
+import { Button, Heading, HStack, IconCircle, Spinner, Surface, Text, VStack } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
 import { HiDesktopComputer, HiDeviceMobile, HiGlobeAlt, HiOutlineLogout } from "react-icons/hi"

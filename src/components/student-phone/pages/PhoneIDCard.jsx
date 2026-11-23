@@ -24,7 +24,7 @@ const PhoneIDCard = () => {
     <div className="mk-page">
       <h1 className="mk-title">ID Card</h1>
       <p className="mk-sub mk-intro">Keep clear photos of both sides of your institute ID card here.</p>
-      {query.isError && !query.data ? (
+      {!user?._id || (query.isError && !query.data) ? (
         <ErrorCard text="Couldn't load your ID card." onRetry={() => query.refetch()} />
       ) : (
         SIDES.map(({ key, label }) => (

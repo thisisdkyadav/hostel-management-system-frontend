@@ -3,11 +3,12 @@
    (student-phone.css): a bright page with tinted containers on it. */
 
 /* ---------- tones ---------- */
-[data-tone="info"] { --tone: var(--color-info); --tone-bg: var(--color-info-bg); }
-[data-tone="warning"] { --tone: var(--color-warning); --tone-bg: var(--color-warning-bg-light); }
+/* --tone is used for text on --tone-bg, so it takes the darker *-text shades (WCAG AA). */
+[data-tone="info"] { --tone: var(--color-info-text); --tone-bg: var(--color-info-bg); }
+[data-tone="warning"] { --tone: var(--color-warning-text); --tone-bg: var(--color-warning-bg-light); }
 [data-tone="purple"] { --tone: var(--color-purple-text); --tone-bg: var(--color-purple-bg); }
-[data-tone="success"] { --tone: var(--color-success); --tone-bg: var(--color-success-bg-light); }
-[data-tone="danger"] { --tone: var(--color-danger); --tone-bg: var(--color-danger-bg-light); }
+[data-tone="success"] { --tone: var(--color-success-text); --tone-bg: var(--color-success-bg-light); }
+[data-tone="danger"] { --tone: var(--color-danger-text); --tone-bg: var(--color-danger-bg-light); }
 [data-tone="muted"],
 [data-tone="neutral"] { --tone: var(--m-on-2); --tone-bg: var(--m-surface); }
 
@@ -222,8 +223,8 @@
 }
 
 .mk-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 50%;
   background: var(--m-surface);
@@ -533,7 +534,7 @@
 .mc-rate { padding: 16px; border-radius: 24px; background: var(--m-surface); gap: 14px !important; }
 .mc-rate .mk-input { background: var(--m-bg); }
 .mc-stars { display: flex; gap: 6px; color: var(--m-outline); }
-.mc-stars button { border: 0; background: none; padding: 2px; color: inherit; cursor: pointer; }
+.mc-stars button { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: none; padding: 2px; color: inherit; cursor: pointer; }
 .mc-stars [data-on] { color: var(--color-warning); }
 
 /* new complaint */
@@ -1308,3 +1309,26 @@ html[data-student-phone="true"] .sp-main .page-header h1 + * , html[data-student
 .mk-sheet__foot > .hz-btn,
 .mk-sheet__foot > * > .hz-btn { flex: 1; min-height: 46px; }
 .mk-sheet__foot > div { display: flex; flex: 1; gap: 8px; justify-content: flex-end; }
+
+/* ---------- accessibility ---------- */
+.mh-stale { margin: 0; font-size: 0.85rem; color: var(--m-on-2); }
+
+/* Keyboard focus: one ring for every phone control (rows and the meal hero
+   clip overflow, so the ring sits inside). */
+:is([class^="sp-"], [class*=" sp-"], [class^="mk-"], [class*=" mk-"], [class^="mc-"], [class*=" mc-"], [class^="mh-"], [class*=" mh-"], [class^="md-"], [class*=" md-"], [class^="mm-"], [class*=" mm-"], [class^="iap-"], [class*=" iap-"]):focus-visible {
+  outline: 2px solid var(--m-primary, var(--color-primary));
+  outline-offset: -2px;
+}
+.mk-sheet:focus,
+.sp-sheet:focus { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-student-phone="true"] *,
+  html[data-student-phone="true"] *::before,
+  html[data-student-phone="true"] *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+.sp-ghost-title { display: block; width: 45%; height: 34px; margin: 4px 0 20px; border-radius: 12px; }

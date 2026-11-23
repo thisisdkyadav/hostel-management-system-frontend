@@ -44,6 +44,13 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
     let peekPath = null
     let frame = 0
     let samples = []
+    let timer = 0 // spring-back / finish, cleared if anything new starts
+    const later = (fn, ms) => {
+      window.clearTimeout(timer)
+      timer = window.setTimeout(fn, ms)
+    }
+    // The finger we're tracking (a second finger mustn't move the page).
+    const tracked = (event) => Array.from(event.changedTouches || []).find((t) => t.identifier === start?.id) || null
 
     const neighbour = (dx) => {
       const { paths: list, currentIndex: index } = state.current
@@ -77,19 +84,23 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
     }
 
     const onStart = (event) => {
+      if (start && event.touches.length > 1) return // a second finger: keep tracking the first
       start = null
       if (event.touches.length !== 1 || state.current.currentIndex < 0) return
       const touch = event.touches[0]
       if (touch.clientX < EDGE || touch.clientX > window.innerWidth - EDGE) return
       if (inSideScroller(event.target, main)) return
-      start = { x: touch.clientX, y: touch.clientY }
+      window.clearTimeout(timer)
+      if (peekPath) setPeek(null) // a spring-back was still running
+      start = { x: touch.clientX, y: touch.clientY, id: touch.identifier }
       mode = null
       samples = [{ x: touch.clientX, t: event.timeStamp }]
     }
 
     const onMove = (event) => {
       if (!start) return
-      const touch = event.touches[0]
+      const touch = tracked(event)
+      if (!touch) return
       const dx = touch.clientX - start.x
       const dy = touch.clientY - start.y
       if (!mode) {
@@ -113,8 +124,9 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       schedule()
     }
 
-    const onEnd = () => {
-      if (!start || mode !== "x") {
+    const onEnd = (event) => {
+      if (!start || !tracked(event)) return
+      if (mode !== "x") {
         start = null
         return
       }
@@ -131,7 +143,7 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       const flick = Math.abs(speed) > SWITCH_SPEED && Math.abs(move) > 30 && Math.sign(speed) === Math.sign(move)
       if (!target || !(far || flick)) {
         paint(0, 260)
-        window.setTimeout(() => setPeek(null), 260)
+        later(() => setPeek(null), 260)
         move = 0
         return
       }
@@ -143,7 +155,7 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       }
       if (reducedMotion()) return finish()
       paint(dir * width, 220)
-      window.setTimeout(finish, 220)
+      later(finish, 220)
     }
 
     main.addEventListener("touchstart", onStart, { passive: true })
@@ -152,6 +164,7 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
     main.addEventListener("touchcancel", onEnd)
     return () => {
       if (frame) window.cancelAnimationFrame(frame)
+      window.clearTimeout(timer)
       main.removeEventListener("touchstart", onStart)
       main.removeEventListener("touchmove", onMove)
       main.removeEventListener("touchend", onEnd)

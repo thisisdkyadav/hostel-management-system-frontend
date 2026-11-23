@@ -125,6 +125,11 @@ export const AuthProvider = ({ children }) => {
       setUser(null)
       // Cached reads belong to the user who just left (dining portal, etc.).
       queryClient.clear()
+      try {
+        localStorage.removeItem("student_dashboard_data")
+      } catch {
+        /* storage blocked */
+      }
     }
   }
 

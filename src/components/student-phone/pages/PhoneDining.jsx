@@ -45,6 +45,7 @@ import {
   mealsQuery as mealsQuery_,
 } from "../phoneQueries";
 import Segmented from "../kit/Segmented";
+import { ErrorCard } from "../kit/ListBits";
 import { renderSheetModal } from "../kit/SheetModal";
 import { ModalOverrideContext } from "../../common/AdaptiveModal";
 import PhoneMenu from "./PhoneMenu";
@@ -258,6 +259,12 @@ const PhoneDining = () => {
 
   const rebatesTab = () => (
     <div className="md-plain md-stack">
+      {rebatesQuery.isError && !rebatesQuery.data && (
+        <ErrorCard
+          text="Couldn't load your rebates."
+          onRetry={() => rebatesQuery.refetch()}
+        />
+      )}
       <AwayCard
         rebates={rebates}
         today={meals?.today || localTodayKey()}
@@ -276,6 +283,11 @@ const PhoneDining = () => {
     <div className="md-plain md-stack">
       {billingQuery.isPending ? (
         <p className="mk-sub">Loading your bills…</p>
+      ) : billingQuery.isError && !billingQuery.data ? (
+        <ErrorCard
+          text="Couldn't load your bills."
+          onRetry={() => billingQuery.refetch()}
+        />
       ) : billingPeriods.length ? (
         <BillCard billingPeriods={billingPeriods} />
       ) : (

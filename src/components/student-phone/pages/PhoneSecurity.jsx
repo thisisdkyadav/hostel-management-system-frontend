@@ -44,8 +44,8 @@ const PhoneSecurity = () => {
       ) : entries.length === 0 ? (
         <EmptyCard icon={ShieldCheck} title="No entries yet" text="Each time the gate scans your QR, it shows up here." />
       ) : (
-        days.map((day) => (
-          <section key={day.label} className="ms-day">
+        days.map((day, index) => (
+          <section key={`${index}-${day.label}`} className="ms-day">
             <h3 className="mk-sub ms-day__label">{day.label}</h3>
             <ul className="mk-list">
               {day.entries.map((entry) => {

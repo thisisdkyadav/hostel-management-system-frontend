@@ -16,22 +16,37 @@ const normalizeDashboard = (payload) => {
   return data?.profile ? data : null
 }
 
-/** Last dashboard seen on this device, for offline / error fallbacks. */
-export const readDashboardCache = () => {
+/**
+ * Last dashboard seen on this device, for when the student is offline. Tied to
+ * the account that saved it, so a different student on the same phone never
+ * sees it. Returns { data, savedAt } or null.
+ */
+export const readDashboardCache = (userId) => {
+  if (!userId) return null
   try {
-    return normalizeDashboard(JSON.parse(localStorage.getItem(DASHBOARD_CACHE_KEY) || "null")?.data)
+    const saved = JSON.parse(localStorage.getItem(DASHBOARD_CACHE_KEY) || "null")
+    if (!saved || saved.userId !== userId) return null
+    const data = normalizeDashboard(saved.data)
+    return data ? { data, savedAt: saved.timestamp || null } : null
   } catch {
     return null
   }
 }
 
-export const dashboardQuery = () => ({
+/** True for "couldn't reach the server" (offline, timeout), not for a 4xx/5xx answer. */
+export const isNetworkError = (error) => {
+  if (!error) return false
+  const status = error.status ?? error.response?.status ?? error.statusCode
+  return !status
+}
+
+export const dashboardQuery = (userId) => ({
   queryKey: queryKeys.studentDashboard.data(),
   queryFn: async () => {
     const data = normalizeDashboard(await studentApi.getStudentDashboard())
     if (!data) throw new Error("Student dashboard response is missing profile data")
     try {
-      localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({ data, timestamp: new Date().toISOString() }))
+      localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({ data, userId: userId || null, timestamp: new Date().toISOString() }))
     } catch {
       /* storage full or blocked */
     }
@@ -121,33 +136,35 @@ export const visitorRequestsQuery = () => ({
 export const myProfileQuery = () => ({ queryKey: ["student-phone", "profile"], queryFn: () => studentApi.getStudent() })
 export const myHealthQuery = () => ({ queryKey: ["student-phone", "health"], queryFn: () => studentProfileApi.getHealthDetails(), retry: false })
 
-/** The More-sheet pages: preloaded too, refreshed less often (usePhonePreload). */
-export const morePreloadQueries = (userId) => [
-  notificationsQuery(),
-  lostFoundQuery(),
-  feedbacksQuery(),
-  securityEntriesQuery(),
-  undertakingListsQuery(),
-  visitorRequestsQuery(),
-  myProfileQuery(),
-  myHealthQuery(),
-  ...(userId ? [idCardQuery(userId)] : []),
-]
-
-/** Everything the bottom-bar pages show on first paint. */
-export const preloadQueries = () => {
+/**
+ * What the background preloader keeps warm, with the route each belongs to so
+ * nothing is fetched for a page the student can't open. `infinite` lists use
+ * prefetchInfiniteQuery.
+ */
+export const preloadEntries = (userId) => {
   const thisWeek = weekStartOf(localTodayKey())
   return [
-    dashboardQuery(),
-    mealsQuery(),
-    votingQuery(),
-    undertakingsCountQuery(),
-    complaintStatsQuery(),
-    studentDiningPortalQuery(),
-    diningRebatesQuery(),
-    diningBillingQuery(),
-    diningTagsQuery(),
-    menuWeekQuery(thisWeek),
-    menuWeekQuery(addDays(thisWeek, 7)),
+    { routeKey: "route.student.dashboard", query: dashboardQuery(userId) },
+    { routeKey: "route.student.dashboard", query: votingQuery() },
+    { routeKey: "route.student.dashboard", query: undertakingsCountQuery() },
+    { routeKey: "route.student.dining", query: mealsQuery() },
+    { routeKey: "route.student.dining", query: studentDiningPortalQuery() },
+    { routeKey: "route.student.dining", query: diningRebatesQuery() },
+    { routeKey: "route.student.dining", query: diningBillingQuery() },
+    { routeKey: "route.student.dining", query: diningTagsQuery() },
+    { routeKey: "route.student.dining", query: menuWeekQuery(thisWeek) },
+    { routeKey: "route.student.dining", query: menuWeekQuery(addDays(thisWeek, 7)) },
+    { routeKey: "route.student.complaints", query: complaintStatsQuery() },
+    { routeKey: "route.student.complaints", query: complaintsListQuery("all"), infinite: true },
+    { routeKey: "route.student.events", query: phoneEventsQuery("upcoming"), infinite: true },
+    { routeKey: "route.student.notifications", query: notificationsQuery() },
+    { routeKey: "route.student.lostAndFound", query: lostFoundQuery() },
+    { routeKey: "route.student.feedbacks", query: feedbacksQuery() },
+    { routeKey: "route.student.security", query: securityEntriesQuery() },
+    { routeKey: "route.student.undertakings", query: undertakingListsQuery() },
+    { routeKey: "route.student.visitors", query: visitorRequestsQuery() },
+    { routeKey: "route.student.profile", query: myProfileQuery() },
+    { routeKey: "route.student.profile", query: myHealthQuery() },
+    ...(userId ? [{ routeKey: "route.student.idCard", query: idCardQuery(userId) }] : []),
   ]
 }

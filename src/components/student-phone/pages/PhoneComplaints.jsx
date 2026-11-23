@@ -14,6 +14,8 @@ const FILTERS = [
   { value: "Pending", label: "Pending", stat: "pending" },
   { value: "In Progress", label: "In progress", stat: "inProgress" },
   { value: "Resolved", label: "Resolved", stat: "resolved" },
+  // Only shown when the student has any (most never do).
+  { value: "Forwarded to IDO", label: "Forwarded", stat: "forwardedToIDO", optional: true },
 ]
 
 /** Students on a phone: their complaints as one list, a filter row, and a button to raise a new one. */
@@ -30,7 +32,9 @@ const PhoneComplaints = () => {
 
   const items = useMemo(() => (listQuery.data?.pages || []).flatMap((page) => page?.data?.items || []), [listQuery.data])
   const openComplaint = open ? items.find((item) => item.id === open.id) || open : null
-  const filters = FILTERS.map((filter) => ({ ...filter, count: stats ? stats[filter.stat] || 0 : undefined }))
+  const filters = FILTERS.map((filter) => ({ ...filter, count: stats ? stats[filter.stat] || 0 : undefined })).filter(
+    (filter) => !filter.optional || filter.count > 0 || filter.value === status,
+  )
 
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.complaints.all })

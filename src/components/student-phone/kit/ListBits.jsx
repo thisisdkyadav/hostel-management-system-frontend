@@ -71,7 +71,7 @@ export const EmptyCard = ({ icon: Icon, title, text, action }) => (
 )
 
 export const ErrorCard = ({ text = "Couldn't load this right now.", onRetry }) => (
-  <div className="mk-empty">
+  <div className="mk-empty" role="alert">
     <p>{text}</p>
     {onRetry && (
       <button type="button" className="mk-btn mk-btn--soft" onClick={onRetry}>

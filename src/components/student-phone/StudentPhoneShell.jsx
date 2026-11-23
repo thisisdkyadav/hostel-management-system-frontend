@@ -1,7 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Bell, ChevronRight, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
-import { Modal } from "hzero"
 import { useAuth } from "../../contexts/AuthProvider"
 import useColorScheme from "../../hooks/useColorScheme"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -10,6 +9,9 @@ import { NewTag } from "../sidebar/NewBadge"
 import QRCodeGenerator from "../QRCodeGenerator"
 import { setPhoneBeta } from "./phoneBeta"
 import useSheetDrag from "./kit/useSheetDrag"
+import PhoneSheet from "./kit/PhoneSheet"
+import useLayer from "./kit/useLayer"
+import { Ghosts } from "./kit/ListBits"
 import useTabSwipe from "./kit/useTabSwipe"
 import usePhonePreload from "./usePhonePreload"
 import RouteAccessGuard from "../authz/RouteAccessGuard"
@@ -32,14 +34,22 @@ const PhoneVisitors = lazy(() => import("./pages/PhoneVisitors"))
 const PhoneProfile = lazy(() => import("./pages/PhoneProfile"))
 
 // Same access keys as the routes in StudentRoutes (the shell renders these in place of <Outlet/>).
+// Placeholder while a page's code or access check loads (instead of a blank screen).
+const PageGhost = () => (
+  <div className="mk-page" aria-busy="true">
+    <span className="mk-shimmer sp-ghost-title" />
+    <Ghosts count={3} />
+  </div>
+)
 const guarded = (routeKey, page) => (
-  <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
+  <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />} loadingFallback={<PageGhost />}>
     {page}
   </RouteAccessGuard>
 )
 const PHONE_PAGES = {
   "/student": guarded("route.student.dashboard", <PhoneHome />),
   "/student/complaints": guarded("route.student.complaints", <PhoneComplaints />),
+  // Unguarded on purpose, like the desktop route: Dining is always shown to students.
   "/student/dining": <PhoneDining />,
   "/student/events": guarded("route.student.events", <PhoneEvents />),
   "/student/notifications": guarded("route.student.notifications", <PhoneNotifications />),
@@ -150,17 +160,14 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const closeSheet = useCallback(() => setSheetPath(null), [])
   const { sheetRef, backdropRef } = useSheetDrag(closeSheet, sheetOpen)
 
-  useEffect(() => {
-    if (!sheetOpen) return undefined
-    const onKey = (event) => event.key === "Escape" && setSheetPath(null)
-    document.addEventListener("keydown", onKey)
-    return () => document.removeEventListener("keydown", onKey)
-  }, [sheetOpen])
+  useLayer(closeSheet, sheetRef, sheetOpen) // Back / Escape close it; focus stays inside
 
   const go = (item) => {
+    const fromSheet = sheetOpen
     setSheetOpen(false)
     if (item.action) item.action()
-    else if (item.path) navigate(item.path)
+    // From the sheet, replace its history entry so Back returns to the page it was opened on.
+    else if (item.path) navigate(item.path, fromSheet ? { replace: true } : undefined)
   }
 
   if (blocked) {
@@ -174,6 +181,19 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
             <li>Open the browser menu (⋮ in Chrome, “aA” in Safari).</li>
             <li>Untick <b>Desktop site</b> (Chrome) or tap <b>Request Mobile Website</b> (Safari).</li>
           </ol>
+          <div className="sp-blocked__actions">
+            <button type="button" className="sp-blocked__btn sp-blocked__btn--primary" onClick={() => window.location.reload()}>
+              Done, reload
+            </button>
+            <button type="button" className="sp-blocked__btn" onClick={() => setPhoneBeta(false)}>
+              Use the classic layout instead
+            </button>
+            {logoutItem && (
+              <button type="button" className="sp-blocked__btn sp-blocked__btn--quiet" onClick={() => go(logoutItem)}>
+                Log out
+              </button>
+            )}
+          </div>
         </div>
       </div>
     )
@@ -194,7 +214,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
             className="sp-icon-btn"
             data-active={isActivePath(pathname, "/student/notifications") || undefined}
             onClick={() => navigate("/student/notifications")}
-            aria-label={notificationsCount ? `Notifications, ${notificationsCount} new` : "Notifications"}
+            aria-label={notificationsCount ? `Notifications, ${notificationsCount} active` : "Notifications"}
             title="Notifications"
           >
             <Bell size={20} strokeWidth={2} />
@@ -205,7 +225,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
       <main ref={mainRef} className="sp-main" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 4)}>
         {phonePage ? (
-          <Suspense fallback={null}>{phonePage}</Suspense>
+          <Suspense fallback={<PageGhost />}>{phonePage}</Suspense>
         ) : (
           <Outlet />
         )}
@@ -248,8 +268,8 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
       {sheetOpen && (
         <div className="sp-sheet-layer">
-          <button ref={backdropRef} type="button" className="sp-sheet-backdrop" aria-label="Close menu" onClick={() => setSheetOpen(false)} />
-          <div ref={sheetRef} className="sp-sheet" role="dialog" aria-modal="true" aria-label="More">
+          <button ref={backdropRef} type="button" tabIndex={-1} className="sp-sheet-backdrop" aria-label="Close menu" onClick={() => setSheetOpen(false)} />
+          <div ref={sheetRef} tabIndex={-1} className="sp-sheet" role="dialog" aria-modal="true" aria-label="More">
             <div className="sp-sheet__grip" aria-hidden="true" />
             <div className="sp-sheet__top">
               {profileItem ? (
@@ -321,9 +341,9 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
       )}
 
       {qrOpen && (
-        <Modal title="Campus Access QR" onClose={() => setQrOpen(false)} width={480}>
+        <PhoneSheet title="Campus QR" onClose={() => setQrOpen(false)}>
           <QRCodeGenerator />
-        </Modal>
+        </PhoneSheet>
       )}
     </div>
   )

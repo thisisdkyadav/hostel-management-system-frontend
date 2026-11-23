@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 
-import { Button, Field, Input, Label, Modal, Surface, Text, VStack } from "hzero"
+import { Button, Field, Input, Label, Surface, Text, VStack } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"

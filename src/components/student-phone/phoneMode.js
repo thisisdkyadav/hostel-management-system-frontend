@@ -180,7 +180,7 @@ const startForcing = () => {
   rewriteAll()
 
   try {
-    Object.defineProperty(window, "innerWidth", { configurable: true, get: phoneWidth })
+    Object.defineProperty(window, "innerWidth", { configurable: true, get: phoneWidth, set: () => {} })
   } catch {
     // leave it; layout code for students follows the phone flag, not innerWidth
   }

@@ -13,12 +13,21 @@ const DayStrip = ({ days, value, today, onChange }) => {
     const active = ref.current?.querySelector("[data-active]")
     active?.scrollIntoView({ block: "nearest", inline: "center" })
   }, [value])
+  // Arrow keys move between days, like ARIA tabs.
+  const onKeyDown = (event) => {
+    const index = days.indexOf(value)
+    const next = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: days.length - 1 }[event.key]
+    if (next === undefined || !days[next]) return
+    event.preventDefault()
+    onChange(days[next])
+    event.currentTarget.querySelectorAll('[role="tab"]')[next]?.focus()
+  }
   return (
-    <div className="mm-days" ref={ref} role="tablist" aria-label="Day">
+    <div className="mm-days" ref={ref} role="tablist" aria-label="Day" onKeyDown={onKeyDown}>
       {days.map((key) => {
         const date = fromKey(key)
         return (
-          <button key={key} type="button" role="tab" aria-selected={key === value} className="mm-day" data-active={key === value || undefined} data-today={key === today || undefined} onClick={() => onChange(key)}>
+          <button key={key} type="button" role="tab" aria-selected={key === value} tabIndex={key === value ? 0 : -1} className="mm-day" data-active={key === value || undefined} data-today={key === today || undefined} onClick={() => onChange(key)}>
             <span className="mm-day__wd">{key === today ? "Today" : date.toLocaleDateString("en-IN", { weekday: "short" })}</span>
             <span className="mm-day__n">{date.getDate()}</span>
           </button>

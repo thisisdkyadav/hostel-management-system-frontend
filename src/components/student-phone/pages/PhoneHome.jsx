@@ -4,13 +4,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { CalendarDays, Check, ChevronRight, Clock, Coffee, Cookie, FileSignature, Moon, Plane, Plus, ShieldCheck, Star, Sun, UtensilsCrossed, Vote, X } from "lucide-react"
 import { useToast } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { dashboardQuery as dashboardQuery_, mealsQuery as mealsQuery_, readDashboardCache, undertakingsCountQuery, votingQuery as votingQuery_ } from "../phoneQueries"
+import { dashboardQuery as dashboardQuery_, isNetworkError, mealsQuery as mealsQuery_, readDashboardCache, undertakingsCountQuery, votingQuery as votingQuery_ } from "../phoneQueries"
 import { queryKeys } from "../../../lib/query"
 import { addDays, clock12, formatCountdown, mealPaletteFor, mealProgress, mealVarsFor, nowParts, slotKey, timeSpan, toMinutes, weekStartOf } from "../../dining/menu/menuHelpers"
 import { useNow, useStudentMenuWeek } from "../../dining/student/useStudentMenu"
 import ComplaintSheet from "./ComplaintSheet"
 import NewComplaintSheet from "./NewComplaintSheet"
 import { isOpenComplaint, statusMeta, StatusTrack, timeAgo } from "./complaintBits"
+import { ErrorCard } from "../kit/ListBits"
 
 const greeting = (hour) => (hour < 5 ? "Good night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening")
 
@@ -129,13 +130,17 @@ const PhoneHome = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const { isOnline } = useAuth()
+  const { isOnline, user } = useAuth()
   const now = useNow()
   const [openComplaint, setOpenComplaint] = useState(null)
   const [creating, setCreating] = useState(false)
 
-  const dashboardQuery = useQuery({ ...dashboardQuery_(), enabled: isOnline })
-  const data = dashboardQuery.data ?? (dashboardQuery.isError || !isOnline ? readDashboardCache() : null)
+  const dashboardQuery = useQuery({ ...dashboardQuery_(user?._id), enabled: isOnline })
+  // Offline (or the server unreachable): fall back to this student's last saved copy, labelled as such.
+  const unreachable = !isOnline || (dashboardQuery.isError && isNetworkError(dashboardQuery.error))
+  const cached = !dashboardQuery.data && unreachable ? readDashboardCache(user?._id) : null
+  const data = dashboardQuery.data ?? cached?.data ?? null
+  const failed = !data && (dashboardQuery.isError || !isOnline)
 
   const mealsQuery = useQuery(mealsQuery_())
   const todayMeals = mealsQuery.data?.period ? mealsQuery.data.todayMeals : []
@@ -180,6 +185,13 @@ const PhoneHome = () => {
         <h1 className="mh-hello__text">{birthday ? "Happy birthday 🎂" : greeting(now.getHours())}</h1>
       </header>
 
+      {cached && (
+        <p className="mc-note mh-stale" role="status">
+          Offline · showing what you saw {cached.savedAt ? timeAgo(cached.savedAt) : "earlier"}
+        </p>
+      )}
+      {failed && <ErrorCard text={isOnline ? "Couldn't load your dashboard." : "You're offline. Your dashboard will load when you're back online."} onRetry={isOnline ? () => dashboardQuery.refetch() : undefined} />}
+
       {todo.length > 0 && (
         <ul className="mh-todo">
           {todo.map((item) => {
@@ -199,6 +211,7 @@ const PhoneHome = () => {
 
       <MealHero now={now} todayMeals={todayMeals} />
 
+      {!failed && (
       <section className="mh-block" aria-label="Your complaints">
         <div className="mh-complaints">
           <button type="button" className="mh-count" data-zero={openCount === 0 || undefined} onClick={() => navigate("/student/complaints")}>
@@ -228,6 +241,7 @@ const PhoneHome = () => {
           Raise a complaint
         </button>
       </section>
+      )}
 
       {room && (
         <section className="mh-room" aria-label="Your room">

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { CheckCircle2, Download, ExternalLink, Loader2, MoreVertical, PlusSquare, Share, X } from "lucide-react"
 import useSheetDrag from "../kit/useSheetDrag"
+import useLayer, { isLayerOpen } from "../kit/useLayer"
 import { isPhoneDevice } from "../phoneMode"
 import { checkInstalled, installPrompt, isStandalone, onAppInstalled, onInstallChange, openInApp, platform, runInstall } from "./pwaInstall"
 import "./install-prompt.css"
@@ -12,6 +13,10 @@ const SHOW_AFTER_MS = 2500
 const REOPEN_AFTER_MS = 30 * 60 * 1000
 // If the browser never says "installed" (some don't), offer Open app after this anyway.
 const INSTALL_FALLBACK_MS = 45 * 1000
+// Don't drop on top of something the student is doing; check again after this.
+const BUSY_RETRY_MS = 4000
+
+const somethingOpen = () => isLayerOpen() || Boolean(document.querySelector('[role="dialog"][aria-modal="true"]'))
 
 // Once per page load: moving between pages inside SMS doesn't bring it back.
 let shownThisLoad = false
@@ -44,9 +49,11 @@ const InstallAppPrompt = () => {
     if (!shouldOffer()) return undefined
     let alive = true
     let timer = 0
-    const offer = () => {
+    const offer = (delay = SHOW_AFTER_MS) => {
       window.clearTimeout(timer)
       timer = window.setTimeout(async () => {
+        if (!alive || !shouldOffer()) return
+        if (somethingOpen()) return offer(BUSY_RETRY_MS)
         const state = await checkInstalled()
         if (!alive || !shouldOffer()) return
         shownThisLoad = true
@@ -54,7 +61,7 @@ const InstallAppPrompt = () => {
         setCanPrompt(Boolean(installPrompt()))
         setOpenTried(false)
         setOpen(true)
-      }, SHOW_AFTER_MS)
+      }, delay)
     }
     if (!shownThisLoad) offer()
 
@@ -86,8 +93,9 @@ const InstallAppPrompt = () => {
     }
   }, [])
 
-  const close = () => setOpen(false)
+  const close = useCallback(() => setOpen(false), [])
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
+  useLayer(close, sheetRef, open) // Back / Escape close it; focus stays inside
 
   if (!open) return null
 
@@ -237,7 +245,7 @@ const InstallAppPrompt = () => {
   return createPortal(
     <div className="iap-layer" role="dialog" aria-modal="true" aria-label="SMS app">
       <div ref={backdropRef} className="iap-backdrop" onClick={close} />
-      <div ref={sheetRef} className="iap-sheet">
+      <div ref={sheetRef} tabIndex={-1} className="iap-sheet">
         <div className="iap-grip" aria-hidden="true" />
         <button type="button" className="iap-close" onClick={close} aria-label="Close">
           <X size={20} />

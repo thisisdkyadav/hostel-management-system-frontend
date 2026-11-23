@@ -185,7 +185,7 @@ const StudentLayout = () => {
     return (
       <DiningAllocationGate>
         <StudentPhoneShell navItems={allNavItems} notificationsCount={notificationsCount} blocked={phone.blocked} />
-        <InstallAppPrompt />
+        {!phone.blocked && <InstallAppPrompt />}
       </DiningAllocationGate>
     )
   }
