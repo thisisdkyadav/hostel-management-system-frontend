@@ -21,18 +21,20 @@ import "./student-phone.css"
 import "./pages/phone-pages.css"
 
 // Pages with their own phone design; every other route renders its normal page.
-const PhoneHome = lazy(() => import("./pages/PhoneHome"))
-const PhoneComplaints = lazy(() => import("./pages/PhoneComplaints"))
-const PhoneDining = lazy(() => import("./pages/PhoneDining"))
-const PhoneEvents = lazy(() => import("./pages/PhoneEvents"))
-const PhoneNotifications = lazy(() => import("./pages/PhoneNotifications"))
-const PhoneLostFound = lazy(() => import("./pages/PhoneLostFound"))
-const PhoneFeedback = lazy(() => import("./pages/PhoneFeedback"))
-const PhoneIDCard = lazy(() => import("./pages/PhoneIDCard"))
-const PhoneSecurity = lazy(() => import("./pages/PhoneSecurity"))
-const PhoneUndertakings = lazy(() => import("./pages/PhoneUndertakings"))
-const PhoneVisitors = lazy(() => import("./pages/PhoneVisitors"))
-const PhoneProfile = lazy(() => import("./pages/PhoneProfile"))
+// lazy(), plus a preload() to fetch the page's code ahead of the first visit.
+const lazyPage = (load) => Object.assign(lazy(load), { preload: load })
+const PhoneHome = lazyPage(() => import("./pages/PhoneHome"))
+const PhoneComplaints = lazyPage(() => import("./pages/PhoneComplaints"))
+const PhoneDining = lazyPage(() => import("./pages/PhoneDining"))
+const PhoneEvents = lazyPage(() => import("./pages/PhoneEvents"))
+const PhoneNotifications = lazyPage(() => import("./pages/PhoneNotifications"))
+const PhoneLostFound = lazyPage(() => import("./pages/PhoneLostFound"))
+const PhoneFeedback = lazyPage(() => import("./pages/PhoneFeedback"))
+const PhoneIDCard = lazyPage(() => import("./pages/PhoneIDCard"))
+const PhoneSecurity = lazyPage(() => import("./pages/PhoneSecurity"))
+const PhoneUndertakings = lazyPage(() => import("./pages/PhoneUndertakings"))
+const PhoneVisitors = lazyPage(() => import("./pages/PhoneVisitors"))
+const PhoneProfile = lazyPage(() => import("./pages/PhoneProfile"))
 
 // Same access keys as the routes in StudentRoutes (the shell renders these in place of <Outlet/>).
 // Placeholder while a page's code or access check loads (instead of a blank screen).
@@ -62,6 +64,9 @@ const PHONE_PAGES = {
   "/student/visitors": guarded("route.student.visitors", <PhoneVisitors />),
   "/student/profile": guarded("route.student.profile", <PhoneProfile />),
 }
+// Bottom-bar pages, whose code is fetched early.
+const TAB_PAGES = [PhoneHome, PhoneComplaints, PhoneDining, PhoneEvents]
+const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 // What slides in beside the page during a swipe.
 const PEEK_PAGES = PHONE_PAGES
 const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === "/student/" ? "/student" : pathname.replace(/\/$/, "")] || null
@@ -105,7 +110,7 @@ const useDisplayFont = () =>
 
 const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }) => {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const { pathname, key: locationKey } = useLocation()
   const { user } = useAuth()
   const { isDark, toggleTheme } = useColorScheme(user)
   // The sheet belongs to the page it was opened on, so any navigation
@@ -130,7 +135,11 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
       const bi = GRID_ORDER.indexOf(b.path)
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi)
     })
-  const sheetPageActive = !tabs.some((tab) => isActivePath(pathname, tab.path)) && !isActivePath(pathname, "/student/notifications")
+  // A tapped tab lights up straight away, before its page has rendered (page
+  // changes are React transitions, so a heavy page can take a moment).
+  const [pending, setPending] = useState(null)
+  const shownPath = pending && pending.from === locationKey ? pending.path : pathname
+  const sheetPageActive = !tabs.some((tab) => isActivePath(pathname, tab.path)) && !isActivePath(pathname, "/student/notifications") && !(pending && pending.from === locationKey)
   const sheetHasNews = spotlight.length > 0 || gridItems.some((item) => isNavItemNew(item))
 
   const tabPaths = tabs.map((tab) => tab.path)
@@ -150,14 +159,58 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   })
   usePhonePreload(!blocked)
 
-  // New page: start at the top, and drop any swipe transform before it paints.
+  // Fetch the bottom-bar pages' code early, so a first tap or swipe isn't waiting on it.
+  useEffect(() => {
+    const timer = window.setTimeout(() => TAB_PAGES.forEach((Page) => Page.preload?.().catch(() => {})), 1200)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  // Tapping a tab slides the pages like a swipe does: a still copy of the page
+  // being left slides out while the new page slides in from the side the tab is on.
+  const slideRef = useRef(null) // { ghost, dir } captured at the tap
+  const slideAnims = useRef([])
+  const stopSlide = () => {
+    slideAnims.current.forEach((animation) => animation.cancel())
+    slideAnims.current = []
+    document.querySelectorAll(".sp-slide-ghost").forEach((node) => node.remove())
+  }
+  const captureSlide = (toIndex) => {
+    stopSlide()
+    const main = mainRef.current
+    const fromIndex = tabPaths.findIndex((path) => isActivePath(pathname, path))
+    slideRef.current = null
+    if (!main || fromIndex < 0 || toIndex < 0 || fromIndex === toIndex || reducedMotion()) return
+    const ghost = main.cloneNode(true)
+    ghost.className = "sp-main sp-peek sp-slide-ghost"
+    ghost.removeAttribute("style")
+    ghost.setAttribute("aria-hidden", "true")
+    ghost.inert = true
+    if (phonePage) ghost.setAttribute("data-mpage", "")
+    slideRef.current = { ghost, scrollTop: main.scrollTop, dir: toIndex > fromIndex ? 1 : -1 }
+  }
+
+  // New page: start at the top, drop any swipe transform and sideways scroll
+  // before it paints, then run the tap slide if there is one.
   useLayoutEffect(() => {
     const main = mainRef.current
     if (!main) return
     main.style.transition = "none"
     main.style.transform = ""
     main.scrollTop = 0
+    main.scrollLeft = 0
+    if (main.parentElement) main.parentElement.scrollLeft = 0
+    const slide = slideRef.current
+    slideRef.current = null
+    if (!slide || !main.parentElement) return
+    main.parentElement.insertBefore(slide.ghost, main.nextSibling)
+    slide.ghost.scrollTop = slide.scrollTop
+    const timing = { duration: 280, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
+    const pageIn = main.animate([{ transform: `translate3d(${slide.dir * 100}%, 0, 0)` }, { transform: "translate3d(0, 0, 0)" }], timing)
+    const pageOut = slide.ghost.animate([{ transform: "translate3d(0, 0, 0)" }, { transform: `translate3d(${slide.dir * -100}%, 0, 0)` }], { ...timing, fill: "forwards" })
+    slideAnims.current = [pageIn, pageOut]
+    pageOut.finished.then(() => slide.ghost.remove(), () => slide.ghost.remove())
   }, [pathname, mainRef])
+  useEffect(() => stopSlide, [])
   const closeSheet = useCallback(() => setSheetPath(null), [])
   const { sheetRef, backdropRef } = useSheetDrag(closeSheet, sheetOpen)
 
@@ -166,9 +219,18 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const go = (item) => {
     const fromSheet = sheetOpen
     setSheetOpen(false)
-    if (item.action) item.action()
+    if (item.action) return item.action()
+    if (!item.path) return
+    if (item.path === shownPath) {
+      // Already here: a second tap goes back to the top.
+      mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+      return
+    }
+    const toIndex = tabPaths.indexOf(item.path)
+    if (!fromSheet) captureSlide(toIndex)
+    setPending({ path: item.path, from: locationKey })
     // From the sheet, replace its history entry so Back returns to the page it was opened on.
-    else if (item.path) navigate(item.path, fromSheet ? { replace: true } : undefined)
+    navigate(item.path, fromSheet ? { replace: true } : undefined)
   }
 
   if (blocked) {
@@ -248,7 +310,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
       <nav className="sp-bar" aria-label="Main">
         {tabs.map((tab) => {
           const Icon = tab.icon
-          const active = isActivePath(pathname, tab.path)
+          const active = isActivePath(shownPath, tab.path)
           return (
             <button key={tab.path} type="button" className="sp-tab" data-active={active || undefined} aria-current={active ? "page" : undefined} onClick={() => go(tab)}>
               <span className="sp-tab__icon">

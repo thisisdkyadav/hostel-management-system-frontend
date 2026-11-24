@@ -9,9 +9,16 @@ import "../../dining/menu/Menu.css"
 /** Two weeks of day chips: this week and next, today first in view. */
 const DayStrip = ({ days, value, today, onChange }) => {
   const ref = useRef(null)
+  // Centre the chosen day by scrolling the strip itself. (scrollIntoView would also
+  // scroll every ancestor, including the page while it is mid-swipe or rendered
+  // off screen as the swipe preview, which made the Dining page jump and stick.)
   useEffect(() => {
-    const active = ref.current?.querySelector("[data-active]")
-    active?.scrollIntoView({ block: "nearest", inline: "center" })
+    const strip = ref.current
+    const active = strip?.querySelector("[data-active]")
+    if (!active) return
+    const s = strip.getBoundingClientRect()
+    const a = active.getBoundingClientRect()
+    strip.scrollLeft += a.left + a.width / 2 - (s.left + s.width / 2)
   }, [value])
   // Arrow keys move between days, like ARIA tabs.
   const onKeyDown = (event) => {

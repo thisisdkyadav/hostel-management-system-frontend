@@ -44,7 +44,8 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
     let peekPath = null
     let frame = 0
     let samples = []
-    let timer = 0 // spring-back / finish, cleared if anything new starts
+    let timer = 0 // spring-back, cleared if anything new starts
+    let finishing = null // the page switch at the end of a completed swipe
     const later = (fn, ms) => {
       window.clearTimeout(timer)
       timer = window.setTimeout(fn, ms)
@@ -89,6 +90,9 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       if (event.touches.length !== 1 || state.current.currentIndex < 0) return
       const touch = event.touches[0]
       if (touch.clientX < EDGE || touch.clientX > window.innerWidth - EDGE) return
+      // A touch while a completed swipe is still sliding: switch now instead of
+      // cancelling it (cancelling left the page parked off screen).
+      if (finishing) return finishing()
       if (inSideScroller(event.target, main)) return
       window.clearTimeout(timer)
       if (peekPath) setPeek(null) // a spring-back was still running
@@ -150,19 +154,30 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       const dir = Math.sign(move)
       move = 0
       const finish = () => {
+        window.clearTimeout(timer)
+        finishing = null
         peekPath = null
         state.current.onSwitch(target) // the shell resets transforms once the new page is in
       }
       if (reducedMotion()) return finish()
       paint(dir * width, 220)
+      finishing = finish
       later(finish, 220)
     }
 
+    // Sideways drags are ours: without this some Android browsers take them for
+    // their own back/forward gesture and the swipe never starts. Rows that scroll
+    // sideways still scroll and pinch zoom still works (checked in Chrome). Not on
+    // iPhones, where WebKit may apply it to those rows too.
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    if (!ios) main.style.touchAction = "pan-y pinch-zoom"
     main.addEventListener("touchstart", onStart, { passive: true })
     main.addEventListener("touchmove", onMove, { passive: false })
     main.addEventListener("touchend", onEnd)
     main.addEventListener("touchcancel", onEnd)
     return () => {
+      finishing = null
+      main.style.touchAction = ""
       if (frame) window.cancelAnimationFrame(frame)
       window.clearTimeout(timer)
       main.removeEventListener("touchstart", onStart)

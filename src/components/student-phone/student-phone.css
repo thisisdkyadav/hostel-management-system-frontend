@@ -154,6 +154,7 @@ html[data-theme="dark"] .sp-shell[data-scrolled] .sp-head {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   position: relative;
+
   /* the bar floats over the page, so leave room under the last item */
   padding-bottom: calc(var(--sp-bar-space) + 8px);
 }
