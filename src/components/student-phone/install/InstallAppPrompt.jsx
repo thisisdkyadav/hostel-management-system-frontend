@@ -4,7 +4,7 @@ import { CheckCircle2, Download, ExternalLink, Loader2, MoreVertical, PlusSquare
 import useSheetDrag from "../kit/useSheetDrag"
 import useLayer, { isLayerOpen } from "../kit/useLayer"
 import { isPhoneDevice } from "../phoneMode"
-import { checkInstalled, installPrompt, isStandalone, onAppInstalled, onInstallChange, openInApp, platform, runInstall } from "./pwaInstall"
+import { checkInstalled, installPrompt, isChrome, isStandalone, onAppInstalled, onInstallChange, openInApp, openInChrome, platform, runInstall } from "./pwaInstall"
 import "./install-prompt.css"
 
 const SHOW_AFTER_MS = 2500
@@ -44,6 +44,10 @@ const InstallAppPrompt = () => {
     setPhase(next)
   }
   const os = platform()
+  // Android browsers other than Chrome (Edge…) only add a shortcut that opens in
+  // themselves: send students to Chrome to install, and never "Open in app" from
+  // here (the system would just hand the link back to this browser).
+  const otherAndroidBrowser = os === "android" && !isChrome()
 
   useEffect(() => {
     if (!shouldOffer()) return undefined
@@ -108,6 +112,13 @@ const InstallAppPrompt = () => {
       toPhase("ready")
       setOpen(true)
     }, INSTALL_FALLBACK_MS)
+  }
+
+  const tryChrome = () => {
+    openInChrome(window.location.pathname + window.location.search)
+    window.setTimeout(() => {
+      if (document.visibilityState === "visible") setOpenTried(true)
+    }, 1500)
   }
 
   const tryOpen = () => {
@@ -178,7 +189,7 @@ const InstallAppPrompt = () => {
         </div>
         {openTried && <p className="iap-note">Didn't switch? Open <b>SMS - IITI</b> from your home screen.</p>}
         <div className="iap-actions">
-          {os === "android" ? (
+          {os === "android" && !otherAndroidBrowser ? (
             <button type="button" className="iap-btn iap-btn--primary" onClick={tryOpen}>
               <ExternalLink size={18} /> Open in app
             </button>
@@ -189,6 +200,39 @@ const InstallAppPrompt = () => {
             Stay in browser
           </button>
         </div>
+      </>
+    )
+  } else if (otherAndroidBrowser && !canPrompt) {
+    body = (
+      <>
+        <div className="iap-head">
+          {appIcon}
+          <div>
+            <h2 className="iap-title">Get the SMS app</h2>
+            <p className="iap-text">
+              This browser can&apos;t install apps. Open SMS in <b>Chrome</b> to install it: one tap from your home screen, full screen, and you stay
+              logged in.
+            </p>
+          </div>
+        </div>
+        <ol className="iap-steps">
+          <li>
+            Tap <b>Open in Chrome</b> and log in there
+          </li>
+          <li>
+            Tap <b>Install app</b> when Chrome offers it
+          </li>
+        </ol>
+        {openTried && <p className="iap-note">Didn&apos;t switch? Open Chrome and go to <b>{window.location.host}</b>.</p>}
+        <div className="iap-actions">
+          <button type="button" className="iap-btn iap-btn--primary" onClick={tryChrome}>
+            <ExternalLink size={18} /> Open in Chrome
+          </button>
+          <button type="button" className="iap-btn" onClick={close}>
+            Not now
+          </button>
+        </div>
+        <p className="iap-note">Already installed? Open <b>SMS - IITI</b> from your home screen.</p>
       </>
     )
   } else {

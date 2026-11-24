@@ -41,6 +41,17 @@ export const platform = () => {
   return "other"
 }
 
+/**
+ * Google Chrome itself (not Edge, Samsung Internet, Opera, Firefox, an in-app
+ * webview…). Only Chrome makes the real app (a WebAPK) that owns our links, so
+ * only there can "Open in app" hand the page over; elsewhere "Add to Home
+ * screen" is just a shortcut back into that browser.
+ */
+export const isChrome = () => {
+  const ua = navigator.userAgent || ""
+  return /Chrome\/\d/.test(ua) && !/EdgA|EdgiOS|Edg\/|OPR|OPT\/|SamsungBrowser|YaBrowser|UCBrowser|MiuiBrowser|HeyTapBrowser|VivoBrowser|DuckDuckGo|Firefox|; wv\)/i.test(ua)
+}
+
 export const installPrompt = () => window.deferredPrompt || null
 export const rememberedInstalled = () => store.get(INSTALLED_KEY) === "1"
 
@@ -107,4 +118,10 @@ export const runInstall = async () => {
 export const openInApp = (path = "/student") => {
   const url = new URL(path, window.location.origin)
   window.location.href = `intent://${url.host}${url.pathname}${url.search}#Intent;scheme=https;end`
+}
+
+/** Open this page in Google Chrome (Android), where the app can be installed. */
+export const openInChrome = (path = "/student") => {
+  const url = new URL(path, window.location.origin)
+  window.location.href = `intent://${url.host}${url.pathname}${url.search}#Intent;scheme=https;package=com.android.chrome;end`
 }
