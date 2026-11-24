@@ -4,7 +4,7 @@ import { Switch } from "hzero";
 import { isPhoneDevice } from "./phoneMode";
 import { setPhoneBeta, usePhoneBeta } from "./phoneBeta";
 
-/** Profile card (phones only): use the phone app (default) or the classic layout. */
+/** Profile card (phones only): use the phone app (default) or, for this visit, the classic layout. */
 const PhoneBetaCard = () => {
   const on = usePhoneBeta();
   if (!isPhoneDevice()) return null;
@@ -16,7 +16,7 @@ const PhoneBetaCard = () => {
       <div className="sp-beta-card__text">
         <strong>Phone app</strong>
         <span>
-          SMS designed for your phone. Turn it off to use the classic layout.
+          SMS designed for your phone. Turn it off to use the classic layout for this visit; it comes back when you reopen SMS.
         </span>
       </div>
       <Switch

@@ -2,37 +2,29 @@ import { useSyncExternalStore } from "react"
 
 /**
  * The phone app is the default on phones. Students can switch to the classic
- * layout; that choice is stored per device ("0"). Anything else means on.
+ * layout, but only for the current visit: the choice lives in memory, so a
+ * reload or reopening SMS brings the phone app back.
  */
-const KEY = "sms_phone_beta"
+let on = true
 const listeners = new Set()
 
-const read = () => {
-  try {
-    return localStorage.getItem(KEY) !== "0"
-  } catch {
-    return true
-  }
+// Devices that chose Classic before it became per-visit kept it in storage; drop it.
+try {
+  localStorage.removeItem("sms_phone_beta")
+} catch {
+  /* storage blocked: nothing stored either */
 }
 
-export const setPhoneBeta = (on) => {
-  try {
-    if (on) localStorage.removeItem(KEY)
-    else localStorage.setItem(KEY, "0")
-  } catch {
-    /* storage blocked: the switch just won't stick */
-  }
+const read = () => on
+
+export const setPhoneBeta = (next) => {
+  on = Boolean(next)
   listeners.forEach((listener) => listener())
 }
 
 const subscribe = (listener) => {
   listeners.add(listener)
-  const onStorage = (event) => event.key === KEY && listener()
-  window.addEventListener("storage", onStorage)
-  return () => {
-    listeners.delete(listener)
-    window.removeEventListener("storage", onStorage)
-  }
+  return () => listeners.delete(listener)
 }
 
 export const usePhoneBeta = () => useSyncExternalStore(subscribe, read, () => true)
