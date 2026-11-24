@@ -20,6 +20,7 @@ const DiningTagsPage = lazy(() => import("../pages/common/DiningTagsPage"))
 const DiningMenuPage = lazy(() => import("../pages/common/DiningMenuPage"))
 const DiningBioPhotosPage = lazy(() => import("../pages/common/DiningBioPhotosPage"))
 const DiningScannerUsersPage = lazy(() => import("../pages/common/DiningScannerUsersPage"))
+const AppUsagePage = lazy(() => import("../pages/admin/AppUsagePage"))
 const DailyMealsPage = lazy(() => import("../pages/common/DailyMealsPage"))
 const DiningLiveFeedPage = lazy(() => import("../pages/common/DiningLiveFeedPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
@@ -90,6 +91,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/DiningMenuPage"),
   () => import("../pages/common/DiningBioPhotosPage"),
   () => import("../pages/common/DiningScannerUsersPage"),
+  () => import("../pages/admin/AppUsagePage"),
   () => import("../pages/common/DailyMealsPage"),
   () => import("../pages/admin/HostelsPage"),
   () => import("../pages/admin/HostelExplorerPage"),
@@ -209,6 +211,7 @@ const AdminRoutes = () => {
                 <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
                 <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
                 <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />
+                <Route path="app-usage" element={guardRoute("route.admin.appUsage", <AppUsagePage />)} />
                 <Route path="attendance" element={guardRoute("route.admin.attendance", <AttendancePage basePath="/admin/attendance" />)} />
                 <Route path="attendance/:occurrenceId" element={guardRoute("route.admin.attendance", <AttendanceOccurrencePage basePath="/admin/attendance" />)} />
                 <Route path="expenditure" element={guardRoute("route.admin.expenditure", <ExpenditureManagementPage basePath="/admin/expenditure" />)} />

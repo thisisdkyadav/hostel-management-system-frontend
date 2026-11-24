@@ -55,6 +55,7 @@ import {
   Map,
   Radio,
   CalendarCheck,
+  Smartphone,
 } from "lucide-react"
 
 // ============================================
@@ -207,6 +208,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, autoPin: true },
     { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "App Usage", icon: Smartphone, section: "main", path: "/admin/app-usage", routeKey: "route.admin.appUsage", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },

@@ -12,12 +12,14 @@ import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 import { Heading, Surface, Text } from "hzero"
 import DiningAllocationGate from "../components/dining/student/DiningAllocationGate"
 import InstallAppPrompt from "../components/student-phone/install/InstallAppPrompt"
+import useAppUsagePing from "../components/student-phone/install/useAppUsagePing"
 
 const StudentLayout = () => {
   const location = useLocation()
   const { user } = useAuth()
   // Students on a phone get the phone layout, even with "Desktop site" on.
   const phone = useStudentPhone(user?.role === "Student")
+  useAppUsagePing(user?.role === "Student", phone.isPhone ? "phone" : "classic")
   const handleLogout = useLogout()
   const [notificationsCount, setNotificationsCount] = useState(0)
   const [showOverallBestPerformer, setShowOverallBestPerformer] = useState(false)

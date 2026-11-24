@@ -1,0 +1,83 @@
+/* App Usage page (Admin). Series colours in fixed order: 1 = Android, 2 = iPhone. */
+
+.au { display: flex; flex-direction: column; gap: var(--spacing-4); }
+.au [data-series="1"] { background: var(--color-series-1); }
+.au [data-series="2"] { background: var(--color-series-2); }
+
+.au-head { display: flex; align-items: center; gap: var(--spacing-2); }
+.au-head__time { font-size: 0.8rem; color: var(--color-text-muted); }
+.au-spin { animation: au-spin 0.9s linear infinite; }
+@keyframes au-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .au-spin { animation: none; } }
+
+.au-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--spacing-3); }
+.au-tile {
+  display: flex; flex-direction: column; gap: var(--spacing-1);
+  padding: var(--spacing-4); border-radius: 14px;
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-light);
+}
+.au-tile[data-tone="1"] { border-color: color-mix(in oklab, var(--color-series-1) 45%, var(--color-border-light)); }
+.au-tile__label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--color-text-secondary); }
+.au-tile__value { font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--color-text-heading); font-variant-numeric: tabular-nums; }
+.au-tile__note { font-size: 0.8rem; line-height: 1.4; color: var(--color-text-muted); }
+
+.au-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--spacing-4); }
+.au-card {
+  display: flex; flex-direction: column; gap: var(--spacing-3);
+  padding: var(--spacing-4); border-radius: 14px; min-width: 0;
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-light);
+}
+.au-card__title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--color-text-heading); }
+.au-note { margin: 0; font-size: 0.8rem; line-height: 1.45; color: var(--color-text-muted); }
+.au-empty, .au-error { margin: 0; font-size: 0.9rem; color: var(--color-text-muted); }
+.au-error { color: var(--color-danger-text); }
+
+/* split bar: 2px surface gap between segments, rounded ends */
+.au-split { display: flex; flex-direction: column; gap: var(--spacing-3); }
+.au-split__bar { display: flex; gap: 2px; height: 18px; }
+.au-split__bar span { min-width: 6px; border-radius: 4px; }
+.au-legend { display: flex; flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-5); margin: 0; padding: 0; list-style: none; font-size: 0.9rem; color: var(--color-text-secondary); }
+.au-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.au-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.au-legend b { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.au-legend small { color: var(--color-text-muted); }
+
+/* horizontal bars, one series */
+.au-bars { display: flex; flex-direction: column; gap: var(--spacing-2); margin: 0; padding: 0; list-style: none; }
+.au-bars li { display: grid; grid-template-columns: minmax(120px, 38%) 1fr auto; align-items: center; gap: var(--spacing-3); font-size: 0.9rem; }
+.au-bars__label { display: flex; flex-direction: column; color: var(--color-text-primary); }
+.au-bars__label small { font-size: 0.72rem; color: var(--color-warning-text); }
+.au-bars__track { height: 10px; border-radius: 4px; background: var(--color-bg-tertiary); overflow: hidden; }
+.au-bars__fill { display: block; height: 100%; border-radius: 4px; background: var(--color-series-1); }
+.au-bars b { font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+
+/* daily trend: columns with a 2px gap, rounded tops anchored to the baseline */
+.au-trend { display: flex; flex-direction: column; gap: var(--spacing-2); }
+.au-trend__readout { font-size: 0.85rem; color: var(--color-text-secondary); min-height: 1.3em; }
+.au-trend__readout b { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.au-trend__plot {
+  position: relative; display: flex; align-items: stretch; gap: 2px; height: 140px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.au-trend__max { position: absolute; top: -2px; left: 0; font-size: 0.7rem; color: var(--color-text-muted); pointer-events: none; }
+.au-trend__col {
+  flex: 1; display: flex; align-items: flex-end; min-width: 0; padding: 0; border: 0;
+  background: transparent; cursor: default; border-radius: 4px 4px 0 0;
+}
+.au-trend__col:hover, .au-trend__col[data-active] { background: var(--color-bg-hover); }
+.au-trend__col:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.au-trend__bar { display: block; width: 100%; border-radius: 4px 4px 0 0; background: var(--color-series-1); }
+.au-trend__col[data-active] .au-trend__bar { background: color-mix(in oklab, var(--color-series-1) 80%, var(--color-text-heading)); }
+.au-trend__axis { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--color-text-muted); }
+
+/* latest visits */
+.au-table-wrap { overflow-x: auto; }
+.au-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.au-table th { text-align: left; font-weight: 600; font-size: 0.78rem; color: var(--color-text-muted); padding: 0 var(--spacing-3) var(--spacing-2); white-space: nowrap; }
+.au-table td { padding: var(--spacing-2) var(--spacing-3); border-top: 1px solid var(--color-border-light); color: var(--color-text-primary); vertical-align: middle; white-space: nowrap; }
+.au-table td small { display: block; color: var(--color-text-muted); font-size: 0.78rem; }
+.au-num { text-align: right; font-variant-numeric: tabular-nums; }
+.au-who { font-weight: 500; }
+.au-device { display: inline-flex; align-items: center; gap: 6px; }
+.au-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.78rem; background: var(--color-bg-tertiary); color: var(--color-text-secondary); }
+.au-pill[data-app] { background: var(--color-series-1-bg); color: var(--color-text-primary); }

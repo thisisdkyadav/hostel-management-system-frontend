@@ -67,6 +67,21 @@ export const iosBrowser = () => {
   return "inapp" // a webview without Safari's markers
 }
 
+/** The browser, as the App Usage stats name it (matches the backend's list). */
+export const browserName = () => {
+  const ua = navigator.userAgent || ""
+  const os = platform()
+  if (os === "ios") return iosBrowser()
+  if (/EdgA|Edg\//.test(ua)) return "edge"
+  if (/SamsungBrowser/.test(ua)) return "samsung"
+  if (/OPR\/|OPT\//.test(ua)) return "opera"
+  if (/Firefox\//.test(ua)) return "firefox"
+  if (os === "android" && /; wv\)|FBAN|FBAV|Instagram|LinkedInApp|Line\//.test(ua)) return "inapp"
+  if (/Chrome\/\d/.test(ua)) return "chrome"
+  if (/Safari\//.test(ua) && /Version\//.test(ua)) return "safari"
+  return "other"
+}
+
 export const installPrompt = () => window.deferredPrompt || null
 export const rememberedInstalled = () => store.get(INSTALLED_KEY) === "1"
 

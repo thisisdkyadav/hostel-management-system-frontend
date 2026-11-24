@@ -81,6 +81,10 @@ export const queryKeys = {
     students: (params) => [...queryKeys.diningRebateBoard.all, "students", params ?? {}],
     history: (id) => [...queryKeys.diningRebateBoard.all, "history", id ?? ""],
   },
+  appUsage: {
+    all: ["app-usage"],
+    stats: ["app-usage", "stats"],
+  },
   diningScannerUsers: {
     all: ["dining-scanner-users"],
     list: (params) => [...queryKeys.diningScannerUsers.all, "list", params ?? {}],
