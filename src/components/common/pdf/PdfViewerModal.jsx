@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Button, Heading, HStack, IconCircle, Modal, Surface, Text } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
+import { Button, Heading, HStack, IconCircle, Surface, Text } from "hzero"
 import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|bmp|svg)(?:$|\?)/i

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react"
-import { Alert, Button, Checkbox, ConfirmDialog, Field, Input, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
+import { AdaptiveConfirmDialog as ConfirmDialog } from "@/components/common/AdaptiveConfirm"
+import { Alert, Button, Checkbox, Field, Input, StatusBadge, Textarea, ToggleButtonGroup } from "hzero"
 import Modal from "@/components/common/AdaptiveModal"
 import { Download } from "lucide-react"
 import CapacityBar from "@/components/dining/CapacityBar"

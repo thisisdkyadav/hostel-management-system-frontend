@@ -10,6 +10,7 @@ import QRCodeGenerator from "../QRCodeGenerator"
 import { setPhoneBeta } from "./phoneBeta"
 import useSheetDrag from "./kit/useSheetDrag"
 import PhoneSheet from "./kit/PhoneSheet"
+import { PhoneConfirmProvider } from "./kit/PhoneConfirm"
 import useLayer from "./kit/useLayer"
 import { Ghosts } from "./kit/ListBits"
 import useTabSwipe from "./kit/useTabSwipe"
@@ -200,6 +201,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   }
 
   return (
+    <PhoneConfirmProvider>
     <div className="sp-shell" data-mpage={phonePage ? "" : undefined} data-scrolled={scrolled || undefined}>
       <header className="sp-head">
         <button type="button" className="sp-head__brand" onClick={() => navigate("/student")}>
@@ -346,6 +348,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
         </PhoneSheet>
       )}
     </div>
+    </PhoneConfirmProvider>
   )
 }
 

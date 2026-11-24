@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { Button, ConfirmDialog, Heading, HStack, Input, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "hzero"
+import { AdaptiveConfirmDialog as ConfirmDialog } from "@/components/common/AdaptiveConfirm"
+import { Button, Heading, HStack, Input, Label, Select, Spinner, Surface, Text, Textarea, VStack } from "hzero"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
   const [loading, setLoading] = useState(true)
