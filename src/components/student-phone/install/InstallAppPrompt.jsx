@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { CheckCircle2, Download, ExternalLink, Loader2, MoreVertical, PlusSquare, Share, X } from "lucide-react"
+import { CheckCircle2, Compass, Download, ExternalLink, Loader2, Menu, MoreHorizontal, MoreVertical, PlusSquare, Share, X } from "lucide-react"
 import useSheetDrag from "../kit/useSheetDrag"
 import useLayer, { isLayerOpen } from "../kit/useLayer"
 import { isPhoneDevice } from "../phoneMode"
-import { checkInstalled, installPrompt, isChrome, isStandalone, onAppInstalled, onInstallChange, openInApp, openInChrome, platform, runInstall } from "./pwaInstall"
+import { checkInstalled, installPrompt, iosBrowser, isChrome, isStandalone, onAppInstalled, onInstallChange, openInApp, openInChrome, platform, runInstall } from "./pwaInstall"
 import "./install-prompt.css"
 
 const SHOW_AFTER_MS = 2500
@@ -22,6 +22,58 @@ const somethingOpen = () => isLayerOpen() || Boolean(document.querySelector('[ro
 let shownThisLoad = false
 
 const shouldOffer = () => isPhoneDevice() && !isStandalone()
+
+const share = <Share size={16} aria-label="Share" />
+const addStep = (
+  <li>
+    Scroll down, choose <PlusSquare size={16} aria-hidden="true" /> <b>Add to Home Screen</b>, then <b>Add</b>
+  </li>
+)
+
+/** Add-to-home-screen steps for each iPhone browser (Share is somewhere else in each). */
+const IosSteps = ({ browser }) => {
+  if (browser === "inapp")
+    return (
+      <ol className="iap-steps">
+        <li>
+          Open this page in <b>Safari</b>: tap <MoreHorizontal size={16} aria-label="more" /> or <Compass size={16} aria-label="Safari" /> and choose{" "}
+          <b>Open in Safari</b>
+        </li>
+        <li>
+          In Safari, tap {share} <b>Share</b>
+        </li>
+        {addStep}
+      </ol>
+    )
+  const first = {
+    chrome: (
+      <>
+        Tap {share} <b>Share</b> at the top right, next to the address
+      </>
+    ),
+    edge: (
+      <>
+        Tap <MoreHorizontal size={16} aria-label="menu" /> at the bottom, then {share} <b>Share</b>
+      </>
+    ),
+    firefox: (
+      <>
+        Tap <Menu size={16} aria-label="menu" /> at the bottom, then {share} <b>Share</b>
+      </>
+    ),
+    safari: (
+      <>
+        Tap {share} <b>Share</b> in the toolbar (on newer iPhones, tap <MoreHorizontal size={16} aria-label="more" /> first)
+      </>
+    ),
+  }[browser]
+  return (
+    <ol className="iap-steps">
+      <li>{first}</li>
+      {addStep}
+    </ol>
+  )
+}
 
 const appIcon = <img className="iap-icon" src="/pwa-192.png" alt="" width="56" height="56" />
 
@@ -238,14 +290,7 @@ const InstallAppPrompt = () => {
   } else {
     const steps =
       os === "ios" ? (
-        <ol className="iap-steps">
-          <li>
-            Tap <Share size={16} aria-label="Share" /> <b>Share</b> in Safari&apos;s toolbar
-          </li>
-          <li>
-            Choose <PlusSquare size={16} aria-hidden="true" /> <b>Add to Home Screen</b>, then <b>Add</b>
-          </li>
-        </ol>
+        <IosSteps browser={iosBrowser()} />
       ) : (
         <ol className="iap-steps">
           <li>
@@ -282,6 +327,7 @@ const InstallAppPrompt = () => {
           )}
         </div>
         {openTried && <p className="iap-note">Didn&apos;t switch? Open <b>SMS - IITI</b> from your home screen, or install it with the steps above.</p>}
+        {os === "ios" && <p className="iap-note">Already have it? Open <b>SMS - IITI</b> from your home screen.</p>}
       </>
     )
   }

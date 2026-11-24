@@ -52,6 +52,21 @@ export const isChrome = () => {
   return /Chrome\/\d/.test(ua) && !/EdgA|EdgiOS|Edg\/|OPR|OPT\/|SamsungBrowser|YaBrowser|UCBrowser|MiuiBrowser|HeyTapBrowser|VivoBrowser|DuckDuckGo|Firefox|; wv\)/i.test(ua)
 }
 
+/**
+ * Which browser on an iPhone/iPad. All of them can add SMS to the home screen
+ * from their Share menu (iOS 16.4+), but Share sits in a different place in
+ * each; in-app browsers (Instagram, Gmail…) can't, the page must go to Safari.
+ */
+export const iosBrowser = () => {
+  const ua = navigator.userAgent || ""
+  if (/CriOS/i.test(ua)) return "chrome"
+  if (/EdgiOS/i.test(ua)) return "edge"
+  if (/FxiOS/i.test(ua)) return "firefox"
+  if (/FBAN|FBAV|Instagram|LinkedInApp|Line\/|GSA\/|Twitter|Snapchat|WhatsApp/i.test(ua)) return "inapp"
+  if (/Safari\//.test(ua) && /Version\//.test(ua)) return "safari"
+  return "inapp" // a webview without Safari's markers
+}
+
 export const installPrompt = () => window.deferredPrompt || null
 export const rememberedInstalled = () => store.get(INSTALLED_KEY) === "1"
 
