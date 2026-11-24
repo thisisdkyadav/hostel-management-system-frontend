@@ -84,6 +84,9 @@ export const queryKeys = {
   appUsage: {
     all: ["app-usage"],
     stats: ["app-usage", "stats"],
+    roles: ["app-usage", "roles"],
+    users: (params) => ["app-usage", "users", params ?? {}],
+    user: (userId) => ["app-usage", "user", userId],
   },
   diningScannerUsers: {
     all: ["dining-scanner-users"],

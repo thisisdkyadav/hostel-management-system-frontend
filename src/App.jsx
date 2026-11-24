@@ -8,6 +8,7 @@ import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
 import AppUpdatePrompt from "./components/common/AppUpdatePrompt"
+import PageVisitTracker from "./components/app-usage/PageVisitTracker"
 import { createAppQueryClient } from "./lib/query/queryClient"
 import QueryInvalidationBridge from "./lib/query/QueryInvalidationBridge"
 import { readStoredUser, warmStudentPortal } from "./components/dining/student/portalQuery"
@@ -42,6 +43,7 @@ function App() {
                   <StatusBadgeProvider map={statusVocabulary} fallback="primary">
                     <ConfirmProvider>
                       <AppRoutes />
+                      <PageVisitTracker />
                       <PWAInstallPrompt />
                       <AppUpdatePrompt />
                     </ConfirmProvider>

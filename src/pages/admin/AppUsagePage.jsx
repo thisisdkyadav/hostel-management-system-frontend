@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useSearchParams } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Page } from "hzero"
 import { Apple, Monitor, RefreshCw, Smartphone, Users } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { appUsageApi } from "@/service"
+import PageActivityView from "@/components/app-usage/PageActivityView"
 import "@/components/app-usage/AppUsage.css"
 
 const BROWSERS = {
@@ -140,31 +142,17 @@ const TrendChart = ({ trend }) => {
 }
 
 /**
- * App Usage (Admin): how many students have the installed SMS app, on iPhone
+ * Student app view: how many students have the installed SMS app, on iPhone
  * and Android, and how students reach SMS. Students' browsers report every
  * visit, so the numbers are live; the page refreshes every 30 s.
  */
-const AppUsagePage = () => {
-  const query = useQuery({
-    queryKey: queryKeys.appUsage.stats,
-    queryFn: () => appUsageApi.stats(),
-    refetchInterval: 30_000,
-  })
+const StudentAppView = ({ query }) => {
   const data = query.data
   const installed = data?.installed
   const seen = data?.seen
 
   return (
-    <Page>
-      <PageHeader title="App Usage" subtitle="Students with the SMS app on their phone, updated every time a student opens SMS.">
-        <div className="au-head">
-          {data?.generatedAt && <span className="au-head__time">Updated {ago(data.generatedAt)}</span>}
-          <Button variant="ghost" size="sm" onClick={() => query.refetch()} disabled={query.isFetching} aria-label="Refresh" title="Refresh">
-            <RefreshCw size={16} className={query.isFetching ? "au-spin" : undefined} />
-          </Button>
-        </div>
-      </PageHeader>
-      <Page.Body>
+    <>
         {query.isError && !data && <p className="au-error">Couldn&apos;t load app usage. Try refreshing.</p>}
         {!data && !query.isError && <p className="au-empty">Loading…</p>}
         {data && (
@@ -257,6 +245,80 @@ const AppUsagePage = () => {
               )}
             </section>
           </div>
+        )}
+    </>
+  )
+}
+
+const VIEWS = [
+  { id: "students", label: "Student app" },
+  { id: "pages", label: "Pages & users" },
+]
+
+/**
+ * App Usage (Admin). Two views: the students' installed SMS app, and every
+ * role's page visits (per user: pages with counts, last 7 days visit by visit).
+ * The view, role and user live in the URL.
+ */
+const AppUsagePage = () => {
+  const queryClient = useQueryClient()
+  const [params, setParams] = useSearchParams()
+  const view = params.get("view") === "pages" ? "pages" : "students"
+  const role = params.get("role") || "Student"
+  const userId = params.get("user") || ""
+  const setParam = (changes) =>
+    setParams(
+      (current) => {
+        const next = new URLSearchParams(current)
+        for (const [key, value] of Object.entries(changes)) {
+          if (value) next.set(key, value)
+          else next.delete(key)
+        }
+        return next
+      },
+      { replace: true }
+    )
+
+  const stats = useQuery({
+    queryKey: queryKeys.appUsage.stats,
+    queryFn: () => appUsageApi.stats(),
+    refetchInterval: 30_000,
+    enabled: view === "students",
+  })
+  const fetching = view === "students" ? stats.isFetching : queryClient.isFetching({ queryKey: queryKeys.appUsage.all }) > 0
+
+  return (
+    <Page>
+      <PageHeader
+        title="App Usage"
+        subtitle={view === "students" ? "Students with the SMS app on their phone, updated every time a student opens SMS." : "Who opens which pages, for every role. The last 7 days visit by visit; older visits as totals."}
+      >
+        <div className="au-head">
+          <div className="au-tabs" role="tablist" aria-label="View">
+            {VIEWS.map((v) => (
+              <button key={v.id} type="button" role="tab" aria-selected={view === v.id} onClick={() => setParam({ view: v.id === "students" ? "" : v.id })}>
+                {v.label}
+              </button>
+            ))}
+          </div>
+          {view === "students" && stats.data?.generatedAt && <span className="au-head__time">Updated {ago(stats.data.generatedAt)}</span>}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => queryClient.invalidateQueries({ queryKey: queryKeys.appUsage.all })}
+            disabled={fetching}
+            aria-label="Refresh"
+            title="Refresh"
+          >
+            <RefreshCw size={16} className={fetching ? "au-spin" : undefined} />
+          </Button>
+        </div>
+      </PageHeader>
+      <Page.Body>
+        {view === "students" ? (
+          <StudentAppView query={stats} />
+        ) : (
+          <PageActivityView role={role} onRole={(next) => setParam({ role: next, user: "" })} userId={userId} onUser={(id) => setParam({ user: id })} />
         )}
       </Page.Body>
     </Page>
