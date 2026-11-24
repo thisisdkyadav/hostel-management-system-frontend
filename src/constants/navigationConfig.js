@@ -208,12 +208,12 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostel Explorer", icon: Map, section: "main", path: "/admin/hostel-explorer", routeKey: "route.admin.hostels", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, autoPin: true },
     { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
-    { name: "App Usage", icon: Smartphone, section: "main", path: "/admin/app-usage", routeKey: "route.admin.appUsage", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true },
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Caterers", icon: UtensilsCrossed, section: "main", path: "/admin/caterers", routeKey: "route.admin.caterers", adminCategory: ADMIN_NAV_CATEGORY_DINING },
     { name: "Dining Periods", icon: CalendarDays, section: "main", path: "/admin/dining-periods", routeKey: "route.admin.diningPeriods", adminCategory: ADMIN_NAV_CATEGORY_DINING },
@@ -253,6 +253,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Settings", icon: Settings, section: "main", path: "/admin/settings", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "App Usage", icon: Smartphone, section: "main", path: "/admin/app-usage", routeKey: "route.admin.appUsage", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
   ]
 
   if (APPOINTMENT_ADMIN_SUBROLES.includes(user?.subRole)) {
@@ -270,8 +271,6 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   }
 
   navItems.push(createProfileItem("/admin"))
-  // Shown by route access like every other tab (all admins by default).
-  navItems.push({ name: "Intern Accommodation", icon: GraduationCap, section: "main", path: "/admin/intern-accommodation", routeKey: "route.admin.internAccommodation", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS, isNew: true, autoPin: true })
   navItems.push(createLogoutItem(handleLogout))
 
   return navItems
