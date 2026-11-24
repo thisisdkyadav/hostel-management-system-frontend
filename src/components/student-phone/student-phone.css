@@ -248,9 +248,11 @@ html[data-theme="dark"] .sp-bar {
 }
 
 .sp-tab[data-active] {
-  background: var(--m-secondary-container);
-  color: var(--m-on-secondary-container);
+  background: var(--m-primary-container);
+  color: var(--m-on-primary-container);
 }
+
+.sp-tab[data-active] .sp-tab__icon { color: var(--m-primary); }
 
 .sp-tab[data-active] .sp-tab__label { font-weight: 800; }
 

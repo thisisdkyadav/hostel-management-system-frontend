@@ -74,7 +74,7 @@ const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === 
 
 // Bottom bar, in order. Complaints and Dining are the most visited pages.
 const TAB_PATHS = ["/student", "/student/complaints", "/student/dining", "/student/events"]
-const TAB_LABELS = { "/student": "Home" }
+const TAB_LABELS = { "/student": "Home", "/student/complaints": "Issues" }
 
 // Reached from the header or the sheet's profile card, so not listed in the grid.
 const NOT_IN_GRID = new Set(["/student/notifications", "/student/profile"])
