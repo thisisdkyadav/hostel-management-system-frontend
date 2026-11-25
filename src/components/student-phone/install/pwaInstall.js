@@ -128,6 +128,22 @@ export const checkInstalled = async () => {
   return rememberedInstalled() ? true : null
 }
 
+/**
+ * Is the app actually on the phone yet? Chrome fires `appinstalled` as soon as
+ * the student accepts, but building the real app (a WebAPK) takes a while
+ * longer, and opening it before then just lands back in Chrome.
+ * getInstalledRelatedApps() only lists it once it's really there.
+ * true / false, or null when this browser can't tell.
+ */
+export const appOnPhone = async () => {
+  if (typeof navigator.getInstalledRelatedApps !== "function") return null
+  try {
+    return (await navigator.getInstalledRelatedApps()).length > 0
+  } catch {
+    return null
+  }
+}
+
 /** Show the browser's install dialog. Resolves to true when the student accepted. */
 export const runInstall = async () => {
   const prompt = installPrompt()
@@ -153,5 +169,7 @@ export const openInApp = (path = "/student") => {
 /** Open this page in Google Chrome (Android), where the app can be installed. */
 export const openInChrome = (path = "/student") => {
   const url = new URL(path, window.location.origin)
-  window.location.href = `intent://${url.host}${url.pathname}${url.search}#Intent;scheme=https;package=com.android.chrome;end`
+  // No Chrome on the phone: the system opens its Play Store page instead.
+  const fallback = encodeURIComponent("https://play.google.com/store/apps/details?id=com.android.chrome")
+  window.location.href = `intent://${url.host}${url.pathname}${url.search}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${fallback};end`
 }

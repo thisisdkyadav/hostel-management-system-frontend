@@ -4,15 +4,19 @@ import { CheckCircle2, Compass, Download, ExternalLink, Loader2, Menu, MoreHoriz
 import useSheetDrag from "../kit/useSheetDrag"
 import useLayer, { isLayerOpen } from "../kit/useLayer"
 import { isPhoneDevice } from "../phoneMode"
-import { checkInstalled, installPrompt, iosBrowser, isChrome, isStandalone, onAppInstalled, onInstallChange, openInApp, openInChrome, platform, runInstall } from "./pwaInstall"
+import { appOnPhone, checkInstalled, installPrompt, iosBrowser, isChrome, isStandalone, onAppInstalled, onInstallChange, openInApp, openInChrome, platform, runInstall } from "./pwaInstall"
 import "./install-prompt.css"
 
 const SHOW_AFTER_MS = 2500
 // Coming back to a tab left in the background this long counts as opening the site again
 // (Chrome restores old tabs without reloading them).
 const REOPEN_AFTER_MS = 30 * 60 * 1000
-// If the browser never says "installed" (some don't), offer Open app after this anyway.
-const INSTALL_FALLBACK_MS = 45 * 1000
+// While installing, check this often whether the app is really on the phone.
+const INSTALL_POLL_MS = 2000
+// Give up waiting after this and offer Open app anyway.
+const INSTALL_GIVE_UP_MS = 90 * 1000
+// Browsers that can't say whether it's there: offer Open app after this.
+const INSTALL_BLIND_MS = 20 * 1000
 // Don't drop on top of something the student is doing; check again after this.
 const BUSY_RETRY_MS = 4000
 
@@ -91,10 +95,36 @@ const InstallAppPrompt = () => {
   const [phase, setPhase] = useState(null) // null | "installing" | "ready"
   const phaseRef = useRef(null)
   const fallbackRef = useRef(0)
-  const toPhase = (next) => {
+  const waitStartedRef = useRef(0)
+  const toPhase = useCallback((next) => {
     phaseRef.current = next
     setPhase(next)
-  }
+  }, [])
+  // Show "Installing" until the app is really on the phone, then (re)open the
+  // sheet with "Open app", even if the student hid it meanwhile.
+  const waitUntilOnPhone = useCallback(() => {
+    if (phaseRef.current === "ready" || waitStartedRef.current) return
+    waitStartedRef.current = Date.now()
+    toPhase("installing")
+    const ready = () => {
+      window.clearTimeout(fallbackRef.current)
+      waitStartedRef.current = 0
+      toPhase("ready")
+      setOpenTried(false)
+      setOpen(true)
+    }
+    const check = async () => {
+      const there = await appOnPhone()
+      if (phaseRef.current !== "installing") return
+      if (there === null) {
+        fallbackRef.current = window.setTimeout(ready, INSTALL_BLIND_MS)
+        return
+      }
+      if (there || Date.now() - waitStartedRef.current > INSTALL_GIVE_UP_MS) return ready()
+      fallbackRef.current = window.setTimeout(check, INSTALL_POLL_MS)
+    }
+    check()
+  }, [toPhase])
   const os = platform()
   // Android browsers other than Chrome (Edge…) only add a shortcut that opens in
   // themselves: send students to Chrome to install, and never "Open in app" from
@@ -131,13 +161,11 @@ const InstallAppPrompt = () => {
       setCanPrompt(Boolean(installPrompt()))
       setInstalled(await checkInstalled())
     })
-    // Install finished: (re)open the sheet with "Open app", even if the student hid it.
+    // The browser says installed, but the app may still be being built: keep
+    // showing "Installing" until it's really on the phone.
     const offInstalled = onAppInstalled(() => {
-      window.clearTimeout(fallbackRef.current)
       setInstalled(true)
-      toPhase("ready")
-      setOpenTried(false)
-      setOpen(true)
+      waitUntilOnPhone()
     })
     return () => {
       alive = false
@@ -147,7 +175,7 @@ const InstallAppPrompt = () => {
       off()
       offInstalled()
     }
-  }, [])
+  }, [waitUntilOnPhone])
 
   const close = useCallback(() => setOpen(false), [])
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
@@ -157,13 +185,7 @@ const InstallAppPrompt = () => {
 
   const install = async () => {
     if (!(await runInstall())) return
-    if (phaseRef.current === "ready") return // appinstalled already came in
-    toPhase("installing")
-    fallbackRef.current = window.setTimeout(() => {
-      if (phaseRef.current !== "installing") return
-      toPhase("ready")
-      setOpen(true)
-    }, INSTALL_FALLBACK_MS)
+    waitUntilOnPhone()
   }
 
   const tryChrome = () => {
@@ -189,7 +211,7 @@ const InstallAppPrompt = () => {
           {appIcon}
           <div>
             <h2 className="iap-title">Installing the SMS app…</h2>
-            <p className="iap-text">This takes a few seconds. We&apos;ll let you open it here as soon as it&apos;s ready.</p>
+            <p className="iap-text">Your phone is setting it up, which can take up to a minute. We&apos;ll let you open it here as soon as it&apos;s ready.</p>
           </div>
         </div>
         <div className="iap-progress" role="status">
@@ -254,7 +276,9 @@ const InstallAppPrompt = () => {
         </div>
       </>
     )
-  } else if (otherAndroidBrowser && !canPrompt) {
+  } else if (otherAndroidBrowser) {
+    // Even when this browser offers its own install, it only makes a shortcut
+    // that opens back in this browser, so send students to Chrome.
     body = (
       <>
         <div className="iap-head">
