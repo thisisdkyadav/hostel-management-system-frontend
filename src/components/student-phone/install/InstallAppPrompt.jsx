@@ -11,12 +11,11 @@ const SHOW_AFTER_MS = 2500
 // Coming back to a tab left in the background this long counts as opening the site again
 // (Chrome restores old tabs without reloading them).
 const REOPEN_AFTER_MS = 30 * 60 * 1000
-// While installing, check this often whether the app is really on the phone.
-const INSTALL_POLL_MS = 2000
-// Give up waiting after this and offer Open app anyway.
-const INSTALL_GIVE_UP_MS = 90 * 1000
-// Browsers that can't say whether it's there: offer Open app after this.
-const INSTALL_BLIND_MS = 20 * 1000
+// After the student accepts the install, Chrome still has to build the app, and its
+// "installed" signals come too early. Wait this long before even checking, then
+// offer Open app once the check says it's there (re-checking every so often).
+const INSTALL_WAIT_MS = 5 * 60 * 1000
+const INSTALL_RECHECK_MS = 30 * 1000
 // Don't drop on top of something the student is doing; check again after this.
 const BUSY_RETRY_MS = 4000
 
@@ -95,40 +94,38 @@ const InstallAppPrompt = () => {
   const [phase, setPhase] = useState(null) // null | "installing" | "ready"
   const phaseRef = useRef(null)
   const fallbackRef = useRef(0)
-  const waitStartedRef = useRef(0)
+  const waitingRef = useRef(false)
+  // "Not now" (or closing the sheet any way): nothing more until SMS is reopened.
+  const dismissedRef = useRef(false)
   const toPhase = useCallback((next) => {
     phaseRef.current = next
     setPhase(next)
   }, [])
-  // Show "Installing" until the app is really on the phone, then (re)open the
-  // sheet with "Open app", even if the student hid it meanwhile.
+  // Show "Installing"; after INSTALL_WAIT_MS check the app is really on the phone
+  // and only then switch to "Open app". Stops if the student closes the sheet.
   const waitUntilOnPhone = useCallback(() => {
-    if (phaseRef.current === "ready" || waitStartedRef.current) return
-    waitStartedRef.current = Date.now()
+    if (dismissedRef.current || waitingRef.current || phaseRef.current === "ready") return
+    waitingRef.current = true
     toPhase("installing")
-    const ready = () => {
-      window.clearTimeout(fallbackRef.current)
-      waitStartedRef.current = 0
-      toPhase("ready")
-      setOpenTried(false)
-      setOpen(true)
-    }
     const check = async () => {
-      const there = await appOnPhone()
-      if (phaseRef.current !== "installing") return
-      if (there === null) {
-        fallbackRef.current = window.setTimeout(ready, INSTALL_BLIND_MS)
+      if (dismissedRef.current) return
+      const there = await appOnPhone() // null: this browser can't tell, so trust the wait
+      if (dismissedRef.current) return
+      if (there === false) {
+        fallbackRef.current = window.setTimeout(check, INSTALL_RECHECK_MS)
         return
       }
-      if (there || Date.now() - waitStartedRef.current > INSTALL_GIVE_UP_MS) return ready()
-      fallbackRef.current = window.setTimeout(check, INSTALL_POLL_MS)
+      waitingRef.current = false
+      toPhase("ready")
+      setOpenTried(false)
     }
-    check()
+    window.clearTimeout(fallbackRef.current)
+    fallbackRef.current = window.setTimeout(check, INSTALL_WAIT_MS)
   }, [toPhase])
   const os = platform()
   // Android browsers other than Chrome (Edge…) only add a shortcut that opens in
-  // themselves: send students to Chrome to install, and never "Open in app" from
-  // here (the system would just hand the link back to this browser).
+  // themselves: never offer Install there, send students to Chrome for it. Opening
+  // an app already installed from Chrome works from them, so that stays.
   const otherAndroidBrowser = os === "android" && !isChrome()
 
   useEffect(() => {
@@ -143,6 +140,8 @@ const InstallAppPrompt = () => {
         const state = await checkInstalled()
         if (!alive || !shouldOffer()) return
         shownThisLoad = true
+        dismissedRef.current = false // opened again: a past "Not now" no longer holds
+        if (!waitingRef.current && phaseRef.current === "installing") toPhase(null)
         setInstalled(state)
         setCanPrompt(Boolean(installPrompt()))
         setOpenTried(false)
@@ -161,8 +160,7 @@ const InstallAppPrompt = () => {
       setCanPrompt(Boolean(installPrompt()))
       setInstalled(await checkInstalled())
     })
-    // The browser says installed, but the app may still be being built: keep
-    // showing "Installing" until it's really on the phone.
+    // The browser says installed, but the app may still be being built.
     const offInstalled = onAppInstalled(() => {
       setInstalled(true)
       waitUntilOnPhone()
@@ -175,9 +173,14 @@ const InstallAppPrompt = () => {
       off()
       offInstalled()
     }
-  }, [waitUntilOnPhone])
+  }, [waitUntilOnPhone, toPhase])
 
-  const close = useCallback(() => setOpen(false), [])
+  const close = useCallback(() => {
+    dismissedRef.current = true
+    waitingRef.current = false
+    window.clearTimeout(fallbackRef.current)
+    setOpen(false)
+  }, [])
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
   useLayer(close, sheetRef, open) // Back / Escape close it; focus stays inside
 
@@ -211,7 +214,7 @@ const InstallAppPrompt = () => {
           {appIcon}
           <div>
             <h2 className="iap-title">Installing the SMS app…</h2>
-            <p className="iap-text">Your phone is setting it up, which can take up to a minute. We&apos;ll let you open it here as soon as it&apos;s ready.</p>
+            <p className="iap-text">Your phone is setting it up, which takes a few minutes. Keep SMS open: an Open app button will show here once it&apos;s ready.</p>
           </div>
         </div>
         <div className="iap-progress" role="status">
@@ -219,7 +222,7 @@ const InstallAppPrompt = () => {
         </div>
         <div className="iap-actions">
           <button type="button" className="iap-btn" onClick={close}>
-            Hide
+            Not now
           </button>
         </div>
       </>
@@ -263,7 +266,7 @@ const InstallAppPrompt = () => {
         </div>
         {openTried && <p className="iap-note">Didn't switch? Open <b>SMS - IITI</b> from your home screen.</p>}
         <div className="iap-actions">
-          {os === "android" && !otherAndroidBrowser ? (
+          {os === "android" ? (
             <button type="button" className="iap-btn iap-btn--primary" onClick={tryOpen}>
               <ExternalLink size={18} /> Open in app
             </button>
@@ -307,8 +310,11 @@ const InstallAppPrompt = () => {
           <button type="button" className="iap-btn" onClick={close}>
             Not now
           </button>
+          {/* This browser can't tell whether Chrome installed the app, so always offer it. */}
+          <button type="button" className="iap-link" onClick={tryOpen}>
+            Already installed? Open in app
+          </button>
         </div>
-        <p className="iap-note">Already installed? Open <b>SMS - IITI</b> from your home screen.</p>
       </>
     )
   } else {
