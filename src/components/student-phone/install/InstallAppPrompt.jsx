@@ -214,7 +214,7 @@ const InstallAppPrompt = () => {
           {appIcon}
           <div>
             <h2 className="iap-title">Installing the SMS app…</h2>
-            <p className="iap-text">Your phone is setting it up, which takes a few minutes. Keep SMS open: an Open app button will show here once it&apos;s ready.</p>
+            <p className="iap-text">This will take a while. Meanwhile, you can keep using SMS here in the browser.</p>
           </div>
         </div>
         <div className="iap-progress" role="status">
