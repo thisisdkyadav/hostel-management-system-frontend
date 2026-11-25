@@ -5,11 +5,24 @@ import PdfViewerModal from "@/components/common/pdf/PdfViewerModal"
 import { formatRange, toDayKey } from "../caterer/catererHelpers"
 import { formatRebateStatus, getRebateWhereLines, rebateStatusTone } from "../diningPeriodHelpers"
 import { NOT_COUNTED_STUDENT_TEXT } from "./studentDiningHelpers"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
 
 const SHOWN = 4
 
+const days = (n) => `${n} ${n === 1 ? "day" : "days"}`
+
+/** The rebate rules in one plain sentence. */
+const rebateRulesLine = (rules) => {
+  const run = Number(rules?.shortTermMaxContinuousDays) || 0
+  const notice = Number(rules?.shortTermMinAdvanceDays) || 0
+  const short = run ? `Short breaks of up to ${days(run)} in a row are approved straight away` : "Short breaks are approved straight away"
+  return `${short}${notice ? ` if you tell us ${days(notice)} ahead` : ""}. Longer breaks need a filled form and the dining office's approval.`
+}
+
 /** Rebates as "times I'm away": upcoming first, then the rest, newest first. */
-const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeriods = [] }) => {
+const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeriods = [], rules = null }) => {
+  const phone = useInPhoneShell()
+  const inPhone = phone
   const [showAll, setShowAll] = useState(false)
   const [viewForm, setViewForm] = useState(null)
   const sorted = [...rebates].sort((a, b) => {
@@ -26,11 +39,19 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeri
     <section className="sd-card">
       <header className="sd-card__head">
         <h2 className="sd-card__title">Away from the mess</h2>
-        <Button variant="secondary" size="sm" onClick={onRequest} disabled={!canRequest}>
-          <Plane size={15} /> I&apos;ll be away
-        </Button>
+        {!phone && (
+          <Button variant="secondary" size="sm" onClick={onRequest} disabled={!canRequest}>
+            <Plane size={15} /> I&apos;ll be away
+          </Button>
+        )}
       </header>
-      <p className="sd-card__note">Tell us when you won&apos;t eat here and those days are not charged.</p>
+      <p className="sd-card__note">Tell us when you won&apos;t eat here. Approved days aren&apos;t charged.</p>
+      {rules && <p className="sd-card__note">{rebateRulesLine(rules)}</p>}
+      {phone && (
+        <button type="button" className="mk-btn mk-btn--primary sd-away__ask" onClick={onRequest} disabled={!canRequest}>
+          <Plane size={18} aria-hidden="true" /> Tell us you&apos;ll be away
+        </button>
+      )}
       {unregisteredPeriods.length > 0 && (
         <p className="sd-card__note">
           You didn&apos;t choose a caterer in time, so rebates aren&apos;t available for {unregisteredPeriods.map((period) => formatRange(period.startDate, period.endDate)).join(", ")}.
@@ -62,7 +83,7 @@ const AwayCard = ({ rebates = [], today, canRequest, onRequest, unregisteredPeri
                       View form
                     </button>
                   )}
-                  <StatusBadge status={formatRebateStatus(rebate.status)} tone={rebateStatusTone(rebate.status)} />
+                  <StatusBadge status={formatRebateStatus(rebate.status)} tone={rebateStatusTone(rebate.status)} showDot={!inPhone} />
                 </div>
               </li>
             )

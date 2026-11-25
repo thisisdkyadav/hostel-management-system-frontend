@@ -86,6 +86,10 @@
   text-decoration: underline;
 }
 
+.sd-link:has(.sd-link__chev) { display: inline-flex; align-items: center; gap: 4px; }
+.sd-link__chev { transition: transform 160ms ease; }
+.sd-link__chev[data-open] { transform: rotate(180deg); }
+
 /* ------------------------------------------------------------------ */
 /* Notice (choose a caterer / next period)                             */
 /* ------------------------------------------------------------------ */
@@ -1150,6 +1154,8 @@
   border: var(--border-1) solid var(--color-border-primary);
   background: var(--color-bg-secondary);
 }
+
+.sd-bio__kicker { font-size: var(--font-size-xs, 0.75rem); font-weight: var(--font-weight-semibold, 600); color: var(--color-text-muted); }
 
 .sd-bio__text {
   display: flex;

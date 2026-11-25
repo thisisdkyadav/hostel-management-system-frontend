@@ -15,12 +15,12 @@ import { useToast } from "hzero";
 import { studentApi } from "../../../service";
 import { queryKeys } from "../../../lib/query";
 import {
-  formatDayMonth,
+  toDayKey,
   formatRange,
   localTodayKey,
 } from "../../dining/caterer/catererHelpers";
 import { getErrorMessage } from "../../dining/diningPeriodHelpers";
-import MealHistory from "../../dining/student/MealHistory";
+import PhoneMealHistory from "./PhoneMealHistory";
 import AwayCard from "../../dining/student/AwayCard";
 import BillCard from "../../dining/student/BillCard";
 import TagAnswersCard from "../../dining/student/TagAnswersCard";
@@ -49,7 +49,16 @@ import { ErrorCard } from "../kit/ListBits";
 import { renderSheetModal } from "../kit/SheetModal";
 import { ModalOverrideContext } from "../../common/AdaptiveModal";
 import PhoneMenu from "./PhoneMenu";
+import { timeSpan } from "../../dining/menu/menuHelpers";
 import "../../dining/student/StudentDining.css";
+
+/** "30 Nov": day first, like every other date in the phone app. */
+const formatDayMonth = (value) => {
+  const key = toDayKey(value)
+  if (!key) return ""
+  const [y, m, d] = key.split("-").map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString("en-IN", { day: "numeric", month: "short" })
+}
 
 const SELECTING_REFRESH_MS = 5000;
 const IDLE_REFRESH_MS = 60000;
@@ -233,9 +242,7 @@ const PhoneDining = () => {
                     </span>
                   )}
                 </span>
-                <span className="md-today__time">
-                  {meal.startTime}–{meal.endTime}
-                </span>
+                <span className="md-today__time">{timeSpan(meal)}</span>
               </li>
             );
           })}
@@ -243,8 +250,8 @@ const PhoneDining = () => {
         {meals.days?.length > 1 && (
           <>
             <h2 className="mk-label">Last {meals.days.length} days</h2>
-            <div className="md-plain">
-              <MealHistory
+            <div className="mmh-wrap">
+              <PhoneMealHistory
                 slots={meals.mealSlots}
                 days={meals.days}
                 summary={meals.summary}
@@ -253,6 +260,10 @@ const PhoneDining = () => {
             </div>
           </>
         )}
+        <h2 className="mk-label">Mess scanner</h2>
+        <div className="md-plain">
+          <BioPhotoCard />
+        </div>
       </>
     );
   };
@@ -273,9 +284,9 @@ const PhoneDining = () => {
         unregisteredPeriods={
           rebatesQuery.data?.rules?.unregisteredPeriods || []
         }
+        rules={rebatesQuery.data?.rules || null}
       />
       {!tagsNeedResponse && <TagAnswersCard items={tagItems} />}
-      <BioPhotoCard />
     </div>
   );
 

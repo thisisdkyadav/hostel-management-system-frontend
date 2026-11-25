@@ -45,7 +45,8 @@ export const toDayKey = (value) => {
 
 const format = (key, options) => {
   const date = parseKey(toDayKey(key))
-  return date ? date.toLocaleDateString(undefined, options) : "-"
+  // Day-first everywhere (20 Dec), whatever language the phone or browser is set to.
+  return date ? date.toLocaleDateString("en-IN", options) : "-"
 }
 
 export const formatDayShort = (key) => format(key, { weekday: "short", day: "numeric" })

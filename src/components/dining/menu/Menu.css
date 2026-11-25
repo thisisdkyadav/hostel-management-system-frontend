@@ -299,7 +299,9 @@
 
 .dm-diet[data-diet="egg"] {
   --dm-diet: var(--color-warning);
-  border-radius: var(--radius-xs);
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  transform: scale(1.2);
 }
 
 .dm-diet[data-diet="nonveg"] {

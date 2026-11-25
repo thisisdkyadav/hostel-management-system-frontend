@@ -7,7 +7,7 @@ export const CATEGORY_META = {
   Cleanliness: { icon: Sparkles, series: 6 },
   Internet: { icon: Wifi, series: 5 },
   Carpenter: { icon: Armchair, series: 2 },
-  Other: { icon: MoreHorizontal, series: 8 },
+  Other: { icon: MoreHorizontal, series: 8, bg: "color-mix(in srgb, var(--color-series-8) 16%, var(--m-surface))" },
 }
 
 export const categoryMeta = (category) => CATEGORY_META[category] || CATEGORY_META.Other
@@ -16,7 +16,7 @@ export const categoryMeta = (category) => CATEGORY_META[category] || CATEGORY_ME
 export const STATUS_META = {
   Pending: { step: 0, label: "Pending", tone: "info" },
   "In Progress": { step: 1, label: "In progress", tone: "warning" },
-  "Forwarded to IDO": { step: 1, label: "Forwarded to IDO", tone: "purple" },
+  "Forwarded to IDO": { step: 1, label: "Forwarded to IDO", short: "Forwarded", tone: "purple" },
   Resolved: { step: 2, label: "Resolved", tone: "success" },
   Rejected: { step: 2, label: "Rejected", tone: "danger" },
   Closed: { step: 2, label: "Closed", tone: "muted" },
@@ -30,7 +30,7 @@ export const CategoryIcon = ({ category, size = 20 }) => {
   const meta = categoryMeta(category)
   const Icon = meta.icon
   return (
-    <span className="mc-cat" style={{ "--cat": `var(--color-series-${meta.series})`, "--cat-bg": `var(--color-series-${meta.series}-bg)` }} aria-hidden="true">
+    <span className="mc-cat" style={{ "--cat": `var(--color-series-${meta.series})`, "--cat-bg": meta.bg || `var(--color-series-${meta.series}-bg)` }} aria-hidden="true">
       <Icon size={size} strokeWidth={2} />
     </span>
   )
@@ -40,7 +40,7 @@ export const CategoryIcon = ({ category, size = 20 }) => {
 export const StatusTrack = ({ status }) => {
   const meta = statusMeta(status)
   return (
-    <span className="mc-track" data-tone={meta.tone} data-step={meta.step} aria-hidden="true">
+    <span className="mc-track" data-tone={meta.tone} data-step={meta.step} data-rejected={status === "Rejected" || undefined} aria-hidden="true">
       <i data-on />
       <b data-on={meta.step >= 1 || undefined} />
       <i data-on={meta.step >= 1 || undefined} />

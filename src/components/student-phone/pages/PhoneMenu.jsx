@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { UtensilsCrossed } from "lucide-react"
 import { localTodayKey } from "../../dining/caterer/catererHelpers"
-import { ItemList, LastWeekTurnout } from "../../dining/menu/MenuBits"
+import { DietLegend, ItemList, LastWeekTurnout } from "../../dining/menu/MenuBits"
 import { addDays, clock12, formatCountdown, fromKey, mealPaletteFor, mealProgress, mealVarsFor, nowParts, slotKey, timeSpan, toMinutes, weekStartOf } from "../../dining/menu/menuHelpers"
 import { useNow, useStudentMenuWeek } from "../../dining/student/useStudentMenu"
 import "../../dining/menu/Menu.css"
@@ -79,33 +79,55 @@ const PhoneMenu = () => {
         </div>
       )
     }
+    const content = (meal) =>
+      meal.served === false ? (
+        <p className="mk-sub">Not served</p>
+      ) : meal.items?.length ? (
+        <>
+          <ItemList items={meal.items} />
+          {meal.note && <p className="mk-sub">{meal.note}</p>}
+        </>
+      ) : (
+        <p className="mk-sub">{meal.note || "Menu not posted yet"}</p>
+      )
+    const hasItems = meals.some((meal) => meal.items?.length)
     return (
-      <ul className="mm-meals">
-        {meals.map((meal) => {
-          const state = stateOf(meal)
-          return (
-            <li key={slotKey(meal.name)} className="mm-meal" data-state={state} style={mealVarsFor(palette, slotKey(meal.name))}>
-              <div className="mm-meal__head">
-                <span className="mm-meal__name">{meal.name}</span>
-                {state === "now" && <span className="mm-meal__tag">Now · until {clock12(meal.endTime)}</span>}
-                {state === "next" && <span className="mm-meal__tag">In {formatCountdown(progress.next.start - minutes)}</span>}
-                {state !== "now" && state !== "next" && timeSpan(meal) && <span className="mm-meal__time">{timeSpan(meal)}</span>}
-              </div>
-              {meal.served === false ? (
-                <p className="mk-sub">Not served</p>
-              ) : meal.items?.length ? (
-                <>
-                  <ItemList items={meal.items} />
-                  {meal.note && <p className="mk-sub">{meal.note}</p>}
-                </>
-              ) : (
-                <p className="mk-sub">{meal.note || "Menu not posted yet"}</p>
-              )}
-              <LastWeekTurnout meal={meal} mealName={meal.name.toLowerCase()} />
-            </li>
-          )
-        })}
-      </ul>
+      <>
+        <ul className="mm-meals">
+          {meals.map((meal) => {
+            const state = stateOf(meal)
+            const style = mealVarsFor(palette, slotKey(meal.name))
+            if (state === "done") {
+              // Meals already over today fold away so the next one is in view; tap to see what was served.
+              return (
+                <li key={slotKey(meal.name)} className="mm-meal" data-state="done" style={style}>
+                  <details className="mm-done">
+                    <summary className="mm-meal__head">
+                      <span className="mm-meal__name">{meal.name}</span>
+                      <span className="mm-meal__time">Ended · {timeSpan(meal)}</span>
+                    </summary>
+                    {content(meal)}
+                  </details>
+                </li>
+              )
+            }
+            return (
+              <li key={slotKey(meal.name)} className="mm-meal" data-state={state} style={style}>
+                <div className="mm-meal__head">
+                  <span className="mm-meal__name">{meal.name}</span>
+                  {state === "now" && <span className="mm-meal__tag">Now · until {clock12(meal.endTime)}</span>}
+                  {state === "next" && <span className="mm-meal__tag">In {formatCountdown(progress.next.start - minutes)}</span>}
+                  {state === "idle" && timeSpan(meal) && <span className="mm-meal__time">{timeSpan(meal)}</span>}
+                </div>
+                {state === "next" && timeSpan(meal) && <p className="mk-sub mm-meal__hours">Served {timeSpan(meal)}</p>}
+                {content(meal)}
+                <LastWeekTurnout meal={meal} mealName={meal.name.toLowerCase()} />
+              </li>
+            )
+          })}
+        </ul>
+        {hasItems && <DietLegend />}
+      </>
     )
   }
 

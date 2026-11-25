@@ -7,6 +7,9 @@ import { EmptyCard, ErrorCard, Ghosts, Pill, Row, shortDate } from "../kit/ListB
 import { lostFoundQuery } from "../phoneQueries"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
+/** Names are typed by staff, often all lowercase ("key"). */
+const capitalize = (text = "") => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text)
+
 const FILTERS = [
   { value: "all", label: "All", stat: "total" },
   { value: "Active", label: "Unclaimed", stat: "active" },
@@ -38,18 +41,17 @@ const PhoneLostFound = () => {
   const list = () => {
     if (query.isPending) return <Ghosts />
     if (query.isError && !query.data) return <ErrorCard text="Couldn't load lost & found." onRetry={() => query.refetch()} />
-    if (items.length === 0) return <EmptyCard icon={PackageSearch} title="Nothing here" text="Items handed in to security show up here." />
+    if (items.length === 0) return <EmptyCard icon={PackageSearch} title="Nothing here" text="Items handed in to hostel security show up here, with photos." />
     return (
-      <ul className="mk-list">
+      <ul className="mk-list mk-list--wrap">
         {items.map((item) => (
           <li key={item._id || item.id}>
-            <Row
-              lead={<Thumb item={item} />}
-              title={item.itemName}
-              meta={`Found ${shortDate(item.dateFound, true)}`}
-              trailing={<Pill tone={item.status === "Claimed" ? "success" : "warning"}>{item.status === "Claimed" ? "Claimed" : "Unclaimed"}</Pill>}
-              onClick={() => setOpen(item)}
-            />
+            <Row lead={<Thumb item={item} />} title={capitalize(item.itemName)} onClick={() => setOpen(item)}>
+              <span className="mk-row__status">
+                <Pill tone={item.status === "Claimed" ? "success" : "warning"}>{item.status === "Claimed" ? "Claimed" : "Unclaimed"}</Pill>
+                <span className="mk-row__meta">Found {shortDate(item.dateFound, true)}</span>
+              </span>
+            </Row>
           </li>
         ))}
       </ul>
@@ -74,11 +76,17 @@ const PhoneLostFound = () => {
               </div>
             )}
             <div className="mc-detail__titles">
-              <h2 className="mc-detail__title">{open.itemName}</h2>
+              <h2 className="mc-detail__title">{capitalize(open.itemName)}</h2>
               <span className="mk-sub">Found {shortDate(open.dateFound, true)}</span>
             </div>
             <Pill tone={open.status === "Claimed" ? "success" : "warning"}>{open.status === "Claimed" ? "Claimed" : "Waiting to be claimed"}</Pill>
             {open.description && <p className="mc-text">{open.description}</p>}
+            {open.status !== "Claimed" && (
+              <section className="mc-note">
+                <h3 className="mk-label">Is it yours?</h3>
+                <p className="mc-text">Ask hostel security to claim it. Bring your ID card and be ready to describe the item.</p>
+              </section>
+            )}
           </div>
         </PhoneSheet>
       )}

@@ -50,7 +50,7 @@ export const formatDate = (value) => {
   if (!value) return "-"
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return "-"
-  return date.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" })
+  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
 }
 
 export const formatDateTime = (value) => {
@@ -258,7 +258,7 @@ const shortDay = (value) => {
   if (!value) return ""
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return ""
-  return date.toLocaleDateString(undefined, { day: "numeric", month: "short", timeZone: "UTC" })
+  return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" })
 }
 
 export const periodRangeLabel = (period) => {

@@ -13,7 +13,7 @@ export const ConfirmSheet = ({ title = "Are you sure?", message, confirmText = "
         <button type="button" className="mk-btn mk-btn--soft" onClick={onClose}>
           {cancelText}
         </button>
-        <button type="button" className={destructive ? "mk-btn mk-btn--danger-solid" : "mk-btn"} onClick={onConfirm}>
+        <button type="button" className={destructive ? "mk-btn mk-btn--danger-solid" : "mk-btn mk-btn--primary"} onClick={onConfirm}>
           {confirmText}
         </button>
       </>

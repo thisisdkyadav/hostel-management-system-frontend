@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { CalendarDays, Check, ChevronRight, Clock, Coffee, Cookie, FileSignature, Moon, Plane, Plus, ShieldCheck, Star, Sun, UtensilsCrossed, Vote, X } from "lucide-react"
+import { Check, ChevronRight, Clock, Coffee, Cookie, FileSignature, Moon, Plane, Plus, ShieldAlert, ShieldCheck, Star, Sun, UtensilsCrossed, Vote, X } from "lucide-react"
 import { useToast } from "hzero"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { dashboardQuery as dashboardQuery_, isNetworkError, mealsQuery as mealsQuery_, readDashboardCache, undertakingsCountQuery, votingQuery as votingQuery_ } from "../phoneQueries"
@@ -126,6 +126,30 @@ const MealHero = ({ now, todayMeals }) => {
  * eat, where your complaints stand, and your room; anything that needs you
  * (a vote, an undertaking, rating a fix) sits on top.
  */
+/** Health cover at a glance: provider, policy and whether it still applies. */
+const InsuranceTile = ({ insurance, onOpen }) => {
+  const end = insurance.provider?.endDate ? new Date(insurance.provider.endDate) : null
+  const ended = end && !Number.isNaN(end.getTime()) && end < new Date()
+  const endText = end && !Number.isNaN(end.getTime()) ? end.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : ""
+  return (
+    <>
+      <h2 className="mk-label">Health cover</h2>
+      <button type="button" className="mh-insure" data-ended={ended || undefined} onClick={onOpen}>
+        {ended ? <ShieldAlert size={18} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}
+        <span className="mh-insure__text">
+          <span>{insurance.provider?.name || "Health insurance"}</span>
+          <span className="mk-sub">
+            {ended && <span className="mh-insure__flag">Expired</span>}
+            {insurance.insuranceNumber && <span className="mk-line">Policy {insurance.insuranceNumber}</span>}
+            {endText && <span className="mk-line">{ended ? `Ended ${endText}` : `Covered till ${endText}`}</span>}
+          </span>
+        </span>
+        <ChevronRight size={18} aria-hidden="true" />
+      </button>
+    </>
+  )
+}
+
 const PhoneHome = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -158,7 +182,7 @@ const PhoneHome = () => {
 
   const stats = data?.stats?.complaints || {}
   const active = (data?.activeComplaints || []).filter(isOpenComplaint)
-  const openCount = Math.max((stats.pending || 0) + (stats.inProgress || 0), active.length)
+  const openCount = Math.max((stats.pending || 0) + (stats.inProgress || 0) + (stats.forwardedToIDO || 0), active.length)
   const toRate = data?.resolvedComplaintsWithoutFeedback?.[0] || null
   const room = data?.roomInfo || null
   const events = (data?.upcomingEvents || []).slice(0, 3)
@@ -214,11 +238,13 @@ const PhoneHome = () => {
       {!failed && (
       <section className="mh-block" aria-label="Your complaints">
         <div className="mh-complaints">
-          <button type="button" className="mh-count" data-zero={openCount === 0 || undefined} onClick={() => navigate("/student/complaints")}>
+          <button type="button" className="mh-count" data-zero={openCount === 0 || undefined} aria-label={`View ${openCount} open issue${openCount === 1 ? "" : "s"}`} onClick={() => navigate("/student/complaints", { state: { complaints: "open" } })}>
             <span className="mh-count__n">
               {dashboardQuery.isPending && !data ? "–" : openCount}
             </span>
-            <span className="mh-count__label">open</span>
+            <span className="mh-count__label">
+              open <ChevronRight size={12} strokeWidth={3} aria-hidden="true" />
+            </span>
           </button>
           <div className="mh-complaints__list">
             {active.slice(0, 2).map((complaint) => {
@@ -228,7 +254,9 @@ const PhoneHome = () => {
                   <span className="mh-c__title">{complaint.title}</span>
                   <span className="mh-c__meta" data-tone={meta.tone}>
                     <StatusTrack status={complaint.status} />
-                    {meta.label} · {timeAgo(complaint.createdDate)}
+                    <span className="mh-c__text">
+                      {meta.short || meta.label} · {timeAgo(complaint.createdDate)}
+                    </span>
                   </span>
                 </button>
               )
@@ -252,15 +280,13 @@ const PhoneHome = () => {
           <span className="mh-room__info">
             <span className="mh-room__hostel">{room.hostelName}</span>
             <span className="mh-room__beds">
-              {(room.beds || []).map((bed) => (
-                <i key={bed.id} data-on={bed.isOccupied || undefined} data-me={bed.isCurrentUser || undefined} title={bed.isCurrentUser ? "You" : bed.isOccupied ? "Taken" : "Free"} />
-              ))}
               <span>
-                {room.roommates?.length
-                  ? `with ${room.roommates.map((mate) => String(mate.name || "").split(" ")[0]).join(", ")}`
-                  : room.totalBeds > 1
-                    ? "no roommates yet"
-                    : "single room"}
+                {[
+                  (room.totalBeds || room.beds?.length || 1) > 1 ? `${room.totalBeds || room.beds?.length}-bed room` : "Single room",
+                  room.roommates?.length ? `with ${room.roommates.map((mate) => String(mate.name || "").split(" ")[0]).join(", ")}` : (room.totalBeds || room.beds?.length || 1) > 1 ? "no roommates yet" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               </span>
             </span>
           </span>
@@ -279,14 +305,14 @@ const PhoneHome = () => {
                     <li key={event._id}>
                       <button type="button" className="mh-event" onClick={() => navigate("/student/events")}>
                         <span className="mh-event__date">
-                          <b>{when.getDate()}</b>
                           {when.toLocaleDateString("en-IN", { month: "short" })}
+                          <b>{when.getDate()}</b>
                         </span>
                         <span className="mh-event__main">
                           <span className="mh-event__name">{event.eventName}</span>
                           <span className="mk-sub">{when.toLocaleString("en-IN", { weekday: "short", hour: "numeric", minute: "2-digit" })}</span>
                         </span>
-                        <CalendarDays size={16} aria-hidden="true" />
+                        <ChevronRight size={18} className="mh-event__chev" aria-hidden="true" />
                       </button>
                     </li>
                   )
@@ -294,15 +320,7 @@ const PhoneHome = () => {
               </ul>
             </>
           )}
-          {insurance && (
-            <div className="mh-insure">
-              <ShieldCheck size={18} aria-hidden="true" />
-              <span className="mh-insure__text">
-                <span>{insurance.provider?.name || "Health insurance"}</span>
-                {insurance.insuranceNumber && <span className="mk-sub">Policy {insurance.insuranceNumber}</span>}
-              </span>
-            </div>
-          )}
+          {insurance && <InsuranceTile insurance={insurance} onOpen={() => navigate("/student/profile")} />}
         </section>
       )}
 

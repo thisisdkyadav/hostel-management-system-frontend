@@ -76,7 +76,7 @@ const ComplaintSheet = ({ complaint: initial, onClose, onChanged }) => {
 
   const steps = [
     { label: "Submitted", when: formatStamp(complaint.createdDate), done: true },
-    { label: middleLabel, when: "", done: meta.step >= 1 },
+    { label: middleLabel, when: "", done: meta.step >= 1, hint: complaint.status === "Forwarded to IDO" ? "Passed to IDO, the institute office that handles bigger repairs. It can take longer." : "" },
     { label: ["Closed", "Rejected"].includes(complaint.status) ? complaint.status : "Resolved", when: formatStamp(complaint.resolutionDate), done: resolved },
   ]
 
@@ -102,6 +102,7 @@ const ComplaintSheet = ({ complaint: initial, onClose, onChanged }) => {
               <span className="mc-steps__dot">{step.done && <Check size={12} strokeWidth={3} />}</span>
               <span className="mc-steps__label">{step.label}</span>
               {step.done && step.when && <span className="mc-steps__when">{step.when}</span>}
+              {step.hint && <span className="mc-steps__hint">{step.hint}</span>}
             </li>
           ))}
         </ol>
@@ -115,16 +116,19 @@ const ComplaintSheet = ({ complaint: initial, onClose, onChanged }) => {
 
         {(complaint.resolutionNotes || complaint.resolvedBy?.name) && (
           <section className="mc-note">
-            <h3 className="mk-label">{resolved ? "How it was fixed" : "Update"}</h3>
-            {complaint.resolutionNotes && <p className="mc-text">{complaint.resolutionNotes}</p>}
-            {complaint.resolvedBy?.name && <p className="mk-sub">— {complaint.resolvedBy.name}</p>}
+            <h3 className="mk-label">{complaint.status === "Rejected" ? "Why it was rejected" : resolved ? (complaint.resolutionNotes ? "How it was fixed" : "Marked fixed") : "Update"}</h3>
+            {complaint.resolutionNotes ? <p className="mc-text">{complaint.resolutionNotes}</p> : resolved && <p className="mk-sub">No note was recorded.</p>}
+            {complaint.resolvedBy?.name && <p className="mk-sub">{resolved ? "Closed" : "Updated"} by {complaint.resolvedBy.name}</p>}
           </section>
         )}
 
         {complaint.feedbackRating ? (
           <section>
             <h3 className="mk-label">Your rating</h3>
-            <Stars value={complaint.feedbackRating} size={20} />
+            <div className="mc-rated">
+              <Stars value={complaint.feedbackRating} size={20} />
+              <span className="mk-sub">{complaint.feedbackRating} out of 5 · sent</span>
+            </div>
             {complaint.feedback && <p className="mc-text">{complaint.feedback}</p>}
           </section>
         ) : (

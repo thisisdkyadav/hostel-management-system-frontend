@@ -1,15 +1,18 @@
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import { Bell, ChevronRight, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
+import { ArrowLeft, Bell, ChevronRight, House, LayoutGrid, LogOut, Monitor, Moon, QrCode, Sun, X } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import useColorScheme from "../../hooks/useColorScheme"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { isNavItemNew } from "../../constants/navigationConfig"
 import { NewTag } from "../sidebar/NewBadge"
-import QRCodeGenerator from "../QRCodeGenerator"
 import { setPhoneBeta } from "./phoneBeta"
 import useSheetDrag from "./kit/useSheetDrag"
 import PhoneSheet from "./kit/PhoneSheet"
+import { renderSheetModal } from "./kit/SheetModal"
+import { ModalOverrideContext } from "../common/AdaptiveModal"
+import { PhoneShellContext } from "./phoneShellContext"
+import CampusQr from "./kit/CampusQr"
 import { PhoneConfirmProvider } from "./kit/PhoneConfirm"
 import useLayer from "./kit/useLayer"
 import { Ghosts } from "./kit/ListBits"
@@ -30,6 +33,7 @@ const PhoneEvents = lazyPage(() => import("./pages/PhoneEvents"))
 const PhoneNotifications = lazyPage(() => import("./pages/PhoneNotifications"))
 const PhoneLostFound = lazyPage(() => import("./pages/PhoneLostFound"))
 const PhoneFeedback = lazyPage(() => import("./pages/PhoneFeedback"))
+const PhonePor = lazyPage(() => import("./pages/PhonePor"))
 const PhoneIDCard = lazyPage(() => import("./pages/PhoneIDCard"))
 const PhoneSecurity = lazyPage(() => import("./pages/PhoneSecurity"))
 const PhoneUndertakings = lazyPage(() => import("./pages/PhoneUndertakings"))
@@ -63,6 +67,7 @@ const PHONE_PAGES = {
   "/student/undertakings": guarded("route.student.undertakings", <PhoneUndertakings />),
   "/student/visitors": guarded("route.student.visitors", <PhoneVisitors />),
   "/student/profile": guarded("route.student.profile", <PhoneProfile />),
+  "/student/por": guarded("route.student.por", <PhonePor />),
 }
 // Bottom-bar pages, whose code is fetched early.
 const TAB_PAGES = [PhoneHome, PhoneComplaints, PhoneDining, PhoneEvents]
@@ -80,20 +85,38 @@ const phonePageFor = (pathname) => PHONE_PAGES[pathname === "/" || pathname === 
 // Bottom bar, in order. Complaints and Dining are the most visited pages.
 const TAB_PATHS = ["/student", "/student/complaints", "/student/dining", "/student/events"]
 const TAB_LABELS = { "/student": "Home", "/student/complaints": "Issues" }
+// The nav config gives Dashboard a grid icon, which looks like the More tab beside it.
+const TAB_ICONS = { "/student": House }
 
 // Reached from the header or the sheet's profile card, so not listed in the grid.
 const NOT_IN_GRID = new Set(["/student/notifications", "/student/profile"])
 // Time-limited portals, shown at the top of the sheet while they are open.
 const SPOTLIGHT_PATHS = new Set(["/student/elections", "/student/overall-best-performer"])
+// Shared pages that switch to a phone layout inside the shell: paint them in the phone palette too.
+const PHONE_STYLED_PATHS = SPOTLIGHT_PATHS
 // Grid order: roughly most to least used.
 const GRID_ORDER = ["/student/visitors", "/student/por", "/student/id-card", "/student/lost-and-found", "/student/feedbacks", "/student/security", "/student/undertakings"]
-const GRID_LABELS = { "/student/lost-and-found": "Lost & Found", "/student/feedbacks": "Feedback" }
+// The big tiles; everything else in the More sheet gets a compact two-column row.
+const PRIMARY_GRID = new Set(["/student/visitors", "/student/por", "/student/id-card"])
+
+const GRID_LABELS = { "/student/lost-and-found": "Lost & Found", "/student/feedbacks": "Feedback", "/student/visitors": "Guest stays", "/student/por": "Positions", "/student/id-card": "ID card" }
+
+const HEAD_TITLES = { "/student/profile": "Profile", "/student/notifications": "Notifications", "/student/overall-best-performer": "Best Performer" }
 
 const isActivePath = (pathname, path) => (path === "/student" ? pathname === "/student" || pathname === "/student/" || pathname === "/" : pathname === path || pathname.startsWith(`${path}/`))
 
 const Avatar = ({ user }) => (
   <span className="sp-avatar" aria-hidden="true">
-    {user?.profileImage ? <img src={getMediaUrl(user.profileImage)} alt="" /> : user?.name?.charAt(0)?.toUpperCase() || "?"}
+    {user?.profileImage ? (
+      <img src={getMediaUrl(user.profileImage)} alt="" />
+    ) : (
+      String(user?.name || "?")
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join("") || "?"
+    )}
   </span>
 )
 
@@ -108,7 +131,7 @@ const useDisplayFont = () =>
     document.head.appendChild(link)
   }, [])
 
-const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }) => {
+const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false, waiting = false }) => {
   const navigate = useNavigate()
   const { pathname, key: locationKey } = useLocation()
   const { user } = useAuth()
@@ -120,14 +143,37 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
   const setSheetOpen = (open) => setSheetPath(open ? pathname : null)
   const [qrOpen, setQrOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  // Once a sub-page's big title has scrolled away, the top bar names the page instead of "SMS".
+  const [titleGonePath, setTitleGonePath] = useState(null)
+  // Scrolling down shrinks the page's New button to its icon so it covers less of the list.
+  const [fabMiniPath, setFabMiniPath] = useState(null) // the page it was shrunk on; a new page starts full
+  const fabMini = fabMiniPath === pathname
+  const lastTopRef = useRef(0)
+  const onMainScroll = (event) => {
+    const top = event.currentTarget.scrollTop
+    setScrolled(top > 4)
+    setTitleGonePath(top > 28 ? pathname : null)
+    const delta = top - lastTopRef.current
+    if (Math.abs(delta) > 6) {
+      setFabMiniPath(delta > 0 && top > 48 ? pathname : null)
+      lastTopRef.current = top
+    }
+  }
   useDisplayFont()
   const phonePage = phonePageFor(pathname)
+  const phonePainted = Boolean(phonePage) || PHONE_STYLED_PATHS.has(pathname.replace(/\/$/, ""))
 
   const byPath = useMemo(() => new Map(navItems.filter((item) => item.path).map((item) => [item.path, item])), [navItems])
   const tabs = TAB_PATHS.map((path) => byPath.get(path)).filter(Boolean)
   const profileItem = byPath.get("/student/profile")
   const logoutItem = navItems.find((item) => item.name === "Logout")
   const spotlight = navItems.filter((item) => SPOTLIGHT_PATHS.has(item.path))
+  const cleanPath = pathname.replace(/\/$/, "")
+  // Once the page's big title scrolls away, the header names the page (every page but Home).
+  const headTitle =
+    titleGonePath === pathname && cleanPath !== "/student" && cleanPath !== ""
+      ? HEAD_TITLES[cleanPath] || TAB_LABELS[cleanPath] || GRID_LABELS[cleanPath] || byPath.get(cleanPath)?.name || null
+      : null
   const gridItems = navItems
     .filter((item) => item.path && !TAB_PATHS.includes(item.path) && !NOT_IN_GRID.has(item.path) && !SPOTLIGHT_PATHS.has(item.path))
     .sort((a, b) => {
@@ -185,7 +231,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
     ghost.removeAttribute("style")
     ghost.setAttribute("aria-hidden", "true")
     ghost.inert = true
-    if (phonePage) ghost.setAttribute("data-mpage", "")
+    if (phonePainted) ghost.setAttribute("data-mpage", "")
     slideRef.current = { ghost, scrollTop: main.scrollTop, dir: toIndex > fromIndex ? 1 : -1 }
   }
 
@@ -264,11 +310,28 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
   return (
     <PhoneConfirmProvider>
-    <div className="sp-shell" data-mpage={phonePage ? "" : undefined} data-scrolled={scrolled || undefined}>
+    <div className="sp-shell" data-mpage={phonePainted ? "" : undefined} data-scrolled={scrolled || undefined} data-fab-mini={fabMini || undefined}>
       <header className="sp-head">
-        <button type="button" className="sp-head__brand" onClick={() => navigate("/student")}>
-          SMS
-        </button>
+        <div className="sp-head__lead">
+          {!tabs.some((tab) => isActivePath(pathname, tab.path)) && (
+            <button
+              type="button"
+              className="sp-icon-btn sp-head__back"
+              aria-label="Back"
+              // Back through the app's own history when there is some (react-router keeps an index); otherwise home.
+              onClick={() => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/student"))}
+            >
+              <ArrowLeft size={22} strokeWidth={2} />
+            </button>
+          )}
+          {headTitle ? (
+            <span className="sp-head__title">{headTitle}</span>
+          ) : (
+            <button type="button" className="sp-head__brand" onClick={() => navigate("/student")}>
+              SMS
+            </button>
+          )}
+        </div>
         <div className="sp-head__actions">
           <button type="button" className="sp-icon-btn" onClick={() => setQrOpen(true)} aria-label="Show campus QR code" title="Campus QR">
             <QrCode size={20} strokeWidth={2} />
@@ -287,11 +350,23 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
         </div>
       </header>
 
-      <main ref={mainRef} className="sp-main" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 4)}>
-        {phonePage ? (
-          <Suspense fallback={<PageGhost />}>{phonePage}</Suspense>
+      <main ref={mainRef} className="sp-main" onScroll={onMainScroll}>
+        {waiting ? (
+          // The app is still checking the account: the frame shows straight away.
+          <PageGhost />
+        ) : phonePage ? (
+          // Phone pages also read PhoneShellContext, for the shared dining cards inside them.
+          <PhoneShellContext.Provider value={true}>
+            <Suspense fallback={<PageGhost />}>{phonePage}</Suspense>
+          </PhoneShellContext.Provider>
         ) : (
-          <Outlet />
+          // Shared pages without a phone page of their own: they can ask for
+          // phone layout (PhoneShellContext) and their dialogs open as sheets.
+          <PhoneShellContext.Provider value={true}>
+            <ModalOverrideContext.Provider value={renderSheetModal}>
+              <Outlet />
+            </ModalOverrideContext.Provider>
+          </PhoneShellContext.Provider>
         )}
       </main>
       {peekPage && (
@@ -309,7 +384,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
       <nav className="sp-bar" aria-label="Main">
         {tabs.map((tab) => {
-          const Icon = tab.icon
+          const Icon = TAB_ICONS[tab.path] || tab.icon
           const active = isActivePath(shownPath, tab.path)
           return (
             <button key={tab.path} type="button" className="sp-tab" data-active={active || undefined} aria-current={active ? "page" : undefined} onClick={() => go(tab)}>
@@ -346,7 +421,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
                   <ChevronRight size={18} className="sp-me__chev" />
                 </button>
               ) : <span />}
-              <button type="button" className="sp-icon-btn" onClick={() => setSheetOpen(false)} aria-label="Close">
+              <button type="button" className="sp-icon-btn sp-icon-btn--filled" onClick={() => setSheetOpen(false)} aria-label="Close">
                 <X size={20} />
               </button>
             </div>
@@ -366,23 +441,27 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
               </div>
             )}
 
-            <div className="sp-grid">
-              {gridItems.map((item) => {
-                const Icon = item.icon
-                const active = isActivePath(pathname, item.path)
-                const count = typeof item.badge === "number" ? item.badge : 0
-                return (
-                  <button key={item.path} type="button" className="sp-tile" data-active={active || undefined} onClick={() => go(item)}>
-                    <span className="sp-tile__icon">
-                      <Icon size={22} strokeWidth={2} />
-                      {count > 0 && <span className="sp-dot-count">{count > 99 ? "99+" : count}</span>}
-                    </span>
-                    <span className="sp-tile__label">{GRID_LABELS[item.path] || item.name}</span>
-                    {isNavItemNew(item) && <NewTag />}
-                  </button>
-                )
-              })}
-            </div>
+            {[gridItems.filter((item) => PRIMARY_GRID.has(item.path)), gridItems.filter((item) => !PRIMARY_GRID.has(item.path))].map((group, index) =>
+              group.length === 0 ? null : (
+                <div key={index} className="sp-grid" data-compact={index === 1 || undefined}>
+                  {group.map((item) => {
+                    const Icon = item.icon
+                    const active = isActivePath(pathname, item.path)
+                    const count = typeof item.badge === "number" ? item.badge : 0
+                    return (
+                      <button key={item.path} type="button" className="sp-tile" data-active={active || undefined} onClick={() => go(item)}>
+                        <span className="sp-tile__icon">
+                          <Icon size={index === 1 ? 18 : 22} strokeWidth={2} />
+                          {count > 0 && <span className="sp-dot-count">{count > 99 ? "99+" : count}</span>}
+                        </span>
+                        <span className="sp-tile__label">{GRID_LABELS[item.path] || item.name}</span>
+                        {isNavItemNew(item) && <NewTag />}
+                      </button>
+                    )
+                  })}
+                </div>
+              )
+            )}
 
             <div className="sp-sheet__foot">
               <button type="button" className="sp-foot-btn" onClick={toggleTheme}>
@@ -391,7 +470,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
               </button>
               <button type="button" className="sp-foot-btn" onClick={() => setPhoneBeta(false)}>
                 <Monitor size={18} />
-                Classic
+                Classic view
               </button>
               {logoutItem && (
                 <button type="button" className="sp-foot-btn sp-foot-btn--danger" onClick={() => go(logoutItem)}>
@@ -406,7 +485,7 @@ const StudentPhoneShell = ({ navItems, notificationsCount = 0, blocked = false }
 
       {qrOpen && (
         <PhoneSheet title="Campus QR" onClose={() => setQrOpen(false)}>
-          <QRCodeGenerator />
+          <CampusQr />
         </PhoneSheet>
       )}
     </div>

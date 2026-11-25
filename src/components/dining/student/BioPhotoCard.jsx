@@ -10,6 +10,7 @@ import { queryKeys } from "@/lib/query"
 import { getMediaUrl } from "@/utils/mediaUtils"
 import { getErrorMessage } from "../diningPeriodHelpers"
 import { formatDayMonth } from "../caterer/catererHelpers"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
 import { BIO_PHOTO_LINK_PARAM, BIO_PHOTO_LINK_VALUE } from "./studentDiningHelpers"
 
 const DEFAULT_RULES = { formats: ["JPG", "PNG"], maxSizeMb: 5, minSidePx: 300 }
@@ -217,6 +218,7 @@ const UpdatePhotoModal = ({ rules, onClose, onSent }) => {
 
 /** Side card on the student Dining page: the face-scanner photo and its update request. */
 const BioPhotoCard = () => {
+  const inPhone = useInPhoneShell()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const cardRef = useRef(null)
@@ -289,7 +291,7 @@ const BioPhotoCard = () => {
 
       {scanner && (
         <div className="sd-bio__scanner" data-tone={scanner.tone}>
-          <StatusBadge status={scanner.label} tone={scanner.tone} />
+          <StatusBadge status={scanner.label} tone={scanner.tone} showDot={!inPhone} />
           <p className="sd-bio__scanner-text">{scanner.text}</p>
           <span className="sd-card__note">{checkedAgo(query.data.scanner.checkedAt)}</span>
         </div>
@@ -301,12 +303,13 @@ const BioPhotoCard = () => {
         <div className="sd-bio__row">
           {current.photo?.ref && <img src={getMediaUrl(current.photo.ref)} alt="" className="sd-bio__thumb" />}
           <div className="sd-bio__text">
-            <StatusBadge status={status.label} tone={status.tone} />
+            <span className="sd-bio__kicker">Your last photo request</span>
+            <StatusBadge status={status.label} tone={status.tone} showDot={!inPhone} />
             <span className="sd-card__note">
               {current.status === "pending" && `Sent ${formatDayMonth(current.createdAt)}. The dining office will check it.`}
               {current.status === "approved" && `Updated ${formatDayMonth(current.pushedAt || current.reviewedAt)}. The scanners use it within a few minutes.`}
-              {current.status === "rejected" && (current.reviewComment ? `Reason: ${current.reviewComment}` : "Please send a different photo.")}
-              {current.status === "cancelled" && "You cancelled this request."}
+              {current.status === "rejected" && `${current.reviewComment ? `Reason: ${current.reviewComment}` : "Please send a different photo."} Nothing changed on the scanners.`}
+              {current.status === "cancelled" && "You cancelled it, so nothing changed on the scanners."}
             </span>
             {pending && (
               <button type="button" className="sd-link" onClick={() => setConfirmCancel(true)} disabled={cancel.isPending}>

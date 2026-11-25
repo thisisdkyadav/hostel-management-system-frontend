@@ -67,11 +67,11 @@ const NOTES = [
   "You and your guests must follow all applicable hostel rules and regulations.",
 ]
 
-const AccommodationGuidelinesModal = ({ open, onClose }) => {
+const AccommodationGuidelinesModal = ({ open, onClose, onConfirm, confirmLabel = "I understand" }) => {
   const footer = (
     <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-      <Button variant="primary" onClick={onClose}>
-        I understand
+      <Button variant="primary" fullWidth={Boolean(onConfirm)} onClick={onConfirm || onClose}>
+        {confirmLabel}
       </Button>
     </div>
   )

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Badge, Button, EmptyState, ErrorState, Grid, Input, LoadingState, Modal, Surface, Table, Text, useToast } from "hzero"
-import { FileText, History, Plus } from "lucide-react"
+import { FileText, History, Plus, Vote } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
 import CsvUploader from "@/components/common/CsvUploader"
@@ -10,6 +10,10 @@ import { useSocket } from "@/contexts/SocketProvider"
 import { electionsApi, emailApi } from "@/service"
 import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspace"
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
+import PhoneElectionWorkspace from "@/components/student-phone/pages/PhoneElectionWorkspace"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
+import Segmented from "@/components/student-phone/kit/Segmented"
+import { EmptyCard, ErrorCard, Ghosts } from "@/components/student-phone/kit/ListBits"
 import {
   ElectionHistoryModal,
   CloneElectionModal,
@@ -105,6 +109,7 @@ const ElectionsPage = () => {
 
   const isAdminView = user?.role === "Admin" || user?.role === "Super Admin"
   const isStudentView = user?.role === "Student"
+  const inPhoneShell = useInPhoneShell()
   const isGymkhanaElectionOfficerView =
     user?.role === "Gymkhana" &&
     String(user?.subRole || "").trim().toLowerCase().replace(/\s+/g, " ") === "election officer"
@@ -1026,16 +1031,57 @@ const ElectionsPage = () => {
     }
   }
 
+  const phoneStudent = inPhoneShell && isStudentView
+
   if (loading) {
-    return <LoadingState message="Loading elections" description="Preparing the elections workspace..." />
+    return phoneStudent ? (
+      <div className="mk-page">
+        <h1 className="mk-title">Elections</h1>
+        <Ghosts count={3} />
+      </div>
+    ) : (
+      <LoadingState message="Loading elections" description="Preparing the elections workspace..." />
+    )
   }
 
   if (error) {
-    return <ErrorState title="Unable to load elections" message={error} onRetry={retryCore} />
+    return phoneStudent ? (
+      <div className="mk-page">
+        <h1 className="mk-title">Elections</h1>
+        <ErrorCard text="Couldn't load elections." onRetry={retryCore} />
+      </div>
+    ) : (
+      <ErrorState title="Unable to load elections" message={error} onRetry={retryCore} />
+    )
+  }
+
+  const studentWorkspaceProps = {
+    openNominationModal,
+    withdrawNomination,
+    busyKey,
+    voteSelections,
+    setVoteSelections,
+    submitStudentVotes,
   }
 
   return (
-    <div style={pageStyle}>
+    <div style={phoneStudent ? undefined : pageStyle} className={phoneStudent ? "mk-page" : undefined}>
+      {phoneStudent ? (
+        <>
+          <h1 className="mk-title">Elections</h1>
+          {studentElections.length > 1 && (
+            <div className="mk-scroll-x">
+              <Segmented label="Election" options={studentElections.map((item) => ({ value: item.id, label: item.title }))} value={selectedStudentElectionId} onChange={setSelectedStudentElectionId} />
+            </div>
+          )}
+          {selectedStudentElection ? (
+            <PhoneElectionWorkspace selectedStudentElection={selectedStudentElection} {...studentWorkspaceProps} />
+          ) : (
+            <EmptyCard icon={Vote} title="No election is open" text="Elections show here when nominations, voting or results open. When voting opens, your Home screen tells you too." />
+          )}
+        </>
+      ) : (
+      <>
       <PageHeader
         title="Elections"
         showDate={false}
@@ -1193,6 +1239,8 @@ const ElectionsPage = () => {
           />
         ) : null}
       </div>
+      </>
+      )}
 
       {isAdminView ? (
         <>

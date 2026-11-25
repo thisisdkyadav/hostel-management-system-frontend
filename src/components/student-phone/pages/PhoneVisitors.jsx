@@ -52,12 +52,19 @@ const PhoneVisitors = () => {
   const queryClient = useQueryClient();
   const query = useQuery(visitorRequestsQuery());
   const requests = useMemo(() => query.data?.data?.items || [], [query.data]);
-  const [guidelinesOpen, setGuidelinesOpen] = useState(true);
+  // null, "read" (from the Guidelines button) or "new" (shown before a new request).
+  const [guidelines, setGuidelines] = useState(null);
+  const guidelinesOpen = guidelines !== null;
   const [wizardOpen, setWizardOpen] = useState(false);
   const [resubmitTarget, setResubmitTarget] = useState(null);
   const [selected, setSelected] = useState(null);
   const [searchParams] = useSearchParams();
   const handledParam = useRef(null);
+
+  const startNew = () => {
+    setResubmitTarget(null);
+    setGuidelines("new");
+  };
 
   const refresh = () =>
     queryClient.invalidateQueries({
@@ -115,7 +122,12 @@ const PhoneVisitors = () => {
         <EmptyCard
           icon={BedDouble}
           title="No requests yet"
-          text="Family or friends visiting? Request a hostel room for them. Tap New to start."
+          text="Family or friends visiting? Request a hostel room for them. The warden's office approves it, and the room is confirmed once you pay the advance."
+          action={
+            <button type="button" className="mk-btn mk-btn--primary" onClick={startNew}>
+              <Plus size={18} /> Request a room
+            </button>
+          }
         />
       );
     }
@@ -149,29 +161,32 @@ const PhoneVisitors = () => {
           <button
             type="button"
             className="mk-btn mk-btn--soft mk-btn--sm"
-            onClick={() => setGuidelinesOpen(true)}
+            onClick={() => setGuidelines("read")}
           >
             <BookOpen size={16} /> Guidelines
           </button>
         </div>
         {list()}
 
-        <button
-          type="button"
-          className="mk-fab"
-          onClick={() => {
-            setResubmitTarget(null);
-            setWizardOpen(true);
-          }}
-          aria-label="New guest request"
-        >
-          <Plus size={22} strokeWidth={2.5} />
-          <span>New</span>
-        </button>
+        {requests.length > 0 && (
+          <button type="button" className="mk-fab" onClick={startNew} aria-label="New guest request">
+            <Plus size={22} strokeWidth={2.5} />
+            <span>New</span>
+          </button>
+        )}
 
         <AccommodationGuidelinesModal
           open={guidelinesOpen}
-          onClose={() => setGuidelinesOpen(false)}
+          onClose={() => setGuidelines(null)}
+          confirmLabel={guidelines === "new" ? "Agree and continue" : "Got it"}
+          onConfirm={
+            guidelines === "new"
+              ? () => {
+                  setGuidelines(null);
+                  setWizardOpen(true);
+                }
+              : undefined
+          }
         />
         <AccommodationRequestWizard
           open={wizardOpen}

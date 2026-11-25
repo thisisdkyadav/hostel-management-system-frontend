@@ -1,8 +1,14 @@
 // Helpers for the student Dining page.
-import { formatClock } from "../caterer/meal-records/mealRecordsHelpers"
+import { clock12 } from "../menu/menuHelpers"
 import { formatRange, toDayKey } from "../caterer/catererHelpers"
 
-export { formatClock }
+/** A scan time for students, on the 12-hour clock the menu uses ("8:12 am"). */
+export const formatClock = (value) => {
+  if (!value) return "-"
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return "-"
+  return date.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }).toLowerCase()
+}
 
 /** Shareable link to the face-scanner photo upload: /student/dining?photo=update */
 export const BIO_PHOTO_LINK_PARAM = "photo"
@@ -30,9 +36,9 @@ export const MEAL_STATUS_LABELS = {
 export const mealLine = (meal) => {
   if (meal.status === "ate") return `Ate at ${formatClock(meal.at)}`
   if (meal.status === "away") return "You're away (rebate)"
-  if (meal.status === "serving") return `Being served now · until ${meal.endTime}`
-  if (meal.status === "upcoming") return `Starts at ${meal.startTime}`
-  return "You didn't eat this meal"
+  if (meal.status === "serving") return "Being served now"
+  if (meal.status === "upcoming") return `Starts at ${clock12(meal.startTime)}`
+  return "No meal recorded"
 }
 
 export const issueLine = (meal) =>

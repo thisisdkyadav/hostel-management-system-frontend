@@ -13,17 +13,19 @@ import {
   MapPin,
   MonitorSmartphone,
   Pencil,
+  Plus,
   Phone,
   ShieldPlus,
-  Smartphone,
+  LogOut,
+  Monitor,
   User,
   Users,
 } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthProvider";
+import { useLogout } from "../../../hooks/useLogout";
 import { getMediaUrl } from "../../../utils/mediaUtils";
-import { formatDateOnly } from "../../../utils/formatters";
 import StudentEditProfileModal from "../../profile/StudentEditProfileModal";
-import StudentFamilyDetails from "../../profile/StudentFamilyDetails";
+import { studentProfileApi } from "../../../service";
 import PdfViewerModal from "../../common/pdf/PdfViewerModal";
 import ChangePasswordModal from "../../passwordChange/ChangePasswordModal";
 import ManageSessionsModal from "../../sessions/ManageSessionsModal";
@@ -35,8 +37,9 @@ import { ModalOverrideContext } from "../../common/AdaptiveModal";
 
 const dateLabel = (value) => {
   if (!value) return "";
-  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.trim()))
-    return formatDateOnly(value);
+  // Date-only strings (YYYY-MM-DD) as a local date, so no timezone shift; same "24 Jan 2004" style as the rest of the app.
+  const match = typeof value === "string" && value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) return shortDate(new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])), true);
   return shortDate(value, true);
 };
 
@@ -47,6 +50,47 @@ const initials = (name = "") =>
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
     .join("");
+
+/** Call button for a phone-number Field. */
+const CallButton = ({ phone, who }) => (
+  <a className="mk-btn mk-btn--soft mk-btn--sm" href={`tel:${String(phone).replace(/[^\d+]/g, "")}`} aria-label={`Call ${who}`}>
+    <Phone size={15} aria-hidden="true" /> Call
+  </a>
+);
+
+/** Family members on record, read-only here (edited from Edit profile). */
+const FamilySection = ({ onAdd }) => {
+  const query = useQuery({ queryKey: ["student", "family"], queryFn: () => studentProfileApi.getFamilyMembers() });
+  const members = query.data?.data || [];
+  if (query.isPending) return null;
+  return (
+    <section className="mp-section">
+      <h2 className="mk-label">Family</h2>
+      {query.isError && !query.data ? (
+        <ErrorCard text="Couldn't load your family details." onRetry={() => query.refetch()} />
+      ) : members.length === 0 ? (
+        <div className="mp-empty-row">
+          <p className="mk-sub">No family members added yet.</p>
+          <button type="button" className="mk-btn mk-btn--soft mk-btn--sm" onClick={onAdd}>
+            <Plus size={16} /> Add
+          </button>
+        </div>
+      ) : (
+        <ul className="mk-list">
+          {members.map((member) => (
+            <Field
+              key={member.id || member._id}
+              icon={Users}
+              label={member.relationship || "Family"}
+              value={[member.name, member.phone].filter(Boolean).join(" · ")}
+              action={member.phone ? <CallButton phone={member.phone} who={member.name || "family member"} /> : null}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+};
 
 const Section = ({ title, children }) => (
   <section className="mp-section">
@@ -69,7 +113,7 @@ const ActionRow = ({ icon, label, onClick, tone }) => {
         <span className="mk-field__main">
           <span className="mk-field__value">{label}</span>
         </span>
-        <ChevronRight size={18} className="mk-row__chev" aria-hidden="true" />
+        {tone !== "danger" && <ChevronRight size={18} className="mk-row__chev" aria-hidden="true" />}
       </button>
     </li>
   );
@@ -78,6 +122,7 @@ const ActionRow = ({ icon, label, onClick, tone }) => {
 /** Your profile: who you are, where you live, who to call, and account settings. */
 const PhoneProfile = () => {
   const { user } = useAuth();
+  const logout = useLogout();
   const queryClient = useQueryClient();
   const profile = useQuery(myProfileQuery());
   const health = useQuery(myHealthQuery());
@@ -126,6 +171,7 @@ const PhoneProfile = () => {
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: myProfileQuery().queryKey });
     queryClient.invalidateQueries({ queryKey: myHealthQuery().queryKey });
+    queryClient.invalidateQueries({ queryKey: ["student", "family"] });
   };
 
   return (
@@ -204,6 +250,7 @@ const PhoneProfile = () => {
               icon={Phone}
               label="Guardian phone"
               value={data.guardianPhone}
+              action={data.guardianPhone ? <CallButton phone={data.guardianPhone} who={data.guardian || "guardian"} /> : null}
             />
             <Field
               icon={Mail}
@@ -226,15 +273,21 @@ const PhoneProfile = () => {
               <Field
                 icon={ShieldPlus}
                 label="Insurance"
-                value={[provider?.name, insurance?.insuranceNumber]
-                  .filter(Boolean)
-                  .join(" · ")}
+                value={
+                  provider?.name || insurance?.insuranceNumber ? (
+                    <>
+                      {provider?.name && <span className="mk-line">{provider.name}</span>}
+                      {insurance?.insuranceNumber && <span className="mk-line mk-sub">Policy {insurance.insuranceNumber}</span>}
+                    </>
+                  ) : null
+                }
               />
               {provider?.startDate && provider?.endDate && (
                 <Field
                   icon={Calendar}
                   label="Cover"
                   value={`${shortDate(provider.startDate, true)} – ${shortDate(provider.endDate, true)}`}
+                  action={new Date(provider.endDate) < new Date() ? <span className="mh-insure__flag">Expired</span> : <span className="mp-ok">Active</span>}
                 />
               )}
               {insurance?.documentRef && (
@@ -257,12 +310,7 @@ const PhoneProfile = () => {
           </section>
         )}
 
-        <section className="mp-section">
-          <h2 className="mk-label">Family</h2>
-          <div className="mp-family">
-            <StudentFamilyDetails userId={userId} editable={false} />
-          </div>
-        </section>
+        <FamilySection onAdd={() => setModal("edit")} />
 
         <Section title="Account">
           <ActionRow
@@ -276,10 +324,11 @@ const PhoneProfile = () => {
             onClick={() => setModal("sessions")}
           />
           <ActionRow
-            icon={Smartphone}
+            icon={Monitor}
             label="Switch to the classic view"
             onClick={() => setPhoneBeta(false)}
           />
+          <ActionRow icon={LogOut} label="Log out" tone="danger" onClick={logout} />
         </Section>
 
         {modal === "edit" && (
@@ -287,7 +336,10 @@ const PhoneProfile = () => {
             isOpen
             userId={userId}
             currentData={data}
-            onClose={() => setModal(null)}
+            onClose={() => {
+              setModal(null);
+              queryClient.invalidateQueries({ queryKey: ["student", "family"] });
+            }}
             onUpdate={() => {
               setModal(null);
               refresh();

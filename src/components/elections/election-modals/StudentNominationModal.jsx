@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Alert, Button, Grid, HStack, Input, Modal, Surface, Text } from "hzero"
+import { Alert, Button, Grid, HStack, Input, Surface, Text } from "hzero"
+import Modal from "@/components/common/AdaptiveModal"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
+import PhoneNominationForm from "@/components/student-phone/pages/PhoneNominationForm"
 import { FileText, Plus } from "lucide-react"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { idCardApi } from "@/service"
@@ -32,9 +35,11 @@ export const StudentNominationModal = ({
   statusToneStyles,
 }) => {
   const navigate = useNavigate()
+  const inPhoneShell = useInPhoneShell()
   const [idCard, setIdCard] = useState({ front: "", back: "" })
   const [loadingIdCard, setLoadingIdCard] = useState(false)
   const [viewerUrl, setViewerUrl] = useState("")
+  const [brokenImages, setBrokenImages] = useState({})
 
   useEffect(() => {
     let isActive = true
@@ -92,9 +97,17 @@ export const StudentNominationModal = ({
       <Modal
         isOpen={Boolean(post)}
         onClose={onClose}
-        title={`Nomination · ${post.title}`}
+        title={inPhoneShell ? post.title : `Nomination · ${post.title}`}
         width={720}
         footer={
+          inPhoneShell ? (
+            <div className="mc-send">
+              {!loadingIdCard && !hasUploadedIdCard && <p className="mk-sub mc-send__hint">To submit, upload your ID card first.</p>}
+              <button type="button" className="mk-btn mk-btn--primary" onClick={onSave} disabled={saving || loadingIdCard || !hasUploadedIdCard}>
+                {saving ? "Saving…" : post.myNomination ? "Save changes" : "Submit nomination"}
+              </button>
+            </div>
+          ) : (
           <div
             style={{
               display: "flex",
@@ -129,8 +142,29 @@ export const StudentNominationModal = ({
               </Button>
             </HStack>
           </div>
+          )
         }
       >
+        {inPhoneShell ? (
+          <PhoneNominationForm
+            election={election}
+            post={post}
+            form={form}
+            updateForm={updateForm}
+            idCard={idCard}
+            loadingIdCard={loadingIdCard}
+            reviewNote={reviewNote}
+            changesAsked={post?.myNomination?.status === "modification_requested"}
+            proposerRequired={proposerRequired}
+            seconderRequired={seconderRequired}
+            supportLookupKey={supportLookupKey}
+            onSupporterChange={onSupporterChange}
+            onLookupSupporter={onLookupSupporter}
+            onAddSupporter={onAddSupporter}
+            onRemoveSupporter={onRemoveSupporter}
+            onView={setViewerUrl}
+          />
+        ) : (
         <div style={modalBodyStyle}>
           {hasReviewNote ? (
             <Alert
@@ -180,11 +214,16 @@ export const StudentNominationModal = ({
                             backgroundColor: "var(--color-bg-primary)",
                           }}
                         >
-                          <img
-                            src={getMediaUrl(item.value)}
-                            alt={`Student ID ${item.label}`}
-                            style={{ width: "100%", maxHeight: "140px", objectFit: "contain" }}
-                          />
+                          {brokenImages[item.value] ? (
+                            <span style={{ ...mutedTextStyle, padding: "var(--spacing-3)", textAlign: "center" }}>Preview unavailable</span>
+                          ) : (
+                            <img
+                              src={getMediaUrl(item.value)}
+                              alt={`Student ID ${item.label}`}
+                              style={{ width: "100%", maxHeight: "140px", objectFit: "contain" }}
+                              onError={() => setBrokenImages((current) => ({ ...current, [item.value]: true }))}
+                            />
+                          )}
                         </div>
                         <HStack gap="8px" wrap>
                           <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
@@ -354,6 +393,7 @@ export const StudentNominationModal = ({
             />
           </div>
         </div>
+        )}
       </Modal>
 
       <CertificateViewerModal

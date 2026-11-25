@@ -1,7 +1,8 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { LogIn, LogOut, ShieldCheck } from "lucide-react"
-import QRCodeGenerator from "../../QRCodeGenerator"
+import { ChevronRight, LogIn, LogOut, QrCode, ShieldCheck } from "lucide-react"
+import PhoneSheet from "../kit/PhoneSheet"
+import CampusQr from "../kit/CampusQr"
 import { EmptyCard, ErrorCard, Ghosts, Lead, Row, timeOf } from "../kit/ListBits"
 import { securityEntriesQuery } from "../phoneQueries"
 
@@ -17,6 +18,7 @@ const dayLabel = (value) => {
 
 /** Your gate QR on top, and every time you checked in or out of the hostel below. */
 const PhoneSecurity = () => {
+  const [qrOpen, setQrOpen] = useState(false)
   const query = useQuery(securityEntriesQuery())
   const entries = useMemo(() => query.data?.studentEntries || [], [query.data])
   const days = useMemo(() => {
@@ -32,9 +34,21 @@ const PhoneSecurity = () => {
   return (
     <div className="mk-page">
       <h1 className="mk-title">Security</h1>
-      <section className="ms-qr">
-        <QRCodeGenerator />
-      </section>
+      <button type="button" className="ms-qr" onClick={() => setQrOpen(true)}>
+        <span className="ms-qr__icon" aria-hidden="true">
+          <QrCode size={24} />
+        </span>
+        <span className="ms-qr__text">
+          <span className="ms-qr__title">Show campus QR</span>
+          <span className="mk-sub">Security scans it at the gate</span>
+        </span>
+        <ChevronRight size={20} aria-hidden="true" />
+      </button>
+      {qrOpen && (
+        <PhoneSheet title="Campus QR" onClose={() => setQrOpen(false)}>
+          <CampusQr />
+        </PhoneSheet>
+      )}
 
       <h2 className="mk-label ms-label">Check-ins and check-outs</h2>
       {query.isPending ? (

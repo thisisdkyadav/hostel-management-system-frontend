@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { MessageSquareText, Pencil, Plus, Trash2 } from "lucide-react"
 import { useAdaptiveConfirm as useConfirm } from "@/components/common/AdaptiveConfirm"
@@ -64,6 +65,7 @@ const FeedbackForm = ({ initial, onClose, onSaved }) => {
 
 /** Feedback to the hostel office: what you've sent, their replies, and a button to write more. */
 const PhoneFeedback = () => {
+  const navigate = useNavigate()
   const { toast } = useToast()
   const confirm = useConfirm()
   const queryClient = useQueryClient()
@@ -91,7 +93,23 @@ const PhoneFeedback = () => {
   const list = () => {
     if (query.isPending) return <Ghosts />
     if (query.isError && !query.data) return <ErrorCard text="Couldn't load your feedback." onRetry={() => query.refetch()} />
-    if (items.length === 0) return <EmptyCard icon={MessageSquareText} title="No feedback yet" text="Tell the hostel office what's working and what isn't. Tap New to start." />
+    if (items.length === 0) return (
+        <EmptyCard
+          icon={MessageSquareText}
+          title="No feedback yet"
+          text="Ideas and opinions for the hostel office, like mess timings or common-room hours."
+          action={
+            <>
+              <button type="button" className="mk-btn mk-btn--primary" onClick={() => setEditing("new")}>
+                Send feedback
+              </button>
+              <button type="button" className="mn-link mk-empty__alt" onClick={() => navigate("/student/complaints")}>
+                Something broken? Raise an issue instead
+              </button>
+            </>
+          }
+        />
+      )
     return (
       <ul className="mk-list">
         {items.map((item) => (
@@ -114,10 +132,12 @@ const PhoneFeedback = () => {
       <h1 className="mk-title">Feedback</h1>
       {list()}
 
-      <button type="button" className="mk-fab" onClick={() => setEditing("new")} aria-label="New feedback">
-        <Plus size={22} strokeWidth={2.5} />
-        <span>New</span>
-      </button>
+      {items.length > 0 && (
+        <button type="button" className="mk-fab" onClick={() => setEditing("new")} aria-label="New feedback">
+          <Plus size={22} strokeWidth={2.5} />
+          <span>New</span>
+        </button>
+      )}
 
       {open && !editing && (
         <PhoneSheet title="" label={open.title} onClose={() => setOpenId(null)}>

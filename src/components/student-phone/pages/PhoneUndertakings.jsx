@@ -93,7 +93,7 @@ const PhoneUndertakings = () => {
     if (query.isPending) return <Ghosts count={3} />
     if (query.isError && !query.data) return <ErrorCard text="Couldn't load undertakings." onRetry={() => query.refetch()} />
     if (items.length === 0) {
-      return shown === "pending" ? <EmptyCard icon={Check} title="Nothing to accept" text="New undertakings from the hostel office appear here." /> : <EmptyCard icon={FileSignature} title="None accepted yet" />
+      return shown === "pending" ? <EmptyCard icon={Check} title="You're up to date" text="Nothing is waiting for you to accept. When the hostel office asks you to accept a rule or declaration, like the code of conduct, it shows up here." /> : <EmptyCard icon={FileSignature} title="None accepted yet" />
     }
     return (
       <ul className="mk-list">
@@ -118,9 +118,11 @@ const PhoneUndertakings = () => {
   return (
     <div className="mk-page">
       <h1 className="mk-title">Undertakings</h1>
-      <div className="mk-scroll-x">
-        <Segmented label="Undertakings" options={tabs} value={shown} onChange={setTab} />
-      </div>
+      {(pending.length > 0 || accepted.length > 0) && (
+        <div className="mk-scroll-x">
+          <Segmented label="Undertakings" options={tabs} value={shown} onChange={setTab} />
+        </div>
+      )}
       {list()}
       {open && <UndertakingSheet id={open.id} accepted={open.accepted} onClose={() => setOpen(null)} />}
     </div>

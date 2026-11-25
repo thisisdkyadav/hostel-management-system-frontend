@@ -14,6 +14,8 @@ const NewComplaintSheet = ({ onClose, onCreated }) => {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const ready = category && title.trim() && description.trim()
+  const todo = [!category && "pick what it's about", !title.trim() && "add a short title", !description.trim() && "describe the problem"].filter(Boolean)
+  const missing = todo.length > 1 ? `${todo.slice(0, -1).join(", ")} and ${todo[todo.length - 1]}` : todo[0]
 
   const submit = async (event) => {
     event.preventDefault()
@@ -35,9 +37,12 @@ const NewComplaintSheet = ({ onClose, onCreated }) => {
       tall
       onClose={onClose}
       footer={
-        <button type="submit" form="mc-new-form" className="mk-btn mk-btn--primary" disabled={!ready || saving}>
-          {saving ? "Sending…" : "Send complaint"}
-        </button>
+        <div className="mc-send">
+          {!ready && <p className="mk-sub mc-send__hint">To send, {missing}.</p>}
+          <button type="submit" form="mc-new-form" className="mk-btn mk-btn--primary" disabled={!ready || saving}>
+            {saving ? "Sending…" : "Send complaint"}
+          </button>
+        </div>
       }
     >
       <form id="mc-new-form" className="mc-form" onSubmit={submit}>

@@ -146,6 +146,11 @@ const StudentLayout = () => {
       electionPortalState
     )
   )
+  // On a phone, the app frame shows straight away while the account is checked.
+  if (studentStatusLoading && phone.isPhone && !phone.blocked) {
+    return <StudentPhoneShell navItems={allNavItems} notificationsCount={notificationsCount} waiting />
+  }
+
   // If still loading, don't render anything yet to avoid flashing
   if (studentStatusLoading) {
     return (

@@ -59,6 +59,6 @@ const fmtTurnoutDay = (key) => {
   const date = new Date(`${key}T00:00:00`)
   return {
     weekday: date.toLocaleDateString(undefined, { weekday: "short" }),
-    long: date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "short" }),
+    long: date.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" }),
   }
 }

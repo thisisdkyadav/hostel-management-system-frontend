@@ -1,4 +1,4 @@
-import { accommodationApi, adminApi, complaintApi, electionsApi, eventsApi, feedbackApi, idCardApi, lostAndFoundApi, notificationApi, securityApi, studentApi, studentProfileApi, undertakingApi } from "../../service"
+import { accommodationApi, adminApi, complaintApi, electionsApi, eventsApi, feedbackApi, idCardApi, lostAndFoundApi, notificationApi, porApi, securityApi, studentApi, studentProfileApi, undertakingApi } from "../../service"
 import { queryKeys } from "../../lib/query"
 import { studentDiningPortalQuery, studentDiningTagsQuery } from "../dining/student/portalQuery"
 import { addDays, weekStartOf } from "../dining/menu/menuHelpers"
@@ -133,6 +133,8 @@ export const visitorRequestsQuery = () => ({
   queryFn: () => accommodationApi.listRequests({ limit: 100 }),
 })
 
+export const porWorkspaceQuery = () => ({ queryKey: ["por", "workspace"], queryFn: () => porApi.getWorkspace() })
+
 export const myProfileQuery = () => ({ queryKey: ["student-phone", "profile"], queryFn: () => studentApi.getStudent() })
 export const myHealthQuery = () => ({ queryKey: ["student-phone", "health"], queryFn: () => studentProfileApi.getHealthDetails(), retry: false })
 
@@ -163,6 +165,7 @@ export const preloadEntries = (userId) => {
     { routeKey: "route.student.security", query: securityEntriesQuery() },
     { routeKey: "route.student.undertakings", query: undertakingListsQuery() },
     { routeKey: "route.student.visitors", query: visitorRequestsQuery() },
+    { routeKey: "route.student.por", query: porWorkspaceQuery() },
     { routeKey: "route.student.profile", query: myProfileQuery() },
     { routeKey: "route.student.profile", query: myHealthQuery() },
     ...(userId ? [{ routeKey: "route.student.idCard", query: idCardQuery(userId) }] : []),

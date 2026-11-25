@@ -11,7 +11,7 @@ html[data-student-phone="true"] {
   --m-outline-soft: #E1E6EE;
   --m-on: #161A22;
   --m-on-2: #414753;
-  --m-muted: #6C7280;
+  --m-muted: #5E6472;
   --m-primary: #1360AB;
   --m-on-primary: #FFFFFF;
   --m-primary-container: #D5E3FF;
@@ -30,13 +30,23 @@ html[data-student-phone="true"][data-theme="dark"] {
   --m-outline-soft: #2F343D;
   --m-on: #E4E5EB;
   --m-on-2: #C3C7D0;
-  --m-muted: #8D929C;
+  --m-muted: #A2A7B1;
   --m-primary: #A9C7FF;
   --m-on-primary: #072B55;
   --m-primary-container: #12406F;
   --m-on-primary-container: #D5E3FF;
   --m-secondary-container: #2C3546;
   --m-on-secondary-container: #DCE4F4;
+  /* Shared (hzero) text in dark: its muted greys are too dim on the phone's surfaces. */
+  --color-text-tertiary: #B8BCC5;
+  --color-text-muted: #A2A7B1;
+  --color-text-placeholder: #8D929C;
+  --color-text-light: #8D929C;
+  /* Shared (hzero) buttons in dark: the light phone blue with dark ink, not white on mid-blue. */
+  --btn-primary-bg: var(--m-primary);
+  --btn-primary-fg: var(--m-on-primary);
+  --btn-primary-hover-bg: #C2D6FF;
+  --color-primary-active: #94B8F5;
 }
 
 .sp-shell {
@@ -102,6 +112,9 @@ html[data-theme="dark"] .sp-shell[data-scrolled] .sp-head {
   cursor: pointer;
 }
 
+.sp-head__lead { display: flex; align-items: center; gap: 2px; min-width: 0; flex: 1; }
+.sp-head__back { margin-left: -10px; }
+
 .sp-head__actions {
   display: flex;
   align-items: center;
@@ -123,6 +136,7 @@ html[data-theme="dark"] .sp-shell[data-scrolled] .sp-head {
   -webkit-tap-highlight-color: transparent;
 }
 
+.sp-icon-btn--filled { background: var(--m-surface); }
 .sp-icon-btn:active,
 .sp-icon-btn[data-active] {
   background: var(--m-secondary-container);
@@ -203,6 +217,19 @@ html[data-student-phone="true"] ::-webkit-scrollbar {
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   backdrop-filter: blur(18px) saturate(1.4);
   box-shadow: 0 2px 6px rgb(16 24 40 / 8%), 0 10px 28px rgb(16 24 40 / 14%);
+}
+
+/* Content scrolling under the floating bar fades out instead of showing through the gaps around it. */
+.sp-shell::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 29;
+  height: calc(var(--sp-bar-h) + var(--sp-bar-gap) * 2 + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--m-bg) 0%, transparent), var(--m-bg) 55%);
+  pointer-events: none;
 }
 
 html[data-theme="dark"] .sp-bar {
@@ -342,9 +369,11 @@ html[data-theme="dark"] .sp-bar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary);
-  color: var(--color-white);
-  font-weight: 700;
+  background: var(--m-primary-container, var(--color-primary));
+  color: var(--m-on-primary-container, var(--color-white));
+  font-family: var(--m-font-display, inherit);
+  font-size: 0.9375rem;
+  font-weight: 800;
 }
 
 .sp-avatar img {
@@ -468,21 +497,31 @@ html[data-theme="dark"] .sp-bar {
   text-align: center;
 }
 
+.sp-grid[data-compact] { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 8px; }
+.sp-grid[data-compact] .sp-tile { flex-direction: row; justify-content: flex-start; gap: 10px; min-height: 56px; padding: 8px 12px; border-radius: 18px; }
+.sp-grid[data-compact] .sp-tile__icon { width: 34px; height: 34px; flex: none; background: var(--m-surface-high); color: var(--m-on-2); }
+.sp-grid[data-compact] .sp-tile__label { text-align: left; }
+
 .sp-sheet__foot {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 8px;
   margin-top: 16px;
 }
 
+/* Icon over label so all three fit on narrow phones without clipping. */
 .sp-foot-btn {
-  flex: 1;
+  min-width: 0;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 8px;
-  white-space: nowrap;
+  gap: 4px;
+  min-height: 64px;
+  padding: 8px 6px;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  text-align: center;
   border: 0;
   border-radius: 24px;
   background: var(--m-surface);
@@ -619,3 +658,20 @@ html[data-student-phone="true"] .student-qr-fab {
   font-size: 0.6875rem;
   font-weight: 700;
 }
+
+/* Sub-page name in the top bar once the page's own title has scrolled away. */
+.sp-head__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 4px;
+  font-family: var(--m-font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--m-on);
+  animation: sp-head-title-in 0.18s ease-out;
+}
+@keyframes sp-head-title-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .sp-head__title { animation: none; } }

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChevronRight, ClipboardCheck, Plus } from "lucide-react"
 import { useToast } from "hzero"
@@ -9,20 +10,20 @@ import ComplaintSheet from "./ComplaintSheet"
 import NewComplaintSheet from "./NewComplaintSheet"
 import { CategoryIcon, statusMeta, StatusTrack, timeAgo } from "./complaintBits"
 
+export const OPEN_STATUSES = "Pending,In Progress,Forwarded to IDO"
+const CLOSED_STATUSES = "Resolved,Rejected"
 const FILTERS = [
-  { value: "all", label: "All", stat: "total" },
-  { value: "Pending", label: "Pending", stat: "pending" },
-  { value: "In Progress", label: "In progress", stat: "inProgress" },
-  { value: "Resolved", label: "Resolved", stat: "resolved" },
-  // Only shown when the student has any (most never do).
-  { value: "Forwarded to IDO", label: "Forwarded", stat: "forwardedToIDO", optional: true },
+  { value: "all", label: "All", count: (stats) => stats.total },
+  { value: OPEN_STATUSES, label: "Open", count: (stats) => (stats.pending || 0) + (stats.inProgress || 0) + (stats.forwardedToIDO || 0) },
+  { value: CLOSED_STATUSES, label: "Closed", count: (stats) => Math.max(0, (stats.total || 0) - (stats.pending || 0) - (stats.inProgress || 0) - (stats.forwardedToIDO || 0)) },
 ]
 
 /** Students on a phone: their complaints as one list, a filter row, and a button to raise a new one. */
 const PhoneComplaints = () => {
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const [status, setStatus] = useState("all")
+  const location = useLocation()
+  const [status, setStatus] = useState(location.state?.complaints === "open" ? OPEN_STATUSES : "all")
   const [open, setOpen] = useState(null)
   const [creating, setCreating] = useState(false)
 
@@ -32,9 +33,7 @@ const PhoneComplaints = () => {
 
   const items = useMemo(() => (listQuery.data?.pages || []).flatMap((page) => page?.data?.items || []), [listQuery.data])
   const openComplaint = open ? items.find((item) => item.id === open.id) || open : null
-  const filters = FILTERS.map((filter) => ({ ...filter, count: stats ? stats[filter.stat] || 0 : undefined })).filter(
-    (filter) => !filter.optional || filter.count > 0 || filter.value === status,
-  )
+  const filters = FILTERS.map(({ count, ...filter }) => ({ ...filter, count: stats ? count(stats) || 0 : undefined }))
 
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.complaints.all })
@@ -73,8 +72,8 @@ const PhoneComplaints = () => {
           <span className="mk-empty__icon">
             <ClipboardCheck size={28} />
           </span>
-          <p className="mk-empty__title">{status === "all" ? "No complaints yet" : `Nothing ${statusMeta(status).label.toLowerCase()}`}</p>
-          <p className="mk-sub">{status === "all" ? "Something broken in your room? Tap + to tell us." : "Try another filter."}</p>
+          <p className="mk-empty__title">{status === "all" ? "No complaints yet" : status === OPEN_STATUSES ? "Nothing open" : "Nothing closed yet"}</p>
+          <p className="mk-sub">{status === "all" ? "Something broken in your room? Tap New to tell us." : status === OPEN_STATUSES ? "Every complaint you raised has been dealt with." : "Fixed or rejected complaints show here."}</p>
         </div>
       )
     }
@@ -115,7 +114,8 @@ const PhoneComplaints = () => {
 
   return (
     <div className="mk-page mk-page--fab">
-      <h1 className="mk-title">Complaints</h1>
+      <h1 className="mk-title">Issues</h1>
+      <p className="mk-sub mk-lede">Complaints you&apos;ve raised about your room or hostel, and where each one is.</p>
       <div className="mk-scroll-x">
         <Segmented label="Filter by status" options={filters} value={status} onChange={setStatus} />
       </div>

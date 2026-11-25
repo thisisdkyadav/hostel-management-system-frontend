@@ -3,6 +3,8 @@ import { BookOpen, CalendarDays, CheckCircle2, Clock3, Download, Eye, FileText, 
 import { infoBoxStyle, sectionLabelStyle } from "@/components/gymkhana/events-page/sharedPrimitives"
 import useLocalFormDraft, { readLocalFormDraft } from "@/hooks/useLocalFormDraft"
 import PageHeader from "@/components/common/PageHeader"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
+import { EmptyCard, ErrorCard, Ghosts } from "@/components/student-phone/kit/ListBits"
 import CsvUploader from "@/components/common/CsvUploader"
 import ProfileAvatar from "@/components/profile/ProfileAvatar"
 import { useAuth } from "@/contexts/AuthProvider"
@@ -28,6 +30,7 @@ const OverallBestPerformerPage = () => {
   const canManageOccurrence = isAdminView
   const canReviewApplications = isAdminView
   const canAddHodVerification = isAcademicsView
+  const phoneStudent = useInPhoneShell() && !isReviewerView
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -806,6 +809,26 @@ const OverallBestPerformerPage = () => {
     []
   )
 
+  if (phoneStudent && (loading || error || !portalState?.data?.canAccessPortal)) {
+    const state = portalState?.data
+    const closed =
+      state?.studentStatusAllowed === false
+        ? { title: "Not open to you", text: "Only Active or Graduated students can apply for the Best Performer award." }
+        : state?.applicationWindowStatus === "scheduled"
+          ? { title: "Applications open soon", text: state?.occurrence?.applyStartAt ? `You can apply from ${new Date(state.occurrence.applyStartAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}.` : "You'll be able to apply once the window opens." }
+          : state?.applicationWindowStatus === "closed"
+            ? { title: "Applications have closed", text: "This year's Best Performer window has ended." }
+            : state?.applicationWindowStatus === "open"
+              ? { title: "You're not on this year's list", text: "Only graduating students on the academic office's list can apply. Contact Student Affairs if you think you should be on it." }
+              : { title: "Applications aren't open", text: "Graduating students can apply for the Overall Best Performer award once a year. It shows here when applications open." }
+    return (
+      <div className="mk-page">
+        <h1 className="mk-title">Best Performer</h1>
+        {loading ? <Ghosts count={2} /> : error ? <ErrorCard text="Couldn't load the Best Performer award." onRetry={() => window.location.reload()} /> : <EmptyCard icon={Trophy} title={closed.title} text={closed.text} />}
+      </div>
+    )
+  }
+
   if (loading) {
     return <LoadingState message="Loading Overall Best Performer award..." />
   }
@@ -827,7 +850,7 @@ const OverallBestPerformerPage = () => {
                   ? "Application window not started"
                   : portalState?.data?.applicationWindowStatus === "closed"
                     ? "Application window closed"
-                : "No accessible occurrence"
+                : "Applications aren't open"
             }
             description={
               portalState?.data?.studentStatusAllowed === false
@@ -836,7 +859,7 @@ const OverallBestPerformerPage = () => {
                   ? "The Best Performer portal will become visible only after the configured application start date."
                   : portalState?.data?.applicationWindowStatus === "closed"
                     ? "The Best Performer portal is visible to students only between the configured application start and end date."
-                    : "There is no active Overall Best Performer occurrence for you right now."
+                    : "The Overall Best Performer award isn't taking applications right now."
             }
           />
         </Surface>

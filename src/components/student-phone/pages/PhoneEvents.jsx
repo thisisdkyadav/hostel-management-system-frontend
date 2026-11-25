@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { CalendarDays, Clock, MapPin } from "lucide-react"
+import { CalendarDays, ChevronRight, Clock, MapPin } from "lucide-react"
 import Segmented from "../kit/Segmented"
 import PhoneSheet from "../kit/PhoneSheet"
 import { EmptyCard, ErrorCard, Ghosts } from "../kit/ListBits"
@@ -14,6 +14,8 @@ const FILTERS = [
 
 const when = (value) =>
   new Date(value).toLocaleString("en-IN", { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })
+
+const dayTime = (value) => new Date(value).toLocaleString("en-IN", { weekday: "short", hour: "numeric", minute: "2-digit" })
 
 const DateTile = ({ value }) => {
   const date = new Date(value)
@@ -64,8 +66,9 @@ const PhoneEvents = () => {
                 <DateTile value={event.dateAndTime} />
                 <span className="mh-event__main">
                   <span className="mh-event__name">{event.eventName}</span>
-                  <span className="mk-sub">{when(event.dateAndTime)}</span>
+                  <span className="mk-sub">{[dayTime(event.dateAndTime), event.hostel?.name].filter(Boolean).join(" · ")}</span>
                 </span>
+                <ChevronRight size={18} className="mh-event__chev" aria-hidden="true" />
               </button>
             </li>
           ))}

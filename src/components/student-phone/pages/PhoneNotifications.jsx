@@ -8,7 +8,7 @@ import { notificationsQuery } from "../phoneQueries"
 import { timeAgo } from "./complaintBits"
 
 const FILTERS = [
-  { value: "active", label: "Current" },
+  { value: "active", label: "Active" },
   { value: "all", label: "All" },
 ]
 
@@ -22,7 +22,21 @@ const PhoneNotifications = () => {
   const list = () => {
     if (query.isPending) return <Ghosts />
     if (query.isError && !query.data) return <ErrorCard text="Couldn't load notifications." onRetry={() => query.refetch()} />
-    if (items.length === 0) return <EmptyCard icon={Bell} title="You're all caught up" text="Notices from the hostel office appear here." />
+    if (items.length === 0)
+      return expiry === "active" ? (
+        <EmptyCard
+          icon={Bell}
+          title="No active notices"
+          text="Notices from the hostel office appear here while they're current."
+          action={
+            <button type="button" className="mk-btn mk-btn--soft" onClick={() => setExpiry("all")}>
+              Show all notices
+            </button>
+          }
+        />
+      ) : (
+        <EmptyCard icon={Bell} title="No notices yet" text="Notices from the hostel office appear here." />
+      )
     return (
       <ul className="mk-list">
         {items.map((item) => {

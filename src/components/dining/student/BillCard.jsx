@@ -1,10 +1,13 @@
 import { useState } from "react"
 import { StatusBadge } from "hzero"
+import { ChevronDown } from "lucide-react"
 import { formatRange, pluralize } from "../caterer/catererHelpers"
+import { useInPhoneShell } from "@/components/student-phone/phoneShellContext"
 import { clearanceTone, formatClearance, formatCurrency } from "../diningBillingHelpers"
 
 /** The latest mess bill: what's left in big type, the sums underneath, the per-period math on demand. */
 const BillCard = ({ billingPeriods = [] }) => {
+  const inPhone = useInPhoneShell()
   const [open, setOpen] = useState(false)
   const [bill, ...earlier] = billingPeriods
   if (!bill) return null
@@ -14,16 +17,19 @@ const BillCard = ({ billingPeriods = [] }) => {
     <section className="sd-card">
       <header className="sd-card__head">
         <h2 className="sd-card__title">Mess bill</h2>
-        <StatusBadge status={formatClearance(bill.clearance)} tone={clearanceTone(bill.clearance)} />
+        <StatusBadge status={bill.clearance === "cleared" ? "Nothing due" : formatClearance(bill.clearance)} tone={clearanceTone(bill.clearance)} showDot={!inPhone} />
       </header>
       <p className="sd-card__note">
         {bill.name}
         {bill.startDate ? ` · ${formatRange(bill.startDate, bill.endDate)}` : ""}
       </p>
       <div className="sd-bill__balance" data-negative={negative || undefined}>
-        <span className="sd-bill__label">{negative ? "You owe" : "Balance left"}</span>
+        <span className="sd-bill__label">{negative ? "You owe" : "Credit left"}</span>
         <span className="sd-bill__amount">{formatCurrency(Math.abs(Number(bill.balance) || 0))}</span>
       </div>
+      <p className="sd-card__note">
+        {negative ? "You've been charged more than you paid in. Clear the dues with the dining office." : `What you paid in, minus what's been charged so far.${bill.clearance === "dues" ? "" : " Nothing is due."}`}
+      </p>
       <dl className="sd-bill__sums">
         <div>
           <dt>Paid in</dt>
@@ -37,6 +43,7 @@ const BillCard = ({ billingPeriods = [] }) => {
       {(bill.perPeriod?.length > 0 || earlier.length > 0) && (
         <button type="button" className="sd-link" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
           {open ? "Hide details" : "How is this worked out?"}
+          <ChevronDown size={16} aria-hidden="true" className="sd-link__chev" data-open={open || undefined} />
         </button>
       )}
       {open && (

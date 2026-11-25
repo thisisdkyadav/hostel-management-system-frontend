@@ -95,11 +95,13 @@ export const hydrateSupporterEntries = (entries = [], minimumCount = 0) => {
         name: entry?.name || "",
         email: entry?.email || "",
         profileImage: entry?.profileImage || "",
-        lookupStatus: entry?.rollNumber ? "validated" : "idle",
-        lookupMessage: entry?.status
-          ? `Support ${String(entry.status).replace(/^\w/, (match) => match.toUpperCase())}`
-          : "",
-        supportStatus: entry?.status || "",
+        // Entries arrive either from the API (`status`) or from an already-hydrated
+        // draft (`supportStatus`); keep the confirmation state either way.
+        lookupStatus: entry?.lookupStatus && entry.lookupStatus !== "idle" ? entry.lookupStatus : entry?.rollNumber ? "validated" : "idle",
+        lookupMessage: (entry?.status || entry?.supportStatus)
+          ? `Support ${String(entry.status || entry.supportStatus).replace(/^\w/, (match) => match.toUpperCase())}`
+          : entry?.lookupMessage || "",
+        supportStatus: entry?.status || entry?.supportStatus || "",
         supportRole: entry?.supportRole || "",
       }))
     : []
