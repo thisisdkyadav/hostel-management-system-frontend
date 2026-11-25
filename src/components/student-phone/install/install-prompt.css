@@ -140,3 +140,44 @@
   .iap-sheet, .iap-backdrop { animation: none; }
 }
 .iap-text b, .iap-note b { white-space: nowrap; }
+
+/* "Use browser" while installing: a bar drains across the button over the
+   seconds left before the sheet hides itself, and the count sits at the end. */
+.iap-btn--countdown {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.iap-btn--countdown::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-primary-bg);
+  transform-origin: left center;
+  animation: iap-countdown var(--iap-countdown, 10s) linear forwards;
+}
+
+.iap-btn__secs {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes iap-countdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iap-btn--countdown::before { animation: none; opacity: 0.6; }
+}

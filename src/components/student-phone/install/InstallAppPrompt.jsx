@@ -192,10 +192,19 @@ const InstallAppPrompt = () => {
     window.clearTimeout(fallbackRef.current)
     setOpen(false)
   }, [])
+  // The Installing sheet counts down and hides itself (it comes back with Open app).
+  const [hideIn, setHideIn] = useState(0) // seconds left
   useEffect(() => {
     if (!open || phase !== "installing") return undefined
-    const timer = window.setTimeout(() => setOpen(false), INSTALLING_AUTO_HIDE_MS)
-    return () => window.clearTimeout(timer)
+    const hideAt = Date.now() + INSTALLING_AUTO_HIDE_MS
+    const tick = () => {
+      const left = Math.ceil((hideAt - Date.now()) / 1000)
+      if (left <= 0) return setOpen(false)
+      setHideIn(left)
+    }
+    tick()
+    const timer = window.setInterval(tick, 250)
+    return () => window.clearInterval(timer)
   }, [open, phase])
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
   useLayer(close, sheetRef, open) // Back / Escape close it; focus stays inside
@@ -237,8 +246,14 @@ const InstallAppPrompt = () => {
           <Loader2 size={20} className="iap-spin" aria-hidden="true" /> Installing
         </div>
         <div className="iap-actions">
-          <button type="button" className="iap-btn" onClick={close}>
-            Use browser
+          <p className="iap-note" aria-live="off">
+            This closes by itself in <b>{hideIn} s</b>
+          </p>
+          <button type="button" className="iap-btn iap-btn--countdown" style={{ "--iap-countdown": `${INSTALLING_AUTO_HIDE_MS}ms` }} onClick={close}>
+            <span>Use browser</span>
+            <span className="iap-btn__secs" aria-hidden="true">
+              {hideIn}
+            </span>
           </button>
         </div>
       </>
