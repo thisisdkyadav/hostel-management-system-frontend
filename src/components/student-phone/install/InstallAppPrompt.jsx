@@ -14,7 +14,9 @@ const REOPEN_AFTER_MS = 30 * 60 * 1000
 // After the student accepts the install, Chrome still has to build the app, and its
 // "installed" signals come too early. Wait this long before even checking, then
 // offer Open app once the check says it's there (re-checking every so often).
-const INSTALL_WAIT_MS = 5 * 60 * 1000
+const INSTALL_WAIT_MS = 2 * 60 * 1000
+// The "Installing" sheet hides itself after this; it comes back with Open app.
+const INSTALLING_AUTO_HIDE_MS = 10 * 1000
 const INSTALL_RECHECK_MS = 30 * 1000
 // Don't drop on top of something the student is doing; check again after this.
 const BUSY_RETRY_MS = 4000
@@ -101,8 +103,9 @@ const InstallAppPrompt = () => {
     phaseRef.current = next
     setPhase(next)
   }, [])
-  // Show "Installing"; after INSTALL_WAIT_MS check the app is really on the phone
-  // and only then switch to "Open app". Stops if the student closes the sheet.
+  // Show "Installing" (it hides itself after a few seconds); after INSTALL_WAIT_MS
+  // check the app is really on the phone and only then bring the sheet back with
+  // "Open app". Hiding it while installing doesn't stop this; "Not now" elsewhere does.
   const waitUntilOnPhone = useCallback(() => {
     if (dismissedRef.current || waitingRef.current || phaseRef.current === "ready") return
     waitingRef.current = true
@@ -115,9 +118,15 @@ const InstallAppPrompt = () => {
         fallbackRef.current = window.setTimeout(check, INSTALL_RECHECK_MS)
         return
       }
+      // Don't drop on top of something the student is doing.
+      if (somethingOpen() && !document.querySelector(".iap-layer")) {
+        fallbackRef.current = window.setTimeout(check, BUSY_RETRY_MS)
+        return
+      }
       waitingRef.current = false
       toPhase("ready")
       setOpenTried(false)
+      setOpen(true)
     }
     window.clearTimeout(fallbackRef.current)
     fallbackRef.current = window.setTimeout(check, INSTALL_WAIT_MS)
@@ -176,11 +185,18 @@ const InstallAppPrompt = () => {
   }, [waitUntilOnPhone, toPhase])
 
   const close = useCallback(() => {
+    // While installing, closing only hides it: it comes back with Open app.
+    if (phaseRef.current === "installing") return setOpen(false)
     dismissedRef.current = true
     waitingRef.current = false
     window.clearTimeout(fallbackRef.current)
     setOpen(false)
   }, [])
+  useEffect(() => {
+    if (!open || phase !== "installing") return undefined
+    const timer = window.setTimeout(() => setOpen(false), INSTALLING_AUTO_HIDE_MS)
+    return () => window.clearTimeout(timer)
+  }, [open, phase])
   const { sheetRef, backdropRef } = useSheetDrag(close, open)
   useLayer(close, sheetRef, open) // Back / Escape close it; focus stays inside
 
@@ -222,7 +238,7 @@ const InstallAppPrompt = () => {
         </div>
         <div className="iap-actions">
           <button type="button" className="iap-btn" onClick={close}>
-            Not now
+            Use browser
           </button>
         </div>
       </>
