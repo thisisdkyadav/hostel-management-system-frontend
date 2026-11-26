@@ -99,7 +99,7 @@ const GRID_ORDER = ["/student/visitors", "/student/por", "/student/id-card", "/s
 // The big tiles; everything else in the More sheet gets a compact two-column row.
 const PRIMARY_GRID = new Set(["/student/visitors", "/student/por", "/student/id-card"])
 
-const GRID_LABELS = { "/student/lost-and-found": "Lost & Found", "/student/feedbacks": "Feedback", "/student/visitors": "Guest stays", "/student/por": "Positions", "/student/id-card": "ID card" }
+const GRID_LABELS = { "/student/lost-and-found": "Lost & Found", "/student/feedbacks": "Feedback", "/student/visitors": "Guest stays", "/student/por": "POR", "/student/id-card": "ID card" }
 
 const HEAD_TITLES = { "/student/profile": "Profile", "/student/notifications": "Notifications", "/student/overall-best-performer": "Best Performer" }
 

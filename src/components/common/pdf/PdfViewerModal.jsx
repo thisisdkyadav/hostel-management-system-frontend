@@ -13,6 +13,13 @@ const detectFileType = ({ documentUrl, downloadFileName, fileTypeHint }) => {
   return "pdf"
 }
 
+/**
+ * Android Chrome (and other mobile browsers) can't show a PDF inside the page:
+ * the <object> never loads and the spinner never ends. navigator.pdfViewerEnabled
+ * is false there, so we offer Open / Download instead of embedding.
+ */
+const canEmbedPdf = () => typeof navigator === "undefined" || navigator.pdfViewerEnabled !== false
+
 const PdfViewerModal = ({
   isOpen,
   onClose,
@@ -26,6 +33,7 @@ const PdfViewerModal = ({
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const [fileType, setFileType] = useState("pdf")
+  const embeddable = canEmbedPdf()
   const resolvedDocumentUrl = getMediaUrl(documentUrl)
   const resolvedDownloadUrl = getMediaDownloadUrl(documentUrl)
 
@@ -48,6 +56,38 @@ const PdfViewerModal = ({
   }
 
   if (!isOpen || !documentUrl) return null
+
+  const fallback = (
+    <Surface padding={8} align="center" style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <FaFileAlt style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-text-placeholder)" />
+      <Heading as="h3" size="lg" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>
+        {embeddable ? "Cannot display PDF in browser" : "Open the PDF to read it"}
+      </Heading>
+      <Text color="muted" style={{ marginBottom: "var(--spacing-6)" }}>
+        {embeddable ? "Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab." : "Your phone opens PDFs in its own viewer."}
+      </Text>
+      <HStack gap={3}>
+        <Button onClick={handleDownload} variant="success" size="md">
+          <FaDownload /> Download PDF
+        </Button>
+        <a
+          href={resolvedDocumentUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-colors)" }}
+          onMouseOver={(event) => {
+            event.currentTarget.style.backgroundColor = "var(--color-primary-hover)"
+          }}
+          onMouseOut={(event) => {
+            event.currentTarget.style.backgroundColor = "var(--color-primary)"
+          }}
+        >
+          <FaExternalLinkAlt style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
+          <span>{embeddable ? "Open in New Tab" : "Open PDF"}</span>
+        </a>
+      </HStack>
+    </Surface>
+  )
 
   return (
     <Modal title={title} onClose={onClose} width={900} fullHeight={true}>
@@ -120,7 +160,7 @@ const PdfViewerModal = ({
             </div>
           ) : (
             <div style={{ width: "100%", height: "100%", position: "relative" }}>
-              {isLoading && (
+              {isLoading && embeddable && (
                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--color-bg-tertiary)" }}>
                   <HStack gap={3} align="center">
                     <FaSpinner style={{ width: "var(--icon-lg)", height: "var(--icon-lg)", animation: "spin 1s linear infinite" }} color="var(--color-primary)" />
@@ -129,46 +169,22 @@ const PdfViewerModal = ({
                 </div>
               )}
 
-              <object
-                data={resolvedDocumentUrl}
-                type="application/pdf"
-                style={{ width: "100%", height: "100%" }}
-                onLoad={() => setIsLoading(false)}
-                onError={() => {
-                  setError(true)
-                  setIsLoading(false)
-                }}
-              >
-                <Surface padding={8} align="center" style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                  <FaFileAlt style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", marginBottom: "var(--spacing-4)" }} color="var(--color-text-placeholder)" />
-                  <Heading as="h3" size="lg" weight="medium" color="body" style={{ marginBottom: "var(--spacing-2)" }}>
-                    Cannot display PDF in browser
-                  </Heading>
-                  <Text color="muted" style={{ marginBottom: "var(--spacing-6)" }}>
-                    Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.
-                  </Text>
-                  <HStack gap={3}>
-                    <Button onClick={handleDownload} variant="success" size="md">
-                      <FaDownload /> Download PDF
-                    </Button>
-                    <a
-                      href={resolvedDocumentUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-colors)" }}
-                      onMouseOver={(event) => {
-                        event.currentTarget.style.backgroundColor = "var(--color-primary-hover)"
-                      }}
-                      onMouseOut={(event) => {
-                        event.currentTarget.style.backgroundColor = "var(--color-primary)"
-                      }}
-                    >
-                      <FaExternalLinkAlt style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
-                      <span>Open in New Tab</span>
-                    </a>
-                  </HStack>
-                </Surface>
-              </object>
+              {embeddable ? (
+                <object
+                  data={resolvedDocumentUrl}
+                  type="application/pdf"
+                  style={{ width: "100%", height: "100%" }}
+                  onLoad={() => setIsLoading(false)}
+                  onError={() => {
+                    setError(true)
+                    setIsLoading(false)
+                  }}
+                >
+                  {fallback}
+                </object>
+              ) : (
+                fallback
+              )}
             </div>
           )}
         </div>

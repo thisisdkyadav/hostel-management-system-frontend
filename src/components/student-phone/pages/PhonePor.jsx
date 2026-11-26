@@ -365,7 +365,7 @@ const PhonePor = () => {
   return (
     <ModalOverrideContext.Provider value={renderSheetModal}>
       <div className={`mk-page${canCreate && requests.length ? " mk-page--fab" : ""}`}>
-        <h1 className="mk-title">Positions (POR)</h1>
+        <h1 className="mk-title">POR</h1>
         <p className="mk-sub mk-lede">Positions of responsibility, verified for your record and certificate.</p>
         {requests.length > 0 && (
           <div className="mk-scroll-x">
