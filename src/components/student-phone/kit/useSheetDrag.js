@@ -11,8 +11,20 @@ const verticalScroller = (node, stop) => {
   return null
 }
 
-const CLOSE_DISTANCE = 140 // px, or a third of the sheet, whichever is less
-const CLOSE_SPEED = 0.5 // px per ms: a quick flick closes it from a shorter drag
+const CLOSE_DISTANCE = 140 // px, or 40% of the sheet, whichever is less…
+const MIN_CLOSE_DISTANCE = 90 // …but never less than this (short sheets closed far too easily)
+const CLOSE_SPEED = 0.8 // px per ms: a real flick closes it from a shorter drag…
+const FLICK_DISTANCE = 64 // …once it has moved at least this far
+const SLOP = 6 // px before a pull counts as a drag (taps and jitter don't move the sheet)
+const SPEED_WINDOW = 100 // ms of recent movement used for flick speed
+
+/** Speed (px per ms) over the last SPEED_WINDOW ms; samples are {y, t}. */
+const recentSpeed = (samples) => {
+  const last = samples[samples.length - 1]
+  let first = last
+  for (let i = samples.length - 1; i >= 0 && last.t - samples[i].t <= SPEED_WINDOW; i -= 1) first = samples[i]
+  return last.t > first.t ? (last.y - first.y) / (last.t - first.t) : 0
+}
 const EASE = "cubic-bezier(0.2, 0.8, 0.2, 1)"
 
 /**
@@ -82,7 +94,7 @@ const useSheetDrag = (onClose, active = true) => {
       const dx = touch.clientX - start.x
       const dy = touch.clientY - start.y
       if (!dragging) {
-        if (dx === 0 && dy === 0) return
+        if (Math.abs(dx) < SLOP && Math.abs(dy) < SLOP) return
         const atTop = !start.scroller || start.scroller.scrollTop <= 0
         // Sideways (a chip row) or upward / mid-content (scrolling): not ours.
         if (dy <= 0 || Math.abs(dx) > dy || !atTop) {
@@ -100,12 +112,13 @@ const useSheetDrag = (onClose, active = true) => {
       const raw = touch.clientY - start.y
       offset = raw > 0 ? raw : raw * 0.15 // pulling up past the top resists
       samples.push({ y: touch.clientY, t: event.timeStamp })
-      if (samples.length > 5) samples.shift()
+      if (samples.length > 40) samples.shift()
       schedule()
     }
 
     const onEnd = (event) => {
-      if (!start || !tracked(event)) return
+      const lastTouch = start && tracked(event)
+      if (!lastTouch) return
       if (!dragging) {
         start = null
         return
@@ -115,10 +128,10 @@ const useSheetDrag = (onClose, active = true) => {
       if (frame) window.cancelAnimationFrame(frame)
       frame = 0
       sheet.style.willChange = ""
-      const first = samples[0]
-      const last = samples[samples.length - 1]
-      const speed = last.t > first.t ? (last.y - first.y) / (last.t - first.t) : 0
-      if (offset > Math.min(CLOSE_DISTANCE, height / 3) || (speed > CLOSE_SPEED && offset > 24)) {
+      samples.push({ y: lastTouch.clientY, t: event.timeStamp })
+      const speed = recentSpeed(samples)
+      const closeAt = Math.max(MIN_CLOSE_DISTANCE, Math.min(CLOSE_DISTANCE, height * 0.4))
+      if (offset > closeAt || (speed > CLOSE_SPEED && offset > FLICK_DISTANCE)) {
         offset = height + 24
         paint(true)
         timer = window.setTimeout(() => onCloseRef.current?.(), 220)

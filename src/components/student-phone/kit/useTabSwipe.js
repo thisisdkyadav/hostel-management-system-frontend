@@ -1,20 +1,52 @@
 import { useEffect, useRef } from "react"
 
-const EDGE = 24 // px from the screen edge: left free for the system back gesture
-const LOCK = 8 // px of movement before we decide sideways vs. scrolling
+// Phones with gesture navigation keep their own edge strip, so touches there never
+// reach the page; with 3-button navigation they do, and thumbs often start a swipe
+// near the edge. Only the outermost few px are left alone.
+const EDGE = 8 // px
+const LOCK = 10 // px of movement before we decide sideways vs. scrolling
 const SWITCH_SPEED = 0.45 // px per ms
+const SPEED_WINDOW = 100 // ms of recent movement used for flick speed
 const EASE = "cubic-bezier(0.2, 0.8, 0.2, 1)"
 
-/** True if the touch began inside something that scrolls sideways (chip rows, the day strip, tables) or a field. */
-const inSideScroller = (node, stop) => {
+/** True if the touch began in a field or an opted-out area: never a page swipe. */
+const inField = (node, stop) => {
   for (let el = node; el && el !== stop; el = el.parentElement) {
     if (el.matches?.("input, textarea, select, [data-no-swipe]")) return true
-    if (el.scrollWidth > el.clientWidth + 1) {
-      const { overflowX } = getComputedStyle(el)
-      if (overflowX === "auto" || overflowX === "scroll") return true
-    }
   }
   return false
+}
+
+/** Things under the touch that scroll sideways (chip rows, the day strip, tables), innermost first. */
+const sideScrollers = (node, stop) => {
+  const list = []
+  for (let el = node; el && el !== stop; el = el.parentElement) {
+    if (el.scrollWidth > el.clientWidth + 2) {
+      const { overflowX } = getComputedStyle(el)
+      if (overflowX === "auto" || overflowX === "scroll") list.push(el)
+    }
+  }
+  return list
+}
+
+/**
+ * Can one of them still scroll for a finger moving by dx? A row already at its
+ * end (or one that overflows by a pixel or two) shouldn't swallow the page swipe:
+ * that used to make swipes fail on whole pages at some screen widths.
+ */
+const canScrollSideways = (list, dx) =>
+  list.some((el) => {
+    const max = el.scrollWidth - el.clientWidth
+    const left = Math.abs(el.scrollLeft) // RTL rows report negative values
+    return dx < 0 ? left < max - 2 : left > 2
+  })
+
+/** Speed (px per ms) over the last SPEED_WINDOW ms; samples are {v, t}. */
+const recentSpeed = (samples) => {
+  const last = samples[samples.length - 1]
+  let first = last
+  for (let i = samples.length - 1; i >= 0 && last.t - samples[i].t <= SPEED_WINDOW; i -= 1) first = samples[i]
+  return last.t > first.t ? (last.v - first.v) / (last.t - first.t) : 0
 }
 
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
@@ -93,12 +125,12 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       // A touch while a completed swipe is still sliding: switch now instead of
       // cancelling it (cancelling left the page parked off screen).
       if (finishing) return finishing()
-      if (inSideScroller(event.target, main)) return
+      if (inField(event.target, main)) return
       window.clearTimeout(timer)
       if (peekPath) setPeek(null) // a spring-back was still running
-      start = { x: touch.clientX, y: touch.clientY, id: touch.identifier }
+      start = { x: touch.clientX, y: touch.clientY, id: touch.identifier, scrollers: sideScrollers(event.target, main) }
       mode = null
-      samples = [{ x: touch.clientX, t: event.timeStamp }]
+      samples = [{ v: touch.clientX, t: event.timeStamp }]
     }
 
     const onMove = (event) => {
@@ -108,9 +140,18 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       const dx = touch.clientX - start.x
       const dy = touch.clientY - start.y
       if (!mode) {
-        if (Math.abs(dx) < LOCK && Math.abs(dy) < LOCK) return
-        if (Math.abs(dx) <= Math.abs(dy) * 1.2) {
+        if (Math.abs(dx) < LOCK && Math.abs(dy) < LOCK) {
+          samples.push({ v: touch.clientX, t: event.timeStamp })
+          return
+        }
+        // Thumbs swipe in an arc, so anything flatter than 45° counts as sideways
+        // (it used to need ~40°, and many real swipes were taken for scrolling).
+        if (Math.abs(dx) <= Math.abs(dy)) {
           start = null // vertical: let the page scroll
+          return
+        }
+        if (canScrollSideways(start.scrollers, dx)) {
+          start = null // a chip row / strip that can still move: let it scroll
           return
         }
         mode = "x"
@@ -123,13 +164,14 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       const target = neighbour(raw)
       setPeek(target)
       move = target ? raw : raw * 0.18
-      samples.push({ x: touch.clientX, t: event.timeStamp })
-      if (samples.length > 5) samples.shift()
+      samples.push({ v: touch.clientX, t: event.timeStamp })
+      if (samples.length > 40) samples.shift()
       schedule()
     }
 
     const onEnd = (event) => {
-      if (!start || !tracked(event)) return
+      const lastTouch = start && tracked(event)
+      if (!lastTouch) return
       if (mode !== "x") {
         start = null
         return
@@ -139,9 +181,8 @@ const useTabSwipe = ({ paths, currentIndex, onSwitch, onPeek, peekRef, active = 
       if (frame) window.cancelAnimationFrame(frame)
       frame = 0
       main.style.willChange = ""
-      const first = samples[0]
-      const last = samples[samples.length - 1]
-      const speed = last.t > first.t ? (last.x - first.x) / (last.t - first.t) : 0
+      samples.push({ v: lastTouch.clientX, t: event.timeStamp })
+      const speed = recentSpeed(samples)
       const target = neighbour(move)
       const far = Math.abs(move) > width * 0.25
       const flick = Math.abs(speed) > SWITCH_SPEED && Math.abs(move) > 30 && Math.sign(speed) === Math.sign(move)
