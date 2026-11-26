@@ -4,6 +4,8 @@ import { Search, Smartphone } from "lucide-react"
 import { queryKeys } from "@/lib/query"
 import { appUsageApi } from "@/service"
 import { useDebouncedValue } from "@/components/dining/caterer/rebates/rebateHelpers"
+import { SIDEBAR_DEFAULT_MODE, SIDEBAR_MODE_OPTIONS, resolveSidebarMode } from "@/components/sidebar/sidebarModes"
+import { isCsoAdminSubRole } from "@/constants/navigationConfig"
 
 const number = (value) => (Number(value) || 0).toLocaleString("en-IN")
 const time = (value) => new Date(value).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" })
@@ -25,6 +27,82 @@ const dayTitle = (day, index) => {
   return new Date(`${day}T00:00:00`).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" })
 }
 const pageName = (row) => row.label || row.page
+
+/** "V4 · Icon rail", "X3 · Sketchbook"; unknown ids fall back to the raw id. */
+const sidebarModeName = (mode) => {
+  const option = SIDEBAR_MODE_OPTIONS.find((o) => o.id === mode)
+  return option ? `${option.label} · ${option.name}` : mode || "—"
+}
+const sidebarModeShort = (mode) => SIDEBAR_MODE_OPTIONS.find((o) => o.id === mode)?.label || mode || "—"
+/** Saved layout → what the admin actually sees (older versions are raised to the stable one). */
+const shownSidebarMode = (saved) => resolveSidebarMode({ dbMode: saved || undefined })
+/** Fold {mode, subRole, users} rows into counts of the layout each admin actually sees. */
+const shownModeCounts = (rows = []) => {
+  const counts = new Map()
+  for (const row of rows) {
+    if (isCsoAdminSubRole(row.subRole)) continue
+    const key = row.mode ? shownSidebarMode(row.mode) : null
+    counts.set(key, (counts.get(key) || 0) + row.users)
+  }
+  return [...counts].map(([mode, users]) => ({ mode, users })).sort((a, b) => b.users - a.users)
+}
+const hasSidebarChoice = (user) => user.role === "Admin" && !isCsoAdminSubRole(user.subRole)
+
+/** Current sidebar layout, when it last changed, and every layout this admin has switched to. */
+const SidebarHistory = ({ sidebar }) => {
+  const saved = sidebar?.mode || null
+  const shown = shownSidebarMode(saved)
+  const history = sidebar?.history || []
+  const tried = [...new Set(history.map((h) => h.mode).concat(saved ? [saved] : []))]
+  return (
+    <section>
+      <h4 className="au-sub">Sidebar</h4>
+      <div className="au-sb">
+        <div className="au-sb__now">
+          <span className="au-sb__label">Using now</span>
+          <span className="au-sb__mode">{sidebarModeName(shown)}</span>
+          <small>
+            {!saved
+              ? `Never picked one — gets the default (${sidebarModeShort(SIDEBAR_DEFAULT_MODE)})`
+              : saved !== shown
+                ? `Saved ${sidebarModeName(saved)}, shown as ${sidebarModeShort(shown)} for now`
+                : sidebar?.updatedAt
+                  ? `Switched ${ago(sidebar.updatedAt)} · ${dateTime(sidebar.updatedAt)}`
+                  : "Picked before tracking started"}
+          </small>
+        </div>
+        <div className="au-sb__now">
+          <span className="au-sb__label">Tried so far</span>
+          {tried.length ? (
+            <span className="au-sb__chips">
+              {tried.map((mode) => (
+                <span key={mode} className="au-sb__chip" data-current={mode === shown || undefined} title={sidebarModeName(mode)}>
+                  {sidebarModeShort(mode)}
+                </span>
+              ))}
+            </span>
+          ) : (
+            <small>Only the default</small>
+          )}
+        </div>
+      </div>
+      {history.length > 0 && (
+        <ol className="au-visits au-sb__log">
+          {[...history].reverse().map((entry, index) => (
+            <li key={`${entry.mode}-${entry.at}-${index}`}>
+              <time dateTime={entry.at || undefined}>{entry.at ? dateTime(entry.at) : "Before tracking"}</time>
+              <span className="au-visits__page">{sidebarModeName(entry.mode)}</span>
+              {index === 0 && <span className="au-visits__tag">current</span>}
+            </li>
+          ))}
+        </ol>
+      )}
+      {history.length === 0 && (
+        <p className="au-note">Switches are recorded from {new Date(2026, 10, 26).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} onwards.</p>
+      )}
+    </section>
+  )
+}
 
 const Pager = ({ page, total, limit, onPage }) => {
   const pages = Math.max(1, Math.ceil(total / limit))
@@ -53,7 +131,7 @@ const UserActivity = ({ userId }) => {
   })
   if (query.isError) return <p className="au-error">Couldn&apos;t load this user&apos;s activity.</p>
   if (!query.data) return <p className="au-empty">Loading…</p>
-  const { user, totalVisits, lastAt, pages, days } = query.data
+  const { user, sidebar, totalVisits, lastAt, pages, days } = query.data
   return (
     <div className="au-user">
       <header className="au-user__head">
@@ -66,6 +144,8 @@ const UserActivity = ({ userId }) => {
           <b>{number(totalVisits)}</b> page visits · last seen {ago(lastAt)}
         </p>
       </header>
+
+      {hasSidebarChoice(user) && <SidebarHistory sidebar={sidebar} />}
 
       <section>
         <h4 className="au-sub">Pages</h4>
@@ -192,6 +272,18 @@ const PageActivityView = ({ role, onRole, userId, onUser }) => {
               aria-label="Find a user by name or email"
             />
           </label>
+          {role === "Admin" && users.data?.sidebarModes?.length > 0 && (
+            <div className="au-sb-sum" aria-label="Admins per sidebar version">
+              <span className="au-sb__label">Sidebar versions</span>
+              <span className="au-sb__chips">
+                {shownModeCounts(users.data.sidebarModes).map((row) => (
+                  <span key={row.mode || "default"} className="au-sb__chip" title={row.mode ? sidebarModeName(row.mode) : `Never picked one — sees ${sidebarModeName(SIDEBAR_DEFAULT_MODE)}`}>
+                    {row.mode ? sidebarModeShort(row.mode) : "Default"} <b>{number(row.users)}</b>
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
           {users.isError && <p className="au-error">Couldn&apos;t load users.</p>}
           {users.data && users.data.items.length === 0 && (
             <p className="au-empty">{search ? "Nobody matches." : `No ${role} has opened SMS since tracking started.`}</p>
@@ -211,6 +303,12 @@ const PageActivityView = ({ role, onRole, userId, onUser }) => {
                       "Never opened SMS"
                     )}
                   </span>
+                  {role === "Admin" && !isCsoAdminSubRole(u.subRole) && (
+                    <span className="au-people__stats">
+                      Sidebar {sidebarModeShort(shownSidebarMode(u.sidebarMode))}
+                      {u.sidebarModeUpdatedAt ? ` · switched ${ago(u.sidebarModeUpdatedAt)}` : u.sidebarMode ? "" : " (default)"}
+                    </span>
+                  )}
                 </button>
               </li>
             ))}
