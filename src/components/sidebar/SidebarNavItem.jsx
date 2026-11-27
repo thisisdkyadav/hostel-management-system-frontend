@@ -102,6 +102,7 @@ const SidebarNavItem = ({
         type="button"
         onClick={() => onNavigate(item)}
         aria-current={isActive ? "page" : undefined}
+        title={displayName}
         data-sidebar-active={isActive ? "true" : undefined}
         style={buttonStyle}
         className={`

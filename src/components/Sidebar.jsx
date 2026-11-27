@@ -675,6 +675,11 @@ const Sidebar = ({ navItems }) => {
             {/* Active hostel switcher (warden roles only) */}
             <HostelSwitcher />
 
+            {/* V8: the section's glyph, large and faint, in the panel's bottom corner */}
+            {isToneMode && activeCategoryConfig?.icon && (
+              <activeCategoryConfig.icon key={activeCategoryConfig.id} aria-hidden className="tone-watermark" strokeWidth={1.4} />
+            )}
+
             {/* Profile and logout — V4 keeps these on the left rail */}
             {!isRailMode && (
               <Surface bg={headerTint} className="border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 shrink-0 px-4 py-3">

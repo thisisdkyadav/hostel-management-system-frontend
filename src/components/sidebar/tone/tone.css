@@ -29,19 +29,25 @@ html[data-admin-sidebar="v8"] {
   --tone-theme: var(--color-cat-home);
   --tone-surface: var(--tone-theme);
   --tone-deep: color-mix(in srgb, var(--tone-theme) 90%, #000000);
-  --tone-bloom: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 45%, #FFFFFF) 70%, transparent);
+  --tone-bloom: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 45%, #FFFFFF) 52%, transparent);
   --tone-edge: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 72%, #FFFFFF) 60%, transparent);
   --tone-low: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 86%, #000000) 45%, transparent);
   --tone-sheen: rgb(255 255 255 / 10%);
   --tone-page-top: color-mix(in srgb, var(--tone-theme) 2%, #FAFBFD);
   --tone-page-mid: color-mix(in srgb, var(--tone-theme) 6%, #F3F5F9);
-  --tone-page-base: color-mix(in srgb, var(--tone-theme) 11%, #EEF1F6);
-  --tone-page-blob: color-mix(in srgb, var(--tone-theme) 32%, transparent);
-  --tone-page-blob-2: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 70%, #FFFFFF) 42%, transparent);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 8%, #EEF1F6);
+  --tone-page-blob: color-mix(in srgb, var(--tone-theme) 18%, transparent);
+  --tone-page-blob-2: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 70%, #FFFFFF) 24%, transparent);
   --tone-page-border: color-mix(in srgb, var(--tone-theme) 12%, #E2E8F0);
   --tone-page-border-light: color-mix(in srgb, var(--tone-theme) 8%, #F1F5F9);
   --tone-page-card-shadow: 0 1px 3px 0 color-mix(in srgb, var(--tone-theme) 10%, transparent), 0 1px 2px -1px rgb(0 0 0 / 4%);
 
+  --tone-rail: color-mix(in srgb, var(--tone-theme) 15%, #E7ECF2);
+  --tone-sheet-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 22px 48px -22px color-mix(in srgb, var(--tone-deep) 65%, #000000);
+  /* The sheet's paint, pinned to the viewport (the sheet sits 8px in), so the
+     selected tab in the panel can wear exactly the same colours. */
+  --tone-sheet-paint: linear-gradient(180deg, var(--tone-page-top) 0, var(--tone-page-top) 72px, var(--tone-page-mid) 38%, var(--tone-page-base) 100%) 0 8px / 100% calc(100vh - 16px) no-repeat fixed, var(--tone-page-base);
+  --tone-tab-ink: var(--tone-pill-ink);
   --tone-ink: #FFFFFF;
   --tone-ink-soft: rgb(255 255 255 / 88%);
   --tone-ink-strong: #FFFFFF;
@@ -67,26 +73,43 @@ html[data-admin-sidebar="v8"][data-admin-category="hostels"] { --tone-theme: var
 html[data-admin-sidebar="v8"][data-admin-category="student-affairs"] { --tone-theme: var(--color-cat-student-affairs); }
 html[data-admin-sidebar="v8"][data-admin-category="staff"] { --tone-theme: var(--color-cat-staff); }
 html[data-admin-sidebar="v8"][data-admin-category="dining"] { --tone-theme: var(--color-cat-dining); }
+html[data-admin-sidebar="v8"][data-admin-category="student-affairs"][data-theme="dark"] {
+  --tone-surface: color-mix(in oklch, var(--tone-theme) 56%, color-mix(in srgb, var(--tone-theme) 16%, #07090C));
+}
+/* Sky is the lightest section colour: a touch deeper so white ink clears AA. */
+html[data-admin-sidebar="v8"][data-admin-category="hostels"]:not([data-theme="dark"]) {
+  --tone-surface: color-mix(in srgb, var(--tone-theme) 92%, #000000);
+}
+/* Pink is the most saturated section colour: a lighter wash on its sheet. */
+html[data-admin-sidebar="v8"][data-admin-category="student-affairs"]:not([data-theme="dark"]) {
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 5%, #EEF1F6);
+  --tone-page-mid: color-mix(in srgb, var(--tone-theme) 4%, #F3F5F9);
+  --tone-page-blob: color-mix(in srgb, var(--tone-theme) 11%, transparent);
+  --tone-page-blob-2: color-mix(in srgb, color-mix(in srgb, var(--tone-theme) 70%, #FFFFFF) 16%, transparent);
+}
 
 /* Dark mode: the dark-theme category colours are light, so the field is
    that colour settled into the dark page — same hue, lower, still lit. */
 html[data-admin-sidebar="v8"][data-theme="dark"] {
-  --tone-surface: color-mix(in srgb, var(--tone-theme) 52%, #101418);
-  --tone-deep: color-mix(in srgb, var(--tone-theme) 42%, #101418);
+  --tone-surface: color-mix(in oklch, var(--tone-theme) 50%, color-mix(in srgb, var(--tone-theme) 16%, #07090C));
+  --tone-deep: color-mix(in oklch, var(--tone-theme) 40%, color-mix(in srgb, var(--tone-theme) 14%, #07090C));
   --tone-bloom: color-mix(in srgb, var(--tone-theme) 34%, transparent);
   --tone-edge: color-mix(in srgb, var(--tone-theme) 26%, transparent);
   --tone-low: color-mix(in srgb, #101418 30%, transparent);
   --tone-sheen: rgb(255 255 255 / 5%);
-  --tone-page-top: color-mix(in srgb, var(--tone-theme) 2%, #111111);
-  --tone-page-mid: color-mix(in srgb, var(--tone-theme) 4%, #0E0E0E);
-  --tone-page-base: color-mix(in srgb, var(--tone-theme) 8%, #0D0D0D);
+  --tone-page-top: color-mix(in srgb, var(--tone-theme) 4%, #1A1B1E);
+  --tone-page-mid: color-mix(in srgb, var(--tone-theme) 6%, #17181B);
+  --tone-page-base: color-mix(in srgb, var(--tone-theme) 9%, #151619);
   --tone-page-blob: color-mix(in srgb, var(--tone-theme) 18%, transparent);
   --tone-page-blob-2: color-mix(in srgb, var(--tone-theme) 12%, transparent);
   --tone-page-border: color-mix(in srgb, var(--tone-theme) 10%, #2E2E2E);
   --tone-page-border-light: color-mix(in srgb, var(--tone-theme) 7%, #222222);
   --tone-page-card-shadow: 0 1px 3px 0 rgb(0 0 0 / 30%);
-  --tone-pill: #F4F6FA;
-  --tone-pill-ink: color-mix(in srgb, var(--tone-theme) 55%, #000000);
+  --tone-pill: color-mix(in oklch, var(--tone-theme) 16%, #E9EDF2);
+  --tone-pill-ink: color-mix(in oklch, var(--tone-theme) 62%, #000000);
+  --tone-rail: color-mix(in srgb, var(--tone-theme) 7%, #15181C);
+  --tone-sheet-paint: linear-gradient(180deg, var(--tone-page-top) 0, var(--tone-page-top) 72px, var(--tone-page-mid) 38%, var(--tone-page-base) 100%) 0 8px / 100% calc(100vh - 16px) no-repeat fixed, var(--tone-page-base);
+  --tone-tab-ink: color-mix(in oklch, var(--tone-theme) 55%, #FFFFFF);
   --tone-line: rgb(255 255 255 / 12%);
   --tone-hover: rgb(255 255 255 / 10%);
   --tone-hover-strong: rgb(255 255 255 / 16%);
@@ -109,6 +132,10 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   50% { transform: translate(-18%, -14%) scale(1.07); opacity: 0.7; }
   100% { transform: translate(-30%, 2%) scale(0.95); opacity: 0.95; }
 }
+@keyframes tone-mark-in {
+  from { opacity: 0; transform: rotate(-18deg) scale(0.9); }
+  to { opacity: 0.07; transform: rotate(-10deg) scale(1); }
+}
 @keyframes tone-drift {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
   50%  { transform: translate3d(18px, 14px, 0) scale(1.04); }
@@ -124,7 +151,7 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     height: 100vh;
     overflow: hidden;
     background:
-      linear-gradient(180deg, var(--tone-surface) 0, var(--tone-surface) 340px, var(--tone-deep) 100%);
+      linear-gradient(180deg, var(--tone-surface) 0, var(--tone-surface) 360px, var(--tone-deep) 100%);
   }
 
   /* Bloom layer: light from the top-right of the panel, a second hue on
@@ -138,7 +165,7 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     pointer-events: none;
     background:
       radial-gradient(320px 300px at 380px -30px, var(--tone-bloom), transparent 70%),
-      radial-gradient(260px 380px at 330px 58%, var(--tone-edge), transparent 72%),
+      radial-gradient(380px 420px at 190px 64%, color-mix(in srgb, var(--tone-edge) 60%, transparent), transparent 72%),
       radial-gradient(520px 560px at calc(100% + 40px) 30%, var(--tone-edge), transparent 70%),
       radial-gradient(640px 420px at 70% calc(100% + 80px), var(--tone-bloom), transparent 70%),
       radial-gradient(420px 380px at 0 calc(100% + 60px), var(--tone-low), transparent 72%),
@@ -163,18 +190,17 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     position: relative;
     z-index: 1;
     min-width: 0;
-    height: calc(100vh - 8px);
-    margin: 4px 4px 4px 0;
-    border-radius: 14px;
+    height: calc(100vh - 16px);
+    margin: 8px 8px 8px 0;
+    border-radius: 16px;
     /* Near-white under the (white) page header, deepening into the section's
        colour further down; two soft blobs (::before/::after) drift over it. */
-    background-color: var(--tone-page-base);
-    background-image: linear-gradient(180deg, var(--tone-page-top) 0, var(--tone-page-top) 72px, var(--tone-page-mid) 38%, var(--tone-page-base) 100%);
+    background: var(--tone-sheet-paint);
     /* Borders and card shadows on the sheet pick up a hint of the section. */
     --color-border-primary: var(--tone-page-border);
     --color-border-light: var(--tone-page-border-light);
     --shadow-card: var(--tone-page-card-shadow);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 14%), 0 18px 44px -18px rgb(0 0 0 / 48%);
+    box-shadow: var(--tone-sheet-shadow);
   }
   /* Living blobs, like the landing page: slow drift + breathe. Kept inside the
      sheet's box (even at full travel) so they never add scroll overflow. */
@@ -188,7 +214,7 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     will-change: transform, opacity;
   }
   html[data-admin-sidebar="v8"] .layout-content::before {
-    left: 3%;
+    left: 14%;
     top: 30%;
     width: 50%;
     height: 62%;
@@ -209,7 +235,13 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     background: transparent;
   }
   html[data-admin-sidebar="v8"][data-theme="dark"] .layout-content {
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), 0 12px 32px -14px rgb(0 0 0 / 65%);
+    --tone-ring: color-mix(in srgb, var(--tone-theme) 30%, rgb(255 255 255 / 10%));
+    /* Ring on top, right and bottom only: the left edge is where the
+       selected tab flows in, and a line there would cut it. */
+    box-shadow: 0 -1px 0 0 var(--tone-ring), 1px 0 0 0 var(--tone-ring), 0 1px 0 0 var(--tone-ring), inset 0 1px 0 color-mix(in srgb, var(--tone-theme) 25%, rgb(255 255 255 / 8%)), 0 12px 32px -14px rgb(0 0 0 / 65%);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .layout-content header.page-header {
+    background-color: color-mix(in srgb, var(--tone-theme) 7%, #1D1F23);
   }
 
 
@@ -222,10 +254,40 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   }
 
   .tone-shell .icon-rail {
-    background: var(--color-bg-primary);
+    background: var(--tone-rail);
   }
-  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .icon-rail {
-    background: var(--color-bg-secondary);
+  /* Rail header matches the panel's 72px header, so the category tabs
+     start level with the first page row. */
+  .tone-shell .icon-rail > div:first-child {
+    width: 100%;
+    height: 72px;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--tone-theme) 16%, transparent);
+  }
+  .tone-shell .icon-rail-logo {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--tone-pill-ink);
+  }
+
+  /* Rail counts: ringed in the rail colour and nudged off the icon; the
+     open category shows just a dot, since its panel lists the numbers. */
+  .tone-shell .icon-rail button[data-rail-kind="category"] > span > span[aria-hidden] {
+    filter: none !important;
+    transform: translate(52%, -48%) !important;
+    box-shadow: 0 0 0 2px var(--tone-rail);
+  }
+  .tone-shell .icon-rail button[data-rail-kind="category"][aria-pressed="true"] > span > span[aria-hidden] {
+    font-size: 0 !important;
+    min-width: 8px !important;
+    width: 8px !important;
+    height: 8px !important;
+    padding: 0 !important;
+    transform: translate(40%, -40%) !important;
+    box-shadow: 0 0 0 2px var(--tone-surface);
+  }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .icon-rail-logo {
+    color: color-mix(in srgb, var(--tone-theme) 80%, #FFFFFF);
   }
 
   /* Panel: transparent window onto the field, elevated over the rail. */
@@ -267,19 +329,55 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     filter: drop-shadow(-3px 0 5px rgb(0 0 0 / 42%));
   }
 
-  /* Selected page: white tile, text and icon in the section's colour. */
+  /* Selected page: a tab that runs into the page sheet — the same join the
+     rail makes into the panel, one layer up. It takes the sheet's colour and
+     flares into the sheet's edge with two inverse corners. */
   .tone-shell .rail-panel .sidebar-list-in > [aria-hidden] {
-    background-color: var(--tone-pill) !important;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 12%), 0 8px 18px -8px rgb(0 0 0 / 34%) !important;
+    box-sizing: content-box;
+    padding-right: 12px;
+    border-radius: 12px 0 0 12px !important;
+    background: var(--tone-sheet-paint) !important;
+    box-shadow: -6px 4px 14px -10px rgb(0 0 0 / 45%) !important;
   }
+  html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .rail-panel .sidebar-list-in > [aria-hidden] {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), -6px 4px 14px -10px rgb(0 0 0 / 60%) !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::before,
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 12px;
+    height: 12px;
+  }
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::before,
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::after {
+    background: var(--tone-sheet-paint);
+  }
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::before {
+    top: -12px;
+    -webkit-mask: radial-gradient(circle at 0 0, transparent 11.5px, #000 12px);
+    mask: radial-gradient(circle at 0 0, transparent 11.5px, #000 12px);
+  }
+  .tone-shell .rail-panel .sidebar-list-in > [aria-hidden]::after {
+    bottom: -12px;
+    -webkit-mask: radial-gradient(circle at 0 100%, transparent 11.5px, #000 12px);
+    mask: radial-gradient(circle at 0 100%, transparent 11.5px, #000 12px);
+  }
+
+    /* Selected page: white tile, text and icon in the section's colour. */
   .tone-shell .rail-panel .sidebar-list-in li > button[data-sidebar-active="true"],
   .tone-shell .rail-panel .sidebar-list-in li > button[data-sidebar-active="true"] svg {
-    color: var(--tone-pill-ink) !important;
+    color: var(--tone-tab-ink) !important;
     text-shadow: none;
   }
 
+  /* Hover takes the same tab shape as the selected row (runs to the panel
+     edge), so clicking only changes the colour, never the shape. */
   .tone-shell .rail-panel .sidebar-list-in li > button:first-child:not([data-sidebar-active="true"]):hover {
     background-color: var(--tone-hover) !important;
+    border-radius: 12px 0 0 12px;
+    box-shadow: 12px 0 0 0 var(--tone-hover);
   }
   .tone-shell .rail-panel .sidebar-list-in li > button:first-child:not([data-sidebar-active="true"]):hover svg {
     color: #FFFFFF !important;
@@ -288,23 +386,116 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
   /* Pin buttons: frosted white on the field, theme-tinted on the white tile. */
   .tone-shell .rail-panel .sidebar-list-in li > button:last-child {
     color: var(--tone-ink) !important;
+    background-color: transparent !important;
+    transition: opacity 120ms ease-out, background-color 120ms ease-out !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button:last-child:not(:disabled):has(svg.fill-current) {
+    opacity: 0.5;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:hover > button:last-child,
+  .tone-shell .rail-panel .sidebar-list-in li > button:last-child:focus-visible {
+    opacity: 1;
     background-color: var(--tone-hover) !important;
   }
   .tone-shell .rail-panel .sidebar-list-in li > button:last-child:hover {
     background-color: var(--tone-hover-strong) !important;
   }
+  .tone-shell .rail-panel .sidebar-list-in li > button:last-child:disabled {
+    opacity: 0.4;
+  }
   .tone-shell .rail-panel .sidebar-list-in li:has([data-sidebar-active="true"]) > button:last-child {
-    color: var(--tone-pill-ink) !important;
-    background-color: color-mix(in srgb, var(--tone-pill-ink) 12%, transparent) !important;
+    color: color-mix(in srgb, var(--tone-tab-ink) 70%, transparent) !important;
+    background-color: transparent !important;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:has([data-sidebar-active="true"]) > button:last-child:hover {
+    color: var(--tone-tab-ink) !important;
+    background-color: color-mix(in srgb, var(--tone-tab-ink) 12%, transparent) !important;
   }
 
   /* Header: white title, frosted version switcher, solid dropdown menu. */
-  .tone-shell .rail-panel .sidebar-mode-button {
-    background-color: var(--tone-hover);
-    color: var(--tone-ink);
+  .tone-shell .rail-panel > :first-child {
+    height: 72px;
+    position: relative;
+    z-index: 3; /* above the list, so the V8 menu drops over it */
   }
-  .tone-shell .rail-panel .sidebar-mode-button:hover {
-    background-color: var(--tone-hover-strong);
+  .tone-shell .rail-panel > :first-child .text-lg {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  /* The section's glyph, large and faint, in the panel's bottom corner
+     (where short sections leave room). Lists scroll over it. */
+  .tone-shell .rail-panel {
+    position: relative;
+  }
+  .tone-shell .tone-watermark {
+    position: absolute;
+    right: -22px;
+    bottom: -18px;
+    width: 176px;
+    height: 176px;
+    z-index: 0;
+    color: #FFFFFF;
+    opacity: 0.07;
+    transform: rotate(-10deg);
+    pointer-events: none;
+    animation: tone-mark-in 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tone-shell .rail-panel > :not(.tone-watermark):not(:first-child) {
+    position: relative;
+    z-index: 1;
+  }
+  .tone-shell .rail-panel > :first-child > div {
+    padding-left: 24px;
+    padding-right: 14px;
+  }
+  .tone-shell .rail-panel .sidebar-scrollbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 20px;
+  }
+  /* A little more room for long page names; the frame absorbs it. */
+  div.tone-shell {
+    width: 316px;
+  }
+  /* One trailing column: counts, Live and NEW end 12px in from the row's
+     edge, or 32px in when the row's pin is showing (pinned, or hovered). */
+  .tone-shell .rail-panel .sidebar-list-in li > button:first-child > span:last-child {
+    padding-right: 0;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li:has(> button:last-child svg.fill-current) > button:first-child > span:last-child,
+  .tone-shell .rail-panel .sidebar-list-in li:hover:has(> button:last-child:not(:first-child)) > button:first-child > span:last-child {
+    padding-right: 20px;
+  }
+  .tone-shell .rail-panel .sidebar-list-in .sidebar-new-tag,
+  .tone-shell .rail-panel .sidebar-list-in .sidebar-live-tag {
+    margin-left: auto;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button:last-child {
+    right: 6px;
+    width: 20px;
+    height: 20px;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button:first-child {
+    padding-block: 8px;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button:first-child > span:first-child {
+    margin-right: 10px;
+  }
+  .tone-shell .rail-panel .sidebar-mode-button:not(.sidebar-new-tag) {
+    height: 26px;
+    font-size: 11px;
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+    color: var(--tone-ink);
+    opacity: 0.8;
+  }
+  .tone-shell .rail-panel .sidebar-mode-button:not(.sidebar-new-tag):hover,
+  .tone-shell .rail-panel .sidebar-mode-button[aria-expanded="true"] {
+    opacity: 1;
+  }
+  .tone-shell .rail-panel .sidebar-mode-button:not(.sidebar-new-tag):hover {
+    background-color: var(--tone-hover);
   }
   .tone-shell .rail-panel [role="menu"] {
     --color-bg-primary: var(--tone-menu-bg);
@@ -314,21 +505,31 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     --color-text-primary: var(--tone-menu-text);
     --color-text-secondary: var(--tone-menu-muted);
     --color-text-muted: var(--tone-menu-muted);
+    width: 238px;
+    right: -4px;
     background-color: var(--tone-menu-bg);
     border-color: var(--tone-menu-border);
     color: var(--tone-menu-text);
     text-shadow: none;
   }
 
+  .tone-shell .rail-panel [role="menu"] .grid {
+    grid-template-columns: 1fr 1.15fr;
+  }
+  .tone-shell .rail-panel [role="menu"] .grid .truncate {
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+
   /* Live row: frosted wash, mint accent and icon. */
   .tone-shell .rail-panel .sidebar-accent-success {
-    --sidebar-live-bg: rgb(255 255 255 / 10%);
+    --sidebar-live-bg: transparent;
   }
   .tone-shell .rail-panel .sidebar-accent-success:hover {
-    --sidebar-live-bg: rgb(255 255 255 / 16%);
+    --sidebar-live-bg: var(--tone-hover);
   }
   .tone-shell .rail-panel .sidebar-accent-success::before {
-    background: #A7F3C4;
+    display: none;
   }
   .tone-shell .rail-panel .sidebar-accent-success > button:first-child:not([data-sidebar-active="true"]) svg {
     color: #A7F3C4 !important;
@@ -344,22 +545,92 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
 
   /* "New" rows: frosted outline instead of a neon ring. */
   .tone-shell .rail-panel li:has(.sidebar-new-tag) > button:first-child:not([data-sidebar-active="true"]) {
-    border-color: rgb(255 255 255 / 34%) !important;
-    background-color: rgb(255 255 255 / 9%) !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
   }
   .tone-shell .rail-panel li:has(.sidebar-new-tag) > button:first-child:not([data-sidebar-active="true"]):hover {
-    border-color: rgb(255 255 255 / 50%) !important;
     background-color: var(--tone-hover) !important;
   }
-  .tone-shell .rail-panel .sidebar-new-tag {
+  .tone-shell .rail-panel .sidebar-list-in .sidebar-new-tag {
+    background: #FFFFFF;
+    color: var(--tone-pill-ink);
+    padding: 1px 4px;
+    font-size: 8.5px;
     text-shadow: none;
+  }
+  .tone-shell .rail-panel .sidebar-list-in .sidebar-new-tag::after {
+    display: none;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button[data-sidebar-active="true"] .sidebar-new-tag {
+    background: var(--tone-tab-ink);
+    color: #FFFFFF;
+  }
+
+  /* Count badges: ringed in the field colour so they sit on the icon
+     corner cleanly instead of smudging into it. */
+  .tone-shell .rail-panel li > button:first-child > span:first-child {
+    position: static;
+  }
+  .tone-shell .rail-panel li > button:first-child {
+    position: relative;
+  }
+  .tone-shell .rail-panel li > button:first-child > span:first-child > span[aria-hidden] {
+    filter: none !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    min-width: 20px !important;
+    height: 18px !important;
+    padding-inline: 6px !important;
+    font-size: 10.5px !important;
+    background-color: #FFFFFF !important;
+    color: color-mix(in srgb, var(--color-danger) 88%, #000000) !important;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 14%);
+  }
+  .tone-shell .rail-panel li > button[data-sidebar-active="true"] > span:first-child > span[aria-hidden] {
+    background-color: var(--color-danger) !important;
+    color: #FFFFFF !important;
+  }
+  .tone-shell .rail-panel li > button:first-child > span:first-child > span[aria-hidden] {
+    right: 12px !important;
+    transition: right 140ms ease-out;
+  }
+  .tone-shell .rail-panel li:has(> button:last-child svg.fill-current) > button:first-child > span:first-child > span[aria-hidden],
+  .tone-shell .rail-panel li:hover:has(> button:last-child:not(:first-child)) > button:first-child > span:first-child > span[aria-hidden] {
+    right: 32px !important;
+  }
+  .tone-shell .rail-panel li > button:first-child:has(> span:first-child > span[aria-hidden]) > span:last-child {
+    padding-right: 32px !important;
+  }
+  .tone-shell .rail-panel li:has(> button:last-child svg.fill-current) > button:first-child:has(> span:first-child > span[aria-hidden]) > span:last-child,
+  .tone-shell .rail-panel li:hover:has(> button:last-child:not(:first-child)) > button:first-child:has(> span:first-child > span[aria-hidden]) > span:last-child {
+    padding-right: 52px !important;
+  }
+
+  /* Keyboard focus that reads on the coloured field. */
+  .tone-shell .rail-panel .sidebar-list-in li > button:focus-visible,
+  .tone-shell .rail-panel .sidebar-mode-button:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 90%);
+    outline-offset: -2px;
+    background-color: var(--tone-hover) !important;
+    --tw-ring-shadow: 0 0 #0000;
+    box-shadow: none;
+  }
+  .tone-shell .rail-panel .sidebar-list-in li > button[data-sidebar-active="true"]:focus-visible {
+    outline-color: var(--tone-tab-ink);
+    background-color: transparent !important;
+  }
+
+  /* Long lists fade out at the bottom instead of stopping at the edge. */
+  .tone-shell .rail-panel .sidebar-scrollbar {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 32px), transparent);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html[data-admin-sidebar="v8"] .layout-container::before,
   html[data-admin-sidebar="v8"] .layout-content::before,
-  html[data-admin-sidebar="v8"] .layout-content::after {
+  html[data-admin-sidebar="v8"] .layout-content::after,
+  html[data-admin-sidebar="v8"] .tone-watermark {
     animation: none;
     transition: none;
   }
