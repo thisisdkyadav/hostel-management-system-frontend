@@ -19,6 +19,9 @@ export const diningRebateBoardApi = {
   /** { periodId, status, type, search, day, sort, page, limit } → { items, total, page, limit, counts, period, scope } */
   list: (params = {}) => apiClient.get(`${BASE}/list`, { params }).then(unwrap),
 
+  /** { periodId } → { period, rows: [{ rollNumber, name, email, caterer, shortTermDays, longTermDays, totalDays }] } approved days per student */
+  exportRows: (params = {}) => apiClient.get(`${BASE}/export`, { params }).then(unwrap),
+
   /** { search, periodId } → { items } students with photo, room, caterer in the period and live rebates */
   students: (params = {}) => apiClient.get(`${BASE}/students`, { params }).then(unwrap),
 

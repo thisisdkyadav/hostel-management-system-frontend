@@ -2,12 +2,14 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Page } from "hzero"
-import { ChevronLeft, ChevronRight, Plus, RefreshCw, Search, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, Download, Plus, RefreshCw, Search, X } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import { queryKeys } from "@/lib/query"
 import { diningRebateBoardApi } from "@/service"
 import { getErrorMessage } from "@/components/dining/diningPeriodHelpers"
 import { useDebouncedValue } from "@/components/dining/caterer/rebates/rebateHelpers"
+import { buildCsvContent } from "@/utils/csvExport"
+import { downloadCsv } from "@/components/dining/caterer/meal-records/mealRecordsHelpers"
 import PeriodPicker from "@/components/dining/rebate-board/PeriodPicker"
 import PeriodConsole from "@/components/dining/rebate-board/PeriodConsole"
 import RebateCard, { Photo } from "@/components/dining/rebate-board/RebateCard"
@@ -79,6 +81,7 @@ const DiningRebatesPage = () => {
   const [picked, setPicked] = useState(null)
   const [status, setStatus] = useState(null)
   const [creating, setCreating] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const search = useDebouncedValue(searchInput.trim(), 250)
 
   const overview = useQuery({
@@ -135,6 +138,23 @@ const DiningRebatesPage = () => {
     refresh()
   }
 
+  // One row per student in the period: approved short / long / total rebate days that fall inside it.
+  const exportCsv = async () => {
+    if (!period) return
+    setExporting(true)
+    try {
+      const data = await diningRebateBoardApi.exportRows({ periodId: period.id })
+      const days = data.period?.days ?? period.days
+      const head = ["Roll number", "Name", "Email", "Caterer", "Period days", "Short-term rebate days", "Long-term rebate days", "Total rebate days"]
+      const body = (data.rows || []).map((row) => [row.rollNumber, row.name, row.email, row.caterer, days, row.shortTermDays, row.longTermDays, row.totalDays])
+      downloadCsv(`dining-rebates-${period.startDate}-to-${period.endDate}.csv`, buildCsvContent(head, body))
+    } catch (error) {
+      setStatus({ message: getErrorMessage(error, "Couldn't export the rebates."), tone: "bad" })
+    } finally {
+      setExporting(false)
+    }
+  }
+
   // Hovering a row shows it after a short pause; arrow keys move through the list.
   const hoverTimer = useRef(null)
   const hoverTo = (id) => {
@@ -173,6 +193,15 @@ const DiningRebatesPage = () => {
           <PeriodPicker periods={overview.data?.periods || []} value={periodId} onChange={choosePeriod} />
           <Button variant="ghost" size="sm" onClick={refresh} disabled={overview.isFetching} aria-label="Refresh" title="Refresh">
             <RefreshCw size={16} className={overview.isFetching || list.isFetching ? "rb-spin" : undefined} />
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={exportCsv}
+            disabled={!period || exporting}
+            title={period ? "Download each student's approved rebate days in this period (CSV)" : "Pick a dining period to export"}
+          >
+            <Download size={16} /> {exporting ? "Exporting…" : "Export"}
           </Button>
           <Button variant="primary" size="sm" onClick={() => setCreating(true)}>
             <Plus size={16} /> New rebate
