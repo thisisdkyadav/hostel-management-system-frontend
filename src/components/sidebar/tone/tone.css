@@ -134,7 +134,7 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
 }
 @keyframes tone-mark-in {
   from { opacity: 0; transform: rotate(-18deg) scale(0.9); }
-  to { opacity: 0.07; transform: rotate(-10deg) scale(1); }
+  to { transform: rotate(-10deg) scale(1); }
 }
 @keyframes tone-drift {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
@@ -372,12 +372,17 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     text-shadow: none;
   }
 
-  /* Hover takes the same tab shape as the selected row (runs to the panel
-     edge), so clicking only changes the colour, never the shape. */
+  /* Hover takes the same tab shape as the selected row and runs toward the
+     panel edge, fading out there: only the selected row joins the page. */
   .tone-shell .rail-panel .sidebar-list-in li > button:first-child:not([data-sidebar-active="true"]):hover {
+    --tone-hover-step: color-mix(in srgb, var(--tone-hover) 17%, transparent);
     background-color: var(--tone-hover) !important;
     border-radius: 12px 0 0 12px;
-    box-shadow: 12px 0 0 0 var(--tone-hover);
+    /* Six overlapping 2px steps = a fade over the 12px gutter. */
+    box-shadow:
+      2px 0 0 0 var(--tone-hover-step), 4px 0 0 0 var(--tone-hover-step),
+      6px 0 0 0 var(--tone-hover-step), 8px 0 0 0 var(--tone-hover-step),
+      10px 0 0 0 var(--tone-hover-step), 12px 0 0 0 var(--tone-hover-step);
   }
   .tone-shell .rail-panel .sidebar-list-in li > button:first-child:not([data-sidebar-active="true"]):hover svg {
     color: #FFFFFF !important;
@@ -439,6 +444,9 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     opacity: 0.07;
     transform: rotate(-10deg);
     pointer-events: none;
+    /* Fade away from the corner so long lists don't read over a hard glyph. */
+    -webkit-mask-image: radial-gradient(circle at 100% 100%, #000 40%, transparent 72%);
+    mask-image: radial-gradient(circle at 100% 100%, #000 40%, transparent 72%);
     animation: tone-mark-in 480ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .tone-shell .rail-panel > :not(.tone-watermark):not(:first-child) {
@@ -505,8 +513,8 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     --color-text-primary: var(--tone-menu-text);
     --color-text-secondary: var(--tone-menu-muted);
     --color-text-muted: var(--tone-menu-muted);
-    width: 238px;
-    right: -4px;
+    width: 248px;
+    right: -14px; /* reaches the panel edge, covering the selected tab */
     background-color: var(--tone-menu-bg);
     border-color: var(--tone-menu-border);
     color: var(--tone-menu-text);
@@ -634,4 +642,8 @@ html[data-admin-sidebar="v8"][data-theme="dark"] {
     animation: none;
     transition: none;
   }
+}
+
+html[data-admin-sidebar="v8"][data-theme="dark"] .tone-shell .tone-watermark {
+  opacity: 0.05;
 }
